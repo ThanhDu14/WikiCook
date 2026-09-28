@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+.venv/
+env/
+
+# Build outputs
+dist/
+build/
+*.zip
+
+# OS & IDE files
+.DS_Store
+.vscode/
+.idea/
+
+# Environment variables & secrets
+.env
+.env.local
