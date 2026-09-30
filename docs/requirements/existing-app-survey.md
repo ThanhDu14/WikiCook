@@ -1,7 +1,7 @@
 # Existing App Survey
 
 *Author: Nguyen Thanh Du*
-*Reviewer:* 
+*Reviewer: Nguyen Duc Duy* 
 *Editor:*  
 
 ## 1. Surveyed Applications
