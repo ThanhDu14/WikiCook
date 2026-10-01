@@ -8,15 +8,16 @@
 ## DOCUMENT METADATA & RESPONSIBILITY MATRIX
 | Section | Title | Performed by (Author) | Reviewed by | Edited by |
 | :---: | :--- | :---: | :---: | :---: |
-| **Section 1** | Overview, Vision & Practical Value | **DucDuyNguyen15-IT**  |  **ThanhDu14** | Member 3 |
-| **Section 2** | Target Users & Operating Environments | **DucDuyNguyen15-IT**  |  **ThanhDu14** | Member 3 |
-| **Section 3** | Key Functional Features (10 Modules) | **DucDuyNguyen15-IT**  |  **ThanhDu14** | Member 3 |
-| **Section 4** | AI Smart Chef Assistant & Data Flow | Member 3 | **DucDuyNguyen15-IT**  , **ThanhDu14** | Member 5 |
+| **Section 1** | Overview, Vision & Practical Value | **DucDuyNguyen15-IT**  |  **ThanhDu14** | **LqHung06** |
+| **Section 2** | Target Users & Operating Environments | **DucDuyNguyen15-IT**  |  **ThanhDu14** | **LqHung06** |
+| **Section 3** | Key Functional Features (10 Modules) | **DucDuyNguyen15-IT**  |  **ThanhDu14** | **LqHung06** |
+| **Section 4** | AI Smart Chef Assistant & Data Flow | **MaiHien3507** | **DucDuyNguyen15-IT**  , **ThanhDu14** | **LqHung06** |
+| **Section 5** | End-to-End User Journey & Workflow Diagram | **DucDuyNguyen15-IT** , **LqHung06** | **ThanhDu14** | **LqHung06** |
 
 ---
 
 ## 1. PROJECT OVERVIEW & VISION
-*Performed by: DucDuyNguyen15-IT (Member 2) | Reviewed by: Member 1 | Edited by: Member 3*
+*Performed by: DucDuyNguyen15-IT (Member 2) | Reviewed by: Member 1 | Edited by: **LqHung06**
 
 ### 1.1. Problem Statement
 In the fast-paced modern urban environment, cooking at home presents several recurring challenges for individuals and families:
@@ -147,6 +148,139 @@ WikiCook provides a robust suite of **10 core feature modules**, engineered to d
 ---
 
 ## 4. SPECIAL FEATURE: AI SMART CHEF ASSISTANT
-*Performed by: Member 3 (AI Architect) | Reviewed by: DucDuyNguyen15-IT (Member 2), ThanhDu14 | Edited by: Member 5 (DevOps)*
+*Performed by:* MaiHien3507 | Reviewed by: DucDuyNguyen15-IT , ThanhDu14 | Edited by: ThanhDu14*
 
 *(This section is engineered by Member 3 under Task SCRUM-9: LLM-driven recipe suggestion, AI-powered nutritional analysis, natural language recipe search, and Mermaid Data Flow Diagram).*
+
+---
+
+## 5. END-TO-END USER JOURNEY & CULINARY WORKFLOW
+*Performed by: DucDuyNguyen15-IT,LqHung06 | Reviewed by: ThanhDu14 | Edited by: LqHung06*
+
+To provide a cohesive, architectural view of how WikiCook's 10 functional modules interconnect, the following end-to-end workflow illustrates the complete user lifecycle from initial onboarding, meal planning, and grocery shopping to interactive cooking and community feedback.
+
+### 5.1. System Workflow Diagram (Mermaid)
+
+```mermaid
+flowchart TD
+    User(["New / Existing User"])
+    
+    Auth["<b>3.1. Registration & Authentication</b><br/>• Email / Google OAuth Login<br/>• Dietary Profiling (Allergies, Family Serving Size)"]
+    
+    User --> Auth
+    
+    Auth --> UserIntent{"User Intent"}
+    
+    %% Recipe Contribution Branch
+    UserIntent -- "Contribute Recipe" --> Wizard["<b>3.6. Recipe Creation Wizard</b><br/>• Structured Ingredient & Unit Input<br/>• Step-by-Step Photos, Videos & Cooking Timers"]
+    
+    Wizard --> Moderation["<b>3.10. Admin Content Moderation</b><br/>• Review, Approve, Reject, or Request Revision"]
+    
+    Moderation -- "Approved & Published" --> Discovery
+    
+    %% Recipe Discovery Branch
+    UserIntent -- "Explore & Cook" --> Discovery["<b>3.2. Recipe Search & Multi-Criteria Filtering</b><br/>• Search by Keyword, Calories, Prep Time & Equipment<br/>• Inspect LLM Nutrition & Dietary Warning Badges (3.9)"]
+    
+    Discovery --> PrepChoice{"Preparation Route"}
+    
+    %% Weekly Meal Planning Route
+    PrepChoice -- "Plan for the Week" --> MealPlanner["<b>3.3. Weekly Meal Planner</b><br/>• Drag-and-Drop Calendar Schedule<br/>• Or Trigger Automated AI Menu Generator"]
+    
+    MealPlanner --> ShoppingList["<b>3.4. Automated Smart Shopping List</b><br/>• Consolidate Ingredients from Selected Meals<br/>• Auto-Categorize Items by Supermarket Aisle<br/>• Interactive In-Store Checklist"]
+    
+    ShoppingList --> HandsFree
+    
+    %% Immediate Cooking Route
+    PrepChoice -- "Cook Immediately" --> HandsFree["<b>3.5. Hands-Free Cooking Mode & Timers</b><br/>• Distraction-Free Fullscreen View with Large Typography<br/>• Concurrent Multi-Stage Countdown Timers with Audio Alarms"]
+    
+    %% Post-Cooking Engagement
+    HandsFree -- "Finished Cooking" --> Review["<b>3.7. Community Reviews & Cooksnaps</b><br/>• 1-5 Star Interactive Ratings & Feedback<br/>• Upload Actual Finished Dish Photos (Cooksnaps)<br/>• Share Seasoning & Ingredient Substitution Tips"]
+    
+    Review -- "Save to Repertoire" --> Bookmarks["<b>3.8. Personal Bookmarks & Custom Collections</b><br/>• Organize into 'Family Favorites', 'Quick Dinners', 'Diet'..."]
+
+    %% Styling
+    classDef startNode fill:#ea580c,stroke:#c2410c,stroke-width:2px,color:#fff;
+    classDef stepNode fill:#f8fafc,stroke:#0284c7,stroke-width:2px,color:#0f172a;
+    classDef decisionNode fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f;
+    
+    class User startNode;
+    class Auth,Wizard,Moderation,Discovery,MealPlanner,ShoppingList,HandsFree,Review,Bookmarks stepNode;
+    class UserIntent,PrepChoice decisionNode;
+```
+
+### 5.2. Text-Based Workflow Representation
+
+```text
+[ New / Existing User ]
+           │
+           ▼
+┌────────────────────────────────────────────────────────┐
+│  3.1. Registration & Authentication                    │
+│  - Set up dietary preferences (Allergies, Portions)    │
+└───────────────────────────┬────────────────────────────┘
+                            │
+               ┌────────────┴────────────┐
+               ▼                         ▼
+      [ Explore & Cook ]       [ Contribute Recipe ]
+               │                         │
+               │                         ▼
+               │       ┌─────────────────────────────────────────┐
+               │       │ 3.6. Recipe Creation Wizard             │
+               │       │ - Structured ingredients & quantities   │
+               │       │ - Steps, media, timer metadata          │
+               │       └───────────────────┬─────────────────────┘
+               │                           │
+               │                           ▼
+               │       ┌─────────────────────────────────────────┐
+               │       │ 3.10. Admin Content Moderation          │
+               │       │ - Approve / Reject / Request Revisions  │
+               │       └───────────────────┬─────────────────────┘
+               │                           │ (Once Approved)
+               │ ◄─────────────────────────┘
+               ▼
+┌────────────────────────────────────────────────────────┐
+│  3.2. Recipe Search & Multi-Criteria Filtering         │
+│  - Filter by keyword, calories, time, equipment        │
+│  - Inspect AI nutrition & allergen badges (3.9)       │
+└───────────────────────────┬────────────────────────────┘
+                            │
+               ┌────────────┴────────────┐
+               │ (Plan Weekly Meals)     │ (Cook Immediately)
+               ▼                         │
+┌───────────────────────────────┐        │
+│ 3.3. Weekly Meal Planner      │        │
+│ - Drag-and-drop weekly calendar│       │
+│ - Or generate menu via AI     │        │
+└──────────────┬────────────────┘        │
+               │                         │
+               ▼                         │
+┌───────────────────────────────┐        │
+│ 3.4. Automated Shopping List  │        │
+│ - Auto-consolidate ingredients│        │
+│ - Group by supermarket aisle  │        │
+│ - Interactive mobile checklist│        │
+└──────────────┬────────────────┘        │
+               │                         │
+               └────────────┬────────────┘
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│  3.5. Hands-Free Cooking Mode & Integrated Timers      │
+│  - Distraction-free fullscreen view with large text    │
+│  - Concurrent countdown timers for active cooking steps│
+└───────────────────────────┬────────────────────────────┘
+                            │ (Cooking Complete)
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│  3.7. Community Reviews & Cooksnaps                    │
+│  - Rate 1 to 5 stars                                   │
+│  - Upload actual finished dish photos (Cooksnaps)      │
+│  - Share taste adjustment & substitution tips          │
+└───────────────────────────┬────────────────────────────┘
+                            │ (Save for Future Use)
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│  3.8. Personal Bookmarks & Custom Collections          │
+│  - Save into "Family Favorites", "Healthy Weekdays"... │
+└────────────────────────────────────────────────────────┘
+```
+
