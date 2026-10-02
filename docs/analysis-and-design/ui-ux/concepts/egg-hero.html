@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<!--
+  ORIGINAL CONCEPT (author: DucDuyNguyen15-IT) — kept as reference only.
+  Kept: egg crack → yolk falls into pan transition, Web Audio sounds, amber-on-dark palette.
+  Dropped/replaced: restaurant menu, prices, cart, login gate (see ../design-direction.md §2).
+  Port plan: ADR-0010 (docs/adr/0010-egg-transition-vanilla-threejs-lazy.md).
+-->
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chef's Table 3D - Gourmet Breakfast & Live Pan</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      background-color: #08090d;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #f1f5f9;
+      overflow-x: hidden;
+      overflow-y: hidden; /* Locked initially, unlocked after cooking */
+    }
+
+    /* Fixed WebGL Canvas in Background */
+    #canvas-container {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Sticky Top Navigation */
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 50;
+      pointer-events: none;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: rgba(8, 9, 13, 0.5);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      pointer-events: auto;
+      cursor: pointer;
+    }
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+    }
+    .brand-name {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    .brand-tag {
+      font-size: 11px;
+      color: #fbbf24;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 600;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      pointer-events: auto;
+    }
+
+    /* Sound Mute Toggle Button */
+    .btn-sound-toggle {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(8px);
+    }
+    .btn-sound-toggle:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-1px);
+    }
+    .btn-sound-toggle.muted {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+
+    .cart-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(22, 27, 36, 0.85);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #e2e8f0;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: all 0.4s ease;
+    }
+    .cart-pill.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .cart-count {
+      background: #f59e0b;
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 12px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-nav-logout {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #94a3b8;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: none;
+      transition: all 0.2s;
+    }
+    .btn-nav-logout:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    /* --- SECTION 1: HERO (100vh) --- */
+    .hero-section {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* Phase 1: Login Card Overlay */
+    .login-wrapper {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .login-wrapper.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.9) translateY(-40px);
+    }
+    .login-card {
+      width: 100%;
+      max-width: 410px;
+      background: rgba(15, 18, 24, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border-radius: 24px;
+      padding: 38px 34px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(245, 158, 11, 0.12);
+      text-align: center;
+    }
+    .login-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #fbbf24;
+      margin-bottom: 12px;
+    }
+    .login-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .login-desc {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+    .form-group {
+      margin-bottom: 14px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+    }
+    .input-field {
+      width: 100%;
+      background: rgba(10, 13, 18, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: #f8fafc;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .input-field:focus {
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    }
+    .btn-login {
+      width: 100%;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #0f172a;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.25s ease;
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-login:hover {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.5);
+    }
+    .btn-login:active {
+      transform: translateY(0);
+    }
+    .egg-hint {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    /* Hero Live Title (Appears above the sizzling pan at top) */
+    .hero-live-header {
+      position: absolute;
+      top: 14%;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.8s ease;
+      pointer-events: none;
+    }
+    .hero-live-header.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .live-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fbbf24;
+      backdrop-filter: blur(12px);
+      margin-bottom: 10px;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 10px #ef4444;
+      animation: pulseAnim 1.4s infinite;
+    }
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+    }
+    .hero-live-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Scroll Down Indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 34px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: all 0.8s ease;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+    .scroll-hint.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .scroll-hint-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: #94a3b8;
+      letter-spacing: 0.05em;
+    }
+    .scroll-arrow {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fbbf24;
+      font-size: 16px;
+      animation: bounceArrow 1.8s infinite ease-in-out;
+    }
+    @keyframes bounceArrow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+
+    /* --- SECTION 2: FOOD MENU (SCROLL-REVEALED) --- */
+    .menu-section {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      z-index: 20;
+      padding: 100px 32px 80px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(180deg, transparent 0%, rgba(8, 10, 14, 0.94) 22%, #080a0e 100%);
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      pointer-events: auto;
+    }
+    .menu-section.fade-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .menu-inner {
+      width: 100%;
+      max-width: 1120px;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 42px;
+    }
+    .section-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #f59e0b;
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+    .section-subtitle {
+      font-size: 15px;
+      color: #94a3b8;
+      max-width: 580px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Filter Category Pills */
+    .menu-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 38px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(8px);
+    }
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .tab-btn.active {
+      background: #f59e0b;
+      border-color: #f59e0b;
+      color: #0f172a;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+    }
+
+    /* Menu Grid (3 Columns) */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .dish-card {
+      background: rgba(20, 24, 32, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .dish-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 0 25px rgba(245, 158, 11, 0.12);
+      background: rgba(24, 29, 39, 0.8);
+    }
+    .dish-card.featured-live {
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      background: linear-gradient(160deg, rgba(245, 158, 11, 0.1) 0%, rgba(18, 22, 30, 0.7) 100%);
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .dish-icon {
+      font-size: 34px;
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.05);
+    }
+    .dish-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .dish-badge.live {
+      background: #f59e0b;
+      color: #0f172a;
+    }
+    .dish-badge.popular {
+      background: #3b82f6;
+      color: #fff;
+    }
+    .dish-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 8px;
+    }
+    .dish-desc {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .dish-price {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fbbf24;
+    }
+    .btn-add-cart {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #f8fafc;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-add-cart:hover {
+      background: #f59e0b;
+      color: #0f172a;
+    }
+    .btn-add-cart.added {
+      background: rgba(34, 197, 94, 0.2);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+
+    .menu-footer {
+      margin-top: 70px;
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      width: 100%;
+      color: #64748b;
+      font-size: 13px;
+    }
+    .btn-replay-bottom {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #e2e8f0;
+      padding: 10px 22px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: all 0.2s;
+    }
+    .btn-replay-bottom:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <div class="brand-logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+      <div class="brand-icon">🍳</div>
+      <div>
+        <div class="brand-name">Chef's Table 3D</div>
+        <div class="brand-tag">Gourmet Breakfast</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <!-- Sound Mute/Unmute Toggle Button -->
+      <button class="btn-sound-toggle" id="btn-sound" onclick="toggleSound()">
+        <span id="sound-icon">🔊</span>
+        <span id="sound-label">Âm thanh</span>
+      </button>
+
+      <div class="cart-pill" id="cart-pill">
+        <span>🛒 Giỏ hàng</span>
+        <span class="cart-count" id="cart-count">1</span>
+      </div>
+      <button class="btn-nav-logout" id="btn-logout" onclick="resetToLogin()">Đăng xuất / Nấu lại</button>
+    </div>
+  </nav>
+
+  <!-- SECTION 1: HERO VIEWPORT (100vh) -->
+  <section class="hero-section" id="hero-section">
+    <!-- Phase 1: Login Form Overlay -->
+    <div class="login-wrapper" id="login-wrapper">
+      <div class="login-card">
+        <div class="login-badge">Bếp Trưởng • Sign In</div>
+        <h2 class="login-title">Đăng Nhập Phục Vụ</h2>
+        <p class="login-desc">Quả trứng 3D đang lơ lửng chờ bạn. Nhấn đăng nhập để bắt đầu trải nghiệm đập trứng rơi vào chảo!</p>
+
+        <form onsubmit="event.preventDefault(); handleLogin();">
+          <div class="form-group">
+            <label>Email hoặc Tên Bếp Trưởng</label>
+            <input type="text" class="input-field" value="chef.gourmet@kitchen.com" required />
+          </div>
+          <div class="form-group">
+            <label>Mật khẩu</label>
+            <input type="password" class="input-field" value="••••••••••••" required />
+          </div>
+          <button type="submit" class="btn-login">
+            <span>Đăng nhập & Thả trứng</span>
+            <span>🍳</span>
+          </button>
+        </form>
+        <div class="egg-hint">💡 Hoặc click trực tiếp vào quả trứng 3D để đăng nhập nhanh!</div>
+      </div>
+    </div>
+
+    <!-- Phase 3: Title appears right over the sizzling pan at top -->
+    <div class="hero-live-header" id="hero-live-header">
+      <div class="live-status-pill">
+        <span class="pulse-dot"></span>
+        <span>Chảo Gang Đang Rán Xèo Xèo • 185°C</span>
+      </div>
+      <h1 class="hero-live-title">Trứng Ốp La Chảo Gang Cao Cấp</h1>
+    </div>
+
+    <!-- Scroll down invitation -->
+    <div class="scroll-hint" id="scroll-hint" onclick="scrollToMenu()">
+      <span class="scroll-hint-text">Cuộn chuột xuống để khám phá thực đơn</span>
+      <div class="scroll-arrow">↓</div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: FOOD MENU (SCROLL-REVEALED) -->
+  <section class="menu-section" id="menu-section">
+    <div class="menu-inner">
+      <div class="section-header">
+        <span class="section-badge">Gourmet Breakfast & Brunch</span>
+        <h2 class="section-title">Thực Đơn Bữa Sáng Hôm Nay</h2>
+        <p class="section-subtitle">Thưởng thức món trứng rán trực tiếp từ chảo gang của bếp trưởng và các món ăn sáng chuẩn vị Âu hảo hạng.</p>
+      </div>
+
+      <div class="menu-tabs">
+        <button class="tab-btn active">Tất Cả Món Trứng</button>
+        <button class="tab-btn">Bữa Sáng Kiểu Âu</button>
+        <button class="tab-btn">Bánh Mì & Muffin</button>
+        <button class="tab-btn">Cà Phê & Đồ Uống</button>
+      </div>
+
+      <div class="menu-grid">
+        <div class="dish-card featured-live">
+          <div class="card-top">
+            <div class="dish-icon">🍳</div>
+            <span class="dish-badge live">Đang Nấu Trên Chảo</span>
+          </div>
+          <h3 class="dish-title">Trứng Ốp La Chảo Gang (Sunny-Side Up)</h3>
+          <p class="dish-desc">Lòng đỏ béo ngậy óng ánh, lòng trắng giòn viền thơm nức rán cùng bơ thảo mộc trực tiếp trên chảo gang bạn vừa chiên.</p>
+          <div class="card-footer">
+            <span class="dish-price">65.000 ₫</span>
+            <button class="btn-add-cart added" id="btn-dish-1" onclick="addToCart('Trứng Ốp La Chảo Gang', this)">✓ Trong Chảo</button>
+          </div>
+        </div>
+
+        <div class="dish-card">
+          <div class="card-top">
+            <div class="dish-icon">🥪</div>
+            <span class="dish-badge popular">Bestseller</span>
+          </div>
+          <h3 class="dish-title">Eggs Benedict Hoàng Gia</h3>
+          <p class="dish-desc">Trứng chần lòng đào trên bánh Muffin nướng giòn, thịt giăm bông xông khói và sốt Hollandaise bơ chanh béo mịn.</p>
+          <div class="card-footer">
+            <span class="dish-price">125.000 ₫</span>
+            <button class="btn-add-cart" onclick="addToCart('Eggs Benedict', this)">+ Thêm món</button>
+          </div>
+        </div>
+
+        <div class="dish-card">
+          <div class="card-top">
+            <div class="dish-icon">🧀</div>
+            <span class="dish-badge popular">Chef's Choice</span>
+          </div>
+          <h3 class="dish-title">Omelette Nấm Phô Mai Truffle</h3>
+          <p class="dish-desc">Trứng cuộn mềm tan như lụa theo công thức Pháp, nấm hương áp chảo tiêu đen và phô mai Gruyère béo ngậy thơm nức.</p>
+          <div class="card-footer">
+            <span class="dish-price">115.000 ₫</span>
+            <button class="btn-add-cart" onclick="addToCart('Omelette Truffle', this)">+ Thêm món</button>
+          </div>
+        </div>
+
+        <div class="dish-card">
+          <div class="card-top">
+            <div class="dish-icon">🥖</div>
+          </div>
+          <h3 class="dish-title">Bánh Mì Chảo Bò Bít Tết & Trứng</h3>
+          <p class="dish-desc">Thịt bò áp chảo mềm mọng, xúc xích Đức nướng, pate gan ngỗng béo thơm và 2 quả trứng ốp la lòng đào sốt tiêu đen.</p>
+          <div class="card-footer">
+            <span class="dish-price">145.000 ₫</span>
+            <button class="btn-add-cart" onclick="addToCart('Bánh Mì Chảo Bò', this)">+ Thêm món</button>
+          </div>
+        </div>
+
+        <div class="dish-card">
+          <div class="card-top">
+            <div class="dish-icon">🍅</div>
+          </div>
+          <h3 class="dish-title">Shakshuka Địa Trung Hải</h3>
+          <p class="dish-desc">Trứng gà thả sốt cà chua cay nồng với ớt chuông nướng, phô mai Feta vụn và mùi tây thơm, ăn kèm bánh mì bơ tỏi.</p>
+          <div class="card-footer">
+            <span class="dish-price">98.000 ₫</span>
+            <button class="btn-add-cart" onclick="addToCart('Shakshuka', this)">+ Thêm món</button>
+          </div>
+        </div>
+
+        <div class="dish-card">
+          <div class="card-top">
+            <div class="dish-icon">☕</div>
+          </div>
+          <h3 class="dish-title">Cà Phê Muối Kem Béo Caramel</h3>
+          <p class="dish-desc">Cà phê Robusta Đắk Lắk pha phin truyền thống phối kem sữa béo ngậy phủ bột cacao Bỉ và caramel muối biển.</p>
+          <div class="card-footer">
+            <span class="dish-price">48.000 ₫</span>
+            <button class="btn-add-cart" onclick="addToCart('Cà Phê Muối', this)">+ Thêm món</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-footer">
+        <p>Bếp mở cửa từ 06:30 - 14:00 mỗi ngày • Hotline: 1900 8888</p>
+        <button class="btn-replay-bottom" onclick="resetToLogin()">🍳 Đăng xuất & Chiên lại quả trứng mới</button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // --- 1. Web Audio Synthesizer with Master Mute Support ---
+    class SoundFx {
+      constructor() {
+        this.ctx = null;
+        this.sizzleSource = null;
+        this.sizzleGain = null;
+        this.isMuted = false;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      setMuted(muted) {
+        this.isMuted = muted;
+        if (this.sizzleGain && this.ctx) {
+          if (muted) {
+            this.sizzleGain.gain.setValueAtTime(0, this.ctx.currentTime);
+          } else {
+            this.sizzleGain.gain.setValueAtTime(0.32, this.ctx.currentTime);
+          }
+        }
+      }
+      playLoginChime() {
+        if (this.isMuted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const notes = [440, 554.37, 659.25, 880];
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+          gain.gain.setValueAtTime(0.2, now + idx * 0.09);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.6);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.09);
+          osc.stop(now + idx * 0.09 + 0.6);
+        });
+      }
+      playCrack() {
+        if (this.isMuted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(560, now);
+        osc.frequency.exponentialRampToValueAtTime(50, now + 0.09);
+        gain.gain.setValueAtTime(0.85, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.09);
+
+        const bufferSize = this.ctx.sampleRate * 0.12;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.25));
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 2400;
+        const noiseGain = this.ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.9, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(this.ctx.destination);
+        noise.start(now);
+      }
+      playSplat() {
+        if (this.isMuted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(40, now + 0.12);
+        gain.gain.setValueAtTime(0.6, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.12);
+      }
+      startSizzle() {
+        this.init();
+        if (this.sizzleSource) return;
+        const now = this.ctx.currentTime;
+        const bufferSize = this.ctx.sampleRate * 2;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        this.sizzleSource = this.ctx.createBufferSource();
+        this.sizzleSource.buffer = buffer;
+        this.sizzleSource.loop = true;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 2400;
+
+        const band = this.ctx.createBiquadFilter();
+        band.type = 'peaking';
+        band.frequency.value = 3800;
+        band.gain.value = 8;
+
+        this.sizzleGain = this.ctx.createGain();
+        const targetVol = this.isMuted ? 0.0 : 0.32;
+        this.sizzleGain.gain.setValueAtTime(0.01, now);
+        this.sizzleGain.gain.linearRampToValueAtTime(targetVol, now + 0.4);
+
+        this.sizzleSource.connect(filter);
+        filter.connect(band);
+        band.connect(this.sizzleGain);
+        this.sizzleGain.connect(this.ctx.destination);
+        this.sizzleSource.start(now);
+      }
+      stopSizzle() {
+        if (this.sizzleGain && this.ctx) {
+          const now = this.ctx.currentTime;
+          this.sizzleGain.gain.linearRampToValueAtTime(0.001, now + 0.25);
+          setTimeout(() => {
+            if (this.sizzleSource) {
+              try { this.sizzleSource.stop(); } catch(e){}
+              this.sizzleSource = null;
+            }
+          }, 300);
+        }
+      }
+      playPop() {
+        if (this.isMuted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.exponentialRampToValueAtTime(900, now + 0.06);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.06);
+      }
+    }
+    const sound = new SoundFx();
+
+    // Sound toggle state
+    let isSoundMuted = false;
+    function toggleSound() {
+      isSoundMuted = !isSoundMuted;
+      sound.setMuted(isSoundMuted);
+      const btn = document.getElementById('btn-sound');
+      const icon = document.getElementById('sound-icon');
+      const label = document.getElementById('sound-label');
+
+      if (isSoundMuted) {
+        btn.classList.add('muted');
+        icon.innerText = '🔇';
+        label.innerText = 'Đã tắt âm';
+      } else {
+        btn.classList.remove('muted');
+        icon.innerText = '🔊';
+        label.innerText = 'Âm thanh';
+      }
+    }
+
+    // --- 2. Three.js Scene & Camera Setup ---
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x08090d);
+
+    // Initial camera: looking high at the egg during login
+    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 3.8, 5.8);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
+    container.appendChild(renderer.domElement);
+
+    // --- 3. Studio Lighting ---
+    const ambientLight = new THREE.AmbientLight(0xfff7ed, 0.75);
+    scene.add(ambientLight);
+
+    const mainLight = new THREE.DirectionalLight(0xfffaea, 1.5);
+    mainLight.position.set(3, 9, 3.5);
+    mainLight.castShadow = true;
+    mainLight.shadow.mapSize.width = 2048;
+    mainLight.shadow.mapSize.height = 2048;
+    mainLight.shadow.bias = -0.0002;
+    scene.add(mainLight);
+
+    const fillLight = new THREE.DirectionalLight(0x93c5fd, 0.5);
+    fillLight.position.set(-4, 4, -2);
+    scene.add(fillLight);
+
+    // Ground Table Surface (Initially hidden deep below during login)
+    const tableGeo = new THREE.CylinderGeometry(4.2, 4.3, 0.2, 64);
+    const tableMat = new THREE.MeshStandardMaterial({
+      color: 0x101217,
+      roughness: 0.8,
+      metalness: 0.1
+    });
+    const table = new THREE.Mesh(tableGeo, tableMat);
+    table.position.set(0, -6.0, 0);
+    table.receiveShadow = true;
+    table.visible = false;
+    scene.add(table);
+
+    // --- 4. BACKGROUND SPEED PARTICLES (Tạo cảm giác rơi tự do kịch tính) ---
+    // User requested: "Background có những chấm nhỏ random, khi trứng rớt thì chấm đó chạy vụt lên"
+    const bgDotCount = 280;
+    const bgDotGeo = new THREE.BufferGeometry();
+    const bgDotPositions = new Float32Array(bgDotCount * 3);
+    const bgDotVelocities = [];
+
+    for (let i = 0; i < bgDotCount; i++) {
+      // Disperse dots in space around camera & egg
+      bgDotPositions[i * 3] = (Math.random() - 0.5) * 12;      // X: [-6, 6]
+      bgDotPositions[i * 3 + 1] = (Math.random() - 0.5) * 14;  // Y: [-7, 7]
+      bgDotPositions[i * 3 + 2] = -1.5 - Math.random() * 6;    // Z: behind and around scene
+      bgDotVelocities.push({
+        baseY: 0.08 + Math.random() * 0.15,
+        swaySpeed: 0.5 + Math.random() * 1.5,
+        swayAmp: 0.005 + Math.random() * 0.01
+      });
+    }
+    bgDotGeo.setAttribute('position', new THREE.BufferAttribute(bgDotPositions, 3));
+
+    const bgDotMat = new THREE.PointsMaterial({
+      color: 0xf59e0b,
+      size: 0.055,
+      transparent: true,
+      opacity: 0.45,
+      blending: THREE.AdditiveBlending
+    });
+    const bgDots = new THREE.Points(bgDotGeo, bgDotMat);
+    scene.add(bgDots);
+
+    // --- 5. 3D Pan Assembly (Hidden deep below during login) ---
+    const panGroup = new THREE.Group();
+    panGroup.position.set(0, -5.85, 0);
+    panGroup.rotation.y = -Math.PI / 5.2;
+    panGroup.visible = false;
+    scene.add(panGroup);
+
+    // Hollow pan body
+    const panPoints = [];
+    panPoints.push(new THREE.Vector2(0, 0));
+    panPoints.push(new THREE.Vector2(1.6, 0));
+    panPoints.push(new THREE.Vector2(1.78, 0.04));
+    panPoints.push(new THREE.Vector2(1.95, 0.15));
+    panPoints.push(new THREE.Vector2(2.18, 0.48));
+    panPoints.push(new THREE.Vector2(2.24, 0.52));
+    panPoints.push(new THREE.Vector2(2.28, 0.48));
+    panPoints.push(new THREE.Vector2(2.05, 0.06));
+    panPoints.push(new THREE.Vector2(1.72, -0.06));
+    panPoints.push(new THREE.Vector2(0, -0.06));
+
+    const panGeo = new THREE.LatheGeometry(panPoints, 64);
+    panGeo.computeVertexNormals();
+
+    const panMat = new THREE.MeshStandardMaterial({
+      color: 0x1b1d22,
+      metalness: 0.25,
+      roughness: 0.45,
+    });
+    const panBody = new THREE.Mesh(panGeo, panMat);
+    panBody.castShadow = true;
+    panBody.receiveShadow = true;
+    panGroup.add(panBody);
+
+    // Handle Assembly: 100% Co-Axial & Straight
+    const handleGroup = new THREE.Group();
+    handleGroup.position.set(-2.18, 0.46, 0);
+    handleGroup.rotation.z = 0.095;
+    panGroup.add(handleGroup);
+
+    const steelMat = new THREE.MeshStandardMaterial({ color: 0xb0b7c0, metalness: 0.85, roughness: 0.25 });
+    const gripMat = new THREE.MeshStandardMaterial({ color: 0x22252b, metalness: 0.1, roughness: 0.65 });
+
+    const flange = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.26, 0.28), steelMat);
+    flange.position.set(-0.04, 0, 0);
+    flange.castShadow = true;
+    handleGroup.add(flange);
+
+    const neckLength = 0.46;
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.125, 0.145, neckLength, 32), steelMat);
+    neck.rotation.z = Math.PI / 2;
+    neck.position.set(-neckLength / 2, 0, 0);
+    neck.castShadow = true;
+    handleGroup.add(neck);
+
+    const gripLength = 2.3;
+    const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.125, gripLength, 32), gripMat);
+    grip.rotation.z = Math.PI / 2;
+    grip.position.set(-0.46 - gripLength / 2, 0, 0);
+    grip.castShadow = true;
+    handleGroup.add(grip);
+
+    const capLength = 0.08;
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.115, capLength, 32), steelMat);
+    cap.rotation.z = Math.PI / 2;
+    cap.position.set(-2.76 - capLength / 2, 0, 0);
+    cap.castShadow = true;
+    handleGroup.add(cap);
+
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.022, 16, 32), steelMat);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.set(-2.76 - capLength - 0.07, 0, 0);
+    ring.castShadow = true;
+    handleGroup.add(ring);
+
+    // --- 6. 3D Floating Egg (Placed high at Y = 2.1) ---
+    function createEggGeometry(isTop) {
+      const geo = new THREE.SphereGeometry(0.72, 48, 24, 0, Math.PI * 2, isTop ? 0 : Math.PI / 2, Math.PI / 2);
+      const pos = geo.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        let x = pos.getX(i);
+        let y = pos.getY(i);
+        let z = pos.getZ(i);
+
+        let factor = 1.0 - (y * 0.22);
+        x *= factor;
+        z *= factor;
+
+        if (isTop) y *= 1.25;
+        else y *= 0.95;
+        pos.setXYZ(i, x, y, z);
+      }
+      geo.computeVertexNormals();
+      return geo;
+    }
+
+    const eggShellMat = new THREE.MeshStandardMaterial({
+      color: 0xfff1e6,
+      roughness: 0.65,
+      metalness: 0.02,
+      side: THREE.DoubleSide
+    });
+
+    const initialEggY = 2.05;
+    const eggGroup = new THREE.Group();
+    eggGroup.position.set(0, initialEggY, 0);
+    scene.add(eggGroup);
+
+    const topShell = new THREE.Mesh(createEggGeometry(true), eggShellMat);
+    topShell.castShadow = true;
+    eggGroup.add(topShell);
+
+    const bottomShell = new THREE.Mesh(createEggGeometry(false), eggShellMat);
+    bottomShell.castShadow = true;
+    eggGroup.add(bottomShell);
+
+    const hitBox = new THREE.Mesh(new THREE.SphereGeometry(0.95, 16, 16), new THREE.MeshBasicMaterial({ visible: false }));
+    eggGroup.add(hitBox);
+
+    // --- 7. Falling Yolk & Fried Contents ---
+    const yolkMat = new THREE.MeshStandardMaterial({
+      color: 0xff9900,
+      roughness: 0.1,
+      metalness: 0.05,
+      emissive: 0x552200,
+      emissiveIntensity: 0.25
+    });
+    const yolk = new THREE.Mesh(new THREE.SphereGeometry(0.36, 36, 36), yolkMat);
+    yolk.scale.set(1, 0.72, 1);
+    yolk.castShadow = true;
+    yolk.visible = false;
+    scene.add(yolk);
+
+    const dropTrail = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.08, 0.32, 0.9, 16),
+      new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.7, roughness: 0.1 })
+    );
+    dropTrail.visible = false;
+    scene.add(dropTrail);
+
+    // Fried White shape
+    const friedWhiteShape = new THREE.Shape();
+    const pts = 40;
+    for (let i = 0; i <= pts; i++) {
+      const angle = (i / pts) * Math.PI * 2;
+      const wobble = 0.9 + Math.sin(angle * 5) * 0.14 + Math.cos(angle * 7) * 0.08;
+      const r = 1.18 * wobble;
+      const x = Math.cos(angle) * r;
+      const y = Math.sin(angle) * r;
+      if (i === 0) friedWhiteShape.moveTo(x, y);
+      else friedWhiteShape.lineTo(x, y);
+    }
+    const friedWhite = new THREE.Mesh(
+      new THREE.ShapeGeometry(friedWhiteShape),
+      new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.25, metalness: 0.05, transparent: true, opacity: 0.95 })
+    );
+    friedWhite.rotation.x = -Math.PI / 2;
+    friedWhite.position.set(0, -0.705, 0);
+    friedWhite.receiveShadow = true;
+    friedWhite.scale.set(0.01, 0.01, 0.01);
+    friedWhite.visible = false;
+    scene.add(friedWhite);
+
+    // Steam particles
+    const particleCount = 42;
+    const particleGeo = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+    const particleVelocities = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      particlePositions[i * 3] = (Math.random() - 0.5) * 1.5;
+      particlePositions[i * 3 + 1] = -0.7;
+      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 1.5;
+      particleVelocities.push({
+        vx: (Math.random() - 0.5) * 0.008,
+        vy: 0.012 + Math.random() * 0.025,
+        vz: (Math.random() - 0.5) * 0.008
+      });
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    const particles = new THREE.Points(
+      particleGeo,
+      new THREE.PointsMaterial({ color: 0xffffff, size: 0.05, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending })
+    );
+    particles.visible = false;
+    scene.add(particles);
+
+    // --- 8. State Machine & Fall Choreography ---
+    let appState = 'login';
+    let crackProgress = 0;
+    let yolkVelocityY = -0.6;
+    let yolkPosY = initialEggY;
+    let bounceFactor = 0;
+    let speedRushIntensity = 0; // Speed lines velocity intensity
+
+    const loginWrapper = document.getElementById('login-wrapper');
+    const heroLiveHeader = document.getElementById('hero-live-header');
+    const scrollHint = document.getElementById('scroll-hint');
+    const menuSection = document.getElementById('menu-section');
+    const cartPill = document.getElementById('cart-pill');
+    const btnLogout = document.getElementById('btn-logout');
+
+    function handleLogin() {
+      if (appState !== 'login') return;
+      appState = 'opening';
+      sound.playLoginChime();
+
+      loginWrapper.classList.add('hidden');
+
+      setTimeout(() => {
+        startEggDropWithSpeedLines();
+      }, 350);
+    }
+
+    function startEggDropWithSpeedLines() {
+      sound.playCrack();
+      appState = 'falling';
+
+      yolkPosY = initialEggY;
+      yolkVelocityY = -0.9;
+      yolk.position.set(0, yolkPosY, 0);
+      yolk.visible = true;
+
+      dropTrail.position.set(0, yolkPosY + 0.35, 0);
+      dropTrail.visible = true;
+    }
+
+    // Direct click on Egg triggers login
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    window.addEventListener('pointerdown', (e) => {
+      if (appState !== 'login') return;
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+
+      const intersects = raycaster.intersectObject(hitBox);
+      if (intersects.length > 0) {
+        handleLogin();
+      }
+    });
+
+    function scrollToMenu() {
+      menuSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    let cartTotal = 1;
+    function addToCart(name, btn) {
+      sound.playPop();
+      cartTotal++;
+      document.getElementById('cart-count').innerText = cartTotal;
+      btn.innerText = "✓ Đã Thêm";
+      btn.classList.add('added');
+    }
+
+    function resetToLogin() {
+      sound.stopSizzle();
+      appState = 'login';
+      crackProgress = 0;
+      yolkPosY = initialEggY;
+      yolkVelocityY = -0.6;
+      bounceFactor = 0;
+      speedRushIntensity = 0;
+
+      document.body.style.overflowY = 'hidden';
+      window.scrollTo(0, 0);
+
+      heroLiveHeader.classList.remove('visible');
+      scrollHint.classList.remove('visible');
+      menuSection.classList.remove('fade-in');
+      cartPill.classList.remove('visible');
+      btnLogout.style.display = 'none';
+
+      loginWrapper.classList.remove('hidden');
+
+      eggGroup.position.set(0, initialEggY, 0);
+      topShell.position.set(0, 0, 0);
+      topShell.rotation.set(0, 0, 0);
+      bottomShell.position.set(0, 0, 0);
+      bottomShell.rotation.set(0, 0, 0);
+      eggShellMat.opacity = 1.0;
+      eggShellMat.transparent = false;
+      eggGroup.visible = true;
+
+      // Hide Pan and Table deep below
+      panGroup.visible = false;
+      table.visible = false;
+      panGroup.position.set(0, -5.85, 0);
+      table.position.set(0, -6.0, 0);
+
+      yolk.visible = false;
+      yolk.scale.set(1, 0.72, 1);
+      dropTrail.visible = false;
+      friedWhite.visible = false;
+      friedWhite.scale.set(0.01, 0.01, 0.01);
+      particles.visible = false;
+    }
+
+    const mouseOffset = new THREE.Vector2();
+    window.addEventListener('pointermove', (e) => {
+      mouseOffset.x = (e.clientX / window.innerWidth - 0.5) * 0.4;
+      mouseOffset.y = -(e.clientY / window.innerHeight - 0.5) * 0.25;
+    });
+
+    let scrollY = 0;
+    window.addEventListener('scroll', () => {
+      scrollY = window.scrollY;
+      if (scrollY > 100) {
+        menuSection.classList.add('fade-in');
+        scrollHint.style.opacity = '0';
+        scrollHint.style.pointerEvents = 'none';
+      } else if (appState === 'ready') {
+        scrollHint.style.opacity = '1';
+        scrollHint.style.pointerEvents = 'auto';
+      }
+    });
+
+    // --- 9. Main Render Loop with Particle Upward Rush ---
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const delta = Math.min(clock.getDelta(), 0.08);
+      const elapsed = clock.getElapsedTime();
+
+      // --- ANIMATE BACKGROUND PARTICLES ---
+      const bgPositions = bgDots.geometry.attributes.position.array;
+      // If falling: speed rush intensity jumps to 1.0!
+      if (appState === 'falling') {
+        speedRushIntensity = THREE.MathUtils.lerp(speedRushIntensity, 1.0, delta * 6);
+      } else {
+        speedRushIntensity = THREE.MathUtils.lerp(speedRushIntensity, 0.0, delta * 3);
+      }
+
+      // Dynamic upward speed: normal slow drift vs HIGH SPEED UPWARD RUSH
+      const baseUpwardSpeed = 0.4 + speedRushIntensity * 18.0;
+      bgDotMat.opacity = 0.35 + speedRushIntensity * 0.45;
+      bgDotMat.size = 0.05 + speedRushIntensity * 0.035;
+
+      for (let i = 0; i < bgDotCount; i++) {
+        // Move particle UPWARDS (+Y) to simulate downward fall of egg & camera!
+        bgPositions[i * 3 + 1] += baseUpwardSpeed * delta;
+
+        // Wrap around when reaching top (+7)
+        if (bgPositions[i * 3 + 1] > 7.5) {
+          bgPositions[i * 3 + 1] = -6.5;
+          bgPositions[i * 3] = (Math.random() - 0.5) * 12;
+        }
+
+        // Slight lateral sway
+        if (speedRushIntensity < 0.2) {
+          bgPositions[i * 3] += Math.sin(elapsed * bgDotVelocities[i].swaySpeed) * 0.002;
+        }
+      }
+      bgDots.geometry.attributes.position.needsUpdate = true;
+
+      // State: LOGIN
+      if (appState === 'login') {
+        eggGroup.position.y = initialEggY + Math.sin(elapsed * 2.2) * 0.07;
+        eggGroup.rotation.y = Math.sin(elapsed * 1.1) * 0.12;
+      }
+
+      // State: FALLING (Camera plunges down, yolk falls, background dots rush UP)
+      if (appState === 'falling') {
+        crackProgress += delta * 2.4;
+
+        // Shell halves pop outwards
+        topShell.position.x = crackProgress * 0.65;
+        topShell.position.y = crackProgress * 0.55;
+        topShell.rotation.z = -crackProgress * 1.4;
+
+        bottomShell.position.x = -crackProgress * 0.65;
+        bottomShell.position.y = -crackProgress * 0.25;
+        bottomShell.rotation.z = crackProgress * 1.3;
+
+        if (crackProgress > 0.4) {
+          eggShellMat.transparent = true;
+          eggShellMat.opacity = Math.max(0, 1 - (crackProgress - 0.4) * 2.0);
+        }
+
+        // Yolk free-fall with gravity
+        yolkVelocityY += 9.8 * delta * 0.95;
+        yolkPosY -= yolkVelocityY * delta;
+        yolk.position.y = yolkPosY;
+
+        // Dynamic fluid elongation
+        const stretch = 1 + Math.max(0, yolkVelocityY * 0.2);
+        yolk.scale.set(1 / Math.sqrt(stretch), 0.72 * stretch, 1 / Math.sqrt(stretch));
+
+        dropTrail.position.y = yolkPosY + 0.35;
+        dropTrail.scale.set(1, Math.min(2.4, 1 + yolkVelocityY * 0.3), 1);
+
+        // Progressive emergence of pan & table: only appear when egg has plunged past 40% distance!
+        const fallProgress = Math.min(1.0, Math.max(0, (initialEggY - yolkPosY) / (initialEggY - (-0.53))));
+        if (fallProgress > 0.38) {
+          panGroup.visible = true;
+          table.visible = true;
+          const t = (fallProgress - 0.38) / 0.62;
+          panGroup.position.y = THREE.MathUtils.lerp(-3.8, -0.72, t);
+          table.position.y = THREE.MathUtils.lerp(-3.95, -0.85, t);
+        } else {
+          panGroup.visible = false;
+          table.visible = false;
+          panGroup.position.y = -5.85;
+          table.position.y = -6.0;
+        }
+
+        // Impact with Pan Cooking Floor at y = -0.53
+        if (yolkPosY <= -0.53) {
+          yolkPosY = -0.53;
+          yolk.position.y = yolkPosY;
+          dropTrail.visible = false;
+          eggGroup.visible = false;
+
+          // Lock pan and table firmly in cooking position
+          panGroup.visible = true;
+          table.visible = true;
+          panGroup.position.y = -0.72;
+          table.position.y = -0.85;
+
+          appState = 'sizzling';
+          sound.playSplat();
+          sound.startSizzle();
+          friedWhite.visible = true;
+          particles.visible = true;
+
+          document.body.style.overflowY = 'auto';
+
+          setTimeout(() => {
+            heroLiveHeader.classList.add('visible');
+            scrollHint.classList.add('visible');
+            cartPill.classList.add('visible');
+            btnLogout.style.display = 'inline-block';
+            appState = 'ready';
+          }, 400);
+        }
+      }
+
+      // State: SIZZLING & READY
+      if (appState === 'sizzling' || appState === 'ready') {
+        if (friedWhite.scale.x < 1.0) {
+          const s = THREE.MathUtils.lerp(friedWhite.scale.x, 1.0, delta * 7);
+          friedWhite.scale.set(s, s, 1.0);
+        }
+
+        bounceFactor += delta * 15;
+        const damp = Math.max(0, 1 - (bounceFactor * 0.04));
+        const sq = Math.sin(bounceFactor) * 0.15 * damp;
+        yolk.scale.set(1 + sq * 0.85, 0.72 - sq, 1 + sq * 0.85);
+
+        // Steam bubbles
+        const positions = particles.geometry.attributes.position.array;
+        for (let i = 0; i < particleCount; i++) {
+          const v = particleVelocities[i];
+          positions[i * 3 + 1] += v.vy;
+          positions[i * 3] += v.vx;
+          positions[i * 3 + 2] += v.vz;
+
+          if (positions[i * 3 + 1] > 0.45) {
+            positions[i * 3 + 1] = -0.7;
+            positions[i * 3] = (Math.random() - 0.5) * 1.4;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 1.4;
+          }
+        }
+        particles.geometry.attributes.position.needsUpdate = true;
+      }
+
+      // Camera Dynamic Choreography:
+      // While in login: Camera looks high (Y = 4.2, lookAt Y = 1.6)
+      // When falling: Camera tracks down to follow the plunge!
+      let targetCamY = 3.6;
+      let targetLookY = -0.15;
+
+      if (appState === 'login' || appState === 'opening') {
+        targetCamY = 4.2;
+        targetLookY = 1.3;
+      } else if (appState === 'falling') {
+        // Camera plunges downward following yolk
+        targetCamY = THREE.MathUtils.lerp(4.2, 3.6, Math.max(0, (initialEggY - yolkPosY) / 2.2));
+        targetLookY = THREE.MathUtils.lerp(1.3, -0.15, Math.max(0, (initialEggY - yolkPosY) / 2.2));
+      } else {
+        // Scroll parallax
+        const scrollFactor = Math.min(scrollY / window.innerHeight, 1.5);
+        targetCamY = 3.6 + scrollFactor * 1.2;
+        targetLookY = -0.15 - scrollFactor * 0.5;
+      }
+
+      camera.position.x = THREE.MathUtils.lerp(camera.position.x, mouseOffset.x, 0.05);
+      camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetCamY + mouseOffset.y, 0.05);
+      camera.position.z = THREE.MathUtils.lerp(camera.position.z, 5.5, 0.05);
+
+      camera.lookAt(0, targetLookY, 0);
+
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    animate();
+  </script>
+</body>
+</html>
