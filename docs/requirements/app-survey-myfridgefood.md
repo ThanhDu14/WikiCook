@@ -22,8 +22,8 @@
 **Mô tả:** Không giống các trang web hiện đại có Hero section lớn, MyFridgeFood hiển thị ngay một bảng checklist nguyên liệu khổng lồ ngay tại trang chủ. 
 - Nguyên liệu được chia thành 2 chế độ: **Quick Kitchen** (các nguyên liệu phổ biến nhất) và **Detailed** (danh sách đầy đủ được nhóm theo thịt, rau củ, gia vị...).
 - Nút "Find Recipes" nổi bật để bắt đầu tìm kiếm.
-![alt text](image.png)
-![alt text](image-1.png)
+![alt text](../assets/screenshots/existing-app-servey-2/image.png)
+![alt text](../assets/screenshots/existing-app-servey-2/image-1.png)
 
 ### 2.2. Trang kết quả tìm kiếm (Recipe Results)
 
@@ -31,7 +31,7 @@
 - Hiển thị theo dạng Grid hoặc List.
 - Mỗi card công thức có: Tên món, hình ảnh, đánh giá.
 - Có thanh bộ lọc bên trên để lọc theo loại món
-![alt text](image-2.png)
+![alt text](../assets/screenshots/existing-app-servey-2/image-2.png)
 
 ### 2.3. Trang chi tiết công thức (Recipe Detail)
 
@@ -40,15 +40,15 @@
 - Danh sách nguyên liệu chi tiết.
 - Hướng dẫn từng bước.
 - Phần bình luận và đánh giá từ cộng đồng.
-![alt text](image-3.png)
-![alt text](image-4.png)
+![alt text](../assets/screenshots/existing-app-servey-2/image-3.png)
+![alt text](../assets/screenshots/existing-app-servey-2/image-4.png)
 
 ### 2.4. Trang "Submit a Recipe" (Đóng góp công thức)
 
 **Mô tả:** Form cho phép người dùng chia sẻ công thức của họ.
 - Yêu cầu nhập: Tên món, danh mục, thời gian nấu, nguyên liệu, các bước thực hiện và tải ảnh lên.
 - Đây là nguồn dữ liệu chính giúp MyFridgeFood phong phú.
-![alt text](image-5.png)
+![alt text](../assets/screenshots/existing-app-servey-2/image-5.png)
 
 ---
 
