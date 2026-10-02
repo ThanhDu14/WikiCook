@@ -1,0 +1,621 @@
+<title>WikiCook Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap&subset=vietnamese">
+<style>
+/* Layout: sticky toolbar, then a single 1200px column of specimen sections; screens section is a wrapping grid of phone frames. */
+:root {
+  --bg:#FFFBF5; --surface:#FFFFFF; --surface-2:#F5F0E8; --border:#E7E0D6; --border-strong:#78716C;
+  --text:#1C1917; --text-muted:#57534E;
+  --primary:#D97706; --primary-hover:#F59E0B; --on-primary:#1C1917; --primary-text:#B45309; --primary-soft:#FEF3C7; --primary-ink:#92400E;
+  --herb:#15803D; --herb-soft:#DCFCE7; --herb-ink:#166534;
+  --danger:#B91C1C; --danger-soft:#FEE2E2; --danger-ink:#991B1B;
+  --focus:#2563EB;
+  --shadow-card:0 1px 2px rgba(28,25,23,.06), 0 8px 24px rgba(28,25,23,.08);
+  --shadow-float:0 12px 32px rgba(28,25,23,.16);
+  /* theme-independent: Cook Mode + illustration + photo placeholders */
+  --cook-bg:#0C0A09; --cook-surface:#1C1917; --cook-text:#F5F5F4; --cook-muted:#A8A29E; --cook-accent:#F59E0B; --cook-border:#3A3431;
+  --ill-pan:#1F2125; --ill-pan-rim:#3B3E45; --ill-white:#FFFDF8; --ill-yolk:#F59E0B; --ill-shell:#F6E7D6;
+  --photo-1:linear-gradient(135deg,#9A3412,#EA580C 55%,#FDBA74);
+  --photo-2:linear-gradient(135deg,#7F1D1D,#DC2626 50%,#FCA5A5);
+  --photo-3:linear-gradient(135deg,#365314,#65A30D 55%,#D9F99D);
+  --photo-4:linear-gradient(135deg,#78350F,#D97706 55%,#FDE68A);
+  --font-body:'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display:'Fraunces', Georgia, 'Times New Roman', serif;
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#0C0A09; --surface:#1C1917; --surface-2:#292524; --border:#3A3431; --border-strong:#78716C;
+    --text:#F5F5F4; --text-muted:#A8A29E;
+    --primary:#F59E0B; --primary-hover:#FBBF24; --on-primary:#1C1917; --primary-text:#FBBF24; --primary-soft:#451A03; --primary-ink:#FCD34D;
+    --herb:#4ADE80; --herb-soft:#052E16; --herb-ink:#4ADE80;
+    --danger:#F87171; --danger-soft:#450A0A; --danger-ink:#F87171;
+    --focus:#93C5FD; --shadow-card:none; --shadow-float:0 12px 32px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#0C0A09; --surface:#1C1917; --surface-2:#292524; --border:#3A3431; --border-strong:#78716C;
+  --text:#F5F5F4; --text-muted:#A8A29E;
+  --primary:#F59E0B; --primary-hover:#FBBF24; --on-primary:#1C1917; --primary-text:#FBBF24; --primary-soft:#451A03; --primary-ink:#FCD34D;
+  --herb:#4ADE80; --herb-soft:#052E16; --herb-ink:#4ADE80;
+  --danger:#F87171; --danger-soft:#450A0A; --danger-ink:#F87171;
+  --focus:#93C5FD; --shadow-card:none; --shadow-float:0 12px 32px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font:400 16px/1.55 var(--font-body);margin:0}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+p{margin:0}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.num{font-variant-numeric:tabular-nums}
+
+/* toolbar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.bar-in{max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.brand{display:flex;gap:10px;align-items:center}
+.mark{width:34px;height:34px;border-radius:50%;background:var(--ill-pan);display:grid;place-items:center;box-shadow:inset 0 0 0 3px var(--ill-pan-rim);position:relative}
+.mark::before{content:"";width:20px;height:17px;border-radius:48% 52% 45% 55%;background:var(--ill-white);display:block}
+.mark::after{content:"";position:absolute;width:9px;height:9px;border-radius:50%;background:var(--ill-yolk)}
+.brand b{font:600 1.25rem/1 var(--font-display)}
+.brand small{display:block;font-size:.75rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;padding:6px 14px;border-radius:999px;font-size:.875rem;font-weight:600;color:var(--text-muted);cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--text);box-shadow:var(--shadow-card)}
+
+/* page */
+.wrap{max-width:1200px;margin:0 auto;padding-inline:16px;padding-block:32px 64px;display:grid;gap:56px}
+.intro{display:grid;gap:10px;max-width:68ch}
+.intro h1{font:600 clamp(1.75rem,4vw,2.25rem)/1.2 var(--font-display)}
+.intro p{color:var(--text-muted)}
+.sec{display:grid;gap:20px}
+.sec-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:10px}
+.sec-h h2{font-size:1.375rem;font-weight:600}
+.sec-h span{font-size:.875rem;color:var(--text-muted)}
+.over{font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+
+/* swatches */
+.sw-groups{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.sw-group{display:grid;gap:8px;align-content:start}
+.sw{display:flex;gap:12px;align-items:center;min-width:0}
+.chip-c{width:44px;height:44px;border-radius:var(--r-sm);border:1px solid var(--border);flex:none}
+.sw code{font-size:.8125rem;display:block}
+.sw .hex{font-size:.75rem;color:var(--text-muted);font-variant-numeric:tabular-nums}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.875rem;min-width:520px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--border)}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:600}
+tr:last-child td{border-bottom:0}
+.sample{display:inline-block;padding:2px 10px;border-radius:6px;font-weight:600}
+.ok{color:var(--herb-ink);background:var(--herb-soft);padding:2px 8px;border-radius:999px;font-weight:600;font-size:.75rem}
+.bad{color:var(--danger-ink);background:var(--danger-soft);padding:2px 8px;border-radius:999px;font-weight:600;font-size:.75rem}
+
+/* type */
+.type{display:grid;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px}
+.type-row{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:baseline}
+.type-row .over{white-space:nowrap}
+@media (max-width:560px){.type-row{grid-template-columns:1fr;gap:2px}}
+
+/* components */
+.comp{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;display:grid;gap:14px;align-content:start;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:var(--r-md);border:1px solid transparent;font-weight:600;font-size:.9375rem;cursor:pointer;transition:background .15s var(--ease),transform .15s var(--ease)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--primary);color:var(--on-primary)}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-secondary{background:var(--surface);border-color:var(--border-strong);color:var(--text)}
+.btn-secondary:hover{background:var(--surface-2)}
+.btn-ghost{background:transparent;color:var(--primary-text)}
+.btn-ghost:hover{background:var(--primary-soft)}
+.btn-danger{background:var(--danger-soft);color:var(--danger-ink)}
+.btn-block{width:100%}
+.pill{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);font-size:.875rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s var(--ease)}
+.pill[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-size:.75rem;font-weight:600;white-space:nowrap}
+.badge .i{width:14px;height:14px}
+.b-herb{background:var(--herb-soft);color:var(--herb-ink)}
+.b-danger{background:var(--danger-soft);color:var(--danger-ink)}
+.b-primary{background:var(--primary-soft);color:var(--primary-ink)}
+.b-neutral{background:var(--surface-2);color:var(--text-muted)}
+.field{display:grid;gap:6px}
+.field label{font-size:.875rem;font-weight:600}
+.input{min-height:44px;width:100%;padding:0 14px;border-radius:var(--r-sm);border:1px solid var(--border-strong);background:var(--surface)}
+.hint{font-size:.8125rem;color:var(--text-muted)}
+.err .input{border-color:var(--danger)}
+.err .hint{color:var(--danger-ink)}
+.check{display:flex;gap:10px;align-items:center;min-height:44px;cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--herb)}
+.check input:checked + span{text-decoration:line-through;color:var(--text-muted)}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--border-strong);border-radius:var(--r-md);overflow:hidden}
+.stepper button{width:44px;height:44px;border:0;background:var(--surface);cursor:pointer;display:grid;place-items:center}
+.stepper button:hover{background:var(--surface-2)}
+.stepper output{min-width:88px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+.dur{display:inline-flex;align-items:center;gap:4px;border:0;border-bottom:2px dashed currentColor;background:transparent;color:var(--primary-text);font-weight:700;cursor:pointer;padding:0 2px}
+.timer{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--primary-soft);color:var(--primary-ink);font-weight:700;font-variant-numeric:tabular-nums}
+.timer.done{background:var(--herb-soft);color:var(--herb-ink)}
+
+/* recipe card */
+.cards{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-card);display:flex;flex-direction:column;transition:transform .15s var(--ease)}
+.card:hover{transform:translateY(-3px)}
+.photo{aspect-ratio:4/3;max-width:100%;position:relative;display:flex;align-items:flex-end;padding:10px;color:#fff;font-size:.75rem;font-weight:600}
+.photo span{background:rgba(0,0,0,.45);padding:2px 8px;border-radius:6px}
+.bm{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;border:0;background:var(--surface);color:var(--text);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow-float)}
+.bm[aria-pressed="true"]{color:var(--primary-text)}
+.bm[aria-pressed="true"] .i{fill:currentColor}
+.card-b{padding:14px;display:grid;gap:8px}
+.card-b h3{font:600 1.125rem/1.3 var(--font-display);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.meta{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.8125rem;color:var(--text-muted);font-weight:500;font-variant-numeric:tabular-nums}
+.meta span{display:inline-flex;align-items:center;gap:4px}
+.meta .i{width:15px;height:15px}
+
+/* phones */
+.phones{display:grid;gap:28px;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));justify-items:center}
+.ph-wrap{display:grid;gap:10px;width:100%;max-width:320px}
+.ph-cap{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.ph-cap b{font-size:.9375rem}
+.ph-cap span{font-size:.75rem;color:var(--text-muted)}
+.phone{width:100%;height:640px;border-radius:32px;border:1px solid var(--border-strong);background:var(--bg);overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:var(--shadow-float)}
+.ph-scroll{flex:1;overflow-y:auto;padding:16px;display:grid;gap:16px;align-content:start}
+.tabbar{display:flex;justify-content:space-around;border-top:1px solid var(--border);background:var(--surface);padding:6px 4px 10px}
+.tabbar span{display:grid;justify-items:center;gap:2px;font-size:.6875rem;font-weight:600;color:var(--text-muted);min-width:52px}
+.tabbar span.on{color:var(--primary-text)}
+.mini{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:8px}
+.mini .photo{width:72px;aspect-ratio:1;border-radius:var(--r-sm);padding:0;flex:none}
+.mini h4{font:600 .9375rem/1.3 var(--font-display)}
+.mini > div:last-child{display:grid;gap:4px;min-width:0}
+.ai{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 14px;border-radius:var(--r-md);border:1px solid var(--border-strong);background:var(--surface);color:var(--text-muted);font-size:.875rem}
+.ai .i{color:var(--primary-text)}
+.scroller{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hrow h3{font-size:1rem;font-weight:600}
+.hrow a{font-size:.8125rem;color:var(--primary-text);font-weight:600;text-decoration:none}
+.nutri{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
+.nutri div{background:var(--surface-2);border-radius:var(--r-sm);padding:8px 2px;display:grid}
+.nutri b{font-size:1rem;font-variant-numeric:tabular-nums}
+.nutri small{font-size:.6875rem;color:var(--text-muted)}
+.disc{font-size:.75rem;color:var(--text-muted)}
+ul{list-style:none;margin:0;padding:0}
+.ing li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.9375rem}
+.ing li b{font-variant-numeric:tabular-nums;font-weight:600}
+.sticky-cta{padding:12px 16px 14px;border-top:1px solid var(--border);background:var(--surface)}
+
+/* login + egg static fallback */
+.login{background:radial-gradient(circle at 50% 28%,var(--surface-2),var(--bg) 70%)}
+.egg-stage{height:210px;display:grid;place-items:center;position:relative}
+.egg-idle,.egg-pan{position:absolute;transition:opacity .4s var(--ease)}
+.egg-idle{width:86px;height:110px;border-radius:50% 50% 46% 46%/60% 60% 40% 40%;background:radial-gradient(circle at 35% 30%,var(--ill-white),var(--ill-shell) 70%);box-shadow:0 18px 30px -12px rgba(0,0,0,.35)}
+.egg-pan{width:180px;height:180px;border-radius:50%;background:var(--ill-pan);box-shadow:inset 0 0 0 8px var(--ill-pan-rim),0 18px 30px -10px rgba(0,0,0,.45);display:grid;place-items:center;opacity:0}
+.egg-pan::before{content:"";width:104px;height:92px;background:var(--ill-white);border-radius:52% 48% 55% 45%/50% 58% 42% 50%;display:block}
+.egg-pan::after{content:"";position:absolute;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#FCD34D,var(--ill-yolk) 60%,#B45309)}
+.cooked .egg-idle{opacity:0}
+.cooked .egg-pan{opacity:1}
+.welcome{text-align:center;font:600 1.375rem/1.2 var(--font-display);opacity:0;transition:opacity .4s var(--ease) .2s}
+.cooked .welcome{opacity:1}
+.glass{background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:var(--r-xl);padding:18px;display:grid;gap:12px;transition:opacity .3s var(--ease)}
+.cooked .glass{opacity:0;pointer-events:none}
+.tier{font-size:.75rem;color:var(--text-muted);text-align:center}
+
+/* cook mode */
+.cook{--c-bg:var(--cook-bg);--c-surface:var(--cook-surface);--c-text:var(--cook-text);--c-muted:var(--cook-muted);--c-accent:var(--cook-accent);--c-border:var(--cook-border);background:var(--c-bg);color:var(--c-text);border-color:var(--c-border);color-scheme:dark}
+.cook.hc{--c-bg:#000000;--c-surface:#171717;--c-text:#FFFFFF;--c-muted:#D6D3D1;--c-accent:#FDE68A;--c-border:#525252}
+.cook-top{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--c-border);gap:8px}
+.cook-top button{background:var(--c-surface);border:1px solid var(--c-border);color:var(--c-text);border-radius:999px;padding:6px 12px;font-size:.75rem;font-weight:600;cursor:pointer;min-height:36px}
+.tray{display:flex;gap:8px;flex-wrap:wrap;padding:10px 14px;min-height:56px;border-bottom:1px solid var(--c-border)}
+.cook .timer{background:var(--c-surface);color:var(--c-accent);border:1px solid var(--c-border);font-size:1rem}
+.cook .timer.done{color:var(--c-bg);background:var(--c-accent)}
+.tray-empty{font-size:.8125rem;color:var(--c-muted);align-self:center}
+.cook-step{flex:1;padding:18px 16px;display:grid;align-content:center;gap:14px}
+.cook-step .over{color:var(--c-muted)}
+.cook-step p{font-size:1.75rem;line-height:1.3;font-weight:500}
+.cook .dur{color:var(--c-accent)}
+.progress{height:4px;background:var(--c-surface)}
+.progress i{display:block;height:100%;background:var(--c-accent);transition:width .25s var(--ease)}
+.cook-nav{display:grid;grid-template-columns:1fr 1.4fr;gap:10px;padding:12px 14px 16px}
+.cook-nav button{min-height:64px;border-radius:var(--r-lg);font-size:1.125rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.cook-prev{background:var(--c-surface);color:var(--c-text);border:1px solid var(--c-border)}
+.cook-next{background:var(--c-accent);color:#1C1917;border:0}
+.cook-prev:disabled{opacity:.4;cursor:not-allowed}
+.wake{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;color:var(--c-muted)}
+.wake i{width:8px;height:8px;border-radius:50%;background:#4ADE80;display:inline-block}
+
+@media (prefers-reduced-motion: reduce){*{transition-duration:1ms!important;animation:none!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.050 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+  <symbol id="i-hat" viewBox="0 0 24 24"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 9.18 0A4 4 0 0 1 18 13.87V21H6z"/><path d="M6 17h12"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.7 1.8 1.8.7-1.8.7L19 20l-.7-1.8-1.8-.7 1.8-.7z"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><path d="M10 2h4M12 14l3-3"/><circle cx="12" cy="14" r="8"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V21H3z"/><path d="M9 21v-7h6v7"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
+</svg>
+
+<header class="bar">
+  <div class="bar-in">
+    <div class="brand"><span class="mark" aria-hidden="true"></span><div><b>WikiCook</b><small>Design System · v0.1</small></div></div>
+    <div class="seg" role="group" aria-label="Giao diện">
+      <button type="button" data-t="system" id="t-system">Hệ thống</button>
+      <button type="button" data-t="light" id="t-light">Sáng</button>
+      <button type="button" data-t="dark" id="t-dark">Tối</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <span class="over">Bản xem trước · Bước 3</span>
+    <h1>Bếp ấm, chữ rõ, một khoảnh khắc trứng rơi.</h1>
+    <p>Mọi màu, chữ và component ở đây lấy từ <code>design-tokens.json</code>. Đổi Sáng/Tối ở góc trên để kiểm tra cả hai theme; bảng tương phản bên dưới tự tính lại theo theme đang xem. Các màn hình dùng dữ liệu mẫu.</p>
+  </section>
+
+  <section class="sec" aria-labelledby="h-color">
+    <div class="sec-h"><h2 id="h-color">Màu sắc</h2><span>Tên theo vai trò, không theo màu</span></div>
+    <div class="sw-groups" id="swatches"></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Cặp màu</th><th>Mẫu</th><th>Tỉ lệ</th><th>Ngưỡng</th><th>Kết quả</th></tr></thead>
+        <tbody id="contrast"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="h-type">
+    <div class="sec-h"><h2 id="h-type">Chữ</h2><span>Fraunces cho tiêu đề món · Be Vietnam Pro cho mọi thứ còn lại</span></div>
+    <div class="type">
+      <div class="type-row"><span class="over">Page title · 36</span><span style="font:600 2.25rem/1.2 var(--font-display)">Tối nay nấu gì?</span></div>
+      <div class="type-row"><span class="over">Recipe title · 28</span><span style="font:600 1.75rem/1.2 var(--font-display)">Canh chua cá lóc miền Tây</span></div>
+      <div class="type-row"><span class="over">Section · 22</span><span style="font-size:1.375rem;font-weight:600">Nguyên liệu cho 4 người</span></div>
+      <div class="type-row"><span class="over">Body · 16</span><span>Phi thơm tỏi, cho cà chua vào xào nhuyễn rồi thêm nửa chén nước. Đun liu riu đến khi sốt sánh lại.</span></div>
+      <div class="type-row"><span class="over">Meta · 14</span><span class="meta" style="font-size:.875rem"><span><svg class="i"><use href="#i-clock"/></svg>35 phút</span><span><svg class="i"><use href="#i-hat"/></svg>Trung bình</span><span><svg class="i"><use href="#i-flame"/></svg>280 kcal</span></span></div>
+      <div class="type-row"><span class="over">Cook step · 28–48</span><span style="font-size:clamp(1.75rem,4vw,3rem);line-height:1.25;font-weight:500">Chiên đậu vàng đều các mặt.</span></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="h-comp">
+    <div class="sec-h"><h2 id="h-comp">Components</h2><span>Bấm thử được</span></div>
+    <div class="comp">
+      <div class="panel">
+        <span class="over">Button</span>
+        <div class="row">
+          <button class="btn btn-primary" type="button">Bắt đầu nấu</button>
+          <button class="btn btn-secondary" type="button">Thêm vào thực đơn</button>
+        </div>
+        <div class="row">
+          <button class="btn btn-ghost" type="button">Xem tất cả</button>
+          <button class="btn btn-danger" type="button">Xoá bộ sưu tập</button>
+        </div>
+        <span class="over">Pill (lọc nhanh)</span>
+        <div class="row" data-pills>
+          <button class="pill" type="button" aria-pressed="true">≤ 30 phút</button>
+          <button class="pill" type="button" aria-pressed="false">Chay</button>
+          <button class="pill" type="button" aria-pressed="false">Ít calo</button>
+          <button class="pill" type="button" aria-pressed="false">Món Việt</button>
+        </div>
+        <span class="over">Badge</span>
+        <div class="row">
+          <span class="badge b-herb"><svg class="i"><use href="#i-leaf"/></svg>Hợp với bạn</span>
+          <span class="badge b-danger"><svg class="i"><use href="#i-alert"/></svg>Chứa tôm</span>
+          <span class="badge b-primary">Đang chờ duyệt</span>
+          <span class="badge b-neutral">Món Việt</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <span class="over">Form</span>
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input class="input" id="f-email" type="email" value="duy@example.com">
+        </div>
+        <div class="field err">
+          <label for="f-pass">Mật khẩu</label>
+          <input class="input" id="f-pass" type="password" value="123" aria-describedby="f-pass-h" aria-invalid="true">
+          <span class="hint" id="f-pass-h">Mật khẩu cần ít nhất 8 ký tự.</span>
+        </div>
+        <span class="over">Checkbox (danh sách đi chợ)</span>
+        <label class="check"><input type="checkbox" id="c-1" checked><span>Đậu phụ · 600 g</span></label>
+        <label class="check"><input type="checkbox" id="c-2"><span>Cà chua · 6 quả</span></label>
+      </div>
+
+      <div class="panel">
+        <span class="over">Servings stepper</span>
+        <div class="row">
+          <div class="stepper" data-stepper="comp">
+            <button type="button" data-d="-1" aria-label="Giảm khẩu phần"><svg class="i"><use href="#i-minus"/></svg></button>
+            <output class="num" aria-live="polite"><span data-v>2</span> người</output>
+            <button type="button" data-d="1" aria-label="Tăng khẩu phần"><svg class="i"><use href="#i-plus"/></svg></button>
+          </div>
+        </div>
+        <ul class="ing" data-ing="comp">
+          <li><span>Đậu phụ</span><b data-q="300" data-u="g"></b></li>
+          <li><span>Cà chua</span><b data-q="3" data-u="quả"></b></li>
+        </ul>
+        <span class="over">Duration link → Timer</span>
+        <p>Chiên đậu vàng các mặt khoảng <button class="dur" type="button" data-sec="300" data-name="Chiên đậu" data-tray="comp-tray"><svg class="i" style="width:16px;height:16px"><use href="#i-timer"/></svg>5 phút</button>.</p>
+        <div class="row" id="comp-tray" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <span class="over">Recipe card</span>
+    <div class="cards">
+      <article class="card">
+        <div class="photo" style="background:var(--photo-1)"><span>Ảnh món</span><button class="bm" type="button" aria-pressed="false" aria-label="Lưu công thức"><svg class="i"><use href="#i-bookmark"/></svg></button></div>
+        <div class="card-b">
+          <h3>Canh chua cá lóc miền Tây</h3>
+          <div class="meta"><span><svg class="i"><use href="#i-clock"/></svg>35 phút</span><span><svg class="i"><use href="#i-hat"/></svg>Trung bình</span><span><svg class="i"><use href="#i-flame"/></svg>280 kcal</span></div>
+          <div class="row"><span class="badge b-herb"><svg class="i"><use href="#i-leaf"/></svg>Hợp với bạn</span></div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="photo" style="background:var(--photo-2)"><span>Ảnh món</span><button class="bm" type="button" aria-pressed="true" aria-label="Bỏ lưu công thức"><svg class="i"><use href="#i-bookmark"/></svg></button></div>
+        <div class="card-b">
+          <h3>Bún bò Huế</h3>
+          <div class="meta"><span><svg class="i"><use href="#i-clock"/></svg>90 phút</span><span><svg class="i"><use href="#i-hat"/></svg>Khó</span><span><svg class="i"><use href="#i-flame"/></svg>520 kcal</span></div>
+          <div class="row"><span class="badge b-danger"><svg class="i"><use href="#i-alert"/></svg>Chứa tôm (mắm ruốc)</span></div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="photo" style="background:var(--photo-3)"><span>Ảnh món</span><button class="bm" type="button" aria-pressed="false" aria-label="Lưu công thức"><svg class="i"><use href="#i-bookmark"/></svg></button></div>
+        <div class="card-b">
+          <h3>Đậu phụ sốt cà chua</h3>
+          <div class="meta"><span><svg class="i"><use href="#i-clock"/></svg>20 phút</span><span><svg class="i"><use href="#i-hat"/></svg>Dễ</span><span><svg class="i"><use href="#i-flame"/></svg>240 kcal</span></div>
+          <div class="row"><span class="badge b-herb"><svg class="i"><use href="#i-leaf"/></svg>Chay</span><span class="badge b-herb"><svg class="i"><use href="#i-leaf"/></svg>Hợp với bạn</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="h-screens">
+    <div class="sec-h"><h2 id="h-screens">Màn hình chính</h2><span>Wireframe mobile · hồ sơ mẫu: Duy, dị ứng tôm, 2 người</span></div>
+    <div class="phones">
+
+      <!-- S2 Login (Static tier) -->
+      <div class="ph-wrap">
+        <div class="ph-cap"><b>S2 · Đăng nhập</b><span>Mức ảnh tĩnh</span></div>
+        <div class="phone login" id="login">
+          <div class="ph-scroll">
+            <div class="egg-stage" aria-hidden="true"><div class="egg-idle"></div><div class="egg-pan"></div></div>
+            <p class="welcome" aria-live="polite">Chào Duy, vào bếp thôi!</p>
+            <form class="glass" id="login-form">
+              <div class="field"><label for="l-email">Email</label><input class="input" id="l-email" type="email" value="duy@example.com"></div>
+              <div class="field"><label for="l-pass">Mật khẩu</label><input class="input" id="l-pass" type="password" value="matkhau123"></div>
+              <button class="btn btn-primary btn-block" type="submit">Đăng nhập</button>
+              <button class="btn btn-secondary btn-block" type="button">Tiếp tục với Google</button>
+            </form>
+            <p class="tier" id="tier-note">Máy yếu hoặc bật giảm chuyển động: hai ảnh tĩnh thay cho cảnh 3D. Bấm Đăng nhập để xem.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- S1 Home -->
+      <div class="ph-wrap">
+        <div class="ph-cap"><b>S1 · Trang chủ</b><span>Tìm kiếm trước</span></div>
+        <div class="phone">
+          <div class="ph-scroll">
+            <div style="display:grid;gap:4px">
+              <span class="over">Thứ Sáu, 18:05</span>
+              <h3 style="font:600 1.75rem/1.2 var(--font-display)">Tối nay nấu gì, Duy?</h3>
+            </div>
+            <div class="ai"><svg class="i"><use href="#i-spark"/></svg>Ví dụ: món chay dưới 20 phút có đậu phụ</div>
+            <div class="scroller" data-pills>
+              <button class="pill" type="button" aria-pressed="true">≤ 30 phút</button>
+              <button class="pill" type="button" aria-pressed="false">Chay</button>
+              <button class="pill" type="button" aria-pressed="false">Ít calo</button>
+              <button class="pill" type="button" aria-pressed="false">Món Việt</button>
+            </div>
+            <div class="hrow"><h3>Hợp với bạn tối nay</h3><a href="#h-screens">Xem tất cả</a></div>
+            <div class="mini"><div class="photo" style="background:var(--photo-3)"></div><div><h4>Đậu phụ sốt cà chua</h4><div class="meta"><span>20 phút</span><span>240 kcal</span></div><span class="badge b-herb" style="justify-self:start"><svg class="i"><use href="#i-leaf"/></svg>Hợp với bạn</span></div></div>
+            <div class="mini"><div class="photo" style="background:var(--photo-4)"></div><div><h4>Trứng chiên thịt bằm</h4><div class="meta"><span>15 phút</span><span>380 kcal</span></div><span class="badge b-herb" style="justify-self:start"><svg class="i"><use href="#i-leaf"/></svg>Hợp với bạn</span></div></div>
+            <div class="hrow"><h3>Mới đăng</h3><a href="#h-screens">Xem tất cả</a></div>
+            <div class="mini"><div class="photo" style="background:var(--photo-1)"></div><div><h4>Canh chua cá lóc</h4><div class="meta"><span>35 phút</span><span>280 kcal</span></div></div></div>
+          </div>
+          <nav class="tabbar" aria-label="Điều hướng chính">
+            <span class="on"><svg class="i"><use href="#i-home"/></svg>Trang chủ</span>
+            <span><svg class="i"><use href="#i-search"/></svg>Tìm</span>
+            <span><svg class="i"><use href="#i-cal"/></svg>Thực đơn</span>
+            <span><svg class="i"><use href="#i-bookmark"/></svg>Đã lưu</span>
+            <span><svg class="i"><use href="#i-user"/></svg>Tôi</span>
+          </nav>
+        </div>
+      </div>
+
+      <!-- S5 Search -->
+      <div class="ph-wrap">
+        <div class="ph-cap"><b>S5 · Tìm &amp; lọc</b><span>Bộ lọc dạng sheet</span></div>
+        <div class="phone">
+          <div class="ph-scroll">
+            <div class="ai" style="color:var(--text)"><svg class="i" style="color:var(--text-muted)"><use href="#i-search"/></svg>đậu phụ</div>
+            <div class="scroller">
+              <button class="pill" type="button"><svg class="i" style="width:16px;height:16px"><use href="#i-sliders"/></svg>Bộ lọc · 2</button>
+              <span data-pills style="display:contents">
+                <button class="pill" type="button" aria-pressed="true">≤ 30 phút</button>
+                <button class="pill" type="button" aria-pressed="true">Chay</button>
+                <button class="pill" type="button" aria-pressed="false">Dễ</button>
+              </span>
+            </div>
+            <p class="hint" aria-live="polite"><b class="num">12</b> công thức · đã ẩn 1 món chứa tôm</p>
+            <div class="mini"><div class="photo" style="background:var(--photo-3)"></div><div><h4>Đậu phụ sốt cà chua</h4><div class="meta"><span>20 phút</span><span>Dễ</span><span>240 kcal</span></div><span class="badge b-herb" style="justify-self:start"><svg class="i"><use href="#i-leaf"/></svg>Chay</span></div></div>
+            <div class="mini"><div class="photo" style="background:var(--photo-4)"></div><div><h4>Đậu phụ chiên sả ớt</h4><div class="meta"><span>25 phút</span><span>Dễ</span><span>310 kcal</span></div><span class="badge b-herb" style="justify-self:start"><svg class="i"><use href="#i-leaf"/></svg>Chay</span></div></div>
+            <div class="mini"><div class="photo" style="background:var(--photo-2)"></div><div><h4>Đậu hũ non hấp nấm</h4><div class="meta"><span>15 phút</span><span>Dễ</span><span>180 kcal</span></div><span class="badge b-herb" style="justify-self:start"><svg class="i"><use href="#i-leaf"/></svg>Chay</span></div></div>
+          </div>
+          <nav class="tabbar" aria-label="Điều hướng chính">
+            <span><svg class="i"><use href="#i-home"/></svg>Trang chủ</span>
+            <span class="on"><svg class="i"><use href="#i-search"/></svg>Tìm</span>
+            <span><svg class="i"><use href="#i-cal"/></svg>Thực đơn</span>
+            <span><svg class="i"><use href="#i-bookmark"/></svg>Đã lưu</span>
+            <span><svg class="i"><use href="#i-user"/></svg>Tôi</span>
+          </nav>
+        </div>
+      </div>
+
+      <!-- S6 Detail -->
+      <div class="ph-wrap">
+        <div class="ph-cap"><b>S6 · Chi tiết công thức</b><span>Khẩu phần tự tính</span></div>
+        <div class="phone">
+          <div class="ph-scroll" style="padding:0;gap:0">
+            <div class="photo" style="background:var(--photo-3);aspect-ratio:16/10"><span>Ảnh món</span><button class="bm" type="button" aria-pressed="false" aria-label="Lưu công thức"><svg class="i"><use href="#i-bookmark"/></svg></button></div>
+            <div style="padding:16px;display:grid;gap:14px">
+              <h3 style="font:600 1.5rem/1.2 var(--font-display)">Đậu phụ sốt cà chua</h3>
+              <div class="meta"><span><svg class="i"><use href="#i-clock"/></svg>20 phút</span><span><svg class="i"><use href="#i-hat"/></svg>Dễ</span><span><svg class="i"><use href="#i-flame"/></svg>240 kcal/người</span></div>
+              <div class="row"><span class="badge b-herb"><svg class="i"><use href="#i-leaf"/></svg>Chay</span><span class="badge b-herb"><svg class="i"><use href="#i-leaf"/></svg>Không chứa tôm</span></div>
+              <div class="nutri">
+                <div><b>240</b><small>kcal</small></div><div><b>14g</b><small>Đạm</small></div><div><b>12g</b><small>Tinh bột</small></div><div><b>15g</b><small>Béo</small></div>
+              </div>
+              <p class="disc">Ước tính bởi AI, chỉ mang tính tham khảo.</p>
+              <div class="hrow"><h3>Nguyên liệu</h3>
+                <div class="stepper" data-stepper="detail">
+                  <button type="button" data-d="-1" aria-label="Giảm khẩu phần"><svg class="i"><use href="#i-minus"/></svg></button>
+                  <output class="num" aria-live="polite" style="min-width:72px"><span data-v>2</span> người</output>
+                  <button type="button" data-d="1" aria-label="Tăng khẩu phần"><svg class="i"><use href="#i-plus"/></svg></button>
+                </div>
+              </div>
+              <ul class="ing" data-ing="detail">
+                <li><span>Đậu phụ</span><b data-q="300" data-u="g"></b></li>
+                <li><span>Cà chua</span><b data-q="3" data-u="quả"></b></li>
+                <li><span>Hành lá</span><b data-q="2" data-u="nhánh"></b></li>
+                <li><span>Nước mắm chay</span><b data-q="1" data-u="muỗng canh"></b></li>
+              </ul>
+              <h3 style="font-size:1rem">Cách làm</h3>
+              <p style="font-size:.9375rem">1. Cắt đậu thành miếng vuông, chiên vàng các mặt khoảng <button class="dur" type="button" data-sec="300" data-name="Chiên đậu" data-tray="detail-tray">5 phút</button>.</p>
+              <div class="row" id="detail-tray" aria-live="polite"></div>
+            </div>
+          </div>
+          <div class="sticky-cta"><button class="btn btn-primary btn-block" type="button">Bắt đầu nấu</button></div>
+        </div>
+      </div>
+
+      <!-- S7 Cook Mode -->
+      <div class="ph-wrap">
+        <div class="ph-cap"><b>S7 · Cook Mode</b><span>Luôn tối · có tương phản cao</span></div>
+        <div class="phone cook" id="cook">
+          <div class="cook-top">
+            <div style="display:grid"><b style="font-size:.9375rem">Đậu phụ sốt cà chua</b><span class="wake"><i></i>Màn hình luôn sáng</span></div>
+            <button type="button" id="hc-btn" aria-pressed="false">Tương phản cao</button>
+          </div>
+          <div class="tray" id="cook-tray" aria-live="polite"><span class="tray-empty">Chưa có hẹn giờ. Bấm vào thời lượng trong bước để bắt đầu.</span></div>
+          <div class="progress"><i id="cook-prog"></i></div>
+          <div class="cook-step">
+            <span class="over" id="cook-n"></span>
+            <p id="cook-text"></p>
+          </div>
+          <div class="cook-nav">
+            <button class="cook-prev" type="button" id="cook-prev"><svg class="i" style="width:24px;height:24px"><use href="#i-left"/></svg>Lùi</button>
+            <button class="cook-next" type="button" id="cook-next"><span id="cook-next-l">Tiếp</span><svg class="i" style="width:24px;height:24px"><use href="#i-right"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var KEY='wikicook-preview-theme';
+  function applyTheme(t){
+    if(t==='light'||t==='dark'){root.setAttribute('data-theme',t)}else{root.removeAttribute('data-theme')}
+    document.querySelectorAll('.seg button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.t===t))});
+    try{localStorage.setItem(KEY,t)}catch(e){}
+    requestAnimationFrame(renderColors);
+  }
+  var saved='system';try{saved=localStorage.getItem(KEY)||'system'}catch(e){}
+  document.querySelectorAll('.seg button').forEach(function(b){b.addEventListener('click',function(){applyTheme(b.dataset.t)})});
+  try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){requestAnimationFrame(renderColors)})}catch(e){}
+
+  /* swatches + contrast */
+  var groups=[
+    ['Nền & chữ',['bg','surface','surface-2','border','border-strong','text','text-muted']],
+    ['Thương hiệu (hổ phách)',['primary','primary-hover','on-primary','primary-text','primary-soft','primary-ink']],
+    ['Ngữ nghĩa',['herb','herb-soft','herb-ink','danger','danger-soft','danger-ink','focus']]
+  ];
+  var pairs=[['text','bg',4.5],['text','surface',4.5],['text-muted','surface',4.5],['text-muted','surface-2',4.5],['primary-text','bg',4.5],['on-primary','primary',4.5],['herb-ink','herb-soft',4.5],['danger-ink','danger-soft',4.5],['primary-ink','primary-soft',4.5],['border-strong','surface',3],['focus','bg',3],['primary','surface',3]];
+  function v(n){return getComputedStyle(root).getPropertyValue('--'+n).trim().toUpperCase()}
+  function lum(h){h=h.replace('#','');var c=[0,2,4].map(function(i){var x=parseInt(h.substr(i,2),16)/255;return x<=0.03928?x/12.92:Math.pow((x+0.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]}
+  function ratio(a,b){var x=lum(a),y=lum(b);var hi=Math.max(x,y),lo=Math.min(x,y);return (hi+.05)/(lo+.05)}
+  function renderColors(){
+    var sw=document.getElementById('swatches');sw.innerHTML='';
+    groups.forEach(function(g){
+      var d=document.createElement('div');d.className='sw-group';
+      d.innerHTML='<span class="over">'+g[0]+'</span>'+g[1].map(function(n){return '<div class="sw"><span class="chip-c" style="background:var(--'+n+')"></span><div><code>--'+n+'</code><span class="hex">'+v(n)+'</span></div></div>'}).join('');
+      sw.appendChild(d);
+    });
+    var tb=document.getElementById('contrast');
+    tb.innerHTML=pairs.map(function(p){var r=ratio(v(p[0]),v(p[1]));var pass=r>=p[2];
+      return '<tr><td><code>'+p[0]+'</code> trên <code>'+p[1]+'</code></td><td><span class="sample" style="color:var(--'+p[0]+');background:var(--'+p[1]+');border:1px solid var(--border)">Aa Ăn</span></td><td class="num">'+r.toFixed(2)+':1</td><td class="num">'+p[2]+':1</td><td><span class="'+(pass?'ok':'bad')+'">'+(pass?'Đạt':'Chưa đạt')+'</span></td></tr>'}).join('');
+  }
+  applyTheme(saved);
+
+  /* pills + bookmarks */
+  document.querySelectorAll('[data-pills] .pill').forEach(function(p){p.addEventListener('click',function(){p.setAttribute('aria-pressed',String(p.getAttribute('aria-pressed')!=='true'))})});
+  document.querySelectorAll('.bm').forEach(function(b){b.addEventListener('click',function(){var on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',String(on));b.setAttribute('aria-label',on?'Bỏ lưu công thức':'Lưu công thức')})});
+
+  /* servings */
+  function fmt(n){var r=Math.round(n*10)/10;return (r%1===0?r.toFixed(0):r.toFixed(1)).replace('.',',')}
+  document.querySelectorAll('[data-stepper]').forEach(function(s){
+    var key=s.dataset.stepper,base=2,val=2,out=s.querySelector('[data-v]'),list=document.querySelector('[data-ing="'+key+'"]');
+    function render(){out.textContent=val;list.querySelectorAll('[data-q]').forEach(function(b){b.textContent=fmt(b.dataset.q*val/base)+' '+b.dataset.u})}
+    s.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){val=Math.min(12,Math.max(1,val+Number(b.dataset.d)));render()})});
+    render();
+  });
+
+  /* timers: timestamp-based, like the real Cook Mode */
+  var timers=[],audio=null;
+  function beep(){try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();var t=audio.currentTime;[0,.25,.5].forEach(function(o){var os=audio.createOscillator(),g=audio.createGain();os.frequency.value=880;g.gain.setValueAtTime(.15,t+o);g.gain.exponentialRampToValueAtTime(.001,t+o+.2);os.connect(g);g.connect(audio.destination);os.start(t+o);os.stop(t+o+.2)})}catch(e){}}
+  function mmss(ms){var s=Math.max(0,Math.ceil(ms/1000));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+  function addTimer(name,sec,trayId){
+    var tray=document.getElementById(trayId);var empty=tray.querySelector('.tray-empty');if(empty)empty.remove();
+    var el=document.createElement('span');el.className='timer';tray.appendChild(el);
+    timers.push({name:name,end:Date.now()+sec*1000,el:el,done:false});tick();
+  }
+  function tick(){var now=Date.now();timers.forEach(function(t){if(t.done)return;var left=t.end-now;
+    if(left<=0){t.done=true;t.el.className='timer done';t.el.setAttribute('role','alert');t.el.textContent=t.name+' · Xong!';beep()}
+    else{t.el.innerHTML='<svg class="i" style="width:16px;height:16px"><use href="#i-timer"/></svg>'+t.name+' '+mmss(left)}})}
+  setInterval(tick,250);
+  function bindDur(scope){scope.querySelectorAll('.dur').forEach(function(d){if(d.dataset.bound)return;d.dataset.bound='1';d.addEventListener('click',function(){addTimer(d.dataset.name,Number(d.dataset.sec),d.dataset.tray)})})}
+  bindDur(document);
+
+  /* cook mode */
+  var steps=[
+    'Cắt 300 g đậu phụ thành miếng vuông, để ráo nước.',
+    'Chiên đậu vàng đều các mặt khoảng <button class="dur" type="button" data-sec="300" data-name="Chiên đậu" data-tray="cook-tray">5 phút</button>, vớt ra.',
+    'Phi thơm hành tím, cho cà chua vào xào nhuyễn rồi thêm nửa chén nước.',
+    'Cho đậu vào, đun liu riu <button class="dur" type="button" data-sec="600" data-name="Rim sốt" data-tray="cook-tray">10 phút</button> cho sốt sánh lại.',
+    'Nêm nước mắm chay, đường cho vừa ăn.',
+    'Rắc hành lá, tắt bếp và dọn ra đĩa.'
+  ];
+  var i=1,txt=document.getElementById('cook-text'),n=document.getElementById('cook-n'),prev=document.getElementById('cook-prev'),next=document.getElementById('cook-next'),nextL=document.getElementById('cook-next-l'),prog=document.getElementById('cook-prog');
+  function show(){txt.innerHTML=steps[i];n.textContent='Bước '+(i+1)+' / '+steps.length;prev.disabled=i===0;nextL.textContent=i===steps.length-1?'Xong':'Tiếp';prog.style.width=((i+1)/steps.length*100)+'%';bindDur(txt)}
+  prev.addEventListener('click',function(){if(i>0){i--;show()}});
+  next.addEventListener('click',function(){if(i<steps.length-1){i++;show()}});
+  show();
+  var hc=document.getElementById('hc-btn');
+  hc.addEventListener('click',function(){var on=hc.getAttribute('aria-pressed')!=='true';hc.setAttribute('aria-pressed',String(on));document.getElementById('cook').classList.toggle('hc',on)});
+
+  /* login: static tier demo */
+  var login=document.getElementById('login'),note=document.getElementById('tier-note');
+  var NOTE='Máy yếu hoặc bật giảm chuyển động: hai ảnh tĩnh thay cho cảnh 3D. Bấm Đăng nhập để xem.';
+  document.getElementById('login-form').addEventListener('submit',function(e){
+    e.preventDefault();login.classList.add('cooked');
+    note.innerHTML='Thực tế sẽ chuyển vào app sau khoảng 2,5 giây. <button class="btn btn-ghost" type="button" id="replay">Xem lại</button>';
+    document.getElementById('replay').addEventListener('click',function(){login.classList.remove('cooked');note.textContent=NOTE});
+  });
+})();
+</script>

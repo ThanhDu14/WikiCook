@@ -1,0 +1,63 @@
+{
+  "$description": "WikiCook design tokens. Source of truth for CSS custom properties and Tailwind theme. See design-system.md for rationale.",
+  "color": {
+    "bg":            { "light": "#FFFBF5", "dark": "#0C0A09" },
+    "surface":       { "light": "#FFFFFF", "dark": "#1C1917" },
+    "surface-2":     { "light": "#F5F0E8", "dark": "#292524" },
+    "border":        { "light": "#E7E0D6", "dark": "#3A3431" },
+    "border-strong": { "light": "#78716C", "dark": "#78716C" },
+    "text":          { "light": "#1C1917", "dark": "#F5F5F4" },
+    "text-muted":    { "light": "#57534E", "dark": "#A8A29E" },
+    "primary":       { "light": "#D97706", "dark": "#F59E0B" },
+    "primary-hover": { "light": "#F59E0B", "dark": "#FBBF24" },
+    "on-primary":    { "light": "#1C1917", "dark": "#1C1917" },
+    "primary-text":  { "light": "#B45309", "dark": "#FBBF24" },
+    "primary-soft":  { "light": "#FEF3C7", "dark": "#451A03" },
+    "primary-ink":   { "light": "#92400E", "dark": "#FCD34D" },
+    "herb":          { "light": "#15803D", "dark": "#4ADE80" },
+    "herb-soft":     { "light": "#DCFCE7", "dark": "#052E16" },
+    "herb-ink":      { "light": "#166534", "dark": "#4ADE80" },
+    "danger":        { "light": "#B91C1C", "dark": "#F87171" },
+    "danger-soft":   { "light": "#FEE2E2", "dark": "#450A0A" },
+    "danger-ink":    { "light": "#991B1B", "dark": "#F87171" },
+    "focus":         { "light": "#2563EB", "dark": "#93C5FD" }
+  },
+  "cookMode": {
+    "$description": "Cook Mode is dark by default regardless of app theme; high-contrast variant switches to pure black/white.",
+    "default":       { "bg": "#0C0A09", "surface": "#1C1917", "text": "#F5F5F4", "text-muted": "#A8A29E", "accent": "#F59E0B" },
+    "high-contrast": { "bg": "#000000", "surface": "#171717", "text": "#FFFFFF", "text-muted": "#D6D3D1", "accent": "#FDE68A" }
+  },
+  "font": {
+    "body":    "'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+    "display": "'Fraunces', Georgia, 'Times New Roman', serif"
+  },
+  "fontSize": {
+    "xs": "0.75rem", "sm": "0.875rem", "base": "1rem", "lg": "1.125rem",
+    "xl": "1.375rem", "2xl": "1.75rem", "3xl": "2.25rem",
+    "cook-step": "clamp(1.75rem, 4vw, 3rem)"
+  },
+  "fontWeight": { "regular": 400, "medium": 500, "semibold": 600, "bold": 700 },
+  "lineHeight": { "tight": 1.2, "snug": 1.35, "normal": 1.55 },
+  "space": {
+    "0": "0", "1": "4px", "2": "8px", "3": "12px", "4": "16px",
+    "5": "24px", "6": "32px", "7": "48px", "8": "64px"
+  },
+  "radius": { "sm": "8px", "md": "12px", "lg": "16px", "xl": "24px", "pill": "999px" },
+  "shadow": {
+    "card":  { "light": "0 1px 2px rgba(28,25,23,.06), 0 8px 24px rgba(28,25,23,.08)", "dark": "none" },
+    "float": { "light": "0 12px 32px rgba(28,25,23,.16)", "dark": "0 12px 32px rgba(0,0,0,.6)" }
+  },
+  "size": {
+    "touch-min": "44px",
+    "cook-touch-min": "64px",
+    "container-max": "1200px",
+    "reading-max": "68ch"
+  },
+  "breakpoint": { "sm": "640px", "md": "768px", "lg": "1024px", "xl": "1280px" },
+  "motion": {
+    "fast": "150ms", "base": "200ms", "slow": "250ms",
+    "easing": "cubic-bezier(0.16, 1, 0.3, 1)",
+    "egg-transition-max": "3000ms"
+  },
+  "zIndex": { "base": 0, "sticky": 10, "header": 20, "sheet": 30, "dialog": 40, "toast": 50, "transition": 60 }
+}
