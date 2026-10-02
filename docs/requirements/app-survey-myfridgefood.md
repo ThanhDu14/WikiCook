@@ -39,7 +39,6 @@
 - Bao gồm: Hình ảnh món ăn, thời gian chuẩn bị, thời gian nấu.
 - Danh sách nguyên liệu chi tiết.
 - Hướng dẫn từng bước.
-- Phần bình luận và đánh giá từ cộng đồng.
 ![alt text](../assets/screenshots/existing-app-servey-2/image-3.png)
 ![alt text](../assets/screenshots/existing-app-servey-2/image-4.png)
 
