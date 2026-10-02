@@ -148,9 +148,267 @@ WikiCook provides a robust suite of **10 core feature modules**, engineered to d
 ---
 
 ## 4. SPECIAL FEATURE: AI SMART CHEF ASSISTANT
-*Performed by:* MaiHien3507 | Reviewed by: DucDuyNguyen15-IT , ThanhDu14 | Edited by: ThanhDu14*
+*Performed by: MaiHien3507 | Reviewed by: DucDuyNguyen15-IT, ThanhDu14 | Edited by: ThanhDu14*
 
-*(This section is engineered by Member 3 under Task SCRUM-9: LLM-driven recipe suggestion, AI-powered nutritional analysis, natural language recipe search, and Mermaid Data Flow Diagram).*
+### 4.1. Purpose & User Value
+
+The **AI Smart Chef Assistant** eliminates the single most frustrating moment in home cooking: standing in front of an open fridge with no idea what to make. By allowing users to **enter the ingredients they have on hand** and instantly receive curated, step-by-step recipe suggestions, the feature removes both cognitive friction and food waste in one interaction.
+
+The feature combines two AI techniques in a single pipeline:
+1. **Retrieval-Augmented Generation (RAG)** – the entered ingredients are converted into a dense embedding vector and used to semantically query WikiCook's curated recipe knowledge base (Vector Store), surfacing the top-K most contextually relevant recipe candidates.
+2. **LLM Orchestration** – a language model receives the retrieved recipe context together with the user's personal dietary profile and produces personalised, ranked recipe recommendations with ingredient coverage scores and a nutritional estimate.
+
+#### 4.1.1. Practical Value and UX Enhancement
+
+The table below maps each user need to a concrete AI processing step and the resulting UX benefit, demonstrating that the feature operates significantly beyond keyword search or simple auto-suggest.
+
+| User Need | AI Processing | User Benefit |
+|:----------|:-------------|:-------------|
+| "What can I cook with what I have?" | Ingredient list is embedded and used for **semantic vector search** against the WikiCook Recipe Vector Store, retrieving recipes whose ingredient profile is semantically closest to the user's input — not just recipes that share a keyword. | User receives up to 5 ranked recipe suggestions within seconds, without browsing or searching manually. |
+| Reduce food waste | The system ranks recipes by **ingredient coverage score** (the proportion of required ingredients the user already possesses), prioritising recipes that require the fewest additional purchases. | Users cook with what they have, reducing spoilage and unplanned grocery trips. |
+| Personalised results, not generic suggestions | The user's stored **dietary profile** (allergens, excluded ingredients, diet type) is injected into both the RAG filter and the LLM system prompt. Recipes containing excluded allergens are filtered before they ever reach the LLM. | Recommendations are safe for the user's dietary requirements by design, not by chance. |
+| Control over meal constraints | **Serving size** and **maximum preparation time** are passed as hard constraints in the LLM prompt, instructing the model to only rank recipes that can be scaled to the requested yield within the prep-time budget. | Results are immediately actionable for the user's specific situation. |
+| Trust in recipe accuracy | **RAG grounds the LLM in WikiCook's verified recipe knowledge base.** The LLM does not generate recipes from memory; it ranks and explains candidates retrieved from the database. This significantly reduces hallucination risk and ensures all suggestions are traceable to a real WikiCook recipe. | Users can trust that recommended recipes are achievable and community-verified, not AI-invented. |
+| Understandable recommendations | The LLM produces a **plain-language explanation** for each suggestion: why the recipe matches the ingredient list, which ingredients are missing, and how the recipe aligns with the user's dietary constraints. | Users understand *why* a recipe was recommended, not just *what* was recommended. |
+| Iterative, interactive experience | Users can **modify the ingredient list or adjust filters** and immediately re-submit. Each query is a fresh RAG retrieval + LLM call, returning updated results without a page reload. | The experience is interactive and exploratory, unlike a static search result page. |
+
+---
+
+### 4.2. User Flow (Use-Case Narrative)
+
+| Step | Actor | Action |
+|:----:|:------|:-------|
+| 1 | User | Opens the **AI Chef** tab and selects **Manual Entry** mode. |
+| 2 | User | Types ingredient names into the free-text input field with autocomplete suggestions, or selects from tag-chip recommendations. Unrecognised terms are flagged with a "Did you mean...?" prompt for user confirmation. |
+| 3 | System | Validates the ingredient list (client-side: non-empty; server-side: format and length constraints). |
+| 4 | System | Normalises ingredient names using the synonym and canonical-name map, then applies the user's **dietary profile** (allergens, excluded ingredients, serving size) as a filter mask. |
+| 5 | System | Converts the filtered ingredient list into a semantic embedding vector and queries the **RAG Vector Store** (WikiCook recipe knowledge base), retrieving the top-K (default: 10) most relevant recipe documents. |
+| 6 | System | Constructs a structured LLM prompt from the retrieved recipe context, the filtered ingredient list, and the user's dietary constraints, then calls the **Recipe Suggestion LLM**. |
+| 7 | System | Receives a structured JSON response containing ranked recipe suggestions, each with: name, match score, missing ingredients, estimated prep time, and a live nutritional estimate. |
+| 8 | User | Reviews the ranked suggestion cards, optionally adjusts the serving count or removes an ingredient, and taps **Cook This** to enter Hands-Free Cooking Mode (Section 3.5). |
+| 9 | User | (Optional) Saves the suggestion to Personal Bookmarks (Section 3.8) or adds missing ingredients to the Smart Shopping List (Section 3.4). |
+
+---
+
+### 4.3. Inputs
+
+| Input | Source | Format | Required |
+|:------|:-------|:-------|:--------:|
+| Manual ingredient list | Free-text field or tag-chip entry with autocomplete | Comma-separated or individually tagged ingredient names | Yes |
+| User dietary profile | Authenticated user account | JSON (allergens[], excluded[], servingSize, dietType) | Yes |
+| Serving size override | UI slider | Integer 1–20 | Optional |
+| Maximum prep-time filter | UI input | Integer (minutes) | Optional |
+
+---
+
+### 4.4. Core AI Pipeline Architecture
+
+The following five-step pipeline describes the complete data transformation from raw user input to personalised recipe recommendations. Each step identifies its inputs, the processing performed, and its output, making clear that the LLM acts as a **reasoning and ranking layer over retrieved context**, not as a database or search engine.
+
+**Step 1 – Input Validation and Ingredient Normalisation**
+- *Input:* Raw ingredient name list (strings) + serving size + max prep-time filter, submitted via `POST /api/ai/chef-assistant`.
+- *Processing:* Validate that the list is non-empty and within the 30-item limit. Map each ingredient name to its canonical form using the Ingredient Synonym Map (e.g., "thit heo" → "pork", "ca chua" → "tomato"). Flag any unrecognised terms and return "Did you mean...?" suggestions to the client for user confirmation. Apply the user's dietary profile (allergens[], excluded[]) to remove any ingredients the user cannot consume.
+- *Output:* A clean, canonical, dietary-safe ingredient list ready for semantic retrieval.
+- *Contribution:* Ensures the downstream embedding and retrieval operate on unambiguous, standardised ingredient names, improving retrieval precision.
+
+**Step 2 – Semantic Retrieval via Embedding and Vector Store**
+- *Input:* Clean canonical ingredient list from Step 1.
+- *Processing:* The ingredient list is passed to a text embedding model (e.g., text-embedding-3-small or Gemini Embedding) to produce a dense vector representation. This vector is used to perform an Approximate Nearest Neighbour (ANN) search over the WikiCook Recipe Vector Store (Pinecone or pgvector). The search returns the top-K (default K=10) recipe chunks whose semantic embedding is closest to the query vector. Each retrieved chunk contains: `recipe_id`, `title`, `ingredient_list`, and `preparation_steps`.
+- *Output:* Top-K recipe context documents (retrieved from the Vector Store, not generated).
+- *Contribution:* Grounds all subsequent LLM processing in real, verified WikiCook recipes. The LLM operates only on this retrieved context — it cannot hallucinate recipes that do not exist in the knowledge base.
+
+**Step 3 – RAG Context Construction and LLM Prompt Assembly**
+- *Input:* Top-K recipe context documents (Step 2) + clean ingredient list + dietary constraints + serving size + max prep-time.
+- *Processing:* Construct a structured prompt containing: (a) a system role instruction specifying the LLM's task and output format, (b) the user's dietary constraints as hard filters, (c) the user's ingredient list and preferences, (d) the full text of the top-K retrieved recipe documents as grounding context. The prompt instructs the LLM to return a structured JSON array and to justify each recommendation from the provided context only.
+- *Output:* Assembled LLM prompt ready for API call.
+- *Contribution:* Implements the RAG pattern — the LLM receives a closed context to reason over, reducing hallucination and ensuring recommendations are traceable to genuine WikiCook recipes.
+
+**Step 4 – LLM Recommendation and Ranking**
+- *Input:* Assembled prompt (Step 3).
+- *Processing:* Send the prompt to the LLM API (Gemini Pro / GPT-4) with JSON output mode enforced (function-calling or structured output schema). The LLM analyses the retrieved recipes against the ingredient list and dietary constraints, then returns a ranked JSON array. Each item includes: `recipe_id`, `matchScore` (proportion of required ingredients the user already has), `missingIngredients[]`, `estimatedPrepTime`, `estimatedNutrition`, and a short `recommendationReason`. Validate the JSON response against a strict schema; retry once if malformed.
+- *Output:* Validated, ranked suggestion array in structured JSON.
+- *Contribution:* Converts raw retrieved recipe data into personalised, ranked, and contextualised recommendations — the key value-add beyond a traditional keyword search.
+
+**Step 5 – Post-Processing and Structured Response Assembly**
+- *Input:* Ranked suggestion JSON (Step 4).
+- *Processing:* Fetch full recipe records from the WikiCook Recipe Database using the `recipe_id` values returned by the LLM. Merge with the LLM's ranking scores and explanations. Attach allergen/dietary badges based on recipe tags. Scale nutritional estimates to the requested serving size. Log the interaction to the AI Interaction Log for feedback analytics.
+- *Output:* Enriched HTTP/JSON response containing ranked recipe cards with all display-ready fields.
+- *Contribution:* Ensures the response is complete, display-ready, and fully consistent with the WikiCook Recipe Database — the LLM output is validated and enriched, never used raw.
+
+```text
+ User Input (ingredients + preferences)
+          |
+          v
+ [STEP 1] Input Validation & Normalisation
+  (synonym map, dietary filter)
+          |
+          v
+ [STEP 2] Embedding + ANN Vector Search
+  (ingredient list  ->  dense vector  ->  Recipe Vector Store)
+          |
+  Top-K WikiCook Recipes (retrieved, not generated)
+          |
+          v
+ [STEP 3] RAG Context + Prompt Construction
+  (recipes + ingredients + dietary constraints  ->  LLM prompt)
+          |
+          v
+ [STEP 4] LLM Ranking & Recommendation
+  (prompt  ->  LLM API  ->  structured JSON: matchScore, missingIngredients,
+   estimatedNutrition, recommendationReason)
+          |
+          v
+ [STEP 5] Post-Processing & Response Assembly
+  (merge with Recipe DB, attach allergen badges, scale nutrition)
+          |
+          v
+ Ranked Recipe Recommendations  ->  Web Client  ->  User
+```
+
+---
+
+### 4.5. Data Flow Diagram (Mermaid)
+
+> **Diagram Type:** System Architecture Data Flow – illustrating the end-to-end path from User to Web Client to Backend API to AI Engine (with Vector Store, Recipe Database, User Profile, and LLM) and back to User.
+
+```mermaid
+flowchart LR
+    User["User"]
+    WebClient["Web Client<br/>(Browser / PWA)"]
+    Backend["Backend API<br/>(WikiCook Server)"]
+    AIEngine["AI Engine<br/>(Orchestration Layer)"]
+    VectorStore[("Recipe Vector Store<br/>(Pinecone / pgvector)")]
+    RecipeDB[("Recipe Database<br/>(PostgreSQL)")]
+    UserProfile[("User Profile Store<br/>(dietaryProfile, allergens)")]
+    SynonymMap[("Ingredient Synonym Map")]
+    LLM["LLM API<br/>(Gemini Pro / GPT-4)"]
+    AILog[("AI Interaction Log")]
+    Result["Recipe Recommendations<br/>(Ranked Cards)"]
+
+    User -->|"Ingredients and preferences"| WebClient
+    WebClient -->|"POST /api/ai/chef-assistant<br/>{ingredients, servingSize, maxPrepTime}"| Backend
+
+    Backend -->|"Read dietary profile"| UserProfile
+    UserProfile -->|"allergens[], excluded[], dietType"| Backend
+
+    Backend -->|"Validated request +<br/>dietary constraints"| AIEngine
+
+    AIEngine -->|"Ingredient name lookup"| SynonymMap
+    SynonymMap -->|"Canonical ingredient names"| AIEngine
+
+    AIEngine -->|"Ingredient embedding vector"| VectorStore
+    VectorStore -->|"Top-K recipe chunks<br/>(recipe_id, title, ingredients, steps)"| AIEngine
+
+    AIEngine -->|"Fetch full recipe details<br/>by recipe_id"| RecipeDB
+    RecipeDB -->|"Recipe data<br/>(steps, nutrition, tags)"| AIEngine
+
+    AIEngine -->|"Prompt: retrieved recipes +<br/>ingredients + dietary constraints"| LLM
+    LLM -->|"Structured JSON:<br/>[{recipe_id, matchScore,<br/>missingIngredients,<br/>estimatedNutrition,<br/>recommendationReason}]"| AIEngine
+
+    AIEngine -->|"Ranked, validated<br/>recommendation JSON"| Backend
+    Backend -->|"Log interaction"| AILog
+    Backend -->|"Enriched JSON response"| WebClient
+    WebClient -->|"Display ranked recipe cards"| Result
+    Result --> User
+
+    classDef actor      fill:#1e3a5f,stroke:#3b82f6,stroke-width:2px,color:#e0f2fe;
+    classDef service    fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#d1fae5;
+    classDef store      fill:#3b0764,stroke:#a855f7,stroke-width:2px,color:#f3e8ff;
+    classDef output     fill:#7c2d12,stroke:#f97316,stroke-width:2px,color:#ffedd5;
+
+    class User,LLM actor;
+    class WebClient,Backend,AIEngine service;
+    class VectorStore,RecipeDB,UserProfile,SynonymMap,AILog store;
+    class Result output;
+```
+
+**Legend:**
+
+| Fill Colour | Node Type | Examples |
+|:------------|:----------|:---------|
+| Dark Blue | Actor / External Service | User, LLM API |
+| Dark Green | System Layer | Web Client, Backend API, AI Engine |
+| Purple | Data Store | Recipe Vector Store, Recipe DB, User Profile, Synonym Map, AI Log |
+| Dark Orange | Output / Result | Recipe Recommendations |
+
+---
+
+### 4.6. Outputs
+
+| Output Field | Format | Displayed As |
+|:-------------|:-------|:-------------|
+| `recipeName` | String | Recipe card title |
+| `matchScore` | Float 0–1 → displayed as % | Ingredient coverage badge |
+| `missingIngredients` | String array | Inline chips + "Add to Shopping List" CTA |
+| `estimatedPrepTime` | Integer (minutes) | Prep-time badge on card |
+| `estimatedNutrition` | `{calories, protein, carbs, fat}` per serving | Expandable nutrition panel |
+| `allergenTags` | Badge array (Gluten-Free, Dairy-Free, etc.) | Inline warning chips |
+| `recommendationReason` | Short plain-language string from LLM | Contextual explanation below recipe title |
+
+> **Disclaimer displayed in UI:** *"Recipe suggestions are generated by AI based on available ingredients and may not account for all dietary conditions. Always verify allergen safety independently."*
+
+---
+
+### 4.7. Validation & Error Handling
+
+| Failure Scenario | System Behaviour |
+|:-----------------|:----------------|
+| Ingredient list is empty on submission | Client-side validation blocks submission and highlights the input field; server-side returns HTTP 400 if bypassed |
+| Unrecognised ingredient name | Normalisation step returns the closest synonym as a "Did you mean...?" suggestion; user must confirm before proceeding |
+| No matching recipes found in Vector Store | System returns an informative empty-state message recommending the user broaden their ingredient list |
+| Zero ingredients remain after dietary filter | System notifies the user that no eligible ingredients were found and recommends reviewing dietary profile settings |
+| LLM returns malformed JSON | Backend validates against JSON Schema; retries once; on second failure, returns a graceful empty-state error message |
+| Recipe LLM API rate-limit hit | Exponential back-off for up to 2 retries; if all fail, degrades gracefully to keyword-based fallback search on the WikiCook recipe index |
+| User has incomplete dietary profile | Pipeline executes in full but appends a soft warning: *"Complete your dietary profile for personalised filtering."* |
+
+---
+
+### 4.8. API Contract
+
+**Endpoint:** `POST /api/ai/chef-assistant`
+
+**What the client sends:**
+```json
+{
+  "ingredients": ["egg", "tomato", "chicken"],
+  "servingSize": 2,
+  "maxPrepTime": 30
+}
+```
+The user's dietary profile (allergens, excluded ingredients, dietType) is **automatically retrieved from the authenticated user's stored profile** by the Backend — the client does not need to send it.
+
+**What the Backend does:** Validates the request, reads the user's `dietaryProfile` from the User Profile Store, and forwards the combined payload to the AI Engine.
+
+**What the AI Engine does:** Normalises ingredients → embeds into a vector → queries the Recipe Vector Store (top-K retrieval) → fetches full recipe details from the Recipe Database → constructs the LLM prompt → calls the LLM API → validates and ranks the structured JSON response.
+
+**What the response returns:**
+```json
+{
+  "suggestions": [
+    {
+      "recipeId": "wc-00421",
+      "recipeName": "Tomato and Egg Stir-Fry",
+      "matchScore": 0.92,
+      "missingIngredients": ["scallion"],
+      "estimatedPrepTime": 15,
+      "estimatedNutrition": { "calories": 310, "protein": 18, "carbs": 12, "fat": 20 },
+      "allergenTags": ["Dairy-Free", "Gluten-Free"],
+      "recommendationReason": "Uses 11 of your 12 ingredients; quick to prepare within your 30-minute limit."
+    }
+  ]
+}
+```
+
+**Additional constraints:** Endpoint is rate-limited to **10 requests / user / hour**. All approved WikiCook recipes are embedded and indexed in the Vector Store at publish time and re-indexed nightly.
+
+---
+
+### 4.9. Known Limitations
+
+1. **No Quantity Information:** Users enter only ingredient names, not amounts. The system assumes each ingredient is available in a recipe-appropriate quantity; suggestions may not perfectly match actual stock levels.
+2. **Naming Ambiguity:** Suggestion quality depends on how users phrase ingredient names (e.g., "thit heo" vs. "pork" vs. "pork belly"). The synonym and normalisation map mitigates this, but less common or highly regional names may not be resolved correctly.
+3. **Hallucination Risk:** The LLM may occasionally produce a recipe step or nutritional value not grounded in the retrieved context. The RAG pipeline mitigates this risk, but the system-wide disclaimer and independent user verification remain essential.
+4. **Offline Unavailability:** Both AI steps (RAG retrieval and LLM generation) require active internet connectivity. The feature is fully disabled in offline/PWA cached mode.
 
 ---
 
