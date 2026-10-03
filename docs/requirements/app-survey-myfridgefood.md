@@ -73,26 +73,26 @@ Comparative feature matrix between **MyFridgeFood (`myfridgefood.com`)** and **W
 *Homepage displays the "WHAT'S IN YOUR FRIDGE?" heading with Quick Kitchen mode — a simplified checklist of common pantry staples. The "Click Here For All Ingredients" button switches to the Detailed mode with full categorized ingredients.*
 
 #### Figure 2: Detailed Ingredient List (Full Categories)
-![Detailed Ingredient List](docs/assets/screenshots/existing-app-survey-2/Detail.png)
+![alt text](../assets/screenshots/existing-app-survey-2/Detail.png)
 *Detailed ingredient view showing the full categorized checklist (Meats, Dairy, Vegetables, Spices, Grains, etc.) with the "Find Recipes" button prominently visible.*
 
 #### Figure 3: Recipe Search Results
-![Recipe Search Results](docs/assets/screenshots/existing-app-survey-2/Recipe%20Result.png)
+![alt text](../assets/screenshots/existing-app-survey-2/Recipe%20Result.png)
 *Search results page showing matching recipes in a grid layout. Each recipe card displays: thumbnail image, recipe name, and star rating. Filter bar at top allows narrowing by meal type.*
 
 #### Figure 4: Recipe Detail Page
-![Recipe Detail Page 1](docs/assets/screenshots/existing-app-survey-2/Recipe%20Detail%201.png)
-![Recipe Detail Page 2](docs/assets/screenshots/existing-app-survey-2/Recipe%20Detail%202.png)
+![alt text](../assets/screenshots/existing-app-survey-2/Recipe%20Detail%201.png)
+![alt text](../assets/screenshots/existing-app-survey-2/Recipe%20Detail%202.png)
 *Recipe detail page with hero image, Prep Time & Cook Time metadata, full Ingredients list, and step-by-step Directions.*
 
 #### Figure 5: Community Comments & Rating
-![Community Comments & Rating](docs/assets/screenshots/existing-app-survey-2/Comment.png)
+![alt text](../assets/screenshots/existing-app-survey-2/Comment.png)
 *Comment section below the recipe showing 5-star ratings and user-submitted text comments.*
 
 #### Figure 6: Submit a Recipe Form
-![Submit a Recipe Form 1](docs/assets/screenshots/existing-app-survey-2/Submit%20Form%201.png)
-![Submit a Recipe Form 2](docs/assets/screenshots/existing-app-survey-2/Submit%20Form%202.png)
-![Submit a Recipe Form 3](docs/assets/screenshots/existing-app-survey-2/Submit%20Form%203.png)
+![alt text](../assets/screenshots/existing-app-survey-2/Submit%20Form%201.png)
+![alt text](../assets/screenshots/existing-app-survey-2/Submit%20Form%202.png)
+![alt text](../assets/screenshots/existing-app-survey-2/Submit%20Form%203.png)
 *Recipe submission form allowing registered users to contribute recipes: name, category, cook time, ingredients, directions, and photo upload.*
 
 ---
