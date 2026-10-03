@@ -69,7 +69,7 @@ Comparative feature matrix between **MyFridgeFood (`myfridgefood.com`)** and **W
 ### 3.1. Screenshots
 
 #### Figure 1: Homepage — Quick Kitchen Ingredient Checklist
-![Homepage — Quick Kitchen Ingredient Checklist](docs/assets/screenshots/existing-app-survey-2/Home%20Page.png)
+![alt text](../assets/screenshots/existing-app-survey-2/Home%20Page.png)
 *Homepage displays the "WHAT'S IN YOUR FRIDGE?" heading with Quick Kitchen mode — a simplified checklist of common pantry staples. The "Click Here For All Ingredients" button switches to the Detailed mode with full categorized ingredients.*
 
 #### Figure 2: Detailed Ingredient List (Full Categories)
