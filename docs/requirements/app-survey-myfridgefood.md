@@ -1,149 +1,131 @@
-# Khảo sát ứng dụng: MyFridgeFood
+# Existing App Survey
 
-> **Người khảo sát:** Trần Nguyễn Công Chung  
+*Author: Trần Nguyễn Công Chung*
+*Reviewer:* 
+*Editor:*  
 
----
+## 1. Surveyed Applications
 
-## 1. Tổng quan ứng dụng
+### 1.1. MyFridgeFood (myfridgefood.com)
+* **Website URL:** [https://www.myfridgefood.com/](https://www.myfridgefood.com/)
+* **Platform:** Responsive Website (Server-rendered, jQuery-based) with companion mobile apps (iOS & Android via PhoneGap).
+* **Target Audience:** Anyone who wants to cook a meal using ingredients they already have at home — particularly home cooks, college students, and budget-conscious families.
+* **App Overview:**
+  MyFridgeFood is one of the pioneering platforms for **"Reverse Recipe Search"** — instead of browsing recipes and buying ingredients, users select what they already have in the fridge and the system suggests matching recipes. The platform features a community-driven recipe database (User-Generated Content), a bookmark system, and a recipe contest section. No account is required to use the core search functionality.
 
-**MyFridgeFood** là một trong những trang web tiên phong và nổi tiếng nhất với mô hình **"Reverse Recipe Search"** (Tìm kiếm công thức ngược). Thay vì chọn món rồi đi chợ, người dùng chỉ cần chọn những gì đang có trong tủ lạnh, hệ thống sẽ gợi ý các món ăn có thể nấu được ngay.
+* **Feature Tree:**
 
-**Đặc điểm cốt lõi:**
-- Giao diện cực kỳ đơn giản, tập trung 100% vào danh sách nguyên liệu.
-- Dữ liệu công thức được đóng góp từ cộng đồng.
-- Không yêu cầu đăng nhập để sử dụng tính năng cốt lõi.
-
----
-
-## 2. Các màn hình và tính năng chính
-
-### 2.1. Trang chủ — "What's in your fridge?"
-
-**Mô tả:** Không giống các trang web hiện đại có Hero section lớn, MyFridgeFood hiển thị ngay một bảng checklist nguyên liệu khổng lồ ngay tại trang chủ. 
-- Nguyên liệu được chia thành 2 chế độ: **Quick Kitchen** (các nguyên liệu phổ biến nhất) và **Detailed** (danh sách đầy đủ được nhóm theo thịt, rau củ, gia vị...).
-- Nút "Find Recipes" nổi bật để bắt đầu tìm kiếm.
-![alt text](../assets/screenshots/existing-app-servey-2/image.png)
-![alt text](../assets/screenshots/existing-app-servey-2/image-1.png)
-
-### 2.2. Trang kết quả tìm kiếm (Recipe Results)
-
-**Mô tả:** Sau khi chọn nguyên liệu và nhấn tìm kiếm, hệ thống trả về danh sách các công thức phù hợp.
-- Hiển thị theo dạng Grid hoặc List.
-- Mỗi card công thức có: Tên món, hình ảnh, đánh giá.
-- Có thanh bộ lọc bên trên để lọc theo loại món
-![alt text](../assets/screenshots/existing-app-servey-2/image-2.png)
-
-### 2.3. Trang chi tiết công thức (Recipe Detail)
-
-**Mô tả:** Trang hiển thị chi tiết cách nấu một món ăn.
-- Bao gồm: Hình ảnh món ăn, thời gian chuẩn bị, thời gian nấu.
-- Danh sách nguyên liệu chi tiết.
-- Hướng dẫn từng bước.
-![alt text](../assets/screenshots/existing-app-servey-2/image-3.png)
-![alt text](../assets/screenshots/existing-app-servey-2/image-4.png)
-
-### 2.4. Trang "Submit a Recipe" (Đóng góp công thức)
-
-**Mô tả:** Form cho phép người dùng chia sẻ công thức của họ.
-- Yêu cầu nhập: Tên món, danh mục, thời gian nấu, nguyên liệu, các bước thực hiện và tải ảnh lên.
-- Đây là nguồn dữ liệu chính giúp MyFridgeFood phong phú.
-![alt text](../assets/screenshots/existing-app-servey-2/image-5.png)
-
----
-
-## 3. Phân tích UI/UX
-
-### 3.1. Điểm mạnh
-
-| Khía cạnh | Phân tích |
-|-----------|-----------|
-| **Core Value First** | Cung cấp giá trị ngay lập tức. Người dùng vào web là thấy ngay danh sách chọn nguyên liệu mà không cần cuộn qua các phần quảng cáo hay giới thiệu dài dòng. |
-| **Quick vs Detailed** | Có chế độ "Quick Kitchen" chỉ hiển thị các nguyên liệu cơ bản (Trứng, sữa, bơ, muối...), giúp người dùng lười cũng có thể dùng nhanh chóng. |
-| **No friction** | Không bắt buộc tạo tài khoản vẫn có thể tìm kiếm công thức. |
-| **Community Driven** | Tính năng submit công thức giúp mở rộng database miễn phí và tạo cảm giác cộng đồng. |
-
-### 3.2. Điểm yếu / Hạn chế
-
-| Khía cạnh | Phân tích |
-|-----------|-----------|
-| **UI Lỗi thời** | Giao diện mang hơi hướng web những năm 2010. Không có tính thẩm mỹ cao, thiếu khoảng trắng (whitespace) và hierarchy chưa rõ ràng. |
-| **Quá nhiều Text** | Bảng checklist nguyên liệu hiển thị theo cột bằng chữ, gây choáng ngợp và khó tìm nhanh. Nếu có icon hoặc nhóm màu sắc sẽ tốt hơn. |
-| **Quảng cáo** | Có khá nhiều banner quảng cáo chèn ngang nội dung làm giảm trải nghiệm người dùng. |
-| **Không có Smart Suggestion** | Chỉ khớp nguyên liệu một cách cơ học (matching dựa trên tag). Không gợi ý được các món thay thế nguyên liệu linh hoạt như AI. |
-
----
-
-## 4. Sơ đồ User Flow chính
-
-```mermaid
-flowchart TD
-    A["Trang chủ"] --> B["Tick chọn nguyên liệu có sẵn<br/>(Quick / Detailed)"]
-    B --> C["Nhấn nút Find Recipes"]
-    C --> D["Danh sách công thức gợi ý"]
-    D --> E["Lọc theo loại món (Tùy chọn)"]
-    D --> F["Xem chi tiết công thức"]
-    F --> G["Lưu Bookmark / Chia sẻ"]
-    
-    A --> H["Submit a Recipe"]
-    H --> I["Điền form (Tên, Nguyên liệu, Các bước)"]
-    I --> J["Chờ duyệt & Đăng tải"]
+```text
+                    MYFRIDGEFOOD
+                         │
+        ┌────────────────┼────────────────┐
+        │                │                │
+   Ingredient Input    Recipe Output    Community
+        │                │                │
+   Quick Kitchen       Search Results    Submit Recipe
+   Detailed List       Recipe Detail     Comments/Rating
+   Checkbox Select     Bookmark          Contests
+                       Filter by Type    Tips
 ```
 
+* **Detailed Feature Group Descriptions:**
+  * **Ingredient Input:**
+    * *Quick Kitchen:* A simplified checklist displaying only the most common pantry staples (Eggs, Butter, Milk, Salt, Sugar, Flour, etc.) for fast selection with minimal cognitive load.
+    * *Detailed List:* A comprehensive ingredient checklist grouped by categories (Meats, Vegetables, Dairy, Spices, Grains, etc.) with checkboxes, toggled via "Click Here For All Ingredients" button.
+    * *Checkbox Select:* Users tick checkboxes next to each ingredient they have, then press the prominent "Find Recipes" button.
+  * **Recipe Output:**
+    * *Search Results:* Grid/List display of matching recipes. Each card shows: recipe name, thumbnail image, and star rating.
+    * *Recipe Detail:* Full recipe page with: hero image, Prep Time, Cook Time, ingredient list, step-by-step Directions, and a community comments section with star ratings.
+    * *Filter by Type:* Filter bar above results to narrow by meal category (Breakfast, Main Dish, Dessert, Snacks, etc.).
+    * *Bookmark:* Logged-in users can save recipes to a personal Bookmarks page for later access.
+  * **Community:**
+    * *Submit Recipe:* A form allowing any registered user to contribute their own recipe (name, category, cook time, ingredients, directions, photo upload).
+    * *Comments / Rating:* 5-star rating system and comment section on each recipe detail page.
+    * *Contests:* Periodic recipe contests to encourage community participation.
+    * *Tips:* A dedicated Tips section for general cooking advice.
+
+
+## 2. Feature Comparison Matrix
+
+Comparative feature matrix between **MyFridgeFood (`myfridgefood.com`)** and **WikiCook** across 10 core functional modules and AI assistant capability:
+
+| No. | Feature Module | MyFridgeFood (`myfridgefood.com`) | WikiCook (Proposed) | Comparative Notes & Assessment |
+| :---: | :--- | :---: | :---: | :--- |
+| **1** | **Account & Profile Management** | Partial | Complete | MyFridgeFood supports Login/Register for bookmarks and recipe submission. No dietary profile, allergen preferences, or family management features. |
+| **2** | **Recipe Search & Filtering** | Partial | Complete | MyFridgeFood's core strength — checkbox-based ingredient matching with meal type filters. However, search is purely mechanical (tag matching), no semantic understanding. WikiCook adds AI-powered search, calorie filters, and allergen filters. |
+| **3** | **Weekly Meal Planner** | Not Available | Complete | MyFridgeFood only handles single recipe lookups. WikiCook provides a full weekly planner with drag-and-drop and AI menu generation. |
+| **4** | **Automated Shopping List** | Not Available | Complete | Conceptually opposite to MyFridgeFood's model (cook with what you have). WikiCook aggregates ingredients from meal plans and categorizes by supermarket aisle. |
+| **5** | **Hands-Free Mode & Timers** | Not Available | Complete | MyFridgeFood shows static text-based recipe pages. WikiCook offers a fullscreen cooking mode with large fonts and concurrent step timers. |
+| **6** | **Recipe Creation & Contribution** | Available | Community | Both platforms support user-submitted recipes. MyFridgeFood uses a simple form; WikiCook enhances with rich editor, photo gallery, and AI-assisted formatting. |
+| **7** | **Community Reviews & Cooksnaps** | Partial | Interactive | MyFridgeFood has star ratings and text comments. WikiCook adds photo uploads of finished dishes (*Cooksnaps*) and structured reviews. |
+| **8** | **Bookmarks & Custom Collections** | Partial | Advanced | MyFridgeFood has a flat Bookmarks page. WikiCook supports custom albums/themes and organized collections. |
+| **9** | **Nutritional & Allergy Analysis** | Not Available | Detailed | MyFridgeFood shows no nutritional data. WikiCook auto-calculates Calories, Macros (Protein/Carbs/Fat), and attaches dietary safety tags via LLM. |
+| **10** | **Smart Chef AI Assistant** | Not Available | LLM-Powered AI | MyFridgeFood relies on static keyword matching. WikiCook leverages LLMs for natural language queries, creative recipe generation from available ingredients, ingredient substitution suggestions, and nutritional breakdowns. |
+
+*Notation Key: Complete = Full support* | *Partial = Basic or limited support* | *Not Available = Feature is missing*
+
+## 3. UI/UX Analysis and Screenshots
+
+### 3.1. Screenshots
+
+#### Figure 1: Homepage — Quick Kitchen Ingredient Checklist
+![Homepage — Quick Kitchen Ingredient Checklist](docs/assets/screenshots/existing-app-survey-2/Home%20Page.png)
+*Homepage displays the "WHAT'S IN YOUR FRIDGE?" heading with Quick Kitchen mode — a simplified checklist of common pantry staples. The "Click Here For All Ingredients" button switches to the Detailed mode with full categorized ingredients.*
+
+#### Figure 2: Detailed Ingredient List (Full Categories)
+![Detailed Ingredient List](docs/assets/screenshots/existing-app-survey-2/Detail.png)
+*Detailed ingredient view showing the full categorized checklist (Meats, Dairy, Vegetables, Spices, Grains, etc.) with the "Find Recipes" button prominently visible.*
+
+#### Figure 3: Recipe Search Results
+![Recipe Search Results](docs/assets/screenshots/existing-app-survey-2/Recipe%20Result.png)
+*Search results page showing matching recipes in a grid layout. Each recipe card displays: thumbnail image, recipe name, and star rating. Filter bar at top allows narrowing by meal type.*
+
+#### Figure 4: Recipe Detail Page
+![Recipe Detail Page 1](docs/assets/screenshots/existing-app-survey-2/Recipe%20Detail%201.png)
+![Recipe Detail Page 2](docs/assets/screenshots/existing-app-survey-2/Recipe%20Detail%202.png)
+*Recipe detail page with hero image, Prep Time & Cook Time metadata, full Ingredients list, and step-by-step Directions.*
+
+#### Figure 5: Community Comments & Rating
+![Community Comments & Rating](docs/assets/screenshots/existing-app-survey-2/Comment.png)
+*Comment section below the recipe showing 5-star ratings and user-submitted text comments.*
+
+#### Figure 6: Submit a Recipe Form
+![Submit a Recipe Form 1](docs/assets/screenshots/existing-app-survey-2/Submit%20Form%201.png)
+![Submit a Recipe Form 2](docs/assets/screenshots/existing-app-survey-2/Submit%20Form%202.png)
+![Submit a Recipe Form 3](docs/assets/screenshots/existing-app-survey-2/Submit%20Form%203.png)
+*Recipe submission form allowing registered users to contribute recipes: name, category, cook time, ingredients, directions, and photo upload.*
+
 ---
 
-## 5. Bảng tổng hợp tính năng
+### 3.2. UI/UX Analysis
 
-| STT | Tính năng | Có | Chi tiết |
-|-----|-----------|:---:|----------|
-| 1 | Tìm kiếm theo nguyên liệu | ✅ | Core feature của web |
-| 2 | Phân loại Quick / Detailed list | ✅ | Hữu ích cho UX |
-| 3 | Lọc công thức | ✅ | Theo loại bữa ăn |
-| 4 | Xem chi tiết công thức | ✅ | Step-by-step text |
-| 5 | Đóng góp công thức (UGC) | ✅ | Form cho người dùng |
-| 6 | Đánh giá / Bình luận | ✅ | Hệ thống 5 sao và comment |
-| 7 | AI Gợi ý thay thế | ❌ | Không có AI |
-| 8 | Lên thực đơn (Meal plan) | ❌ | Chỉ tìm món lẻ tẻ |
-| 9 | Danh sách đi chợ | ❌ | Ngược lại với concept của web |
-| 10| Cộng đồng mạnh | ⚠️ | Có bình luận nhưng không có profile người dùng sâu |
+#### Strengths:
+* **Immediate Core Value (Zero Friction):** No landing page, no hero section, no marketing copy — the ingredient checklist is displayed immediately on page load, delivering value within seconds.
+* **Quick vs Detailed Toggle:** Two input modes cater to different user patience levels — "Quick Kitchen" for casual users, "Detailed" for thorough cooks.
+* **No Account Required:** Core search functionality works without registration, minimizing friction for first-time visitors.
+* **Community-Driven Content:** User recipe submission and rating system create a self-growing database without editorial overhead.
+* **Cross-Platform Availability:** Companion iOS & Android apps extend reach beyond the web.
 
----
-
-## 6. UI/UX Patterns đáng chú ý (áp dụng cho WikiCook)
-
-### 6.1. Patterns nên tham khảo
-
-1. **Immediate Value:** Đưa ngay công cụ tìm kiếm nguyên liệu ra màn hình chính, không giấu sau menu.
-2. **Quick Ingredient List:** WikiCook nên có một danh sách "Nguyên liệu cơ bản" (như Hành, tỏi, nước mắm, đường, trứng...) được tick sẵn hoặc dễ chọn bằng 1 click để tiết kiệm thời gian cho user.
-3. **User Submission:** Cho phép người dùng dễ dàng đóng góp công thức để làm giàu hệ sinh thái.
-
-### 6.2. Patterns cần cải thiện
-
-1. **Giao diện nhập nguyên liệu:** Thay vì làm một cái bảng chữ khổng lồ như MyFridgeFood, WikiCook nên dùng:
-   - **Thanh tìm kiếm có auto-suggest.**
-   - **Chip/Tag UI** để hiển thị nguyên liệu đã chọn.
-   - Hoặc **Chụp ảnh tủ lạnh** để tự nhận diện nguyên liệu.
-2. **AI Recipe Generation:** Thay vì chỉ filter từ Database có sẵn, WikiCook có thể dùng AI để "Sáng tạo" ra công thức mới dựa trên chính xác những gì người dùng có (thậm chí gợi ý nguyên liệu thay thế).
-3. **Hiện đại hóa UI:** Sử dụng thiết kế sạch sẽ, premium như đã phân tích ở MealPlan VN.
+#### Weaknesses:
+* **Severely Outdated UI (circa 2010):** No modern design principles — lacks whitespace, visual hierarchy, responsive grid, or any contemporary aesthetic. Typography and color scheme feel dated.
+* **Overwhelming Text-based Ingredient List:** The Detailed checklist is a massive wall of text checkboxes, causing cognitive overload. No icons, images, or color-coding to aid scanning.
+* **Intrusive Advertising:** Multiple ad banners interrupt the content flow, degrading user experience significantly.
+* **No AI or Smart Matching:** Recipe matching is purely mechanical keyword/tag matching — cannot suggest ingredient substitutions, handle partial matches, or generate creative combinations.
+* **No Nutritional Information:** Recipes display no calorie counts, macro breakdowns, or dietary/allergen labels.
+* **Static Recipe Presentation:** Recipes are displayed as plain text — no cooking mode, no timers, no interactive step tracking.
 
 ---
 
-## 7. So sánh sơ bộ: MyFridgeFood vs WikiCook (dự kiến)
+## 4. Key Takeaways & Opportunities
 
-| Tiêu chí | MyFridgeFood | WikiCook (dự kiến) |
-|----------|:------------:|:------------------:|
-| **Concept cốt lõi** | Tìm kiếm món dựa trên nguyên liệu | AI hỗ trợ tìm/tạo món dựa trên nguyên liệu |
-| **Giao diện chọn nguyên liệu**| Bảng checkbox tĩnh, nhiều chữ | Search bar thông minh, tag, có thể có AI Image |
-| **Nguồn công thức** | User submitted + Admin | AI generated + Database chuẩn + User submitted |
-| **Gợi ý linh hoạt** | Rất cứng (chỉ map theo keyword) | Cực kỳ linh hoạt (AI hiểu cách thay thế gia vị) |
-| **Trải nghiệm UI** | Cũ, nhiều quảng cáo | Hiện đại, không gián đoạn |
-| **Hướng dẫn nấu** | Text thuần | Text + Timer + Tips từ AI |
+### 4.1. Key Takeaways for WikiCook:
+1. **"Ingredient-First" Model is a Proven Need:** MyFridgeFood's enduring popularity validates that "What can I cook with what I have?" is a real, widespread pain point. WikiCook must make this a first-class feature.
+2. **Immediate Value Delivery:** Placing the core tool (ingredient selector) front-and-center on the homepage — no scrolling, no intro — dramatically reduces time-to-value. WikiCook should adopt this principle.
+3. **Quick Preset Lists:** The "Quick Kitchen" concept (pre-selecting common staples like salt, oil, garlic) saves significant user effort. WikiCook should implement a "Common Vietnamese Pantry" quick-select.
+4. **User-Generated Content Grows the Database:** Community recipe submission is a cost-effective way to scale the recipe library. WikiCook should make contribution easy and rewarding.
 
----
-
-## 8. Kết luận
-
-**MyFridgeFood** là minh chứng rõ ràng cho việc: **Tính năng "Tìm công thức theo nguyên liệu" là một nhu cầu có thật và rất lớn.** Sự thành công của họ đến từ việc giải quyết đúng một pain point duy nhất: "Tôi có ngần này đồ, tôi nấu được món gì?".
-
-Tuy nhiên, MyFridgeFood đã cũ kỹ về mặt công nghệ và UX. Đây là cơ hội vàng cho **WikiCook**. Bằng cách lấy Core Logic của MyFridgeFood kết hợp với **Generative AI** và một **Giao diện (UI) hiện đại, cao cấp**, WikiCook hoàn toàn có thể trở thành phiên bản "MyFridgeFood 2.0" vượt trội hơn về mọi mặt, đặc biệt là khả năng cá nhân hóa và tùy biến công thức.
-
----
+### 4.2. Breakthrough Opportunities & Differentiators for WikiCook:
+1. **AI-Powered Ingredient Understanding:** MyFridgeFood matches ingredients mechanically. WikiCook can use AI to understand ingredient relationships — suggesting substitutions (e.g., "no fish sauce? use soy sauce + lime"), handling partial matches, and even generating novel recipes from available ingredients.
+2. **Modern Ingredient Input UX:** Replace the text-heavy checkbox wall with a smart search bar (auto-suggest), chip/tag UI for selected items, and potentially AI Vision (photo-based ingredient recognition from fridge photos).
+3. **Nutritional & Dietary Intelligence:** Automatically attach calorie/macro breakdowns and allergen/dietary safety tags (Gluten-Free, Vegetarian, etc.) to every recipe — something MyFridgeFood completely lacks.
+4. **Premium, Contemporary Design:** MyFridgeFood's outdated UI is its biggest weakness. WikiCook has a clear opportunity to deliver the same core value in a visually stunning, modern interface with smooth animations and responsive design.
