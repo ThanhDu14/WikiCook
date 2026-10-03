@@ -1,23 +1,17 @@
 # PROJECT PROPOSAL: WIKICOOK
-**Course:** CS300 - CSC13002: Introduction to Software Engineering  
-**Project:** WikiCook - Smart Cooking Assistant & Culinary Social Platform  
-**Academic Year:** Fall Semester (2026 - 2027)  
-
----
-
 ## DOCUMENT METADATA & RESPONSIBILITY MATRIX
 | Section | Title | Performed by (Author) | Reviewed by | Edited by |
 | :---: | :--- | :---: | :---: | :---: |
-| **Section 1** | Overview, Vision & Practical Value | **DucDuyNguyen15-IT**  |  **ThanhDu14** | **LqHung06** |
-| **Section 2** | Target Users & Operating Environments | **DucDuyNguyen15-IT**  |  **ThanhDu14** | **LqHung06** |
-| **Section 3** | Key Functional Features (10 Modules) | **DucDuyNguyen15-IT**  |  **ThanhDu14** | **LqHung06** |
-| **Section 4** | AI Weekly Meal Planner & Data Flow | **MaiHien3507** | **DucDuyNguyen15-IT**  , **ThanhDu14** | **LqHung06** |
-| **Section 5** | End-to-End User Journey & Workflow Diagram | **DucDuyNguyen15-IT** , **LqHung06** | **ThanhDu14** | **LqHung06** |
+| **Section 1** | Overview, Vision & Practical Value | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** |
+| **Section 2** | Target Users & Operating Environments | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** |
+| **Section 3** | Key Functional Features (10 Modules) | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** |
+| **Section 4** | AI Weekly Meal Planner & Data Flow | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** |
+| **Section 5** | End-to-End User Journey & Workflow Diagram | **Nguyễn Đức Duy (DucDuyNguyen15-IT), Lê Quốc Hưng (LqHung06)** | **Nguyễn Thành Dự (ThanhDu14)** | **Mai Văn Hiển (MaiHien3507)** |
 
 ---
 
 ## 1. PROJECT OVERVIEW & VISION
-*Performed by: DucDuyNguyen15-IT (Member 2) | Reviewed by: Member 1 | Edited by: **LqHung06**
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 ### 1.1. Problem Statement
 In the fast-paced modern urban environment, cooking at home presents several recurring challenges for individuals and families:
@@ -43,7 +37,7 @@ WikiCook bridges the divide between **daily meal confusion** and **delightful di
 ---
 
 ## 2. TARGET USERS & OPERATING ENVIRONMENTS
-*Performed by: DucDuyNguyen15-IT (Member 2) | Reviewed by: Member 1 | Edited by: Member 3*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 ### 2.1. User Personas (Actors)
 
@@ -97,7 +91,7 @@ WikiCook bridges the divide between **daily meal confusion** and **delightful di
 ---
 
 ## 3. KEY FUNCTIONAL FEATURES
-*Performed by: DucDuyNguyen15-IT (Member 2) | Reviewed by: Member 1, ThanhDu14 | Edited by: Member 3, ThanhDu14*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 WikiCook provides a robust suite of **10 core feature modules**, engineered to deliver an end-to-end culinary journey from recipe discovery to final dish presentation:
 
@@ -148,7 +142,7 @@ WikiCook provides a robust suite of **10 core feature modules**, engineered to d
 ---
 
 ## 4. SPECIAL FEATURE: AI WEEKLY MEAL PLANNER
-*Performed by: MaiHien3507 | Reviewed by: DucDuyNguyen15-IT, ThanhDu14 | Edited by: ThanhDu14*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 ### 4.1. Purpose & User Value
 
@@ -483,7 +477,7 @@ The user's dietary profile (`allergens`, `excluded`, `dietType`) is **automatica
 
 
 ## 5. END-TO-END USER JOURNEY & CULINARY WORKFLOW
-*Performed by: DucDuyNguyen15-IT,LqHung06 | Reviewed by: ThanhDu14 | Edited by: LqHung06*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT), Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Mai Văn Hiển (MaiHien3507)*
 
 To provide a cohesive, architectural view of how WikiCook's 10 functional modules interconnect, the following end-to-end workflow illustrates the complete user lifecycle from initial onboarding, meal planning, and grocery shopping to interactive cooking and community feedback.
 
