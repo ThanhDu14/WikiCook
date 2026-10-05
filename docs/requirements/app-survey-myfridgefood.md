@@ -1,8 +1,14 @@
 # Existing App Survey
 
-*Author: Trần Nguyễn Công Chung*
-*Reviewer:* 
-*Editor:*  
+## DOCUMENT METADATA & RESPONSIBILITY MATRIX
+| Section | Content | Performed by (Author) | Reviewed by | Edited by |
+| :---: | :--- | :---: | :---: | :---: |
+| **Section 1** | Survey of App 1: MyFridgeFood | **Trần Nguyễn Công Chung** | Mai Văn Hiển | **Lê Quốc Hưng** |
+| **Section 2** | Feature Comparison Matrix | **Trần Nguyễn Công Chung** | Mai Văn Hiển | **Lê Quốc Hưng** |
+| **Section 3** | UI/UX Screenshots & Analysis | **Trần Nguyễn Công Chung** | Mai Văn Hiển | **Lê Quốc Hưng** |
+| **Section 4** | Key Takeaways & Opportunities | **Trần Nguyễn Công Chung** | Mai Văn Hiển | **Lê Quốc Hưng** |
+
+---
 
 ## 1. Surveyed Applications
 

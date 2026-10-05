@@ -1,12 +1,18 @@
-# Existing App Survey
+# EXISTING APP SURVEY
+## DOCUMENT METADATA & RESPONSIBILITY MATRIX
+| Section | Content | Performed by (Author) | Reviewed by | Edited by |
+| :---: | :--- | :---: | :---: | :---: |
+| **Section 1** | Survey of Appications| **Nguyễn Thành Dự** | Nguyễn Đức Duy | **Lê Quốc Hưng** |
+| **Section 2** | Feature Comparison Matrix | **Nguyễn Thành Dự**  | Nguyễn Đức Duy | **Lê Quốc Hưng** |
+| **Section 3** | UI/UX Screenshots & Analysis | **Nguyễn Thành Dự** | Nguyễn Đức Duy | **Lê Quốc Hưng** |
+| **Section 4** | Key Takeaways & Opportunities | **Nguyễn Thành Dự** | Nguyễn Đức Duy | **Lê Quốc Hưng** |
 
-*Author: Nguyen Thanh Du*
-*Reviewer: Nguyen Duc Duy* 
-*Editor:*  
+---
 
 ## 1. Surveyed Applications
 
 ### 1.1. Ăn Gì Ngon (angingon.com)
+*Performed by: Trần Nguyễn Công Chung | Reviewed by: Nguyễn Đức Duy | Edited by: Lê Quốc Hưng*
 * **Website URL:** [https://www.angingon.com/](https://www.angingon.com/)
 * **Platform:** Responsive Web Application (Single Page Application / Progressive Web App - Astro Framework & TailwindCSS).
 * **Target Audience:** Homemakers, independent young adults, and Vietnamese families seeking daily cooking recipes, kitchen tips, and kitchen appliance reviews.
@@ -45,10 +51,22 @@
     * *Favorites:* "Saved" section storing collections of favorite recipes.
     * *Login:* Authentication via **Google OAuth** or **Email/Password**, with links to Terms of Service & Privacy Policy.
 
+### 1.2. Survey of Existing App 2: Global Culinary Platform (Tasty / Yummly)
+*Performed by: Nguyễn Thành Dự | Reviewed by: Trần Nguyễn Công Chung | Edited by: Lê Quốc Hưng*
+
+*(This benchmark section is under active execution by Nguyễn Thành Dự under Task SCRUM-12 and SCRUM-13. The candidate app selected is Tasty / Yummly / Cookpad to provide international and cross-cultural UI/UX comparisons).*
+
+* **Website / App URL:** *(Pending Nguyễn Thành Dự (@ThanhDu14) upload)*
+* **Platform:** Mobile Application (iOS/Android) & Web Platform.
+* **Target Audience:** International home cooks, culinary hobbyists, and digital food communities.
+* **Core Strengths to Benchmark:** Video-integrated recipe execution, automated smart pantry sync, and global recipe taxonomy.
+
+---
 
 ## 2. Feature Comparison Matrix
+*Performed by: Trần Nguyễn Công Chung | Reviewed by: Nguyễn Đức Duy | Edited by: Lê Quốc Hưng*
 
-Comparative feature matrix between **Ăn Gì Ngon (`angingon.com`)** and **WikiCook** across 10 core functional modules and AI assistant capability:
+Comparative feature matrix between **Ăn Gì Ngon (`angingon.com`)**, **Secondary Benchmark App**, and **WikiCook** across 10 core functional modules and AI assistant capability:
 
 | No. | Feature Module | Ăn Gì Ngon (`angingon.com`) | WikiCook (Proposed) | Comparative Notes & Assessment |
 | :---: | :--- | :---: | :---: | :--- |
