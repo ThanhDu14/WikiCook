@@ -1,5 +1,7 @@
 # PROJECT PROPOSAL: WIKICOOK
+
 ## DOCUMENT METADATA & RESPONSIBILITY MATRIX
+
 | Section | Title | Performed by (Author) | Reviewed by | Edited by |
 | :---: | :--- | :---: | :---: | :---: |
 | **Section 1** | Overview, Vision & Practical Value | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** |
@@ -14,25 +16,30 @@
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 ### 1.1. Problem Statement
+
 In the fast-paced modern urban environment, cooking at home presents several recurring challenges for individuals and families:
+
 1. **Daily Decision Fatigue ("What to cook today?"):** Everyday consumers spend an average of 15 to 30 minutes pondering daily meal choices, often constrained by repetitive menus, limited inspiration, and time scarcity after long work hours.
 2. **Fragmented Culinary Resources:** Most current recipe websites are cluttered with intrusive display advertisements, lack dynamic portion scaling (e.g., automatically recalculating ingredient quantities from 2 servings to 5 servings), and fail to bridge the gap between recipes and grocery shopping lists.
 3. **Dietary & Health Compliance Difficulties:** Individuals managing specific dietary restrictions (e.g., lactose intolerance, gluten allergies, diabetic or keto diets) struggle to verify whether online recipes meet their nutritional and allergen safety criteria.
 4. **Lack of Kitchen-Friendly Cooking Guidance:** Traditional recipe blog posts require constant scrolling and screen tapping — extremely inconvenient when the cook's hands are wet, greasy, or covered in flour during active meal preparation.
 
 ### 1.2. Product Vision
-**WikiCook** is envisioned as an all-in-one, intelligent culinary companion and community ecosystem designed to revolutionize how home cooks plan, shop, prepare, and share meals. 
+
+**WikiCook** is envisioned as an all-in-one, intelligent culinary companion and community ecosystem designed to revolutionize how home cooks plan, shop, prepare, and share meals.
 
 WikiCook bridges the divide between **daily meal confusion** and **delightful dinner tables** by:
-* Providing smart recipe discovery with multi-criteria filtering and AI-powered natural language search.
-* Empowering cooks of all experience levels with an interactive, hands-free cooking mode equipped with integrated countdown timers for a distraction-free kitchen experience.
-* Cultivating a healthy, collaborative community where culinary enthusiasts can share authentic family recipes, exchange cooking tips, and inspire sustainable cooking habits.
-* Leveraging LLM-powered nutritional analysis to automatically estimate calories, macronutrients, and allergen warnings for every recipe.
+
+- Providing smart recipe discovery with multi-criteria filtering and AI-powered natural language search.
+- Empowering cooks of all experience levels with an interactive, hands-free cooking mode equipped with integrated countdown timers for a distraction-free kitchen experience.
+- Cultivating a healthy, collaborative community where culinary enthusiasts can share authentic family recipes, exchange cooking tips, and inspire sustainable cooking habits.
+- Leveraging LLM-powered nutritional analysis to automatically estimate calories, macronutrients, and allergen warnings for every recipe.
 
 ### 1.3. Practical Value & Social Impact
-* **Health & Wellness Improvement:** AI-powered nutritional breakdowns and automated allergen warnings enable families to sustain balanced nutrition and make informed dietary choices.
-* **Time Efficiency:** Streamlined weekly meal planning with AI-generated menus and consolidated grocery checklists eliminate redundant supermarket trips and daily decision fatigue.
-* **Community & Knowledge Sharing:** A two-way recipe contribution platform (unlike one-way editorial blogs) fosters authentic culinary exchange, preserves family cooking traditions, and builds social trust through verified Cooksnaps and community reviews.
+
+- **Health & Wellness Improvement:** AI-powered nutritional breakdowns and automated allergen warnings enable families to sustain balanced nutrition and make informed dietary choices.
+- **Time Efficiency:** Streamlined weekly meal planning with AI-generated menus and consolidated grocery checklists eliminate redundant supermarket trips and daily decision fatigue.
+- **Community & Knowledge Sharing:** A two-way recipe contribution platform (unlike one-way editorial blogs) fosters authentic culinary exchange, preserves family cooking traditions, and builds social trust through verified Cooksnaps and community reviews.
 
 ---
 
@@ -60,33 +67,38 @@ WikiCook bridges the divide between **daily meal confusion** and **delightful di
 ```
 
 #### Actor 1: The Busy Home Cook (Primary Persona)
-* **Demographics:** Young working professionals, working parents, university students living independently (aged 20–45).
-* **Core Goals:** Prepare quick, delicious, and nutritious meals within 20 to 45 minutes using whatever ingredients are currently on hand; avoid throwing away spoiled groceries.
-* **Pain Points:** Exhausted after work; easily overwhelmed by lengthy, unstructured blog posts with buried ingredient lists; clumsy experience touching smartphone screens with wet or greasy hands while cooking.
+
+- **Demographics:** Young working professionals, working parents, university students living independently (aged 20–45).
+- **Core Goals:** Prepare quick, delicious, and nutritious meals within 20 to 45 minutes using whatever ingredients are currently on hand; avoid throwing away spoiled groceries.
+- **Pain Points:** Exhausted after work; easily overwhelmed by lengthy, unstructured blog posts with buried ingredient lists; clumsy experience touching smartphone screens with wet or greasy hands while cooking.
 
 #### Actor 2: The Recipe Contributor / Culinary Creator (Secondary Persona)
-* **Demographics:** Passionate home chefs, culinary bloggers, and community recipe contributors (aged 22–55).
-* **Core Goals:** Document culinary traditions and creative recipes; reach an appreciative audience; receive authentic reviews and photos of cooked dishes (*cooksnaps*) from other users.
-* **Pain Points:** Lack of clean, specialized authoring tools; difficulty structuring preparation steps, ingredient quantities, and accompanying photos; poor attribution on generic social media.
+
+- **Demographics:** Passionate home chefs, culinary bloggers, and community recipe contributors (aged 22–55).
+- **Core Goals:** Document culinary traditions and creative recipes; reach an appreciative audience; receive authentic reviews and photos of cooked dishes (*cooksnaps*) from other users.
+- **Pain Points:** Lack of clean, specialized authoring tools; difficulty structuring preparation steps, ingredient quantities, and accompanying photos; poor attribution on generic social media.
 
 #### Actor 3: The Health-Conscious & Dietary-Restricted User (Specialized Persona)
-* **Demographics:** Fitness enthusiasts, vegetarians, vegans, and individuals with food allergies or chronic dietary requirements (aged 18–60).
-* **Core Goals:** Filter recipes with zero tolerance for restricted ingredients (e.g., peanut-free, gluten-free, dairy-free); monitor estimated calories and macronutrient ratios per serving.
-* **Pain Points:** Inaccurate nutritional labeling online; ambiguous ingredient naming; lack of automated substitution recommendations.
+
+- **Demographics:** Fitness enthusiasts, vegetarians, vegans, and individuals with food allergies or chronic dietary requirements (aged 18–60).
+- **Core Goals:** Filter recipes with zero tolerance for restricted ingredients (e.g., peanut-free, gluten-free, dairy-free); monitor estimated calories and macronutrient ratios per serving.
+- **Pain Points:** Inaccurate nutritional labeling online; ambiguous ingredient naming; lack of automated substitution recommendations.
 
 #### Actor 4: The Platform Administrator (System Persona)
-* **Demographics:** WikiCook team operators, content moderators, and system administrators.
-* **Core Goals:** Ensure recipe quality and community safety by reviewing user-submitted content before publication; manage recipe categories, ingredient taxonomies, and user accounts; monitor platform analytics and flag inappropriate content.
-* **Pain Points:** High volume of user-generated content requiring efficient moderation workflows; need for bulk management tools to organize recipes, categories, and user reports at scale.
+
+- **Demographics:** WikiCook team operators, content moderators, and system administrators.
+- **Core Goals:** Ensure recipe quality and community safety by reviewing user-submitted content before publication; manage recipe categories, ingredient taxonomies, and user accounts; monitor platform analytics and flag inappropriate content.
+- **Pain Points:** High volume of user-generated content requiring efficient moderation workflows; need for bulk management tools to organize recipes, categories, and user reports at scale.
 
 ### 2.2. Operating Environments & Technical Ecosystem
-* **Application Architecture:** Responsive Web Application (Single-Page Application / Progressive Web App).
-* **Supported Client Environments:**
-  * **Desktop & Laptop Browsers:** Modern versions of Google Chrome (v100+), Mozilla Firefox (v100+), Apple Safari (v15+), and Microsoft Edge on Windows, macOS, and Linux platforms (optimized for resolutions from 1280x720 up to 4K UHD).
-  * **Mobile & Tablet Devices:** Touch-optimized viewports for iOS (Safari Mobile 15+) and Android (Chrome Mobile 100+), featuring fluid grids, collapsible menus, and oversized action buttons suitable for kitchen countertop usage.
-* **Operating Constraints & Resilience:**
-  * Requires active internet connectivity for cloud search, account synchronization, and AI queries.
-  * Incorporates client-side caching (Local Storage / Service Workers) allowing an active cooking session (recipe text, timers, step checklists) to remain uninterrupted even if home Wi-Fi temporarily drops.
+
+- **Application Architecture:** Responsive Web Application (Single-Page Application / Progressive Web App).
+- **Supported Client Environments:**
+  - **Desktop & Laptop Browsers:** Modern versions of Google Chrome (v100+), Mozilla Firefox (v100+), Apple Safari (v15+), and Microsoft Edge on Windows, macOS, and Linux platforms (optimized for resolutions from 1280x720 up to 4K UHD).
+  - **Mobile & Tablet Devices:** Touch-optimized viewports for iOS (Safari Mobile 15+) and Android (Chrome Mobile 100+), featuring fluid grids, collapsible menus, and oversized action buttons suitable for kitchen countertop usage.
+- **Operating Constraints & Resilience:**
+  - Requires active internet connectivity for cloud search, account synchronization, and AI queries.
+  - Incorporates client-side caching (Local Storage / Service Workers) allowing an active cooking session (recipe text, timers, step checklists) to remain uninterrupted even if home Wi-Fi temporarily drops.
 
 ---
 
@@ -96,48 +108,58 @@ WikiCook bridges the divide between **daily meal confusion** and **delightful di
 WikiCook provides a robust suite of **10 core feature modules**, engineered to deliver an end-to-end culinary journey from recipe discovery to final dish presentation:
 
 ### 3.1. User Authentication & Profile Management
-* **What it does:** Allows users to register, log in (via Email/Password or OAuth Google/Apple), manage their personal avatar, and define dietary profiles (e.g., vegetarian, halal, keto, specific allergies, household size).
-* **Why it is useful:** Personalizes all downstream recommendations according to the user's family size and dietary constraints, preventing accidental exposure to food allergens and saving preference setup time.
+
+- **What it does:** Allows users to register, log in (via Email/Password or OAuth Google/Apple), manage their personal avatar, and define dietary profiles (e.g., vegetarian, halal, keto, specific allergies, household size).
+- **Why it is useful:** Personalizes all downstream recommendations according to the user's family size and dietary constraints, preventing accidental exposure to food allergens and saving preference setup time.
 
 ### 3.2. Smart Recipe Discovery & Multi-Criteria Filtering
-* **What it does:** Provides full-text keyword search alongside multi-dimensional filters based on preparation time, cuisine origin (Vietnamese, Italian, Japanese, etc.), difficulty level, cooking method (air fryer, boiling, baking), and calories.
-* **Why it is useful:** Enables users to find exactly what they desire within seconds rather than browsing through hundreds of irrelevant food posts.
+
+- **What it does:** Provides full-text keyword search alongside multi-dimensional filters based on preparation time, cuisine origin (Vietnamese, Italian, Japanese, etc.), difficulty level, cooking method (air fryer, boiling, baking), and calories.
+- **Why it is useful:** Enables users to find exactly what they desire within seconds rather than browsing through hundreds of irrelevant food posts.
 
 ### 3.3. Weekly Meal Planner & Schedule
-* **What it does:** Provides an intuitive drag-and-drop calendar interface where users can assign breakfast, lunch, and dinner recipes for each day of the upcoming week. Includes an AI-powered auto-generation feature that suggests balanced daily menus.
-* **Why it is useful:** Eradicates daily decision fatigue, promotes balanced home nutrition, and facilitates planned, stress-free bulk cooking.
+
+- **What it does:** Provides an intuitive drag-and-drop calendar interface where users can assign breakfast, lunch, and dinner recipes for each day of the upcoming week. Includes an AI-powered auto-generation feature that suggests balanced daily menus.
+- **Why it is useful:** Eradicates daily decision fatigue, promotes balanced home nutrition, and facilitates planned, stress-free bulk cooking.
 
 ### 3.4. Automated Smart Shopping List
-* **What it does:** Automatically compiles ingredients from selected recipes or weekly meal plans into a consolidated shopping checklist, merging duplicate items and grouping entries by supermarket aisle category (Produce, Meat & Seafood, Spices & Condiments, Dairy & Eggs).
-* **Why it is useful:** Eliminates duplicate purchases, speeds up supermarket grocery trips, and guarantees no crucial seasoning or herb is forgotten before cooking begins.
+
+- **What it does:** Automatically compiles ingredients from selected recipes or weekly meal plans into a consolidated shopping checklist, merging duplicate items and grouping entries by supermarket aisle category (Produce, Meat & Seafood, Spices & Condiments, Dairy & Eggs).
+- **Why it is useful:** Eliminates duplicate purchases, speeds up supermarket grocery trips, and guarantees no crucial seasoning or herb is forgotten before cooking begins.
 
 ### 3.5. Interactive Hands-Free Cooking Mode & Integrated Timers
-* **What it does:** Displays recipe execution in a clean, high-contrast, distraction-free fullscreen view with large text steps. Users can trigger concurrent countdown timers for distinct cooking stages (e.g., simmering broth for 15 mins while sautéing garlic for 2 mins) with audible alarms.
-* **Why it is useful:** Prevents messy kitchen accidents on device touchscreens, eliminates overcooking or burned meals, and keeps the cook fully focused on food preparation.
+
+- **What it does:** Displays recipe execution in a clean, high-contrast, distraction-free fullscreen view with large text steps. Users can trigger concurrent countdown timers for distinct cooking stages (e.g., simmering broth for 15 mins while sautéing garlic for 2 mins) with audible alarms.
+- **Why it is useful:** Prevents messy kitchen accidents on device touchscreens, eliminates overcooking or burned meals, and keeps the cook fully focused on food preparation.
 
 ### 3.6. Rich Recipe Creation & Multimedia Contribution Editor
-* **What it does:** Provides a structured, multi-step creation wizard for community members to submit new recipes with ingredient measurements, equipment tags, yield adjustments, high-resolution step photos, and optional YouTube/TikTok embed links.
-* **Why it is useful:** Maintains consistent, high-quality recipe documentation standards across the platform and incentivizes home chefs to share their culinary creations.
+
+- **What it does:** Provides a structured, multi-step creation wizard for community members to submit new recipes with ingredient measurements, equipment tags, yield adjustments, high-resolution step photos, and optional YouTube/TikTok embed links.
+- **Why it is useful:** Maintains consistent, high-quality recipe documentation standards across the platform and incentivizes home chefs to share their culinary creations.
 
 ### 3.7. Community Reviews, Cooksnaps & Interactive Ratings
-* **What it does:** Allows cooks to rate recipes on a 5-star scale, post text comments, share helpful modifications (e.g., "substituted fish sauce with soy sauce for vegan version"), and upload photos of their own finished results (*Cooksnaps*).
-* **Why it is useful:** Fosters social trust and community engagement, providing real-world proof of whether a recipe turns out as promised before someone attempts it.
+
+- **What it does:** Allows cooks to rate recipes on a 5-star scale, post text comments, share helpful modifications (e.g., "substituted fish sauce with soy sauce for vegan version"), and upload photos of their own finished results (*Cooksnaps*).
+- **Why it is useful:** Fosters social trust and community engagement, providing real-world proof of whether a recipe turns out as promised before someone attempts it.
 
 ### 3.8. Personal Recipe Bookmarks & Custom Collections
-* **What it does:** Enables users to save favorite recipes and organize them into personalized themed cookbooks (e.g., "Quick 15-Minute Dinners", "Tet Holiday Specials", "Healthy Lunchboxes").
-* **Why it is useful:** Empowers users to curate their own private culinary repertoire for quick recall without having to search the entire global catalog repeatedly.
+
+- **What it does:** Enables users to save favorite recipes and organize them into personalized themed cookbooks (e.g., "Quick 15-Minute Dinners", "Tet Holiday Specials", "Healthy Lunchboxes").
+- **Why it is useful:** Empowers users to curate their own private culinary repertoire for quick recall without having to search the entire global catalog repeatedly.
 
 ### 3.9. LLM-Powered Nutritional Analysis & Dietary Warning Badges
-* **What it does:** Leverages a Large Language Model (LLM) API (e.g., Gemini, GPT) to automatically analyze a recipe's ingredient list and estimate caloric values, macronutrient distributions (protein, carbohydrates, fats), and prominent allergen/dietary safety tags (Gluten-Free, Dairy-Free, Nut-Free, Low-Sodium) per serving. Results are displayed with a disclaimer: *"Nutritional estimates are AI-generated and intended for reference purposes only."*
-* **Why it is useful:** Eliminates the need for a complex nutritional database while still providing actionable dietary insights. Safeguards vulnerable family members with severe allergies and assists health-conscious users in meeting their fitness and wellness targets effortlessly.
+
+- **What it does:** Leverages a Large Language Model (LLM) API (e.g., Gemini, GPT) to automatically analyze a recipe's ingredient list and estimate caloric values, macronutrient distributions (protein, carbohydrates, fats), and prominent allergen/dietary safety tags (Gluten-Free, Dairy-Free, Nut-Free, Low-Sodium) per serving. Results are displayed with a disclaimer: *"Nutritional estimates are AI-generated and intended for reference purposes only."*
+- **Why it is useful:** Eliminates the need for a complex nutritional database while still providing actionable dietary insights. Safeguards vulnerable family members with severe allergies and assists health-conscious users in meeting their fitness and wellness targets effortlessly.
 
 ### 3.10. Admin Dashboard & Content Moderation
-* **What it does:** Provides a dedicated administrator panel with the following capabilities:
-  * **Recipe Moderation Queue:** Review, approve, reject, or request revisions for user-submitted recipes before they are published to the public catalog. Includes bulk approve/reject actions for efficient moderation workflows.
-  * **Recipe & Category Management:** Full CRUD (Create, Read, Update, Delete) operations on the recipe catalog. Manage recipe categories, cuisine tags, ingredient taxonomies, and featured/promoted recipe selections.
-  * **User & Community Management:** View registered user accounts, handle user reports, suspend or ban accounts violating community guidelines, and manage user roles (regular user, verified contributor, moderator).
-  * **Platform Analytics Overview:** Dashboard widgets displaying key metrics such as total recipes, new submissions pending review, active users, most popular recipes, and community engagement statistics.
-* **Why it is useful:** Ensures content quality, community safety, and platform integrity. Prevents spam, plagiarized, or inappropriate recipe submissions from reaching end users. Enables efficient platform governance at scale as the recipe catalog and user base grow.
+
+- **What it does:** Provides a dedicated administrator panel with the following capabilities:
+  - **Recipe Moderation Queue:** Review, approve, reject, or request revisions for user-submitted recipes before they are published to the public catalog. Includes bulk approve/reject actions for efficient moderation workflows.
+  - **Recipe & Category Management:** Full CRUD (Create, Read, Update, Delete) operations on the recipe catalog. Manage recipe categories, cuisine tags, ingredient taxonomies, and featured/promoted recipe selections.
+  - **User & Community Management:** View registered user accounts, handle user reports, suspend or ban accounts violating community guidelines, and manage user roles (regular user, verified contributor, moderator).
+  - **Platform Analytics Overview:** Dashboard widgets displaying key metrics such as total recipes, new submissions pending review, active users, most popular recipes, and community engagement statistics.
+- **Why it is useful:** Ensures content quality, community safety, and platform integrity. Prevents spam, plagiarized, or inappropriate recipe submissions from reaching end users. Enables efficient platform governance at scale as the recipe catalog and user base grow.
 
 ---
 
@@ -151,10 +173,12 @@ The **AI Weekly Meal Planner** (also known as the AI Menu Generator) automates t
 This feature is the proposed AI extension of the AI-powered auto-generation capability described in **Section 3.3 (Weekly Meal Planner)** and the automated shopping list generation described in **Section 3.4**. It targets the same AI menu generation opportunity identified in the existing-app survey (Ăn Gì Ngon's AI Menu Generator), but with a full LLM-orchestrated pipeline, integrated shopping list, and dietary constraint enforcement.
 
 > **Implementation Status Notice:**
-> * **Implemented in Workspace:** Manual Weekly Meal Planner calendar UI (Section 3.3), Smart Shopping List compilation (Section 3.4), and User Profile dietary preferences storage (Section 3.1).
-> * **Proposed AI Architecture for PA1:** Vector Store index (pgvector), RAG semantic candidate retrieval, LLM-orchestrated 7-day (21-meal) planning pipeline, `POST /api/ai/weekly-meal-plan` endpoint, automated plan validation, and rate-limiting rules.
+>
+> - **Implemented in Workspace:** Manual Weekly Meal Planner calendar UI (Section 3.3), Smart Shopping List compilation (Section 3.4), and User Profile dietary preferences storage (Section 3.1).
+> - **Proposed AI Architecture for PA1:** Vector Store index (pgvector), RAG semantic candidate retrieval, LLM-orchestrated 7-day (21-meal) planning pipeline, `POST /api/ai/weekly-meal-plan` endpoint, automated plan validation, and rate-limiting rules.
 
 The feature combines two AI techniques in a single pipeline:
+
 1. **Retrieval-Augmented Generation (RAG)** — the user's planning constraints and dietary profile are used to semantically query WikiCook's curated recipe knowledge base (Vector Store), surfacing a candidate set of contextually relevant recipes from which the AI constructs the weekly plan.
 2. **LLM Orchestration** — a language model receives the retrieved recipe candidates and the user's constraints, then produces a structured 7-day meal plan (21 meals) as a coherent plan, not as 21 independent recommendations, ensuring variety, dietary compliance, and reasonable ingredient reuse across the week.
 
@@ -398,6 +422,7 @@ flowchart LR
 **Endpoint:** `POST /api/ai/weekly-meal-plan`
 
 **What the client sends:**
+
 ```json
 {
   "days": 7,
@@ -407,6 +432,7 @@ flowchart LR
   "cuisinePreferences": ["Vietnamese", "Japanese"]
 }
 ```
+
 The user's dietary profile (`allergens`, `excluded`, `dietType`) is **automatically retrieved from the authenticated user's stored profile** by the Backend — the client does not need to send it. Fields `maxCookingTimePerMeal` and `cuisinePreferences` are optional.
 
 **What the Backend does:** Validates the request, reads the user's `dietaryProfile` from the User Profile Store, and forwards the combined payload to the AI Engine.
@@ -414,6 +440,7 @@ The user's dietary profile (`allergens`, `excluded`, `dietType`) is **automatica
 **What the AI Engine does:** Encodes planning constraints into an embedding vector — queries the Recipe Vector Store (semantic retrieval, top-K) — filters candidates by dietary constraints — fetches recipe details from the Recipe Database — constructs the LLM planning prompt — calls the LLM API — validates the structured JSON plan — generates the shopping list.
 
 **What the response returns:**
+
 ```json
 {
   "planId": "wc-plan-00041",
@@ -472,9 +499,8 @@ The user's dietary profile (`allergens`, `excluded`, `dietType`) is **automatica
 5. **Ingredient Quantity Accuracy:** Shopping list quantities are aggregated from recipe ingredient data. Accuracy depends on how precisely ingredient quantities are stored in the Recipe Database.
 6. **Offline Unavailability:** Both RAG retrieval and LLM generation require active internet connectivity. The AI Weekly Meal Planner is fully disabled in offline/PWA cached mode. The manual Meal Planner drag-and-drop interface (Section 3.3) remains available offline.
 7. **Constraint Conflicts:** When multiple constraints conflict (e.g., a very short cooking time combined with strict dietary requirements and a large serving size), the system may return a reduced plan or an error rather than violating a constraint silently.
+
 ---
-
-
 
 ## 5. END-TO-END USER JOURNEY & CULINARY WORKFLOW
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT), Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Mai Văn Hiển (MaiHien3507)*
@@ -605,4 +631,3 @@ flowchart TD
 │  - Save into "Family Favorites", "Healthy Weekdays"... │
 └────────────────────────────────────────────────────────┘
 ```
-
