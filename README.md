@@ -4,6 +4,7 @@
 This repository contains the software engineering project for **CS300 - CSC13002 - Introduction to Software Engineering**.
 
 ## Project Structure
+
 ```text
 .
 ├── docs/
