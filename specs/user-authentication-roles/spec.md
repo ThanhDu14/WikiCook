@@ -1,10 +1,10 @@
 # Feature Specification: User Authentication & Roles
 
-**Feature Branch**: `feature/SCRUM-xx-user-authentication-roles` *(TODO: assign Jira key)*
+**Feature Branch**: `feature/SCRUM-27-user-authentication-roles` *(Sprint 02 Backlog)*
 
 **Created**: 2026-10-02
 
-**Status**: Draft
+**Status**: Ready for Implementation (Sprint 02)
 
 **Input**: User description: "Describe the login feature: user stories, acceptance criteria and edge
 cases. A good spec has a summary + user stories + acceptance criteria + functional and

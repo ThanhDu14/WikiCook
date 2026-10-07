@@ -11,7 +11,7 @@
 ---
 
 ## 1. TEAM ROLES AND RESPONSIBILITIES
-*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
 
 **All 5 team members act as Full-stack Engineers**, actively engaging across all stages of the software engineering lifecycle( requirements analysis, system design, implementation, testing, and continuous deployment).
 
@@ -25,8 +25,8 @@ flowchart TD
 
     %% Cross-Functional Engineering & Delivery Squad
     TECH["<b>Mai Văn Hiển (MaiHien3507)</b> <br/><b>AI Architect & Technical Lead</b><br/>• AI Weekly Meal Planner RAG Design<br/>• Mermaid Diagrams & Technical Standards"]
-    QA["<b>Trần Nguyễn Công Chung (itzchugnn)</b> <br/><b>Market Researcher 1 & QA Lead</b><br/>• App Survey 1 (Ăn Gì Ngon)<br/>• UI/UX Analysis & Peer-Review Auditing"]
-    DEVOPS["<b>Nguyễn Thành Dự (ThanhDu14)</b><br/><b>Market Researcher 2 & DevOps Lead</b><br/>• App Survey 2 (Tasty / Yummly)<br/>• Git Repo Management & Release Packaging"]
+    QA["<b>Trần Nguyễn Công Chung (itzchugnn)</b> <br/><b>Market Researcher 1 & QA Lead</b><br/>• App Survey 1 (MyFridgeFood)<br/>• UI/UX Analysis & Peer-Review Auditing"]
+    DEVOPS["<b>Nguyễn Thành Dự (ThanhDu14)</b><br/><b>Market Researcher 2 & DevOps Lead</b><br/>• App Survey 2 (Ăn Gì Ngon)<br/>• Git Repo Management & Release Packaging"]
 
     %% Agile Relationships & Interactions
     SM <-->|"Agile Sync & Sprint Backlog"| PO
@@ -51,8 +51,8 @@ flowchart TD
 | **Lê Quốc Hưng (LqHung06)**| **Project Manager & Scrum Master** | Sprint governance, Jira tracking, Team Contract & Meeting Minutes |
 | **Nguyễn Đức Duy (DucDuyNguyen15-IT)**| **Product Owner & Requirements Lead** | Vision, Problem Statement, Personas, 10 Functional Modules & Backlog |
 | **Mai Văn Hiển (MaiHien3507)**| **AI Architect & Technical Lead** | AI Weekly Meal Planner RAG Architecture, Mermaid Diagrams & Technical Standards, English QA |
-| **Nguyễn Thành Dự (ThanhDu14)**| **Market Researcher 2 & DevOps Lead** | App Survey 2 (Tasty/Yummly), Git Repo Management, Release Packaging (PDF/ZIP) |
-| **Trần Nguyễn Công Chung (itzchugnn)**| **Market Researcher 1 & QA Lead** | App Survey 1 (Ăn Gì Ngon), UX benchmarking, Peer-Review Auditing |
+| **Nguyễn Thành Dự (ThanhDu14)**| **Market Researcher 2 & DevOps Lead** | App Survey 2 (Ăn Gì Ngon), Git Repo Management, Release Packaging (PDF/ZIP) |
+| **Trần Nguyễn Công Chung (itzchugnn)**| **Market Researcher 1 & QA Lead** | App Survey 1 (MyFridgeFood), UX benchmarking, Peer-Review Auditing |
 
 ### Detailed Role Descriptions
 
@@ -69,11 +69,11 @@ flowchart TD
    - Enforces technical documentation rigor, diagrams syntax (Mermaid), and English quality standards.
    - Audits AI account registrations across the team.
 4. **Nguyễn Thành Dự (Market Researcher 2 & DevOps Lead):**
-   - Conducts benchmark analysis of competitor App 2 (Tasty / Yummly) and synthesizes differentiation opportunities.
+   - Conducts benchmark analysis of competitor App 2 (Ăn Gì Ngon - angingon.com) and synthesizes differentiation opportunities.
    - Manages Git repository architecture, branching rules, and versioning pipelines.
    - Owns final release packaging (Markdown-to-PDF compilation and ZIP archiving).
 5. **Trần Nguyễn Công Chung (Market Researcher 1 & QA Lead):**
-   - Conducts in-depth market benchmarking of existing culinary web applications (App 1 - Ăn Gì Ngon).
+   - Conducts in-depth market benchmarking of existing culinary web applications (App 1 - MyFridgeFood - myfridgefood.com).
    - Analyzes competitor UI/UX workflows, capturing high-fidelity screenshots with comprehensive captions.
    - Leads the peer-review cross-checking process and QA audits.
 
