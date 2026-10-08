@@ -6,6 +6,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 |---|---|---|---|
 | 1 | 2026-10-08 | Viết spec 020 (tìm kiếm và lọc công thức) bằng `/speckit-specify` | 020 |
 | 2 | 2026-10-08 | Viết spec 060 (wizard tạo công thức, "Công thức của tôi") bằng `/speckit-specify` | 060 |
+| 3 | 2026-10-08 | Soạn bản nháp schema nhóm bảng `recipes` / `ingredients` gửi cả nhóm | 020, 060 |
 
 ---
 
@@ -171,3 +172,67 @@ ghi thành bảng riêng.
 - Đối chiếu file phân công: máy trạng thái `DRAFT → PENDING → PUBLISHED / REJECTED / REVISION_REQUESTED`, `ARCHIVED` khớp FR-023; điểm giao "Bước có hẹn giờ" (B ↔ D) và "Dinh dưỡng và embedding khi xuất bản" (C ↔ B ↔ E) có trong bảng Integration Points.
 - `grep` trong spec: 0 `[NEEDS CLARIFICATION]`, 33 FR, 7 SC, không có tên công nghệ.
 - Việc tiếp theo: gửi bản nháp schema `recipes`/`ingredients` cho nhóm trước T3 13/10; mang 2 bảng Integration Points ra họp T4 14/10; chạy `/speckit-clarify` cho 020 và 060 trước T5 15/10.
+
+---
+
+## Mục 3: Soạn bản nháp schema nhóm bảng `recipes` / `ingredients`
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-08 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Spec liên quan | 020, 060 – phần CSDL của B (mục 2 file phân công) |
+| Công cụ AI | Claude Code (model Claude Opus 5.5) |
+| Mục đích | Có bản nháp schema lõi `recipes` + `ingredients` gửi cả nhóm trước T3 13/10, vì mọi spec khác đều phụ thuộc |
+| Nhánh Git | `Duy` |
+
+### Prompt đã dùng
+
+```
+Soạn bản nháp schema PostgreSQL 16 cho nhóm bảng mình phụ trách (B) theo mục 2 của
+docs/management/w1-spec-design-assignment.md: recipes, recipe_steps, recipe_ingredients, ingredients,
+units, recipe_media, categories, cuisines, tags, recipe_tags, equipment, recipe_equipment.
+- Suy ra cột và ràng buộc từ FR và Key Entities của specs/020-recipe-search-filter/spec.md và
+  specs/060-recipe-editor/spec.md; mỗi quyết định ghi rõ FR nào cần nó.
+- Mỗi bảng: cột (kiểu, NULL, mặc định), khóa chính/khóa ngoại kèm ON DELETE, CHECK/UNIQUE, index cho
+  các truy vấn chính (danh sách mới nhất, tìm full-text, lọc, "Công thức của tôi", hàng đợi duyệt).
+- Máy trạng thái DRAFT → PENDING → PUBLISHED / REJECTED / REVISION_REQUESTED, ARCHIVED: vẽ sơ đồ,
+  ghi chuyển nào do tác giả, chuyển nào do moderator. Bản nháp được thiếu trường nhưng rời DRAFT thì
+  phải đủ (dùng CHECK theo status).
+- Tìm kiếm full-text tiếng Việt không dấu: cột tsvector, index GIN, unaccent; giải thích cách xử lý việc
+  unaccent không phải hàm IMMUTABLE và dữ liệu tìm kiếm nằm ở nhiều bảng.
+- Quy ước chung (khóa chính, kiểu enum, timestamp, soft delete, tên file Flyway) do A chốt: đề xuất một
+  phương án kèm lý do và đánh dấu "chờ A chốt". Bảng cần thêm ngoài danh sách được giao (nhóm nguyên
+  liệu, cách nấu, bản sửa, lịch sử trạng thái, liên kết nguyên liệu – dị ứng) đánh dấu là đề xuất.
+- Liệt kê câu hỏi cho từng điểm giao với A, C, D, E kèm đề xuất của mình để mang ra họp T4 14/10.
+- Kèm sơ đồ Mermaid erDiagram và danh sách file migration Flyway dự kiến.
+Viết tiếng Việt, đặt ở docs/analysis-and-design/database/draft-recipes-ingredients.md (file riêng, không
+đụng README.md mà A sẽ tạo).
+```
+
+### Tóm tắt phản hồi của AI
+
+- Tạo `docs/analysis-and-design/database/draft-recipes-ingredients.md` gồm 6 mục: quy ước giả định, ERD Mermaid, sơ đồ máy trạng thái, đặc tả 12 bảng được giao + 6 bảng đề xuất, migration Flyway dự kiến, 10 câu hỏi cho họp T4.
+- Quy ước đề xuất (chờ A chốt): khóa chính `BIGINT IDENTITY`, enum `VARCHAR + CHECK`, công thức không soft delete mà dùng `ARCHIVED`, danh mục dùng `is_active`, migration nhóm B dùng dải `V2xx`.
+- `recipes`: các cột nội dung cho phép `NULL` để lưu nháp; ràng buộc `chk_recipes_complete` buộc đủ trường khi `status <> 'DRAFT'`; `total_time_minutes` là cột generated cho lọc/sắp xếp; `version` cho optimistic lock (spec 060 FR-021); 6 index theo từng truy vấn chính, dùng partial index `WHERE status = 'PUBLISHED'`.
+- Tìm kiếm: hàm bọc `f_unaccent` khai báo `IMMUTABLE`; `search_vector` do Service ghi khi xuất bản vì lấy dữ liệu từ nhiều bảng, trọng số tên (A) > thẻ + nguyên liệu (B) > mô tả (C), cấu hình `simple`, từ khóa tham số hóa.
+- 6 bảng đề xuất thêm: `ingredient_allergens` (nguồn sự thật để lọc dị ứng), `ingredient_groups`, `cooking_methods` + `recipe_cooking_methods`, `recipe_revisions` (bản sửa lưu JSONB, tối đa một bản đang mở), `recipe_status_history` (lý do từ chối, ghi chú sửa, bắt buộc `message` khi từ chối).
+- Ràng buộc đáng chú ý: một ảnh bìa và một ảnh mỗi bước bằng unique partial index; ảnh ≤ 5 MB; `UNIQUE (recipe_id, position) DEFERRABLE` để đổi thứ tự trong một transaction; tên nguyên liệu đã duyệt không trùng khi bỏ dấu.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Cột nội dung `NULL` + `CHECK` theo `status` | Dùng | Lưu nháp thiếu trường (spec 060 FR-015) mà vẫn đảm bảo bài gửi duyệt đủ dữ liệu ngay ở CSDL |
+| `search_vector` do Service cập nhật thay vì trigger | Dùng | Theo constitution III: logic ở Service, dễ test; chỉ cần cập nhật khi xuất bản |
+| Bản sửa lưu JSONB thay vì nhân đôi 6 bảng con | Dùng tạm | Đơn giản cho đồ án; chốt cùng E ở họp T4 |
+| `ingredient_allergens` do B giữ | Chờ thống nhất | Điểm giao A ↔ B ↔ C, câu hỏi số 3 |
+| Quy ước khóa chính, enum, dải số migration | Chờ A chốt | Thuộc phần quy ước chung của A |
+
+### Cách kiểm chứng
+
+- Đối chiếu từng bảng với danh sách của B ở mục 2 file phân công: đủ 12 bảng; 6 bảng thêm được đánh dấu 🔵 và có lý do.
+- Đối chiếu với spec: giới hạn trong `CHECK` khớp FR (thời gian 0–1440 – 060 FR-005; khẩu phần 1–50; hẹn giờ 10 giây – 24 giờ – FR-010; ảnh JPEG/PNG/WebP ≤ 5 MB – FR-014); index khớp truy vấn của 020 FR-014/FR-015 và 060 FR-031.
+- Đối chiếu constitution: PostgreSQL 16 + Flyway, không `ddl-auto`; truy vấn tìm kiếm tham số hóa (nguyên tắc IV).
+- Chưa chạy thử SQL vì máy chưa có PostgreSQL/Docker; sẽ chạy migration khi C dựng xong `docker-compose.yml` (PostgreSQL 16 + `unaccent`).
+- Việc tiếp theo: gửi link file vào nhóm Zalo trước T3 13/10; cập nhật theo kết quả họp T4 rồi chuyển vào `database/README.md`.
