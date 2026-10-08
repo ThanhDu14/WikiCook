@@ -1,8 +1,8 @@
 # SPRINT 01 REPORT: WIKICOOK PROJECT
 
 **Course:** Introduction to Software Engineering  
-**Project:** WikiCook
-**Sprint Cycle:** Sprint 01 (Project Assignment 1 - Preparation, Proposal & Team Setup)  
+**Project:** WikiCook  
+**Sprint Cycle:** Sprint 01 (Project Assignment 1 — Preparation, Proposal & Team Setup)  
 **Sprint Duration:** September 28, 2026 – October 09, 2026  
 
 ---
