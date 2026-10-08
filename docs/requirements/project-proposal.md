@@ -109,7 +109,7 @@ WikiCook provides a robust suite of **10 core feature modules**, engineered to d
 
 ### 3.1. User Authentication & Profile Management
 
-- **What it does:** Allows users to register, log in (via Email/Password or OAuth Google/Apple), manage their personal avatar, and define dietary profiles (e.g., vegetarian, halal, keto, specific allergies, household size).
+- **What it does:** Allows users to register, log in (via Email/Password or OAuth 2.0 with Google), manage their personal avatar, and define dietary profiles (e.g., vegetarian, halal, keto, specific allergies, household size).
 - **Why it is useful:** Personalizes all downstream recommendations according to the user's family size and dietary constraints, preventing accidental exposure to food allergens and saving preference setup time.
 
 ### 3.2. Smart Recipe Discovery & Multi-Criteria Filtering
@@ -168,19 +168,19 @@ WikiCook provides a robust suite of **10 core feature modules**, engineered to d
 
 ### 4.1. Purpose & User Value
 
-The **AI Weekly Meal Planner** (also known as the AI Menu Generator) automates the most mentally exhausting part of home cooking: planning what to eat across an entire week. Instead of making 21 individual meal decisions, the user receives a complete, personalised **7-day meal plan** — covering breakfast, lunch, and dinner for every day — based on the user's dietary profile, household constraints, and ingredient preferences, all drawn from the WikiCook recipe knowledge base.
+The **AI Weekly Meal Planner** (also known as the AI Menu Generator) automates the most mentally exhausting part of home cooking: planning what to eat across an entire week. Instead of making up to 21 individual meal decisions, the user receives a complete, personalized **meal plan** — covering the requested horizon (up to 7 days, 1–3 meals per day, totaling up to 21 meals) — based on the user's dietary profile, household constraints, and ingredient preferences, all drawn from the WikiCook recipe knowledge base.
 
 This feature is the proposed AI extension of the AI-powered auto-generation capability described in **Section 3.3 (Weekly Meal Planner)** and the automated shopping list generation described in **Section 3.4**. It targets the same AI menu generation opportunity identified in the existing-app survey (Ăn Gì Ngon's AI Menu Generator), but with a full LLM-orchestrated pipeline, integrated shopping list, and dietary constraint enforcement.
 
 > **Implementation Status Notice:**
 >
 > - **Implemented in Workspace:** Manual Weekly Meal Planner calendar UI (Section 3.3), Smart Shopping List compilation (Section 3.4), and User Profile dietary preferences storage (Section 3.1).
-> - **Proposed AI Architecture for PA1:** Vector Store index (pgvector), RAG semantic candidate retrieval, LLM-orchestrated 7-day (21-meal) planning pipeline, `POST /api/ai/weekly-meal-plan` endpoint, automated plan validation, and rate-limiting rules.
+> - **Proposed AI Architecture for PA1:** Vector Store index (pgvector), RAG semantic candidate retrieval, LLM-orchestrated flexible planning pipeline (up to 7 days x 3 meals = 21 meals), `POST /api/ai/weekly-meal-plan` endpoint, automated plan validation, and rate-limiting rules.
 
 The feature combines two AI techniques in a single pipeline:
 
 1. **Retrieval-Augmented Generation (RAG)** — the user's planning constraints and dietary profile are used to semantically query WikiCook's curated recipe knowledge base (Vector Store), surfacing a candidate set of contextually relevant recipes from which the AI constructs the weekly plan.
-2. **LLM Orchestration** — a language model receives the retrieved recipe candidates and the user's constraints, then produces a structured 7-day meal plan (21 meals) as a coherent plan, not as 21 independent recommendations, ensuring variety, dietary compliance, and reasonable ingredient reuse across the week.
+2. **LLM Orchestration** — a language model receives the retrieved recipe candidates and the user's constraints, then produces a structured meal plan (up to 21 meals for a full 7-day horizon) as a coherent plan, not as independent recommendations, ensuring variety, dietary compliance, and reasonable ingredient reuse across the week.
 
 #### 4.1.1. Practical Value and UX Enhancement
 
@@ -188,11 +188,11 @@ The table below maps each user need to a concrete AI processing step and the res
 
 | User Need | AI Processing | User Benefit |
 |:----------|:-------------|:-------------|
-| Avoid deciding 21 meals manually | LLM generates a coherent 7-day plan from candidate recipes, considering constraints across all slots simultaneously — not one meal at a time. | User receives a complete weekly meal plan in one interaction, eliminating daily decision fatigue for the entire week. |
+| Avoid deciding up to 21 meals manually | LLM generates a coherent plan from candidate recipes, considering constraints across all slots simultaneously — not one meal at a time. | User receives a complete meal plan in one interaction, eliminating daily decision fatigue. |
 | Plan meals that fit dietary restrictions | The user's dietary profile (allergens, excluded ingredients, diet type) is applied as a hard filter during RAG retrieval and reinforced in the LLM prompt. Allergen-violating recipes are excluded before reaching the LLM. | The retrieval and validation pipeline reduces the risk of dietary and allergen violations, while final user verification remains recommended. |
-| Avoid eating the same dish every day | The LLM prompt explicitly instructs the model to maximise variety across the 7-day horizon, avoiding repeated recipes. | Users receive a diverse menu across the full week. |
+| Avoid eating the same dish every day | The LLM prompt explicitly instructs the model to maximize variety across the planning horizon, avoiding repeated recipes. | Users receive a diverse menu across the plan. |
 | Reduce ingredient waste | The LLM is instructed to consider ingredient reuse across meals where feasible, reducing the number of unique ingredients required across the week. | Fewer distinct ingredients need to be purchased; leftover ingredients are more likely to be used. |
-| Receive a shopping list automatically | After the meal plan is validated, the system aggregates all required ingredients from the 21 selected recipes and generates a consolidated shopping list (Section 3.4). | User does not need to manually compile ingredients; the shopping list is derived directly from the approved plan. |
+| Receive a shopping list automatically | After the meal plan is validated, the system aggregates all required ingredients from all selected recipes in the plan (up to 21 recipes for a full week) and generates a consolidated shopping list (Section 3.4). | User does not need to manually compile ingredients; the shopping list is derived directly from the approved plan. |
 | Trust that the plan uses real recipes | RAG grounds the LLM in WikiCook's verified recipe knowledge base. The LLM selects and arranges recipes from the retrieved candidate set; it does not invent recipes from training data. | Each selected meal is intended to reference a recipe retrieved from the WikiCook recipe knowledge base and validated against the Recipe Database. |
 | Personalise for household size and time | Serving size and cooking time constraints are passed as hard constraints in the planning prompt. | The generated plan accounts for the user's household and available cooking time. |
 
@@ -206,12 +206,12 @@ The table below maps each user need to a concrete AI processing step and the res
 | 2 | User | Reviews pre-populated planning preferences drawn from the user profile: dietary restrictions, serving size, and cooking time limits. User confirms or adjusts these before triggering generation. |
 | 3 | System | Validates the planning request (non-empty profile; valid `days`, `mealsPerDay`, and `servingSize` values). |
 | 4 | System | Reads the authenticated user's full dietary profile (allergens, excluded ingredients, diet type, preferences) from the User Profile Store. |
-| 5 | System | Performs semantic retrieval from the Recipe Vector Store using the user's dietary profile and planning constraints as the query context, returning a candidate recipe set sufficient to populate a 7-day plan. |
-| 6 | System | Constructs a structured LLM prompt from the candidate recipes, user constraints, and planning horizon (7 days x 3 meals), then calls the LLM API. |
-| 7 | System | Receives a structured JSON response representing a complete 7-day meal plan (21 meal slots), validates it against the plan schema, and generates the corresponding shopping list. |
-| 8 | User | Reviews the generated plan in the Weekly Meal Planner calendar view. Each day shows Breakfast, Lunch, and Dinner, each linked to a WikiCook recipe. |
+| 5 | System | Performs semantic retrieval from the Recipe Vector Store using the user's dietary profile and planning constraints as the query context, returning a candidate recipe set sufficient to populate the requested plan horizon (up to 21 slots for a full 7-day plan). |
+| 6 | System | Constructs a structured LLM prompt from the candidate recipes, user constraints, and planning horizon (`days` x `mealsPerDay`, up to 7 days x 3 meals), then calls the LLM API. |
+| 7 | System | Receives a structured JSON response representing a complete meal plan matching the requested horizon (`days` x `mealsPerDay`), validates it against the plan schema, and generates the corresponding shopping list. |
+| 8 | User | Reviews the generated plan in the Weekly Meal Planner calendar view. Each day displays the assigned meal slots (Breakfast, Lunch, Dinner as configured), each linked to a WikiCook recipe. |
 | 9 | User | (Optional) Swaps individual meals within the plan using the drag-and-drop interface (Section 3.3), views recipe details, or regenerates the plan with adjusted constraints. |
-| 10 | User | Confirms the plan. The system finalises the shopping list (Section 3.4) from the 21 selected recipes and makes it available for the user. |
+| 10 | User | Confirms the plan. The system finalises the shopping list (Section 3.4) from the selected recipes and makes it available for the user. |
 
 ---
 
@@ -295,7 +295,7 @@ The following six-step pipeline describes the complete data transformation from 
           |
           v
  [STEP 4] LLM: Generate Weekly Meal Plan
-  (prompt -> LLM API -> structured JSON: 7 days x 3 meals = 21 slots)
+  (prompt -> LLM API -> structured JSON: days x mealsPerDay, up to 21 slots)
           |
           v
  [STEP 5] Validate and Post-process
@@ -303,10 +303,10 @@ The following six-step pipeline describes the complete data transformation from 
           |
           v
  [STEP 6] Generate Shopping List
-  (aggregate ingredients from 21 recipes -> deduplicate -> group by category)
+  (aggregate ingredients from selected recipes -> deduplicate -> group by category)
           |
           v
- 7-Day Meal Plan + Shopping List -> Backend -> Web Client -> User
+ Validated Meal Plan + Shopping List -> Backend -> Web Client -> User
 ```
 
 ---
@@ -326,7 +326,7 @@ flowchart LR
     RecipeDB[("Recipe Database (PostgreSQL)")]
     LLM["LLM API (Gemini Pro / GPT-4)"]
     Validator["Plan Validation and Post-processing"]
-    MealPlan["7-Day Meal Plan (21 meal slots)"]
+    MealPlan["Generated Meal Plan (up to 21 slots)"]
     ShoppingList["Shopping List"]
 
     User -->|"Preferences and planning constraints"| WebClient
@@ -344,11 +344,11 @@ flowchart LR
     RecipeDB -->|"Recipe metadata, ingredients, tags"| AIEngine
 
     AIEngine -->|"Planning context: candidates + constraints + plan schema"| LLM
-    LLM -->|"Structured JSON: 7-day meal plan (21 slots)"| AIEngine
+    LLM -->|"Structured JSON: plan matching horizon"| AIEngine
 
     AIEngine --> Validator
-    Validator -->|"Validated 7-day meal plan"| MealPlan
-    MealPlan -->|"Aggregate ingredients for 21 meals"| ShoppingList
+    Validator -->|"Validated meal plan"| MealPlan
+    MealPlan -->|"Aggregate ingredients for selected meals"| ShoppingList
 
     Validator -->|"Enriched plan and shopping list"| Backend
     Backend -->|"Plan and shopping list response"| WebClient
@@ -367,7 +367,7 @@ flowchart LR
 
 **Legend:**
 
-| Fill Colour | Node Type | Examples |
+| Fill Color | Node Type | Examples |
 |:------------|:----------|:---------|
 | Dark Blue | Actor / External Service | User, LLM API |
 | Dark Green | System Layer | Web Client, Backend API, AI Engine, Validator |
@@ -378,16 +378,19 @@ flowchart LR
 
 ### 4.6. Outputs
 
-#### Primary Output: 7-Day Meal Plan
+#### Primary Output: Generated Meal Plan
 
 | Output Field | Format | Displayed As |
 |:-------------|:-------|:-------------|
 | `planId` | UUID string | Internal plan identifier |
-| `days` | Array of 7 day objects | Weekly calendar view in Meal Planner (Section 3.3) |
+| `days` | Array of 1–7 day objects (matching requested `days`) | Calendar view in Meal Planner (Section 3.3) |
 | `days[].date` | ISO date string | Column header in calendar |
-| `days[].breakfast` | `{recipeId, recipeName, estimatedPrepTime, dietaryTags[]}` | Breakfast slot in calendar |
-| `days[].lunch` | `{recipeId, recipeName, estimatedPrepTime, dietaryTags[]}` | Lunch slot in calendar |
-| `days[].dinner` | `{recipeId, recipeName, estimatedPrepTime, dietaryTags[]}` | Dinner slot in calendar |
+| `days[].breakfast` | `{recipeId, recipeName, estimatedPrepTime, dietaryTags[]}` or `null` | Breakfast slot in calendar (`null` if unselected or `mealsPerDay` < 3) |
+| `days[].lunch` | `{recipeId, recipeName, estimatedPrepTime, dietaryTags[]}` or `null` | Lunch slot in calendar (`null` if unselected) |
+| `days[].dinner` | `{recipeId, recipeName, estimatedPrepTime, dietaryTags[]}` or `null` | Dinner slot in calendar (`null` if unselected) |
+
+> *Note on slot flexibility:* If `mealsPerDay` is less than 3, unselected slots return `null`, allowing frontend calendar components to render only active meal slots gracefully.
+
 
 #### Secondary Output: Shopping List
 
@@ -403,9 +406,9 @@ flowchart LR
 
 ### 4.7. Validation & Error Handling
 
-| Failure Scenario | System Behaviour |
+| Failure Scenario | System Behavior |
 |:-----------------|:----------------|
-| User dietary profile is missing or incomplete | Pipeline executes with available data; a soft warning is appended: *"Complete your dietary profile for more personalised planning."* |
+| User dietary profile is missing or incomplete | Pipeline executes with available data; a soft warning is appended: *"Complete your dietary profile for more personalized planning."* |
 | Insufficient candidate recipes after dietary filter (an insufficient number of eligible candidate recipes to construct a sufficiently varied 7-day meal plan) | System returns a descriptive error recommending the user relax dietary or time constraints, or expand cuisine preferences. |
 | LLM returns a plan with fewer than the requested meal slots (`days * mealsPerDay`) | Backend validates slot count against the requested horizon; retries the LLM call once with an explicit correction instruction. |
 | LLM references a `recipe_id` not in the candidate set or not in the Recipe Database | Validator removes invalid references; affected slots are flagged as unfilled and returned to the client for manual selection. |
@@ -493,7 +496,7 @@ The user's dietary profile (`allergens`, `excluded`, `dietType`) is **automatica
 ### 4.9. Known Limitations
 
 1. **Recipe Database Coverage:** The quality and variety of the generated plan depend directly on the number and diversity of recipes in the WikiCook Recipe Database and Vector Store. If the database contains few recipes matching the user's dietary constraints, the system may be unable to generate a sufficiently varied plan.
-2. **LLM Planning Optimality:** The LLM produces a plausible plan, not a provably optimal one. Ingredient reuse, nutritional balance, and variety heuristics are approximated through prompt engineering, not guaranteed by a formal optimisation algorithm.
+2. **LLM Planning Optimality:** The LLM produces a plausible plan, not a provably optimal one. Ingredient reuse, nutritional balance, and variety heuristics are approximated through prompt engineering, not guaranteed by a formal optimization algorithm.
 3. **Hallucination Risk:** The RAG pipeline grounds the LLM in retrieved WikiCook recipes, but post-processing validation is essential to catch any `recipe_id` references that do not match the Recipe Database.
 4. **Nutritional Balance:** Nutritional balance across the 7-day plan is a soft constraint communicated via prompt. The system does not guarantee specific calorie or macronutrient targets unless explicit nutritional data per recipe is integrated (Section 3.9).
 5. **Ingredient Quantity Accuracy:** Shopping list quantities are aggregated from recipe ingredient data. Accuracy depends on how precisely ingredient quantities are stored in the Recipe Database.

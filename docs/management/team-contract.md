@@ -13,7 +13,7 @@
 ## 1. TEAM ROLES AND RESPONSIBILITIES
 *Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
 
-**All 5 team members act as Full-stack Engineers**, actively engaging across all stages of the software engineering lifecycle( requirements analysis, system design, implementation, testing, and continuous deployment).
+**All 5 team members act as Full-stack Engineers**, actively engaging across all stages of the software engineering lifecycle (requirements analysis, system design, implementation, testing, and continuous deployment).
 
 To ensure clear ownership, prevent organizational bottlenecks, and drive execution, specific leadership roles are designated as follows:
 
@@ -65,8 +65,8 @@ flowchart TD
    - Prioritizes product backlog items to maximize practical end-user value.
    - Formats and structures technical documentation in Markdown.
 3. **Mai Văn Hiển (AI Architect & Technical Lead):**
-   - Researches, architectures, and models the AI Weekly Meal Planner (AI Menu Generator) and RAG planning pipelines.
-   - Enforces technical documentation rigor, diagrams syntax (Mermaid), and English quality standards.
+   - Researches, architects, and models the AI Weekly Meal Planner (AI Menu Generator) and RAG planning pipelines.
+   - Enforces technical documentation rigor, diagram syntax (Mermaid), and English quality standards.
    - Audits AI account registrations across the team.
 4. **Nguyễn Thành Dự (Market Researcher 2 & DevOps Lead):**
    - Conducts benchmark analysis of competitor App 2 (Ăn Gì Ngon - angingon.com) and synthesizes differentiation opportunities.
@@ -172,10 +172,9 @@ If any task falls behind schedule by more than 24 hours:
 ### 4.1. Version Control & Git Workflow
 
 - **Repository Visibility:** Private repository on GitHub (`ThanhDu14/WikiCook`).
-- **Branching Strategy:**
-  - `main`: Protected production branch; only contains reviewed and tested deliverables.
-  - `develop`: Integration branch for daily development.
-  - Feature branches: Named format `feature/<task-id>-<short-description>` (e.g., `feature/scrum-8-functional-modules`).
+- **Branching Strategy:** GitHub Flow model
+  - `main`: Protected production and release branch; only contains reviewed and tested deliverables via Pull Requests.
+  - Feature / Member branches: Named format `feature/<task-id>-<short-description>` (e.g., `feature/scrum-8-functional-modules`) or assigned member branches (e.g., `Hung`, `Hien`).
 - **Pull Request (PR) Policy:** Direct commits to `main` are strictly prohibited. All changes must pass a PR with at least 1 peer approval.
 
 ### 4.2. Commit Message Conventions
@@ -338,7 +337,7 @@ The following penalty structure applies when a member misses a task deadline:
 **When a task is at risk of being late:**
 
 1. Member identifies a blocker or risk.
-2. Member notifies the team immediately
+2. Member notifies the team immediately.
 3. Team assesses the cause.
 4. Deadline or task scope is adjusted if the reason is valid, or auxiliary pair-writer is assigned.
 5. Member continues and completes the task.

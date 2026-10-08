@@ -17,7 +17,7 @@ recover access when they forget their password. Every signed-in person has exact
 (Member, Contributor, Moderator, Administrator) that decides what they may do on the platform.
 Visitors who are not signed in (Guests) can still browse and read public recipes.
 
-This feature is the foundation for every personalised module in the proposal (dietary profile,
+This feature is the foundation for every personalized module in the proposal (dietary profile,
 meal planner, shopping list, bookmarks, reviews, recipe submission and the admin dashboard): those
 modules rely on knowing *who* the user is and *what they are allowed to do*.
 
@@ -35,7 +35,7 @@ Apple sign-in, two-factor authentication, the admin dashboard UI itself (Module 
 As a **registered home cook**, I want to sign in with my email and password so that I can access
 my saved recipes, meal plans and shopping lists from any device.
 
-**Why this priority**: Sign-in is the gate to every personalised feature. Without it no other
+**Why this priority**: Sign-in is the gate to every personalized feature. Without it no other
 member-only module can be demonstrated.
 
 **Independent Test**: Using a pre-created, verified account, open the sign-in page, enter valid
@@ -95,7 +95,7 @@ received by email, and sign in successfully with the new credentials.
 
 ### User Story 3 - Role-based access (Priority: P1)
 
-As the **platform**, I need every signed-in person to have a role so that only authorised people
+As the **platform**, I need every signed-in person to have a role so that only authorized people
 can perform moderation and administration actions.
 
 **Why this priority**: Without roles, any member could moderate content or manage users — a direct
@@ -181,10 +181,9 @@ is reused.
   and the unsaved form content is not silently lost (user is warned before leaving).
 - **Redirect after sign-in** only goes to pages inside WikiCook; links pointing to external sites
   are ignored and the user goes to the home page.
-- **Email with leading/trailing spaces or mixed case** is normalised for both sign-up and sign-in.
+- **Email with leading/trailing spaces or mixed case** is normalized for both sign-up and sign-in.
 - **Password with leading/trailing spaces** is kept exactly as typed (not trimmed).
-- **Very long input** (email > 254 characters, password > 128 characters, display name
-  > 50 characters) is rejected with a clear validation message.
+- **Very long input** (email > 254 characters, password > 128 characters, display name > 50 characters) is rejected with a clear validation message.
 - **Double-click on submit** does not create two accounts or send two emails.
 - **Google account without an email address** or with an unverified email → sign-in refused
   with a message suggesting email/password registration.
@@ -315,7 +314,7 @@ is reused.
 - **SC-002**: A returning user can sign in in under 15 seconds from opening the sign-in page.
 - **SC-003**: At least 90% of test participants complete sign-up and sign-in on their first attempt
   without help.
-- **SC-004**: 100% of protected actions in the permission matrix are refused for unauthorised roles
+- **SC-004**: 100% of protected actions in the permission matrix are refused for unauthorized roles
   in acceptance testing (zero privilege-escalation defects).
 - **SC-005**: 0 accounts can be accessed after 5 wrong passwords within 15 minutes (lockout works in
   100% of tests).

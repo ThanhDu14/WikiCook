@@ -77,7 +77,7 @@
 ---
 
 ## 3. Scope & High-Level Use Cases
-*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14)* | Edited by: Lê Quốc Hưng (LqHung06)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 ### 3.1. High-Level Use Cases
 

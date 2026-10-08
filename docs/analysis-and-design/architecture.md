@@ -56,9 +56,10 @@ flowchart TD
         Repo["Spring Data JPA Repositories"]
     end
 
-    subgraph DATA["Data Tier"]
+    subgraph DATA["Data & Cache Tier"]
         DB[(PostgreSQL 16\nRelational Schema)]
         VEC[(pgvector Extension\nRecipe Embeddings)]
+        CACHE[(Redis 7.x\nRate-Limit & Session Cache)]
         MIG["Flyway Migration Engine"]
     end
 
@@ -69,6 +70,7 @@ flowchart TD
 
     %% Interactions
     CLIENT -->|"HTTPS / REST JSON (/api/v1)"| GW
+    GW <-->|"Rate Limiting & Lockout Checks"| CACHE
     GW --> MODULES
     MODULES --> Repo
     AIOrch <-->|"Vector Query (top-K)"| VEC
@@ -94,6 +96,7 @@ In accordance with the team's engineering constitution (`.specify/memory/constit
 | **Security & Auth** | **Spring Security** | 6.x | Standardized RBAC, BCrypt password hashing, and stateless JWT session handling. |
 | **Database** | **PostgreSQL** | 16 | ACID-compliant relational storage with JSONB support for recipe parameters. |
 | **Vector Search** | **pgvector** | 0.7+ | Native vector similarity search (Cosine/ANN) within PostgreSQL, eliminating dedicated vector DB overhead. |
+| **Cache & Rate Limiting** | **Redis** | 7.x | In-memory key-value store for anti-abuse rate limiting (FR-017), brute-force account lockout tracking (FR-012), and temporary token blacklisting. |
 | **Database Migration** | **Flyway** | Latest | Version-controlled database schema evolution; prevents `ddl-auto` deployment risks. |
 | **AI Integration** | **Gemini Pro / GPT-4** | Cloud API | High-reasoning structured JSON generation for 7-day meal planning and nutritional estimation. |
-| **Containerization** | **Docker Compose** | v2 | Replicable local development environment running Backend, Frontend, and PostgreSQL. |
+| **Containerization** | **Docker Compose** | v2 | Replicable local development environment running Backend, Frontend, PostgreSQL, and Redis. |

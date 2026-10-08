@@ -79,4 +79,4 @@ flowchart TD
 
 ### 3.4. End-to-End & Manual Testing
 * **Target:** Complete user journeys (Sign up → Sign in → Recipe Discovery → Meal Planner → Shopping List).
-* **Tooling:** Postman collections and manual QA verification across desktop and mobile viewports.
+* **Tooling:** Playwright for automated browser E2E test suites, Postman collections for API flows, and manual QA verification across desktop and mobile viewports.
