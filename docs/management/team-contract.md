@@ -6,14 +6,14 @@
 | :---: | :--- | :---: | :---: | :---: |
 | **Section 1 - 3** | Roles, Communication & Work Schedule | **Lê Quốc Hưng (LqHung06)** | Nguyễn Đức Duy (DucDuyNguyen15-IT), Mai Văn Hiển (MaiHien3507) | Nguyễn Thành Dự (ThanhDu14) |
 | **Section 4 - 5** | Code/Doc Standards & Accountability | **Lê Quốc Hưng (LqHung06) & Mai Văn Hiển (MaiHien3507)** | Nguyễn Đức Duy (DucDuyNguyen15-IT) | Trần Nguyễn Công Chung (itzchugnn) |
-| **Section 6 - 8** | Governance, Conflict Resolution & Review | **Lê Quốc Hưng (LqHung06)** | Mai Văn Hiển (MaiHien3507) | Nguyễn Đức Duy (DucDuyNguyen15-IT) |
+| **Section 6 - 9** | Governance, Conflict Resolution, Review & Commitment | **Lê Quốc Hưng (LqHung06)** | Mai Văn Hiển (MaiHien3507) | Nguyễn Đức Duy (DucDuyNguyen15-IT) |
 
 ---
 
 ## 1. TEAM ROLES AND RESPONSIBILITIES
-*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
 
-**All 5 team members act as Full-stack Engineers**, actively engaging across all stages of the software engineering lifecycle( requirements analysis, system design, implementation, testing, and continuous deployment).
+**All 5 team members act as Full-stack Engineers**, actively engaging across all stages of the software engineering lifecycle (requirements analysis, system design, implementation, testing, and continuous deployment).
 
 To ensure clear ownership, prevent organizational bottlenecks, and drive execution, specific leadership roles are designated as follows:
 
@@ -25,8 +25,8 @@ flowchart TD
 
     %% Cross-Functional Engineering & Delivery Squad
     TECH["<b>Mai Văn Hiển (MaiHien3507)</b> <br/><b>AI Architect & Technical Lead</b><br/>• AI Weekly Meal Planner RAG Design<br/>• Mermaid Diagrams & Technical Standards"]
-    QA["<b>Trần Nguyễn Công Chung (itzchugnn)</b> <br/><b>Market Researcher 1 & QA Lead</b><br/>• App Survey 1 (Ăn Gì Ngon)<br/>• UI/UX Analysis & Peer-Review Auditing"]
-    DEVOPS["<b>Nguyễn Thành Dự (ThanhDu14)</b><br/><b>Market Researcher 2 & DevOps Lead</b><br/>• App Survey 2 (Tasty / Yummly)<br/>• Git Repo Management & Release Packaging"]
+    QA["<b>Trần Nguyễn Công Chung (itzchugnn)</b> <br/><b>Market Researcher 1 & QA Lead</b><br/>• App Survey 1 (MyFridgeFood)<br/>• UI/UX Analysis & Peer-Review Auditing"]
+    DEVOPS["<b>Nguyễn Thành Dự (ThanhDu14)</b><br/><b>Market Researcher 2 & DevOps Lead</b><br/>• App Survey 2 (Ăn Gì Ngon)<br/>• Git Repo Management & Release Packaging"]
 
     %% Agile Relationships & Interactions
     SM <-->|"Agile Sync & Sprint Backlog"| PO
@@ -51,8 +51,8 @@ flowchart TD
 | **Lê Quốc Hưng (LqHung06)**| **Project Manager & Scrum Master** | Sprint governance, Jira tracking, Team Contract & Meeting Minutes |
 | **Nguyễn Đức Duy (DucDuyNguyen15-IT)**| **Product Owner & Requirements Lead** | Vision, Problem Statement, Personas, 10 Functional Modules & Backlog |
 | **Mai Văn Hiển (MaiHien3507)**| **AI Architect & Technical Lead** | AI Weekly Meal Planner RAG Architecture, Mermaid Diagrams & Technical Standards, English QA |
-| **Nguyễn Thành Dự (ThanhDu14)**| **Market Researcher 2 & DevOps Lead** | App Survey 2 (Tasty/Yummly), Git Repo Management, Release Packaging (PDF/ZIP) |
-| **Trần Nguyễn Công Chung (itzchugnn)**| **Market Researcher 1 & QA Lead** | App Survey 1 (Ăn Gì Ngon), UX benchmarking, Peer-Review Auditing |
+| **Nguyễn Thành Dự (ThanhDu14)**| **Market Researcher 2 & DevOps Lead** | App Survey 2 (Ăn Gì Ngon), Git Repo Management, Release Packaging (PDF/ZIP) |
+| **Trần Nguyễn Công Chung (itzchugnn)**| **Market Researcher 1 & QA Lead** | App Survey 1 (MyFridgeFood), UX benchmarking, Peer-Review Auditing |
 
 ### Detailed Role Descriptions
 
@@ -65,15 +65,15 @@ flowchart TD
    - Prioritizes product backlog items to maximize practical end-user value.
    - Formats and structures technical documentation in Markdown.
 3. **Mai Văn Hiển (AI Architect & Technical Lead):**
-   - Researches, architectures, and models the AI Weekly Meal Planner (AI Menu Generator) and RAG planning pipelines.
-   - Enforces technical documentation rigor, diagrams syntax (Mermaid), and English quality standards.
+   - Researches, architects, and models the AI Weekly Meal Planner (AI Menu Generator) and RAG planning pipelines.
+   - Enforces technical documentation rigor, diagram syntax (Mermaid), and English quality standards.
    - Audits AI account registrations across the team.
 4. **Nguyễn Thành Dự (Market Researcher 2 & DevOps Lead):**
-   - Conducts benchmark analysis of competitor App 2 (Tasty / Yummly) and synthesizes differentiation opportunities.
+   - Conducts benchmark analysis of competitor App 2 (Ăn Gì Ngon - angingon.com) and synthesizes differentiation opportunities.
    - Manages Git repository architecture, branching rules, and versioning pipelines.
    - Owns final release packaging (Markdown-to-PDF compilation and ZIP archiving).
 5. **Trần Nguyễn Công Chung (Market Researcher 1 & QA Lead):**
-   - Conducts in-depth market benchmarking of existing culinary web applications (App 1 - Ăn Gì Ngon).
+   - Conducts in-depth market benchmarking of existing culinary web applications (App 1 - MyFridgeFood - myfridgefood.com).
    - Analyzes competitor UI/UX workflows, capturing high-fidelity screenshots with comprehensive captions.
    - Leads the peer-review cross-checking process and QA audits.
 
@@ -101,7 +101,17 @@ Efficient, transparent communication is vital for agile collaboration. The team 
 - Members are encouraged to check and respond to team messages regularly, especially during active development periods.
 - Team members should try to **pick up assigned tasks early** and communicate any questions or blockers as soon as possible.
 - Urgent issues or blockers should be communicated promptly so that the team can support and resolve them together.
-- There are no strict response-time requirements outside active working periods. Members are expected to respond when reasonably available.
+- **Response-time expectations during an active sprint:**
+
+| Message Type | Expected Response |
+|:---|:---|
+| General message in the Zalo group | Within **12 hours** |
+| Message tagged as urgent or blocking another member | Within **4 hours** (08:00 – 23:00) |
+| Pull request review request | Review completed within **24 hours** |
+| Any message during the last 48 hours before a deadline | Within **4 hours** (08:00 – 23:00) |
+
+- If a member cannot give a full answer in time, they acknowledge the message first and state when they will reply.
+- Outside active sprints, members respond when reasonably available.
 
 ### 2.3. Meeting Cadence & Scrum Protocols
 
@@ -157,11 +167,25 @@ gantt
 
 **Deadline Flexibility:** Team members are encouraged to start and complete their assigned tasks **before the scheduled deadlines** whenever possible. Deadlines serve as target dates rather than fixed start dates, so members do not need to wait until the deadline approaches to begin their work. Completing tasks early is welcomed and allows additional time for review, testing, and addressing unexpected issues.
 
+### Member Availability
+
+All members are available from **22:00** every day, so 22:00 is the default start time for Scrum meetings and pair-work sessions. Each member's regular availability is listed below:
+
+| Team Member | Weekday Evenings | Weekends | Notes |
+|:---|:---|:---|:---|
+| Lê Quốc Hưng (LqHung06) | From 22:00 | From 22:00 | |
+| Nguyễn Đức Duy (DucDuyNguyen15-IT) | From 22:00 | From 22:00 | |
+| Mai Văn Hiển (MaiHien3507) | From 22:00 | From 22:00 | |
+| Nguyễn Thành Dự (ThanhDu14) | From 22:00 | From 22:00 | |
+| Trần Nguyễn Công Chung (itzchugnn) | From 22:00 | From 22:00 | |
+
+Members announce planned absences (exams, travel, illness) in the Zalo group at least 2 days in advance when possible.
+
 ### Contingency Plan for Delays
 
 If any task falls behind schedule by more than 24 hours:
 
-1. The assigned member must immediately report the bottleneck in the `#sprint-01` channel.
+1. The assigned member must immediately report the bottleneck in the team's Zalo group and tag the Project Manager.
 2. Project Manager redistributes auxiliary tasks or assigns a peer pair-writer to unblock the critical path.
 
 ---
@@ -172,10 +196,9 @@ If any task falls behind schedule by more than 24 hours:
 ### 4.1. Version Control & Git Workflow
 
 - **Repository Visibility:** Private repository on GitHub (`ThanhDu14/WikiCook`).
-- **Branching Strategy:**
-  - `main`: Protected production branch; only contains reviewed and tested deliverables.
-  - `develop`: Integration branch for daily development.
-  - Feature branches: Named format `feature/<task-id>-<short-description>` (e.g., `feature/scrum-8-functional-modules`).
+- **Branching Strategy:** GitHub Flow model
+  - `main`: Protected production and release branch; only contains reviewed and tested deliverables via Pull Requests.
+  - Feature / Member branches: Named format `feature/<task-id>-<short-description>` (e.g., `feature/scrum-8-functional-modules`) or assigned member branches (e.g., `Hung`, `Hien`).
 - **Pull Request (PR) Policy:** Direct commits to `main` are strictly prohibited. All changes must pass a PR with at least 1 peer approval.
 
 ### 4.2. Commit Message Conventions
@@ -289,6 +312,41 @@ Mermaid diagrams should be used in documentation when a visual representation im
 - After editing a Mermaid diagram, verify the syntax is valid to avoid breaking Markdown rendering.
 - Diagrams that describe the system architecture or data flow must reflect the actual, implemented architecture — not assumptions or placeholder designs.
 
+### 4.5. Coding Conventions & Tools
+
+The technology stack and engineering rules are defined in the project constitution (`.specify/memory/constitution.md`). The conventions below apply to all source code in `src/`:
+
+| Area | Convention | Tool |
+|:---|:---|:---|
+| **Backend (Java 21, Spring Boot 3)** | Google Java Style; classes in `PascalCase`, methods and variables in `camelCase`, constants in `UPPER_SNAKE_CASE`; packages organized by feature (e.g., `recipe`, `user`, `mealplan`), each with `controller` / `service` / `repository` / `dto` layers. | Maven, IntelliJ IDEA or VS Code |
+| **Frontend (React 18 + Vite)** | Function components and hooks; components in `PascalCase.jsx`, hooks named `useXxx`; all API calls go through one shared API client. | ESLint, Prettier, npm |
+| **Database (PostgreSQL 16)** | Tables and columns in `snake_case`; every schema change is a Flyway migration named `V{n}__{description}.sql`. | Flyway, Docker Compose |
+| **API** | RESTful JSON endpoints under `/api/v1`, documented with OpenAPI. | springdoc-openapi |
+
+- Secrets (API keys, database passwords) are read from environment variables and never committed; `.env` files are listed in `.gitignore`.
+- Code must build and pass lint locally before a pull request is opened.
+
+### 4.6. Code Review Process
+
+- Every change reaches `main` through a pull request reviewed and approved by **at least one other member**.
+- The author fills in the PR description: linked Jira task (`SCRUM-xx`), summary of changes, and how it was tested.
+- The reviewer checks: the change matches the spec and acceptance criteria, layering rules are respected (Controller → Service → Repository), tests are included and pass, no secrets are committed, and documentation in `docs/` is updated.
+- Review comments must be resolved or answered before merging; the author merges after approval.
+
+### 4.7. Testing Procedures
+
+| Level | What Is Tested | Tool |
+|:---|:---|:---|
+| **Unit tests** | Business logic in the Service layer | JUnit 5, Mockito |
+| **Integration tests** | Controllers and repositories against a real PostgreSQL database | Spring Boot Test, Testcontainers |
+| **Frontend component tests** | Main user flows in React components | Vitest, React Testing Library |
+| **Acceptance tests** | Each acceptance scenario in a feature's `spec.md` | Test cases in `docs/test/test-cases.md` |
+
+- Tests are written before the implementation (Red → Green → Refactor), as required by the constitution.
+- Each acceptance scenario in `spec.md` has at least one corresponding test.
+- Coverage of the Service layer must be **at least 70%** (measured with JaCoCo).
+- A pull request is merged only when all tests pass. The QA Lead (Trần Nguyễn Công Chung) maintains the test plan and test cases in `docs/test/` and records test results at the end of each sprint.
+
 ---
 
 ## 5. ACCOUNTABILITY AND PERFORMANCE
@@ -338,7 +396,7 @@ The following penalty structure applies when a member misses a task deadline:
 **When a task is at risk of being late:**
 
 1. Member identifies a blocker or risk.
-2. Member notifies the team immediately
+2. Member notifies the team immediately.
 3. Team assesses the cause.
 4. Deadline or task scope is adjusted if the reason is valid, or auxiliary pair-writer is assigned.
 5. Member continues and completes the task.
@@ -384,6 +442,8 @@ Technical disagreements or team conflicts should be handled openly and construct
 ---
 
 ## 9. TEAM MEMBER COMMITMENT & SIGNATURES
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
 By committing this document to the repository, all 5 members acknowledge that they have read, understood, and agreed to abide by all clauses herein:
 
 - **Lê Quốc Hưng (LqHung06 - Project Manager & Scrum Master):** *Confirmed*
