@@ -316,7 +316,7 @@ The following six-step pipeline describes the complete data transformation from 
 > **Diagram Type:** System Architecture Data Flow — illustrating the end-to-end path from User to Web Client to Backend API to AI Meal Planning Engine (with Recipe Vector Store, Recipe Database, User Profile, and LLM) and back to User, including Shopping List generation.
 
 ```mermaid
-flowchart LR
+flowchart TB
     User["User"]
     WebClient["Web Client (Browser / PWA)"]
     Backend["Backend API (WikiCook Server)"]

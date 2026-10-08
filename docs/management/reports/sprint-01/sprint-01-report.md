@@ -143,16 +143,12 @@ The live Jira board state reflecting the 24 tasks is captured below:
 
 Following the Scrum process mandated in `PA1-2026.pdf` (Page 5), our team conducts **4 structured Scrum meetings**:
 
-```text
-+-------------------+-----------------------------------+-----------------------------------+
-| Meeting Event     | Date & Modality                   | Key Focus / Outcome               |
-+-------------------+-----------------------------------+-----------------------------------+
-| **Meeting 1**     | 28/09/2026 • 22:00 (Google Meet) | Sprint Planning & WBS Task Allocation |
-| **Meeting 2**     | 01/10/2026 • 21:00 (Google Meet) | Weekly Scrum 1 – Mid-Sprint Sync  |
-| **Meeting 3**     | 06/10/2026 • 20:30 (Google Meet) | Weekly Scrum 2 – Draft Audit      |
-| **Meeting 4**     | 08/10/2026 • 20:00 (Google Meet) | Sprint Review & Retrospective     |
-+-------------------+-----------------------------------+-----------------------------------+
-```
+| Meeting Event | Date & Modality | Key Focus / Outcome |
+| :--- | :--- | :--- |
+| **Meeting 1** | 28/09/2026 • 22:00 (Google Meet) | Sprint Planning & WBS Task Allocation |
+| **Meeting 2** | 01/10/2026 • 21:00 (Google Meet) | Weekly Scrum 1 – Mid-Sprint Sync |
+| **Meeting 3** | 06/10/2026 • 20:30 (Google Meet) | Weekly Scrum 2 – Draft Audit |
+| **Meeting 4** | 08/10/2026 • 20:00 (Google Meet) | Sprint Review & Retrospective |
 
 ---
 
