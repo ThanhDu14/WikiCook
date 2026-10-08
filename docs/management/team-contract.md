@@ -6,7 +6,7 @@
 | :---: | :--- | :---: | :---: | :---: |
 | **Section 1 - 3** | Roles, Communication & Work Schedule | **Lê Quốc Hưng (LqHung06)** | Nguyễn Đức Duy (DucDuyNguyen15-IT), Mai Văn Hiển (MaiHien3507) | Nguyễn Thành Dự (ThanhDu14) |
 | **Section 4 - 5** | Code/Doc Standards & Accountability | **Lê Quốc Hưng (LqHung06) & Mai Văn Hiển (MaiHien3507)** | Nguyễn Đức Duy (DucDuyNguyen15-IT) | Trần Nguyễn Công Chung (itzchugnn) |
-| **Section 6 - 8** | Governance, Conflict Resolution & Review | **Lê Quốc Hưng (LqHung06)** | Mai Văn Hiển (MaiHien3507) | Nguyễn Đức Duy (DucDuyNguyen15-IT) |
+| **Section 6 - 9** | Governance, Conflict Resolution, Review & Commitment | **Lê Quốc Hưng (LqHung06)** | Mai Văn Hiển (MaiHien3507) | Nguyễn Đức Duy (DucDuyNguyen15-IT) |
 
 ---
 
@@ -101,7 +101,17 @@ Efficient, transparent communication is vital for agile collaboration. The team 
 - Members are encouraged to check and respond to team messages regularly, especially during active development periods.
 - Team members should try to **pick up assigned tasks early** and communicate any questions or blockers as soon as possible.
 - Urgent issues or blockers should be communicated promptly so that the team can support and resolve them together.
-- There are no strict response-time requirements outside active working periods. Members are expected to respond when reasonably available.
+- **Response-time expectations during an active sprint:**
+
+| Message Type | Expected Response |
+|:---|:---|
+| General message in the Zalo group | Within **12 hours** |
+| Message tagged as urgent or blocking another member | Within **4 hours** (08:00 – 23:00) |
+| Pull request review request | Review completed within **24 hours** |
+| Any message during the last 48 hours before a deadline | Within **4 hours** (08:00 – 23:00) |
+
+- If a member cannot give a full answer in time, they acknowledge the message first and state when they will reply.
+- Outside active sprints, members respond when reasonably available.
 
 ### 2.3. Meeting Cadence & Scrum Protocols
 
@@ -157,11 +167,25 @@ gantt
 
 **Deadline Flexibility:** Team members are encouraged to start and complete their assigned tasks **before the scheduled deadlines** whenever possible. Deadlines serve as target dates rather than fixed start dates, so members do not need to wait until the deadline approaches to begin their work. Completing tasks early is welcomed and allows additional time for review, testing, and addressing unexpected issues.
 
+### Member Availability
+
+All Sprint 01 meetings were held on weekday evenings between 20:00 and 23:30, so this window is the default slot for Scrum meetings. Each member's regular availability for meetings and pair-work sessions is listed below:
+
+| Team Member | Weekday Evenings | Weekends | Notes |
+|:---|:---|:---|:---|
+| Lê Quốc Hưng (LqHung06) | *To be confirmed* | *To be confirmed* | |
+| Nguyễn Đức Duy (DucDuyNguyen15-IT) | *To be confirmed* | *To be confirmed* | |
+| Mai Văn Hiển (MaiHien3507) | *To be confirmed* | *To be confirmed* | |
+| Nguyễn Thành Dự (ThanhDu14) | *To be confirmed* | *To be confirmed* | |
+| Trần Nguyễn Công Chung (itzchugnn) | *To be confirmed* | *To be confirmed* | |
+
+Members announce planned absences (exams, travel, illness) in the Zalo group at least 2 days in advance when possible.
+
 ### Contingency Plan for Delays
 
 If any task falls behind schedule by more than 24 hours:
 
-1. The assigned member must immediately report the bottleneck in the `#sprint-01` channel.
+1. The assigned member must immediately report the bottleneck in the team's Zalo group and tag the Project Manager.
 2. Project Manager redistributes auxiliary tasks or assigns a peer pair-writer to unblock the critical path.
 
 ---
@@ -288,6 +312,41 @@ Mermaid diagrams should be used in documentation when a visual representation im
 - After editing a Mermaid diagram, verify the syntax is valid to avoid breaking Markdown rendering.
 - Diagrams that describe the system architecture or data flow must reflect the actual, implemented architecture — not assumptions or placeholder designs.
 
+### 4.5. Coding Conventions & Tools
+
+The technology stack and engineering rules are defined in the project constitution (`.specify/memory/constitution.md`). The conventions below apply to all source code in `src/`:
+
+| Area | Convention | Tool |
+|:---|:---|:---|
+| **Backend (Java 21, Spring Boot 3)** | Google Java Style; classes in `PascalCase`, methods and variables in `camelCase`, constants in `UPPER_SNAKE_CASE`; packages organized by feature (e.g., `recipe`, `user`, `mealplan`), each with `controller` / `service` / `repository` / `dto` layers. | Maven, IntelliJ IDEA or VS Code |
+| **Frontend (React 18 + Vite)** | Function components and hooks; components in `PascalCase.jsx`, hooks named `useXxx`; all API calls go through one shared API client. | ESLint, Prettier, npm |
+| **Database (PostgreSQL 16)** | Tables and columns in `snake_case`; every schema change is a Flyway migration named `V{n}__{description}.sql`. | Flyway, Docker Compose |
+| **API** | RESTful JSON endpoints under `/api/v1`, documented with OpenAPI. | springdoc-openapi |
+
+- Secrets (API keys, database passwords) are read from environment variables and never committed; `.env` files are listed in `.gitignore`.
+- Code must build and pass lint locally before a pull request is opened.
+
+### 4.6. Code Review Process
+
+- Every change reaches `main` through a pull request reviewed and approved by **at least one other member**.
+- The author fills in the PR description: linked Jira task (`SCRUM-xx`), summary of changes, and how it was tested.
+- The reviewer checks: the change matches the spec and acceptance criteria, layering rules are respected (Controller → Service → Repository), tests are included and pass, no secrets are committed, and documentation in `docs/` is updated.
+- Review comments must be resolved or answered before merging; the author merges after approval.
+
+### 4.7. Testing Procedures
+
+| Level | What Is Tested | Tool |
+|:---|:---|:---|
+| **Unit tests** | Business logic in the Service layer | JUnit 5, Mockito |
+| **Integration tests** | Controllers and repositories against a real PostgreSQL database | Spring Boot Test, Testcontainers |
+| **Frontend component tests** | Main user flows in React components | Vitest, React Testing Library |
+| **Acceptance tests** | Each acceptance scenario in a feature's `spec.md` | Test cases in `docs/test/test-cases.md` |
+
+- Tests are written before the implementation (Red → Green → Refactor), as required by the constitution.
+- Each acceptance scenario in `spec.md` has at least one corresponding test.
+- Coverage of the Service layer must be **at least 70%** (measured with JaCoCo).
+- A pull request is merged only when all tests pass. The QA Lead (Trần Nguyễn Công Chung) maintains the test plan and test cases in `docs/test/` and records test results at the end of each sprint.
+
 ---
 
 ## 5. ACCOUNTABILITY AND PERFORMANCE
@@ -383,6 +442,8 @@ Technical disagreements or team conflicts should be handled openly and construct
 ---
 
 ## 9. TEAM MEMBER COMMITMENT & SIGNATURES
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
 By committing this document to the repository, all 5 members acknowledge that they have read, understood, and agreed to abide by all clauses herein:
 
 - **Lê Quốc Hưng (LqHung06 - Project Manager & Scrum Master):** *Confirmed*

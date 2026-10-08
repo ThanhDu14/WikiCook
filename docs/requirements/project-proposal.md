@@ -174,7 +174,7 @@ This feature is the proposed AI extension of the AI-powered auto-generation capa
 
 > **Implementation Status Notice:**
 >
-> - **Implemented in Workspace:** Manual Weekly Meal Planner calendar UI (Section 3.3), Smart Shopping List compilation (Section 3.4), and User Profile dietary preferences storage (Section 3.1).
+> - **Planned (not yet implemented):** Manual Weekly Meal Planner calendar UI (Section 3.3), Smart Shopping List compilation (Section 3.4), and User Profile dietary preferences storage (Section 3.1). No application code exists in PA1; these modules are scheduled for implementation from PA2 onward.
 > - **Proposed AI Architecture for PA1:** Vector Store index (pgvector), RAG semantic candidate retrieval, LLM-orchestrated flexible planning pipeline (up to 7 days x 3 meals = 21 meals), `POST /api/ai/weekly-meal-plan` endpoint, automated plan validation, and rate-limiting rules.
 
 The feature combines two AI techniques in a single pipeline:
