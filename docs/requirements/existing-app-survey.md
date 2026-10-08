@@ -188,7 +188,7 @@ Comparative feature matrix between **MyFridgeFood (`myfridgefood.com`)** and **W
 ## 6. Feature Comparison Matrix
 *Performed by: Trần Nguyễn Công Chung | Reviewed by: Nguyễn Đức Duy | Edited by: Lê Quốc Hưng*
 
-Comparative feature matrix between **Ăn Gì Ngon (`angingon.com`)**, **Secondary Benchmark App**, and **WikiCook** across 10 core functional modules and AI assistant capability:
+Comparative feature matrix between **Ăn Gì Ngon (`angingon.com`)** and **WikiCook** across 10 core functional modules and AI assistant capability:
 
 | No. | Feature Module | Ăn Gì Ngon (`angingon.com`) | WikiCook (Proposed) | Comparative Notes & Assessment |
 | :---: | :--- | :---: | :---: | :--- |

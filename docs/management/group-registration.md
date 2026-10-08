@@ -8,7 +8,7 @@
 ## 1. GENERAL GROUP INFORMATION
 * **Group Name:** Group WikiCook  
 * **Group Leader:** Lê Quốc Hưng (@LqHung06)
-* **Communication Channel**: Zalo Group , GoogleMeet
+* **Communication Channel**: Zalo Group, Google Meet
 * **Repository URL:** [https://github.com/ThanhDu14/WikiCook](https://github.com/ThanhDu14/WikiCook)  
 * **Jira Project Key:** WikiCook Scrum Board
 
