@@ -42,6 +42,26 @@ Cooksnaps (spec 070), the content blocks of the public recipe detail page that b
 importing recipes from a web link, co-authoring, translations, scaling quantities by servings (specs
 040 and 050 use the base quantities).
 
+## Clarifications
+
+### Session 2026-10-08
+
+- Q: When an author edits a recipe that is already PUBLISHED, what do readers see while the change is
+  reviewed? → A: The edit becomes a separate revision that goes through moderation; readers keep seeing
+  the current published version until the revision is approved, and the recipe keeps its reviews,
+  ratings, bookmarks and meal-plan entries.
+- Q: Does restoring an ARCHIVED recipe need a new moderation review? → A: No. Archived recipes cannot be
+  edited, so restoring always returns the same content straight to PUBLISHED.
+- Q: Can an author use an ingredient that is not yet in the shared catalogue? → A: Yes, by proposing it
+  inside the recipe; the proposal is approved or rejected by a moderator together with the recipe, and
+  until approved it is visible only inside that recipe.
+- Q: Are the default limits acceptable (1–50 ingredients, 1–30 steps, one photo and one timer per step,
+  images ≤ 5 MB, 10 submissions per day, 20 open drafts, autosave every 30 seconds)? → A: Yes, all
+  limits are confirmed as written.
+- Q: When the same draft was changed on two devices, what happens on save? → A: The system detects the
+  conflict and asks the user which version to keep; nothing is overwritten silently ("last save wins" is
+  rejected).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Create a recipe with the wizard and submit it for review (Priority: P1)
@@ -213,8 +233,8 @@ page; restore it and confirm it is public again; delete a draft and confirm it i
 
 1. **Given** a PUBLISHED recipe, **When** the author archives it and confirms, **Then** it becomes
    ARCHIVED, disappears from search and the public page shows "This recipe is no longer available".
-2. **Given** an ARCHIVED recipe that was not changed while archived, **When** the author restores it,
-   **Then** it returns to PUBLISHED without a new review.
+2. **Given** an ARCHIVED recipe (archived recipes cannot be edited), **When** the author restores it,
+   **Then** it returns to PUBLISHED with the same content and without a new review.
 3. **Given** a DRAFT or REJECTED recipe, **When** the author deletes it and confirms, **Then** it is
    permanently removed together with its photos.
 4. **Given** a PUBLISHED or ARCHIVED recipe, **When** the author looks for "Delete", **Then** it is not
@@ -320,8 +340,8 @@ page; restore it and confirm it is public again; delete a draft and confirm it i
   made only by Moderators or Administrators (spec 100); a rejection MUST include a reason and a
   revision request MUST include a note, both shown to the author.
 - **FR-025**: Submission MUST be refused if any required item of steps 1, 2 or 4 is missing or invalid.
-- **FR-026**: Recipes in PENDING or REJECTED MUST NOT be editable by the author; REJECTED recipes MUST
-  offer "Copy to new draft".
+- **FR-026**: Recipes in PENDING, REJECTED or ARCHIVED MUST NOT be editable by the author; REJECTED
+  recipes MUST offer "Copy to new draft", and ARCHIVED recipes MUST be restored before they can be edited.
 - **FR-027**: Editing a PUBLISHED recipe MUST create a single revision that goes through review while the
   published version stays unchanged and visible; on approval the revision MUST replace the published
   content and keep the recipe's identity, reviews, ratings and references.
@@ -383,7 +403,7 @@ page; restore it and confirm it is public again; delete a draft and confirm it i
 |---|---|---|
 | Core recipe fields | Whole team | Servings, preparation time, cooking time, difficulty, status, author, publication date — names and meaning used by every spec. Draft schema to be shared by Tue 13/10. |
 | Moderation transitions | E (100) | Who performs each transition (FR-023, FR-024), where rejection reasons and revision notes are stored, how the "what changed" view works, approval of proposed ingredients. |
-| Editing published recipes | E (100) | Revision flow of FR-027 (published version stays visible while the revision is reviewed). |
+| Editing published recipes | E (100) | **Decided for this spec** (Clarifications 2026-10-08): revision flow of FR-027; E to confirm how revisions appear in the moderation queue. |
 | Rating on the recipe | E (070) | Whether average rating and review count are stored on the recipe and who updates them. |
 | Step timers | D (050) | One timer per step (FR-010), entered here and used by cooking mode. |
 | Supermarket aisle | D (040) | Who sets the aisle of a catalogue ingredient (administrator vs. author when proposing). |
@@ -413,12 +433,9 @@ page; restore it and confirm it is public again; delete a draft and confirm it i
 
 - Every submission is reviewed, including those from Verified Contributors (spec 010 permission
   matrix: "Submit recipes — goes to moderation queue").
-- Editing a published recipe uses a separate revision that is reviewed while the published version
-  stays visible (FR-027). *(to confirm with E at `/speckit-clarify`)*
-- Restoring an archived recipe that was not changed does not need a new review. *(to confirm at
-  `/speckit-clarify`)*
-- Default limits: 1–50 ingredients, 1–30 steps, one photo and one timer per step, images up to 5 MB, 10
-  submissions per day, 20 open drafts, autosave every 30 seconds. *(to confirm at `/speckit-clarify`)*
+- The revision flow for published recipes, restore without review, proposed ingredients, the numeric
+  limits and the multi-device conflict rule were confirmed in Clarifications (Session 2026-10-08). The
+  revision flow still has to be agreed with E (spec 100) before `/speckit-plan`.
 - The cover photo is required for submission but not for saving a draft.
 - Proposed new ingredients are reviewed by moderators together with the recipe (spec 100); until
   approved they are visible only inside that recipe.

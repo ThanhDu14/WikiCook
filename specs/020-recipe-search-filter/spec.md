@@ -40,6 +40,24 @@ autocomplete and "did you mean", creating or editing recipes (spec 060), estimat
 dietary tags (spec 090), managing categories / cuisines / tags / cooking methods (spec 100), the
 content of the recipe detail page.
 
+## Clarifications
+
+### Session 2026-10-08
+
+- Q: What does the system rely on to decide that a recipe contains a user's allergen? → A: Only the
+  allergen ↔ ingredient links of the shared ingredient catalogue (set by moderators/administrators);
+  AI-estimated allergen tags from spec 090 are display-only and never used for hiding.
+- Q: How long does "Show them for this search" (showing recipes hidden by the dietary profile) stay in
+  effect? → A: Only for the current search; changing the keyword or leaving the results page turns the
+  dietary filter back on automatically.
+- Q: Should results use numbered pages or a "load more" / infinite-scroll list? → A: Numbered pages of
+  20 recipes, so that every page has its own shareable address and the Back button is predictable.
+- Q: Should the time and calorie filters use fixed ranges or free sliders? → A: Fixed ranges only
+  (≤ 15 / ≤ 30 / ≤ 60 / > 60 minutes; < 300 / 300–500 / 500–800 / > 800 kcal per serving).
+- Q: How should "Top rated" treat recipes with very few reviews? → A: A recipe needs at least 3 reviews
+  to be ranked by its average rating; recipes with fewer than 3 reviews (including none) are listed
+  after all ranked recipes, ordered by their average and then newest first.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Search recipes by keyword (Priority: P1)
@@ -187,8 +205,10 @@ Back and confirm the previous state returns.
 - **Recipe unpublished or archived after results loaded** → it disappears on the next search; opening it
   from a stale result shows "This recipe is no longer available" instead of an error page.
 - **Recipe without a cover image** shows a neutral placeholder image on its card.
-- **Recipe without reviews** shows "No reviews yet" instead of a rating; with "Top rated" it is listed
-  after all rated recipes.
+- **Recipe without reviews** shows "No reviews yet" instead of a rating.
+- **Recipe with 1–2 reviews** shows its average and review count on the card, but with "Top rated" it is
+  listed after all recipes that have at least 3 reviews (a single 5-star review never outranks a
+  well-reviewed recipe).
 - **Ties** in any sort order are broken by newest first, so pages never repeat or skip recipes for an
   unchanged catalogue.
 - **Filter option with no matching recipes in the current search** is still selectable; selecting it
@@ -239,20 +259,26 @@ Back and confirm the previous state returns.
   average rating and number of reviews (or "No reviews yet").
 - **FR-014**: Users MUST be able to sort by Relevance (only when a keyword is present), Newest, Top
   rated and Quickest; the default is Relevance with a keyword and Newest without one.
+- **FR-014a**: "Top rated" MUST rank recipes with at least 3 reviews by average rating (then by review
+  count), followed by recipes with fewer than 3 reviews ordered by average rating, then by recipes
+  without reviews.
 - **FR-015**: Ties in every sort order MUST be broken by publication date, newest first, then by a stable
   unique order.
-- **FR-016**: Results MUST be paginated at 20 recipes per page and the total number of matching recipes
-  MUST be displayed.
+- **FR-016**: Results MUST be shown as numbered pages of 20 recipes (no infinite scroll or "load more"),
+  and the total number of matching recipes MUST be displayed.
 - **FR-017**: Changing the keyword, a filter or the sort order MUST return the user to page 1.
 
 **Dietary-profile exclusion**
 
 - **FR-018**: For signed-in users with a dietary profile, System MUST hide every recipe that contains an
-  ingredient linked to one of the user's allergens or an ingredient the user excluded.
+  ingredient linked to one of the user's allergens or an ingredient the user excluded. The only source
+  for "ingredient contains allergen" is the allergen links of the ingredient catalogue; AI-estimated
+  allergen tags (spec 090) MUST NOT be used to hide or show recipes.
 - **FR-019**: System MUST display how many recipes were hidden by the dietary profile whenever that
   number is greater than zero.
-- **FR-020**: Users MUST be able to show hidden recipes for the current search only; while shown, each
-  such recipe MUST carry a visible warning naming the conflicting allergen or ingredient.
+- **FR-020**: Users MUST be able to show hidden recipes for the current search only; changing the keyword
+  or leaving the results page MUST switch the dietary filter back on. While shown, each such recipe MUST
+  carry a visible warning naming the conflicting allergen or ingredient.
 - **FR-021**: The exclusion rule MUST be defined once and applied identically by search and by the AI
   Weekly Meal Planner (spec 031).
 - **FR-022**: Diet type (e.g. vegetarian, keto) from the dietary profile MUST NOT be applied
@@ -305,9 +331,9 @@ Back and confirm the previous state returns.
 
 | Point | With | What must be agreed |
 |---|---|---|
-| Allergen ↔ ingredient link | A (011), C (031, 090) | Allergens are linked to catalogue ingredients and this link is the **source of truth** for exclusion; AI-estimated allergen tags (spec 090) are informational only. |
+| Allergen ↔ ingredient link | A (011), C (031, 090) | **Decided for this spec** (Clarifications 2026-10-08): catalogue links are the only source of truth for exclusion; A and C to confirm who maintains the link table and that spec 090 tags stay display-only. |
 | Shared exclusion rule | A (011), C (031) | One rule (FR-018) used by both search and the AI planner. |
-| Rating on recipe cards | E (070) | Whether average rating and review count are stored on the recipe or computed on read, and who updates them. |
+| Rating on recipe cards | E (070) | Whether average rating and review count are stored on the recipe or computed on read, and who updates them; the 3-review threshold of FR-014a uses the same review count. |
 | Calories per serving | C (090) | The calories filter reads the estimate produced by spec 090; recipes without an estimate are excluded only when the filter is on. |
 | Taxonomy lists | E (100) | Cuisines, categories, cooking methods and tags are maintained in the admin area; what happens to recipes when a value they use is removed. |
 | Core recipe fields | B (060) → team | Preparation time, cooking time, difficulty, status and publication date as used by filters and sorting. |
@@ -333,13 +359,8 @@ Back and confirm the previous state returns.
 
 - Only recipes in PUBLISHED status are searchable; the status values follow the recipe lifecycle
   defined in spec 060.
-- Page size is 20 recipes with numbered pages; infinite scroll is not used so that pages can be shared
-  and the Back button works predictably. *(to confirm at `/speckit-clarify`)*
-- Total-time buckets (≤ 15 / ≤ 30 / ≤ 60 / > 60 minutes) and calorie ranges (< 300 / 300–500 /
-  500–800 / > 800 kcal) are fixed for this release; custom ranges with sliders are not provided.
-  *(to confirm at `/speckit-clarify`)*
-- The dietary-profile override lasts only for the current search, so the safe default returns
-  automatically. *(to confirm at `/speckit-clarify`)*
+- Page size, fixed filter ranges, the scope of the dietary override and the "Top rated" threshold were
+  confirmed in Clarifications (Session 2026-10-08).
 - Diet type is not applied automatically because it is a preference rather than a safety rule; allergens
   and excluded ingredients are treated as hard rules.
 - The "Vegetarian" quick filter maps to a tag or diet label maintained by administrators.

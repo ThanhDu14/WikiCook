@@ -7,6 +7,8 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 1 | 2026-10-08 | Viết spec 020 (tìm kiếm và lọc công thức) bằng `/speckit-specify` | 020 |
 | 2 | 2026-10-08 | Viết spec 060 (wizard tạo công thức, "Công thức của tôi") bằng `/speckit-specify` | 060 |
 | 3 | 2026-10-08 | Soạn bản nháp schema nhóm bảng `recipes` / `ingredients` gửi cả nhóm | 020, 060 |
+| 4 | 2026-10-08 | Làm rõ spec 020 bằng `/speckit-clarify` (5 câu hỏi) | 020 |
+| 5 | 2026-10-08 | Làm rõ spec 060 bằng `/speckit-clarify` (5 câu hỏi) | 060 |
 
 ---
 
@@ -236,3 +238,130 @@ Viết tiếng Việt, đặt ở docs/analysis-and-design/database/draft-recipe
 - Đối chiếu constitution: PostgreSQL 16 + Flyway, không `ddl-auto`; truy vấn tìm kiếm tham số hóa (nguyên tắc IV).
 - Chưa chạy thử SQL vì máy chưa có PostgreSQL/Docker; sẽ chạy migration khi C dựng xong `docker-compose.yml` (PostgreSQL 16 + `unaccent`).
 - Việc tiếp theo: gửi link file vào nhóm Zalo trước T3 13/10; cập nhật theo kết quả họp T4 rồi chuyển vào `database/README.md`.
+
+---
+
+## Mục 4: Làm rõ spec 020 bằng `/speckit-clarify`
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-08 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Spec liên quan | 020 – Tìm kiếm và lọc công thức (`specs/020-recipe-search-filter`) |
+| Công cụ AI | Claude Code (model Claude Opus 5.5), lệnh Spec Kit `/speckit-clarify` |
+| Mục đích | Chốt các giá trị mặc định AI tự chọn ở bước specify và quy tắc an toàn cho người bị dị ứng, trước khi lập kế hoạch kỹ thuật |
+| Nhánh Git | `Duy` |
+
+### Prompt đã dùng
+
+```
+/speckit-clarify
+Rà soát spec 020 (specs/020-recipe-search-filter/spec.md) và hỏi mình lần lượt từng câu, tối đa 5 câu,
+về những điểm còn mơ hồ có ảnh hưởng lớn tới dữ liệu, độ an toàn với người bị dị ứng và trải nghiệm tìm
+kiếm. Ưu tiên: (1) 3 giá trị mặc định đang đánh dấu "to confirm at /speckit-clarify" trong Assumptions
+(20 kết quả/trang đánh số trang, mốc thời gian và calo cố định, tắt lọc dị ứng chỉ trong một lần tìm);
+(2) các điểm giao trong bảng Integration Points ảnh hưởng tới schema ở
+docs/analysis-and-design/database/draft-recipes-ingredients.md, đặc biệt nguồn sự thật của nhãn dị ứng
+và cách tính điểm đánh giá trên thẻ công thức. Mỗi câu kèm phương án đề xuất, lý do và hệ quả của từng
+phương án. Sau khi mình trả lời, ghi vào mục Clarifications và sửa đồng bộ mọi FR, User Story, Edge
+Case, Success Criteria, Assumptions liên quan; không để lại giá trị cũ mâu thuẫn.
+```
+
+Câu 1 mình tự chọn sau khi đọc hệ quả từng phương án; từ câu 2, mình đồng ý dùng phương án AI đề xuất cho các câu còn lại:
+
+| # | Câu hỏi của AI | AI đề xuất | Mình chọn |
+|---|---|---|---|
+| 1 | Hệ thống dựa vào đâu để biết công thức chứa chất gây dị ứng của người dùng? | A – chỉ liên kết nguyên liệu → chất dị ứng trong danh mục; nhãn LLM (spec 090) chỉ để hiển thị | A – đồng ý |
+| 2 | "Hiện các công thức đã bị ẩn" có hiệu lực trong bao lâu? | A – chỉ trong lần tìm hiện tại | Theo đề xuất |
+| 3 | Kết quả chia trang đánh số hay "Xem thêm"/cuộn vô hạn? | A – trang đánh số, 20 công thức/trang | Theo đề xuất |
+| 4 | Lọc thời gian và calo dùng mốc cố định hay thanh trượt tự chọn? | A – mốc cố định | Theo đề xuất |
+| 5 | "Đánh giá cao nhất" xử lý công thức có rất ít đánh giá thế nào? | A – cần ít nhất 3 đánh giá mới được xếp hạng, ít hơn thì xếp sau | Theo đề xuất |
+
+### Tóm tắt phản hồi của AI
+
+- Thêm mục **Clarifications / Session 2026-10-08** với 5 câu hỏi – trả lời.
+- FR-018: ghi rõ nguồn duy nhất để xác định "nguyên liệu chứa chất dị ứng" là liên kết trong danh mục nguyên liệu; nhãn dị ứng do AI ước tính (spec 090) không được dùng để ẩn/hiện công thức. Bảng Integration Points đổi thành "đã quyết định cho spec này", A và C chỉ còn xác nhận ai giữ bảng liên kết.
+- FR-020: thêm điều kiện "đổi từ khóa hoặc rời trang kết quả thì tự bật lại lọc dị ứng".
+- FR-016: ghi rõ trang đánh số 20 công thức, không cuộn vô hạn hay "Xem thêm".
+- Thêm FR-014a: thứ tự "đánh giá cao nhất" (≥ 3 đánh giá → < 3 đánh giá → chưa có đánh giá); Edge Cases thêm trường hợp công thức có 1–2 đánh giá; bảng Integration Points nhắc E dùng chung số lượt đánh giá cho ngưỡng này.
+- Assumptions: bỏ 3 dòng "to confirm", thay bằng một dòng dẫn tới Clarifications.
+- Checklist chất lượng vẫn 16/16.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Chỉ dùng liên kết nguyên liệu – chất dị ứng để lọc | Dùng | Dữ liệu do người duyệt nhập, kiểm chứng được; nhãn LLM có thể sai và chưa có ngay khi xuất bản |
+| Dùng cả hai nguồn để lọc (phương án C câu 1) | **Bỏ** | Ẩn cả công thức do LLM báo nhầm; spec 020 phụ thuộc tiến độ spec 090 |
+| Tắt lọc dị ứng trong cả phiên (phương án B câu 2) | **Bỏ** | Người bị dị ứng dễ quên đang tắt lọc |
+| Ngưỡng 3 đánh giá cho "đánh giá cao nhất" | Dùng (bổ sung mới) | Tránh món chỉ có 1 đánh giá 5 sao đứng đầu danh sách |
+| Trang đánh số, mốc lọc cố định | Dùng | Giữ link chia sẻ và nút Back đúng (SC-005); dễ kiểm thử, gọn trên mobile |
+
+### Cách kiểm chứng
+
+- Mục Clarifications có đúng 5 dòng; mỗi câu trả lời khớp với FR-014a, FR-016, FR-018, FR-020, Edge Cases và Assumptions.
+- Tìm "to confirm" trong spec chỉ còn dòng Integration Points về việc A và C xác nhận người giữ bảng, không còn giá trị mặc định chưa chốt.
+- Đối chiếu schema nháp mục 4.4: bảng `ingredient_allergens` là nguồn lọc, khớp câu 1.
+- Việc tiếp theo: báo E về ngưỡng 3 đánh giá dùng `review_count`; báo A, C về quyết định nguồn dị ứng ở họp T4 14/10.
+
+---
+
+## Mục 5: Làm rõ spec 060 bằng `/speckit-clarify`
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-08 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Spec liên quan | 060 – Soạn công thức (`specs/060-recipe-editor`) |
+| Công cụ AI | Claude Code (model Claude Opus 5.5), lệnh Spec Kit `/speckit-clarify` |
+| Mục đích | Chốt vòng đời công thức sau khi xuất bản, nguyên liệu mới, các giới hạn số lượng và cách xử lý sửa trên nhiều thiết bị |
+| Nhánh Git | `Duy` |
+
+### Prompt đã dùng
+
+```
+/speckit-clarify
+Rà soát spec 060 (specs/060-recipe-editor/spec.md) và hỏi mình lần lượt từng câu, tối đa 5 câu, ưu tiên
+những điểm ảnh hưởng tới máy trạng thái công thức, dữ liệu và việc không mất nội dung người dùng đã nhập:
+(1) sửa công thức đã PUBLISHED thì người đọc thấy gì trong lúc chờ duyệt (điểm giao với E – spec 100);
+(2) khôi phục công thức ARCHIVED có phải duyệt lại không; (3) tác giả có được dùng nguyên liệu chưa có
+trong danh mục không và ai duyệt; (4) các giới hạn số lượng đang đặt tạm (số nguyên liệu, số bước, dung
+lượng ảnh, số lần gửi duyệt/ngày, số bản nháp, chu kỳ tự lưu); (5) cùng một bản nháp bị sửa trên hai
+thiết bị. Mỗi câu kèm phương án đề xuất, lý do và hệ quả, đối chiếu với schema nháp ở
+docs/analysis-and-design/database/draft-recipes-ingredients.md. Mình đồng ý dùng phương án đề xuất cho
+cả 5 câu; ghi vào Clarifications, sửa đồng bộ FR, User Story, Edge Cases, Assumptions và bảng
+Integration Points, không để lại giá trị cũ mâu thuẫn.
+```
+
+| # | Câu hỏi của AI | AI đề xuất | Mình chọn |
+|---|---|---|---|
+| 1 | Sửa công thức đã xuất bản thì người đọc thấy gì trong lúc chờ duyệt? | A – bản sửa đi duyệt riêng, người đọc vẫn thấy bản đang xuất bản | Theo đề xuất |
+| 2 | Khôi phục công thức đã lưu trữ có phải duyệt lại không? | A – không, vì công thức đã lưu trữ không sửa được | Theo đề xuất |
+| 3 | Tác giả có được dùng nguyên liệu chưa có trong danh mục không? | A – được đề xuất, moderator duyệt cùng công thức | Theo đề xuất |
+| 4 | Các giới hạn mặc định có chấp nhận được không? | A – giữ nguyên toàn bộ | Theo đề xuất |
+| 5 | Bản nháp bị sửa trên hai thiết bị thì khi lưu xử lý thế nào? | A – phát hiện xung đột, hỏi người dùng giữ bản nào | Theo đề xuất |
+
+### Tóm tắt phản hồi của AI
+
+- Thêm mục **Clarifications / Session 2026-10-08** với 5 câu hỏi – trả lời.
+- User Story 6 kịch bản 2: bỏ điều kiện "không bị sửa trong lúc lưu trữ", vì nay công thức đã lưu trữ không sửa được; khôi phục luôn trả về `PUBLISHED` với nội dung cũ.
+- FR-026: thêm `ARCHIVED` vào danh sách trạng thái tác giả không được sửa, phải khôi phục trước rồi mới sửa (để câu 2 không có kẽ hở).
+- Bảng Integration Points: luồng sửa công thức đã xuất bản chuyển thành "đã quyết định cho spec này", E chỉ còn xác nhận cách bản sửa hiện trong hàng đợi duyệt.
+- Assumptions: bỏ 3 dòng "to confirm", thay bằng một dòng dẫn tới Clarifications và nhắc việc thống nhất với E trước `/speckit-plan`.
+- Checklist chất lượng vẫn 16/16.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Bản sửa đi duyệt riêng, bản cũ vẫn hiển thị | Dùng | Công thức không biến mất khỏi tìm kiếm khi tác giả sửa lỗi nhỏ; khớp bảng `recipe_revisions` trong schema nháp |
+| Khôi phục không cần duyệt lại | Dùng | Nội dung giống hệt lúc đã được duyệt; đi kèm việc cấm sửa khi đang lưu trữ |
+| "Lưu sau cùng thắng" khi sửa trên hai thiết bị | **Bỏ** | Mất nội dung âm thầm, trái NFR-001 (không mất ký tự nào) |
+| Giới hạn 50 nguyên liệu, 30 bước, ảnh 5 MB, 10 lần gửi/ngày, 20 bản nháp | Dùng | Đủ cho công thức gia đình, chặn spam; giới hạn ảnh vẫn chờ E xác nhận nơi lưu |
+
+### Cách kiểm chứng
+
+- Mục Clarifications có đúng 5 dòng; mỗi câu trả lời khớp với FR-021, FR-026, FR-027, User Story 6 và Assumptions.
+- Tìm "to confirm" và "not changed" trong spec không còn kết quả cũ mâu thuẫn.
+- Đối chiếu schema nháp: `recipe_revisions` (tối đa một bản sửa đang mở), cột `version` cho optimistic lock, `ingredients.status = 'PROPOSED'`, các `CHECK` giới hạn — đều khớp câu trả lời.
+- Việc tiếp theo: mang luồng sửa công thức đã xuất bản ra họp T4 14/10 để E xác nhận; sau khi thống nhất các điểm giao thì chạy `/speckit-plan` cho 020 và 060 (hạn T6 16/10).
