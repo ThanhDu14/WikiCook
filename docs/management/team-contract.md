@@ -169,15 +169,15 @@ gantt
 
 ### Member Availability
 
-All Sprint 01 meetings were held on weekday evenings between 20:00 and 23:30, so this window is the default slot for Scrum meetings. Each member's regular availability for meetings and pair-work sessions is listed below:
+All members are available from **22:00** every day, so 22:00 is the default start time for Scrum meetings and pair-work sessions. Each member's regular availability is listed below:
 
 | Team Member | Weekday Evenings | Weekends | Notes |
 |:---|:---|:---|:---|
-| Lê Quốc Hưng (LqHung06) | *To be confirmed* | *To be confirmed* | |
-| Nguyễn Đức Duy (DucDuyNguyen15-IT) | *To be confirmed* | *To be confirmed* | |
-| Mai Văn Hiển (MaiHien3507) | *To be confirmed* | *To be confirmed* | |
-| Nguyễn Thành Dự (ThanhDu14) | *To be confirmed* | *To be confirmed* | |
-| Trần Nguyễn Công Chung (itzchugnn) | *To be confirmed* | *To be confirmed* | |
+| Lê Quốc Hưng (LqHung06) | From 22:00 | From 22:00 | |
+| Nguyễn Đức Duy (DucDuyNguyen15-IT) | From 22:00 | From 22:00 | |
+| Mai Văn Hiển (MaiHien3507) | From 22:00 | From 22:00 | |
+| Nguyễn Thành Dự (ThanhDu14) | From 22:00 | From 22:00 | |
+| Trần Nguyễn Công Chung (itzchugnn) | From 22:00 | From 22:00 | |
 
 Members announce planned absences (exams, travel, illness) in the Zalo group at least 2 days in advance when possible.
 
