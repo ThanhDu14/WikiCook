@@ -3,19 +3,20 @@
 ## DOCUMENT METADATA & RESPONSIBILITY MATRIX
 | Section | Content | Performed by (Author) | Reviewed by | Edited by |
 | :---: | :--- | :---: | :---: | :---: |
-| **Section 1** | Survey of App 1: MyFridgeFood | **Trần Nguyễn Công Chung** | Mai Văn Hiển | **Lê Quốc Hưng** |
-| **Section 2** | Feature Comparison Matrix | **Trần Nguyễn Công Chung** | Mai Văn Hiển | **Lê Quốc Hưng** |
-| **Section 3** | UI/UX Screenshots & Analysis | **Trần Nguyễn Công Chung** | Mai Văn Hiển | **Lê Quốc Hưng** |
-| **Section 4** | Key Takeaways & Opportunities | **Trần Nguyễn Công Chung** | Mai Văn Hiển | **Lê Quốc Hưng** |
-| **Section 5** | Survey of App 2: Ăn Gì Ngon | **Nguyễn Thành Dự** | Nguyễn Đức Duy | **Lê Quốc Hưng** |
-| **Section 6** | Feature Comparison Matrix | **Nguyễn Thành Dự** | Nguyễn Đức Duy | **Lê Quốc Hưng** |
-| **Section 7** | UI/UX Screenshots & Analysis | **Nguyễn Thành Dự** | Nguyễn Đức Duy | **Lê Quốc Hưng** |
-| **Section 8** | Key Takeaways & Opportunities | **Nguyễn Thành Dự** | Nguyễn Đức Duy | **Lê Quốc Hưng** |
+| **Section 1** | Survey of App 1: MyFridgeFood | **Trần Nguyễn Công Chung (itzchugnn)** | Mai Văn Hiển (MaiHien3507) | **Lê Quốc Hưng (LqHung06)** |
+| **Section 2** | Feature Comparison Matrix | **Trần Nguyễn Công Chung (itzchugnn)** | Mai Văn Hiển (MaiHien3507) | **Lê Quốc Hưng (LqHung06)** |
+| **Section 3** | UI/UX Screenshots & Analysis | **Trần Nguyễn Công Chung (itzchugnn)** | Mai Văn Hiển (MaiHien3507) | **Lê Quốc Hưng (LqHung06)** |
+| **Section 4** | Key Takeaways & Opportunities | **Trần Nguyễn Công Chung (itzchugnn)** | Mai Văn Hiển (MaiHien3507) | **Lê Quốc Hưng (LqHung06)** |
+| **Section 5** | Survey of App 2: Ăn Gì Ngon | **Nguyễn Thành Dự (ThanhDu14)** | Nguyễn Đức Duy (DucDuyNguyen15-IT) | **Lê Quốc Hưng (LqHung06)** |
+| **Section 6** | Feature Comparison Matrix | **Nguyễn Thành Dự (ThanhDu14)** | Nguyễn Đức Duy (DucDuyNguyen15-IT) | **Lê Quốc Hưng (LqHung06)** |
+| **Section 7** | UI/UX Screenshots & Analysis | **Nguyễn Thành Dự (ThanhDu14)** | Nguyễn Đức Duy (DucDuyNguyen15-IT) | **Lê Quốc Hưng (LqHung06)** |
+| **Section 8** | Key Takeaways & Opportunities | **Nguyễn Thành Dự (ThanhDu14)** | Nguyễn Đức Duy (DucDuyNguyen15-IT) | **Lê Quốc Hưng (LqHung06)** |
+| **Section 9** | Cross-App Comparison Summary | **Trần Nguyễn Công Chung (itzchugnn) & Nguyễn Thành Dự (ThanhDu14)** | Nguyễn Đức Duy (DucDuyNguyen15-IT) | **Lê Quốc Hưng (LqHung06)** |
 
 ---
 
-## 1. Surveyed Applications
-*Performed by: Trần Nguyễn Công Chung | Reviewed by: Mai Văn Hiển | Edited by: Lê Quốc Hưng*
+## 1. Survey of App 1: MyFridgeFood
+*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 ### 1.1. MyFridgeFood (myfridgefood.com)
 * **Website URL:** [https://www.myfridgefood.com/](https://www.myfridgefood.com/)
@@ -58,14 +59,14 @@
 ---
 
 ## 2. Feature Comparison Matrix
-*Performed by: Trần Nguyễn Công Chung | Reviewed by: Mai Văn Hiển | Edited by: Lê Quốc Hưng*
+*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 Comparative feature matrix between **MyFridgeFood (`myfridgefood.com`)** and **WikiCook** across core functional modules and AI assistant capability:
 
 | No. | Feature Module | MyFridgeFood (`myfridgefood.com`) | WikiCook (Proposed) | Comparative Notes & Assessment |
 | :---: | :--- | :---: | :---: | :--- |
 | **1** | **Account & Profile Management** | 🟡 Partial | 🟢 Complete | MyFridgeFood supports basic Login/Register for bookmarks and submission. Lacks dietary profiles, allergen preferences, and household settings. |
-| **2** | **Recipe Search & Filtering** | 🟡 Partial | 🟢 Complete | MyFridgeFood matches ingredients mechanically via checkboxes. WikiCook adds full-text keyword search, calorie/allergen filters, and AI search. |
+| **2** | **Recipe Search & Filtering** | 🟡 Partial | 🟢 Complete | MyFridgeFood matches ingredients mechanically via checkboxes. WikiCook adds full-text keyword search plus calorie, allergen and cooking-method filters. |
 | **3** | **Weekly Meal Planner** | ❌ Not Available | 🟢 Complete | MyFridgeFood only handles single recipe lookups. WikiCook provides a full drag-and-drop weekly planner with AI menu auto-generation. |
 | **4** | **Automated Shopping List** | ❌ Not Available | 🟢 Complete | Opposite to MyFridgeFood's model. WikiCook aggregates ingredients from meal plans and categorizes items by supermarket aisle. |
 | **5** | **Hands-Free Mode & Timers** | ❌ Not Available | 🟢 Complete | MyFridgeFood displays static text recipe pages. WikiCook provides a fullscreen mode with large typography and concurrent step timers. |
@@ -74,14 +75,14 @@ Comparative feature matrix between **MyFridgeFood (`myfridgefood.com`)** and **W
 | **8** | **Bookmarks & Custom Collections** | 🟡 Partial | 🟢 Advanced | MyFridgeFood has a flat Bookmarks list. WikiCook supports customizable thematic albums and organized collections. |
 | **9** | **Nutritional & Allergy Analysis** | ❌ Not Available | 🟢 Detailed | MyFridgeFood displays no nutritional data. WikiCook auto-calculates Calories, Macros (Protein/Carbs/Fat), and attaches dietary safety tags via LLM. |
 | **10** | **Admin Dashboard & Content Moderation** | ❌ Not Available | 🟢 Complete | MyFridgeFood lacks moderation workflows; WikiCook provides administrative queues for recipe approval, user management, and platform analytics. |
-| **11** | **Smart Chef AI Assistant & Meal Planner** | ❌ Not Available | 🟢 LLM-Powered AI | MyFridgeFood relies on static tag matching. WikiCook leverages LLMs with RAG for natural language planning, ingredient substitutions, and meal recommendations. |
+| **11** | **AI Weekly Meal Planner** | ❌ Not Available | 🟢 LLM-Powered AI | MyFridgeFood relies on static ingredient matching and has no meal planning. WikiCook uses RAG over its own published recipes and an LLM to generate a 7-day, 21-meal plan that respects the user's dietary profile, then derives the shopping list from it. |
 
 *Notation Key:* 🟢 *Complete / Standard* | 🟡 *Partial / Basic Support* | ❌ *Not Supported / Missing*
 
 ---
 
 ## 3. UI/UX Analysis and Screenshots
-*Performed by: Trần Nguyễn Công Chung | Reviewed by: Mai Văn Hiển | Edited by: Lê Quốc Hưng*
+*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 ### 3.1. Screenshots
 
@@ -134,24 +135,24 @@ Comparative feature matrix between **MyFridgeFood (`myfridgefood.com`)** and **W
 ---
 
 ## 4. Key Takeaways & Opportunities
-*Performed by: Trần Nguyễn Công Chung | Reviewed by: Mai Văn Hiển | Edited by: Lê Quốc Hưng*
+*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 ### 4.1. Key Takeaways for WikiCook:
-1. **"Ingredient-First" Model is a Proven Need:** MyFridgeFood's enduring popularity validates that "What can I cook with what I have?" is a real, widespread pain point. WikiCook must make this a first-class feature.
+1. **"What Can I Cook?" is a Proven Need:** MyFridgeFood's enduring popularity validates that deciding what to cook is a real, widespread pain point. WikiCook answers it through multi-criteria recipe filtering (Module 3.2) and the AI Weekly Meal Planner; searching by on-hand ingredients is a candidate for a later release.
 2. **Immediate Value Delivery:** Placing the core tool (ingredient selector) front-and-center on the homepage — no scrolling, no intro — dramatically reduces time-to-value. WikiCook should adopt this principle.
-3. **Quick Preset Lists:** The "Quick Kitchen" concept (pre-selecting common staples like salt, oil, garlic) saves significant user effort. WikiCook should implement a "Common Vietnamese Pantry" quick-select.
+3. **Quick Presets:** The "Quick Kitchen" concept (a short list of the most common choices before the full list) saves significant user effort. WikiCook should apply the same idea to its filters with one-tap presets such as "Under 30 minutes" or "Vegetarian".
 4. **User-Generated Content Grows the Database:** Community recipe submission is a cost-effective way to scale the recipe library. WikiCook should make contribution easy and rewarding.
 
 ### 4.2. Breakthrough Opportunities & Differentiators for WikiCook:
-1. **AI-Powered Ingredient Understanding:** MyFridgeFood matches ingredients mechanically. WikiCook can use AI to understand ingredient relationships — suggesting substitutions (e.g., "no fish sauce? use soy sauce + lime"), handling partial matches, and even generating novel recipes from available ingredients.
-2. **Modern Ingredient Input UX:** Replace the text-heavy checkbox wall with a smart search bar (auto-suggest), chip/tag UI for selected items, and potentially AI Vision (photo-based ingredient recognition from fridge photos).
+1. **Structured Ingredient Data:** MyFridgeFood stores ingredients as plain text. WikiCook records each ingredient with a quantity and unit (Module 3.6), which enables portion scaling, merged shopping lists (Module 3.4) and LLM-based nutrition and allergen tags (Module 3.9). Substitution tips (e.g., "no fish sauce? use soy sauce + lime") come from community reviews (Module 3.7), not from AI-generated recipes.
+2. **Modern Input UX:** Replace MyFridgeFood's text-heavy checkbox wall and single long submission form with chip-based filters and a step-by-step recipe creation wizard (Module 3.6) that validates each step before moving on.
 3. **Nutritional & Dietary Intelligence:** Automatically attach calorie/macro breakdowns and allergen/dietary safety tags (Gluten-Free, Vegetarian, etc.) to every recipe — something MyFridgeFood completely lacks.
 4. **Premium, Contemporary Design:** MyFridgeFood's outdated UI is its biggest weakness. WikiCook has a clear opportunity to deliver the same core value in a visually stunning, modern interface with smooth animations and responsive design.
 
 ---
 
-## 5. Surveyed Applications
-*Performed by: Nguyễn Thành Dự | Reviewed by: Nguyễn Đức Duy | Edited by: Lê Quốc Hưng*
+## 5. Survey of App 2: Ăn Gì Ngon
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 ### 5.1. Ăn Gì Ngon (angingon.com)
 * **Website URL:** [https://www.angingon.com/](https://www.angingon.com/)
@@ -195,7 +196,7 @@ Comparative feature matrix between **MyFridgeFood (`myfridgefood.com`)** and **W
 ---
 
 ## 6. Feature Comparison Matrix
-*Performed by: Nguyễn Thành Dự | Reviewed by: Nguyễn Đức Duy | Edited by: Lê Quốc Hưng*
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 Comparative feature matrix between **Ăn Gì Ngon (`angingon.com`)** and **WikiCook** across 10 core functional modules and AI assistant capability:
 
@@ -211,14 +212,14 @@ Comparative feature matrix between **Ăn Gì Ngon (`angingon.com`)** and **WikiC
 | **8** | **Bookmarks & Custom Collections** | 🟡 Basic | 🟢 Advanced | Ăn Gì Ngon has a "Saved" section with bookmark buttons on cards. WikiCook supports custom album/theme organization. |
 | **9** | **Nutritional & Allergy Analysis** | ❌ Not Available | 🟢 Detailed | WikiCook automatically calculates Calories, Macros (Protein/Carbs/Fat), and attaches dietary safety tags via LLM. |
 | **10** | **Admin Dashboard & Content Moderation** | ❌ Not Available | 🟢 Complete | Ăn Gì Ngon relies solely on in-house editorial content without community moderation queues; WikiCook provides full administrative recipe review, category taxonomy management, and user governance. |
-| **11** | **Smart Chef AI Assistant & Meal Planner** | 🟡 AI Menu Generator | 🟢 LLM-Powered AI | Ăn Gì Ngon features automated menu generation + AI Search Hero. WikiCook leverages LLMs with RAG for natural language recipe discovery, ingredient-based dish generation, and nutritional breakdown. |
+| **11** | **AI Weekly Meal Planner** | 🟡 AI Menu Generator | 🟢 LLM-Powered AI | Ăn Gì Ngon offers an AI Menu Generator for daily meals. WikiCook uses RAG over its own published recipes and an LLM to plan a full 7-day, 21-meal week as one coherent plan, enforcing allergen and dietary constraints, validating every recipe reference, and generating a consolidated shopping list. |
 
 *Notation Key:* 🟢 *Complete / Standard* | 🟡 *Partial / Basic Support* | ❌ *Not Supported / Missing*
 
 ---
 
 ## 7. UI/UX Analysis and Screenshots
-*Performed by: Nguyễn Thành Dự | Reviewed by: Nguyễn Đức Duy | Edited by: Lê Quốc Hưng*
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 ### 7.1. Screenshots
 
@@ -262,10 +263,10 @@ Comparative feature matrix between **Ăn Gì Ngon (`angingon.com`)** and **WikiC
 ---
 
 ## 8. Key Takeaways & Opportunities
-*Performed by: Nguyễn Thành Dự | Reviewed by: Nguyễn Đức Duy | Edited by: Lê Quốc Hưng*
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 ### 8.1. Key Takeaways for WikiCook:
-1. **Natural Language Search Experience (AI Search):** Prominent AI search bar directly on the Homepage creates an intuitive and user-friendly experience. WikiCook should adopt and enhance this.
+1. **Search as the Homepage Entry Point:** Ăn Gì Ngon's prominent search bar in the hero section gives users an immediate starting point. WikiCook should adopt a prominent keyword search with filters on its homepage (Module 3.2), while focusing its AI on weekly meal planning rather than search.
 2. **Effective Multi-dimensional Sidebar Filters:** Checkboxes by Category / Post Type / Difficulty help users refine results quickly — WikiCook should expand this to include filters for Calories & Allergens.
 3. **Meal Planner + AI Menu Generation:** Ăn Gì Ngon implements this feature effectively. WikiCook can excel further with a drag-and-drop interface and automated shopping list aggregation.
 4. **Clean Design Focused on Food Photography:** High-quality imagery and clean layouts significantly improve user retention.
@@ -274,3 +275,50 @@ Comparative feature matrix between **Ăn Gì Ngon (`angingon.com`)** and **WikiC
 1. **Hands-Free Cooking Mode:** Ăn Gì Ngon displays recipes as static scrollable blogs. WikiCook innovates with a large-font fullscreen interface accompanied by concurrent multi-step timers.
 2. **2-Way Cooking Community:** Ăn Gì Ngon operates on a 1-way model (editorials only). WikiCook allows users to contribute recipes, post 5-star reviews, and share Cooksnaps.
 3. **Nutritional Personalization & Allergen Warnings:** Ăn Gì Ngon lacks nutritional analysis. WikiCook automatically calculates Calories/Macros and attaches food safety labels (Gluten-Free, Dairy-Free, etc.).
+
+---
+
+## 9. Cross-App Comparison Summary
+*Performed by: Trần Nguyễn Công Chung (itzchugnn) & Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Lê Quốc Hưng (LqHung06)*
+
+This section compares both surveyed apps side by side and summarizes what WikiCook will reuse and where it will differ.
+
+### 9.1. Features the Existing Apps Have in Common
+
+| Feature | MyFridgeFood | Ăn Gì Ngon | Notes |
+| :--- | :---: | :---: | :--- |
+| Recipe detail page (prep/cook time, ingredients, steps) | 🟢 | 🟢 | Both present recipes as a single static, scrollable page. |
+| Browse and filter by category or meal type | 🟢 | 🟢 | MyFridgeFood filters by meal type; Ăn Gì Ngon adds post type and difficulty. |
+| Save recipes for later (bookmarks / "Saved") | 🟢 | 🟢 | Both offer a flat list with no custom collections. |
+| Account login for personal features | 🟢 | 🟢 | Core browsing works without an account in both apps. |
+| Ratings, comments and user-submitted recipes | 🟢 | ❌ | Only MyFridgeFood has community content, and it has no visible moderation. |
+| Weekly meal planner, AI menu and shopping list | ❌ | 🟢 | Only Ăn Gì Ngon plans meals; its shopping list is basic. |
+
+**Summary:** Both apps cover recipe browsing, recipe detail pages, basic filtering and bookmarks. Neither app combines community contribution with meal planning, and neither supports the cook while cooking.
+
+### 9.2. What WikiCook Will Do Differently or Better
+
+| Gap in Existing Apps | WikiCook Response | Module |
+| :--- | :--- | :---: |
+| Neither app offers a cooking mode; users scroll static pages with messy hands. | Fullscreen, large-text cooking mode with concurrent countdown timers. | 3.5 |
+| Neither app shows nutrition or allergen information. | LLM-estimated calories, macronutrients and allergen tags with a disclaimer. | 3.9 |
+| Neither app stores a dietary profile. | Dietary profile (allergens, diet type, household size) used by search and meal planning. | 3.1 |
+| MyFridgeFood accepts recipes without moderation; Ăn Gì Ngon accepts no user recipes. | Community recipe wizard combined with an admin moderation queue. | 3.6, 3.10 |
+| Reviews are text and stars only (MyFridgeFood) or absent (Ăn Gì Ngon). | Reviews with substitution tips and photos of finished dishes (Cooksnaps). | 3.7 |
+| Ăn Gì Ngon's AI menu and shopping list are basic. | AI Weekly Meal Planner grounded in WikiCook recipes with allergen checks, plus a shopping list merged and grouped by supermarket aisle. | 3.3, 3.4, Section 4 of the proposal |
+| Bookmarks are a single flat list in both apps. | Custom themed collections. | 3.8 |
+
+### 9.3. UI/UX Patterns WikiCook Will Adopt
+
+| Pattern | Source | Where WikiCook Uses It |
+| :--- | :--- | :--- |
+| Core tool visible immediately on the homepage, no intro page | MyFridgeFood | Homepage search and filters |
+| Short "quick" list before the full list | MyFridgeFood (Quick Kitchen) | One-tap filter presets |
+| Browse without signing in | Both | Guests can search and read published recipes |
+| Left sidebar with checkbox filters | Ăn Gì Ngon | Search results page (bottom sheet on mobile) |
+| Recipe card showing time, difficulty and a bookmark icon | Ăn Gì Ngon | Search results and collections |
+| Recipe metadata row and table of contents (Ingredients, Steps) | Ăn Gì Ngon | Recipe detail page |
+| Weekly grid of days × Breakfast / Lunch / Dinner with "+ Add dish" | Ăn Gì Ngon | Weekly Meal Planner |
+| Login modal with Google sign-in and email/password | Ăn Gì Ngon | Authentication |
+
+**Patterns WikiCook will avoid:** intrusive advertising banners and long walls of text checkboxes (MyFridgeFood), and recipe pages that require continuous scrolling while cooking (both apps).
