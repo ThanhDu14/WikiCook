@@ -1,6 +1,6 @@
 # Nhật ký sử dụng AI – Nguyễn Đức Duy
 
-Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễn Đức Duy** (mã **B**, Product Owner & Requirements Lead, phụ trách spec `020-recipe-search-filter` và `060-recipe-editor` theo [phân công tuần 12/10 – 18/10](docs/management/w1-spec-design-assignment.md)). Mỗi lần dùng AI là một mục mới, mục mới nhất ở cuối.
+Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễn Đức Duy** (mã **B**, Product Owner & Requirements Lead, phụ trách spec `020-recipe-search-filter` và `060-recipe-editor` theo [phân công tuần 12/10 – 18/10](../management/w1-spec-design-assignment.md)). Mỗi lần dùng AI là một mục mới, mục mới nhất ở cuối.
 
 | # | Ngày | Nội dung | Spec |
 |---|---|---|---|
