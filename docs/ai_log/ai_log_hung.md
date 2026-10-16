@@ -8,6 +8,8 @@ File này ghi lại toàn bộ lịch sử sử dụng công cụ AI của **Lê
 | 2 | 2026-10-16 | Hợp nhất baseline tài liệu Project Plan v1.0, giải quyết xung đột nhánh và đồng bộ Jira Board | `docs/management/project-plan.md` |
 | 3 | 2026-10-16 | Tạo đặc tả chức năng (Feature Specification) cho Chế độ nấu ăn rảnh tay & Đếm giờ song song bằng `/speckit-specify` | `specs/050-cooking-mode/` |
 | 4 | 2026-10-16 | Làm rõ yêu cầu kỹ thuật và hành vi biên (Interactive Clarification) bằng `/speckit-clarify` | `specs/050-cooking-mode/` |
+| 5 | 2026-10-16 | Tạo đặc tả chức năng (Feature Specification) cho Danh sách mua sắm thông minh & Gộp nguyên liệu (`040`) bằng `/speckit-specify` | `specs/040-shopping-list/` |
+| 6 | 2026-10-16 | Làm rõ yêu cầu kỹ thuật và hành vi biên (Interactive Clarification) bằng `/speckit-clarify` | `specs/040-shopping-list/` |
 
 ---
 
@@ -157,7 +159,68 @@ Tạo file specs/050-cooking-mode/spec.md theo đúng spec-template.md với Use
 - **Checklist chất lượng yêu cầu:** `specs/050-cooking-mode/checklists/requirements.md` đạt 16/16 tiêu chí (100% PASSED).
 - **Trạng thái sẵn sàng:** Tài liệu đặc tả đã loại bỏ toàn bộ các điểm mù và hành vi biên mơ hồ. Sẵn sàng 100% để chuyển sang giai đoạn lập kế hoạch kiến trúc bằng lệnh `/speckit-plan`.
 
+---
 
+## Mục 5: Viết spec 040 (Automated Smart Shopping List & Ingredient Aggregation) bằng `/speckit-specify`
 
+| Trường | Nội dung |
+|---|---|
+| **Ngày** | 2026-10-16 |
+| **Người thực hiện** | Lê Quốc Hưng (`LqHung06`) |
+| **Spec liên quan** | 040 – Danh sách mua sắm thông minh và Gộp nguyên liệu tự động (`specs/040-shopping-list/`) |
+| **Công cụ AI** | Google Antigravity (Gemini 3.8 Flash), lệnh Spec Kit `/speckit-specify` |
+| **Mục đích** | Soạn thảo bản đặc tả yêu cầu chức năng (`spec.md`) và checklist chất lượng (`checklists/requirements.md`) theo phân công tại `w1-spec-design-assignment.md` (Module 3.4). |
+| **Nhánh Git** | `feature/040-shopping-list` |
 
+### Quá trình phân tích & Đánh giá nghiệp vụ trước khi sinh spec:
+Sinh viên rà soát toàn diện các điểm giao thoa kỹ thuật và nghiệp vụ thực tế khi đi chợ:
+1. **Chuẩn hóa ngôn ngữ tài liệu:** Chuyển đổi toàn bộ nội dung sang tiếng Anh chuyên ngành (Formal Technical English) để đảm bảo tính đồng bộ 100% với 6 spec còn lại trong repository (`010`, `020`, `030`, `031`, `050`, `060`).
+2. **Quy tắc gộp nguyên liệu & Đổi đơn vị hai chiều:** Định lượng được scale theo tỷ lệ khẩu phần ($S_{\text{target}} / S_{\text{base}}$). Chỉ cộng dồn các đơn vị cùng hệ chuẩn hóa metric ($g \leftrightarrow kg$, $ml \leftrightarrow l$); các đơn vị định tính/rời rạc ("quả", "nhánh", "thìa canh") được giữ thành các dòng con riêng biệt, không cộng ép gây sai lệch.
+3. **Phân nhóm quầy siêu thị (Aisle Categorization):** Tự động phân loại nguyên liệu theo 6 quầy chuẩn (Produce, Meat & Seafood, Dairy & Eggs, Pantry & Spices, Frozen, General) giúp người đi chợ di chuyển tuần tự theo sơ đồ tầng.
+4. **Khả năng hoạt động Ngoại tuyến (In-Store Offline Resilience):** Lưu trữ cục bộ (Local-first / IndexedDB) đảm bảo khi mất sóng 3G/4G trong tầng hầm siêu thị, người dùng vẫn tick chọn, sửa số lượng bình thường; tự động đồng bộ ngầm (Background Sync) trong 3 giây khi có mạng lại.
+5. **Đưa sẵn 8 Clarifications (Q1–Q8):** Khóa chặt các quyết định biên (đơn vị thìa, snapshot công thức, gộp từ meal plan vs công thức lẻ, ưu tiên giữ trạng thái đã mua khi đồng bộ conflict).
 
+### Kết quả do AI sinh ra & Kiểm chứng của sinh viên:
+- File đặc tả đã tạo: `specs/040-shopping-list/spec.md`.
+- File checklist chất lượng: `specs/040-shopping-list/checklists/requirements.md`.
+- Sinh viên kiểm tra:
+  + Cấu trúc tiếng Anh học thuật đạt chuẩn.
+  + Đầy đủ 5 User Stories (P1 đến P3) với kịch bản kiểm thử Given - When - Then chi tiết.
+  + Checklist đạt 16/16 tiêu chí (100% PASSED).
+  + Sẵn sàng cho bước `/speckit-plan`.
+
+---
+
+## Mục 6: Làm rõ yêu cầu kỹ thuật và hành vi biên bằng `/speckit-clarify`
+
+| Trường | Nội dung |
+|---|---|
+| **Ngày** | 2026-10-16 |
+| **Người thực hiện** | Lê Quốc Hưng (`LqHung06`) |
+| **Spec liên quan** | 040 – Danh sách mua sắm thông minh và Gộp nguyên liệu tự động (`specs/040-shopping-list/`) |
+| **Công cụ AI** | Google Antigravity (Gemini 3.8 Flash), lệnh Spec Kit `/speckit-clarify` |
+| **Mục đích** | Rà soát các điểm mập mờ trong tài liệu đặc tả, tiến hành vòng lặp hỏi đáp tương tác (interactive clarification loop) tối đa 5 câu hỏi để chuẩn hóa hành vi biên của hệ thống. |
+| **Nhánh Git** | `feature/040-shopping-list` |
+
+### Quá trình làm rõ & Quyết định kỹ thuật:
+- **Câu hỏi 1 (Làm tròn số lượng lẻ cho đơn vị đếm được / rời rạc):** Làm rõ cách xử lý khi nhân tỷ lệ khẩu phần sinh ra số lượng lẻ thập phân cho các đơn vị rời rạc (quả, củ, bắp, lon, gói, quả trứng).
+  + *Quyết định chọn:* Phương án A – Tự động làm tròn lên (Ceiling $\lceil x \rceil$) thành số nguyên gần nhất (ví dụ: 1 quả trứng, 2 bắp cải) trên checklist mua hàng nhằm tránh thiếu hụt nguyên liệu khi nấu; giữ nguyên giá trị tính toán thập phân chính xác trong chi tiết nguồn gốc (Item Provenance); các đơn vị đo lường liên tục ($g, kg, ml, l$) giữ độ chính xác tối đa 2 chữ số thập phân.
+  + *Cập nhật vào Spec:* Bổ sung Q9 vào mục `## Clarifications`, thêm Acceptance Scenario 7 vào User Story 2, cập nhật `FR-003` và bổ sung `Discrete Unit Ceiling Rule` vào `Assumptions`.
+- **Câu hỏi 2 (Lọc gia vị và nguyên liệu sẵn có tại nhà trước khi gộp):** Làm rõ việc người dùng có được xem trước và bỏ chọn các gia vị cơ bản (muối, đường, dầu ăn, nước mắm...) trước khi gộp vào danh sách mua sắm hay không.
+  + *Quyết định chọn:* Phương án A – Hiển thị Bottom Sheet/Modal xem trước danh sách nguyên liệu kèm checkbox chọn lọc trước khi gộp; cung cấp nút tiện ích 1 chạm *"Bỏ chọn gia vị cơ bản"* để nhanh chóng loại trừ các món thường có sẵn tại nhà, giúp danh sách mua sắm không bị rác.
+  + *Cập nhật vào Spec:* Bổ sung Q10 vào mục `## Clarifications`, thêm Acceptance Scenario 8 vào User Story 2, cập nhật `FR-002` và `FR-004`.
+- **Câu hỏi 3 (Cơ chế xử lý dữ liệu khi bấm "Xóa các món đã mua"):** Làm rõ việc các món đã mua sau khi hết 5 giây hoàn tác sẽ bị xóa vĩnh viễn (Hard delete) hay ẩn tạm thời nhưng giữ trong lịch sử (Soft-clear).
+  + *Quyết định chọn:* Phương án A – Cơ chế Soft-clear (`is_cleared = true`), ẩn khỏi giao diện checklist mua sắm để giảm tải thị giác khi đi chợ, có nút mở xem lại theo nhu cầu; đồng thời bảo lưu 100% dữ liệu các món này khi danh sách chuyển sang trạng thái lưu trữ (Archived) để phục vụ đối soát hóa đơn và thống kê.
+  + *Cập nhật vào Spec:* Bổ sung Q11 vào mục `## Clarifications`, cập nhật Acceptance Scenario 5 của User Story 3, cập nhật `FR-018` và bổ sung thuộc tính `isCleared`, `clearedAt` vào thực thể `ShoppingListItem`.
+- **Câu hỏi 4 (Phạm vi ghi nhớ khi người dùng thủ công chuyển quầy hàng):** Làm rõ việc người dùng reassign quầy hàng (Aisle Re-categorization) cho một nguyên liệu thì hệ thống chỉ nhớ trên danh sách hiện tại hay lưu thành thói quen lâu dài.
+  + *Quyết định chọn:* Phương án A – Áp dụng ngay cho danh sách hiện tại; tại hộp thoại chuyển quầy cung cấp checkbox tùy chọn *"Ghi nhớ quầy này cho các lần mua sau"*. Nếu người dùng tích chọn, hệ thống lưu vào hồ sơ sở thích cá nhân (`UserAislePreference`) để các lần import công thức sau tự động phân vào đúng quầy quen thuộc.
+  + *Cập nhật vào Spec:* Bổ sung Q12 vào mục `## Clarifications`, cập nhật Acceptance Scenario 6 của User Story 3, cập nhật `FR-011` và bổ sung thực thể `UserAislePreference` vào Key Entities.
+- **Câu hỏi 5 (Trạng thái các món khi khôi phục danh sách cũ từ Lịch sử):** Làm rõ trạng thái mua sắm của các món (`isChecked`, `isCleared`) khi một danh sách đã lưu trữ được khôi phục làm danh sách hiện hành.
+  + *Quyết định chọn:* Phương án A – Tự động đặt lại toàn bộ trạng thái về "Chưa mua" (`isChecked = false`, `isCleared = false`), giữ nguyên tên món, định lượng đã scale và phân nhóm quầy để người dùng có ngay một checklist mới sẵn sàng cho chuyến đi chợ tiếp theo mà không phải bấm bỏ tick từng món.
+  + *Cập nhật vào Spec:* Bổ sung Q13 vào mục `## Clarifications`, cập nhật Acceptance Scenario 5 của User Story 1, và cập nhật `FR-022`.
+
+### Kết quả phiên làm rõ & Đánh giá chất lượng:
+- **Số câu hỏi đã hoàn thành:** 5 / 5 câu theo đúng ngân sách tối đa của Spec Kit.
+- **File đặc tả đã cập nhật:** `specs/040-shopping-list/spec.md` (bao gồm Q1–Q13 tại mục Clarifications).
+- **Checklist chất lượng yêu cầu:** `specs/040-shopping-list/checklists/requirements.md` đạt 16/16 tiêu chí (100% PASSED).
+- **Trạng thái sẵn sàng:** Toàn bộ các góc khuất nghiệp vụ, tính toán định lượng, tương tác ngoại tuyến và vòng đời dữ liệu đã được khóa chặt chẽ. Sẵn sàng 100% cho bước lập kế hoạch kiến trúc bằng `/speckit-plan`.
