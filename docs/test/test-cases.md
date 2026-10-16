@@ -16,7 +16,7 @@
 This test specification defines the acceptance test suite for **WikiCook Module 1: User Authentication & Role-Based Access Control (RBAC)**, implementing the testing requirements formalized in:
 1. **WikiCook Constitution** (`.specify/memory/constitution.md` - Principle II: Test-First NON-NEGOTIABLE).
 2. **Master Test Plan** (`docs/test/test-plan.md`).
-3. **Feature Specification** (`specs/user-authentication-roles/spec.md`).
+3. **Feature Specification** (`specs/010-user-authentication-roles/spec.md`).
 
 All test cases are written following a strict Given-When-Then behavioral contract and serve as the baseline for automated backend integration tests (via Spring Boot Test & Testcontainers) and frontend unit/E2E tests (Vitest & Playwright).
 
