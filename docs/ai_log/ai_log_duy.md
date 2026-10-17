@@ -1,14 +1,18 @@
 # Nhật ký sử dụng AI – Nguyễn Đức Duy
 
-Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễn Đức Duy** (mã **B**, Product Owner & Requirements Lead, phụ trách spec `020-recipe-search-filter` và `060-recipe-editor` theo [phân công tuần 12/10 – 18/10](../management/w1-spec-design-assignment.md)). Mỗi lần dùng AI là một mục mới, mục mới nhất ở cuối.
+Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễn Đức Duy** (mã **B**, Product Owner & Requirements Lead, phụ trách spec `020-recipe-search-filter` và `060-recipe-editor` theo [phân công tuần 12/10 – 18/10](../management/w1-spec-design-assignment.md), và Mục 1–6 của Vision Document theo Sprint 2 – `SCRUM-32` → `SCRUM-35` trong [project plan](../management/project-plan.md)). Mỗi lần dùng AI là một mục mới, mục mới nhất ở cuối.
 
-| # | Ngày | Nội dung | Spec |
+| # | Ngày | Nội dung | Spec / Tài liệu |
 |---|---|---|---|
 | 1 | 2026-10-08 | Viết spec 020 (tìm kiếm và lọc công thức) bằng `/speckit-specify` | 020 |
 | 2 | 2026-10-08 | Viết spec 060 (wizard tạo công thức, "Công thức của tôi") bằng `/speckit-specify` | 060 |
 | 3 | 2026-10-08 | Soạn bản nháp schema nhóm bảng `recipes` / `ingredients` gửi cả nhóm | 020, 060 |
 | 4 | 2026-10-08 | Làm rõ spec 020 bằng `/speckit-clarify` (5 câu hỏi) | 020 |
 | 5 | 2026-10-08 | Làm rõ spec 060 bằng `/speckit-clarify` (5 câu hỏi) | 060 |
+| 6 | 2026-10-17 | Soạn Vision Document Mục 1 (Introduction) và Mục 2 (Positioning) theo mẫu RUP (`SCRUM-32`) | Vision §1–2 |
+| 7 | 2026-10-17 | Soạn Vision Document Mục 3 (Stakeholder & User Descriptions) và Mục 4 (Product Overview) (`SCRUM-33`) | Vision §3–4 |
+| 8 | 2026-10-17 | Viết 10 tính năng cốt lõi dạng đoạn văn What/Why/Who ở Mục 5 (`SCRUM-34`) | Vision §5 |
+| 9 | 2026-10-17 | Thiết kế 2 sơ đồ Mermaid luồng người dùng ở Mục 6 (`SCRUM-35`) | Vision §6 |
 
 ---
 
@@ -328,9 +332,9 @@ những điểm ảnh hưởng tới máy trạng thái công thức, dữ liệ
 trong danh mục không và ai duyệt; (4) các giới hạn số lượng đang đặt tạm (số nguyên liệu, số bước, dung
 lượng ảnh, số lần gửi duyệt/ngày, số bản nháp, chu kỳ tự lưu); (5) cùng một bản nháp bị sửa trên hai
 thiết bị. Mỗi câu kèm phương án đề xuất, lý do và hệ quả, đối chiếu với schema nháp ở
-docs/analysis-and-design/database/draft-recipes-ingredients.md. Mình đồng ý dùng phương án đề xuất cho
-cả 5 câu; ghi vào Clarifications, sửa đồng bộ FR, User Story, Edge Cases, Assumptions và bảng
-Integration Points, không để lại giá trị cũ mâu thuẫn.
+docs/analysis-and-design/database/draft-recipes-ingredients.md. Sau khi mình trả lời từng câu, ghi vào
+mục Clarifications và sửa đồng bộ FR, User Story, Edge Cases, Assumptions và bảng Integration Points;
+không để lại giá trị cũ mâu thuẫn.
 ```
 
 | # | Câu hỏi của AI | AI đề xuất | Mình chọn |
@@ -365,3 +369,240 @@ Integration Points, không để lại giá trị cũ mâu thuẫn.
 - Tìm "to confirm" và "not changed" trong spec không còn kết quả cũ mâu thuẫn.
 - Đối chiếu schema nháp: `recipe_revisions` (tối đa một bản sửa đang mở), cột `version` cho optimistic lock, `ingredients.status = 'PROPOSED'`, các `CHECK` giới hạn — đều khớp câu trả lời.
 - Việc tiếp theo: mang luồng sửa công thức đã xuất bản ra họp T4 14/10 để E xác nhận; sau khi thống nhất các điểm giao thì chạy `/speckit-plan` cho 020 và 060 (hạn T6 16/10).
+
+---
+
+## Mục 6: Soạn Vision Document Mục 1 (Introduction) và Mục 2 (Positioning)
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-17 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `docs/requirements/vision-document.md` – Mục 1, 2 (Jira `SCRUM-32`) |
+| Công cụ AI | Claude Code (model Claude Opus 5.5) |
+| Mục đích | Đưa Vision Document từ khung PA1 sang đúng cấu trúc mẫu RUP Vision; chuẩn hóa Problem Statement và Product Position Statement |
+| Nhánh Git | `Duy` |
+
+### Prompt đã dùng
+
+```
+Soạn Mục 1 (Introduction) và Mục 2 (Positioning) của docs/requirements/vision-document.md theo đúng cấu
+trúc mẫu RUP Vision cho dự án nhỏ (rup_vision_sp.docx), task Jira SCRUM-32.
+Bối cảnh: file hiện có là bản PA1 (positioning, persona, use case) chưa theo mẫu RUP. Nguồn dữ liệu:
+docs/requirements/project-proposal.md (mục 1–3), existing-app-survey.md, comparative-analysis.md,
+docs/management/project-plan.md (vai trò, task SCRUM-32 → SCRUM-36, ràng buộc CON/ASM) và các spec 010,
+020, 030, 031, 060.
+Yêu cầu:
+1. Tái cấu trúc toàn bộ file theo khung RUP: 1 Introduction, 2 Positioning, 3 Stakeholder and User
+   Descriptions, 4 Product Overview, 5 Product Features, 6 User Workflow Diagrams, 7 Non-Functional
+   Requirements. Mục 7 do Mai Văn Hiển viết ở SCRUM-36: chỉ giữ tiêu đề và metadata, không viết nội dung.
+2. Metadata 3 cấp giống project-plan.md: bảng Responsibility Matrix (Performed by / Reviewed by / Edited
+   by / Jira Task) và dòng metadata in nghiêng dưới mỗi mục. Reviewer lấy đúng theo bảng task Sprint 2
+   (Mục 1–2: Lê Quốc Hưng; 3–4: Trần Nguyễn Công Chung; 5–6: Mai Văn Hiển), editor là Lê Quốc Hưng.
+   Thêm Revision History.
+3. Mục 1: 1.1 Purpose (nêu rõ đối tượng đọc và cách họ dùng tài liệu), 1.2 Scope (in-scope là 10 tính
+   năng, out-of-scope rõ ràng), 1.3 Definitions (Cooksnap, RAG, pgvector, các vai trò của spec 010…),
+   1.4 References (IEEE Std 830-1998, mẫu RUP, PA1/PA2, proposal, survey, project plan, architecture, các
+   spec), 1.5 Overview.
+4. Mục 2: 2.1 Business Opportunity dựa trên khoảng trống thị trường rút ra từ khảo sát PA1; 2.2 Problem
+   Statement đúng bảng 4 dòng "The problem of / affects / the impact of which is / a successful solution
+   would be"; 2.3 Product Position Statement đúng bảng "For / Who / WikiCook (is) / That / Unlike / Our
+   product".
+Ràng buộc: tiếng Anh chuẩn văn phong tài liệu kỹ thuật; mọi con số phải có nguồn trong repo (không bịa số
+liệu khảo sát người dùng); thuật ngữ và quyết định phải khớp các spec đã clarify (ví dụ: nguồn dữ liệu dị
+ứng là liên kết nguyên liệu – chất dị ứng, không phải nhãn do LLM sinh). Chỉ sửa vision-document.md.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Viết lại toàn bộ `vision-document.md` theo 7 mục của mẫu RUP; thêm phần đầu tài liệu (môn học, nhóm, phiên bản `0.9`, ngày), bảng Responsibility Matrix 7 dòng có cột Jira và bảng Revision History (`v0.1` là bản PA1 merge ở PR #12 ngày 08/10, `v0.9` là bản này).
+- Mục 1: Purpose cho 3 nhóm người đọc (giảng viên/trợ giảng, PO, nhóm phát triển); Scope nêu 10 tính năng và 5 hạng mục ngoài phạm vi (app native, đặt hàng/thanh toán, IoT, AI tự tạo công thức, tư vấn y khoa); 10 thuật ngữ; 8 tài liệu tham chiếu, có ghi chú IEEE 830 đã được thay bằng ISO/IEC/IEEE 29148.
+- Mục 2: Business Opportunity chỉ ra mỗi đối thủ chỉ phủ một phần chuỗi "chọn món → lên thực đơn → đi chợ → nấu → chia sẻ"; Problem Statement và Position Statement dùng đúng nhãn của mẫu RUP, phần "Unlike" nêu tên và điểm yếu cụ thể của MyFridgeFood và Ăn Gì Ngon.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Tái cấu trúc cả file theo mẫu RUP | Dùng | Đề PA2 yêu cầu theo `rup_vision_sp.docx`; khung 3 mục của PA1 không có Introduction, Stakeholder, Product Overview |
+| Sơ đồ use case cấp cao của PA1 | **Bỏ** | Mô hình hóa use case là việc của Sprint 3 (PA3); persona và phạm vi của PA1 được chuyển vào Mục 3.2 và 1.2 |
+| Số liệu "15–30 phút/ngày" | Dùng, ghi rõ nguồn | Chỉ có trong proposal PA1, nhóm chưa khảo sát người dùng thật nên ghi "PA1 proposal estimate" |
+| Mục 7 chỉ để tiêu đề và metadata | Dùng | Thuộc `SCRUM-36` của Hiển; tránh conflict khi merge |
+
+### Cách kiểm chứng
+
+- Đối chiếu nhãn bảng 2.2 và 2.3 với mẫu RUP: đủ 4 dòng và 6 dòng, đúng thứ tự.
+- Đối chiếu reviewer/editor trong bảng metadata với bảng task Sprint 2 ở `project-plan.md` mục 4.2.2: khớp cả 7 dòng.
+- Kiểm tra các nhánh khác trên remote: không nhánh nào sửa `vision-document.md`, nên tái cấu trúc không gây conflict.
+- Xem lịch sử git của file để ghi đúng ngày `v0.1` (commit `af3a9f3`, 08/10/2026).
+
+---
+
+## Mục 7: Soạn Vision Document Mục 3 (Stakeholder & User Descriptions) và Mục 4 (Product Overview)
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-17 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `docs/requirements/vision-document.md` – Mục 3, 4 (Jira `SCRUM-33`) |
+| Công cụ AI | Claude Code (model Claude Opus 5.5) |
+| Mục đích | Mô tả stakeholder, người dùng, môi trường sử dụng, nhu cầu cốt lõi, đối thủ và bối cảnh sản phẩm, có dẫn chứng từ khảo sát PA1 |
+| Nhánh Git | `Duy` |
+
+### Prompt đã dùng
+
+```
+Tiếp tục docs/requirements/vision-document.md: viết Mục 3 (Stakeholder and User Descriptions) và Mục 4
+(Product Overview) theo mẫu RUP — task SCRUM-33. Tiêu chí nghiệm thu: phân tích sâu, dẫn chứng thuyết
+phục từ kết quả khảo sát PA1.
+Mục 3:
+- 3.1 Stakeholder Summary (Name / Description / Responsibilities): giảng viên – trợ giảng, PO, PM/SM, nhóm
+  phát triển, nhà cung cấp dịch vụ bên ngoài (LLM, Google OAuth, email).
+- 3.2 User Summary (Name / Description / Responsibilities / Stakeholder) cho người nấu ăn bận rộn, người
+  sáng tạo công thức, quản trị viên/moderator; giữ nhóm người dùng có chế độ ăn đặc biệt của PA1 như một
+  nhóm con; thêm cột ánh xạ vai trò hệ thống theo spec 010 (Guest/Member/Contributor/Moderator/Admin).
+- 3.3 User Environment theo từng bối cảnh: bếp (tay ướt/dính dầu mỡ, hơi nước, tiếng ồn máy hút mùi,
+  thiết bị đặt cách 0,5–1 m, màn hình tự tắt sau 30–60 giây), lên thực đơn hằng tuần, siêu thị sóng yếu,
+  soạn công thức/kiểm duyệt; nền tảng và trình duyệt hỗ trợ; ứng dụng liên quan (Zalo, YouTube/TikTok).
+- 3.4 Summary of Key Needs: bảng Need / Priority / Concerns / Current Solution / Proposed Solution, đánh
+  mã N1…N8 để Mục 5 truy vết ngược.
+- 3.5 Alternatives and Competition: phân tích MyFridgeFood và Ăn Gì Ngon (điểm mạnh, điểm yếu, WikiCook
+  học được gì), trích dẫn đúng Figure và hàng trong ma trận của existing-app-survey.md; nêu các giải pháp
+  thay thế khác (blog/YouTube, nhóm Facebook, ghi chú giấy); kết thúc bằng bảng so sánh năng lực 3 sản
+  phẩm và kết luận về điểm khác biệt.
+Mục 4:
+- 4.1 Product Perspective: vị trí sản phẩm, kiến trúc khái quát theo architecture.md, kèm sơ đồ Mermaid
+  ngữ cảnh hệ thống (người dùng, thành phần WikiCook, hệ thống bên ngoài).
+- 4.2 Assumptions and Dependencies: bảng ID / Type / Statement / Impact if it does not hold, gồm giả định
+  (mạng, đủ công thức cho AI, dữ liệu dị ứng do moderator duyệt, hạn mức free tier, API trình duyệt) và
+  phụ thuộc (LLM, embedding + pgvector, Google OAuth, email, thứ tự giữa các spec, ràng buộc dự án).
+Ràng buộc: chỉ dùng số liệu có trong proposal, survey, spec; không bịa thống kê; tiếng Anh; giữ metadata 3 cấp.
+```
+
+### Tóm tắt phản hồi của AI
+
+- 3.1: 5 nhóm stakeholder; 3.2: 4 nhóm người dùng kèm vai trò hệ thống và ghi chú persona (mục tiêu, nỗi đau).
+- 3.3: 6 bối cảnh sử dụng, mỗi bối cảnh suy ra yêu cầu giao diện (chữ lớn đọc từ xa, nút lớn, giữ màn hình sáng, dùng một tay, chịu được mất mạng).
+- 3.4: 8 nhu cầu N1–N8 (5 ưu tiên High, 3 Medium).
+- 3.5: phân tích 2 đối thủ có dẫn chứng (Figure 1, 2, 5–7, 10, 11 và các hàng trong ma trận Mục 2 và 6 của survey), 3 nhóm giải pháp thay thế, bảng so sánh 11 năng lực; kết luận khác biệt nằm ở **chuỗi liền mạch** cộng 3 năng lực mà cả hai đối thủ đều không có.
+- 4.1: sơ đồ ngữ cảnh Mermaid gồm 3 nhóm người dùng, 4 thành phần nội bộ và 6 hệ thống bên ngoài; 4.2: 5 giả định (ASM-01 → 05) và 6 phụ thuộc (DEP-01 → 06), mỗi dòng có hệ quả nếu không đúng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Người dùng có chế độ ăn đặc biệt là nhóm con | Dùng | Đề Jira nêu 3 nhóm, nhưng đây là persona của PA1 và là lý do tồn tại của Feature 1 và 9 |
+| Chỉ so sánh với 2 app đã khảo sát ở PA1 | Dùng | Mọi nhận định đều kiểm chứng được bằng screenshot trong repo; không thêm đối thủ chưa khảo sát |
+| ASM-03: liên kết nguyên liệu – chất dị ứng là nguồn sự thật | Dùng | Khớp quyết định ở `/speckit-clarify` spec 020 (Mục 4 của log này) |
+| Giới hạn 5 lần sinh thực đơn/người/giờ trong ASM-04 | Dùng | Lấy từ spec 031 và proposal mục 4.8 |
+
+### Cách kiểm chứng
+
+- Đối chiếu các ô 🟢/🟡/❌ của MyFridgeFood và Ăn Gì Ngon trong bảng 3.5.4 với ma trận Mục 2 và 6 của `existing-app-survey.md`: khớp; riêng dòng "Search by on-hand ingredients" không có trong ma trận nên lấy theo mô tả tính năng ở Mục 1 và 5 của survey.
+- Kiểm tra các Figure được trích dẫn đều có trong survey (Figure 1–11).
+- Sơ đồ ngữ cảnh 4.1 parse hợp lệ bằng Mermaid 11.4.1 (xem Mục 9).
+
+---
+
+## Mục 8: Viết 10 tính năng cốt lõi ở Vision Document Mục 5
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-17 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `docs/requirements/vision-document.md` – Mục 5 (Jira `SCRUM-34`) |
+| Công cụ AI | Claude Code (model Claude Opus 5.5) |
+| Mục đích | Mô tả 10 tính năng cốt lõi thành đoạn văn 3–5 câu theo quy tắc bắt buộc của đề PA2 |
+| Nhánh Git | `Duy` |
+
+### Prompt đã dùng
+
+```
+Viết Mục 5 (Product Features) của docs/requirements/vision-document.md — task SCRUM-34. Áp dụng quy tắc bắt
+buộc của đề PA2: mỗi tính năng là MỘT đoạn văn hoàn chỉnh 3–5 câu, tuyệt đối không dùng gạch đầu dòng.
+Mỗi đoạn phải trả lời đủ 3 ý:
+- What: tính năng làm gì, vận hành thế nào;
+- Why: giải quyết nỗi đau nào của người dùng, dẫn chứng khoảng trống của MyFridgeFood / Ăn Gì Ngon từ
+  khảo sát PA1;
+- Who: nhóm người dùng nào (theo User Summary ở Mục 3.2) hưởng lợi trực tiếp.
+10 tính năng theo đúng thứ tự: User Auth & Dietary Profile, Smart Recipe Discovery & Filters, AI Weekly
+Meal Planner, Smart Shopping List, Hands-free Cooking Mode & Timers, Community Recipe Contribution, Social
+Cooksnaps & Reviews, Custom Recipe Collections, Nutrition & Allergen Analyzer, Admin Content Moderation.
+Nội dung phải khớp các quyết định đã chốt trong spec: 010 (4 vai trò, xác minh email); 020 (tìm không dấu,
+lọc kết hợp, ẩn món xung đột hồ sơ ăn uống, ngưỡng 3 đánh giá); 030/031 (lịch 7 ngày × 3 bữa, RAG, ràng
+buộc cứng/mềm, kiểm tra từng món AI chọn, AI không tạo món mới); 040 và 050 trên nhánh feature; 060
+(wizard 6 bước, vòng đời trạng thái). Nhãn dị ứng phải lấy từ liên kết nguyên liệu – chất dị ứng, LLM chỉ
+ước tính dinh dưỡng. Cuối mục thêm bảng truy vết Feature → User Need (N1–N8) → module PA1 → spec.
+Tiếng Anh chuyên nghiệp; tự đếm số câu của từng đoạn trước khi trả kết quả.
+```
+
+### Tóm tắt phản hồi của AI
+
+- 10 đoạn văn (5.1 → 5.10), mỗi đoạn 5 câu theo thứ tự: cơ chế (What) → chi tiết vận hành → giá trị khi kết nối với tính năng khác → nỗi đau và dẫn chứng đối thủ (Why) → người hưởng lợi (Who).
+- Mục 5.11: bảng truy vết 10 tính năng → nhu cầu N1–N8 → module 3.1–3.10 của proposal → spec.
+- Các chi tiết lấy từ spec: "pho bo" tìm ra "Phở bò" (020), ngưỡng 3 đánh giá cho "Top rated" (020 clarify), vòng đời Draft → Pending → Published/Rejected/Revision Requested → Archived (060), thử lại LLM và để trống món sai (031), giữ màn hình sáng và lệnh giọng nói tiếng Việt (050), gộp đơn vị g ↔ kg và dùng offline (040).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Tìm theo nguyên liệu có sẵn (pantry matching) nằm trong Feature 2 | Dùng, có ghi chú | Đề Jira và Workflow 2 yêu cầu, nhưng spec 020 đã loại khỏi phạm vi; bảng 5.11 ghi "pantry matching in a later increment" — **cần PO chốt** có viết spec riêng hay không |
+| Nhãn dị ứng lấy từ liên kết nguyên liệu, không từ LLM | Dùng (khác proposal 3.9) | Proposal PA1 nói LLM gắn nhãn dị ứng; đã đổi theo quyết định clarify spec 020 vì nhãn LLM có thể sai |
+| Viết đúng 5 câu mỗi đoạn | Dùng | Mức trên của khung 3–5 câu, đủ chỗ cho cả What, Why, Who |
+
+### Cách kiểm chứng
+
+- Đếm câu bằng script `awk` trên từng đoạn 5.1–5.10: cả 10 đoạn đều 5 câu; không đoạn nào dùng gạch đầu dòng.
+- Đối chiếu con số với spec: 4 vai trò (010 FR-003 và ma trận phân quyền), 7 × 3 = 21 slot (030 FR-002, 031), ≥ 3 đánh giá (020 FR-014a), wizard 6 bước (060).
+- Kiểm tra mỗi đoạn đều nhắc ít nhất một nhóm người dùng có trong bảng 3.2.
+
+---
+
+## Mục 9: Thiết kế 2 sơ đồ Mermaid luồng người dùng ở Vision Document Mục 6
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-17 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `docs/requirements/vision-document.md` – Mục 6 (Jira `SCRUM-35`) |
+| Công cụ AI | Claude Code (model Claude Opus 5.5) |
+| Mục đích | Minh họa 2 hành trình đầu-cuối nối các tính năng ở Mục 5 bằng sơ đồ Mermaid có chú thích |
+| Nhánh Git | `Duy` |
+
+### Prompt đã dùng
+
+```
+Thiết kế Mục 6 (User Workflow Diagrams) của docs/requirements/vision-document.md — task SCRUM-35: 2 sơ đồ
+Mermaid flowchart, mỗi sơ đồ kèm bảng chú thích từng bước (Step / Actor / Description / Feature ở Mục 5).
+- Workflow 1 – AI Meal Planning & Grocery: thiết lập khẩu phần và ràng buộc từ dietary profile → RAG truy
+  vấn vector database (pgvector) → lọc cứng dị ứng/nguyên liệu loại trừ → LLM sinh thực đơn tuần → kiểm
+  tra từng món → xem/swap món → xác nhận → tự động xuất danh sách đi chợ đã gộp và nhóm theo quầy siêu thị.
+- Workflow 2 – Pantry Search & Cooking Mode: chọn nguyên liệu có sẵn trong tủ lạnh → tìm công thức phù hợp
+  → bật chế độ nấu rảnh tay → kích hoạt nhiều bộ hẹn giờ đếm ngược song song → đăng ảnh Cooksnap.
+- Thể hiện cả nhánh ngoại lệ: ràng buộc không hợp lệ, không đủ công thức, LLM lỗi hoặc quá thời gian (quay
+  về planner thủ công), không tìm thấy món phù hợp; hẹn giờ vẫn chạy nền khi người dùng sang bước khác.
+- Phân biệt tác nhân bằng classDef màu (người dùng / hệ thống / dịch vụ AI / điểm quyết định) và ghi chú
+  giải màu ngay trước sơ đồ.
+- Khớp spec 031 (thử lại LLM 1 lần; món sai bị loại và để trống cho người dùng chọn) và spec 050.
+Tiêu chí nghiệm thu: cú pháp Mermaid hợp lệ, render được trên GitHub; tự kiểm tra bằng trình parse của
+Mermaid trước khi báo xong.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Workflow 1: 13 bước, 4 điểm quyết định (ràng buộc hợp lệ, đủ ứng viên, LLM phản hồi kịp, hài lòng với bản nháp) với các nhánh sửa ràng buộc, nới ràng buộc, quay về planner thủ công, swap/sinh lại; tô màu riêng các bước của dịch vụ AI (embedding, truy vấn pgvector, LLM).
+- Workflow 2: 13 bước, vòng lặp theo từng bước nấu; hẹn giờ nối bằng mũi tên nét đứt "runs in background" tới chuông báo để thể hiện chạy song song.
+- Mỗi sơ đồ có bảng chú thích 6–7 dòng gom các bước, ghi tác nhân và tính năng tương ứng ở Mục 5.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Phân biệt tác nhân bằng màu thay vì swimlane `subgraph` | Dùng | Swimlane có nhiều mũi tên qua lại giữa các làn nên sơ đồ rối khi render |
+| Cooksnap hiện ngay, nội dung xấu xử lý qua báo cáo | Dùng tạm | Chưa có spec 070; **cần thống nhất** với người viết spec 070 và 100 xem Cooksnap có phải duyệt trước không |
+| Bước LLM trả về JSON có cấu trúc | Dùng | Khớp proposal mục 4.4 và spec 031 (kiểm tra schema) |
+
+### Cách kiểm chứng
+
+- Parse cả 3 sơ đồ Mermaid trong file (ngữ cảnh 4.1 và 2 workflow) bằng `mermaid@11.4.1` chạy trên Node + jsdom: **3/3 hợp lệ** (`flowchart-v2`); một sơ đồ cố tình viết sai cú pháp thì parser báo lỗi, chứng tỏ bước kiểm tra có tác dụng.
+- Đối chiếu nhánh lỗi với spec 031: thử lại một lần khi LLM lỗi hoặc sai định dạng; món không hợp lệ không hiển thị và slot được đánh dấu để người dùng chọn tay.
+- Chưa xem render thực tế trên GitHub vì chưa push; cần mở file trên GitHub sau khi push để kiểm tra lần cuối.
