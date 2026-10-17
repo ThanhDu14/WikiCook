@@ -12,6 +12,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 6 | 2026-10-17 | Soạn Vision Document Mục 1 (Introduction) và Mục 2 (Positioning) theo mẫu RUP (`SCRUM-32`) | Vision §1–2 |
 | 7 | 2026-10-17 | Soạn Vision Document Mục 3 (Stakeholder & User Descriptions) và Mục 4 (Product Overview) (`SCRUM-33`) | Vision §3–4 |
 | 8 | 2026-10-17 | Viết 10 tính năng cốt lõi dạng đoạn văn What/Why/Who ở Mục 5 (`SCRUM-34`) | Vision §5 |
+| 9 | 2026-10-17 | Thiết kế 2 sơ đồ Mermaid luồng người dùng ở Mục 6 (`SCRUM-35`) | Vision §6 |
 
 ---
 
@@ -554,3 +555,54 @@ Tiếng Anh chuyên nghiệp; tự đếm số câu của từng đoạn trướ
 - Đối chiếu con số với spec: 4 vai trò (010 FR-003 và ma trận phân quyền), 7 × 3 = 21 slot (030 FR-002, 031), ≥ 3 đánh giá (020 FR-014a), wizard 6 bước (060).
 - Kiểm tra mỗi đoạn đều nhắc ít nhất một nhóm người dùng có trong bảng 3.2.
 
+---
+
+## Mục 9: Thiết kế 2 sơ đồ Mermaid luồng người dùng ở Vision Document Mục 6
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-17 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `docs/requirements/vision-document.md` – Mục 6 (Jira `SCRUM-35`) |
+| Công cụ AI | Claude Code (model Claude Opus 5.5) |
+| Mục đích | Minh họa 2 hành trình đầu-cuối nối các tính năng ở Mục 5 bằng sơ đồ Mermaid có chú thích |
+| Nhánh Git | `Duy` |
+
+### Prompt đã dùng
+
+```
+Thiết kế Mục 6 (User Workflow Diagrams) của docs/requirements/vision-document.md — task SCRUM-35: 2 sơ đồ
+Mermaid flowchart, mỗi sơ đồ kèm bảng chú thích từng bước (Step / Actor / Description / Feature ở Mục 5).
+- Workflow 1 – AI Meal Planning & Grocery: thiết lập khẩu phần và ràng buộc từ dietary profile → RAG truy
+  vấn vector database (pgvector) → lọc cứng dị ứng/nguyên liệu loại trừ → LLM sinh thực đơn tuần → kiểm
+  tra từng món → xem/swap món → xác nhận → tự động xuất danh sách đi chợ đã gộp và nhóm theo quầy siêu thị.
+- Workflow 2 – Pantry Search & Cooking Mode: chọn nguyên liệu có sẵn trong tủ lạnh → tìm công thức phù hợp
+  → bật chế độ nấu rảnh tay → kích hoạt nhiều bộ hẹn giờ đếm ngược song song → đăng ảnh Cooksnap.
+- Thể hiện cả nhánh ngoại lệ: ràng buộc không hợp lệ, không đủ công thức, LLM lỗi hoặc quá thời gian (quay
+  về planner thủ công), không tìm thấy món phù hợp; hẹn giờ vẫn chạy nền khi người dùng sang bước khác.
+- Phân biệt tác nhân bằng classDef màu (người dùng / hệ thống / dịch vụ AI / điểm quyết định) và ghi chú
+  giải màu ngay trước sơ đồ.
+- Khớp spec 031 (thử lại LLM 1 lần; món sai bị loại và để trống cho người dùng chọn) và spec 050.
+Tiêu chí nghiệm thu: cú pháp Mermaid hợp lệ, render được trên GitHub; tự kiểm tra bằng trình parse của
+Mermaid trước khi báo xong.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Workflow 1: 13 bước, 4 điểm quyết định (ràng buộc hợp lệ, đủ ứng viên, LLM phản hồi kịp, hài lòng với bản nháp) với các nhánh sửa ràng buộc, nới ràng buộc, quay về planner thủ công, swap/sinh lại; tô màu riêng các bước của dịch vụ AI (embedding, truy vấn pgvector, LLM).
+- Workflow 2: 13 bước, vòng lặp theo từng bước nấu; hẹn giờ nối bằng mũi tên nét đứt "runs in background" tới chuông báo để thể hiện chạy song song.
+- Mỗi sơ đồ có bảng chú thích 6–7 dòng gom các bước, ghi tác nhân và tính năng tương ứng ở Mục 5.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Phân biệt tác nhân bằng màu thay vì swimlane `subgraph` | Dùng | Swimlane có nhiều mũi tên qua lại giữa các làn nên sơ đồ rối khi render |
+| Cooksnap hiện ngay, nội dung xấu xử lý qua báo cáo | Dùng tạm | Chưa có spec 070; **cần thống nhất** với người viết spec 070 và 100 xem Cooksnap có phải duyệt trước không |
+| Bước LLM trả về JSON có cấu trúc | Dùng | Khớp proposal mục 4.4 và spec 031 (kiểm tra schema) |
+
+### Cách kiểm chứng
+
+- Parse cả 3 sơ đồ Mermaid trong file (ngữ cảnh 4.1 và 2 workflow) bằng `mermaid@11.4.1` chạy trên Node + jsdom: **3/3 hợp lệ** (`flowchart-v2`); một sơ đồ cố tình viết sai cú pháp thì parser báo lỗi, chứng tỏ bước kiểm tra có tác dụng.
+- Đối chiếu nhánh lỗi với spec 031: thử lại một lần khi LLM lỗi hoặc sai định dạng; món không hợp lệ không hiển thị và slot được đánh dấu để người dùng chọn tay.
+- Chưa xem render thực tế trên GitHub vì chưa push; cần mở file trên GitHub sau khi push để kiểm tra lần cuối.
