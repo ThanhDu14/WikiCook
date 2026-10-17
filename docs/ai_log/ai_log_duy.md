@@ -1,14 +1,15 @@
 # Nhật ký sử dụng AI – Nguyễn Đức Duy
 
-Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễn Đức Duy** (mã **B**, Product Owner & Requirements Lead, phụ trách spec `020-recipe-search-filter` và `060-recipe-editor` theo [phân công tuần 12/10 – 18/10](../management/w1-spec-design-assignment.md)). Mỗi lần dùng AI là một mục mới, mục mới nhất ở cuối.
+Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễn Đức Duy** (mã **B**, Product Owner & Requirements Lead, phụ trách spec `020-recipe-search-filter` và `060-recipe-editor` theo [phân công tuần 12/10 – 18/10](../management/w1-spec-design-assignment.md), và Mục 1–6 của Vision Document theo Sprint 2 – `SCRUM-32` → `SCRUM-35` trong [project plan](../management/project-plan.md)). Mỗi lần dùng AI là một mục mới, mục mới nhất ở cuối.
 
-| # | Ngày | Nội dung | Spec |
+| # | Ngày | Nội dung | Spec / Tài liệu |
 |---|---|---|---|
 | 1 | 2026-10-08 | Viết spec 020 (tìm kiếm và lọc công thức) bằng `/speckit-specify` | 020 |
 | 2 | 2026-10-08 | Viết spec 060 (wizard tạo công thức, "Công thức của tôi") bằng `/speckit-specify` | 060 |
 | 3 | 2026-10-08 | Soạn bản nháp schema nhóm bảng `recipes` / `ingredients` gửi cả nhóm | 020, 060 |
 | 4 | 2026-10-08 | Làm rõ spec 020 bằng `/speckit-clarify` (5 câu hỏi) | 020 |
 | 5 | 2026-10-08 | Làm rõ spec 060 bằng `/speckit-clarify` (5 câu hỏi) | 060 |
+| 6 | 2026-10-17 | Soạn Vision Document Mục 1 (Introduction) và Mục 2 (Positioning) theo mẫu RUP (`SCRUM-32`) | Vision §1–2 |
 
 ---
 
@@ -328,9 +329,9 @@ những điểm ảnh hưởng tới máy trạng thái công thức, dữ liệ
 trong danh mục không và ai duyệt; (4) các giới hạn số lượng đang đặt tạm (số nguyên liệu, số bước, dung
 lượng ảnh, số lần gửi duyệt/ngày, số bản nháp, chu kỳ tự lưu); (5) cùng một bản nháp bị sửa trên hai
 thiết bị. Mỗi câu kèm phương án đề xuất, lý do và hệ quả, đối chiếu với schema nháp ở
-docs/analysis-and-design/database/draft-recipes-ingredients.md. Mình đồng ý dùng phương án đề xuất cho
-cả 5 câu; ghi vào Clarifications, sửa đồng bộ FR, User Story, Edge Cases, Assumptions và bảng
-Integration Points, không để lại giá trị cũ mâu thuẫn.
+docs/analysis-and-design/database/draft-recipes-ingredients.md. Sau khi mình trả lời từng câu, ghi vào
+mục Clarifications và sửa đồng bộ FR, User Story, Edge Cases, Assumptions và bảng Integration Points;
+không để lại giá trị cũ mâu thuẫn.
 ```
 
 | # | Câu hỏi của AI | AI đề xuất | Mình chọn |
@@ -365,3 +366,69 @@ Integration Points, không để lại giá trị cũ mâu thuẫn.
 - Tìm "to confirm" và "not changed" trong spec không còn kết quả cũ mâu thuẫn.
 - Đối chiếu schema nháp: `recipe_revisions` (tối đa một bản sửa đang mở), cột `version` cho optimistic lock, `ingredients.status = 'PROPOSED'`, các `CHECK` giới hạn — đều khớp câu trả lời.
 - Việc tiếp theo: mang luồng sửa công thức đã xuất bản ra họp T4 14/10 để E xác nhận; sau khi thống nhất các điểm giao thì chạy `/speckit-plan` cho 020 và 060 (hạn T6 16/10).
+
+---
+
+## Mục 6: Soạn Vision Document Mục 1 (Introduction) và Mục 2 (Positioning)
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-17 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `docs/requirements/vision-document.md` – Mục 1, 2 (Jira `SCRUM-32`) |
+| Công cụ AI | Claude Code (model Claude Opus 5.5) |
+| Mục đích | Đưa Vision Document từ khung PA1 sang đúng cấu trúc mẫu RUP Vision; chuẩn hóa Problem Statement và Product Position Statement |
+| Nhánh Git | `Duy` |
+
+### Prompt đã dùng
+
+```
+Soạn Mục 1 (Introduction) và Mục 2 (Positioning) của docs/requirements/vision-document.md theo đúng cấu
+trúc mẫu RUP Vision cho dự án nhỏ (rup_vision_sp.docx), task Jira SCRUM-32.
+Bối cảnh: file hiện có là bản PA1 (positioning, persona, use case) chưa theo mẫu RUP. Nguồn dữ liệu:
+docs/requirements/project-proposal.md (mục 1–3), existing-app-survey.md, comparative-analysis.md,
+docs/management/project-plan.md (vai trò, task SCRUM-32 → SCRUM-36, ràng buộc CON/ASM) và các spec 010,
+020, 030, 031, 060.
+Yêu cầu:
+1. Tái cấu trúc toàn bộ file theo khung RUP: 1 Introduction, 2 Positioning, 3 Stakeholder and User
+   Descriptions, 4 Product Overview, 5 Product Features, 6 User Workflow Diagrams, 7 Non-Functional
+   Requirements. Mục 7 do Mai Văn Hiển viết ở SCRUM-36: chỉ giữ tiêu đề và metadata, không viết nội dung.
+2. Metadata 3 cấp giống project-plan.md: bảng Responsibility Matrix (Performed by / Reviewed by / Edited
+   by / Jira Task) và dòng metadata in nghiêng dưới mỗi mục. Reviewer lấy đúng theo bảng task Sprint 2
+   (Mục 1–2: Lê Quốc Hưng; 3–4: Trần Nguyễn Công Chung; 5–6: Mai Văn Hiển), editor là Lê Quốc Hưng.
+   Thêm Revision History.
+3. Mục 1: 1.1 Purpose (nêu rõ đối tượng đọc và cách họ dùng tài liệu), 1.2 Scope (in-scope là 10 tính
+   năng, out-of-scope rõ ràng), 1.3 Definitions (Cooksnap, RAG, pgvector, các vai trò của spec 010…),
+   1.4 References (IEEE Std 830-1998, mẫu RUP, PA1/PA2, proposal, survey, project plan, architecture, các
+   spec), 1.5 Overview.
+4. Mục 2: 2.1 Business Opportunity dựa trên khoảng trống thị trường rút ra từ khảo sát PA1; 2.2 Problem
+   Statement đúng bảng 4 dòng "The problem of / affects / the impact of which is / a successful solution
+   would be"; 2.3 Product Position Statement đúng bảng "For / Who / WikiCook (is) / That / Unlike / Our
+   product".
+Ràng buộc: tiếng Anh chuẩn văn phong tài liệu kỹ thuật; mọi con số phải có nguồn trong repo (không bịa số
+liệu khảo sát người dùng); thuật ngữ và quyết định phải khớp các spec đã clarify (ví dụ: nguồn dữ liệu dị
+ứng là liên kết nguyên liệu – chất dị ứng, không phải nhãn do LLM sinh). Chỉ sửa vision-document.md.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Viết lại toàn bộ `vision-document.md` theo 7 mục của mẫu RUP; thêm phần đầu tài liệu (môn học, nhóm, phiên bản `0.9`, ngày), bảng Responsibility Matrix 7 dòng có cột Jira và bảng Revision History (`v0.1` là bản PA1 merge ở PR #12 ngày 08/10, `v0.9` là bản này).
+- Mục 1: Purpose cho 3 nhóm người đọc (giảng viên/trợ giảng, PO, nhóm phát triển); Scope nêu 10 tính năng và 5 hạng mục ngoài phạm vi (app native, đặt hàng/thanh toán, IoT, AI tự tạo công thức, tư vấn y khoa); 10 thuật ngữ; 8 tài liệu tham chiếu, có ghi chú IEEE 830 đã được thay bằng ISO/IEC/IEEE 29148.
+- Mục 2: Business Opportunity chỉ ra mỗi đối thủ chỉ phủ một phần chuỗi "chọn món → lên thực đơn → đi chợ → nấu → chia sẻ"; Problem Statement và Position Statement dùng đúng nhãn của mẫu RUP, phần "Unlike" nêu tên và điểm yếu cụ thể của MyFridgeFood và Ăn Gì Ngon.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Tái cấu trúc cả file theo mẫu RUP | Dùng | Đề PA2 yêu cầu theo `rup_vision_sp.docx`; khung 3 mục của PA1 không có Introduction, Stakeholder, Product Overview |
+| Sơ đồ use case cấp cao của PA1 | **Bỏ** | Mô hình hóa use case là việc của Sprint 3 (PA3); persona và phạm vi của PA1 được chuyển vào Mục 3.2 và 1.2 |
+| Số liệu "15–30 phút/ngày" | Dùng, ghi rõ nguồn | Chỉ có trong proposal PA1, nhóm chưa khảo sát người dùng thật nên ghi "PA1 proposal estimate" |
+| Mục 7 chỉ để tiêu đề và metadata | Dùng | Thuộc `SCRUM-36` của Hiển; tránh conflict khi merge |
+
+### Cách kiểm chứng
+
+- Đối chiếu nhãn bảng 2.2 và 2.3 với mẫu RUP: đủ 4 dòng và 6 dòng, đúng thứ tự.
+- Đối chiếu reviewer/editor trong bảng metadata với bảng task Sprint 2 ở `project-plan.md` mục 4.2.2: khớp cả 7 dòng.
+- Kiểm tra các nhánh khác trên remote: không nhánh nào sửa `vision-document.md`, nên tái cấu trúc không gây conflict.
+- Xem lịch sử git của file để ghi đúng ngày `v0.1` (commit `af3a9f3`, 08/10/2026).
+
