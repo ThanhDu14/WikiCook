@@ -11,6 +11,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 5 | 2026-10-08 | Làm rõ spec 060 bằng `/speckit-clarify` (5 câu hỏi) | 060 |
 | 6 | 2026-10-17 | Soạn Vision Document Mục 1 (Introduction) và Mục 2 (Positioning) theo mẫu RUP (`SCRUM-32`) | Vision §1–2 |
 | 7 | 2026-10-17 | Soạn Vision Document Mục 3 (Stakeholder & User Descriptions) và Mục 4 (Product Overview) (`SCRUM-33`) | Vision §3–4 |
+| 8 | 2026-10-17 | Viết 10 tính năng cốt lõi dạng đoạn văn What/Why/Who ở Mục 5 (`SCRUM-34`) | Vision §5 |
 
 ---
 
@@ -498,4 +499,58 @@ Ràng buộc: chỉ dùng số liệu có trong proposal, survey, spec; không b
 - Đối chiếu các ô 🟢/🟡/❌ của MyFridgeFood và Ăn Gì Ngon trong bảng 3.5.4 với ma trận Mục 2 và 6 của `existing-app-survey.md`: khớp; riêng dòng "Search by on-hand ingredients" không có trong ma trận nên lấy theo mô tả tính năng ở Mục 1 và 5 của survey.
 - Kiểm tra các Figure được trích dẫn đều có trong survey (Figure 1–11).
 - Sơ đồ ngữ cảnh 4.1 parse hợp lệ bằng Mermaid 11.4.1 (xem Mục 9).
+
+---
+
+## Mục 8: Viết 10 tính năng cốt lõi ở Vision Document Mục 5
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-17 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `docs/requirements/vision-document.md` – Mục 5 (Jira `SCRUM-34`) |
+| Công cụ AI | Claude Code (model Claude Opus 5.5) |
+| Mục đích | Mô tả 10 tính năng cốt lõi thành đoạn văn 3–5 câu theo quy tắc bắt buộc của đề PA2 |
+| Nhánh Git | `Duy` |
+
+### Prompt đã dùng
+
+```
+Viết Mục 5 (Product Features) của docs/requirements/vision-document.md — task SCRUM-34. Áp dụng quy tắc bắt
+buộc của đề PA2: mỗi tính năng là MỘT đoạn văn hoàn chỉnh 3–5 câu, tuyệt đối không dùng gạch đầu dòng.
+Mỗi đoạn phải trả lời đủ 3 ý:
+- What: tính năng làm gì, vận hành thế nào;
+- Why: giải quyết nỗi đau nào của người dùng, dẫn chứng khoảng trống của MyFridgeFood / Ăn Gì Ngon từ
+  khảo sát PA1;
+- Who: nhóm người dùng nào (theo User Summary ở Mục 3.2) hưởng lợi trực tiếp.
+10 tính năng theo đúng thứ tự: User Auth & Dietary Profile, Smart Recipe Discovery & Filters, AI Weekly
+Meal Planner, Smart Shopping List, Hands-free Cooking Mode & Timers, Community Recipe Contribution, Social
+Cooksnaps & Reviews, Custom Recipe Collections, Nutrition & Allergen Analyzer, Admin Content Moderation.
+Nội dung phải khớp các quyết định đã chốt trong spec: 010 (4 vai trò, xác minh email); 020 (tìm không dấu,
+lọc kết hợp, ẩn món xung đột hồ sơ ăn uống, ngưỡng 3 đánh giá); 030/031 (lịch 7 ngày × 3 bữa, RAG, ràng
+buộc cứng/mềm, kiểm tra từng món AI chọn, AI không tạo món mới); 040 và 050 trên nhánh feature; 060
+(wizard 6 bước, vòng đời trạng thái). Nhãn dị ứng phải lấy từ liên kết nguyên liệu – chất dị ứng, LLM chỉ
+ước tính dinh dưỡng. Cuối mục thêm bảng truy vết Feature → User Need (N1–N8) → module PA1 → spec.
+Tiếng Anh chuyên nghiệp; tự đếm số câu của từng đoạn trước khi trả kết quả.
+```
+
+### Tóm tắt phản hồi của AI
+
+- 10 đoạn văn (5.1 → 5.10), mỗi đoạn 5 câu theo thứ tự: cơ chế (What) → chi tiết vận hành → giá trị khi kết nối với tính năng khác → nỗi đau và dẫn chứng đối thủ (Why) → người hưởng lợi (Who).
+- Mục 5.11: bảng truy vết 10 tính năng → nhu cầu N1–N8 → module 3.1–3.10 của proposal → spec.
+- Các chi tiết lấy từ spec: "pho bo" tìm ra "Phở bò" (020), ngưỡng 3 đánh giá cho "Top rated" (020 clarify), vòng đời Draft → Pending → Published/Rejected/Revision Requested → Archived (060), thử lại LLM và để trống món sai (031), giữ màn hình sáng và lệnh giọng nói tiếng Việt (050), gộp đơn vị g ↔ kg và dùng offline (040).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Tìm theo nguyên liệu có sẵn (pantry matching) nằm trong Feature 2 | Dùng, có ghi chú | Đề Jira và Workflow 2 yêu cầu, nhưng spec 020 đã loại khỏi phạm vi; bảng 5.11 ghi "pantry matching in a later increment" — **cần PO chốt** có viết spec riêng hay không |
+| Nhãn dị ứng lấy từ liên kết nguyên liệu, không từ LLM | Dùng (khác proposal 3.9) | Proposal PA1 nói LLM gắn nhãn dị ứng; đã đổi theo quyết định clarify spec 020 vì nhãn LLM có thể sai |
+| Viết đúng 5 câu mỗi đoạn | Dùng | Mức trên của khung 3–5 câu, đủ chỗ cho cả What, Why, Who |
+
+### Cách kiểm chứng
+
+- Đếm câu bằng script `awk` trên từng đoạn 5.1–5.10: cả 10 đoạn đều 5 câu; không đoạn nào dùng gạch đầu dòng.
+- Đối chiếu con số với spec: 4 vai trò (010 FR-003 và ma trận phân quyền), 7 × 3 = 21 slot (030 FR-002, 031), ≥ 3 đánh giá (020 FR-014a), wizard 6 bước (060).
+- Kiểm tra mỗi đoạn đều nhắc ít nhất một nhóm người dùng có trong bảng 3.2.
 
