@@ -10,6 +10,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 4 | 2026-10-08 | Làm rõ spec 020 bằng `/speckit-clarify` (5 câu hỏi) | 020 |
 | 5 | 2026-10-08 | Làm rõ spec 060 bằng `/speckit-clarify` (5 câu hỏi) | 060 |
 | 6 | 2026-10-17 | Soạn Vision Document Mục 1 (Introduction) và Mục 2 (Positioning) theo mẫu RUP (`SCRUM-32`) | Vision §1–2 |
+| 7 | 2026-10-17 | Soạn Vision Document Mục 3 (Stakeholder & User Descriptions) và Mục 4 (Product Overview) (`SCRUM-33`) | Vision §3–4 |
 
 ---
 
@@ -431,4 +432,70 @@ liệu khảo sát người dùng); thuật ngữ và quyết định phải kh�
 - Đối chiếu reviewer/editor trong bảng metadata với bảng task Sprint 2 ở `project-plan.md` mục 4.2.2: khớp cả 7 dòng.
 - Kiểm tra các nhánh khác trên remote: không nhánh nào sửa `vision-document.md`, nên tái cấu trúc không gây conflict.
 - Xem lịch sử git của file để ghi đúng ngày `v0.1` (commit `af3a9f3`, 08/10/2026).
+
+---
+
+## Mục 7: Soạn Vision Document Mục 3 (Stakeholder & User Descriptions) và Mục 4 (Product Overview)
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-17 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `docs/requirements/vision-document.md` – Mục 3, 4 (Jira `SCRUM-33`) |
+| Công cụ AI | Claude Code (model Claude Opus 5.5) |
+| Mục đích | Mô tả stakeholder, người dùng, môi trường sử dụng, nhu cầu cốt lõi, đối thủ và bối cảnh sản phẩm, có dẫn chứng từ khảo sát PA1 |
+| Nhánh Git | `Duy` |
+
+### Prompt đã dùng
+
+```
+Tiếp tục docs/requirements/vision-document.md: viết Mục 3 (Stakeholder and User Descriptions) và Mục 4
+(Product Overview) theo mẫu RUP — task SCRUM-33. Tiêu chí nghiệm thu: phân tích sâu, dẫn chứng thuyết
+phục từ kết quả khảo sát PA1.
+Mục 3:
+- 3.1 Stakeholder Summary (Name / Description / Responsibilities): giảng viên – trợ giảng, PO, PM/SM, nhóm
+  phát triển, nhà cung cấp dịch vụ bên ngoài (LLM, Google OAuth, email).
+- 3.2 User Summary (Name / Description / Responsibilities / Stakeholder) cho người nấu ăn bận rộn, người
+  sáng tạo công thức, quản trị viên/moderator; giữ nhóm người dùng có chế độ ăn đặc biệt của PA1 như một
+  nhóm con; thêm cột ánh xạ vai trò hệ thống theo spec 010 (Guest/Member/Contributor/Moderator/Admin).
+- 3.3 User Environment theo từng bối cảnh: bếp (tay ướt/dính dầu mỡ, hơi nước, tiếng ồn máy hút mùi,
+  thiết bị đặt cách 0,5–1 m, màn hình tự tắt sau 30–60 giây), lên thực đơn hằng tuần, siêu thị sóng yếu,
+  soạn công thức/kiểm duyệt; nền tảng và trình duyệt hỗ trợ; ứng dụng liên quan (Zalo, YouTube/TikTok).
+- 3.4 Summary of Key Needs: bảng Need / Priority / Concerns / Current Solution / Proposed Solution, đánh
+  mã N1…N8 để Mục 5 truy vết ngược.
+- 3.5 Alternatives and Competition: phân tích MyFridgeFood và Ăn Gì Ngon (điểm mạnh, điểm yếu, WikiCook
+  học được gì), trích dẫn đúng Figure và hàng trong ma trận của existing-app-survey.md; nêu các giải pháp
+  thay thế khác (blog/YouTube, nhóm Facebook, ghi chú giấy); kết thúc bằng bảng so sánh năng lực 3 sản
+  phẩm và kết luận về điểm khác biệt.
+Mục 4:
+- 4.1 Product Perspective: vị trí sản phẩm, kiến trúc khái quát theo architecture.md, kèm sơ đồ Mermaid
+  ngữ cảnh hệ thống (người dùng, thành phần WikiCook, hệ thống bên ngoài).
+- 4.2 Assumptions and Dependencies: bảng ID / Type / Statement / Impact if it does not hold, gồm giả định
+  (mạng, đủ công thức cho AI, dữ liệu dị ứng do moderator duyệt, hạn mức free tier, API trình duyệt) và
+  phụ thuộc (LLM, embedding + pgvector, Google OAuth, email, thứ tự giữa các spec, ràng buộc dự án).
+Ràng buộc: chỉ dùng số liệu có trong proposal, survey, spec; không bịa thống kê; tiếng Anh; giữ metadata 3 cấp.
+```
+
+### Tóm tắt phản hồi của AI
+
+- 3.1: 5 nhóm stakeholder; 3.2: 4 nhóm người dùng kèm vai trò hệ thống và ghi chú persona (mục tiêu, nỗi đau).
+- 3.3: 6 bối cảnh sử dụng, mỗi bối cảnh suy ra yêu cầu giao diện (chữ lớn đọc từ xa, nút lớn, giữ màn hình sáng, dùng một tay, chịu được mất mạng).
+- 3.4: 8 nhu cầu N1–N8 (5 ưu tiên High, 3 Medium).
+- 3.5: phân tích 2 đối thủ có dẫn chứng (Figure 1, 2, 5–7, 10, 11 và các hàng trong ma trận Mục 2 và 6 của survey), 3 nhóm giải pháp thay thế, bảng so sánh 11 năng lực; kết luận khác biệt nằm ở **chuỗi liền mạch** cộng 3 năng lực mà cả hai đối thủ đều không có.
+- 4.1: sơ đồ ngữ cảnh Mermaid gồm 3 nhóm người dùng, 4 thành phần nội bộ và 6 hệ thống bên ngoài; 4.2: 5 giả định (ASM-01 → 05) và 6 phụ thuộc (DEP-01 → 06), mỗi dòng có hệ quả nếu không đúng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Người dùng có chế độ ăn đặc biệt là nhóm con | Dùng | Đề Jira nêu 3 nhóm, nhưng đây là persona của PA1 và là lý do tồn tại của Feature 1 và 9 |
+| Chỉ so sánh với 2 app đã khảo sát ở PA1 | Dùng | Mọi nhận định đều kiểm chứng được bằng screenshot trong repo; không thêm đối thủ chưa khảo sát |
+| ASM-03: liên kết nguyên liệu – chất dị ứng là nguồn sự thật | Dùng | Khớp quyết định ở `/speckit-clarify` spec 020 (Mục 4 của log này) |
+| Giới hạn 5 lần sinh thực đơn/người/giờ trong ASM-04 | Dùng | Lấy từ spec 031 và proposal mục 4.8 |
+
+### Cách kiểm chứng
+
+- Đối chiếu các ô 🟢/🟡/❌ của MyFridgeFood và Ăn Gì Ngon trong bảng 3.5.4 với ma trận Mục 2 và 6 của `existing-app-survey.md`: khớp; riêng dòng "Search by on-hand ingredients" không có trong ma trận nên lấy theo mô tả tính năng ở Mục 1 và 5 của survey.
+- Kiểm tra các Figure được trích dẫn đều có trong survey (Figure 1–11).
+- Sơ đồ ngữ cảnh 4.1 parse hợp lệ bằng Mermaid 11.4.1 (xem Mục 9).
 
