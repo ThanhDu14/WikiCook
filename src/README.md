@@ -1,3 +1,152 @@
-# Source Code Directory
+# WikiCook - Source Code & Spec Kit Artifacts Directory
 
-This directory will contain the application source code for future sprints.
+> **Project:** WikiCook — Smart Cooking & Recipe Platform  
+> **Course:** Software Engineering (CO3001) — Project Assignment 2 (PA2)  
+> **Directory Scope:** `WikiCook/src/`  
+> **Task Tracking:** `SCRUM-37` (Spec Kit Compliance & Artifact Synchronization)  
+
+---
+
+## 1. Overview & Compliance Note
+
+*Performed by: Tran Nguyen Cong Chung | Reviewed by: Mai Van Hien, Nguyen Thanh Du | Edited by: Le Quoc Hung*
+
+This directory (`WikiCook/src/`) serves as the official container for **Spec Kit artifacts** in compliance with the Project Assignment 2 evaluation guidelines (`PA2-2026.pdf`, Section C):
+
+> *"The Spec Kit artifacts should be placed inside the /src folder of your repository."*
+
+In adherence to this mandate, the ratified project constitution, markdown generation templates, and all sprint-level feature specifications produced by Spec Kit are synchronized directly into this directory. 
+
+Simultaneously, the original root configuration directories (`.specify/` and `specs/`) are preserved at the repository root to maintain full backward compatibility with Spec Kit CLI workflows and automated bash scripts (`.specify/scripts/bash/`). This dual-location structure ensures **zero broken links** across engineering documentation while providing a consolidated, compliant destination for academic grading.
+
+---
+
+## 2. Directory Structure
+
+*Performed by: Tran Nguyen Cong Chung | Reviewed by: Mai Van Hien, Nguyen Thanh Du | Edited by: Le Quoc Hung*
+
+```text
+WikiCook/src/
+├── README.md                      # Documentation guide for src/ structure & compliance (this file)
+├── constitution.md                # Ratified WikiCook Engineering Constitution (v1.0.0)
+│
+├── templates/                     # Spec Kit standard Markdown authoring templates
+│   ├── checklist-template.md      # Requirements checklist template
+│   ├── constitution-template.md   # Core governance & principle template
+│   ├── plan-template.md           # Implementation plan template
+│   ├── spec-template.md           # Feature specification template
+│   └── tasks-template.md          # Actionable development task template
+│
+└── specs/                         # Feature specifications generated via Spec Kit
+    ├── user-authentication-roles/ # Sprint 1: Authentication & RBAC feature
+    │   ├── spec.md                # Detailed user stories, requirements & data model
+    │   └── checklists/
+    │       └── requirements.md    # Pre-implementation verification checklist
+    │
+    ├── 020-recipe-search-filter/  # Sprint 2: Recipe search & multi-facet filtering
+    │   ├── spec.md                # Search algorithm, filters & query specifications
+    │   └── checklists/
+    │       └── requirements.md    # Quality checklist for search functionality
+    │
+    └── 060-recipe-editor/         # Sprint 2: Interactive rich-text recipe editor
+        ├── spec.md                # Drafts, ingredients & step-by-step editing spec
+        └── checklists/
+            └── requirements.md    # Quality checklist for editor functionality
+```
+
+---
+
+## 3. Spec Kit Artifact Descriptions
+
+*Performed by: Tran Nguyen Cong Chung | Reviewed by: Mai Van Hien, Nguyen Thanh Du | Edited by: Le Quoc Hung*
+
+### 3.1. Engineering Constitution ([`constitution.md`](./constitution.md))
+
+The project constitution establishes non-negotiable engineering laws ratified by the entire WikiCook development team (Version 1.0.0). It governs all architectural, testing, and implementation decisions across all 5 Scrum Sprints:
+
+1. **Principle I (Spec-First):** Every user story MUST have a validated `spec.md` approved before implementation planning or code execution. Each story maps 1-to-1 to a Jira task ID (`SCRUM-xx`).
+2. **Principle II (Test-First — NON-NEGOTIABLE):** Minimum automated test coverage of $\ge 70\%$ is enforced before merging. All test cases must precede code implementation in the task schedule.
+3. **Principle III (Simple Layered Architecture):** Strict separation of concerns across Presentation (React + Vite), Service/Domain, and Data Access (Spring Boot 3 + PostgreSQL 16) layers.
+4. **Principle IV (Data Privacy & Security):** Mandatory hashing (BCrypt cost 12), JWT-based stateless authentication, and rate limiting (max 3 reset emails / 15 minutes).
+5. **Principle V (Consistent UX):** Seamless, responsive interface adhering to WCAG 2.1 AA accessibility guidelines across Chrome, Safari, and Firefox.
+
+### 3.2. Markdown Authoring Templates ([`templates/`](./templates/))
+
+The `templates/` folder contains standard scaffolding documents used by developers and AI agents to author consistent engineering deliverables:
+
+| Template Name | File Path | Functional Purpose |
+| :--- | :--- | :--- |
+| **Checklist Template** | [`templates/checklist-template.md`](./templates/checklist-template.md) | Quality gate verification items before implementation begins. |
+| **Constitution Template** | [`templates/constitution-template.md`](./templates/constitution-template.md) | Baseline structure for defining team principles and governance. |
+| **Plan Template** | [`templates/plan-template.md`](./templates/plan-template.md) | Technical architecture, dependency analysis, and risk mitigation plan. |
+| **Spec Template** | [`templates/spec-template.md`](./templates/spec-template.md) | User scenario definition, acceptance criteria, and edge-case catalog. |
+| **Tasks Template** | [`templates/tasks-template.md`](./templates/tasks-template.md) | Dependency-ordered implementation tasks mapped to Jira backlog items. |
+
+### 3.3. Feature Specifications ([`specs/`](./specs/))
+
+The `specs/` directory hosts living specification packages generated through Spec Kit workflows:
+
+* **User Authentication & Roles ([`specs/user-authentication-roles/`](./specs/user-authentication-roles/)):**
+  * *Sprint:* Sprint 1 (Foundational security).
+  * *Deliverables:* [`spec.md`](./specs/user-authentication-roles/spec.md), [`checklists/requirements.md`](./specs/user-authentication-roles/checklists/requirements.md).
+  * *Scope:* Registration, login, password recovery, JWT token lifecycles, and Role-Based Access Control (Admin vs. Cook).
+
+* **Recipe Search & Filter ([`specs/020-recipe-search-filter/`](./specs/020-recipe-search-filter/)):**
+  * *Sprint:* Sprint 2 (Discovery engine).
+  * *Deliverables:* [`spec.md`](./specs/020-recipe-search-filter/spec.md), [`checklists/requirements.md`](./specs/020-recipe-search-filter/checklists/requirements.md).
+  * *Scope:* Fuzzy text search, dietary preference filtering, ingredient exclusion, cooking time facets, and pagination.
+
+* **Recipe Editor ([`specs/060-recipe-editor/`](./specs/060-recipe-editor/)):**
+  * *Sprint:* Sprint 2 (Content creation).
+  * *Deliverables:* [`spec.md`](./specs/060-recipe-editor/spec.md), [`checklists/requirements.md`](./specs/060-recipe-editor/checklists/requirements.md).
+  * *Scope:* Rich-text drafting, step-by-step cooking timers, nutritional metadata calculation, and automated local draft saving.
+
+---
+
+## 4. Future Sprint Source Code Roadmap
+
+*Performed by: Tran Nguyen Cong Chung | Reviewed by: Mai Van Hien, Nguyen Thanh Du | Edited by: Le Quoc Hung*
+
+During **Sprint 1 & Sprint 2 (PA1 & PA2)**, repository effort focuses on requirement engineering, architectural design, and Spec Kit governance.
+
+From **Sprint 3 (PA3)** onwards, this directory (`src/`) will accommodate the application source code tree:
+
+```text
+src/
+├── main/                          # Backend application source (Java 21 / Spring Boot 3)
+│   ├── java/com/wikicook/
+│   │   ├── auth/                  # Authentication & authorization module
+│   │   ├── recipe/                # Recipe management & search module
+│   │   └── user/                  # User profile & dietary preference module
+│   └── resources/
+│       ├── db/migration/          # Flyway SQL migration scripts
+│       └── application.yml        # Spring Boot configuration profiles
+├── test/                          # Automated test suites (Unit, Integration, Architecture)
+├── web/                           # Frontend application source (React 18 / TypeScript / Vite)
+│   ├── src/components/            # Reusable UI component library
+│   ├── src/pages/                 # Page-level route views
+│   └── package.json               # Frontend dependencies & build scripts
+├── constitution.md                # Preserved Spec Kit governance
+├── templates/                     # Preserved Spec Kit templates
+└── specs/                         # Preserved Spec Kit specifications
+```
+
+---
+
+## 5. Synchronization & Integrity Maintenance
+
+*Performed by: Tran Nguyen Cong Chung | Reviewed by: Mai Van Hien, Nguyen Thanh Du | Edited by: Le Quoc Hung*
+
+To maintain alignment between the development tooling at root and the grading submission tree in `src/`:
+
+1. Whenever `constitution.md` or templates are updated via Spec Kit commands, run:
+   ```bash
+   cp .specify/memory/constitution.md src/constitution.md
+   cp -r .specify/templates/* src/templates/
+   cp -r specs/* src/specs/
+   ```
+2. Verify all relative internal links point to active resources.
+3. Commit both locations under a single semantic commit message:
+   ```bash
+   git commit -m "docs(spec-kit): sync artifacts to src for SCRUM-37"
+   ```

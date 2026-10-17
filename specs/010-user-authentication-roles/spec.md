@@ -1,10 +1,10 @@
 # Feature Specification: User Authentication & Roles
 
-**Feature Branch**: `feature/SCRUM-xx-user-authentication-roles` *(TODO: assign Jira key)*
+**Feature Branch**: `feature/SCRUM-27-user-authentication-roles` *(Sprint 02 Backlog)*
 
 **Created**: 2026-10-02
 
-**Status**: Draft
+**Status**: Ready for Implementation (Sprint 02)
 
 **Input**: User description: "Describe the login feature: user stories, acceptance criteria and edge
 cases. A good spec has a summary + user stories + acceptance criteria + functional and
@@ -183,8 +183,7 @@ is reused.
   are ignored and the user goes to the home page.
 - **Email with leading/trailing spaces or mixed case** is normalized for both sign-up and sign-in.
 - **Password with leading/trailing spaces** is kept exactly as typed (not trimmed).
-- **Very long input** (email > 254 characters, password > 128 characters, display name
-  > 50 characters) is rejected with a clear validation message.
+- **Very long input** (email > 254 characters, password > 128 characters, display name > 50 characters) is rejected with a clear validation message.
 - **Double-click on submit** does not create two accounts or send two emails.
 - **Google account without an email address** or with an unverified email → sign-in refused
   with a message suggesting email/password registration.
