@@ -4,7 +4,7 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 06  
 **Template:** Adapted from the RUP Vision template for small projects (`rup_vision_sp.docx`)  
-**Document Version:** 0.6 (Sprint 02 Draft — Sections 1–2, Project Assignment 2)  
+**Document Version:** 0.7 (Sprint 02 Draft — Sections 1–4, Project Assignment 2)  
 **Date:** October 17, 2026  
 
 ---
@@ -27,6 +27,7 @@
 | :---: | :---: | :--- | :--- |
 | **08/10/2026** | `v0.1` | PA1 draft: positioning, personas, high-level use cases and scope boundary (merged in PR #12). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **17/10/2026** | `v0.6` | Restructured to the RUP Vision template; authored Sections 1–2 (`SCRUM-32`); Section 7 reserved for `SCRUM-36`. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
+| **17/10/2026** | `v0.7` | Authored Sections 3–4: stakeholders, users, competition and product overview (`SCRUM-33`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 
 ---
 
@@ -106,6 +107,154 @@ Home cooking involves a chain of separate tasks — deciding what to cook, plann
 | **That** | connects recipe discovery, AI weekly meal planning, automatic shopping lists, hands-free cooking and community sharing in one workflow, personalised by each user's dietary profile |
 | **Unlike** | *MyFridgeFood*, which matches ingredients mechanically in a dated, ad-heavy interface with no planning or nutrition data, and *Ăn Gì Ngon*, a one-way editorial blog with no community contribution, reviews or cooking mode |
 | **Our product** | grounds every AI-generated meal plan in real, moderated WikiCook recipes, enforces allergens and dietary rules as hard constraints, and supports the cook from the first idea to the Cooksnap of the finished dish |
+
+---
+
+## 3. STAKEHOLDER AND USER DESCRIPTIONS
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
+
+### 3.1. Stakeholder Summary
+
+Stakeholders are people or organisations who influence or are affected by the project but do not necessarily use the product.
+
+| Name | Description | Responsibilities |
+| :--- | :--- | :--- |
+| **Course Instructors & Teaching Assistants (CS300)** | Academic sponsors and evaluators of the project. | Approve the project scope, grade each PA deliverable, and give feedback that the team turns into revisions in the next Sprint. |
+| **Product Owner** — Nguyễn Đức Duy | Owner of the product vision and requirements. | Maintains this Vision Document, prioritises the backlog, accepts or rejects feature changes, and ensures every spec traces back to a user need in Section 3.4. |
+| **Project Manager & Scrum Master** — Lê Quốc Hưng | Owner of the delivery process. | Plans Sprints, tracks progress on Jira, removes blockers and acts as chief editor of all deliverables. |
+| **Development Team** — Mai Văn Hiển (Tech Lead), Trần Nguyễn Công Chung (QA Lead), Nguyễn Thành Dự (DevOps Lead) | Engineers who specify, build, test and release WikiCook. | Turn features into specs and working software; own architecture and AI pipeline, quality assurance, and build/release respectively. |
+| **External Service Providers** | LLM and embedding API provider, Google (OAuth 2.0), email delivery service. | Provide services WikiCook depends on (Section 4.2); their free-tier quotas and availability constrain the AI features. |
+
+### 3.2. User Summary
+
+| Name | Description | Responsibilities | Stakeholder | System Role (spec 010) |
+| :--- | :--- | :--- | :--- | :--- |
+| **Busy Home Cook** *(primary)* | Working professionals, independent students and working parents aged 20–45 who cook at home several times a week. | Searches recipes, plans weekly meals, shops from the list, cooks in Cooking Mode, rates recipes and posts Cooksnaps. | Self (represented by the Product Owner) | Guest → Member |
+| **Health-Conscious & Dietary-Restricted Cook** *(specialised)* | A sub-group of home cooks aged 18–60: people with food allergies, vegetarians/vegans, fitness enthusiasts and people managing diet-related conditions. | Maintains an accurate dietary profile and relies on allergen filtering, warning badges and nutrition estimates. | Self (represented by the Product Owner) | Member |
+| **Recipe Creator** *(secondary)* | Home chefs and culinary hobbyists aged 22–55 who want to document and share their own or family recipes. | Authors structured recipes through the wizard, responds to moderator feedback, and engages with reviews and Cooksnaps. | Self (represented by the Product Owner) | Member → Contributor |
+| **Platform Administrator / Moderator** *(system)* | WikiCook operations staff — in this project, members of the team acting as moderators. | Reviews submitted recipes, curates categories, ingredients and allergen links, handles reports and suspends abusive accounts. | Project team | Moderator / Administrator |
+
+**Persona notes.**
+
+- **Busy Home Cook:** wants a dinner decided in under 3 minutes and cookable in 20–45 minutes from what is already in the fridge; is exhausted after work and frustrated by long blog posts with buried ingredient lists.
+- **Dietary-Restricted Cook:** needs zero tolerance for restricted ingredients and transparent calories and macros per serving; distrusts unlabelled online recipes and ambiguous ingredient names.
+- **Recipe Creator:** wants clean authoring tools, proper attribution and real feedback; is discouraged by unstructured social media posts where recipes are quickly buried.
+- **Platform Administrator:** needs an efficient review queue and taxonomy tools to keep a growing catalogue clean, safe and consistently tagged.
+
+### 3.3. User Environment
+
+- **Kitchen (cooking):** one person cooks while the device — usually a smartphone or tablet — is propped on the counter 0.5–1 m away. Hands are frequently wet, greasy or covered in flour, the air is humid and steamy, and the range hood creates background noise. Mobile screens normally dim and lock after 30–60 seconds without touch, and a typical cooking session lasts 20–45 minutes with several overlapping stages. The interface therefore needs large text readable from a distance, oversized touch targets, a screen that stays awake, and alternatives to precise touch (keyboard and voice).
+- **Planning (weekly):** planning is usually done once a week, often on a weekend evening, on a laptop or phone, and takes 10–20 minutes. The user plans for a household of typically 1–5 people, so serving counts and household size matter.
+- **Supermarket (shopping):** the user holds a phone in one hand and a basket in the other, often in basements or large stores with weak mobile signal. The shopping list must work one-handed and keep checked items when the connection drops.
+- **Authoring and moderation:** recipe creators and moderators mostly work on a desktop or laptop where long forms, photo uploads and review queues are comfortable, but authoring must remain usable on mobile.
+- **Platforms:** modern browsers — Chrome/Edge 100+, Firefox 100+, Safari 15+ on Windows, macOS, Linux, Android and iOS — from 360 px wide screens up to 4K desktops. An internet connection is required for search, synchronisation and AI features.
+- **Other applications:** users share shopping lists through messaging apps such as Zalo or Messenger, and recipe creators link cooking videos from YouTube or TikTok.
+
+### 3.4. Summary of Key Stakeholder or User Needs
+
+| Need | Priority | Concerns | Current Solution | Proposed Solution |
+| :--- | :---: | :--- | :--- | :--- |
+| **N1.** Decide quickly what to cook | High | 15–30 minutes of daily decision fatigue; recipes that need ingredients the user does not have | Scroll recipe blogs; tick a long checkbox list on MyFridgeFood | Keyword search with combinable filters and one-tap presets, plus pantry matching (Feature 2) |
+| **N2.** Plan the week and shop efficiently | High | Repetitive menus; forgotten or duplicate purchases; manual quantity arithmetic | Paper notes; Ăn Gì Ngon's planner with a basic, ungrouped list | AI Weekly Meal Planner (Feature 3) feeding an aisle-grouped Smart Shopping List (Feature 4) |
+| **N3.** Follow a recipe with busy, messy hands | High | Smudged devices, lost place in the recipe, overcooked stages, screen locking | Scroll static recipe pages; separate phone timer app | Hands-free Cooking Mode with parallel timers (Feature 5) |
+| **N4.** Stay safe from allergens and within a diet | High | Accidental allergen exposure; unknown calories and macros | Read every ingredient manually; neither surveyed app helps | Dietary profile enforced across search and planning (Feature 1), allergen badges and nutrition estimates (Feature 9) |
+| **N5.** Share own recipes and receive feedback | Medium | No attribution; unstructured posts; no feedback loop | Facebook groups; MyFridgeFood's single long form | Structured recipe wizard with a clear review lifecycle (Feature 6) |
+| **N6.** Trust a recipe before cooking it | Medium | Styled photos and single ratings can mislead | Star ratings only (MyFridgeFood) or nothing (Ăn Gì Ngon) | Reviews, tips and Cooksnaps with a minimum-ratings rule for ranking (Feature 7) |
+| **N7.** Find favourite recipes again | Medium | A single flat bookmark list becomes unusable | Browser bookmarks; flat "Saved" lists | Named personal collections (Feature 8) |
+| **N8.** Keep the catalogue clean and safe *(admin)* | High | Spam, plagiarism and unsafe content; inconsistent tags and allergen data | No moderation (MyFridgeFood); editorial only (Ăn Gì Ngon) | Moderation queue and taxonomy management (Feature 10) |
+
+### 3.5. Alternatives and Competition
+
+The PA1 survey ([`existing-app-survey.md`](existing-app-survey.md), Sections 1–9) analysed two platforms that represent the two dominant models on the market. The evidence below refers to the screenshots and feature matrices recorded in that survey.
+
+#### 3.5.1. MyFridgeFood (myfridgefood.com) — reverse ingredient search model
+
+- **Strengths:** delivers value immediately — the "What's in your fridge?" ingredient checklist is the homepage itself (survey Figure 1), with a short "Quick Kitchen" list before the full list; core search needs no account; community members submit recipes and rate them with five stars (Figures 5–6).
+- **Weaknesses:** matching is purely mechanical checkbox matching over a wall of text checkboxes (Figure 2); the interface dates from around 2010 and is interrupted by advertising banners; there is no meal planner, shopping list, nutrition data, cooking mode or visible moderation (survey Section 2, rows 3–5, 9–10).
+- **What WikiCook takes from it:** the "core tool first" homepage, quick presets before full lists, guest browsing and community contribution — rebuilt with chip-based inputs and backed by moderation.
+
+#### 3.5.2. Ăn Gì Ngon (angingon.com) — editorial content and planning model
+
+- **Strengths:** a modern, fast interface over a library of more than 19,000 recipes and tips; multi-dimensional sidebar filters (Figure 7); a weekly planner of days × breakfast/lunch/dinner with an "AI Menu Generator" and a "select dates to create shopping list" action (Figure 10); Google and email login (Figure 11).
+- **Weaknesses:** a one-way editorial blog — users cannot contribute recipes, comment, rate or post photos; recipes are static pages that must be scrolled while cooking; no nutrition or allergen information; the shopping list is basic and not grouped by aisle (survey Section 6, rows 4–7, 9).
+- **What WikiCook takes from it:** the homepage search entry point, sidebar filters (as a bottom sheet on mobile), recipe cards with time, difficulty and bookmark, and the days × meals planner grid — extended with dietary enforcement and an aisle-grouped list.
+
+#### 3.5.3. Other alternatives
+
+Users also rely on general recipe blogs and YouTube videos (rich content but ad-heavy, unstructured and impossible to follow hands-free), Facebook cooking groups (community feedback but no structure, search or attribution), and paper notes or note-taking apps for shopping (no consolidation and easily forgotten). These alternatives solve single steps of the chain and leave the user to connect them manually.
+
+#### 3.5.4. Competitive Summary
+
+| Capability | MyFridgeFood | Ăn Gì Ngon | WikiCook |
+| :--- | :---: | :---: | :---: |
+| Keyword search and multi-criteria filters | 🟡 | 🟢 | 🟢 |
+| Search by on-hand ingredients | 🟢 | ❌ | 🟢 |
+| Dietary profile and automatic allergen filtering | ❌ | ❌ | 🟢 |
+| Weekly meal planner | ❌ | 🟢 | 🟢 |
+| AI meal planning grounded in the platform's own recipes, with dietary enforcement | ❌ | 🟡 | 🟢 |
+| Shopping list merged and grouped by supermarket aisle | ❌ | 🟡 | 🟢 |
+| Hands-free cooking mode with parallel timers | ❌ | ❌ | 🟢 |
+| Community recipe contribution | 🟢 | ❌ | 🟢 |
+| Reviews and Cooksnaps | 🟡 | ❌ | 🟢 |
+| Nutrition estimates and allergen badges | ❌ | ❌ | 🟢 |
+| Content moderation | ❌ | ➖ (editorial) | 🟢 |
+
+*Notation:* 🟢 supported · 🟡 partial · ❌ not supported · ➖ not applicable. Ratings for MyFridgeFood and Ăn Gì Ngon come from the PA1 survey feature matrices.
+
+**Conclusion.** Each competitor is strong in one model and absent in the other: MyFridgeFood has community and pantry search without planning; Ăn Gì Ngon has planning without community. WikiCook's differentiation is not a single feature but the **connected workflow** — discover → plan → shop → cook → share — combined with three capabilities neither competitor offers: dietary-profile enforcement, hands-free cooking and nutrition/allergen information.
+
+---
+
+## 4. PRODUCT OVERVIEW
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
+
+### 4.1. Product Perspective
+
+WikiCook is a new, self-contained product; it is not a component of a larger system. It is built as a layered client–server web application: a React single-page application in the browser, a stateless Spring Boot REST API, a PostgreSQL 16 database with the `pgvector` extension for recipe embeddings, and Redis for caching and rate limiting (see the Software Architecture Document). The diagram below shows WikiCook's users and the external systems it interacts with.
+
+```mermaid
+flowchart LR
+    Cook(["Home Cook / Dietary-Restricted Cook"])
+    Creator(["Recipe Creator"])
+    Admin(["Moderator / Administrator"])
+
+    subgraph WC["WikiCook Platform"]
+        SPA["Web Client<br/>React SPA, 360 px to 4K"]
+        API["REST API<br/>Spring Boot 3.x"]
+        DB[("PostgreSQL 16<br/>+ pgvector")]
+        Cache[("Redis<br/>cache and rate limits")]
+        SPA <--> API
+        API <--> DB
+        API <--> Cache
+    end
+
+    Cook --> SPA
+    Creator --> SPA
+    Admin --> SPA
+
+    API -- "meal planning, nutrition estimates" --> LLM["LLM API"]
+    API -- "recipe and query embeddings" --> EMB["Embedding API"]
+    API -- "sign-in with Google" --> OAUTH["Google OAuth 2.0"]
+    API -- "verification and reset emails" --> MAIL["Email Delivery Service"]
+    SPA -- "embedded cooking videos" --> VIDEO["YouTube / TikTok"]
+    SPA -- "wake lock, speech recognition" --> BROWSER["Browser Platform APIs"]
+```
+
+### 4.2. Assumptions and Dependencies
+
+| ID | Type | Statement | Impact if it does not hold |
+| :---: | :--- | :--- | :--- |
+| **ASM-01** | Assumption | Users have a modern browser and an internet connection for search, synchronisation and AI features; only Cooking Mode and the Shopping List must tolerate short disconnections. | Offline support would have to be extended to more features, increasing client complexity. |
+| **ASM-02** | Assumption | Before the AI planner is demonstrated, the catalogue contains enough published recipes (seeded by the team) to fill a 21-slot week for typical dietary profiles. | The planner returns "not enough recipes" more often and its value cannot be shown. |
+| **ASM-03** | Assumption | Moderators keep the ingredient–allergen links accurate; these links, not LLM output, are the source of truth for allergen filtering. | Allergen filtering and badges become unreliable, which is a safety risk for dietary-restricted users. |
+| **ASM-04** | Assumption | Free-tier LLM and embedding quotas are sufficient when the AI planner is limited to 5 generations per user per hour and results are cached. | AI features must be throttled further or temporarily disabled, falling back to the manual planner. |
+| **ASM-05** | Assumption | Screen Wake Lock and speech recognition are available in the main target browsers but may be missing on some devices. | Cooking Mode falls back to touch and keyboard navigation and shows a hint to keep the screen on. |
+| **DEP-01** | Dependency | LLM API (e.g., Gemini or OpenAI) for meal-plan arrangement and nutrition estimation. | Without it, AI planning and nutrition estimates are unavailable; all non-AI features keep working. |
+| **DEP-02** | Dependency | Embedding API and PostgreSQL `pgvector` for RAG retrieval of candidate recipes. | Without it, the AI planner cannot retrieve candidates and is disabled. |
+| **DEP-03** | Dependency | Google OAuth 2.0 for "Sign in with Google". | Users sign in with email and password only. |
+| **DEP-04** | Dependency | An email delivery service for verification and password-reset emails. | New accounts cannot be verified and therefore cannot publish recipes (spec 010 FR-006). |
+| **DEP-05** | Dependency | Feature order: roles and dietary profile (specs 010/011) precede all personalised features; structured ingredients from the recipe wizard (spec 060) precede the shopping list, nutrition analysis and AI planner. | Downstream features cannot be built or tested on real data. |
+| **DEP-06** | Dependency | Project constraints from the Project Plan: zero budget, five team members and a 14-week semester. | Scope must be re-prioritised; lower-priority features move to a later release. |
 
 ---
 
