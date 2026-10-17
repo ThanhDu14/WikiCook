@@ -4,7 +4,7 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 06  
 **Template:** Adapted from the RUP Vision template for small projects (`rup_vision_sp.docx`)  
-**Document Version:** 0.8 (Sprint 02 Draft — Sections 1–5, Project Assignment 2)  
+**Document Version:** 0.9 (Sprint 02 Draft — Sections 1–6, Project Assignment 2)  
 **Date:** October 17, 2026  
 
 ---
@@ -29,6 +29,7 @@
 | **17/10/2026** | `v0.6` | Restructured to the RUP Vision template; authored Sections 1–2 (`SCRUM-32`); Section 7 reserved for `SCRUM-36`. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **17/10/2026** | `v0.7` | Authored Sections 3–4: stakeholders, users, competition and product overview (`SCRUM-33`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **17/10/2026** | `v0.8` | Authored Section 5: 10 core product features and traceability (`SCRUM-34`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
+| **17/10/2026** | `v0.9` | Authored Section 6: 2 Mermaid user workflow diagrams (`SCRUM-35`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 
 ---
 
@@ -318,6 +319,118 @@ Admin Content Moderation provides a back-office dashboard where moderators revie
 | 5.8 | Custom Recipe Collections | N7 | 3.8 | `080` (collections) |
 | 5.9 | Nutrition & Allergen Analyzer | N4 | 3.9 | `090` (nutrition analyzer) |
 | 5.10 | Admin Content Moderation | N8 | 3.10 | `100-admin-moderation`, `101-admin-analytics` |
+
+---
+
+## 6. USER WORKFLOW DIAGRAMS
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Lê Quốc Hưng (LqHung06)*
+
+The two diagrams below show how the features in Section 5 combine into end-to-end user journeys. Node colours indicate who performs each step: **orange** — the user, **blue** — the WikiCook system, **purple** — the AI services (embedding and LLM), **yellow** — decisions.
+
+### 6.1. Workflow 1 — AI Meal Planning & Grocery Shopping
+
+```mermaid
+flowchart TD
+    S(["Member opens the Weekly Meal Planner<br/>and selects Generate with AI"])
+    P1["1. Review the constraint dialog pre-filled<br/>from the dietary profile: servings,<br/>allergens, diet type, max cooking time"]
+    D1{"2. Constraints valid?"}
+    P2["3. Encode constraints as a query vector"]
+    P3["4. RAG retrieval: similarity search<br/>over published recipes in pgvector"]
+    P4["5. Hard-filter candidates: remove allergens,<br/>excluded ingredients, over-time recipes"]
+    D2{"6. Enough candidates<br/>for the selected slots?"}
+    R1["Suggest relaxing constraints"]
+    P5["7. LLM arranges candidates into a<br/>7-day x 3-meal draft as structured JSON"]
+    D3{"LLM responded<br/>in time?"}
+    F1["Fallback: show error, manual<br/>planner stays fully usable"]
+    P6["8. Validate every pick: recipe exists,<br/>is published, breaks no constraint"]
+    P7["9. Show draft on the calendar with AI labels;<br/>invalid picks become empty slots to fill manually"]
+    D4{"10. Satisfied<br/>with the draft?"}
+    U1["Swap, move or remove a dish"]
+    P8["11. Confirm: save the meal plan"]
+    P9["12. Build shopping list: scale to servings,<br/>merge duplicates, convert units"]
+    P10["13. Group items by supermarket aisle"]
+    E(["Aisle-grouped checklist ready for the store"])
+
+    S --> P1 --> D1
+    D1 -- "No" --> P1
+    D1 -- "Yes" --> P2 --> P3 --> P4 --> D2
+    D2 -- "No" --> R1 --> P1
+    D2 -- "Yes" --> P5 --> D3
+    D3 -- "No, after retry" --> F1
+    D3 -- "Yes" --> P6 --> P7 --> D4
+    D4 -- "Edit" --> U1 --> P7
+    D4 -- "Regenerate" --> P1
+    D4 -- "Confirm" --> P8 --> P9 --> P10 --> E
+
+    classDef user fill:#ffedd5,stroke:#ea580c,color:#7c2d12
+    classDef system fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+    classDef ai fill:#ede9fe,stroke:#7c3aed,color:#4c1d95
+    classDef decision fill:#fef3c7,stroke:#d97706,color:#78350f
+    class S,P1,U1,P8,E user
+    class P4,R1,F1,P6,P7,P9,P10 system
+    class P2,P3,P5 ai
+    class D1,D2,D3,D4 decision
+```
+
+| Step | Actor | Description | Feature |
+| :---: | :--- | :--- | :---: |
+| 1–2 | Member | Confirms or adjusts the constraints pre-filled from the dietary profile; invalid input (no day selected, servings out of range) is rejected before any AI call. | 5.1, 5.3 |
+| 3–4 | AI services | The constraints are embedded and used to retrieve semantically similar published recipes from the `pgvector` index (RAG), so the LLM only ever sees real WikiCook recipes. | 5.3 |
+| 5–6 | System | Allergens, excluded ingredients and over-time recipes are removed as hard rules; if too few candidates remain, the user is asked to relax constraints instead of receiving a repetitive or unsafe plan. | 5.3 |
+| 7 | AI services | The LLM arranges the candidates into a draft for the selected days and meals, aiming for variety and ingredient reuse; on timeout or malformed output the call is retried once, then the manual planner is offered. | 5.3 |
+| 8–9 | System | Every pick is checked against the database; invalid picks are never shown and their slots are flagged for manual selection. | 5.3 |
+| 10 | Member | Swaps, moves or removes dishes with the normal planner tools, regenerates, or confirms the draft. | 5.3 |
+| 11–13 | System | The confirmed plan is saved and its ingredients are scaled, merged and grouped by supermarket aisle into the Smart Shopping List. | 5.4 |
+
+### 6.2. Workflow 2 — Pantry Search & Hands-free Cooking
+
+```mermaid
+flowchart TD
+    S(["Cook opens WikiCook in the kitchen"])
+    U1["1. Select on-hand ingredients<br/>as chips with auto-suggest"]
+    P1["2. Pantry matching: rank published recipes<br/>by ingredient coverage; hide recipes that<br/>conflict with the dietary profile"]
+    D1{"3. Suitable<br/>recipe found?"}
+    U2["Add ingredients or loosen filters"]
+    U3["4. Open the recipe: missing ingredients,<br/>total time, nutrition and allergen badges"]
+    P2["5. Start Hands-free Cooking Mode:<br/>full screen, large text, screen kept awake"]
+    U4["6. Go to the next step by large button,<br/>keyboard or voice command"]
+    D2{"7. Step has<br/>a duration?"}
+    P3["8. Start a countdown timer;<br/>several timers run in parallel"]
+    A1["Alarm sounds and flashes<br/>when a timer ends"]
+    D3{"9. Last step<br/>completed?"}
+    P4["10. Finish the cooking session"]
+    D4{"11. Share<br/>the result?"}
+    U5["12. Upload a Cooksnap photo<br/>with rating and tip"]
+    P5["13. Cooksnap appears on the recipe;<br/>reports go to moderation"]
+    E(["Done"])
+
+    S --> U1 --> P1 --> D1
+    D1 -- "No" --> U2 --> U1
+    D1 -- "Yes" --> U3 --> P2 --> U4 --> D2
+    D2 -- "Yes" --> P3 --> D3
+    P3 -. "runs in background" .-> A1
+    D2 -- "No" --> D3
+    D3 -- "No" --> U4
+    D3 -- "Yes" --> P4 --> D4
+    D4 -- "Yes" --> U5 --> P5 --> E
+    D4 -- "No" --> E
+
+    classDef user fill:#ffedd5,stroke:#ea580c,color:#7c2d12
+    classDef system fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+    classDef decision fill:#fef3c7,stroke:#d97706,color:#78350f
+    class S,U1,U2,U3,U4,U5,E user
+    class P1,P2,P3,A1,P4,P5 system
+    class D1,D2,D3,D4 decision
+```
+
+| Step | Actor | Description | Feature |
+| :---: | :--- | :--- | :---: |
+| 1–3 | Cook | Picks the ingredients at hand; WikiCook ranks published recipes by coverage and, for signed-in users, hides recipes that conflict with the dietary profile. If nothing fits, the cook adds ingredients or loosens filters. | 5.1, 5.2 |
+| 4 | Cook | Reviews the recipe, including any missing ingredients, total time, estimated nutrition and allergen badges. | 5.2, 5.9 |
+| 5–6 | System, Cook | Cooking Mode opens full screen and keeps the display awake; the cook advances with large buttons, the keyboard or a voice command, without precise touch. | 5.5 |
+| 7–8 | System | A step with a duration offers a timer; timers keep running in the background while the cook moves on, and each one raises an audible and visual alarm when it ends. | 5.5 |
+| 9–10 | Cook | The loop repeats until the last step is completed and the session ends. | 5.5 |
+| 11–13 | Cook, System | The cook optionally posts a Cooksnap with a rating and tip (sign-in required); it appears on the recipe, and other users can report it to moderators. | 5.7, 5.10 |
 
 ---
 
