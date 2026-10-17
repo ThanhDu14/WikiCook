@@ -476,29 +476,120 @@ Any delay in authoring the 10 core features or the technical roadmap propagates 
 ### 4.4. Software Build and Release Plan
 *Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Lê Quốc Hưng (LqHung06)*
 
-In strict accordance with the **PA2-2026** instructions (*"specify how many builds you will produce for testing and when... note that the final sprint includes a demo of all project features"*), the team defines an incremental **5-stage build strategy** tied to each Sprint milestone:
+In strict accordance with the **PA2-2026** instructions (*"specify how many builds you will produce for testing and when... note that the final sprint includes a demo of all project features"*), the team commits to **5 planned builds**, one per Sprint milestone: **2 documentation baselines** (`v0.1`, `v0.2`) and **3 executable software builds for testing** (`v0.5`, `v0.8 Beta`, `v1.0 RC`). Additional patch or release-candidate builds (e.g., `v0.8.0-beta.2`, `v1.0.0-rc.2`) are produced **only** to fix defects found while testing a planned build; they never add new scope.
 
-#### 4.4.1. Five-Stage Incremental Build Schedule
+#### 4.4.1. Versioning, Git Tagging & Release Notes Conventions
 
-| Build Version | Sprint Target | Target Release Date | Build Artifacts & Core Scope | Target Environment | Primary Verification & Test Objectives | Acceptance Gate Criteria |
+| Convention | Rule Applied in WikiCook |
+| :--- | :--- |
+| **Version Format** | Semantic Versioning `vMAJOR.MINOR.PATCH[-PRERELEASE]`. `MAJOR = 0` until the PA5 demo build is accepted; `PRERELEASE` is `beta.N` for Sprint 4 and `rc.N` for Sprint 5. |
+| **Meaning of MINOR (why `v0.2` jumps to `v0.5`)** | The MINOR number marks **product maturity**, not a build counter: `0.1–0.2` = documentation baselines with no runnable code; `0.5` = the halfway point where the full stack runs end-to-end for the first time; `0.8` = Must-have core features working (Beta); `1.0` = feature-complete. Versions `0.3` and `0.4` are skipped on purpose because Sprint 3 delivers no intermediate code increment worth a separate release. |
+| **Git Tags** | Annotated tags on the `main` commit that was submitted or demonstrated: `v0.1.0`, `v0.2.0`, `v0.5.0`, `v0.8.0-beta.1`, `v1.0.0-rc.1`. After the PA5 demo is accepted, the demonstrated RC commit is re-tagged `v1.0.0`. Tags are created only by the Release Owner (Sec 4.4.3) after the Acceptance Gate passes. |
+| **Docker Image Tags** | From `v0.5` onward, every image is tagged with the same version as the Git tag (e.g., `wikicook-backend:0.8.0-beta.1`). Tagged images are never overwritten, so any earlier build can be redeployed. |
+| **Release Notes** | Each tag gets a GitHub Release and an entry in the root `CHANGELOG.md` (*Keep a Changelog* format) containing: (1) build ID & date; (2) features (`F-xx`) and Jira keys included; (3) Flyway migration versions; (4) test summary (pass/fail counts, coverage %, k6 P95 latency); (5) known issues with severity; (6) rollback target (the previous stable tag). For `v0.1`/`v0.2`, the release notes are the Sprint Report and the Moodle ZIP. |
+| **Defect Severity Scale** | **S1 Critical:** crash, data loss, security breach, or blocks a demo scenario. **S2 Major:** feature behaves incorrectly but a workaround exists. **S3 Minor:** cosmetic or low-impact issue. Acceptance gates below are stated in terms of this scale. |
+
+#### 4.4.2. Five-Stage Incremental Build Schedule
+
+| Build Version | Sprint Target | Target Release Date | Build Artifacts & Core Scope | Target Environment | Primary Verification & Test Objectives | Acceptance Gate Criteria (Measurable) |
 | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
-| **`Build v0.1`** | **Sprint 1** | **09/10/2026** | Initial repository skeleton, `.gitignore`, initial CI workflow, project proposal, team charter. | GitHub Repository / Markdown | Validate repository structure, branch protection rules, and Markdown rendering. | All foundational documents pass peer review; CI checks pass without syntax defects. |
-| **`Build v0.2`** | **Sprint 2** | **22/10/2026** | Verified Spec Kit framework in `WikiCook/src/`, `constitution.md`, Vision Document v1.0, Project Plan v1.0. | GitHub Repository / `src/` | Verify Spec Kit initialization compliance, 3-tier metadata, and PDF conversion integrity. | 100% of PA2 deliverables pass QA audit (`SCRUM-42`); clean PDF compilation with zero clipped diagrams. |
-| **`Build v0.5`** | **Sprint 3** | **13/11/2026** | Base Spring Boot 3.x project + React 18 SPA skeleton + PostgreSQL 16 container + Flyway migration v1. | Local Docker Compose | Verify multi-tier connectivity (Frontend $\to$ Backend $\to$ PostgreSQL); health check API returns `UP`. | Container builds cleanly via `docker compose up`; database schema initializes without errors. |
-| **`Build v0.8 Beta`** | **Sprint 4** | **04/12/2026** | Functional core services: User Auth (JWT/BCrypt), Recipe Search, AI Meal Planner with Redis cache, Shopping List. | Docker Compose Local Staging | Execute service-level unit tests and REST API integration tests; verify AI fallback when API disconnected. | Unit test coverage $\ge 70\%$; P95 API response time $< 500$ms; zero fatal authentication or persistence crashes. |
-| **`Build v1.0 RC`** | **Sprint 5** | **25/12/2026** | Feature-complete production release candidate: Hands-free mode, Cooksnaps, AI nutrition analyzer, admin dashboard. | Dockerized Production Staging | Full system regression testing, performance load testing ($\ge 100$ concurrent users), and live demo dry run. | **100% of committed features operational for live demo**; all Must-have user stories accepted; zero critical bugs. |
+| **`Build v0.1`** | **Sprint 1** | **09/10/2026** | Repository skeleton, `.gitignore`, PA1 documents (proposal, survey, team charter). **No application code.** | GitHub Repository / Markdown | Validate repository structure, `main` branch protection, and Markdown rendering. Documentation checks (`markdownlint`, relative-link check) are run by hand by the QA Lead; there is no automated code CI in Sprint 1. | All PA1 documents peer-reviewed and merged into `main`; `markdownlint` reports 0 errors; 0 broken relative links; PA1 ZIP submitted on time. |
+| **`Build v0.2`** | **Sprint 2** | **22/10/2026** | Spec Kit framework in `WikiCook/src/` (`constitution.md`), Vision Document v1.0, Project Plan v1.0. **No application code.** | GitHub Repository / `src/` | Verify Spec Kit placement, 3-tier metadata, Mermaid rendering, and PDF conversion integrity. | 100% of PA2 deliverables pass the `SCRUM-42` QA checklist; 0 `markdownlint` errors; 0 broken links; every Mermaid diagram renders in both GitHub and PDF with 0 clipped blocks. |
+| **`Build v0.5`** | **Sprint 3** | **13/11/2026** | Walking skeleton: Spring Boot 3.x project (layered packages, health endpoint), React 18 SPA skeleton (routing, API client), PostgreSQL 16 container with **Flyway `V1` baseline only** (schema history + `users` table), Redis 7 container. First automated code CI (GitHub Actions). | Local Docker Compose | Verify multi-tier connectivity (Frontend $\to$ Backend $\to$ PostgreSQL / Redis); CI builds and tests backend and frontend on every PR. | From a clean clone, `docker compose up` brings all 4 containers to `healthy` in $\le 5$ min; `GET /actuator/health` returns `UP` including `db` and `redis` components; SPA displays the health status; Flyway `V1` applies with 0 errors; CI pipeline green on `main`. |
+| **`Build v0.8 Beta`** | **Sprint 4** | **04/12/2026** | Core services: **F-01** Auth (JWT/BCrypt) **with RBAC** for the 4 roles (`Guest`, `Standard User`, `Culinary Creator`, `Platform Administrator`); **F-02** Recipe Search; **F-03** AI Meal Planner with **RAG vector service** (`pgvector` column + index, embedding generation for seeded/new recipes, top-k retrieval, LLM call with 5 s timeout, **deterministic SQL fallback**, Redis plan cache); **F-04** Shopping List; **F-05** basic step-by-step view; **F-06** basic recipe authoring. **Full relational schema** (Flyway `V2…Vn`) and 50+ seeded recipes. | Docker Compose Local Staging (Mock LLM + real LLM) | Service-level unit tests, REST API integration tests (Testcontainers), RBAC permission matrix tests, RAG retrieval tests, and fallback test with the LLM disconnected. | All in-scope user stories accepted by the PO; line coverage $\ge 70\%$ (JaCoCo) **for the service/domain packages of the modules implemented so far**; P95 $< 500$ ms for non-AI endpoints at 20 virtual users for 5 min (k6); AI plan P95 $\le 5.0$ s; fallback returns a valid 7-day plan in $\le 2$ s with the LLM disabled; RBAC matrix 100% pass; 0 open S1 defects. |
+| **`Build v1.0 RC`** | **Sprint 5** | **18/12/2026** *(RC tag)* → **25/12/2026** *(demo)* | Feature-complete release candidate: all **10 features** (adds **F-05** full hands-free mode with voice/keyboard and concurrent timers, **F-06** media & moderation flow, **F-07** Cooksnaps, **F-08** Collections, **F-09** AI Nutrition Analyzer, **F-10** Admin Dashboard); offline demo mode; demo seed snapshot. | Dockerized Demo Release (Sec 4.4.6) | Full regression suite, E2E smoke tests of demo scenarios D1–D10 (Playwright), load test at 100 concurrent users, and two demo dry runs (Sec 4.4.7). | All 10 features pass demo scenarios D1–D10 in **2 consecutive dry runs**; line coverage $\ge 70\%$ **across all backend business logic** (service/domain packages); at 100 concurrent users for 10 min: P95 $< 500$ ms (non-AI), error rate $< 1\%$, AI P95 $< 5.0$ s; page load $< 2.0$ s on the demo machine; 0 open S1/S2 defects; offline mode verified. |
 
-#### 4.4.2. Build Environments & Deployment Strategy
+#### 4.4.3. Build Ownership: Release, Testing & Acceptance Sign-off
+
+| Build | Release Owner *(tags, packages, release notes)* | Integration Owner *(merges the stack)* | Test Owner *(plans & runs tests)* | Acceptance Sign-off |
+| :---: | :--- | :--- | :--- | :--- |
+| **`v0.1`** | Nguyễn Thành Dự (`ThanhDu14`) | — | Trần Nguyễn Công Chung (`itzchugnn`) | Lê Quốc Hưng (`LqHung06`) — PM |
+| **`v0.2`** | Nguyễn Thành Dự (`SCRUM-44`) | — | Trần Nguyễn Công Chung (`SCRUM-42`) | Lê Quốc Hưng — PM |
+| **`v0.5`** | Nguyễn Thành Dự | Mai Văn Hiển (`MaiHien3507`) — Tech Lead | Trần Nguyễn Công Chung | Mai Văn Hiển (technical) → Lê Quốc Hưng (final) |
+| **`v0.8 Beta`** | Nguyễn Thành Dự | Mai Văn Hiển | Trần Nguyễn Công Chung | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) — PO (functional) → Lê Quốc Hưng (final) |
+| **`v1.0 RC`** | Nguyễn Thành Dự | Mai Văn Hiển | Trần Nguyễn Công Chung | Nguyễn Đức Duy — PO (all 10 features) → Lê Quốc Hưng (final, Go/No-Go for demo) |
+
+*Rule:* a build is tagged only after the Test Owner publishes its test summary and both sign-off owners approve it in the Jira release ticket. Every feature author (all 5 members) fixes S1/S2 defects in their own module before the gate.
+
+#### 4.4.4. Integration Roadmap per Build
+
+`v0.1` and `v0.2` contain no runnable code, so integration starts at `v0.5`.
+
+| Layer / Integration Point | `Build v0.5` (Sprint 3) | `Build v0.8 Beta` (Sprint 4) | `Build v1.0 RC` (Sprint 5) |
+| :--- | :--- | :--- | :--- |
+| **Frontend (React 18 SPA)** $\leftrightarrow$ **Backend** | Routing shell + API client calling `/actuator/health`. | Pages for F-01–F-06 wired to real REST APIs with JWT handling. | All 10 feature UIs; Screen Wake Lock, voice/keyboard navigation (F-05). |
+| **Backend (Spring Boot 3.x)** | Layered package skeleton, health endpoint, OpenAPI stub. | JWT/BCrypt + RBAC (Spring Security method-level rules for 4 roles); REST APIs for F-01–F-06. | All endpoints; input validation, account lockout, rate limiting; admin APIs (F-10). |
+| **Backend** $\leftrightarrow$ **PostgreSQL 16 / `pgvector`** | Flyway `V1` baseline only; `pgvector` image used, extension not yet used. | Full relational schema (Flyway `V2…Vn`); `vector` embedding column + similarity index; 50+ seeded recipes. | Migrations for Cooksnaps, Collections, moderation; frozen demo seed snapshot. |
+| **Backend** $\leftrightarrow$ **Redis 7** | Container + health check only. | Meal-plan cache; rate limit on AI endpoints. | Rate limit on login/auth; cache warm-up script for the demo. |
+| **Backend** $\leftrightarrow$ **LLM / Embedding API** | Not integrated (Mock LLM container only). | Embedding pipeline + RAG retrieval for F-03; 5 s timeout; deterministic SQL fallback; Mock LLM in CI. | F-09 nutrition analysis via LLM; `LLM_MODE=live/mock/offline` switch for the demo. |
+| **CI (GitHub Actions)** | Backend build + unit tests, frontend build + lint, Docker image build. | + Integration tests (Testcontainers), JaCoCo coverage report. | + E2E smoke (Playwright) on demo scenarios, k6 load test before RC tag. |
+
+```mermaid
+flowchart LR
+    B05["<b>v0.5</b><br/>FE ↔ BE ↔ PostgreSQL (V1)<br/>Redis container<br/>Code CI starts"] --> B08["<b>v0.8 Beta</b><br/>Full schema + pgvector<br/>RBAC · RAG + fallback<br/>Redis cache · F-01–F-06"]
+    B08 --> B10["<b>v1.0 RC</b><br/>All 10 features<br/>Offline demo mode<br/>E2E + load tests"]
+```
+
+#### 4.4.5. Feature-to-Build Traceability & PA5 Demo Scenarios
+
+Feature IDs follow the numbering of the 10 core modules in Section 2.1.2. MoSCoW priorities for F-06–F-10 are provisional and will be confirmed by the Product Owner in PA3.
+
+| Feature ID | Feature | Priority | First Working In | Completed In | PA5 Demo Scenario |
+| :---: | :--- | :---: | :---: | :---: | :--- |
+| **F-01** | Authentication, RBAC & Dietary Profile | Must | `v0.8` | `v1.0` | **D1:** Register by email, set a "no peanuts, $\le 600$ kcal" profile; show a `Guest` denied recipe creation (HTTP `403`) and account lockout after repeated failed logins. |
+| **F-02** | Smart Recipe Discovery & Filtering | Must | `v0.8` | `v1.0` | **D2:** Pantry search "egg, tomato" filtered by $\le 30$ min and *Easy*; results respect the dietary profile. |
+| **F-03** | AI Weekly Meal Planner (RAG) | Must | `v0.8` | `v1.0` | **D3:** Generate a 7-day plan, swap one dish; switch `LLM_MODE=offline` and show the fallback plan still loads. |
+| **F-04** | Smart Shopping List | Must | `v0.8` | `v1.0` | **D4:** Build a consolidated list from the plan, scale servings 2 $\to$ 4, check items off by aisle. |
+| **F-05** | Hands-Free Cooking Mode & Timers | Must | `v0.8` *(basic step view)* | `v1.0` | **D5:** Cook a recipe in full-screen mode, navigate steps by voice/keyboard, run 2 timers in parallel. |
+| **F-06** | Community Recipe Authoring | Should | `v0.8` *(basic form)* | `v1.0` | **D6:** A `Culinary Creator` publishes a structured recipe with photos; it enters the moderation queue. |
+| **F-07** | Social Cooksnaps & Verified Reviews | Should | `v1.0` | `v1.0` | **D7:** Upload a Cooksnap photo and a star rating for a cooked recipe. |
+| **F-08** | Recipe Collections (Digital Cookbooks) | Could | `v1.0` | `v1.0` | **D8:** Save recipes into a "Weeknight Dinners" collection and reopen it. |
+| **F-09** | AI Nutrition & Allergen Analyzer | Should | `v1.0` | `v1.0` | **D9:** Show per-serving kcal/macros and a peanut allergen warning badge matching the D1 profile. |
+| **F-10** | Admin Moderation & Taxonomy | Should | `v1.0` | `v1.0` | **D10:** An administrator approves the D6 recipe and resolves an abuse report. |
+
+**Demo commitment:** `Build v1.0 RC` commits to demonstrating **all 10 features** (D1–D10) in one continuous storyline. The Must-have features **F-01–F-05** are the **minimum condition for a Go decision**: if a Should/Could feature still has an open S1 defect at code freeze, the demo proceeds, that feature is shown at its last stable state, and the defect is listed as a known issue in the release notes.
+
+#### 4.4.6. Build Environments & Deployment Strategy
 
 ```mermaid
 flowchart LR
     DEV["<b>1. Local Dev Environment</b><br/>• JDK 21 & Node.js 20+<br/>• Hot-reload (Vite + Spring DevTools)<br/>• Local test execution"] --> STG["<b>2. Containerized Staging</b><br/>• Multi-container Docker Compose<br/>• PostgreSQL 16 + pgvector<br/>• Redis 7 Cache & Mock LLM"]
-    STG --> PROD["<b>3. Demo Production Candidate</b><br/>• Optimized production build<br/>• Seeded demo dataset (50+ recipes)<br/>• Live PA5 Feature Demonstration"]
+    STG --> PROD["<b>3. Demo Release Environment</b><br/>• Tagged production images<br/>• Seeded demo dataset (50+ recipes)<br/>• Live PA5 Feature Demonstration"]
 ```
 
 1. **Development Environment:** All developers run localized Spring Boot and Vite servers with hot-reload enabled. Developers execute unit tests locally prior to raising Pull Requests.
-2. **Containerized Staging Environment (`docker-compose.yml`):** Replicates production dependencies locally via Docker Compose, including PostgreSQL 16 with the `pgvector` extension and Redis 7. Integrates a mock LLM service allowing integration testing without consuming external cloud API quotas.
-3. **Demo Release Environment (`Build v1.0 RC`):** A pre-configured, self-contained container stack with pre-seeded recipe data (50+ Vietnamese and international dishes) ensuring the live demonstration during **PA5** remains resilient against internet dropouts or third-party API throttling.
+2. **Containerized Staging Environment (`docker-compose.yml`, from `v0.5`):** Replicates production dependencies locally via Docker Compose, including PostgreSQL 16 with the `pgvector` extension and Redis 7. Integrates a mock LLM service allowing integration testing without consuming external cloud API quotas. Builds `v0.5` and `v0.8 Beta` are tested here.
+3. **Demo Release Environment (`Build v1.0 RC`):** A pre-configured, self-contained container stack running the tagged images with pre-seeded recipe data (50+ Vietnamese and international dishes), ensuring the live demonstration during **PA5** remains resilient against internet dropouts or third-party API throttling.
+
+#### 4.4.7. Code Freeze, Demo Dry-Run & Contingency Plan
+
+| Date | Checkpoint | Rule / Activity | Owner |
+| :---: | :--- | :--- | :--- |
+| **11/11/2026** | `v0.5` code freeze | Only `fix:` PRs allowed; tag `v0.5.0` on 13/11 after the gate passes. | Nguyễn Thành Dự |
+| **30/11/2026** | `v0.8` feature freeze | No new user stories enter Sprint 4. | Lê Quốc Hưng |
+| **02/12/2026** | `v0.8` code freeze | Tag `v0.8.0-beta.1`; Test Owner runs the full Beta test suite until 04/12. | Nguyễn Thành Dự & Trần Nguyễn Công Chung |
+| **16/12/2026** | `v1.0` feature freeze | All 10 features merged into `main`; only S1/S2 fixes after this date. | Lê Quốc Hưng |
+| **18/12/2026** | `v1.0` code freeze | Tag `v1.0.0-rc.1`; regression, E2E, and load tests run. | Nguyễn Thành Dự & Trần Nguyễn Công Chung |
+| **20/12/2026** | Demo dry run #1 | Full D1–D10 run on staging, timed; defects logged in Jira. | All 5 members |
+| **22/12/2026** | RC fix build (if needed) | Tag `v1.0.0-rc.2` with S1/S2 fixes only, approved by Tech Lead and QA Lead. | Mai Văn Hiển & Nguyễn Thành Dự |
+| **23/12/2026** | Demo dry run #2 | Full D1–D10 run on the **primary and backup demo machines**, including one run in offline mode. | All 5 members |
+| **24/12/2026** | Go/No-Go decision | PO and PM sign off the demonstrated RC; images exported for offline use. | Nguyễn Đức Duy & Lê Quốc Hưng |
+| **25/12/2026** *(Est.)* | **PA5 Live Demo** | Demo of all 10 features; RC commit re-tagged `v1.0.0` after acceptance. | All 5 members |
+
+**Contingency measures for the PA5 demo:**
+1. **Last stable build:** The previous accepted tag (`v1.0.0-rc.N-1`, or `v0.8.0-beta.N` in the worst case) and its Docker images are kept ready; rollback means switching the image tags in `docker-compose.yml` and restarting the stack (target $\le 10$ min).
+2. **Backup machine:** A second team laptop holds the same stack, loaded from images exported with `docker save` and the demo database snapshot, and is verified in dry run #2.
+3. **Offline mode when the LLM fails:** `LLM_MODE=offline` serves meal plans from the Redis cache warmed before the demo, falling back to the deterministic SQL planner (consistent with `RSK-02`); nutrition data for demo recipes is pre-computed and stored in the database.
+4. **Last resort:** A screen recording of dry run #2 covering D1–D10 is prepared in case both machines fail.
+
+#### 4.4.8. Consistency Notes with Other Sections
+
+| Topic | Other Section | How Section 4.4 Aligns |
+| :--- | :--- | :--- |
+| **CI timing** | Sec 3.1.2 places Docker/CI setup in Sprints 3–5. | Sprint 1–2 builds use documentation checks only (`markdownlint`, link check). Automated code CI starts with `Build v0.5`. |
+| **Database schema** | Sec 4.3.3 places the full PostgreSQL schema and `pgvector` index in Sprint 4. | `Build v0.5` contains only the Flyway `V1` baseline; the full schema and `pgvector` arrive in `Build v0.8 Beta`. |
+| **Coverage target** | Sec 2.3 and milestone M8 set $\ge 70\%$ coverage in Sprint 5. | `v0.8 Beta`: $\ge 70\%$ for implemented modules only; `v1.0 RC`: $\ge 70\%$ across all backend business logic, matching M8. |
+| **Demo scope** | `RSK-03` requires only Must-have modules for the PA5 demo. | `v1.0 RC` commits to demonstrating all 10 features; Must-have F-01–F-05 is the minimum Go condition (Sec 4.4.5), so `RSK-03` remains the fallback, not the target. |
 
 ---
 
