@@ -4,7 +4,7 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 06  
 **Template:** Adapted from the RUP Vision template for small projects (`rup_vision_sp.docx`)  
-**Document Version:** 0.7 (Sprint 02 Draft — Sections 1–4, Project Assignment 2)  
+**Document Version:** 0.8 (Sprint 02 Draft — Sections 1–5, Project Assignment 2)  
 **Date:** October 17, 2026  
 
 ---
@@ -28,6 +28,7 @@
 | **08/10/2026** | `v0.1` | PA1 draft: positioning, personas, high-level use cases and scope boundary (merged in PR #12). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **17/10/2026** | `v0.6` | Restructured to the RUP Vision template; authored Sections 1–2 (`SCRUM-32`); Section 7 reserved for `SCRUM-36`. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **17/10/2026** | `v0.7` | Authored Sections 3–4: stakeholders, users, competition and product overview (`SCRUM-33`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
+| **17/10/2026** | `v0.8` | Authored Section 5: 10 core product features and traceability (`SCRUM-34`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 
 ---
 
@@ -255,6 +256,68 @@ flowchart LR
 | **DEP-04** | Dependency | An email delivery service for verification and password-reset emails. | New accounts cannot be verified and therefore cannot publish recipes (spec 010 FR-006). |
 | **DEP-05** | Dependency | Feature order: roles and dietary profile (specs 010/011) precede all personalised features; structured ingredients from the recipe wizard (spec 060) precede the shopping list, nutrition analysis and AI planner. | Downstream features cannot be built or tested on real data. |
 | **DEP-06** | Dependency | Project constraints from the Project Plan: zero budget, five team members and a 14-week semester. | Scope must be re-prioritised; lower-priority features move to a later release. |
+
+---
+
+## 5. PRODUCT FEATURES
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Lê Quốc Hưng (LqHung06)*
+
+This section describes the ten core features of WikiCook at the level of capability and value. Each feature is written as one paragraph that explains **what** it does, **why** users need it and **who** benefits directly; detailed requirements live in the feature specification listed in Section 5.11.
+
+### 5.1. User Authentication & Dietary Profile
+
+WikiCook lets visitors register with an email and password or sign in with Google, verifies their email address, and assigns every account exactly one role — Member, Contributor, Moderator or Administrator — that determines what it may do on the platform. After signing in, each user can record a dietary profile listing allergens, excluded ingredients, diet type, preferred cuisines, maximum cooking time and household size. This profile is not a passive settings page: search hides recipes that conflict with it, the meal planner treats it as a hard constraint, and the household size becomes the default number of servings throughout the product. The feature is needed because the PA1 survey found that neither MyFridgeFood nor Ăn Gì Ngon stores any dietary or allergen information, so users must re-check every recipe by hand and remain exposed to accidental allergens. Every signed-in user benefits, but dietary-restricted cooks and families cooking for several people gain the most in safety and saved time.
+
+### 5.2. Smart Recipe Discovery & Filters
+
+Smart Recipe Discovery combines full-text keyword search, which ignores Vietnamese diacritics and letter case so that "pho bo" finds "Phở bò", with combinable filters for total time, cuisine, difficulty, cooking method, category and calories per serving. One-tap presets such as "Under 30 minutes" or "Vegetarian" sit on the homepage, and every query, filter and page number is kept in the URL so that results can be shared, reloaded or revisited with the Back button. A pantry-matching mode extends the same engine: the user selects the ingredients already in the fridge, and WikiCook ranks recipes by how many of their ingredients are covered and shows what is still missing. The feature answers the daily question "What can I cook today?", which the PA1 proposal estimates costs 15 to 30 minutes, and replaces MyFridgeFood's cluttered checkbox wall with a fast, modern interface. Guests and busy home cooks use it as their entry point to the product, while dietary-restricted members also have conflicting recipes hidden automatically.
+
+### 5.3. AI Weekly Meal Planner
+
+The AI Weekly Meal Planner fills the empty slots of a 7-day by 3-meal calendar with WikiCook recipes arranged by a large language model. It first retrieves candidate recipes from a vector index of published recipes (Retrieval-Augmented Generation), then asks the model to arrange them while treating allergens, excluded ingredients, diet type and maximum cooking time as hard rules and variety and ingredient reuse as soft goals. Every AI pick is validated against the database before the user sees the draft, so the model can never invent a dish or slip an allergen into the plan, and the user can swap, move or remove any dish before confirming. The feature exists because deciding up to 21 meals a week is the most tiring part of home cooking, and Ăn Gì Ngon's AI menu generator suggests dishes without enforcing dietary rules or connecting them to a structured shopping list. Busy home cooks and working parents are the primary beneficiaries, and the manual planner remains fully usable whenever the AI service is unavailable.
+
+### 5.4. Smart Shopping List
+
+The Smart Shopping List turns a confirmed meal plan, a single recipe or ad-hoc items into one consolidated grocery checklist. It scales every quantity to the chosen number of servings, merges duplicate ingredients across dishes, converts compatible units such as grams and kilograms, and groups items by supermarket aisle such as Produce, Meat & Seafood, Dairy & Eggs, and Pantry & Spices. In the store the list can be used with one hand and keeps working offline, so checked items are not lost in a basement supermarket with no signal, and it can be copied into a messaging app in one tap. This removes the manual copying, mental arithmetic and forgotten ingredients identified in the PA1 survey, where MyFridgeFood offers no list at all and Ăn Gì Ngon's list is not grouped by aisle. Home cooks doing the weekly grocery run benefit directly, as do the family members to whom they delegate the shopping.
+
+### 5.5. Hands-free Cooking Mode & Timers
+
+Hands-free Cooking Mode presents a recipe as a full-screen, high-contrast sequence of large step cards that can be read from across the kitchen counter. The cook moves between steps with oversized touch targets, the keyboard or optional Vietnamese voice commands, and the screen is kept awake for the whole session. Steps that mention a duration offer a one-tap timer, and several countdown timers can run in parallel with audible and visual alarms — for example, simmering a broth for 15 minutes while sautéing garlic for 2 minutes. The feature is needed because both surveyed competitors show recipes only as static pages that must be scrolled with wet or greasy hands, which leads to smudged devices, lost places in the recipe and burned food. Every cook at the stove benefits, especially beginners following an unfamiliar recipe and busy parents preparing several dishes at once.
+
+### 5.6. Community Recipe Contribution
+
+Community Recipe Contribution gives signed-in members with a verified email a six-step wizard to publish their own recipes: general information, structured ingredients with quantities and units, equipment, steps with optional photos and timers, an optional YouTube or TikTok link, and a final preview. Drafts are saved automatically so no input is lost, and each submission follows a clear lifecycle — Draft, Pending, Published, Rejected or Revision Requested, and Archived — that the author can track on a "My Recipes" page. Because every ingredient is stored as structured data rather than free text, contributed recipes can be scaled, merged into shopping lists, analysed for nutrition and used by the AI planner. The feature grows the catalogue through the community, the model MyFridgeFood proved effective, while avoiding Ăn Gì Ngon's one-way editorial approach that gives home chefs no voice. Recipe creators are the direct users, and every other user benefits from a larger and more diverse catalogue.
+
+### 5.7. Social Cooksnaps & Reviews
+
+Social Cooksnaps & Reviews let members rate a recipe from one to five stars, write a comment, share practical modifications such as an ingredient substitution, and upload a photo of the dish they actually cooked, called a Cooksnap. Ratings feed the recipe's average score, and a recipe needs at least three ratings before it can lead the "Top rated" ranking, so a single enthusiastic review cannot push it to the top. Cooksnaps give prospective cooks visual proof of how a recipe turns out in a real home kitchen rather than in a styled photograph. The PA1 survey showed that MyFridgeFood offers only stars and text comments and Ăn Gì Ngon has no community feedback at all, leaving users with no way to judge a recipe's reliability before cooking it. Home cooks gain trust and practical tips, while recipe creators receive the recognition and feedback that motivate them to keep publishing.
+
+### 5.8. Custom Recipe Collections
+
+Custom Recipe Collections let members save any published recipe with one tap and organise their saved recipes into named personal cookbooks such as "Quick 15-Minute Dinners" or "Tet Holiday Specials". A recipe can belong to several collections, and collections can be renamed, reordered or deleted without affecting the recipes themselves. Saved recipes stay connected to the rest of the product: a dish can be added to the meal plan or opened in Cooking Mode directly from a collection, and saved recipes act as preference signals for the AI planner. Both surveyed apps offer only a single flat bookmark list, which becomes unusable once a user has saved dozens of dishes. Regular home cooks who return to a familiar repertoire benefit most, as do dietary-restricted users who keep a vetted list of recipes they know are safe.
+
+### 5.9. Nutrition & Allergen Analyzer
+
+The Nutrition & Allergen Analyzer estimates calories, protein, carbohydrates and fat per serving for every published recipe by sending its structured ingredient list to a large language model, and displays the result with a clear disclaimer that the figures are AI-generated estimates for reference only. It also shows allergen warning badges, but these badges are derived from the moderator-curated links between catalogue ingredients and allergens rather than from the model, so safety-critical information remains verifiable. The calorie estimates power the calorie filter in search and give users a basis for balancing their weekly plan. Neither MyFridgeFood nor Ăn Gì Ngon provides any nutritional or allergen information, which forces health-conscious users to calculate macros manually or rely on unverified sources. Fitness enthusiasts, people managing diet-related conditions and parents cooking for children with allergies are the main beneficiaries.
+
+### 5.10. Admin Content Moderation
+
+Admin Content Moderation provides a back-office dashboard where moderators review every submitted recipe and approve it, reject it with a reason, or request revisions with notes before it reaches the public catalogue. Administrators also manage the shared taxonomies — categories, cuisines, tags, ingredients and their allergen links — handle reports about abusive reviews or Cooksnaps, and suspend or ban accounts that break community guidelines. A summary panel shows pending submissions, active users and popular recipes so that the team can see where attention is needed. The feature is necessary because open contribution without moderation, as observed on MyFridgeFood, lets spam, plagiarism and unsafe content reach users, and because the allergen data that protects users must be curated by people. Moderators and administrators use it directly, and every end user benefits from a clean, trustworthy catalogue.
+
+### 5.11. Feature Traceability
+
+| # | Feature | User Needs (3.4) | PA1 Module | Specification(s) |
+| :---: | :--- | :--- | :---: | :--- |
+| 5.1 | User Authentication & Dietary Profile | N4 | 3.1 | `010-user-authentication-roles`, `011` (dietary profile) |
+| 5.2 | Smart Recipe Discovery & Filters | N1, N4 | 3.2 | `020-recipe-search-filter` (pantry matching in a later increment) |
+| 5.3 | AI Weekly Meal Planner | N2, N4 | 3.3, Section 4 | `030-meal-planner`, `031-ai-weekly-meal-planner` |
+| 5.4 | Smart Shopping List | N2 | 3.4 | `040-shopping-list` |
+| 5.5 | Hands-free Cooking Mode & Timers | N3 | 3.5 | `050-cooking-mode` |
+| 5.6 | Community Recipe Contribution | N5 | 3.6 | `060-recipe-editor` |
+| 5.7 | Social Cooksnaps & Reviews | N5, N6 | 3.7 | `070` (reviews and Cooksnaps) |
+| 5.8 | Custom Recipe Collections | N7 | 3.8 | `080` (collections) |
+| 5.9 | Nutrition & Allergen Analyzer | N4 | 3.9 | `090` (nutrition analyzer) |
+| 5.10 | Admin Content Moderation | N8 | 3.10 | `100-admin-moderation`, `101-admin-analytics` |
 
 ---
 
