@@ -272,8 +272,9 @@ button; turn the network back on and confirm the planner reloads the week by its
 
 ### Edge Cases
 
-- **Two devices or tabs edit the same week**: the last saved change to a slot wins; the other
-  device shows the latest plan the next time it loads or reloads the week.
+- **Two devices or tabs edit the same week**: an edit made on the latest state of a slot is saved,
+  and the other device shows it the next time it loads or reloads the week; an edit made on an
+  outdated state of the slot is handled by the next case.
 - **Slot changed elsewhere before an edit is saved** (e.g. a dish was removed on another device):
   the edit is refused, the user is told the plan changed, and the planner reloads the week.
 - **Dragging a dish outside any slot** or pressing Escape during a drag: nothing changes.
@@ -467,6 +468,9 @@ button; turn the network back on and confirm the planner reloads the week by its
   or calories, and ordering on the main search page, belong to spec 020.
 - Recipes carry which meals they suit (breakfast / lunch / dinner, possibly several); a recipe with
   no meal information counts as suited to lunch and dinner. This must be agreed with B (spec 060).
+- Snacks, drinks and desserts (recipes marked as snack, not suited to any main meal) are not
+  offered in the recipe picker or the "Add to meal plan" dialog, the same as the AI planner
+  (spec 031).
 - Dependencies: sign-in (spec 010), household size (spec 011), collections (spec 080), recipe data
   and published state (spec 060), shopping list creation (spec 040), AI plan generation (spec 031).
   How spec 040 merges ingredients and scales servings is agreed between C and D (assignment
