@@ -69,6 +69,35 @@ dishes).
   by the AI for that slot's meal and the user's profile; search results in the picker are ordered
   by meal, then profile (spec 030 FR-007a). The main search page (spec 020) is not changed.
 
+### Session 2026-10-18
+
+- Q: Which recipes can the AI choose from? → A: Every PUBLISHED recipe in the WikiCook catalogue,
+  including recipes imported from the team's crawled data (cleaned, ingredients and units normalised
+  to the catalogue, author set to the system account "WikiCook", source link kept). The AI never picks
+  a dish outside this catalogue.
+- Q: In what order does generation work? → A: The system first removes every recipe that breaks a
+  hard rule (allergies, excluded ingredients, diet type, maximum cooking time), then retrieves the
+  candidate recipes that best fit the request from the remaining ones, and only then gives those
+  candidates to the AI to arrange the week. The check of the AI result (FR-013) is kept.
+- Q: Does "Suggested for you" for a single slot call the AI language model? → A: No. It only uses the
+  retrieval step over the prepared recipe data, so it costs no AI generation and no language-model call.
+- Q: Where does the system learn whether a recipe is vegetarian or vegan, for the diet-type hard rule?
+  → A: It is derived automatically from the ingredient catalogue: each catalogue ingredient is marked
+  with its kind (meat, seafood, egg, dairy, honey…), and a recipe's diet type follows from its
+  ingredients. AI-suggested diet labels (spec 090) are never used.
+- Q: When the AI fails or takes longer than 60 seconds, does the user only see an error, or does the
+  system build a backup draft without the AI? → A: A backup draft is built automatically from the
+  filtered candidates (FR-008a) by fixed rules (meal suitability, no repeats, preferences) within
+  2 seconds; it carries the notice "Tạo tự động, không dùng AI" and does not count toward the hourly
+  limit (matches the fallback criterion in docs/management/project-plan.md).
+- Q: Besides 5 generations per user per hour, is there a platform-wide cap tied to the AI provider's
+  free-tier quota, and what happens when it is reached? → A: Yes, a configurable daily cap within the
+  free-tier quota. When it is reached, "Generate" still works but returns the backup draft (FR-027)
+  with the notice "AI đã hết lượt hôm nay", and it does not count toward the user's limit.
+- Q: When the profile has no household size, how is servings pre-filled in the constraint dialog? →
+  A: "Theo công thức" (per recipe): each dish uses its recipe's own servings, the same as spec 030;
+  the user can still enter one number from 1 to 20 to apply to every dish.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Generate a week of meals from my profile (Priority: P1)
@@ -129,8 +158,8 @@ and the Shopping List for that week is created.
    tools and rules as the manual planner (spec 030) apply, and the changes stay in the draft until
    confirmed.
 2. **Given** a draft, **When** the user chooses "Confirm", **Then** all draft dishes are saved into
-   the week's plan, keep their "AI" label, and the shopping list for the week is created through the
-   Shopping List feature (spec 040); the user is taken to the result.
+   the week's plan, keep their "AI" (or "Auto") label, and the Shopping List's meal-plan import flow
+   (spec 040: ingredient preview, merge or start a new list) opens for that week.
 3. **Given** a draft, **When** the user chooses "Discard", **Then** the draft disappears and the week
    returns to exactly how it was before generation.
 4. **Given** an unconfirmed draft, **When** the user tries to leave the planner, change week, reload
@@ -169,8 +198,8 @@ three slots empty with a "Choose a dish" marker and none of the three recipes ap
 4. **Given** some slots were removed, **When** the draft appears, **Then** a short message says how
    many slots need a manual choice.
 5. **Given** the AI returns fewer or more slots than requested, or a result that cannot be read,
-   **When** this happens, **Then** the system retries once; if it still fails, the user sees an error
-   and no draft.
+   **When** this happens, **Then** the system retries once; if it still fails, the backup draft of
+   User Story 6 is shown instead.
 
 ---
 
@@ -216,34 +245,45 @@ use up a generation.
    user has left in the current hour.
 2. **Given** a user has used 5 generations in the last 60 minutes, **When** they open the dialog,
    **Then** "Generate" is disabled and the time when the next generation becomes available is shown.
-3. **Given** a generation ends with a draft, **When** the count is updated, **Then** it counts as
-   one generation, including "Regenerate".
+3. **Given** a generation ends with an AI draft, **When** the count is updated, **Then** it counts as
+   one generation, including "Regenerate"; a backup draft (User Story 6) does not count.
 4. **Given** a generation fails because of a system or AI error, times out, is cancelled by the user
    before a draft appears, or ends with "not enough recipes", **When** the count is updated, **Then**
    it does not count.
 
 ---
 
-### User Story 6 - AI unavailable (Priority: P2)
+### User Story 6 - AI unavailable: backup draft without AI (Priority: P2)
 
-As a **home cook**, I want a clear message when the AI cannot help right now, and to keep planning
-by hand, so that an AI outage never blocks my week.
+As a **home cook**, I want to still get a usable week plan when the AI cannot help right now, so
+that an AI outage never blocks my week.
 
-**Why this priority**: The AI provider is an outside service that can be slow or down; the manual
-planner must stay usable (proposal 4.7).
+**Why this priority**: The AI provider is an outside service that can be slow or down (proposal
+4.7); the project plan requires a valid plan within 2 seconds with the AI switched off, which also
+protects the live demo.
 
-**Independent Test**: Make the AI service unreachable, generate, confirm an error message appears
-within 60 seconds, no generation is counted, and manual planning still works.
+**Independent Test**: Make the AI service unreachable, generate, and confirm that within 2 seconds of
+the failure a draft appears with the notice "Tạo tự động, không dùng AI", every dish passes the hard
+rules, no recipe is repeated, and the remaining generation count is unchanged.
 
 **Acceptance Scenarios**:
 
-1. **Given** the AI service fails or is unreachable, **When** the user generates, **Then** an error
-   message says the AI is not available right now and suggests trying again later or planning by
-   hand.
-2. **Given** no draft has appeared after 60 seconds, **When** the limit is reached, **Then** the wait
-   ends with a timeout message.
-3. **Given** any AI failure, **When** the error is shown, **Then** the week is unchanged and every
-   manual planner action still works.
+1. **Given** the AI service fails, is unreachable or returns an unusable result twice (FR-014),
+   **When** the user generates, **Then** the system builds a backup draft from the filtered
+   candidates (FR-008a) by fixed rules — meal suitability first, no repeated recipe, then preferred
+   cuisines — and shows it within 2 seconds of the failure.
+2. **Given** no AI result has arrived after 60 seconds, **When** the limit is reached, **Then** the
+   wait ends and the backup draft is shown the same way.
+3. **Given** a backup draft, **When** it is shown, **Then** it carries the notice "Tạo tự động, không
+   dùng AI", its dishes carry an "Auto" label instead of "AI", and it can be edited, confirmed,
+   regenerated or discarded like any draft (User Story 2).
+4. **Given** a backup draft, **When** the generation count is updated, **Then** it does not count
+   toward the hourly limit.
+5. **Given** the backup rules cannot fill every selected slot, **When** the draft is shown, **Then**
+   the unfilled slots are marked "Choose a dish" as in User Story 3.
+6. **Given** the backup draft also cannot be built (e.g. the recipe data is unreachable), **When**
+   this happens, **Then** an error message suggests trying again later or planning by hand, the week
+   is unchanged and every manual planner action still works.
 
 ---
 
@@ -278,9 +318,9 @@ picker from Tuesday breakfast of a week that already has "Phở bò" on Monday b
    toward the 5 generations per hour.
 6. **Given** fewer than 5 suitable recipes exist, **When** the picker opens, **Then** only those are
    shown; if none exist, the list says there is no suggestion and the normal results stay usable.
-7. **Given** the AI is unavailable or takes longer than 3 seconds, **When** the picker opens,
-   **Then** the "Suggested for you" list is hidden and the ordered search results (spec 030 FR-007a)
-   work as usual.
+7. **Given** the retrieval step is unavailable or takes longer than 3 seconds, **When** the picker
+   opens, **Then** the "Suggested for you" list is hidden and the ordered search results (spec 030
+   FR-007a) work as usual; when only the AI language model is down, suggestions still show.
 
 ---
 
@@ -335,6 +375,8 @@ never chosen again.
 - **Suggestions while a draft is open**: the picker opened from a draft slot also shows
   suggestions; dishes already in the draft count as "already planned".
 - **Hourly limit reached**: slot suggestions still work, because they do not count (FR-036).
+- **Platform daily cap reached** (FR-025a): every user still gets a backup draft with the notice "AI đã
+  hết lượt hôm nay"; slot suggestions are unaffected because they never call the language model.
 - **Fewer suitable recipes than slots but more than zero**: treated as "not enough recipes"
   (User Story 4) rather than filling some slots with repeats.
 
@@ -347,8 +389,9 @@ never chosen again.
 - **FR-001**: "Generate with AI" MUST be available only to signed-in users, on the Meal Planner
   (spec 030), for the current week or a future week that has at least one empty slot.
 - **FR-002**: The constraint dialog MUST be pre-filled from the user's profile: allergies, excluded
-  ingredients, diet type, servings (household size, or 2 when missing), maximum cooking time per
-  dish and preferred cuisines.
+  ingredients, diet type, servings, maximum cooking time per dish and preferred cuisines. Servings is
+  the household size; when it is missing, servings is "Theo công thức" (each dish uses its recipe's
+  own servings, as in spec 030) unless the user enters one number from 1 to 20 for all dishes.
 - **FR-003**: The user MUST be able to choose which days (1–7 within the viewed week, not in the
   past) and which meals (breakfast, lunch, dinner) to fill; by default all remaining days and all
   three meals are selected.
@@ -363,10 +406,18 @@ never chosen again.
 
 - **FR-007**: The AI MUST fill only the selected slots that are empty; dishes already in the plan
   MUST NOT be moved, replaced or removed.
-- **FR-008**: The AI MUST choose only from recipes that are published at the time of generation; it
-  MUST NOT create or describe recipes of its own.
+- **FR-008**: The AI MUST choose only from recipes that are published at the time of generation,
+  including recipes imported into the catalogue from crawled data; it MUST NOT create or describe
+  recipes of its own.
+- **FR-008a**: Before the AI is asked, the system MUST remove every recipe that breaks a hard rule
+  (FR-009) and retrieve, from the remaining recipes, a set of candidates suited to the requested
+  meals and preferences; the AI MUST receive only these candidates. The result check of FR-013 still
+  applies.
 - **FR-009**: Allergies, excluded ingredients, diet type and maximum cooking time MUST be treated as
   hard rules: a recipe breaking any of them MUST never appear in a draft.
+- **FR-009a**: A recipe's diet type (e.g. vegetarian, vegan) MUST be derived from the kinds of its
+  catalogue ingredients (meat, seafood, egg, dairy, honey…); AI-suggested diet labels (spec 090) MUST
+  NOT be used for any hard rule.
 - **FR-010**: Preferred cuisines, meal suitability (breakfast dishes for breakfast), variety and
   ingredient reuse MUST be treated as preferences that guide the choice.
 - **FR-011**: A recipe MUST NOT appear in more than one AI-filled slot of the same draft.
@@ -379,18 +430,20 @@ never chosen again.
   not published, or break a hard rule (FR-009) MUST be removed and their slots marked "Choose a
   dish".
 - **FR-014**: If the AI result has the wrong number of slots or cannot be read, the system MUST retry
-  once and, if it fails again, show an error without a draft.
+  once and, if it fails again, fall back to the backup draft of FR-027.
 - **FR-015**: The draft MUST show how many slots need a manual choice; selecting such a slot MUST open
   the recipe picker of spec 030.
 
 **Draft**
 
 - **FR-016**: The result MUST be shown on the planner calendar as a draft that is not saved until
-  the user confirms; AI-filled dishes MUST carry an "AI" label.
+  the user confirms; AI-filled dishes MUST carry an "AI" label (dishes of a backup draft carry "Auto",
+  FR-027).
 - **FR-017**: In a draft the user MUST be able to move, swap, replace and remove dishes with the same
   rules as spec 030.
-- **FR-018**: "Confirm" MUST save the draft dishes into the week's plan (keeping their "AI" label and
-  servings) and create the week's shopping list through spec 040.
+- **FR-018**: "Confirm" MUST save the draft dishes into the week's plan (keeping their "AI" or "Auto"
+  label and servings) and then open the meal-plan import flow of the Shopping List (spec 040: ingredient
+  preview, then "merge into current list" or "archive and start a new list").
 - **FR-019**: On confirm, an AI dish whose slot was filled elsewhere, or whose recipe is no longer
   published, MUST NOT be saved; the user MUST be told how many dishes were skipped.
 - **FR-020**: "Discard" MUST remove the draft and leave the plan exactly as before generation.
@@ -401,17 +454,27 @@ never chosen again.
 
 **Progress, limits and failures**
 
-- **FR-023**: While generating, the planner MUST show a progress state and allow cancelling; if no
-  draft is ready within 60 seconds the generation MUST end with a timeout message.
+- **FR-023**: While generating, the planner MUST show a progress state and allow cancelling; if no AI
+  result is ready within 60 seconds the AI attempt MUST end and the backup draft of FR-027 MUST be
+  used.
 - **FR-024**: The "not enough recipes" message MUST suggest increasing the maximum cooking time,
   removing preferred cuisines, or selecting fewer days or meals.
 - **FR-025**: Each user MUST be limited to 5 counted generations in any rolling 60-minute window;
   the dialog MUST show the remaining count and, when none remain, the time the next one becomes
   available.
-- **FR-026**: Only generations that end with a draft MUST count toward the limit; failures, timeouts,
-  cancellations and "not enough recipes" results MUST NOT count.
-- **FR-027**: When the AI service fails, the user MUST see a message suggesting trying later or
-  planning by hand, and the manual planner MUST keep working.
+- **FR-025a**: The platform MUST cap the number of AI planner requests per day across all users; the
+  cap is the single platform-wide daily AI quota shared with nutrition estimation (spec 090 FR-020),
+  set within the free-tier quota of the chosen AI provider, and the planner's share MUST be
+  configurable. When the cap is reached, generation MUST NOT call the AI and
+  MUST return the backup draft of FR-027 with the notice "AI đã hết lượt hôm nay".
+- **FR-026**: Only generations that end with an AI draft MUST count toward the limit; failures,
+  timeouts, backup drafts (FR-027), cancellations and "not enough recipes" results MUST NOT count.
+- **FR-027**: When the AI service fails, times out or returns an unusable result twice, the system
+  MUST build a backup draft without the AI from the filtered candidates (FR-008a), using fixed rules
+  (meal suitability, no repeated recipe, preferred cuisines), within 2 seconds; the draft MUST show
+  the notice "Tạo tự động, không dùng AI" and label its dishes "Auto". If the backup draft cannot be
+  built either, the user MUST see a message suggesting trying later or planning by hand, and the
+  manual planner MUST keep working.
 - **FR-028**: The disclaimer "Thực đơn do AI tạo dựa trên hồ sơ của bạn, hãy tự kiểm tra dị ứng và
   cân bằng dinh dưỡng" MUST be shown in the constraint dialog and on every draft.
 
@@ -425,15 +488,18 @@ never chosen again.
 **Slot suggestions**
 
 - **FR-033**: The planner's recipe picker, when opened for a slot, MUST show a "Suggested for you"
-  list of up to 5 published recipes suited to that slot's meal.
+  list of up to 5 published recipes suited to that slot's meal. Suggestions MUST come only from the
+  retrieval step over the prepared recipe data (after the hard-rule filter of FR-008a) and MUST NOT
+  call the AI language model.
 - **FR-034**: Suggestions MUST follow the hard rules of FR-009 and MUST NOT include recipes already
   planned in the same week (including an open draft); they MUST be ranked by meal suitability, then
   preferred cuisines, then variety against the week's other dishes.
 - **FR-035**: Each suggestion MUST show a short reason (meal, cuisine, cooking time) and the list
   MUST show the AI disclaimer in short form.
 - **FR-036**: Slot suggestions MUST NOT count toward the generation limit of FR-025.
-- **FR-037**: If suggestions are not ready within 3 seconds or the AI is unavailable, the list MUST
-  be hidden without an error, and the picker MUST keep working with ordered search results.
+- **FR-037**: If suggestions are not ready within 3 seconds or the retrieval step is unavailable, the
+  list MUST be hidden without an error, and the picker MUST keep working with ordered search results.
+  An outage of the AI language model alone MUST NOT hide suggestions.
 - **FR-038**: A dish added from the suggestions MUST carry the "AI" label like other AI dishes.
 
 **Records**
@@ -469,8 +535,9 @@ never chosen again.
   from the AI carry source "AI planner".
 - **Recipe Knowledge Entry**: the searchable description of one published recipe that the AI chooses
   from — recipe, last refreshed time. Created on publish, refreshed on edit, removed on archive.
-- **Recipe** *(defined in spec 060)*: provides ingredients, cooking time, cuisine, meal suitability,
-  dietary tags and published state.
+- **Recipe** *(defined in spec 060)*: provides ingredients, cooking time, cuisine, meal suitability
+  and published state; its diet type is derived from the kinds of its catalogue ingredients
+  (FR-009a).
 - **Dietary Profile** *(defined in spec 011)*: provides allergies, excluded ingredients, diet type,
   household size, maximum cooking time and preferred cuisines.
 
@@ -480,6 +547,8 @@ never chosen again.
 
 - **SC-001**: A user can go from an empty week to a confirmed 21-dish plan in under 3 minutes.
 - **SC-002**: 90% of successful generations show a draft within 30 seconds.
+- **SC-002a**: With the AI switched off, 100% of generations with enough suitable recipes show a
+  backup draft within 2 seconds of the failure, with 0 hard-rule violations and 0 repeated recipes.
 - **SC-003**: In acceptance tests, 0 drafts contain a non-existent, unpublished or rule-breaking
   recipe (100% of injected bad AI picks are removed).
 - **SC-004**: When enough suitable recipes exist, at least 90% of requested slots are filled in a
@@ -500,21 +569,29 @@ never chosen again.
   spec 030; this spec only adds what is specific to AI generation.
 - Days are chosen as individual days of the viewed week (proposal "days" 1–7); past days of the
   current week cannot be selected.
-- Default servings is 2 when the profile has no household size (spec 030 uses the recipe's own
-  servings for manual dishes; for a generated week one shared value is simpler).
+- When the profile has no household size, servings default to each recipe's own servings, the same
+  rule as manual dishes in spec 030, so the shopping list (spec 040) follows one rule
+  (Clarifications 2026-10-18).
 - The draft lives only in the current page; it is not saved on the server or across devices.
 - "Not enough recipes" means fewer suitable published recipes than slots to fill, so the no-repeat
   rule can always be met; partial plans with repeats are not offered.
 - Recipes have information about which meals they suit (breakfast / lunch / dinner, possibly
   several) and their cooking time and ingredients; a recipe with no meal information counts as
   suited to lunch and dinner. This must be agreed with B (spec 060).
-- Slot suggestions rank recipes from the AI's recipe knowledge; they do not need a full plan
-  generation, which is why they are fast and not counted toward the hourly limit.
+- Every catalogue ingredient carries a kind (meat, seafood, egg, dairy, honey, plant…) used to derive
+  diet type (FR-009a); marking the catalogue, including ingredients of imported recipes, must be
+  agreed with B (spec 060 / catalogue owner).
+- Slot suggestions rank recipes from the prepared recipe data by retrieval only, without calling the
+  AI language model; this is why they are fast and not counted toward the hourly limit
+  (Clarifications 2026-10-18).
+- The catalogue is filled partly by importing the team's crawled recipe data as PUBLISHED recipes of
+  the system account "WikiCook", with the source link kept; how the import is done belongs to the
+  plan, and spec 090 treats each import as one approval for nutrition estimation.
 - Ranking on the main search page (spec 020) is out of scope for this spec.
 - The rule for matching allergies to recipes is shared with search (spec 020) and the profile
   (spec 011), as listed in the assignment's interface table.
-- Confirm creates the shopping list for the whole week, including dishes the user placed by hand,
-  the same as "Create shopping list" in spec 030.
+- Confirm hands the whole week to the Shopping List, including dishes the user placed by hand, the
+  same as "Create shopping list" in spec 030; the preview and merge choice belong to spec 040.
 - The AI provider and the model for recipe search are chosen at the mid-week meeting on 14/10; this
   spec does not depend on which one is chosen as long as a free tier is available.
 - Jira key for this feature is not yet assigned; it must be added to the branch name per the
