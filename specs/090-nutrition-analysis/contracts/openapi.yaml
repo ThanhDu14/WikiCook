@@ -1,0 +1,311 @@
+openapi: 3.0.3
+info:
+  title: WikiCook – Nutrition & Allergen Analysis API (spec 090)
+  version: 0.1.0
+  description: |
+    Đọc ước tính dinh dưỡng đã lưu và cảnh báo dị ứng của công thức (public), và công cụ admin
+    (danh sách, tính lại, ẩn/hiện). Không endpoint nào gọi AI đồng bộ; "recalculate" chỉ đưa việc vào
+    hàng đợi. Lỗi dạng ProblemDetail (RFC 9457) có `code`, không lộ chi tiết lỗi của provider.
+    Calo cho meal planner (030) và tìm kiếm (020) cung cấp qua interface Java, không qua REST
+    (contracts/integration.md).
+servers:
+  - url: /api/v1
+tags:
+  - name: nutrition
+  - name: nutrition-admin
+
+paths:
+  /recipes/{recipeId}/nutrition:
+    get:
+      tags: [nutrition]
+      summary: Ước tính dinh dưỡng mỗi khẩu phần và nhãn AI (FR-014, FR-015, US1)
+      description: |
+        Public (Guest xem được). Chỉ đọc giá trị đã lưu (FR-007). `state = NO_DATA` khi chưa có,
+        lỗi hoặc bị ẩn – không kèm lý do (US1-4). Khi `NO_DATA` hoặc `CALCULATING` thì số liệu và
+        `dietLabels` rỗng/null.
+      operationId: getRecipeNutrition
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/RecipeId'
+      responses:
+        '200':
+          description: Trạng thái và số liệu
+          headers:
+            Cache-Control: { schema: { type: string, example: 'public, max-age=60' } }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RecipeNutrition' }
+        '404': { $ref: '#/components/responses/Problem' }
+
+  /recipes/{recipeId}/allergens:
+    get:
+      tags: [nutrition]
+      summary: Cảnh báo dị ứng từ catalogue nguyên liệu (FR-017, FR-018, US4)
+      description: |
+        Public; nếu có JWT thì mỗi allergen có `inMyProfile`. Lấy từ `ingredient_allergens` của mọi
+        nguyên liệu (kể cả tùy chọn), không bao giờ từ output AI, không phụ thuộc trạng thái ước tính.
+        Danh sách rỗng → UI hiện "Không có chất gây dị ứng nào được ghi trong danh mục nguyên liệu"
+        (không bao giờ "không chứa chất gây dị ứng").
+      operationId: getRecipeAllergens
+      security: [{}, { bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/RecipeId'
+      responses:
+        '200':
+          description: Danh sách allergen, không trùng
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RecipeAllergens' }
+        '404': { $ref: '#/components/responses/Problem' }
+
+  /admin/nutrition:
+    get:
+      tags: [nutrition-admin]
+      summary: Danh sách ước tính của công thức PUBLISHED (FR-023)
+      operationId: listNutritionEstimates
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: status
+          in: query
+          schema: { $ref: '#/components/schemas/AdminStatus' }
+        - name: q
+          in: query
+          description: Tìm theo tên công thức, không phân biệt dấu
+          schema: { type: string, maxLength: 100 }
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 0, default: 0 }
+        - name: size
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 50, default: 20 }
+      responses:
+        '200':
+          description: Một trang kết quả
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EstimatePage' }
+        '400': { $ref: '#/components/responses/Problem' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+
+  /admin/nutrition/{recipeId}/attempts:
+    get:
+      tags: [nutrition-admin]
+      summary: Lịch sử lượt ước tính trong 30 ngày (NFR-009)
+      operationId: listNutritionAttempts
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/RecipeId'
+      responses:
+        '200':
+          description: Mới nhất trước
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Attempt' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+
+  /admin/nutrition/{recipeId}/recalculate:
+    post:
+      tags: [nutrition-admin]
+      summary: Yêu cầu AI tính lại một lần (FR-024)
+      description: |
+        Đưa việc vào hàng đợi rồi trả 202 ngay. Ước tính hiện tại vẫn hiển thị cho tới khi có kết quả
+        hợp lệ; lỗi thì giữ nguyên. Ghi audit `NUTRITION_RECALC_REQUESTED`.
+      operationId: recalculateNutrition
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/RecipeId'
+      responses:
+        '202': { description: Đã đưa vào hàng đợi }
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409':
+          description: Đã có việc tính cho cùng công thức và cùng danh sách nguyên liệu (`ALREADY_QUEUED`)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '422':
+          description: Công thức không PUBLISHED (`RECIPE_NOT_PUBLISHED`)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+
+  /admin/nutrition/{recipeId}/hide:
+    post:
+      tags: [nutrition-admin]
+      summary: Ẩn ước tính, bắt buộc lý do (FR-025)
+      description: Ẩn → "không có số liệu" ở mọi nơi, kể cả nhãn AI. Idempotent. Ghi audit `NUTRITION_HIDDEN`.
+      operationId: hideNutrition
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/RecipeId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/HideRequest' }
+      responses:
+        '204': { description: Đã ẩn }
+        '400': { $ref: '#/components/responses/Problem' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+        '404':
+          description: Công thức không tồn tại hoặc chưa có ước tính (`NO_ESTIMATE`)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+
+  /admin/nutrition/{recipeId}/unhide:
+    post:
+      tags: [nutrition-admin]
+      summary: Bỏ ẩn (FR-025)
+      description: Idempotent. Ghi audit `NUTRITION_UNHIDDEN`.
+      operationId: unhideNutrition
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/RecipeId'
+      responses:
+        '204': { description: Đã bỏ ẩn }
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+
+  parameters:
+    RecipeId:
+      name: recipeId
+      in: path
+      required: true
+      schema: { type: integer, format: int64, minimum: 1 }
+
+  responses:
+    Problem:
+      description: Lỗi (VALIDATION_ERROR, RECIPE_NOT_FOUND, UNAUTHENTICATED, FORBIDDEN…)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+
+  schemas:
+    DietLabel:
+      type: string
+      enum: [GLUTEN_FREE, DAIRY_FREE, NUT_FREE, LOW_SODIUM, VEGETARIAN, VEGAN]
+
+    NutritionState:
+      type: string
+      enum: [CALCULATING, NO_DATA, AVAILABLE]
+
+    AdminStatus:
+      type: string
+      enum: [NO_DATA, CALCULATING, AVAILABLE, LOW_CONFIDENCE, FAILED, HIDDEN]
+
+    FailureReason:
+      type: string
+      description: research R7
+      enum: [AI_ERROR, TIMEOUT, MALFORMED, NEGATIVE, OUT_OF_RANGE, MACRO_MISMATCH, USAGE_CAP,
+             NOTHING_TO_ESTIMATE, NO_SERVINGS, INTERRUPTED, QUEUE_FULL, STALE]
+
+    RecipeNutrition:
+      type: object
+      required: [recipeId, state, lowConfidence, dietLabels, excluded]
+      properties:
+        recipeId: { type: integer, format: int64 }
+        state: { $ref: '#/components/schemas/NutritionState' }
+        lowConfidence: { type: boolean, description: Chỉ có nghĩa khi state = AVAILABLE }
+        servings: { type: integer, nullable: true, description: Số khẩu phần của công thức (US1-1) }
+        kcal: { type: integer, minimum: 0, maximum: 3000, nullable: true }
+        proteinG: { type: integer, minimum: 0, maximum: 300, nullable: true }
+        carbsG: { type: integer, minimum: 0, maximum: 300, nullable: true }
+        fatG: { type: integer, minimum: 0, maximum: 300, nullable: true }
+        dietLabels:
+          type: array
+          items: { $ref: '#/components/schemas/DietLabel' }
+        excluded:
+          type: object
+          required: [toTaste, optional]
+          description: Nguyên liệu không được tính (FR-012, FR-013); rỗng khi không AVAILABLE
+          properties:
+            toTaste: { type: array, items: { type: string } }
+            optional: { type: array, items: { type: string } }
+        computedAt: { type: string, format: date-time, nullable: true }
+
+    RecipeAllergens:
+      type: object
+      required: [recipeId, allergens]
+      properties:
+        recipeId: { type: integer, format: int64 }
+        allergens:
+          type: array
+          items:
+            type: object
+            required: [code, name]
+            properties:
+              code: { type: string, example: PEANUT }
+              name: { type: string, example: Đậu phộng }
+              inMyProfile: { type: boolean, description: Chỉ có khi gọi kèm JWT (FR-018) }
+
+    EstimateRow:
+      type: object
+      required: [recipeId, title, status, queued]
+      properties:
+        recipeId: { type: integer, format: int64 }
+        title: { type: string }
+        status: { $ref: '#/components/schemas/AdminStatus' }
+        kcal: { type: integer, nullable: true }
+        lastAttemptAt: { type: string, format: date-time, nullable: true }
+        lastOutcome: { type: string, nullable: true, enum: [SUCCESS, REJECTED, TIMEOUT, QUOTA_CAP, FAILED, null] }
+        lastReason: { allOf: [{ $ref: '#/components/schemas/FailureReason' }], nullable: true }
+        hiddenReason: { type: string, nullable: true }
+        queued: { type: boolean, description: Đang chờ hoặc đang tính trong hàng đợi }
+
+    EstimatePage:
+      type: object
+      required: [items, page, size, totalElements]
+      properties:
+        items: { type: array, items: { $ref: '#/components/schemas/EstimateRow' } }
+        page: { type: integer }
+        size: { type: integer }
+        totalElements: { type: integer, format: int64 }
+
+    Attempt:
+      type: object
+      required: [createdAt, trigger, outcome, calledLlm]
+      properties:
+        createdAt: { type: string, format: date-time }
+        trigger: { type: string, enum: [APPROVAL, REVISION, IMPORT, ADMIN_RECALC] }
+        outcome: { type: string, enum: [SUCCESS, REJECTED, TIMEOUT, QUOTA_CAP, FAILED] }
+        calledLlm: { type: boolean }
+        reason: { allOf: [{ $ref: '#/components/schemas/FailureReason' }], nullable: true }
+        actorName: { type: string, nullable: true, description: Admin bấm Recalculate }
+
+    HideRequest:
+      type: object
+      required: [reason]
+      properties:
+        reason: { type: string, minLength: 1, maxLength: 300 }
+
+    Problem:
+      type: object
+      required: [type, title, status, code]
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        code:
+          type: string
+          enum:
+            - VALIDATION_ERROR
+            - RECIPE_NOT_FOUND
+            - RECIPE_NOT_PUBLISHED
+            - NO_ESTIMATE
+            - ALREADY_QUEUED
+            - UNAUTHENTICATED
+            - FORBIDDEN
