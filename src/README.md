@@ -38,7 +38,7 @@ WikiCook/src/
 │   └── tasks-template.md          # Actionable development task template
 │
 └── specs/                         # Feature specifications generated via Spec Kit
-    ├── user-authentication-roles/ # Sprint 1: Authentication & RBAC feature
+    ├── 010-user-authentication-roles/ # Sprint 1: Authentication & RBAC feature
     │   ├── spec.md                # Detailed user stories, requirements & data model
     │   └── checklists/
     │       └── requirements.md    # Pre-implementation verification checklist
@@ -48,10 +48,35 @@ WikiCook/src/
     │   └── checklists/
     │       └── requirements.md    # Quality checklist for search functionality
     │
-    └── 060-recipe-editor/         # Sprint 2: Interactive rich-text recipe editor
-        ├── spec.md                # Drafts, ingredients & step-by-step editing spec
+    ├── 030-meal-planner/          # Manual weekly meal planner
+    │   ├── spec.md                # Weekly slots, rearranging & sending to shopping list
+    │   └── checklists/
+    │       └── requirements.md    # Quality checklist for meal planner
+    │
+    ├── 031-ai-weekly-meal-planner/ # AI-generated weekly meal plan
+    │   ├── spec.md                # Profile-based generation, safety rules & fair-use limits
+    │   └── checklists/
+    │       └── requirements.md    # Quality checklist for AI meal planner
+    │
+    ├── 040-shopping-list/         # Sprint 2/3: Smart shopping list & ingredient aggregation
+    │   ├── spec.md                # Deduplication, aisle grouping, offline sync & export
+    │   └── checklists/
+    │       └── requirements.md    # Quality checklist for shopping list
+    │
+    ├── 050-cooking-mode/          # Sprint 2/3: Hands-free cooking mode & timers
+    │   ├── spec.md                # Full-screen steps, concurrent timers & voice navigation
+    │   └── checklists/
+    │       └── requirements.md    # Quality checklist for cooking mode
+    │
+    ├── 060-recipe-editor/         # Sprint 2: Interactive rich-text recipe editor
+    │   ├── spec.md                # Drafts, ingredients & step-by-step editing spec
+    │   └── checklists/
+    │       └── requirements.md    # Quality checklist for editor functionality
+    │
+    └── 090-nutrition-analysis/    # AI nutrition estimate & allergen warnings
+        ├── spec.md                # Estimate on approval, plausibility checks & admin recalculation
         └── checklists/
-            └── requirements.md    # Quality checklist for editor functionality
+            └── requirements.md    # Quality checklist for nutrition analysis
 ```
 
 ---
@@ -86,9 +111,9 @@ The `templates/` folder contains standard scaffolding documents used by develope
 
 The `specs/` directory hosts living specification packages generated through Spec Kit workflows:
 
-* **User Authentication & Roles ([`specs/user-authentication-roles/`](./specs/user-authentication-roles/)):**
+* **User Authentication & Roles ([`specs/010-user-authentication-roles/`](./specs/010-user-authentication-roles/)):**
   * *Sprint:* Sprint 1 (Foundational security).
-  * *Deliverables:* [`spec.md`](./specs/user-authentication-roles/spec.md), [`checklists/requirements.md`](./specs/user-authentication-roles/checklists/requirements.md).
+  * *Deliverables:* [`spec.md`](./specs/010-user-authentication-roles/spec.md), [`checklists/requirements.md`](./specs/010-user-authentication-roles/checklists/requirements.md).
   * *Scope:* Registration, login, password recovery, JWT token lifecycles, and Role-Based Access Control (Admin vs. Cook).
 
 * **Recipe Search & Filter ([`specs/020-recipe-search-filter/`](./specs/020-recipe-search-filter/)):**
@@ -96,10 +121,35 @@ The `specs/` directory hosts living specification packages generated through Spe
   * *Deliverables:* [`spec.md`](./specs/020-recipe-search-filter/spec.md), [`checklists/requirements.md`](./specs/020-recipe-search-filter/checklists/requirements.md).
   * *Scope:* Fuzzy text search, dietary preference filtering, ingredient exclusion, cooking time facets, and pagination.
 
+* **Weekly Meal Planner (Manual) ([`specs/030-meal-planner/`](./specs/030-meal-planner/)):**
+  * *Sprint:* Not yet assigned (Jira key pending).
+  * *Deliverables:* [`spec.md`](./specs/030-meal-planner/spec.md), [`checklists/requirements.md`](./specs/030-meal-planner/checklists/requirements.md).
+  * *Scope:* Filling weekly meal slots, adding recipes from detail pages, rearranging/replacing dishes, week navigation, sending the week to the shopping list, and mobile/offline handling.
+
+* **AI Weekly Meal Planner ([`specs/031-ai-weekly-meal-planner/`](./specs/031-ai-weekly-meal-planner/)):**
+  * *Sprint:* Not yet assigned (Jira key pending).
+  * *Deliverables:* [`spec.md`](./specs/031-ai-weekly-meal-planner/spec.md), [`checklists/requirements.md`](./specs/031-ai-weekly-meal-planner/checklists/requirements.md).
+  * *Scope:* Profile-based weekly plan generation, draft review and confirmation, safety guarantees against unsafe or non-existent dishes, fair-use limits, AI-unavailable fallback, and per-slot suggestions.
+
+* **Smart Shopping List ([`specs/040-shopping-list/`](./specs/040-shopping-list/)):**
+  * *Sprint:* Sprint 2 backlog / Sprint 3 candidate.
+  * *Deliverables:* [`spec.md`](./specs/040-shopping-list/spec.md), [`checklists/requirements.md`](./specs/040-shopping-list/checklists/requirements.md).
+  * *Scope:* List management with custom items, ingredient deduplication and scaling, supermarket aisle grouping, local-first offline sync, and export/print.
+
+* **Hands-free Cooking Mode ([`specs/050-cooking-mode/`](./specs/050-cooking-mode/)):**
+  * *Sprint:* Sprint 2 backlog / Sprint 3 candidate.
+  * *Deliverables:* [`spec.md`](./specs/050-cooking-mode/spec.md), [`checklists/requirements.md`](./specs/050-cooking-mode/checklists/requirements.md).
+  * *Scope:* Full-screen always-on view, oversized step navigation and keyboard controls, concurrent timers with alarms, voice navigation, and session recovery.
+
 * **Recipe Editor ([`specs/060-recipe-editor/`](./specs/060-recipe-editor/)):**
   * *Sprint:* Sprint 2 (Content creation).
   * *Deliverables:* [`spec.md`](./specs/060-recipe-editor/spec.md), [`checklists/requirements.md`](./specs/060-recipe-editor/checklists/requirements.md).
   * *Scope:* Rich-text drafting, step-by-step cooking timers, nutritional metadata calculation, and automated local draft saving.
+
+* **Nutrition & Allergen Analysis ([`specs/090-nutrition-analysis/`](./specs/090-nutrition-analysis/)):**
+  * *Sprint:* Not yet assigned (Jira key pending).
+  * *Deliverables:* [`spec.md`](./specs/090-nutrition-analysis/spec.md), [`checklists/requirements.md`](./specs/090-nutrition-analysis/checklists/requirements.md).
+  * *Scope:* One-time AI nutrition estimate per recipe on approval or import, plausibility checks, nutrition block with AI disclaimer, allergen warnings from ingredient data, calorie source for search and the meal planner, and Administrator recalculate/hide.
 
 ---
 
