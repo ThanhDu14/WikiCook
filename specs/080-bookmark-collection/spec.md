@@ -91,6 +91,7 @@ recipes, "saved by N people" counters.
   it comes back as a "Không còn khả dụng" item. This is an exception to FR-009: Undo reverts a removal,
   it is not a new save. Unsaving never changes dishes already in a meal plan (spec 030); the recipe only
   stops appearing in the planner's "From my collections" view.
+- Session 2026-10-19: Concurrent-user load condition changed from 200 to 100 to match the RC acceptance gate in docs/management/project-plan.md §4.4.2 and Vision Document §7 (SCRUM-36).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -477,7 +478,7 @@ the second shows normally again.
 
 - **NFR-001 (Performance)**: The save icon MUST react within 100 ms of a tap; 95% of saves and dialog
   confirmations MUST be stored within 1 second, and 95% of collection pages MUST be fully shown within 2
-  seconds, under normal load (up to 200 concurrent users) and with lists at their limits.
+  seconds, under normal load (up to 100 concurrent users) and with lists at their limits.
 - **NFR-002 (Privacy)**: Saved recipes and collections, their names and their contents MUST never be
   visible to anyone other than the owner, including through counts, links or error messages.
 - **NFR-003 (Security)**: Collection names MUST be validated on the server and always displayed as plain
