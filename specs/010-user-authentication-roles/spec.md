@@ -45,6 +45,8 @@ authentication, the admin dashboard UI itself (Module 3.10).
 - Q: Are users notified when an Administrator changes their role or suspends/bans them? → A: Suspension/ban: email with reason, end date (suspensions) and appeal instructions, plus an email when the suspension ends or the ban is lifted. Role change: no email, but an in-app notice at the next sign-in names the new role and changed permissions (especially on demotion). Appeals themselves belong to spec 100 (FR-024a).
 - Q: Can an Administrator be suspended, banned or demoted by another Administrator? → A: Yes, but never by themselves, and at least one active Administrator (not suspended, banned or deleted) must always remain; same rule as spec 011 self-deletion. A Moderator cannot act on a Moderator or Administrator (only a higher role acts on a lower one). Actions on another Administrator require re-authentication and are always audited (FR-022a, FR-023).
 
+- Session 2026-10-19: Concurrent-user load condition changed from 200 to 100 to match the RC acceptance gate in docs/management/project-plan.md §4.4.2 and Vision Document §7 (SCRUM-36).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Sign in with email and password (Priority: P1)
@@ -336,7 +338,7 @@ is reused.
 - **NFR-003 (Security – privacy)**: Error messages and response timing MUST NOT reveal whether an
   email is registered (sign-in, reset).
 - **NFR-004 (Performance)**: 95% of sign-in attempts MUST complete in under 2 seconds under normal
-  load (up to 200 concurrent users).
+  load (up to 100 concurrent users).
 - **NFR-005 (Availability)**: Sign-in MUST remain available when the Google sign-in provider is
   unreachable (email/password still works).
 - **NFR-006 (Usability)**: Sign-in and sign-up pages MUST be fully usable on screens from 360 px
