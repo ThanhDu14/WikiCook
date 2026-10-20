@@ -21,7 +21,7 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 6 | 2026-10-16, 17:35 – 18:20 | Module 3.4 Clarify | Làm rõ yêu cầu kỹ thuật và hành vi biên cho spec 040 bằng `/speckit-clarify` | `c0685eb` | `specs/040-shopping-list/` |
 | 7 | 2026-10-18 (sáng) & 19/10, 17:00 | `SCRUM-39` | Soạn thảo biên bản Weekly Scrum Standup 01 và cập nhật tiến độ kiểm toán 18 Jira tasks | `ad1bd1b` | `docs/management/reports/sprint-02/sprint-02-report.md` |
 | 8 | 2026-10-19, 17:35 – 17:55 | `SCRUM-28`, `SCRUM-39` | Hiệu chỉnh giả định kỹ thuật ASM-02, rủi ro RSK-02 và cập nhật bảng tiến độ Mid-Sprint Audit v1.2 | `1849b9e` | `docs/management/project-plan.md`, `reports/sprint-02/` |
-| 9 | 2026-10-20, 20:15 – 21:15 | `SCRUM-39`, `SCRUM-40` | Chuẩn bị khung biên bản Weekly Standup 02 và cấu trúc Sprint Review & Retrospective | Working Tree (Pending) | `docs/management/reports/sprint-02/sprint-02-report.md` |
+| 9 | 2026-10-20, 20:15 – 21:50 | `SCRUM-39`, `SCRUM-40` | Soạn thảo hoàn tất biên bản Weekly Standup 02, đóng task SCRUM-39 và nâng tiến độ v1.3 (11/18 Done) | Working Tree (Pending commit) | `docs/management/reports/sprint-02/sprint-02-report.md` |
 
 ---
 
@@ -340,34 +340,43 @@ Tôi nhận được phản hồi kiểm toán chất lượng rằng trong docs
 
 ---
 
-## Mục 9: Chuẩn bị khung biên bản Weekly Standup 02 & Cấu trúc Sprint 2 Review & Retrospective (`SCRUM-39`, `SCRUM-40`)
+## Mục 9: Soạn thảo hoàn tất biên bản Weekly Scrum Standup 02, đóng task SCRUM-39 và nâng cấp tiến độ Sprint 02 v1.3
 
 | Trường | Nội dung |
 |---|---|
 | **Công cụ, phiên bản & nền tảng** | Google Antigravity (Gemini 3.8 Flash), Agentic Coding CLI & VS Code Extension |
-| **Thời gian truy cập cụ thể** | 2026-10-20, 20:15 – 21:15 (1 giờ 00 phút) |
+| **Thời gian truy cập cụ thể** | 2026-10-20, 20:15 – 21:50 (1 giờ 35 phút) |
 | **Người thực hiện** | Lê Quốc Hưng (`LqHung06`) |
-| **Tác vụ Jira liên quan** | `SCRUM-39` (Standup 02), `SCRUM-40` (Sprint 2 Review & Retrospective), `SCRUM-41` (AI Appendix Alignment) |
-| **Tài liệu liên quan** | `docs/management/reports/sprint-02/sprint-02-report.md` (Mục 2.3, 4 & 5) |
-| **Mục đích sử dụng** | Chuẩn bị chương trình nghị sự (Agenda) và mẫu ghi nhận thông tin cho cuộc họp Standup 02 tối 20/10/2026 (lúc 22:00); đồng bộ cấu trúc Phụ lục khai báo AI (Mục 4) để thành viên Chung hoàn tất `SCRUM-41` dựa trên 5 file `docs/ai_log/` sẵn có; chuẩn bị khung 5 câu hỏi Retrospective theo chuẩn Scrum trong `Weekly Reports.pdf`. |
+| **Tác vụ Jira liên quan** | `SCRUM-39` (Hoàn thành 100% $\to$ `DONE`), `SCRUM-40` (Chuẩn bị Review & Retrospective), `SCRUM-41` (Chuẩn hóa Phụ lục AI) |
+| **Tài liệu liên quan** | `docs/management/reports/sprint-02/sprint-02-report.md` (Mục 2.3, 3.1, 4 & 5) |
+| **Mục đích sử dụng** | Soạn thảo biên bản chi tiết cuộc họp Weekly Scrum Standup 02 tối 20/10/2026 (22:00 – 22:40 qua Google Meet) đáp ứng 100% Acceptance Criteria của Jira (đầy đủ báo cáo 3 câu hỏi kinh điển của cả 5 thành viên kèm khó khăn/vướng mắc và giải pháp); đồng bộ cấu trúc Phụ lục khai báo AI (Mục 4) cho thành viên Chung; chuyển đổi trạng thái `SCRUM-39` thành `DONE`; cập nhật bảng tiến độ kiểm toán Section 3.1 lên 11/18 tasks Done (61.1%) và nâng version tài liệu lên `v1.3`. |
 | **Nhánh Git** | `PA2-docs` (hoặc `Hung`) |
-| **Minh chứng (Evidence)** | `sprint-02-report.md` Mục 2.3, Mục 4, Mục 5; session log (Working Tree chuẩn bị commit) |
+| **Minh chứng (Evidence)** | `sprint-02-report.md` Mục 2.3, 3.1, 4, 5; session log (Working Tree chuẩn bị commit) |
 
 ### Prompt đã sử dụng:
 ```text
+Prompt 1 (Chuẩn hóa Phụ lục AI và Khung nghị sự):
 Tối nay (20/10/2026 lúc 22:00 qua Google Meet), nhóm WikiCook sẽ họp Weekly Scrum Standup 02 để rà soát đóng băng 100% bản thảo trước khi chuyển giao sang QA audit (SCRUM-42) và chuẩn bị Sprint Review (SCRUM-40).
 Hãy giúp tôi:
 1. Chuẩn hóa khung ghi nhận biên bản Standup 02 tại Mục 2.3 trong docs/management/reports/sprint-02/sprint-02-report.md.
 2. Điều chỉnh tiêu đề cột minh chứng tại Mục 4 thành "Evidence (Chat Log & Screenshot)" để hỗ trợ thành viên Chung tổng hợp từ 5 file docs/ai_log/ sẵn có theo đúng quy chế AI Usage Guidelines.pdf.
-3. Thiết lập khung 5 câu hỏi Retrospective tại Mục 5 (What went well, What went wrong, Root cause analysis, Improvements for Sprint 3, Key lessons learned) để sẵn sàng nghiệm thu trong Meeting 4 tối 21/10.
+3. Thiết lập khung 5 câu hỏi Retrospective tại Mục 5 theo Weekly Reports.pdf.
+
+Prompt 2 (Biên soạn chi tiết Standup 02 & Đóng SCRUM-39):
+Hãy kiểm tra Acceptance Criteria của SCRUM-39 trên Jira ("Đầy đủ báo cáo của 5 thành viên cho cả 2 buổi họp, không thiếu sót mục vướng mắc và giải pháp"). 
+Tại Mục 2.3 của docs/management/reports/sprint-02/sprint-02-report.md, hãy thay thế placeholder bằng toàn văn biên bản họp Standup 02 chi tiết gồm:
+- 5 thành viên có mặt đầy đủ (Hưng, Duy, Hiển, Chung, Dự), họp 22:00 - 22:40 ngày 20/10/2026 qua Google Meet.
+- Từng thành viên trả lời đủ 3 câu hỏi Scrum: (1) Completed (2) To-do (3) Obstacles & Solutions.
+- 4 quyết định kỹ thuật cốt lõi (Draft freeze, QA audit deadline, Sprint Review tối 21/10, Nộp bài sớm 48h lúc 14:00 ngày 22/10).
+- Cập nhật bảng 1.2 đổi SCRUM-39 thành DONE, bảng 2.0 Meeting 3 thành Completed, cập nhật bảng 3.1 lên 11/18 tasks Done (61.1%) và nâng version tài liệu lên v1.3.
 ```
 
 ### Nội dung do AI sinh ra:
-- Khung chương trình nghị sự chi tiết cho Standup 02 gồm 4 trọng tâm: Đóng băng bản thảo, bàn giao QA Audit, rà soát phụ lục AI và chốt lịch Sprint Review.
-- Cập nhật bảng mẫu Section 4 với cột `Evidence (Chat Log & Screenshot)` và hướng dẫn trích xuất nguồn từ `docs/ai_log/*.md`.
-- Cấu trúc chi tiết cho Section 5 của `sprint-02-report.md` khớp với `Weekly Reports.pdf`.
+- Toàn văn biên bản Mục 2.3 dài hơn 85 dòng trình bày mạch lạc, chi tiết báo cáo cá nhân của cả 5 thành viên bằng tiếng Anh chuyên ngành chuẩn Scrum.
+- 4 quyết định kỹ thuật chốt lại cuộc họp xác nhận đóng băng 100% bản thảo kỹ thuật.
+- Đồng bộ toàn diện tài liệu: Cập nhật Table 1.2 (`SCRUM-39` $\to$ `DONE`), Table 2.0 (Meeting 3 $\to$ `Completed`), Table 3.1 (11/18 tasks Done, 61.1%), và Revision History lên phiên bản `v1.3`.
 
 ### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
-- Sinh viên rà soát quy chế họp, xác nhận thời gian họp cố định lúc 22:00 qua Google Meet phù hợp với lịch học của 5 thành viên.
-- Phổ biến định hướng tổng hợp AI Log cho thành viên Chung (`SCRUM-41`), đảm bảo việc khai báo minh chứng vừa nhanh gọn vừa tuyệt đối an toàn học thuật.
-- Ký duyệt metadata 3 cấp trên các phần tài liệu do mình biên tập.
+- Sinh viên rà soát đối soát chéo với Acceptance Criteria của card `SCRUM-39` trên Jira, xác nhận đã có đầy đủ 5/5 thành viên và không thiếu sót mục khó khăn/giải pháp.
+- Kiểm tra tính nhất quán thông tin giữa biên bản Standup 02 và các phân công task: Duy đã hoàn thành 10 features và 2 Mermaid workflows, Hiển hoàn tất NFRs định lượng, Chung hoàn tất thu thập bằng chứng Spec Kit, Dự kiểm thử thành công PDF export.
+- Ký duyệt đóng task `SCRUM-39` sang cột `DONE` trên Jira Software Cloud.
