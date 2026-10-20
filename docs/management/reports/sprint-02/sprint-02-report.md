@@ -298,11 +298,11 @@ All 18 Sprint 02 tasks (`SCRUM-27` through `SCRUM-45`) have been formally create
 ## 4. AI USAGE DECLARATION & COMPLIANCE LOG (APPENDIX)
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Lê Quốc Hưng (LqHung06)*
 
-*(Section structure initialized under `SCRUM-27`; detailed declaration table of AI tools, versions, timestamps, exact prompts, AI-generated outputs, human revisions/verifications, and chat history screenshot references in `docs/assets/jira/ai_prompts/` will be compiled by Trần Nguyễn Công Chung under Jira task `SCRUM-41`.)*
+*(Section structure initialized under `SCRUM-27`; consolidated declaration table of key AI milestones across all 5 members synthesized from `docs/ai_log/*.md` with corresponding chat history references and representative screenshots will be compiled by Trần Nguyễn Công Chung under Jira task `SCRUM-41`.)*
 
-| Interaction ID | Member Name | AI Tool & Version | Date & Time | Prompt Used | Purpose | AI-Generated Output | Human Verification & Revision | Evidence Screenshot |
+| Interaction ID | Member Name | AI Tool & Version | Date & Time | Prompt Used | Purpose | AI-Generated Output | Human Verification & Revision | Evidence (Chat Log & Screenshot) |
 | :---: | :--- | :--- | :---: | :--- | :--- | :--- | :--- | :---: |
-| `AI-S2-01` | *(Pending `SCRUM-41`)* | *(Pending)* | *(Pending)* | *(Pending)* | *(Pending)* | *(Pending)* | *(Pending)* | `docs/assets/jira/ai_prompts/...` |
+| `AI-S2-01` | *(Pending `SCRUM-41`)* | *(Pending)* | *(Pending)* | *(Pending)* | *(Pending)* | *(Pending)* | *(Pending)* | `docs/ai_log/...` / `docs/assets/jira/ai_prompts/...` |
 
 ---
 
