@@ -3,9 +3,20 @@
 **Academic Year:** Fall Semester (2026 - 2027)  
 **Project Name:** WikiCook  
 **Target Platform:** Responsive Web Application
+
+## DOCUMENT METADATA & RESPONSIBILITY MATRIX
+
+| Section | Title | Performed by (Author) | Reviewed by | Edited by |
+| :---: | :--- | :---: | :---: | :---: |
+| **Section 1** | General Group Information | Lê Quốc Hưng (LqHung06) | Nguyễn Đức Duy (DucDuyNguyen15-IT) | Lê Quốc Hưng (LqHung06) |
+| **Section 2** | Member Roster & Contact Details | Lê Quốc Hưng (LqHung06) | Mai Văn Hiển (MaiHien3507) | Lê Quốc Hưng (LqHung06) |
+| **Section 3** | Project Brief & Commitment | Lê Quốc Hưng (LqHung06) | Trần Nguyễn Công Chung (itzchugnn) & Nguyễn Thành Dự (ThanhDu14) | Lê Quốc Hưng (LqHung06) |
+
 ---
 
 ## 1. GENERAL GROUP INFORMATION
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Lê Quốc Hưng*
+
 * **Group Name:** Group WikiCook  
 * **Group Leader:** Lê Quốc Hưng (@LqHung06)
 * **Communication Channel**: Zalo Group, Google Meet
@@ -15,6 +26,7 @@
 ---
 
 ## 2. MEMBER ROSTER & CONTACT DETAILS
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Lê Quốc Hưng*
 
 | No. | Full Name | Student ID (MSSV) | University Email | GitHub Username | Assigned Core Role |
 | :---: | :--- | :---: | :--- | :---: | :--- |
@@ -29,5 +41,7 @@
 ---
 
 ## 3. PROJECT BRIEF & COMMITMENT
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) & Nguyễn Thành Dự (ThanhDu14) | Edited by: Lê Quốc Hưng*
+
 * **Short Description:** WikiCook is an intelligent culinary companion designed to eliminate daily meal decision fatigue, suggest recipes from on-hand ingredients, automate weekly meal planning via an AI Weekly Meal Planner with smart grocery consolidation, and provide distraction-free hands-free cooking guidance with concurrent timers.
 * **Team Commitment:** All members commit to professional work ethics, adhering to the Scrum Sprint timeline, participating in all 4 scheduled Scrum ceremonies, and actively maintaining Jira tasks and Git commit logs.
