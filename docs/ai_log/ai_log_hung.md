@@ -21,7 +21,8 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 6 | 2026-10-16, 17:35 – 18:20 | Module 3.4 Clarify | Làm rõ yêu cầu kỹ thuật và hành vi biên cho spec 040 bằng `/speckit-clarify` | `c0685eb` | `specs/040-shopping-list/` |
 | 7 | 2026-10-18 (sáng) & 19/10, 17:00 | `SCRUM-39` | Soạn thảo biên bản Weekly Scrum Standup 01 và cập nhật tiến độ kiểm toán 18 Jira tasks | `ad1bd1b` | `docs/management/reports/sprint-02/sprint-02-report.md` |
 | 8 | 2026-10-19, 17:35 – 17:55 | `SCRUM-28`, `SCRUM-39` | Hiệu chỉnh giả định kỹ thuật ASM-02, rủi ro RSK-02 và cập nhật bảng tiến độ Mid-Sprint Audit v1.2 | `1849b9e` | `docs/management/project-plan.md`, `reports/sprint-02/` |
-| 9 | 2026-10-20, 20:15 – 21:50 | `SCRUM-39`, `SCRUM-40` | Soạn thảo hoàn tất biên bản Weekly Standup 02, đóng task SCRUM-39 và nâng tiến độ v1.3 (11/18 Done) | Working Tree (Pending commit) | `docs/management/reports/sprint-02/sprint-02-report.md` |
+| 9 | 2026-10-20, 20:15 – 21:50 | `SCRUM-39`, `SCRUM-40` | Soạn thảo hoàn tất biên bản Weekly Standup 02, đóng task SCRUM-39 và nâng tiến độ v1.3 (11/18 Done) | `ecfe362` | `docs/management/reports/sprint-02/sprint-02-report.md` |
+| 10 | 2026-10-21, 20:00 – 21:45 | `SCRUM-40` | Soạn thảo hoàn tất biên bản Sprint 02 Review & Retrospective, nhúng minh chứng Jira 18/18 Done và đóng task SCRUM-40 | Working Tree (Pending commit) | `docs/management/reports/sprint-02/sprint-02-report.md` |
 
 ---
 
@@ -380,3 +381,56 @@ Tại Mục 2.3 của docs/management/reports/sprint-02/sprint-02-report.md, hã
 - Sinh viên rà soát đối soát chéo với Acceptance Criteria của card `SCRUM-39` trên Jira, xác nhận đã có đầy đủ 5/5 thành viên và không thiếu sót mục khó khăn/giải pháp.
 - Kiểm tra tính nhất quán thông tin giữa biên bản Standup 02 và các phân công task: Duy đã hoàn thành 10 features và 2 Mermaid workflows, Hiển hoàn tất NFRs định lượng, Chung hoàn tất thu thập bằng chứng Spec Kit, Dự kiểm thử thành công PDF export.
 - Ký duyệt đóng task `SCRUM-39` sang cột `DONE` trên Jira Software Cloud.
+
+---
+
+## Mục 10: Soạn thảo hoàn tất biên bản Sprint 02 Review & Retrospective, nhúng minh chứng Jira 18/18 tasks Done và đóng task SCRUM-40
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Google Antigravity (Gemini 3.8 Flash), Agentic Coding CLI & VS Code Extension |
+| **Thời gian truy cập cụ thể** | 2026-10-21, 20:00 – 21:45 (1 giờ 45 phút — cuộc họp Meeting 4 Sprint Review diễn ra 20:00 – 21:15 ngày 21/10/2026) |
+| **Người thực hiện** | Lê Quốc Hưng (`LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-40` (`[Ceremony]` Tổ chức họp Sprint 2 Review & Retrospective $\to$ `DONE`), `SCRUM-43`, `SCRUM-44` |
+| **Tài liệu liên quan** | `docs/management/reports/sprint-02/sprint-02-report.md` (Mục 2.4, 3.1, 3.2 & Mục 5) |
+| **Mục đích sử dụng** | Soạn thảo toàn văn biên bản nghiệm thu sản phẩm cuối Sprint 2 (Meeting 4: Sprint Review) tại Mục 2.4; cập nhật bảng tiến độ Mục 3.1 đạt 18/18 tasks Done (100.0%); nhúng 2 ảnh chụp minh chứng backlog hoàn thành trên Jira Software Cloud vào Mục 3.2; biên soạn phân tích Retrospective 5 mục toàn diện (What went well, What went wrong, Root Cause Analysis, Actionable improvements for Sprint 03, Key lessons learned, Action Roadmap) tại Mục 5 theo đúng chuẩn `Weekly Reports.pdf`; chuyển trạng thái `SCRUM-40` thành `DONE` và nâng phiên bản báo cáo lên `v2.0`. |
+| **Nhánh Git** | `PA2-docs` |
+| **Minh chứng (Evidence)** | `sprint-02-report.md` Mục 2.4, 3.1, 3.2, 5; 2 ảnh Jira Backlog `docs/assets/jira/jira_sprint2_tasks_list_part1.png` và `docs/assets/jira/jira_sprint2_tasks_list_part2.png`; session log |
+
+### Prompt đã sử dụng:
+```text
+Tôi vừa chủ trì xong cuộc họp Meeting 4: Sprint 02 Review & Retrospective tối 21/10/2026 (20:00 - 21:15 qua Google Meet) cùng cả 5 thành viên để nghiệm thu toàn bộ 4 hợp phần của đề bài PA2 (Project Plan 15đ, Vision Document 20đ, Spec Kit 5đ, Sprint Report & AI Log 5đ).
+Trên Jira Software Cloud (Sprint WikiCook - PA02 14 Oct - 22 Oct), toàn bộ 18/18 tasks từ SCRUM-27 đến SCRUM-45 đều đã chuyển sang trạng thái Done màu xanh, số lượng việc tồn đọng là 0 (0 0 0) và nút Complete sprint đã sẵn sàng.
+Tôi đã chụp 2 ảnh màn hình Backlog:
+- Ảnh 1: SCRUM-44 đến SCRUM-30 (docs/assets/jira/jira_sprint2_tasks_list_part1.png)
+- Ảnh 2: SCRUM-42 đến SCRUM-27 (docs/assets/jira/jira_sprint2_tasks_list_part2.png)
+
+Hãy giúp tôi:
+1. Soạn thảo toàn văn biên bản họp Meeting 4 tại Mục 2.4 của docs/management/reports/sprint-02/sprint-02-report.md:
+   - Ghi nhận 5/5 thành viên có mặt, thời gian 20:00 - 21:15 ngày 21/10/2026.
+   - Nghiệm thu chi tiết 4 sản phẩm bàn giao (Part A, B, C, D) theo chuẩn DoD 6 cổng.
+   - Ghi lại các quyết định chốt Sprint 02: đóng task SCRUM-40, bàn giao cho Dự xuất git-log.txt (SCRUM-43), đóng gói PDF/ZIP (SCRUM-44) và cam kết nộp sớm 48h lúc 14:00 ngày 22/10.
+2. Cập nhật Mục 3.1 và Mục 3.2:
+   - Bảng tiến độ Mục 3.1: 18/18 Done (100.0%), 0 In Progress, 0 To Do.
+   - Mục 3.2: Nhúng 2 ảnh Figure 3.1 và Figure 3.2 kèm phân tích minh chứng Jira.
+3. Soạn thảo Mục 5 (Sprint 02 Retrospective & Next Steps) đầy đủ 5 mục theo Weekly Reports.pdf:
+   - 5.1 What Went Well (5 điểm nổi bật: 18/18 Done trước hạn, văn hóa Spec-Driven Development với Spec Kit, phân chia công việc đồng đều, tuân thủ AI 100%, nhất quán kiến trúc).
+   - 5.2 What Went Wrong (4 khó khăn: Xung đột merge đa nhánh, căn lề sơ đồ Mermaid khi xuất PDF A4, hiểu lầm ban đầu về chụp ảnh chat AI, hiệu chỉnh ngưỡng NFRs).
+   - 5.3 Problems Encountered & Root Cause Analysis (Bảng phân tích 4 sự cố, nguyên nhân gốc rễ và giải pháp khắc phục).
+   - 5.4 Actionable Improvements for Sprint 03 (4 cải tiến: Phân quyền codeowner, CI linting pre-commit, Docker Compose từ ngày đầu, Contract-First API).
+   - 5.5 Key Lessons Learned (3 bài học cốt lõi: Spec là hợp đồng thực thi, cổng chất lượng đa tầng, AI có trách nhiệm).
+   - 5.6 Action Roadmap (Sơ đồ Mermaid lộ trình đóng gói và bàn giao sang Sprint 03).
+4. Đồng bộ Table 1.2 (SCRUM-40, 43, 44 sang DONE) và nâng version tài liệu lên v2.0.
+```
+
+### Nội dung do AI sinh ra:
+- Toàn bộ nội dung biên bản cuộc họp Meeting 4 (Mục 2.4) với các đánh giá nghiệm thu 4 phần điểm số PA2 chặt chẽ, trang trọng bằng tiếng Anh chuyên ngành.
+- Cập nhật số liệu Bảng 3.1 (18/18 tasks Done, 100.0%) và văn bản phân tích minh chứng Jira trực quan cho 2 ảnh Part 1 & Part 2.
+- Bản phân tích Retrospective Mục 5 chuyên sâu, đầy đủ 5 câu hỏi của môn học, có bảng Root Cause Analysis 4 sự cố và sơ đồ Mermaid lộ trình chuyển giao sang Sprint 03.
+- Cập nhật trạng thái Table 1.2, Table 2.0 và nâng phiên bản tài liệu lên `v2.0`.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Sinh viên trực tiếp đối chiếu 18 task trên ảnh chụp Jira thật với danh mục trong báo cáo, xác nhận 100% khớp mã định danh, người thực hiện và hạn chót.
+- Tự tay sao chép 2 ảnh chụp từ thư mục tải lên sang kho lưu trữ tại `docs/assets/jira/jira_sprint2_tasks_list_part1.png` và `docs/assets/jira/jira_sprint2_tasks_list_part2.png`, kiểm tra hiển thị liên kết markdown không bị lỗi đường dẫn.
+- Rà soát các bài học kinh nghiệm và nguyên nhân gốc rễ (RCA) trong Retrospective để đảm bảo phản ánh chân thực quá trình làm việc của nhóm WikiCook trong Sprint 2.
+- Ký duyệt chuyển trạng thái `SCRUM-40` thành `DONE` trên hệ thống Jira Software Cloud.

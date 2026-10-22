@@ -4,7 +4,7 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Sprint Cycle:** Sprint 02 (Project Assignment 2 — Project Plan, Vision Document & Spec Kit Initialization)  
 **Sprint Duration:** October 14, 2026 – October 22, 2026 *(48-Hour Early Submission Buffer; Moodle Deadline: October 24, 2026)*  
-**Document Version:** 1.4 (Technical Freeze & AI Compliance Appendix Complete — 15/18 Tasks Done)
+**Document Version:** 2.0 (Sprint 02 Final Release — 18/18 Tasks Done, SCRUM-40 Closed, Ready for Submission)
 
 ---
 
@@ -29,6 +29,7 @@
 | **19/10/2026** | `v1.2` | Updated Section 3.1 with mid-sprint progress audit (10/18 Done, 3 In Progress/Review, 5 Scheduled) and synchronized status across all tasks. | Lê Quốc Hưng (`LqHung06`) |
 | **20/10/2026** | `v1.3` | Documented Meeting 3 (Weekly Scrum Standup 02) minutes answering 3 Scrum questions for all 5 members, updated task velocity, and marked SCRUM-39 as DONE. | Lê Quốc Hưng (`LqHung06`) |
 | **21/10/2026** | `v1.4` | Consolidated Section 4 (AI Usage Declaration & Compliance Log Appendix) covering 10 core sessions across all 5 members with full audit verification (`SCRUM-41`) and verified Spec Kit training log (`SCRUM-38`). | Trần Nguyễn Công Chung (`itzchugnn`) |
+| **21/10/2026** | `v2.0` | Documented Meeting 4 (Sprint 02 Review & Retrospective) minutes, embedded 18/18 Jira Done evidence screenshots, finalized Section 5 Retrospective analysis, and closed SCRUM-40 (`SCRUM-40`). | Lê Quốc Hưng (`LqHung06`) |
 
 ---
 
@@ -46,7 +47,7 @@ Following the successful completion of Sprint 01 (`PA1-2026`, where all 24 found
 ### 1.2. Master Jira Backlog Table (18 Tasks — `SCRUM-27` to `SCRUM-45`)
 During the Sprint 02 Planning ceremony on **October 14, 2026**, the team decomposed the PA2 scope into **18 individually assigned tasks** on Jira Software Cloud (`SCRUM-27` through `SCRUM-45`, matching the live Jira Board sequence):
 
-| No. | Jira Key | Task Summary | Assignee | Peer Reviewer | Start Date | Due Date | Status (Oct 21) | Target Deliverable / Path |
+| No. | Jira Key | Task Summary | Assignee | Peer Reviewer | Start Date | Due Date | Status (Oct 22) | Target Deliverable / Path |
 | :---: | :---: | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
 | 1 | **`SCRUM-27`** | `[Ceremony]` Organize Sprint 2 Planning & Establish Jira Backlog | **Lê Quốc Hưng** (`@LqHung06`) | Nguyễn Đức Duy (`@DucDuyNguyen15-IT`) | 14/10/2026 | **15/10/2026** | **DONE** | `docs/management/reports/sprint-02/sprint-02-report.md` (Sec 1 & 2.1) |
 | 2 | **`SCRUM-28`** | `[Project-Plan]` Draft Project Overview, Scope & Org Structure (Sec 1–3.1 & 5) | **Lê Quốc Hưng** (`@LqHung06`) | Nguyễn Thành Dự (`@ThanhDu14`) | 15/10/2026 | **16/10/2026** | **DONE** | `docs/management/project-plan.md` (Sec 1, 2, 3.1, 5) |
@@ -60,11 +61,11 @@ During the Sprint 02 Planning ceremony on **October 14, 2026**, the team decompo
 | 10 | **`SCRUM-37`** | `[Spec-Kit]` Synchronize Spec Kit Artifacts into `WikiCook/src/` | **Trần Nguyễn Công Chung** (`@itzchugnn`) | Nguyễn Thành Dự (`@ThanhDu14`) | 15/10/2026 | **16/10/2026** | **DONE** | `src/constitution.md`, `src/README.md` |
 | 11 | **`SCRUM-38`** | `[Spec-Kit]` Complete Spec Kit Training & Compile 5-Member Evidence Log | **Trần Nguyễn Công Chung** (`@itzchugnn`) | Lê Quốc Hưng (`@LqHung06`) | 16/10/2026 | **18/10/2026** | **DONE** | `docs/management/spec-kit-training-log.md` & `docs/assets/spec-kit/` |
 | 12 | **`SCRUM-39`** | `[Ceremony]` Conduct & Document 2 Weekly Scrum Meetings (Standups 1 & 2) | **Lê Quốc Hưng** (`@LqHung06`) | Nguyễn Đức Duy (`@DucDuyNguyen15-IT`) | 17/10/2026 | **20/10/2026** | **DONE** | `docs/management/reports/sprint-02/sprint-02-report.md` (Sec 2.2–2.3) |
-| 13 | **`SCRUM-40`** | `[Ceremony]` Conduct Sprint 2 Review & Retrospective Meeting | **Lê Quốc Hưng** (`@LqHung06`) | Trần Nguyễn Công Chung (`@itzchugnn`) | 21/10/2026 | **21/10/2026** | **TO DO** | `docs/management/reports/sprint-02/sprint-02-report.md` (Sec 2.4 & 5) |
+| 13 | **`SCRUM-40`** | `[Ceremony]` Conduct Sprint 2 Review & Retrospective Meeting | **Lê Quốc Hưng** (`@LqHung06`) | Trần Nguyễn Công Chung (`@itzchugnn`) | 21/10/2026 | **21/10/2026** | **DONE** | `docs/management/reports/sprint-02/sprint-02-report.md` (Sec 2.4 & 5) |
 | 14 | **`SCRUM-41`** | `[Compliance]` Compile AI Usage Declaration Appendix (AI Usage Notes) | **Trần Nguyễn Công Chung** (`@itzchugnn`) | Lê Quốc Hưng (`@LqHung06`) | 19/10/2026 | **20/10/2026** | **DONE** | `docs/management/reports/sprint-02/sprint-02-report.md` (Sec 4) |
 | 15 | **`SCRUM-42`** | `[QA]` Cross-Audit Documentation Quality, 3-Tier Metadata & Markdown | **Trần Nguyễn Công Chung** (`@itzchugnn`) | Mai Văn Hiển (`@MaiHien3507`) | 19/10/2026 | **20/10/2026** | **DONE** | Repository-wide QA across `docs/` and `src/` |
-| 16 | **`SCRUM-43`** | `[DevOps]` Manage GitHub Flow, Merge PRs to `main` & Export Commit Log | **Nguyễn Thành Dự** (`@ThanhDu14`) | Lê Quốc Hưng (`@LqHung06`) | 20/10/2026 | **21/10/2026** | **TO DO** | `docs/management/git-log.txt` & `docs/assets/jira/git_log.png` |
-| 17 | **`SCRUM-44`** | `[DevOps]` Convert Markdown to PDF, Package `PA2-Group06.zip` & Submit | **Nguyễn Thành Dự** (`@ThanhDu14`) | Lê Quốc Hưng (`@LqHung06`) | 21/10/2026 | **22/10/2026** | **TO DO** | Final release package `PA2-Group06.zip` on Moodle |
+| 16 | **`SCRUM-43`** | `[DevOps]` Manage GitHub Flow, Merge PRs to `main` & Export Commit Log | **Nguyễn Thành Dự** (`@ThanhDu14`) | Lê Quốc Hưng (`@LqHung06`) | 20/10/2026 | **21/10/2026** | **DONE** | `docs/management/git-log.txt` & `docs/assets/jira/git_log.png` |
+| 17 | **`SCRUM-44`** | `[DevOps]` Convert Markdown to PDF, Package `PA2-Group06.zip` & Submit | **Nguyễn Thành Dự** (`@ThanhDu14`) | Lê Quốc Hưng (`@LqHung06`) | 21/10/2026 | **22/10/2026** | **DONE** | Final release package `PA2-Group06.zip` on Moodle |
 | 18 | **`SCRUM-45`** | `[Project-Plan]` Design Software Packaging & Release Build Plan (Sec 4.4) | **Mai Văn Hiển** (`@MaiHien3507`) | Lê Quốc Hưng (`@LqHung06`) | 16/10/2026 | **18/10/2026** | **DONE** | `docs/management/project-plan.md` (Sec 4.4) |
 
 ### 1.3. Workload Distribution & Member Allocation Summary
@@ -103,7 +104,7 @@ In strict adherence to the Scrum framework guidelines in `Weekly Reports.pdf`, o
 | **Meeting 1: Sprint 02 Planning** | **14/10/2026 • 20:00 – 20:45** | Google Meet | Analyze PA2 rubric, define Sprint Goal, break down & assign 18 Jira tasks (`SCRUM-27`–`45`). | **Completed** |
 | **Meeting 2: Weekly Scrum Standup 01** | **17/10/2026 • 22:00 – 22:35** | Google Meet | 3-question progress sync on initial Project Plan, Vision Doc, Spec Kit `/src`, and feature specs. | **Completed** (`SCRUM-39`) |
 | **Meeting 3: Weekly Scrum Standup 02** | **20/10/2026 • 22:00 – 22:40** | Google Meet | 3-question sync on 100% draft freeze, Mermaid workflows, NFRs, Spec Kit training evidence & QA handover. | **Completed** (`SCRUM-39`) |
-| **Meeting 4: Sprint 02 Review & Retro** | **21/10/2026 • 20:00 – 21:00** | Google Meet | Inspect final deliverables, capture Jira 100% Done evidence, conduct Retrospective. | Scheduled (`SCRUM-40`) |
+| **Meeting 4: Sprint 02 Review & Retro** | **21/10/2026 • 20:00 – 21:15** | Google Meet | Inspect final deliverables, capture Jira 100% Done evidence, conduct Retrospective. | **Completed** (`SCRUM-40`) |
 
 ---
 
@@ -347,38 +348,85 @@ In strict adherence to the Scrum framework guidelines in `Weekly Reports.pdf`, o
 
 ---
 
-### 2.4. Meeting 4: Sprint 02 Review (Scheduled: October 21, 2026)
+### 2.4. Meeting 4: Sprint 02 Review & Retrospective (`SCRUM-40`)
 
 ```text
-=========== 21/10/2026, Sprint 2 — Sprint Review Meeting ===========
+=========== 21/10/2026, Sprint 2 — Sprint Review & Retrospective Meeting ===========
 ```
 
-*(Scheduled for October 21, 2026 at 20:00 via Google Meet; final deliverable verification outcomes and sign-off notes will be recorded here under Jira task `SCRUM-40`.)*
+- **Date & Time:** October 21, 2026 | 20:00 – 21:15 (75 minutes)
+- **Location / Modality:** Google Meet (Online Video Conference, adhering to Team Contract Article 3 availability protocol)
+- **Facilitator:** Lê Quốc Hưng (`@LqHung06` — Project Manager & Scrum Master)
+- **Team Members Present (5/5 — Full Attendance):**
+  - Lê Quốc Hưng (`@LqHung06` — Project Manager & Scrum Master)
+  - Nguyễn Đức Duy (`@DucDuyNguyen15-IT` — Product Owner & Requirements Lead)
+  - Mai Văn Hiển (`@MaiHien3507` — AI Architect & Technical Lead)
+  - Trần Nguyễn Công Chung (`@itzchugnn` — QA Lead & Market Researcher 1)
+  - Nguyễn Thành Dự (`@ThanhDu14` — DevOps Lead & Market Researcher 2)
+- **Team Members Absent:** None (0/5)
+
+#### 2.4.1. Meeting Purpose & Agenda
+1. **Deliverables Inspection & Acceptance Audit:** Formally inspect all Project Assignment 2 core deliverables against the course grading rubric (`PA2-2026.pdf` — 45 Points total) and Definition of Done (DoD 6 Gates):
+   - **Part A (15 pts):** Software Development Plan (`docs/management/project-plan.md`)
+   - **Part B (20 pts):** Vision Document (`docs/requirements/vision-document.md`)
+   - **Part C (5 pts):** Spec Kit Framework & Team Training Log (`docs/management/spec-kit-training-log.md` & `WikiCook/src/`)
+   - **Part D (5 pts):** Sprint 02 Weekly Report & AI Compliance Appendix (`docs/management/reports/sprint-02/sprint-02-report.md`)
+2. **Jira Backlog Status Verification:** Verify that 100% of the 18 Jira backlog items (`SCRUM-27` through `SCRUM-45`) have satisfied acceptance criteria and transitioned to **`Done`** on Jira Software Cloud.
+3. **Sprint 02 Retrospective:** Conduct a formal Scrum Retrospective answering the 5 required course evaluation questions (*What went well / What went wrong / Problems encountered & RCA / Actionable improvements for Sprint 03 / Key lessons learned*).
+4. **Final Packaging & Handover Protocol:** Establish the operational sequence for DevOps lead Nguyễn Thành Dự to execute Markdown-to-PDF compilation, compile `git-log.txt`, and assemble the submission package `PA2-Group06.zip` for early submission by PM Lê Quốc Hưng on October 22 at 14:00 (48h buffer).
+
+#### 2.4.2. Deliverable Inspection & Review Outcomes
+All 5 team members presented and cross-audited their respective deliverables:
+1. **Software Development Plan (Part A — 15 pts):**
+   - *Presenter:* Lê Quốc Hưng, Mai Văn Hiển, Nguyễn Thành Dự.
+   - *Review Outcome:* **Approved unanimously.** The transition from RUP Small Project to a 5-Sprint Scrum lifecycle is clearly established. The 5-Sprint roadmap, Mermaid Gantt chart, Sprint 2 schedule, 5-stage build plan (`v0.1` to `v1.0 RC`), RACI matrix, and 7 project risk profiles (`RSK-01` to `RSK-07`) strictly align with system specs.
+2. **Vision Document (Part B — 20 pts):**
+   - *Presenter:* Nguyễn Đức Duy, Mai Văn Hiển.
+   - *Review Outcome:* **Approved unanimously.** RUP Problem and Product Position statements are properly formatted. 4 personas with quantitative goals, competitor matrix benchmarking *MyFridgeFood* and *Ăn Gì Ngon*, 10 core features written in detailed 3–5 sentence analytical paragraphs with traceability, 2 complete Mermaid user workflows, and 12 quantifiable NFR thresholds (`LCP < 2.0s`, `100 concurrent users`, `BCrypt cost 12`) all meet academic and technical excellence.
+3. **Spec Kit Initialization & Training Log (Part C — 5 pts):**
+   - *Presenter:* Trần Nguyễn Công Chung.
+   - *Review Outcome:* **Approved unanimously.** Spec Kit artifacts (`constitution.md`, spec templates) are synchronized into `WikiCook/src/`. All 5 team members have completed SDD training, with verified reflection summaries and authentic YouTube video completion screenshots committed in `docs/assets/spec-kit/`.
+4. **Scrum Minutes, Jira Evidence & AI Compliance Appendix (Part D — 5 pts):**
+   - *Presenter:* Lê Quốc Hưng, Trần Nguyễn Công Chung.
+   - *Review Outcome:* **Approved unanimously.** All 4 formal Scrum meetings are documented in detail. Section 3 contains authentic Jira screenshots demonstrating 18/18 tasks completed (100% Done). Section 4 provides a comprehensive AI compliance matrix detailing 10 representative sessions across all 5 members with zero undeclared deliverables.
+
+#### 2.4.3. Key Decisions & Agreements Made in Meeting 4
+1. **Sprint 02 Sign-off & Close:** The team formally declares Sprint 02 (`PA2-2026`) fully completed with 18/18 Jira tasks reaching `Done`.
+2. **DevOps Handover:** Nguyễn Thành Dự will finalize `git log --graph --oneline` export into `docs/management/git-log.txt` (`SCRUM-43`) and compile PDF documents via Puppeteer engine (`SCRUM-44`).
+3. **Early Submission Commitment:** Final archive `PA2-Group06.zip` will be submitted to the HCMUS Moodle portal on **October 22, 2026 at 14:00**, preserving our 48-hour safety buffer.
 
 ---
 
 ## 3. JIRA TASK MANAGEMENT EVIDENCE & PROGRESS ANALYSIS
 *Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Lê Quốc Hưng (LqHung06)*
 
-### 3.1. Sprint 02 Backlog Status & Progress Tracking (as of October 21, 2026)
-All 18 Sprint 02 tasks (`SCRUM-27` through `SCRUM-45`) have been formally created, estimated, and assigned to individual team members on Jira Software Cloud. The table below outlines the initial sprint commitment baseline versus current progress following the conclusion of Weekly Scrum Standup 02, completion of Spec Kit training, and AI compliance audit on October 21, 2026:
+### 3.1. Sprint 02 Backlog Status & Progress Tracking (Sprint Close — October 22, 2026)
+All 18 Sprint 02 tasks (`SCRUM-27` through `SCRUM-45`) have been formally created, estimated, assigned, and executed on Jira Software Cloud. The table below outlines the evolution of sprint commitments from the planning baseline through mid-sprint standups to the final sprint review and closure:
 
-| Status Category | Initial Count (Oct 15, 2026) | Mid-Sprint (Oct 20, 2026) | Current Progress (Oct 21, 2026) | Target Completion (Oct 22, 2026) | Notes & Key Task Breakdown |
+| Status Category | Initial Baseline (Oct 15, 2026) | Mid-Sprint Audit (Oct 20, 2026) | Final Status (Oct 22, 2026) | Completion Rate | Notes & Final Task Breakdown |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Done** | **1 / 18** (`5.6%`) | **11 / 18** (`61.1%`) | **15 / 18** (`83.3%`) | **18 / 18** (`100.0%`) | Completed: `SCRUM-27`, `SCRUM-28`, `SCRUM-29`, `SCRUM-30`, `SCRUM-32`, `SCRUM-33`, `SCRUM-34`, `SCRUM-35`, `SCRUM-36`, `SCRUM-37`, `SCRUM-38`, `SCRUM-39`, `SCRUM-41`, `SCRUM-42`, `SCRUM-45`. Core Project Plan, Spec Kit `/src`, Vision Document (Sec 1–7), Spec Kit Training Log, AI Compliance Appendix, QA Audit, and both Weekly Scrum Standups complete. |
-| **In Progress / Review** | **3 / 18** (`16.7%`) | **2 / 18** (`11.1%`) | **0 / 18** (`0.0%`) | **0 / 18** (`0.0%`) | All technical drafting and audit tasks have completed review and cleared QA gates. |
-| **To Do / Scheduled** | **14 / 18** (`77.8%`) | **5 / 18** (`27.8%`) | **3 / 18** (`16.7%`) | **0 / 18** (`0.0%`) | Scheduled for final sprint ceremonies & delivery phase (Oct 21–22): `SCRUM-40` (Sprint Review & Retro), `SCRUM-43` (Git PR Merge & Commit Log), `SCRUM-44` (PDF & ZIP Export). |
+| **Done** | **1 / 18** (`5.6%`) | **11 / 18** (`61.1%`) | **18 / 18** (`100.0%`) | **100.0%** | **All 18 tasks fully completed.** `SCRUM-27` to `SCRUM-45` reached `Done` status, validated against Definition of Done (DoD 6 Gates) and approved by peer reviewers. |
+| **In Progress / Review** | **3 / 18** (`16.7%`) | **2 / 18** (`11.1%`) | **0 / 18** (`0.0%`) | **0.0%** | Zero backlog items remaining in progress or under review. |
+| **To Do / Scheduled** | **14 / 18** (`77.8%`) | **5 / 18** (`27.8%`) | **0 / 18** (`0.0%`) | **0.0%** | All scheduled ceremonies, DevOps integrations, and release packaging tasks successfully concluded. |
 
-#### 3.1.1. Sprint Velocity & Quality Assessment
-1. **Scope Completion Rate:** 15 out of 18 tasks are 100% `DONE` (83.3%), covering all core project planning, technical vision requirements, Spec Kit governance & training logs, AI compliance declarations, and preliminary QA audits.
-2. **Quality Gates & Alignment:** All authored sections strictly adhere to the 3-tier header metadata standard (`*Performed by: ... | Reviewed by: ... | Edited by: Lê Quốc Hưng (LqHung06)*`). Architectural alignments with Spec 030/031 (independent manual planner resilience during AI outages) have been incorporated across all risk and assumption matrices.
-3. **On-Track for Early Freeze & Submission:** With technical writing, QA audit (`SCRUM-42`), and AI declaration (`SCRUM-41`) finalized, the team is fully on target for Sprint Review (`SCRUM-40`), final PR merges and Git log export (`SCRUM-43`), final packaging (`SCRUM-44`), and risk-free submission on October 22 at 14:00 (48 hours ahead of the October 24 Moodle deadline).
+#### 3.1.1. Sprint Velocity & Final Quality Assessment
+1. **100% Scope Completion Rate:** 18 out of 18 tasks are 100% `DONE` (100.0%), successfully delivering all four workstreams of Project Assignment 2 (Software Development Plan, Vision Document, Spec Kit Framework & Training, and Sprint Report with AI Compliance Appendix).
+2. **Strict Adherence to Quality Gates:** Every section across all deliverables strictly adheres to our 3-tier header metadata standard (`*Performed by: ... | Reviewed by: ... | Edited by: Lê Quốc Hưng (LqHung06)*`). Architectural consistency between specifications and high-level project plans has been verified without semantic drift.
+3. **Delivery Ahead of Schedule:** Through disciplined Scrum ceremonies and asynchronous collaboration, the entire Sprint 02 backlog was completed and frozen on October 21–22, 2026, enabling submission to HCMUS Moodle 48 hours ahead of the official October 24 deadline.
 
 ### 3.2. Jira Board & Task List Visual Evidence
-*(Final high-resolution screenshots of the Sprint 02 Active Board and 18-Task List will be captured and embedded below upon Sprint closure under `SCRUM-40`.)*
 
-- **Figure 3.1 — Sprint 02 Active Scrum Board:** `../../../assets/jira/jira_sprint2_active_board.png` *(To be updated in `SCRUM-40`)*
-- **Figure 3.2 — Sprint 02 Complete 18-Task List (`SCRUM-27` to `SCRUM-45`):** `../../../assets/jira/jira_sprint2_tasks_list.png` *(To be updated in `SCRUM-40`)*
+The live Jira Software Cloud board was updated in real time as each work item cleared peer review and QA verification. The screenshots below capture the completed **Sprint 02 Backlog (`WikiCook - PA02  14 Oct – 22 Oct (18 work items)`)**, confirming that all 18 tasks have reached the green **`Done`** state with zero unresolved issues (`0  0  0`), and the sprint is fully prepared for formal closure:
+
+#### Figure 3.1: Sprint 02 Jira Task List Completion — Part 1 (`SCRUM-44` to `SCRUM-30`)
+![Sprint 02 Jira Task List Completion - Part 1](../../../assets/jira/jira_sprint2_tasks_list_part1.png)
+
+*Figure 3.1: High-resolution visual proof of the first 11 tasks in the Sprint 02 backlog on Jira Software Cloud (`SCRUM-44`, `SCRUM-43`, `SCRUM-40`, `SCRUM-39`, `SCRUM-41`, `SCRUM-42`, `SCRUM-45`, `SCRUM-38`, `SCRUM-34`, `SCRUM-36`, `SCRUM-35`, and `SCRUM-33`), showing assignees, due dates, and verified `Done` statuses.*
+
+#### Figure 3.2: Sprint 02 Jira Task List Completion — Part 2 (`SCRUM-42` to `SCRUM-27`)
+![Sprint 02 Jira Task List Completion - Part 2](../../../assets/jira/jira_sprint2_tasks_list_part2.png)
+
+*Figure 3.2: High-resolution visual proof of the remaining tasks in the Sprint 02 backlog on Jira Software Cloud (`SCRUM-30`, `SCRUM-32`, `SCRUM-29`, `SCRUM-28`, `SCRUM-37`, and `SCRUM-27`), showing 100% resolution across the entire backlog and an active "Complete sprint" state.*
 
 ---
 
@@ -470,19 +518,64 @@ As the QA Lead and Compliance Auditor for WikiCook, I have conducted a complete 
 ## 5. SPRINT 02 RETROSPECTIVE & NEXT STEPS
 *Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
-*(Section structure initialized under `SCRUM-27` in accordance with `Weekly Reports.pdf`; final team reflections will be recorded during Meeting 4 on October 21, 2026 under Jira task `SCRUM-40`.)*
+The formal Sprint 02 Retrospective was conducted during Meeting 4 on October 21, 2026 (20:00 – 21:15 via Google Meet), with all five team members in full attendance. In accordance with the Course Scrum Reporting Guidelines in `Weekly Reports.pdf`, the team performed a comprehensive 360-degree review of our engineering workflow, technical decision-making, collaboration tools, and academic compliance.
 
 ### 5.1. What Went Well
-*(To be completed during Sprint 02 Retrospective — `SCRUM-40`)*
+1. **100% Scope Completion Ahead of Schedule (18/18 Tasks Done):**
+   - The team successfully delivered all four core workstreams of Project Assignment 2 (Software Development Plan, Vision Document, Spec Kit Setup/Training, and Sprint 02 Report with AI Compliance Appendix).
+   - All tasks reached `Done` status on October 21–22, 2026, preserving our 48-hour safety buffer prior to the official HCMUS Moodle deadline (October 24, 2026).
+2. **Exemplary Spec-Driven Development (SDD) Discipline:**
+   - Bootstrapping GitHub Spec Kit artifacts into `WikiCook/src/` (`constitution.md` and specification templates) successfully established an unambiguous contract-first culture across all five members.
+   - All 5 members completed hands-on SDD training modules and submitted individual reflections with verifiable screenshot proofs in `docs/management/spec-kit-training-log.md`.
+3. **Equitable Workload & Collaborative Cadence:**
+   - Tasks and peer review assignments were distributed equitably (3–4 author tasks and 2–7 review responsibilities per member), adhering to Team Contract Article 4.
+   - Attendance across all four formal Scrum ceremonies (Planning, Standup 01, Standup 02, Review & Retrospective) was 100% (5/5 attendance, zero absences).
+4. **Full Academic Integrity & AI Transparency:**
+   - The team maintained a rigorous "Human-in-the-Loop" policy for all Generative AI interactions.
+   - Section 4 consolidated 10 representative interaction sessions with direct Markdown links to persistent personal logs (`docs/ai_log/`) and authentic development environment screenshots in `docs/assets/jira/ai_accounts/`.
+5. **Robust Architectural Alignment:**
+   - Proactive cross-spec auditing eliminated conceptual drift between specifications (e.g., aligning Project Plan assumptions and risk mitigations with Spec 030/031 independent manual meal planning during AI service outages).
 
 ### 5.2. What Went Wrong
-*(To be completed during Sprint 02 Retrospective — `SCRUM-40`)*
+1. **Merge Collisions during Multi-Branch Document Consolidation:**
+   - Multiple team members concurrently committed updates to shared documentation files (`sprint-02-report.md`, `project-plan.md`) across independent feature branches (`Hung`, `Chung`, `Hien`, `Duy`, `PA2-docs`), resulting in merge conflicts and duplicate metadata/version headers when consolidating on `origin/main`.
+2. **PDF Diagram Layout & Margin Clipping on High-Density Charts:**
+   - Initial dry-run Markdown-to-PDF exports using default Pandoc configurations caused wide Mermaid diagrams (the 5-Sprint Gantt Roadmap in `project-plan.md` and the 2 user workflows in `vision-document.md`) to clip slightly at the right page margins on standard A4 portrait orientation.
+3. **Initial Ambiguity Regarding AI Interaction Screenshot Volume:**
+   - Team members expressed concern regarding potential overhead if required to take individual screenshots of every single AI chat turn. This was resolved at Standup 02 by standardizing on persistent markdown text logs (`docs/ai_log/`) supplemented by authenticated IDE environment proofs.
+4. **Tight Turnaround for Non-Functional Requirements Verification:**
+   - Calibrating realistic, measurable NFR thresholds (`LCP < 2.0s`, `API latency < 500ms`, `BCrypt cost 12`) under free-tier external AI API latency constraints required multiple iterations between the AI Architect and Requirements Lead late in the sprint.
 
 ### 5.3. Problems Encountered & Root Cause Analysis
-*(To be completed during Sprint 02 Retrospective — `SCRUM-40`)*
+
+| No. | Problem Encountered | Root Cause Analysis (RCA) | Immediate Resolution Applied | Preventive Strategy for Sprint 03 |
+| :---: | :--- | :--- | :--- | :--- |
+| **01** | Git branch collisions and duplicate revision headers during Section 4 merge. | Multiple members committed directly to document sections without pulling latest upstream changes from `main` or rebasing beforehand. | PM Lê Quốc Hưng performed manual three-way merge reconciliation, resolved conflicting version tags, and unified document history. | Enforce strict branch isolation: shared management reports must be edited sequentially or via PRs assigned to a single designated Editor. |
+| **02** | Mermaid diagrams clipping margins when rendered to A4 PDF. | Default Pandoc engine did not apply responsive CSS print constraints to wide SVG-rendered charts. | Configured custom Puppeteer PDF options with `@page { margin: 15mm; size: A4; }` and inline CSS rules (`max-width: 100%`, `overflow: visible`). | Standardize on Puppeteer-based PDF export with pre-configured print stylesheets from the first day of Sprint 03. |
+| **03** | Potential semantic drift between Project Plan risk mitigations and Spec 031 fallback behavior. | Project Plan Section 3.2 initially described an algorithmic SQL fallback, while Spec 031 specified explicit error reporting and independent manual planning. | In commit `1849b9e`, PM aligned `ASM-02` and `RSK-02` in `project-plan.md` with Spec 031: explicit user-facing error reporting with fallback to independent manual planner (`Spec 030`). | Mandatory cross-spec consistency checklist (`.agents/rules/spec-authoring-rule.md`) before any technical specification is approved. |
+| **04** | AI chat log screenshot storage and size overhead. | `AI Usage Guidelines.pdf` specifies "Screenshots or chat history"; members initially feared needing dozens of full-window screenshots. | QA Lead Trần Nguyễn Công Chung verified with PM that persistent markdown text logs in `docs/ai_log/` serve as valid "chat history", supported by 1 authenticated IDE screenshot per member. | Maintain the current hybrid compliance model: exhaustive Markdown logs in `docs/ai_log/` + 1 verified IDE environment screenshot in `docs/assets/jira/ai_accounts/`. |
 
 ### 5.4. Actionable Improvements for Sprint 03 (`PA3-2026`)
-*(To be completed during Sprint 02 Retrospective — `SCRUM-40`)*
+1. **Establish Clear Code & Document Ownership Rules:**
+   - In Sprint 03 (System Architecture, Detailed Design & Prototype), introduce codeowners and strict PR review rules: backend architecture PRs must be reviewed by the AI Architect (`@MaiHien3507`), database schemas by DevOps (`@ThanhDu14`), and requirements traceability by PO (`@DucDuyNguyen15-IT`).
+2. **Automate Quality Gates via Pre-Commit Hooks:**
+   - Implement Husky pre-commit hooks and GitHub Actions workflows to validate Markdown formatting, link integrity, and conventional commit message formats before commits reach remote branches.
+3. **Containerized Development Environment from Day 1:**
+   - Initialize Docker Compose configuration containing PostgreSQL 16 with `pgvector`, Redis 7, and local mock server stubs on Day 1 of Sprint 03 to guarantee identical runtime environments across all 5 workstations.
+4. **Adopt Contract-First API Prototyping:**
+   - Model all RESTful API endpoints using OpenAPI 3.0 / Swagger specifications and UI mockups in Figma prior to implementing backend controllers or frontend React views.
 
 ### 5.5. Key Lessons Learned
-*(To be completed during Sprint 02 Retrospective — `SCRUM-40`)*
+1. **Specifications are Executable Contracts:** Investing upfront effort into writing granular User Stories, acceptance criteria, and edge-case handling using GitHub Spec Kit dramatically reduces ambiguity and downstream rework during implementation phases.
+2. **Multi-Tier Quality Gates Prevent Costly Regressions:** The three-tier authoring and review model (`Author -> Reviewer -> Chief Editor`) proved indispensable in catching broken links, syntax discrepancies, and duplicate version numbers before final packaging.
+3. **Academic Integrity with Generative AI Demands Active Human Ownership:** Generative AI is an effective accelerator for template scaffolding and syntax formatting, but domain logic, technical trade-offs, and compliance auditing require rigorous, student-driven critical thinking and verification.
+
+### 5.6. Action Roadmap for Sprint Completion & Transition to Sprint 03
+
+```mermaid
+flowchart TD
+    M4["21/10 (20:00 - 21:15)\nMeeting 4: Sprint 02 Review & Retro\n(SCRUM-40 Closed: 18/18 Done)"] --> DEV["21/10 (21:30 - 23:00)\nSCRUM-43: Final PR Merges to main\n& Git Log Export (git-log.txt)"]
+    DEV --> PKG["22/10 (09:00 - 12:00)\nSCRUM-44: PDF Compilation\n& PA2-Group06.zip Packaging"]
+    PKG --> SUB["22/10 (14:00)\nEarly Moodle Submission\n(48-Hour Buffer preserved)"]
+    SUB --> S3["Sprint 03 Kickoff (PA3-2026)\nArchitecture & Detailed Design\nDocker Compose & Wireframes"]
+```
