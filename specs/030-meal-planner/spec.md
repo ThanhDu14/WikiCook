@@ -62,6 +62,7 @@ collections management (spec 080).
   profile (preferred cuisines, maximum cooking time); recipes that break the user's allergies,
   excluded ingredients or diet type go last with a warning. The AI "Suggested for you" list at the
   top of the picker is defined in spec 031.
+- Session 2026-10-19: Concurrent-user load condition changed from 200 to 100 to match the RC acceptance gate in docs/management/project-plan.md §4.4.2 and Vision Document §7 (SCRUM-36) (edited by Mai Văn Hiển with the owner's agreement).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -408,7 +409,7 @@ button; turn the network back on and confirm the planner reloads the week by its
 ### Non-Functional Requirements
 
 - **NFR-001 (Performance)**: 95% of week views MUST be fully shown within 2 seconds, and 95% of edits
-  MUST be confirmed as saved within 1 second, under normal load (up to 200 concurrent users).
+  MUST be confirmed as saved within 1 second, under normal load (up to 100 concurrent users).
 - **NFR-002 (Usability)**: The planner MUST be fully usable on screens from 360 px wide, with
   Vietnamese as the default interface language and touch targets large enough for kitchen use.
 - **NFR-003 (Accessibility)**: Every action, including moving dishes, MUST be possible by keyboard
