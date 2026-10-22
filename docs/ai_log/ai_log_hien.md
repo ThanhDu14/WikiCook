@@ -19,11 +19,16 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Vă
 | Trường | Nội dung |
 |---|---|
 | Ngày | 2026-10-12 → 2026-10-18 |
+| Giờ truy cập | 19:31 – 19:55 |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | Đề PA2; các bài học Spec Kit trên Microsoft Learn; spec 010, 011, 080 |
 | Công cụ AI | Claude (claude.ai), model Claude Opus 5.5 |
 | Mục đích | (1) Dịch và giải thích đề PA2 và các bài học Spec Kit trên Microsoft Learn; (2) hướng dẫn cài đặt Spec Kit với Antigravity; (3) soạn nháp các prompt dùng ở Mục 2–7; (4) góp ý phương án khi trả lời `/speckit-clarify` |
 | Nhánh Git | Không áp dụng (làm việc trên claude.ai, không sửa file trong repo; các prompt sau đó được chạy ở Mục 2–7 trên nhánh `Hien`) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude.** *Claude Opus 5.5, Anthropic, claude.ai*, truy cập [giờ cần điền] từ 12/10 đến 18/10/2026, prompt: xem lịch sử hội thoại bên dưới, dùng để hiểu đề PA2 và các bài học Spec Kit, cài Spec Kit với Antigravity, soạn nháp prompt cho Mục 2–7 và cân nhắc phương án khi trả lời `/speckit-clarify`; AI tạo bản dịch, giải thích, hướng dẫn cài và bản nháp prompt; sinh viên tự viết lại phần tóm tắt training, tự chạy thử cài đặt ở `speckit_test`, chỉnh prompt trước khi chạy và tự chọn phương án ở từng câu clarify.
 
 ### Prompt đã dùng
 
@@ -66,11 +71,16 @@ Xem lịch sử hội thoại claude.ai (ảnh chụp lưu tại `docs/assets/ji
 | Trường | Nội dung |
 |---|---|
 | Ngày | 2026-10-18 |
+| Giờ truy cập | 20:31 |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | 010, 020, 030, 031, 040, 050, 060, `draft-recipes-ingredients.md`, các file `ai_log_*.md` |
 | Công cụ AI | Claude Code trong Google Antigravity, model Claude Opus 5.5 |
 | Mục đích | Liệt kê giả định của các spec khác về dietary profile, khẩu phần, bộ sưu tập, xóa tài khoản, avatar; tìm mâu thuẫn giữa các spec; xem spec 010 còn sót phạm vi của 011 không (prompt 0, chưa sửa file nào) |
 | Nhánh Git | `Hien` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Claude Opus 5.5, Anthropic, Claude Code trong Google Antigravity*, truy cập 20:31 ngày 18/10/2026, prompt: "Chưa sửa file nào. … Đọc … Báo cáo bằng tiếng Việt, dạng bảng" (nguyên văn bên dưới), dùng để rà soát giả định và mâu thuẫn giữa các spec trước khi viết 011 và 080; AI tạo báo cáo 4 phần trong hội thoại (không tạo file); sinh viên đối chiếu số FR/Assumption với các spec và dùng kết quả làm cơ sở cho prompt Mục 4 và Mục 7.
 
 ### Prompt đã dùng
 
@@ -122,11 +132,16 @@ Báo cáo bằng tiếng Việt, dạng bảng:
 | Trường | Nội dung |
 |---|---|
 | Ngày | 2026-10-18 |
+| Giờ truy cập | 20:44 |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | 080 – Bookmark và bộ sưu tập (module 3.8, `specs/080-bookmark-collection`) |
 | Công cụ AI | Claude Code trong Google Antigravity, model Claude Opus 5.5, lệnh Spec Kit `/speckit-specify` |
 | Mục đích | Sinh bản đặc tả đầu tiên cho lưu một chạm, bộ sưu tập, công thức "Không còn khả dụng" và danh sách bộ sưu tập cho hộp chọn món của meal planner |
 | Nhánh Git | `Hien` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Claude Opus 5.5, Anthropic, Claude Code trong Google Antigravity (Spec Kit `/speckit-specify`)*, truy cập 20:44 ngày 18/10/2026, prompt: "/speckit-specify SPECIFY_FEATURE_DIRECTORY=specs/080-bookmark-collection …" (nguyên văn bên dưới), dùng để viết bản đặc tả đầu tiên của spec 080; AI tạo `spec.md` (5 user story, 26 FR, 7 NFR, Integration Points) và checklist; sinh viên xác định phạm vi trong prompt, đổi "Yêu thích" thành "Đã lưu" và chốt các điểm còn mở ở bước clarify (Mục 6).
 
 ### Prompt đã dùng
 
@@ -187,11 +202,16 @@ Số liệu dưới đây đếm trên file spec hiện tại (đã qua `/specki
 | Trường | Nội dung |
 |---|---|
 | Ngày | 2026-10-18 |
+| Giờ truy cập | 20:49 |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | 011 – Hồ sơ cá nhân và dietary profile (module 3.1, `specs/011-user-profile-dietary`) |
 | Công cụ AI | Claude Code trong Google Antigravity, model Sonnet 5.5, lệnh Spec Kit `/speckit-specify` |
 | Mục đích | Sinh bản đặc tả đầu tiên cho hồ sơ, avatar, dietary profile (nguồn sự thật cho 020, 030, 031), đổi/đặt mật khẩu và xóa tài khoản |
 | Nhánh Git | `Hien` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code trong Google Antigravity (Spec Kit `/speckit-specify`)*, truy cập 20:49 ngày 18/10/2026, prompt: "/speckit-specify SPECIFY_FEATURE_DIRECTORY=specs/011-user-profile-dietary …" (nguyên văn bên dưới), dùng để viết bản đặc tả đầu tiên của spec 011; AI tạo `spec.md` (5 user story, 44 FR, 8 NFR, Integration Points 17 dòng) và checklist; sinh viên xác định phạm vi, định nghĩa luật cứng/ưu tiên trong prompt, rồi sửa giới hạn nguyên liệu loại trừ từ 200 xuống 50 và quyền xem của Admin ở bước clarify (Mục 5).
 
 ### Prompt đã dùng
 
@@ -277,11 +297,16 @@ Số liệu dưới đây đếm trên file spec hiện tại (đã qua `/specki
 | Trường | Nội dung |
 |---|---|
 | Ngày | 2026-10-18 |
+| Giờ truy cập | 21:05 |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | 011 – Hồ sơ cá nhân và dietary profile (`specs/011-user-profile-dietary`) |
 | Công cụ AI | Claude Code trong Google Antigravity, model Sonnet 5.5, lệnh Spec Kit `/speckit-clarify` |
 | Mục đích | Chốt trường nào là luật cứng, khẩu phần mặc định, hậu quả khi xóa tài khoản, các giá trị mặc định ở Assumptions, gộp/xóa nguyên liệu và tài khoản bị đình chỉ/cấm |
 | Nhánh Git | `Hien` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code trong Google Antigravity (Spec Kit `/speckit-clarify`)*, truy cập 21:05 ngày 18/10/2026, prompt: "/speckit-clarify Rà soát specs/011-user-profile-dietary/spec.md và hỏi mình lần lượt từng câu, tối đa 5 câu …" (nguyên văn bên dưới), dùng để làm rõ spec 011; AI đặt câu hỏi kèm phương án và ghi 6 mục Clarifications, sửa đồng bộ spec; sinh viên tự chọn đáp án từng câu và đổi 3 điểm so với đề xuất (50 nguyên liệu loại trừ, Admin không xem hồ sơ ăn uống, thêm bước gõ `DELETE`).
 
 ### Prompt đã dùng
 
@@ -361,11 +386,16 @@ Spec ghi 6 câu hỏi – trả lời (câu 6 phát sinh từ yêu cầu cập n
 | Trường | Nội dung |
 |---|---|
 | Ngày | 2026-10-18 |
+| Giờ truy cập | 21:27 |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | 080 – Bookmark và bộ sưu tập (`specs/080-bookmark-collection`) |
 | Công cụ AI | Claude Code trong Google Antigravity, model Claude Opus 5.5, lệnh Spec Kit `/speckit-clarify` |
 | Mục đích | Chốt quyền riêng tư của bộ sưu tập, giới hạn số lượng, cách hiển thị "Không còn khả dụng", hành vi khi mất mạng và việc hoàn tác khi bỏ lưu |
 | Nhánh Git | `Hien` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Claude Opus 5.5, Anthropic, Claude Code trong Google Antigravity (Spec Kit `/speckit-clarify`)*, truy cập 21:27 ngày 18/10/2026, prompt: "/speckit-clarify Rà soát specs/080-bookmark-collection/spec.md và hỏi mình lần lượt từng câu, tối đa 5 câu …" (nguyên văn bên dưới), dùng để làm rõ spec 080; AI đặt 5 câu hỏi kèm phương án và ghi mục Clarifications, sửa đồng bộ spec; sinh viên tự chọn đáp án, đổi "Yêu thích" thành "Đã lưu", đặt giới hạn 1.000 / 50 / 500 và thêm thao tác "Bỏ tất cả món không còn khả dụng".
 
 ### Prompt đã dùng
 
@@ -445,11 +475,16 @@ Chọn A. Bổ sung: khi mất mạng, nút lưu/bỏ lưu một chạm trên tr
 | Trường | Nội dung |
 |---|---|
 | Ngày | 2026-10-18 |
+| Giờ truy cập | 21:05 |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | 010 – Đăng ký, đăng nhập và vai trò (`specs/010-user-authentication-roles`) |
 | Công cụ AI | Claude Code trong Google Antigravity, model Sonnet 5.5, lệnh Spec Kit `/speckit-clarify` |
 | Mục đích | Cắt phần hồ sơ sang spec 011, sửa NFR-009 và Jira key, chốt quy tắc xóa tài khoản, liên kết Google với tài khoản chưa xác minh, thời hạn xác minh email, thông báo và quyền tác động lên Administrator |
 | Nhánh Git | `Hien` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code trong Google Antigravity (Spec Kit `/speckit-clarify`)*, truy cập 21:05 ngày 18/10/2026, prompt: "Rà soát specs/010-user-authentication-roles/spec.md … Ngoài các câu hỏi thông thường (tối đa 5), cập nhật đồng bộ …" (nguyên văn bên dưới), dùng để làm rõ spec 010 và cắt phạm vi sang 011; AI đặt 5 câu hỏi, ghi 9 mục Clarifications và sửa spec (+112 / −22 dòng); sinh viên đưa 4 chỉ thị trong prompt, tự chọn đáp án và thêm các ngoại lệ (danh sách chặn mã băm email, quy tắc Administrator, xóa dữ liệu khi liên kết Google).
 
 ### Prompt đã dùng
 
