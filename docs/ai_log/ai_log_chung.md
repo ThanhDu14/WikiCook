@@ -10,6 +10,7 @@ File này ghi lại toàn bộ lịch sử sử dụng công cụ AI của **Tr�
 | 4 | 2026-10-19 | Làm rõ yêu cầu kỹ thuật và hành vi biên cho spec 070 (Interactive Clarification) bằng `/speckit-clarify` | `specs/070-review-cooksnap/` |
 | 5 | 2026-10-19 | Tạo đặc tả chức năng (Feature Specification) cho Dashboard Quản trị & Kiểm duyệt nội dung (`100`) bằng `/speckit-specify` | `specs/100-admin-moderation/` |
 | 6 | 2026-10-19 | Làm rõ yêu cầu kỹ thuật và hành vi biên cho spec 100 (Interactive Clarification) bằng `/speckit-clarify` | `specs/100-admin-moderation/` |
+| 7 | 2026-10-21 | Tổng hợp & Kiểm toán lịch sử sử dụng AI toàn nhóm trong Sprint 2 (`SCRUM-41`) | `docs/management/reports/sprint-02/sprint-02-report.md` (Mục 4) |
 
 ---
 
@@ -265,14 +266,78 @@ Cung cấp cổng thông tin quản trị tập trung cho Quản trị viên (Ad
 
 ---
 
-## Tổng kết tuần 1 & Kế hoạch tiếp theo của Thành viên E (Chung)
+## Mục 7: Tổng hợp & Kiểm toán lịch sử sử dụng AI toàn nhóm trong Sprint 2 (`SCRUM-41`)
 
-1. **Kết quả đạt được:**
-   - Hoàn thành 100% việc soạn thảo 2 bản đặc tả chất lượng cao: [specs/070-review-cooksnap/spec.md](file:///e:/WikiCook-main/specs/070-review-cooksnap/spec.md) và [specs/100-admin-moderation/spec.md](file:///e:/WikiCook-main/specs/100-admin-moderation/spec.md).
-   - Đầy đủ 2 file checklist chất lượng kiểm định 16/16 tiêu chí (100% PASSED): [070 checklist](file:///e:/WikiCook-main/specs/070-review-cooksnap/checklists/requirements.md) và [100 checklist](file:///e:/WikiCook-main/specs/100-admin-moderation/checklists/requirements.md).
-   - Thống nhất toàn bộ các điểm giao với các thành viên khác trong nhóm (B, D, A, C).
-   - Nhật ký sử dụng AI được chuẩn hóa hoàn toàn theo định dạng Spec Kit chuẩn (`/speckit-specify`, `/speckit-clarify`).
+| Trường | Nội dung |
+|---|---|
+| **Ngày** | 2026-10-21 |
+| **Người thực hiện** | Trần Nguyễn Công Chung (`itzchugnn`) |
+| **Tài liệu liên quan** | `docs/management/reports/sprint-02/sprint-02-report.md` (Mục 4), `docs/ai_log/`, `docs/assets/jira/ai_accounts/` |
+| **Công cụ AI** | Google Antigravity (Gemini 3.8 Flash) |
+| **Mục đích** | Đóng vai trò Consolidator & QA Auditor, trích xuất dữ liệu từ các file nhật ký AI của 5 thành viên để tổng hợp thành bảng Phụ lục (Appendix - Mục 4) trong `sprint-02-report.md`, đối soát 100% tính xác thực của link log và ảnh môi trường làm việc theo quy chế `AI Usage Guidelines.pdf`. |
+| **Nhánh Git** | `Chung` |
 
-2. **Kế hoạch tiếp theo (Thứ 5 – Thứ 6):**
-   - **Thứ 5 (15/10):** Hỗ trợ review chéo spec cho thành viên khác theo bảng phân công và chuẩn bị wireframe UI bản đầu cho các màn hình của module 070 và 100.
-   - **Thứ 6 (16/10):** Chạy lệnh `/speckit-plan` để sinh `data-model.md` khớp đặc tả CSDL chung của nhóm, cập nhật 7 bảng CSDL (`reviews`, `cooksnaps`, `reports`, `moderation_actions`, `user_suspensions`, `featured_recipes`, `audit_logs`) vào tài liệu CSDL chung, kèm bảng phân quyền RBAC chi tiết.
+### Prompt đã dùng:
+
+```text
+Hãy hỗ trợ tôi rà soát toàn bộ 5 file nhật ký sử dụng AI trong docs/ai_log/ của 5 thành viên (Hưng, Duy, Hiển, Dự, Chung).
+Trích xuất tối thiểu 1–2 phiên tương tác cốt lõi của mỗi thành viên (tổng cộng 10 phiên) đại diện cho toàn bộ deliverables của PA2 (Project Plan, Vision Document, Spec Kit Constitution, Feature Specifications).
+Tổng hợp thành bảng 9 cột theo đúng quy chuẩn: Interaction ID (AI-S2-01 đến AI-S2-10), Member Name, AI Tool & Version, Date & Time, Prompt Used, Purpose, AI-Generated Output, Human Verification & Revision, Evidence.
+Kiểm tra tính nhất quán giữa các liên kết log tương đối và đường dẫn ảnh xác thực tài khoản trong docs/assets/jira/ai_accounts/.
+```
+
+### Tóm tắt kết quả do AI sinh ra & Kiểm chứng của sinh viên:
+- AI hỗ trợ quét và tổng hợp dữ liệu thô từ 5 file log thành khung bảng 9 cột chuẩn.
+- Sinh viên tiến hành kiểm toán độc lập (Human Verification):
+  1. Kiểm tra chéo 100% các phiên tương tác, loại bỏ các chi tiết thừa, làm nổi bật phần sinh viên tự làm độc lập (Human-in-the-loop).
+  2. Rà soát chuẩn hóa đường dẫn tương đối từ `docs/management/reports/sprint-02/sprint-02-report.md` đến `../../../ai_log/` và `../../../assets/jira/ai_accounts/`.
+  3. Bổ sung các quyết định kỹ thuật then chốt của từng thành viên (như việc tách riêng module manual planner khi AI outage, khống chế 50 nguyên liệu loại trừ, bỏ EXIF ảnh, Append-Only audit log).
+  4. Ký duyệt biên bản kiểm toán chất lượng (QA Audit Verdict: PASSED), cập nhật `SCRUM-41` từ `TO DO` sang `DONE` và nâng phiên bản báo cáo lên `v1.3`.
+
+---
+
+## Mục 8: Tiến hành kiểm thử chất lượng (QA Audit) hệ thống tài liệu Markdown (`SCRUM-42`)
+
+| Trường | Nội dung |
+|---|---|
+| **Ngày** | 2026-10-21 |
+| **Người thực hiện** | Trần Nguyễn Công Chung (`itzchugnn`) |
+| **Tài liệu liên quan** | Toàn bộ thư mục `docs/` (`docs/management/`, `docs/requirements/`, `docs/analysis-and-design/`) |
+| **Công cụ AI** | Google Antigravity (Gemini 3.8 Flash) |
+| **Mục đích** | Đóng vai trò QA Lead, tiến hành kiểm thử chất lượng toàn diện (Quality Assurance Audit) trên toàn bộ hệ thống tài liệu Markdown trước khi xuất bản PDF cho Sprint 2. Kiểm tra 100% metadata 3 cấp, tính toàn vẹn liên kết và ảnh, cú pháp render Mermaid, và ngôn ngữ tiếng Anh kỹ thuật. |
+| **Nhánh Git** | `Chung` |
+
+### Prompt đã dùng:
+```text
+Tiến hành kiểm thử chất lượng (Quality Assurance Audit) trên toàn bộ hệ thống tài liệu Markdown trước khi xuất bản:
+1. Kiểm tra 100% các tiêu đề ## phải có dòng metadata: *Performed by: ... | Reviewed by: ... | Edited by: Lê Quốc Hưng*.
+2. Kiểm tra tính toàn vẹn của tất cả các liên kết nội bộ (internal markdown links) và đường dẫn ảnh.
+3. Kiểm tra cú pháp render của các khối mã Mermaid.
+4. Đảm bảo ngôn ngữ tiếng Anh thống nhất, không có lỗi chính tả cơ bản.
+Rà soát toàn bộ thư mục WikiCook/docs/ và báo cáo kết quả đạt chuẩn sign-off trước khi xuất PDF.
+```
+
+### Kết quả rà soát & Kiểm chứng độc lập của sinh viên:
+1. **Kiểm tra Metadata 3 cấp:**
+   - Đã quét toàn bộ các file `.md` trong `docs/`.
+   - Bổ sung bảng Document Metadata và metadata 3 cấp cho `docs/requirements/comparative-analysis.md` (Mục 3.1 & 3.3) và `docs/management/group-registration.md` (Mục 1, 2, 3).
+   - Đạt 100% chuẩn: `*Performed by: ... | Reviewed by: ... | Edited by: Lê Quốc Hưng*`.
+2. **Kiểm tra liên kết nội bộ & đường dẫn ảnh:**
+   - Quét tự động toàn bộ 25+ relative links và image tags trong `docs/`.
+   - Kết quả: 0 liên kết chết (0 broken links), 0 ảnh lỗi (0 broken images).
+3. **Kiểm tra cú pháp render Mermaid:**
+   - Trích xuất toàn bộ 19 sơ đồ Mermaid trong `docs/`.
+   - Chạy kiểm thử tự động với engine `mermaid.js` v10 trong môi trường trình duyệt: **19/19 diagrams render thành công không có lỗi cú pháp**.
+   - Loại bỏ các dòng lặp dư thừa tại Diagram 14 trong `docs/requirements/project-proposal.md`.
+4. **Kiểm tra chính tả tiếng Anh & định dạng Markdown:**
+   - Quét lỗi chính tả, từ lặp và đóng mở dấu backtick/code block trên toàn bộ tài liệu tiếng Anh.
+   - Kết quả: 0 lỗi chính tả, định dạng chuẩn Markdown GFM.
+5. **Cập nhật Jira Tracking:**
+   - Chuyển `SCRUM-42` thành `DONE` trong bảng Master Backlog của `sprint-02-report.md`.
+   - Ký biên bản nghiệm thu QA Sign-Off sẵn sàng cho release package `PA2-Group06.zip`.
+
+---
+
+### Tổng kết Sprint 2 của thành viên Chung:
+- **Nhiệm vụ cá nhân hoàn thành:** `SCRUM-37` (Spec Kit `/src` sync), `SCRUM-38` (Training Log), `SCRUM-41` (AI Usage Appendix), `SCRUM-42` (QA Audit Documentation).
+- **Trạng thái:** 4/4 tasks đạt `DONE`. Toàn bộ deliverables của Sprint 2 đã qua kiểm định QA độc lập, đạt 100% Acceptance Criteria và Definition of Done (DoD).
