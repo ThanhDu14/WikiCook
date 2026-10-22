@@ -18,8 +18,8 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Vă
 
 | Trường | Nội dung |
 |---|---|
-| Ngày | 2026-10-12 → 2026-10-18 |
-| Giờ truy cập | 19:31 – 19:55 |
+| Ngày | 2026-10-12 , 2026-10-18 |
+| Giờ truy cập | 19:31 – 19:53 |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | Đề PA2; các bài học Spec Kit trên Microsoft Learn; spec 010, 011, 080 |
 | Công cụ AI | Claude (claude.ai), model Claude Opus 5.5 |
@@ -28,7 +28,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Vă
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude.** *Claude Opus 5.5, Anthropic, claude.ai*, truy cập [giờ cần điền] từ 12/10 đến 18/10/2026, prompt: xem lịch sử hội thoại bên dưới, dùng để hiểu đề PA2 và các bài học Spec Kit, cài Spec Kit với Antigravity, soạn nháp prompt cho Mục 2–7 và cân nhắc phương án khi trả lời `/speckit-clarify`; AI tạo bản dịch, giải thích, hướng dẫn cài và bản nháp prompt; sinh viên tự viết lại phần tóm tắt training, tự chạy thử cài đặt ở `speckit_test`, chỉnh prompt trước khi chạy và tự chọn phương án ở từng câu clarify.
+**Claude.** *Claude Opus 5.5, Anthropic, claude.ai*, truy cập 19:31 đến 19:53 trong 2 ngày 12/10 và 18/10/2026, prompt: xem lịch sử hội thoại bên dưới, dùng để hiểu đề PA2 và các bài học Spec Kit, cài Spec Kit với Antigravity, soạn nháp prompt cho Mục 2–7 và cân nhắc phương án khi trả lời `/speckit-clarify`; AI tạo bản dịch, giải thích, hướng dẫn cài và bản nháp prompt; sinh viên tự viết lại phần tóm tắt training, tự chạy thử cài đặt ở `speckit_test`, chỉnh prompt trước khi chạy và tự chọn phương án ở từng câu clarify.
 
 ### Prompt đã dùng
 
