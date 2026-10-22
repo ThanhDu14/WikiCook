@@ -1,0 +1,440 @@
+openapi: 3.0.3
+info:
+  title: WikiCook – Meal Planner API (spec 030)
+  version: 0.1.0
+  description: |
+    API của lịch thực đơn tuần thủ công. Mọi endpoint yêu cầu đăng nhập (JWT, spec 010) và chỉ
+    thao tác trên kế hoạch của chính người gọi: URL không chứa user id hay meal plan id
+    (FR-006, NFR-004). Lỗi trả về dạng ProblemDetail (RFC 9457) có trường `code`.
+servers:
+  - url: /api/v1
+security:
+  - bearerAuth: []
+tags:
+  - name: meal-plans
+  - name: picker
+
+paths:
+  /meal-plans/{weekStart}:
+    get:
+      tags: [meal-plans]
+      summary: Lấy kế hoạch của một tuần (tuần chưa có kế hoạch trả về 7 ngày rỗng)
+      operationId: getWeekPlan
+      parameters:
+        - $ref: '#/components/parameters/WeekStart'
+      responses:
+        '200':
+          description: Kế hoạch tuần
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WeekPlan' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /meal-plans/{weekStart}/slots/{day}/{meal}:
+    put:
+      tags: [meal-plans]
+      summary: Thêm món vào ô trống hoặc thay món đang có (FR-007, FR-008, FR-016)
+      description: |
+        `expected` mô tả trạng thái ô mà client đang thấy. `expected = null` nghĩa là ô phải trống;
+        nếu ô đã có món → 409 `SLOT_OCCUPIED` (dialog "Thêm vào meal plan" hỏi thay thế).
+        Nếu `expected` không khớp item hiện tại → 409 `SLOT_CHANGED`.
+        Khi thay món, servings của ô được giữ nếu không gửi `servings` (US3-4).
+        Khi thêm mới không gửi `servings`, server dùng household size hoặc servings của công thức
+        (FR-012). Món có cảnh báo dị ứng/loại trừ (FR-007b) được client hỏi xác nhận trước khi gửi;
+        server không chặn.
+      operationId: putSlot
+      parameters:
+        - $ref: '#/components/parameters/WeekStart'
+        - $ref: '#/components/parameters/Day'
+        - $ref: '#/components/parameters/Meal'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PutSlotRequest' }
+      responses:
+        '200':
+          description: Item đã lưu
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PlanItem' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/RecipeNotAvailable' }
+    delete:
+      tags: [meal-plans]
+      summary: Xóa món khỏi ô (FR-016)
+      operationId: deleteSlot
+      parameters:
+        - $ref: '#/components/parameters/WeekStart'
+        - $ref: '#/components/parameters/Day'
+        - $ref: '#/components/parameters/Meal'
+        - { name: itemId, in: query, required: true, schema: { type: integer, format: int64 } }
+        - { name: version, in: query, required: true, schema: { type: integer } }
+      responses:
+        '204': { description: Đã xóa }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /meal-plans/{weekStart}/slots/{day}/{meal}/servings:
+    patch:
+      tags: [meal-plans]
+      summary: Đổi khẩu phần của món trong ô (FR-011)
+      operationId: patchServings
+      parameters:
+        - $ref: '#/components/parameters/WeekStart'
+        - $ref: '#/components/parameters/Day'
+        - $ref: '#/components/parameters/Meal'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PatchServingsRequest' }
+      responses:
+        '200':
+          description: Item đã lưu
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PlanItem' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /meal-plans/{weekStart}/moves:
+    post:
+      tags: [meal-plans]
+      summary: Chuyển món sang ô khác cùng tuần; ô đích có món thì đổi chỗ (FR-014, FR-015)
+      description: Chạy trong một transaction; thất bại thì không ô nào thay đổi (NFR-005).
+      operationId: moveItem
+      parameters:
+        - $ref: '#/components/parameters/WeekStart'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MoveRequest' }
+      responses:
+        '200':
+          description: Các item sau khi chuyển (1 item khi move, 2 khi swap)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MoveResult' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /meal-plans/{weekStart}/days/{day}:
+    delete:
+      tags: [meal-plans]
+      summary: Xóa cả ngày (FR-017) – client đã hỏi xác nhận
+      operationId: clearDay
+      parameters:
+        - $ref: '#/components/parameters/WeekStart'
+        - $ref: '#/components/parameters/Day'
+      responses:
+        '204': { description: Đã xóa mọi món của ngày (không lỗi nếu ngày đã trống) }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /meal-plans/{weekStart}/shopping-handoff:
+    get:
+      tags: [meal-plans]
+      summary: Danh sách món khả dụng của tuần để bàn giao cho Shopping List (FR-024, FR-025)
+      description: Xem contracts/integration.md. Spec 040 cũng gọi được qua MealPlanShoppingFacade.
+      operationId: getShoppingHandoff
+      parameters:
+        - $ref: '#/components/parameters/WeekStart'
+      responses:
+        '200':
+          description: Món khả dụng và số món bị bỏ qua
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ShoppingHandoff' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /meal-plans/picker/recipes:
+    get:
+      tags: [picker]
+      summary: Tìm công thức cho hộp chọn của một ô (FR-007, FR-007a, FR-007b)
+      description: |
+        Chỉ trả công thức PUBLISHED, không phải món ăn vặt (is_snack). Thứ tự: không xung đột trước; hợp bữa; ẩm thực ưa thích;
+        trong thời gian nấu tối đa; độ khớp tên. Món xung đột ở cuối, có `conflicts`.
+        "Gợi ý cho bạn" (FR-007c) là endpoint của spec 031, không nằm ở đây.
+      operationId: searchPickerRecipes
+      parameters:
+        - { name: meal, in: query, required: true, schema: { $ref: '#/components/schemas/Meal' } }
+        - { name: q, in: query, required: false, schema: { type: string, maxLength: 100 } }
+        - name: scope
+          in: query
+          required: false
+          schema: { type: string, enum: [ALL, COLLECTIONS], default: ALL }
+        - { name: page, in: query, required: false, schema: { type: integer, minimum: 0, default: 0 } }
+        - { name: size, in: query, required: false, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
+      responses:
+        '200':
+          description: Một trang kết quả
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PickerPage' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    WeekStart:
+      name: weekStart
+      in: path
+      required: true
+      description: Thứ Hai đầu tuần theo giờ Việt Nam, dạng YYYY-MM-DD
+      schema: { type: string, format: date, example: '2026-10-19' }
+    Day:
+      name: day
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/Day' }
+    Meal:
+      name: meal
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/Meal' }
+
+  schemas:
+    Day:
+      type: string
+      enum: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
+    Meal:
+      type: string
+      enum: [BREAKFAST, LUNCH, DINNER]
+    ItemSource:
+      type: string
+      enum: [MANUAL, AI, AUTO]
+    DietType:
+      type: string
+      description: Suy ra từ ingredients.kind (031 FR-009a), không phải nhãn AI của 090
+      enum: [NONE, VEGETARIAN, VEGAN, PESCATARIAN]
+
+    ExpectedSlotState:
+      type: object
+      nullable: true
+      description: Trạng thái ô client đang thấy; null = ô trống
+      required: [itemId, version]
+      properties:
+        itemId: { type: integer, format: int64 }
+        version: { type: integer }
+
+    PutSlotRequest:
+      type: object
+      required: [recipeId]
+      properties:
+        recipeId: { type: integer, format: int64 }
+        servings: { type: integer, minimum: 1, maximum: 20, nullable: true }
+        source:
+          allOf: [{ $ref: '#/components/schemas/ItemSource' }]
+          description: MANUAL mặc định; AI khi chọn từ "Gợi ý cho bạn" (031 FR-038)
+        expected: { $ref: '#/components/schemas/ExpectedSlotState' }
+
+    PatchServingsRequest:
+      type: object
+      required: [servings, expected]
+      properties:
+        servings: { type: integer, minimum: 1, maximum: 20 }
+        expected: { $ref: '#/components/schemas/ExpectedSlotState' }
+
+    MoveRequest:
+      type: object
+      required: [from, to]
+      properties:
+        from:
+          type: object
+          required: [day, meal, itemId, version]
+          properties:
+            day: { $ref: '#/components/schemas/Day' }
+            meal: { $ref: '#/components/schemas/Meal' }
+            itemId: { type: integer, format: int64 }
+            version: { type: integer }
+        to:
+          type: object
+          required: [day, meal]
+          properties:
+            day: { $ref: '#/components/schemas/Day' }
+            meal: { $ref: '#/components/schemas/Meal' }
+            expected: { $ref: '#/components/schemas/ExpectedSlotState' }
+
+    MoveResult:
+      type: object
+      required: [kind, items]
+      properties:
+        kind: { type: string, enum: [MOVED, SWAPPED] }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/PlacedItem' }
+
+    PlacedItem:
+      type: object
+      required: [day, meal, item]
+      properties:
+        day: { $ref: '#/components/schemas/Day' }
+        meal: { $ref: '#/components/schemas/Meal' }
+        item: { $ref: '#/components/schemas/PlanItem' }
+
+    PlanItem:
+      type: object
+      description: Định dạng ô theo proposal 4.6 + servings (FR-030)
+      required: [id, version, recipeName, servings, source, available]
+      properties:
+        id: { type: integer, format: int64 }
+        version: { type: integer }
+        recipeId: { type: integer, format: int64, nullable: true }
+        recipeName: { type: string, description: Tên công thức; dùng snapshot khi không còn khả dụng }
+        coverImageUrl: { type: string, nullable: true }
+        totalTimeMinutes: { type: integer, nullable: true }
+        servings: { type: integer, minimum: 1, maximum: 20 }
+        source: { $ref: '#/components/schemas/ItemSource' }
+        available: { type: boolean, description: false khi công thức bị ARCHIVED hoặc xóa (FR-020) }
+        dietType: { $ref: '#/components/schemas/DietType' }
+
+    Slot:
+      type: object
+      required: [meal]
+      properties:
+        meal: { $ref: '#/components/schemas/Meal' }
+        item:
+          allOf: [{ $ref: '#/components/schemas/PlanItem' }]
+          nullable: true
+
+    DayNutrition:
+      type: object
+      nullable: true
+      description: Từ spec 090 FR-022; null khi không món nào có ước tính
+      required: [kcalPerPerson, includedDishes, missingDishes]
+      properties:
+        kcalPerPerson: { type: integer }
+        includedDishes: { type: integer }
+        missingDishes: { type: integer }
+
+    DayPlan:
+      type: object
+      required: [date, day, slots]
+      properties:
+        date: { type: string, format: date }
+        day: { $ref: '#/components/schemas/Day' }
+        slots:
+          type: array
+          minItems: 3
+          maxItems: 3
+          items: { $ref: '#/components/schemas/Slot' }
+        nutrition: { $ref: '#/components/schemas/DayNutrition' }
+
+    WeekPlan:
+      type: object
+      required: [weekStart, weekEnd, days, empty]
+      properties:
+        weekStart: { type: string, format: date }
+        weekEnd: { type: string, format: date }
+        today:
+          type: string
+          format: date
+          nullable: true
+          description: Có giá trị khi tuần chứa hôm nay (giờ Việt Nam)
+        empty: { type: boolean, description: true khi tuần không có món nào (FR-022) }
+        availableItemCount: { type: integer, description: Dùng để bật/tắt "Tạo shopping list" (FR-025) }
+        days:
+          type: array
+          minItems: 7
+          maxItems: 7
+          items: { $ref: '#/components/schemas/DayPlan' }
+
+    PickerResult:
+      type: object
+      required: [recipeId, title, mealSuited, conflicts]
+      properties:
+        recipeId: { type: integer, format: int64 }
+        title: { type: string }
+        coverImageUrl: { type: string, nullable: true }
+        totalTimeMinutes: { type: integer, nullable: true }
+        cuisineName: { type: string, nullable: true }
+        mealSuited: { type: boolean }
+        conflicts:
+          type: array
+          description: Rỗng nếu không vi phạm hồ sơ
+          items:
+            type: object
+            required: [type, label]
+            properties:
+              type: { type: string, enum: [ALLERGEN, EXCLUDED_INGREDIENT, DIET_TYPE] }
+              label: { type: string, example: 'Đậu phộng' }
+
+    PickerPage:
+      type: object
+      required: [content, page, size, hasNext]
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/PickerResult' }
+        page: { type: integer }
+        size: { type: integer }
+        hasNext: { type: boolean }
+
+    ShoppingHandoff:
+      type: object
+      required: [weekStart, items, skippedUnavailable]
+      properties:
+        weekStart: { type: string, format: date }
+        skippedUnavailable: { type: integer }
+        items:
+          type: array
+          items:
+            type: object
+            required: [mealPlanItemId, recipeId, servings, day, meal]
+            properties:
+              mealPlanItemId: { type: integer, format: int64 }
+              recipeId: { type: integer, format: int64 }
+              servings: { type: integer }
+              day: { $ref: '#/components/schemas/Day' }
+              meal: { $ref: '#/components/schemas/Meal' }
+
+    Problem:
+      type: object
+      description: ProblemDetail (RFC 9457) + code
+      required: [type, title, status, code]
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        code:
+          type: string
+          enum: [VALIDATION_ERROR, INVALID_WEEK_START, SLOT_CHANGED, SLOT_OCCUPIED, RECIPE_NOT_AVAILABLE, UNAUTHENTICATED]
+        currentItem:
+          allOf: [{ $ref: '#/components/schemas/PlanItem' }]
+          nullable: true
+          description: Với SLOT_OCCUPIED – món đang ở ô, để dialog nêu tên (US2-3)
+
+  responses:
+    BadRequest:
+      description: Dữ liệu không hợp lệ (VALIDATION_ERROR, INVALID_WEEK_START)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Unauthorized:
+      description: Chưa đăng nhập hoặc phiên hết hạn
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Conflict:
+      description: SLOT_CHANGED (ô đã đổi ở nơi khác) hoặc SLOT_OCCUPIED (ô đã có món)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    RecipeNotAvailable:
+      description: Công thức không ở trạng thái PUBLISHED hoặc là món ăn vặt (FR-010)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }

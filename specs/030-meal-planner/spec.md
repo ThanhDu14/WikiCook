@@ -46,7 +46,7 @@ Shopping List, handling recipes that are no longer available, an offline message
 no connection (the planner is not viewable offline), guest redirect to sign-in.
 
 **Out of scope** (separate specs): generating a plan with AI (spec 031), merging ingredients and
-building the shopping list itself (spec 040), daily/weekly nutrition totals (spec 090), advanced
+building the shopping list itself (spec 040), calculating the daily calorie total (spec 090; this spec only reserves where it is shown, FR-032), advanced
 recipe search and filters (spec 020), dietary profile and household size management (spec 011),
 collections management (spec 080).
 
@@ -84,8 +84,8 @@ dishes are still shown in the right slots with the right servings.
    week (Monday → Sunday) is shown with 3 meal slots per day and today's column is highlighted.
 2. **Given** an empty slot, **When** the user selects it, **Then** a recipe picker opens for that
    slot's meal, where the user can search published recipes by name and switch to "From my
-   collections" to pick from recipes they have saved; when the AI is available the picker also
-   shows "Suggested for you" (spec 031) above the results.
+   collections" to pick from recipes they have saved; the picker also shows "Suggested for you"
+   (spec 031) above the results whenever suggestions are available.
 3. **Given** the picker was opened from a breakfast slot, **When** the user searches "trứng",
    **Then** recipes suited to breakfast come before recipes suited only to lunch or dinner; within
    each group, recipes matching the user's preferred cuisines and within their maximum cooking time
@@ -209,7 +209,8 @@ Shopping List feature receives exactly the available dishes of that week with th
 
 1. **Given** the week being viewed holds at least one available dish, **When** the user chooses
    "Create shopping list", **Then** every available dish of that week, with its servings, is handed
-   to the Shopping List feature (spec 040) and the user is taken to the resulting list.
+   to the Shopping List's meal-plan import flow (spec 040: ingredient preview, then "merge into current
+   list" or "archive and start a new list").
 2. **Given** the week has no available dishes, **When** it is shown, **Then** "Create shopping list"
    is disabled with a hint that the week needs at least one dish.
 3. **Given** the week contains dishes marked "No longer available", **When** the user creates the
@@ -272,8 +273,9 @@ button; turn the network back on and confirm the planner reloads the week by its
 
 ### Edge Cases
 
-- **Two devices or tabs edit the same week**: the last saved change to a slot wins; the other
-  device shows the latest plan the next time it loads or reloads the week.
+- **Two devices or tabs edit the same week**: an edit made on the latest state of a slot is saved,
+  and the other device shows it the next time it loads or reloads the week; an edit made on an
+  outdated state of the slot is handled by the next case.
 - **Slot changed elsewhere before an edit is saved** (e.g. a dish was removed on another device):
   the edit is refused, the user is told the plan changed, and the planner reloads the week.
 - **Dragging a dish outside any slot** or pressing Escape during a drag: nothing changes.
@@ -325,8 +327,9 @@ button; turn the network back on and confirm the planner reloads the week by its
 - **FR-007b**: Recipes that break the user's allergies, excluded ingredients or diet type MUST be
   listed after all other results with a warning label naming the conflict, and choosing one MUST
   ask the user to confirm.
-- **FR-007c**: When the AI planner is available, the picker MUST show the "Suggested for you" list
-  of spec 031 above the results; when it is not, the picker MUST work with the ordered results only.
+- **FR-007c**: When suggestions are available, the picker MUST show the "Suggested for you" list of
+  spec 031 above the results; they do not depend on the AI language model (spec 031 FR-033). When
+  they are not available, the picker MUST work with the ordered results only.
 - **FR-008**: The recipe detail page of a published recipe MUST offer "Add to meal plan", which asks
   for week, day and meal and asks before replacing a filled slot.
 - **FR-009**: A guest choosing "Add to meal plan" MUST be sent to sign-in and returned to the same
@@ -372,7 +375,8 @@ button; turn the network back on and confirm the planner reloads the week by its
 **Shopping list hand-off**
 
 - **FR-024**: "Create shopping list" MUST hand every available dish of the week being viewed, with
-  its servings, to the Shopping List feature (spec 040) and take the user to the result.
+  its servings, to the Shopping List's meal-plan import flow (spec 040), which shows the ingredient
+  preview and the "merge into current list" / "archive and start a new list" choice.
 - **FR-025**: "Create shopping list" MUST be disabled when the week has no available dish, and MUST
   report how many unavailable dishes were left out.
 
@@ -392,8 +396,15 @@ button; turn the network back on and confirm the planner reloads the week by its
 
 - **FR-030**: A plan item MUST carry the same information as a slot in proposal section 4.6 (recipe
   reference, recipe name, cooking time, dietary tags) plus servings, so that plans produced by spec
-  031 are shown and edited exactly like manual ones.
+  031 are shown and edited exactly like manual ones. "Dietary tags" here means the diet type derived
+  from the recipe's ingredient kinds (spec 031 FR-009a), never the AI diet labels of spec 090.
 - **FR-031**: The manual planner MUST stay fully usable when the AI planner is unavailable.
+
+**Nutrition**
+
+- **FR-032**: Each day with dishes MUST show the estimated calorie total per person provided by spec
+  090 (FR-022), with its AI disclaimer and the number of dishes without data, or "No nutrition data
+  yet" when no dish of the day has an estimate; on the mobile layout it is shown in the day header.
 
 ### Non-Functional Requirements
 
@@ -415,10 +426,10 @@ button; turn the network back on and confirm the planner reloads the week by its
   and last updated time. Unique per owner and week.
 - **Meal Plan Item**: one dish in a slot — the meal plan it belongs to, day of the week, meal
   (breakfast / lunch / dinner), recipe reference, recipe name at the time it was added, servings,
-  source (added manually or by the AI planner), added time. At most one item per day and meal of a
+  source (manual, AI planner, or auto backup draft of spec 031 FR-027), added time. At most one item per day and meal of a
   plan.
-- **Recipe** *(defined in spec 060)*: provides the photo, name, cooking time, servings, dietary tags
-  and published/archived state shown in slots.
+- **Recipe** *(defined in spec 060)*: provides the photo, name, cooking time, servings, diet type
+  (derived from ingredient kinds) and published/archived state shown in slots.
 - **Collection** *(defined in spec 080)*: the user's saved recipes, used by the picker's "From my
   collections" view.
 - **User Profile** *(defined in spec 011)*: provides the household size used as default servings.
@@ -458,6 +469,9 @@ button; turn the network back on and confirm the planner reloads the week by its
   or calories, and ordering on the main search page, belong to spec 020.
 - Recipes carry which meals they suit (breakfast / lunch / dinner, possibly several); a recipe with
   no meal information counts as suited to lunch and dinner. This must be agreed with B (spec 060).
+- Snacks, drinks and desserts (recipes marked as snack, not suited to any main meal) are not
+  offered in the recipe picker or the "Add to meal plan" dialog, the same as the AI planner
+  (spec 031).
 - Dependencies: sign-in (spec 010), household size (spec 011), collections (spec 080), recipe data
   and published state (spec 060), shopping list creation (spec 040), AI plan generation (spec 031).
   How spec 040 merges ingredients and scales servings is agreed between C and D (assignment
