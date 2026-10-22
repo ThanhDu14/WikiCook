@@ -11,6 +11,9 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Vă
 | 5 | 2026-10-18 | Làm rõ spec 011 bằng `/speckit-clarify` (6 câu hỏi) | 011 |
 | 6 | 2026-10-18 | Làm rõ spec 080 bằng `/speckit-clarify` (5 câu hỏi) | 080 |
 | 7 | 2026-10-18 | Làm rõ spec 010 bằng `/speckit-clarify` (4 chỉ thị + 5 câu hỏi) | 010 |
+| 8 | 2026-10-14 | Tạo Project Plan tổng thể theo mô hình Scrum 5 Sprint, chi tiết Sprint 2 | `project-plan.md` |
+| 9 | 2026-10-19 (ngày commit) | Viết Mục 7 (Non-Functional Requirements) của Vision Document (`SCRUM-36`) | Vision §7 |
+| 10 | 2026-10-19 (ngày commit) | Sửa Mục 4.4 của Project Plan cho khớp spec 031 và Vision §7 (`SCRUM-45`) | `project-plan.md` §4.4 |
 
 ---
 
@@ -557,3 +560,214 @@ Spec ghi 9 mục trong Clarifications: 4 chỉ thị của mình (đánh dấu "
 - Đối chiếu bằng `git diff` và `git status`: spec 010 và checklist ở trạng thái đã sửa nhưng chưa commit; mục Clarifications có 9 mục khớp bảng trên.
 - Đối chiếu chéo với spec 011: Clarifications 2026-10-18 của 011 (câu 6) và các dòng Integration Points (Last Administrator, Banned and suspended accounts on deletion) dẫn về FR-023, FR-026 của 010 cùng nội dung.
 - Lưu ý còn tồn tại: `checklists/requirements.md` của 010 có mục "All functional requirements have clear acceptance criteria" đang bỏ đánh dấu (`[ ]`) trong thay đổi chưa commit; cần xem lại các FR mới (FR-022a, FR-024a, FR-026) đã có kịch bản chấp nhận chưa trước khi đánh dấu lại.
+
+---
+
+## Mục 8: Tạo Project Plan tổng thể theo mô hình Scrum
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-14 |
+| Giờ truy cập | 20:27 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/management/project-plan.md` (Jira `SCRUM-29`), nguồn: `jira_tasks.md`, `PA2_task.md`, `project-proposal.md` |
+| Công cụ AI | Claude Code trong Google Antigravity, model Sonnet 5.5 |
+| Mục đích | Soạn Project Plan tổng thể 5 Sprint (PA1 → PA5), phân rã chi tiết Sprint 2 (Mục 4.1–4.3) và kế hoạch sơ bộ Sprint 3–5 |
+| Nhánh Git | `Hien` |
+
+### Prompt đã dùng
+
+```
+# VAI TRÒ
+Bạn là Scrum Master / Project Manager kiêm technical writer cho dự án phần mềm sinh viên "WikiCook" (AI Smart Chef Assistant) trong môn Nhập môn Công nghệ phần mềm. Hãy viết bằng tiếng Việt, văn phong học thuật, súc tích, định dạng Markdown.
+
+# NHIỆM VỤ
+Tạo file `WikiCook/docs/management/project-plan.md` là Project Plan tổng thể áp dụng mô hình Scrum qua 5 Sprints, đồng thời phân rã chi tiết Sprint 2 tại các Mục 4.1, 4.2, 4.3.
+
+# BƯỚC 0 – ĐỌC NGUỒN DỮ LIỆU (BẮT BUỘC, LÀM TRƯỚC KHI VIẾT)
+1. Đọc toàn bộ `WikiCook/jira_tasks.md`: đây là nguồn sự thật (source of truth) về các task trên Jira Board.
+2. Đọc toàn bộ `WikiCook/PA2_task.md`: đây là yêu cầu/đề bài của PA2 (Vision Document, Project Plan, Spec Kit Init).
+3. Đọc nhanh `docs/requirements/project-proposal.md` (nếu có) để lấy bối cảnh, phạm vi và tên thành viên nhóm.
+4. KHÔNG tự bịa task, mã SCRUM, người phụ trách, story point hay ngày tháng. Thông tin nào không có trong file nguồn thì ghi `TBD` và liệt kê ở cuối câu trả lời.
+
+# MỤC TIÊU ĐẦU RA
+## 1. Lộ trình 5 Sprints (mỗi Sprint 2–3 tuần, tương ứng PA1 → PA5)
+| Sprint | Thời gian | Mục tiêu / Sản phẩm chính | PA |
+|---|---|---|---|
+| Sprint 1 | 28/09 – 09/10 | Project Proposal, Existing App Survey & Git Setup | PA1 |
+| Sprint 2 | 14/10 – 22/10 | Vision Document, Project Plan & Spec Kit Init | PA2 |
+| Sprint 3 | (đề xuất) | Use Case Specifications, Domain Analysis & UI Wireframes | PA3 |
+| Sprint 4 | (đề xuất) | Architecture Design, Database Schema & Core Feature Coding | PA4 |
+| Sprint 5 | (đề xuất) | Testing, Integration, Feature Polish & Final Demo | PA5 |
+
+- Với Sprint 3–5: tự đề xuất ngày bắt đầu/kết thúc hợp lý (liền sau Sprint trước, mỗi Sprint 2–3 tuần). Nếu `PA2_task.md` hoặc các file khác có deadline PA3–PA5 thì ưu tiên dùng deadline đó.
+- Thêm bảng/danh sách Milestones: các mốc quan trọng (nộp PA1–PA5, Sprint Review/Demo, Release cuối...). Mỗi milestone có ngày và tiêu chí hoàn thành.
+
+## 2. Mục 4.1, 4.2, 4.3 – Chi tiết Sprint 2
+- **4.1 Sprint Goal & phạm vi Sprint 2**: mục tiêu, sản phẩm bàn giao (deliverables), Definition of Done, thời gian, các Scrum event của Sprint (Planning, Daily Scrum, Review, Retrospective).
+- **4.2 Bảng phân rã 18 tasks (SCRUM-28 → SCRUM-45)**: bảng với cột: `Mã task | Tên task | Mô tả ngắn | Người phụ trách | Ưu tiên | Ước lượng (SP/giờ) | Hạn | Trạng thái | Phụ thuộc`. Bảng phải khớp 100% với `jira_tasks.md`: đủ 18 dòng, đúng mã, đúng tên, không thừa/thiếu. Nhóm các task theo hạng mục (Vision Document / Project Plan / Spec Kit Init...) nếu hợp lý nhưng vẫn giữ nguyên mã và tên gốc.
+- **4.3 Rủi ro, phụ thuộc & lịch làm việc Sprint 2**: thứ tự thực hiện/phụ thuộc giữa các task, rủi ro chính và cách giảm thiểu, và (nếu phù hợp) timeline theo ngày hoặc sơ đồ Gantt bằng Mermaid.
+
+## 3. Kế hoạch sơ bộ Sprint 3–5
+Với mỗi Sprint, liệt kê:
+- Danh mục User Stories dự kiến (dạng "Là một <vai trò>, tôi muốn <việc> để <lợi ích>"), bám vào các tính năng của WikiCook (đặc biệt AI Smart Chef Assistant).
+- Danh sách task kỹ thuật dự kiến (nhóm theo: phân tích, thiết kế, lập trình, kiểm thử, tài liệu).
+- Deliverables và tiêu chí hoàn thành của Sprint.
+Ghi rõ đây là kế hoạch sơ bộ, sẽ tinh chỉnh ở Sprint Planning của từng Sprint.
+
+# CẤU TRÚC FILE project-plan.md
+1. Giới thiệu (mục đích, phạm vi, thành viên, tài liệu liên quan)
+2. Mô hình Scrum áp dụng (vai trò, events, artifacts, Definition of Done, công cụ: Jira, GitHub)
+3. Lộ trình tổng thể 5 Sprints và Milestones
+4. Chi tiết Sprint 2
+   - 4.1 Sprint Goal & phạm vi
+   - 4.2 Bảng phân rã 18 tasks (SCRUM-28 → SCRUM-45)
+   - 4.3 Rủi ro, phụ thuộc & lịch làm việc
+5. Kế hoạch sơ bộ Sprint 3–5 (user stories + task kỹ thuật)
+6. Quản lý rủi ro và thay đổi chung
+7. Phụ lục (bảng đối chiếu task Sprint 2 với Jira, lịch sử thay đổi tài liệu)
+
+# ACCEPTANCE CRITERIA (TỰ KIỂM TRA TRƯỚC KHI KẾT THÚC)
+- [ ] Lộ trình 5 Sprints rõ ràng, đủ ngày tháng, đủ Milestones.
+- [ ] Bảng Sprint 2 có đúng 18 task, từ SCRUM-28 đến SCRUM-45, khớp 100% với `jira_tasks.md` (mã, tên, người phụ trách, ước lượng).
+- [ ] Mục 4.1, 4.2, 4.3 đúng đánh số như đề bài.
+- [ ] Sprint 3–5 có danh mục user stories và task kỹ thuật.
+- [ ] Mọi nội dung có yêu cầu trong `PA2_task.md` đều được phản ánh.
+- [ ] Markdown hiển thị đúng (bảng, tiêu đề, Mermaid nếu dùng).
+
+# QUY TRÌNH THỰC HIỆN
+1. Đọc các file nguồn → tóm tắt ngắn gọn (3–5 dòng) những gì đã đọc và liệt kê 18 task đã tìm thấy.
+2. Nếu thấy mâu thuẫn hoặc thiếu dữ liệu (ví dụ ít/nhiều hơn 18 task), DỪNG và hỏi tôi, không tự suy đoán.
+3. Viết file `WikiCook/docs/management/project-plan.md` (tạo thư mục nếu chưa có).
+4. Chạy lại checklist Acceptance Criteria, đối chiếu từng task SCRUM-28..45 với `jira_tasks.md`.
+5. Báo cáo ngắn: file đã tạo, các mục `TBD`, và những giả định đã đặt ra.
+
+# RÀNG BUỘC
+- Không sửa `jira_tasks.md` và `PA2_task.md`.
+- Không thêm task ngoài 18 task Sprint 2 vào bảng ở Mục 4.2.
+- Giữ nguyên thuật ngữ Scrum bằng tiếng Anh (Sprint, Backlog, Daily Scrum, Definition of Done...).
+```
+
+### Tóm tắt phản hồi của AI
+
+Số liệu dưới đây đếm trên `project-plan.md` hiện tại, file này đã được chỉnh sửa tiếp sau lần tạo đầu (xem `git log` của file), nên có thể khác bản AI sinh ra ban đầu.
+
+- File hiện có các phần: Document Metadata & Responsibility Matrix (kèm Revision History), 1 Introduction, 2 Project Overview, 3 Project Organization & Risk Management (RACI, Risk Matrix), 4 Project Plan (4.1 lộ trình 5 Sprint, 4.2 phân rã Sprint 2, 4.3 lịch Sprint 2 và kế hoạch sơ bộ Sprint 3–5, 4.4 Build and Release Plan), 5 Monitoring/Control (gồm Definition of Done), Appendix A (đối chiếu task với Jira) và Appendix B (Master Revision History).
+- Cấu trúc thực tế khác cấu trúc 7 mục trong prompt (ví dụ Kế hoạch sơ bộ Sprint 3–5 nằm trong 4.3, thêm 4.4); bảng 4.2 trong file hiện tại ghi dải `SCRUM-27` → `SCRUM-45` thay vì `SCRUM-28` → `SCRUM-45`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Lộ trình 5 Sprint, Milestones, chi tiết Sprint 2 | Dùng (các phần 4.1, 4.2 và lộ trình 5 Sprint đều có trong file hiện tại) | Prompt yêu cầu lộ trình 5 Sprint khớp PA1–PA5 có Milestones kèm ngày và tiêu chí hoàn thành, và Sprint 2 chi tiết ở Mục 4.1–4.3 bám `jira_tasks.md` (nguồn sự thật về task) |
+| Kế hoạch sơ bộ Sprint 3–5 (user story, task kỹ thuật) | Dùng (kế hoạch sơ bộ Sprint 3–5 nằm trong Mục 4.3 của file hiện tại) | Prompt yêu cầu mỗi Sprint 3–5 có user story, task kỹ thuật và deliverables; ghi rõ đây là kế hoạch sơ bộ, sẽ tinh chỉnh ở Sprint Planning của từng Sprint |
+| Cấu trúc file khác với 7 mục trong prompt, dải task `SCRUM-27` → `SCRUM-45` | Chỉnh sửa so với prompt | Project Plan có thêm Mục 4.4 (Build and Release Plan, `SCRUM-45`) và bảng Sprint 2 bám theo Jira, trong đó `SCRUM-27` là task Sprint Planning, nên cấu trúc và dải task khác với prompt |
+
+### Cách kiểm chứng
+
+- Đối chiếu từng task SCRUM với `jira_tasks.md` và Appendix A (Cross-Check Audit against Live Jira Board) trong file.
+---
+
+## Mục 9: Viết Mục 7 (Non-Functional Requirements) của Vision Document
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-19 (ngày commit `a90486a`) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/requirements/vision-document.md` – Mục 7 (Jira `SCRUM-36`) |
+| Công cụ AI | Claude Code trong Google Antigravity, model Sonnet 5.5 |
+| Mục đích | Viết các yêu cầu phi chức năng có ngưỡng số, đối chiếu mô tả Jira với số liệu của spec và constitution trước khi viết |
+| Nhánh Git | `Hien` |
+
+### Prompt đã dùng
+
+```
+Task Jira SCRUM-36: viết Mục 7 (Non-Functional Requirements) của docs/requirements/vision-document.md. Mục 7 đã có sẵn tiêu đề và dòng metadata do Duy chừa; chỉ viết nội dung trong Mục 7, giữ nguyên dòng metadata, KHÔNG sửa mục khác (trừ thêm một dòng vào Revision History).
+
+Bước 1 – Thu thập, chưa viết: đọc .specify/memory/constitution.md, docs/requirements/project-proposal.md, Mục 1–6 của vision-document.md, và mục Non-Functional Requirements, Success Criteria, Assumptions, Clarifications của mọi spec trong specs/ (010, 011, 020, 030, 031, 040, 050, 060, 080 và các spec khác nếu có). Lập danh sách mọi con số đã chốt (thời gian phản hồi, giới hạn, thời hạn, dung lượng, tỷ lệ...) kèm nguồn (file + số FR/NFR/SC).
+
+Bước 2 – Đối chiếu với mô tả Jira sau và báo cáo cho mình TRƯỚC KHI VIẾT, dạng bảng
+"Chỉ số / Jira nói / Spec hoặc constitution nói / Đề xuất":
+- Performance: page load < 2.0 s trên 4G; P95 API < 500 ms; ≥ 100 người dùng đồng thời, tỷ lệ lỗi < 0.1%. - Security: BCrypt cost 12; JWT hết hạn 24 h (30 ngày với Remember me); khóa 15 phút sau 5 lần đăng nhập sai; tối đa 3 email xác thực / 15 phút.
+- Platform & Accessibility: Chrome 110+, Safari 16+, Firefox 110+; WCAG 2.1 Level AA.
+- AI: xử lý RAG prompt < 5 s; dịch vụ sẵn sàng 99.5%. Quy tắc: số liệu trong spec/constitution được ưu tiên hơn Jira. Chỗ nào Jira mâu thuẫn spec (ví dụ RAG < 5 s so với timeout 60 s của 031; JWT 24 h so với bảng refresh_tokens) thì đề xuất cách viết khớp spec. Chỉ số không kiểm soát được (uptime của dịch vụ AI bên ngoài) thì đề xuất chuyển thành yêu cầu về hành vi khi lỗi. Dừng lại chờ mình xác nhận.
+
+Bước 3 – Sau khi mình xác nhận, viết Mục 7 bằng tiếng Anh, văn phong tài liệu kỹ thuật:
+- 7.1 Applicable Standards (WCAG 2.1 AA, OWASP Top 10, ISO/IEC 25010 làm khung phân loại chất lượng, các chuẩn khác nếu spec có nhắc).
+- Các nhóm theo ISO/IEC 25010: Performance Efficiency, Security, Reliability & Availability, Usability & Accessibility, Compatibility / Platform, Maintainability (constitution: coverage ≥ 70%, kiến trúc phân lớp), AI-specific Constraints, Privacy.
+- Mỗi nhóm là một bảng với cột: ID (NFR-PERF-01...), Requirement, Metric & Threshold (có số và đơn vị), Measurement Method (đo bằng gì, trong điều kiện nào), Source (constitution / spec + số FR/NFR/SC / proposal / PA2 brief).
+- Không có yêu cầu nào thiếu ngưỡng số; không dùng từ mơ hồ ("fast", "secure", "user-friendly").
+- Thêm cuối mục một đoạn ngắn 7.x Verification Approach: các chỉ số được kiểm chứng ở sprint nào (theo Build Plan trong docs/management/project-plan.md).
+- Revision History: thêm một dòng cho bản cập nhật Mục 7.
+Không bịa số liệu: chỉ số nào không có nguồn mà là đề xuất mới thì ghi Source là "Proposed (SCRUM-36)" để nhóm duyệt. Không thêm tên công nghệ vào Requirement khi không cần (để ở Measurement Method).
+```
+
+### Tóm tắt phản hồi của AI
+
+- Commit `a90486a` (2026-10-19) thêm 164 dòng vào `vision-document.md`; Revision History có thêm dòng `v0.10` cho Mục 7 (`SCRUM-36`).
+- Mục 7 có 11 tiểu mục: 7.1 Applicable Standards, 7.2 Conventions and Measurement Baseline, 7.3 Performance Efficiency, 7.4 Security, 7.5 Reliability & Availability, 7.6 Usability & Accessibility, 7.7 Compatibility & Platform, 7.8 Maintainability, 7.9 AI-specific Constraints, 7.10 Privacy, 7.11 Verification Approach.
+- Tổng cộng 88 mã NFR duy nhất: PERF 16, SEC 16, AI 13, REL 11, PRV 10, USA 8, MNT 8, COM 6. File có 6 chỗ ghi "Proposed (SCRUM-36)" cho chỉ số đề xuất mới.
+- 7.11 liệt kê từng NFR được kiểm chứng ở Build nào theo Plan 4.4.2 (ví dụ Build v0.2 ngày 22/10 chỉ review, Build v0.5 ngày 13/11, Build v0.8 Beta ngày 04/12).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Số liệu của spec và constitution được ưu tiên hơn mô tả Jira (theo quy tắc trong prompt) | Dùng | Prompt đặt quy tắc số liệu trong spec và constitution được ưu tiên hơn mô tả Jira, để Mục 7 không mâu thuẫn với các spec đã làm rõ |
+| Các chỉ số Jira mâu thuẫn spec (RAG < 5 s, JWT 24 h) và uptime dịch vụ AI | Dùng theo hướng prompt đề xuất: viết khớp spec; mức 99.5% uptime không xuất hiện trong Mục 7 | Prompt nêu RAG < 5 s mâu thuẫn timeout 60 s của spec 031 và JWT 24 h mâu thuẫn bảng `refresh_tokens`; uptime của dịch vụ AI bên ngoài không kiểm soát được nên được chuyển thành yêu cầu về hành vi khi lỗi |
+| Các chỉ số đề xuất mới ghi "Proposed (SCRUM-36)" | Chờ nhóm duyệt | Prompt yêu cầu không bịa số liệu: chỉ số không có nguồn trong repo phải ghi rõ là đề xuất mới để nhóm duyệt |
+
+### Cách kiểm chứng
+
+- Đếm trong file: 88 mã NFR duy nhất ở 8 nhóm; `git show --stat a90486a` chỉ sửa `vision-document.md`.
+- Mục 7 được dùng lại ở Mục 10 (đối chiếu Mục 4.4 của Project Plan với Vision §7).
+
+---
+
+## Mục 10: Sửa Mục 4.4 của Project Plan cho khớp spec 031 và Vision §7
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-19 (ngày commit `4866b9f`) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/management/project-plan.md` – Mục 4.4 (Jira `SCRUM-45`), đối chiếu spec 031 và Vision §7 |
+| Công cụ AI | Claude Code trong Google Antigravity, model Sonnet 5.5 |
+| Mục đích | Bỏ "LLM timeout 5 s" và "fallback SQL ≤ 2 s", thay bằng chỉ số theo spec 031; đối chiếu Mục 4.4 với Vision §7 |
+| Nhánh Git | `Hien` |
+
+### Prompt đã dùng
+
+```
+Task SCRUM-45 (mình là tác giả Mục 4.4 của docs/management/project-plan.md). Sửa Mục 4.4.2 và 4.4.4 cho khớp specs/031-ai-weekly-meal-planner/spec.md và Mục 7 của docs/requirements/vision-document.md:
+- Bỏ "LLM timeout 5 s" và "fallback SQL ≤ 2 s" (031 không có fallback SQL; khi AI lỗi chỉ báo lỗi và lịch thủ công vẫn dùng được).
+- Thay bằng chỉ số theo 031: nháp đầy đủ P90 ≤ 30 s, cứng 60 s; gợi ý một ô ≤ 3 s cho 90% lượt; truy xuất RAG + dựng prompt (không tính lệnh gọi LLM) P95 ≤ 5 s; AI lỗi thì 100% thao tác lịch thủ công vẫn chạy.
+- Đối chiếu toàn bộ Mục 4.4 với Vision §7 (số người dùng đồng thời 100, tỷ lệ lỗi < 1%, coverage line và branch ≥ 70%), báo những chỗ còn lệch và sửa cho khớp.
+- Thêm một dòng Revision History nếu file có.
+Chỉ sửa Mục 4.4 của project-plan.md. Liệt kê dòng cũ và dòng mới để mình kiểm tra.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Commit `4866b9f` (2026-10-19) chỉ sửa `docs/management/project-plan.md`: 10 dòng thêm, 8 dòng xóa.
+- Các thay đổi nhìn thấy trong `git show`:
+  - Bảng tích hợp Backend ↔ LLM / Embedding API: bỏ "5 s timeout; deterministic SQL fallback", thay bằng "RAG retrieval and prompt assembly", giới hạn cứng 60 s cho việc sinh thực đơn, AI lỗi thì báo lỗi còn lịch thủ công vẫn dùng được.
+  - Dòng Backend ↔ Redis: ghi giới hạn 5 lượt tạo được tính cho mỗi người dùng trong mọi cửa sổ 60 phút (spec 031 FR-025), bỏ "meal-plan cache" và "cache warm-up script".
+  - Sơ đồ Build v0.8 Beta: "RAG + fallback / Redis cache" đổi thành "RAG planner / AI-error isolation".
+  - Gate D3 của F-03: bỏ "fallback plan still loads", thay bằng hiển thị thông báo lỗi AI và lịch thủ công vẫn dùng được; kịch bản demo khi LLM lỗi đổi từ cache Redis + planner SQL sang chạy bằng LLM thật (`LLM_MODE=live`), trình bày thông báo lỗi và lịch thủ công.
+  - Mục tiêu coverage: ghi rõ cả line và branch ≥ 70% (cho v0.8 Beta chỉ tính module đã cài, cho v1.0 RC toàn bộ logic backend).
+  - Thêm dòng `v1.1` (19/10/2026) vào Revision History: tác giả Mai Văn Hiển, reviewer Lê Quốc Hưng.
+
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Bỏ LLM timeout 5 s và fallback SQL | Dùng | Spec 031 không có fallback SQL; khi AI lỗi chỉ báo lỗi và lịch thủ công vẫn dùng được, nên hai ý này phải bỏ khỏi Mục 4.4 cho khớp |
+| Chỉ số mới theo 031 (P90 ≤ 30 s, giới hạn cứng 60 s, gợi ý một ô ≤ 3 s, RAG P95 ≤ 5 s) | Dùng một phần trong Mục 4.4: giới hạn cứng 60 s đã có; P90 ≤ 30 s nằm ở Vision NFR-AI-01 (Mục 7) | Để Mục 4.4 dùng cùng chỉ số với spec 031 và Vision §7 thay vì số cũ của Project Plan |
+| Kịch bản demo dùng LLM thật thay cho cache Redis + planner SQL | Dùng | Vì 031 không có fallback SQL nên không còn dùng cache Redis và planner SQL; demo chạy bằng LLM thật và khi lỗi trình bày thông báo lỗi cùng lịch thủ công |
+| Dòng Revision History `v1.1` | Dùng | Prompt yêu cầu thêm dòng Revision History nếu file có; file có bảng nên thêm `v1.1` ghi phạm vi sửa Mục 4.4 |
+
+### Cách kiểm chứng
+
+- `git show 4866b9f` chỉ chạm `project-plan.md`; dòng `v1.1` ghi đúng phạm vi sửa Mục 4.4.
+- Ghi chú: trong phần diff đã xem, các con số P90 ≤ 30 s, RAG P95 ≤ 5 s, gợi ý một ô ≤ 3 s chưa thấy ở các dòng của Mục 4.4; cần xem lại 4.4.2 và 4.4.4 xem đã nêu đủ các chỉ số mà prompt yêu cầu chưa.
