@@ -4,8 +4,8 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 06  
 **Process Model:** Agile Scrum (5 Sprints, replacing the classic RUP lifecycle phases of the `rup_sdpln_sp.dot` template)  
-**Document Version:** 1.0 (Sprint 02 Unified Baseline — Project Assignment 2)  
-**Date:** October 16, 2026  
+**Document Version:** 1.3 (Sprint 02 Final Baseline — Project Assignment 2)  
+**Date:** October 22, 2026  
 
 ---
 
@@ -32,6 +32,7 @@
 | **16/10/2026** | `v1.0` | Unified full baseline: merged Risk Matrix (`SCRUM-30`) and 5-stage Build Plan (`SCRUM-45`); eliminated section duplication and synchronized with Jira Board. | Lê Quốc Hưng (`LqHung06` — Chief Editor) |
 | **19/10/2026** | `v1.1` | Section 4.4 (`SCRUM-45`): replaced LLM 5 s timeout and SQL fallback with spec 031 / Vision §7 metrics; added branch coverage, 5xx scope and LCP method. | Mai Văn Hiển (`MaiHien3507`) |
 | **19/10/2026** | `v1.2` | Aligned ASM-02, RSK-02, and Sec 4.3.3 with Spec 031 and Constitution: removed obsolete deterministic/SQL fallback and fallback caching references; reaffirmed explicit AI error reporting with independent manual planning resilience. | Lê Quốc Hưng (`LqHung06`) |
+| **22/10/2026** | `v1.3` | Final Sprint 02 Audit & Close: Synchronized Appendix A task audit statuses and Table 2.2 deliverables to 100% Verified (DONE) across all 18 tasks matching the live Jira Board and Sprint 02 Report. | Trần Nguyễn Công Chung & Lê Quốc Hưng |
 
 ---
 
@@ -139,9 +140,9 @@ The table below catalogues all major engineering and management deliverables pro
 | **Sprint 1 (PA1)** | Team Contract & Governance Charter | `docs/management/team-contract.md` (`.md` & `.pdf`) | Oct 09, 2026 | Lê Quốc Hưng & Mai Văn Hiển | **Completed** |
 | **Sprint 1 (PA1)** | Sprint 01 Report & AI Account Proofs | `docs/management/reports/sprint-01/sprint-01-report.md` | Oct 09, 2026 | Lê Quốc Hưng (`LqHung06`) | **Completed** |
 | **Sprint 2 (PA2)** | **Project Plan v1.0 (Scrum & Build Plan)** | `docs/management/project-plan.md` (`.md` & `.pdf`) | **Oct 22, 2026** *(Moodle: Oct 24)* | Lê Quốc Hưng, Mai Văn Hiển, Nguyễn Thành Dự | **Completed** |
-| **Sprint 2 (PA2)** | **Vision Document v1.0 (Features & NFRs)** | `docs/requirements/vision-document.md` (`.md` & `.pdf`) | **Oct 22, 2026** *(Moodle: Oct 24)* | Nguyễn Đức Duy & Mai Văn Hiển | **In Progress** |
-| **Sprint 2 (PA2)** | **Spec Kit Artifacts & Training Log** | `src/` & `docs/management/spec-kit-training-log.md` | **Oct 22, 2026** *(Moodle: Oct 24)* | Trần Nguyễn Công Chung (`itzchugnn`) | **In Progress** |
-| **Sprint 2 (PA2)** | **Sprint 02 Report & AI Usage Notes** | `docs/management/reports/sprint-02/sprint-02-report.md` | **Oct 22, 2026** *(Moodle: Oct 24)* | Lê Quốc Hưng & Trần Nguyễn Công Chung | **In Progress** |
+| **Sprint 2 (PA2)** | **Vision Document v1.0 (Features & NFRs)** | `docs/requirements/vision-document.md` (`.md` & `.pdf`) | **Oct 22, 2026** *(Moodle: Oct 24)* | Nguyễn Đức Duy & Mai Văn Hiển | **Completed** |
+| **Sprint 2 (PA2)** | **Spec Kit Artifacts & Training Log** | `src/` & `docs/management/spec-kit-training-log.md` | **Oct 22, 2026** *(Moodle: Oct 24)* | Trần Nguyễn Công Chung (`itzchugnn`) | **Completed** |
+| **Sprint 2 (PA2)** | **Sprint 02 Report & AI Usage Notes** | `docs/management/reports/sprint-02/sprint-02-report.md` | **Oct 22, 2026** *(Moodle: Oct 24)* | Lê Quốc Hưng & Trần Nguyễn Công Chung | **Completed** |
 | **Sprint 3 (PA3)** | Revised Project Plan v2.0 & Vision v2.0 | `docs/management/project-plan.md`, `vision-document.md` | Nov 13, 2026 *(Est.)* | Lê Quốc Hưng & Nguyễn Đức Duy | Planned |
 | **Sprint 3 (PA3)** | Detailed Use Case Specifications & UI Wireframes | `docs/requirements/` & `docs/analysis-and-design/ui-ux/` | Nov 13, 2026 *(Est.)* | Nguyễn Đức Duy & Trần Nguyễn Công Chung | Planned |
 | **Sprint 3 (PA3)** | Core Backend/Frontend Skeleton (`Build v0.5`) | `src/backend/`, `src/frontend/`, `docker-compose.yml` | Nov 13, 2026 *(Est.)* | Mai Văn Hiển & Nguyễn Thành Dự | Planned |
@@ -651,19 +652,19 @@ No Jira task in Sprint 2 or subsequent sprints may be transitioned to the **DONE
 | 2 | **`SCRUM-28`** | `[Project-Plan] Soạn thảo Tổng quan dự án, Phạm vi & Cơ cấu nhóm (Sec 1-3.1)` | Lê Quốc Hưng | 16/10/2026 | Section 1, 2, 3.1 & Section 5 | **Verified (DONE)** |
 | 3 | **`SCRUM-29`** | `[Project-Plan] Xây dựng Lộ trình Kế hoạch 5 Sprints Scrum & Chi tiết Sprint 2 (Sec 4.1 - 4.3)` | Mai Văn Hiển | 18/10/2026 | Section 4.1, 4.2 & 4.3 | **Verified (DONE)** |
 | 4 | **`SCRUM-30`** | `[Project-Plan] Nhận diện và Xây dựng Ma trận Quản trị rủi ro (Sec 3.2)` | Nguyễn Thành Dự | 17/10/2026 | Section 3.2 | **Verified (DONE)** |
-| 5 | **`SCRUM-32`** | `[Vision] Hoàn thiện Problem Statement và Product Position Statement (Sec 1-2)` | Nguyễn Đức Duy | 16/10/2026 | Vision Doc Section 1–2 | **In Progress** |
-| 6 | **`SCRUM-33`** | `[Vision] Mô tả chi tiết Stakeholders, User Personas và Đối thủ cạnh tranh (Sec 3-4)` | Nguyễn Đức Duy | 17/10/2026 | Vision Doc Section 3–4 | **In Progress** |
-| 7 | **`SCRUM-34`** | `[Vision] Soạn thảo chi tiết 10 tính năng cốt lõi WikiCook (Sec 5)` | Nguyễn Đức Duy | 18/10/2026 | Vision Doc Section 5 | **Scheduled** |
-| 8 | **`SCRUM-35`** | `[Vision] Thiết kế 2 sơ đồ Mermaid minh họa User Workflows (Sec 6)` | Nguyễn Đức Duy | 18/10/2026 | Vision Doc Section 6 | **Scheduled** |
-| 9 | **`SCRUM-36`** | `[Vision] Xây dựng bảng Yêu cầu phi chức năng (NFRs) định lượng (Sec 7)` | Mai Văn Hiển | 18/10/2026 | Vision Doc Section 7 | **Scheduled** |
-| 10 | **`SCRUM-37`** | `[Spec-Kit] Đồng bộ và đưa các artifacts của Spec Kit vào thư mục WikiCook/src/` | Trần Nguyễn Công Chung | 16/10/2026 | `WikiCook/src/` & `src/README.md` | **In Progress** |
-| 11 | **`SCRUM-38`** | `[Spec-Kit] Hoàn thành đào tạo Spec Kit và lập Hồ sơ minh chứng 5 thành viên` | Trần Nguyễn Công Chung | 18/10/2026 | `docs/management/spec-kit-training-log.md` | **In Progress** |
-| 12 | **`SCRUM-39`** | `[Ceremony] Tổ chức và ghi chép 2 buổi Daily/Weekly Scrum (Standup 1 & 2)` | Lê Quốc Hưng | 20/10/2026 | Sprint Report Sec 2.2 & 2.3 | **Scheduled** |
-| 13 | **`SCRUM-40`** | `[Ceremony] Tổ chức họp Sprint 2 Review & Retrospective` | Lê Quốc Hưng | 21/10/2026 | Sprint Report Sec 2.4 & Sec 5 | **Scheduled** |
-| 14 | **`SCRUM-41`** | `[Compliance] Lập Phụ lục Khai báo sử dụng AI (AI Usage Notes) chuẩn quy chế` | Trần Nguyễn Công Chung | 20/10/2026 | Sprint Report Section 4 | **Scheduled** |
-| 15 | **`SCRUM-42`** | `[QA] Rà soát chéo chất lượng tài liệu, Metadata 3 cấp & Markdown` | Trần Nguyễn Công Chung | 20/10/2026 | Repository-wide across `docs/` | **Scheduled** |
-| 16 | **`SCRUM-43`** | `[DevOps] Quản lý Git Flow, Merge PRs vào main & Xuất Git Commit Log` | Nguyễn Thành Dự | 21/10/2026 | `docs/management/git-log.txt` | **Scheduled** |
-| 17 | **`SCRUM-44`** | `[DevOps] Chuyển đổi Markdown sang PDF, Đóng gói PA2-Group06.zip & Nộp bài` | Nguyễn Thành Dự | 22/10/2026 | Final `PA2-Group06.zip` on Moodle | **Scheduled** |
+| 5 | **`SCRUM-32`** | `[Vision] Hoàn thiện Problem Statement và Product Position Statement (Sec 1-2)` | Nguyễn Đức Duy | 16/10/2026 | Vision Doc Section 1–2 | **Verified (DONE)** |
+| 6 | **`SCRUM-33`** | `[Vision] Mô tả chi tiết Stakeholders, User Personas và Đối thủ cạnh tranh (Sec 3-4)` | Nguyễn Đức Duy | 17/10/2026 | Vision Doc Section 3–4 | **Verified (DONE)** |
+| 7 | **`SCRUM-34`** | `[Vision] Soạn thảo chi tiết 10 tính năng cốt lõi WikiCook (Sec 5)` | Nguyễn Đức Duy | 18/10/2026 | Vision Doc Section 5 | **Verified (DONE)** |
+| 8 | **`SCRUM-35`** | `[Vision] Thiết kế 2 sơ đồ Mermaid minh họa User Workflows (Sec 6)` | Nguyễn Đức Duy | 18/10/2026 | Vision Doc Section 6 | **Verified (DONE)** |
+| 9 | **`SCRUM-36`** | `[Vision] Xây dựng bảng Yêu cầu phi chức năng (NFRs) định lượng (Sec 7)` | Mai Văn Hiển | 18/10/2026 | Vision Doc Section 7 | **Verified (DONE)** |
+| 10 | **`SCRUM-37`** | `[Spec-Kit] Đồng bộ và đưa các artifacts của Spec Kit vào thư mục WikiCook/src/` | Trần Nguyễn Công Chung | 16/10/2026 | `WikiCook/src/` & `src/README.md` | **Verified (DONE)** |
+| 11 | **`SCRUM-38`** | `[Spec-Kit] Hoàn thành đào tạo Spec Kit và lập Hồ sơ minh chứng 5 thành viên` | Trần Nguyễn Công Chung | 18/10/2026 | `docs/management/spec-kit-training-log.md` | **Verified (DONE)** |
+| 12 | **`SCRUM-39`** | `[Ceremony] Tổ chức và ghi chép 2 buổi Daily/Weekly Scrum (Standup 1 & 2)` | Lê Quốc Hưng | 20/10/2026 | Sprint Report Sec 2.2 & 2.3 | **Verified (DONE)** |
+| 13 | **`SCRUM-40`** | `[Ceremony] Tổ chức họp Sprint 2 Review & Retrospective` | Lê Quốc Hưng | 21/10/2026 | Sprint Report Sec 2.4 & Sec 5 | **Verified (DONE)** |
+| 14 | **`SCRUM-41`** | `[Compliance] Lập Phụ lục Khai báo sử dụng AI (AI Usage Notes) chuẩn quy chế` | Trần Nguyễn Công Chung | 20/10/2026 | Sprint Report Section 4 | **Verified (DONE)** |
+| 15 | **`SCRUM-42`** | `[QA] Rà soát chéo chất lượng tài liệu, Metadata 3 cấp & Markdown` | Trần Nguyễn Công Chung | 20/10/2026 | Repository-wide across `docs/` | **Verified (DONE)** |
+| 16 | **`SCRUM-43`** | `[DevOps] Quản lý Git Flow, Merge PRs vào main & Xuất Git Commit Log` | Nguyễn Thành Dự | 21/10/2026 | `docs/management/git-log.txt` | **Verified (DONE)** |
+| 17 | **`SCRUM-44`** | `[DevOps] Chuyển đổi Markdown sang PDF, Đóng gói PA2-Group06.zip & Nộp bài` | Nguyễn Thành Dự | 22/10/2026 | Final `PA2-Group06.zip` on Moodle | **Verified (DONE)** |
 | 18 | **`SCRUM-45`** | `[Project-Plan] Thiết kế Kế hoạch Đóng gói và Phát hành Phần mềm - Build Plan (Sec 4.4)` | Mai Văn Hiển | 18/10/2026 | Section 4.4 | **Verified (DONE)** |
 
 > *Audit Note:* Confirmed that `SCRUM-31` is not present on the Jira board; total active Sprint 02 scope consists of exactly 18 tasks matching the live board order.
@@ -677,3 +678,5 @@ No Jira task in Sprint 2 or subsequent sprints may be transitioned to the **DONE
 | **`v0.8`** | 16/10/2026 | Mai Văn Hiển (`MaiHien3507`) | Lê Quốc Hưng | Completed Section 4.1 (5-Sprint Roadmap), Section 4.2 (Sprint 2 Breakdown), and Section 4.3 (Schedule & Prelim Backlog) under `SCRUM-29`. |
 | **`v1.0`** | 16/10/2026 | Nguyễn Thành Dự & Mai Văn Hiển | Lê Quốc Hưng (Chief Editor) | Integrated Section 3.2 Risk Management Matrix (`SCRUM-30`) and Section 4.4 Software Build Plan (`SCRUM-45`); resolved duplicate draft sections into a unified, publication-ready baseline. |
 | **`v1.1`** | 19/10/2026 | Mai Văn Hiển (`MaiHien3507`) | Lê Quốc Hưng | Revised Section 4.4 (`SCRUM-45`) to match spec 031 and Vision §7: removed the LLM 5 s timeout and SQL fallback, added AI latency/RAG metrics and branch coverage, and rewrote the demo contingency for LLM failure. |
+| **`v1.2`** | 19/10/2026 | Lê Quốc Hưng (`LqHung06`) | Nguyễn Thành Dự | Aligned ASM-02, RSK-02, and Sec 4.3.3 with Spec 031 and Constitution: removed obsolete deterministic/SQL fallback references; reaffirmed explicit AI error reporting with independent manual planning resilience. |
+| **`v1.3`** | 22/10/2026 | Trần Nguyễn Công Chung & Lê Quốc Hưng | Lê Quốc Hưng | Final Sprint 02 Audit & Close: Synchronized Appendix A task audit statuses and Table 2.2 deliverables to 100% Verified (DONE) across all 18 tasks matching the live Jira Board and Sprint 02 Report. |

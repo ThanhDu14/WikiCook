@@ -4,8 +4,8 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 06  
 **Template:** Adapted from the RUP Vision template for small projects (`rup_vision_sp.docx`)  
-**Document Version:** 0.9 (Sprint 02 Draft — Sections 1–6, Project Assignment 2)  
-**Date:** October 17, 2026  
+**Document Version:** 1.0 (Sprint 02 Final Baseline — Project Assignment 2)  
+**Date:** October 22, 2026  
 
 ---
 
@@ -31,6 +31,7 @@
 | **17/10/2026** | `v0.8` | Authored Section 5: 10 core product features and traceability (`SCRUM-34`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **17/10/2026** | `v0.9` | Authored Section 6: 2 Mermaid user workflow diagrams (`SCRUM-35`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **19/10/2026** | `v0.10` | Authored Section 7: quantifiable non-functional requirements grouped by ISO/IEC 25010, with applicable standards and verification approach (`SCRUM-36`). | Mai Văn Hiển (`MaiHien3507`) |
+| **22/10/2026** | `v1.0` | Sprint 02 Final Baseline: Completed cross-peer review, synchronized traceability across all 10 features & NFRs, and finalized documentation for submission. | Nguyễn Đức Duy & Lê Quốc Hưng |
 
 ---
 

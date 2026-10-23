@@ -1,4 +1,4 @@
-| 9 | 2026-10-17, 22:36 – 23:01 || 8 | 2026-10-17, 22:36 – 23:01 || 7 | 2026-10-17, 22:36 – 23:01 || 6 | 2026-10-17, 22:36 – 23:01 || 5 | 2026-10-08, 22:09 – 22:14 || 4 | 2026-10-08, 22:06 – 22:09 || 3 | 2026-10-08, 21:56 – 21:59 || 2 | 2026-10-08, 21:43 – 21:46 || 1 | 2026-10-08, 21:39 – 21:42 |# Nhật ký sử dụng AI – Nguyễn Đức Duy
+# Nhật ký sử dụng AI – Nguyễn Đức Duy
 
 Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễn Đức Duy** (mã **B**, Product Owner & Requirements Lead, phụ trách spec `020-recipe-search-filter` và `060-recipe-editor` theo [phân công tuần 12/10 – 18/10](../management/w1-spec-design-assignment.md), và Mục 1–6 của Vision Document theo Sprint 2 – `SCRUM-32` → `SCRUM-35` trong [project plan](../management/project-plan.md)). Mỗi lần dùng AI là một mục mới, mục mới nhất ở cuối.
 
