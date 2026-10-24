@@ -2,13 +2,13 @@
 
 **Feature**: [spec.md](spec.md) | **Plan**: [plan.md](plan.md) | **Research**: [research.md](research.md)
 
-Tài liệu này đặc tả chi tiết mô hình dữ liệu (Phase 1 Data Model) cho module **040-shopping-list**, bao gồm lược đồ CSDL quan hệ (PostgreSQL 16), các thực thể JPA (Java 21), DTO Java Records và cấu trúc lưu trữ ngoại tuyến tại Client (IndexedDB).
+This document specifies the Phase 1 Data Model for the **040-shopping-list** module, including the relational database schema (PostgreSQL 16), JPA entities (Java 21), Java Record DTOs, and client-side offline storage structures (IndexedDB).
 
 ---
 
-## 1. Lược đồ CSDL Quan hệ (PostgreSQL 16)
+## 1. Relational Database Schema (PostgreSQL 16)
 
-Thiết kế tuân thủ 100% theo [Mục 4.8 của `docs/analysis-and-design/database/full-schema.md`](../../docs/analysis-and-design/database/full-schema.md#48-shopping-list-040--d), được khởi tạo trong migration Flyway `V401__shopping_lists.sql`.
+The design fully complies with [Section 4.8 of `docs/analysis-and-design/database/full-schema.md`](../../docs/analysis-and-design/database/full-schema.md#48-shopping-list-040--d) and is initialized through the Flyway migration `V401__shopping_lists.sql`.
 
 ```mermaid
 erDiagram
@@ -66,77 +66,77 @@ erDiagram
     }
 ```
 
-### 1.1. Bảng `shopping_lists`
-Lưu trữ thông tin danh sách mua sắm của người dùng.
+### 1.1. `shopping_lists` Table
+Stores users' shopping list information.
 
-| Cột | Kiểu dữ liệu | Nullable | Ràng buộc / Mặc định | Ý nghĩa nghiệp vụ |
+| Column | Data Type | Nullable | Constraint / Default | Business Meaning |
 |---|---|---|---|---|
-| `id` | `BIGINT` | NOT NULL | `PRIMARY KEY GENERATED ALWAYS AS IDENTITY` | Khóa chính duy nhất của danh sách |
-| `user_id` | `BIGINT` | NOT NULL | `REFERENCES users(id) ON DELETE CASCADE` | Chủ sở hữu danh sách |
-| `title` | `VARCHAR(100)` | NOT NULL | Mặc định: `'Danh sách mua sắm'` | Tên danh sách (1–60 ký tự cho phép sửa) |
-| `status` | `VARCHAR(10)` | NOT NULL | `CHECK (status IN ('ACTIVE', 'ARCHIVED'))` | Trạng thái hoạt động |
-| `archived_at` | `TIMESTAMPTZ` | NULL | Mặc định: `NULL` | Thời điểm lưu trữ khi tạo list mới |
+| `id` | `BIGINT` | NOT NULL | `PRIMARY KEY GENERATED ALWAYS AS IDENTITY` | Unique primary key of the list |
+| `user_id` | `BIGINT` | NOT NULL | `REFERENCES users(id) ON DELETE CASCADE` | List owner |
+| `title` | `VARCHAR(100)` | NOT NULL | Default: `'Danh sách mua sắm'` | Editable list name (1–60 characters) |
+| `status` | `VARCHAR(10)` | NOT NULL | `CHECK (status IN ('ACTIVE', 'ARCHIVED'))` | Activity status |
+| `archived_at` | `TIMESTAMPTZ` | NULL | Default: `NULL` | Archival timestamp when a new list is created |
 
-**Chỉ mục & Ràng buộc độc nhất:**
+**Indexes & Uniqueness Constraints:**
 - `CREATE UNIQUE INDEX uq_shopping_lists_active_user ON shopping_lists(user_id) WHERE status = 'ACTIVE';`
-  $\rightarrow$ Đảm bảo mỗi người dùng có **duy nhất 1 danh sách active** tại một thời điểm (FR-001).
+  $\rightarrow$ Ensures each user has **exactly one active list** at a time (FR-001).
 
 ---
 
-### 1.2. Bảng `shopping_list_items`
-Lưu trữ các nguyên liệu hoặc mặt hàng cụ thể trong danh sách.
+### 1.2. `shopping_list_items` Table
+Stores individual ingredients or products in a list.
 
-| Cột | Kiểu dữ liệu | Nullable | Ràng buộc / Mặc định | Ý nghĩa nghiệp vụ |
+| Column | Data Type | Nullable | Constraint / Default | Business Meaning |
 |---|---|---|---|---|
-| `id` | `BIGINT` | NOT NULL | `PRIMARY KEY GENERATED ALWAYS AS IDENTITY` | Khóa chính cơ sở dữ liệu |
-| `list_id` | `BIGINT` | NOT NULL | `REFERENCES shopping_lists(id) ON DELETE CASCADE` | Thuộc danh sách nào |
-| `client_uuid` | `UUID` | NOT NULL | `UNIQUE` | Khóa định danh từ client, hỗ trợ offline idempotency |
-| `ingredient_id` | `BIGINT` | NULL | `REFERENCES ingredients(id) ON DELETE RESTRICT` | Liên kết nguyên liệu chuẩn (NULL nếu là custom item) |
-| `custom_name` | `VARCHAR(100)` | NULL | | Tên món tự nhập thủ công (NULL nếu có `ingredient_id`) |
-| `quantity` | `NUMERIC(10,3)` | NULL | | Số lượng chuẩn hóa (Normalized Quantity: gram, ml, số đếm) |
-| `unit_id` | `BIGINT` | NULL | `REFERENCES units(id) ON DELETE RESTRICT` | Đơn vị chuẩn hóa lưu trữ tương ứng |
-| `aisle_category_id` | `BIGINT` | NOT NULL | `REFERENCES aisle_categories(id) ON DELETE RESTRICT` | Quầy siêu thị phân loại mặt hàng này |
-| `is_checked` | `BOOLEAN` | NOT NULL | `DEFAULT false` | Trạng thái đã mua (đã tick vào giỏ hàng) |
-| `is_cleared` | `BOOLEAN` | NOT NULL | `DEFAULT false` | Trạng thái dọn dẹp mềm (soft-clear) |
-| `is_manually_edited` | `BOOLEAN` | NOT NULL | `DEFAULT false` | Cờ ghi nhận user đã can thiệp sửa số lượng thủ công |
-| `cleared_at` | `TIMESTAMPTZ` | NULL | `DEFAULT NULL` | Thời điểm thực hiện dọn dẹp (phục vụ undo theo đợt) |
-| `version` | `INTEGER` | NOT NULL | `DEFAULT 0` | Khóa phiên bản phục vụ Optimistic Locking & LWW |
+| `id` | `BIGINT` | NOT NULL | `PRIMARY KEY GENERATED ALWAYS AS IDENTITY` | Database primary key |
+| `list_id` | `BIGINT` | NOT NULL | `REFERENCES shopping_lists(id) ON DELETE CASCADE` | Parent list |
+| `client_uuid` | `UUID` | NOT NULL | `UNIQUE` | Client-generated identifier supporting offline idempotency |
+| `ingredient_id` | `BIGINT` | NULL | `REFERENCES ingredients(id) ON DELETE RESTRICT` | Standard ingredient reference (NULL for a custom item) |
+| `custom_name` | `VARCHAR(100)` | NULL | | Manually entered item name (NULL when `ingredient_id` is present) |
+| `quantity` | `NUMERIC(10,3)` | NULL | | Normalized quantity (grams, ml, or count) |
+| `unit_id` | `BIGINT` | NULL | `REFERENCES units(id) ON DELETE RESTRICT` | Corresponding stored normalized unit |
+| `aisle_category_id` | `BIGINT` | NOT NULL | `REFERENCES aisle_categories(id) ON DELETE RESTRICT` | Supermarket aisle classifying this item |
+| `is_checked` | `BOOLEAN` | NOT NULL | `DEFAULT false` | Purchased status (checked into the cart) |
+| `is_cleared` | `BOOLEAN` | NOT NULL | `DEFAULT false` | Soft-clear status |
+| `is_manually_edited` | `BOOLEAN` | NOT NULL | `DEFAULT false` | Flag recording a user's manual quantity adjustment |
+| `cleared_at` | `TIMESTAMPTZ` | NULL | `DEFAULT NULL` | Clear timestamp (used for batch undo) |
+| `version` | `INTEGER` | NOT NULL | `DEFAULT 0` | Version key for Optimistic Locking & LWW |
 
-**Ràng buộc toàn vẹn bảng (Table Check Constraint):**
-- `CHECK (num_nonnulls(ingredient_id, custom_name) >= 1)`: Đảm bảo món đồ phải có mã nguyên liệu hoặc có tên tự do, không được rỗng cả hai.
+**Table Check Constraint:**
+- `CHECK (num_nonnulls(ingredient_id, custom_name) >= 1)`: Ensures an item has an ingredient ID or a free-text name; both cannot be empty.
 
 ---
 
-### 1.3. Bảng `shopping_list_item_sources`
-Lưu trữ vết nguồn gốc (Provenance) cấu thành nên số lượng của mỗi nguyên liệu đã gộp (FR-009).
+### 1.3. `shopping_list_item_sources` Table
+Stores the provenance of the quantities contributing to each aggregated ingredient (FR-009).
 
-| Cột | Kiểu dữ liệu | Nullable | Ràng buộc / Mặc định | Ý nghĩa nghiệp vụ |
+| Column | Data Type | Nullable | Constraint / Default | Business Meaning |
 |---|---|---|---|---|
-| `id` | `BIGINT` | NOT NULL | `PRIMARY KEY GENERATED ALWAYS AS IDENTITY` | Khóa chính dòng đóng góp |
-| `item_id` | `BIGINT` | NOT NULL | `REFERENCES shopping_list_items(id) ON DELETE CASCADE` | Thuộc dòng nguyên liệu nào |
-| `recipe_id` | `BIGINT` | NULL | `REFERENCES recipes(id) ON DELETE SET NULL` | Nguồn từ công thức nào (nếu công thức bị xóa thì set null) |
-| `meal_plan_item_id`| `BIGINT` | NULL | `REFERENCES meal_plan_items(id) ON DELETE SET NULL`| Nguồn từ ô nào trong lịch ăn tuần 030/031 |
-| `recipe_title_snapshot`| `VARCHAR(100)`| NOT NULL | | Tên công thức chụp lại tại thời điểm thêm |
-| `contributed_quantity`| `NUMERIC(10,3)`| NULL | | Số lượng cụ thể do món này đóng góp vào tổng |
-| `unit_id` | `BIGINT` | NULL | `REFERENCES units(id) ON DELETE RESTRICT` | Đơn vị của lượng đóng góp |
+| `id` | `BIGINT` | NOT NULL | `PRIMARY KEY GENERATED ALWAYS AS IDENTITY` | Primary key of the contribution row |
+| `item_id` | `BIGINT` | NOT NULL | `REFERENCES shopping_list_items(id) ON DELETE CASCADE` | Parent ingredient row |
+| `recipe_id` | `BIGINT` | NULL | `REFERENCES recipes(id) ON DELETE SET NULL` | Source recipe (set to null if the recipe is deleted) |
+| `meal_plan_item_id`| `BIGINT` | NULL | `REFERENCES meal_plan_items(id) ON DELETE SET NULL`| Source slot in the weekly meal plan 030/031 |
+| `recipe_title_snapshot`| `VARCHAR(100)`| NOT NULL | | Recipe title captured when added |
+| `contributed_quantity`| `NUMERIC(10,3)`| NULL | | Specific quantity this dish contributes to the total |
+| `unit_id` | `BIGINT` | NULL | `REFERENCES units(id) ON DELETE RESTRICT` | Unit of the contributed quantity |
 
 ---
 
-### 1.4. Bảng `user_aisle_preferences`
-Lưu trữ tùy biến quầy hàng cá nhân của từng người dùng đối với từng nguyên liệu (FR-013, Q12).
+### 1.4. `user_aisle_preferences` Table
+Stores each user's personal aisle preferences for each ingredient (FR-013, Q12).
 
-| Cột | Kiểu dữ liệu | Nullable | Ràng buộc / Mặc định | Ý nghĩa nghiệp vụ |
+| Column | Data Type | Nullable | Constraint / Default | Business Meaning |
 |---|---|---|---|---|
-| `user_id` | `BIGINT` | NOT NULL | `REFERENCES users(id) ON DELETE CASCADE` | Người dùng tùy biến |
-| `ingredient_id` | `BIGINT` | NOT NULL | `REFERENCES ingredients(id) ON DELETE RESTRICT` | Nguyên liệu được tùy biến |
-| `aisle_category_id`| `BIGINT`| NOT NULL | `REFERENCES aisle_categories(id) ON DELETE RESTRICT`| Quầy người dùng mong muốn |
+| `user_id` | `BIGINT` | NOT NULL | `REFERENCES users(id) ON DELETE CASCADE` | User setting the preference |
+| `ingredient_id` | `BIGINT` | NOT NULL | `REFERENCES ingredients(id) ON DELETE RESTRICT` | Ingredient being customized |
+| `aisle_category_id`| `BIGINT`| NOT NULL | `REFERENCES aisle_categories(id) ON DELETE RESTRICT`| User's preferred aisle |
 
-**Khóa chính phức hợp (Composite PK):**
-- `PRIMARY KEY (user_id, ingredient_id)`: Mỗi người dùng có tối đa 1 tùy biến quầy cho 1 nguyên liệu.
+**Composite Primary Key (Composite PK):**
+- `PRIMARY KEY (user_id, ingredient_id)`: Each user has at most one aisle preference per ingredient.
 
 ---
 
-## 2. Các thực thể JPA (Backend Entities - Java 21)
+## 2. JPA Entities (Backend Entities - Java 21)
 
 ### 2.1. `ShoppingList`
 ```java
@@ -251,9 +251,9 @@ public class ShoppingListItem {
 
 ## 3. Java Records DTO (API Transfer Contracts)
 
-Tuân thủ nguyên tắc **Constitution III** (DTO Record, không trả JPA Entity ra ngoài API).
+Complies with **Constitution III** (Record DTOs; JPA entities are not exposed through the API).
 
-### 3.1. DTO Trả về (Responses)
+### 3.1. Response DTOs (Responses)
 ```java
 package com.wikicook.shoppinglist.dto;
 
@@ -331,7 +331,7 @@ public record SyncItemResultDto(
 ) {}
 ```
 
-### 3.2. DTO Nhận vào (Requests)
+### 3.2. Request DTOs (Requests)
 ```java
 package com.wikicook.shoppinglist.dto;
 
@@ -403,12 +403,12 @@ public record UpdateTitleRequest(
 
 ## 4. Client-side IndexedDB Schema (Offline Store)
 
-Được quản lý trong `src/frontend/src/services/offlineShoppingDb.ts` sử dụng thư viện `idb`:
+Managed in `src/frontend/src/services/offlineShoppingDb.ts` using the `idb` library:
 
 ### Database Name: `wikicook_shopping_offline` (Version 1)
 
 1. **Object Store: `active_list`** (KeyPath: `key`)
-   - Chứa snapshot danh sách mua sắm hiện hành:
+   - Contains a snapshot of the current shopping list:
    ```typescript
    interface ActiveListRecord {
      key: 'CURRENT_LIST';
@@ -420,7 +420,7 @@ public record UpdateTitleRequest(
    ```
 
 2. **Object Store: `mutation_queue`** (KeyPath: `clientUuid`)
-   - Hàng đợi mutation ngoại tuyến, sắp xếp theo timestamp:
+   - Offline mutation queue, ordered by timestamp:
    ```typescript
    interface OfflineMutationRecord {
      clientUuid: string;

@@ -2,25 +2,25 @@
 
 **Feature**: [spec.md](spec.md) | **Plan**: [plan.md](plan.md) | **API**: [openapi.yaml](contracts/openapi.yaml)
 
-Tài liệu này hướng dẫn lập trình viên khởi chạy, kiểm thử và xác thực module **040-shopping-list** trong môi trường cục bộ (Local Development) bằng Docker Compose, Spring Boot 3 và React Vite.
+This document guides developers through running, testing, and verifying the **040-shopping-list** module in a local development environment using Docker Compose, Spring Boot 3, and React Vite.
 
 ---
 
-## 1. Yêu cầu môi trường
+## 1. Environment Requirements
 
 - **Java Development Kit (JDK)**: OpenJDK 21 (LTS)
-- **Node.js**: v20.x hoặc v22.x LTS, kèm `npm` v10+
-- **Docker & Docker Compose**: Docker Engine 24+ để chạy PostgreSQL 16
-- **Maven**: 3.9+ (hoặc dùng `./mvnw` đi kèm backend)
+- **Node.js**: v20.x or v22.x LTS, with `npm` v10+
+- **Docker & Docker Compose**: Docker Engine 24+ to run PostgreSQL 16
+- **Maven**: 3.9+ (or use the `./mvnw` bundled with the backend)
 
 ---
 
-## 2. Khởi động CSDL Cục bộ
+## 2. Start the Local Database
 
-Sử dụng Docker Compose để khởi chạy PostgreSQL 16 với migration Flyway:
+Use Docker Compose to start PostgreSQL 16 with Flyway migrations:
 
 ```bash
-# Khởi động PostgreSQL 16 container
+# Start the PostgreSQL 16 container
 docker run -d --name wikicook-postgres \
   -e POSTGRES_DB=wikicook \
   -e POSTGRES_USER=wikicook_user \
@@ -29,17 +29,17 @@ docker run -d --name wikicook-postgres \
   postgres:16-alpine
 ```
 
-Kiểm tra kết nối và chạy Flyway migration:
+Check connectivity and run the Flyway migrations:
 ```bash
 cd src/backend
 ./mvnw flyway:migrate
 ```
 
-Xác nhận 4 bảng của module 040 đã được tạo thành công:
+Confirm that the four tables of module 040 have been created successfully:
 ```bash
 docker exec -it wikicook-postgres psql -U wikicook_user -d wikicook -c "\dt shopping*"
 ```
-Kết quả mong đợi:
+Expected output:
 ```text
                List of relations
  Schema |          Name          | Type  |     Owner      
@@ -52,20 +52,20 @@ Kết quả mong đợi:
 
 ---
 
-## 3. Chạy Kiểm thử Tự động (Automated Tests)
+## 3. Run Automated Tests
 
 ### 3.1. Backend Unit & Integration Tests (Testcontainers)
-Hệ thống tự động khởi chạy container PostgreSQL 16 thật thông qua Testcontainers:
+The system automatically starts a real PostgreSQL 16 container through Testcontainers:
 
 ```bash
 cd src/backend
 ./mvnw clean test -Dtest="com.wikicook.shoppinglist.**"
 ```
 
-Kiểm tra độ phủ JaCoCo ($\ge 70\%$ theo Constitution II):
+Check JaCoCo coverage ($\ge 70\%$ as required by Constitution II):
 ```bash
 ./mvnw jacoco:report
-# Mở báo cáo tại: target/site/jacoco/com.wikicook.shoppinglist.service/index.html
+# Open the report at: target/site/jacoco/com.wikicook.shoppinglist.service/index.html
 ```
 
 ### 3.2. Frontend Tests & Lint
@@ -76,18 +76,18 @@ npm test -- src/features/shopping-list/
 
 ---
 
-## 4. Kiểm thử API bằng cURL (Manual Verification Flow)
+## 4. Test the API with cURL (Manual Verification Flow)
 
-Giả định bạn đã có JWT Bearer token hợp lệ (`$JWT_TOKEN`):
+Assuming you already have a valid JWT Bearer token (`$JWT_TOKEN`):
 
-### Bước 1: Lấy danh sách mua sắm hiện hành (tự động khởi tạo nếu chưa có)
+### Step 1: Retrieve the Current Shopping List (Automatically Created If None Exists)
 ```bash
 curl -X GET "http://localhost:8080/api/v1/shopping-lists/active" \
   -H "Authorization: Bearer $JWT_TOKEN" \
   -H "Accept: application/json"
 ```
 
-### Bước 2: Thêm món thủ công ngoài chợ (Custom Item)
+### Step 2: Manually Add a Shopping Item (Custom Item)
 ```bash
 curl -X POST "http://localhost:8080/api/v1/shopping-lists/items" \
   -H "Authorization: Bearer $JWT_TOKEN" \
@@ -101,7 +101,7 @@ curl -X POST "http://localhost:8080/api/v1/shopping-lists/items" \
   }'
 ```
 
-### Bước 3: Gộp nguyên liệu từ công thức nấu ăn lẻ (Scale khẩu phần 4 người)
+### Step 3: Aggregate Ingredients from a Single Recipe (Scale to Four Servings)
 ```bash
 curl -X POST "http://localhost:8080/api/v1/shopping-lists/import/recipe" \
   -H "Authorization: Bearer $JWT_TOKEN" \
@@ -114,7 +114,7 @@ curl -X POST "http://localhost:8080/api/v1/shopping-lists/import/recipe" \
   }'
 ```
 
-### Bước 4: Thao tác đi siêu thị ngoại tuyến & Đồng bộ theo lô (Offline Batch Sync)
+### Step 4: Offline Shopping Operations & Batch Synchronization (Offline Batch Sync)
 ```bash
 curl -X POST "http://localhost:8080/api/v1/shopping-lists/active/sync" \
   -H "Authorization: Bearer $JWT_TOKEN" \
@@ -132,14 +132,14 @@ curl -X POST "http://localhost:8080/api/v1/shopping-lists/active/sync" \
   }'
 ```
 
-### Bước 5: Dọn dẹp món đã mua (Soft-Clear) & Hoàn tác (Undo)
+### Step 5: Clear Purchased Items (Soft-Clear) & Undo
 ```bash
-# Dọn dẹp các món đã tick
+# Clear checked items
 CLEAR_RESP=$(curl -s -X POST "http://localhost:8080/api/v1/shopping-lists/active/clear-purchased" \
   -H "Authorization: Bearer $JWT_TOKEN")
 echo $CLEAR_RESP
 
-# Lấy clearBatchId và hoàn tác trong vòng 5 giây
+# Retrieve clearBatchId and undo within 5 seconds
 BATCH_ID=$(echo $CLEAR_RESP | jq -r '.clearBatchId')
 curl -X POST "http://localhost:8080/api/v1/shopping-lists/active/undo-clear" \
   -H "Authorization: Bearer $JWT_TOKEN" \
@@ -147,7 +147,7 @@ curl -X POST "http://localhost:8080/api/v1/shopping-lists/active/undo-clear" \
   -d "{\"clearBatchId\": \"$BATCH_ID\"}"
 ```
 
-### Bước 6: Lưu trữ danh sách vào lịch sử (Archive)
+### Step 6: Move the List to History (Archive)
 ```bash
 curl -X POST "http://localhost:8080/api/v1/shopping-lists/active/archive" \
   -H "Authorization: Bearer $JWT_TOKEN"

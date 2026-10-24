@@ -2,56 +2,56 @@
 
 **Branch**: `feature/040-shopping-list` | **Date**: 2026-10-24 | **Spec**: [spec.md](spec.md)
 
-**Input**: Feature specification from `specs/040-shopping-list/spec.md` (Status: Draft / Ready for Review; giả định đã được team phê chuẩn làm baseline lập kế hoạch kỹ thuật).
+**Input**: Feature specification from `specs/040-shopping-list/spec.md` (Status: Draft / Ready for Review; assumed to have been approved by the team as the technical planning baseline).
 
 ---
 
 ## Summary
 
-Module **040-shopping-list** cung cấp giải pháp chuyển giao liền mạch từ kế hoạch thực đơn sang thực tế đi chợ siêu thị cho người dùng WikiCook:
-1. **Tổng hợp đa nguồn (Multi-Source Ingestion)**: Thu nạp nguyên liệu từ công thức đơn lẻ kèm hệ số nhân khẩu phần ($S_{\text{target}} / S_{\text{base}}$), gộp hàng loạt từ lịch ăn tuần 7 ngày $\times$ 3 bữa (Spec 030/031), hoặc thêm món tạp hóa/gia dụng thủ công.
-2. **Động cơ gộp thông minh & Quy đổi đơn vị**: Tự động gom nhóm theo mã nguyên liệu chuẩn (`ingredient_id`), quy đổi đơn vị metric hai chiều ($g \leftrightarrow kg$, $ml \leftrightarrow l$) bằng mã nguồn Java, làm tròn trần (`Ceiling`) cho đơn vị đếm (quả, củ, trứng) ở danh sách mua nhưng bảo toàn số lẻ ở chi tiết nguồn gốc (Provenance), và giữ nguyên các đơn vị định tính ("thìa canh", "tép") ở dòng độc lập.
-3. **Phân nhóm quầy siêu thị & Tiện ích Checklist**: Tự động phân loại vào 6 quầy hàng chuẩn (`PRODUCE`, `MEAT_SEAFOOD`, `DAIRY_EGGS`, `PANTRY_SPICES`, `FROZEN`, `GENERAL`), hỗ trợ ghi nhớ quầy tùy biến (`user_aisle_preferences`), giao diện checklist 1 tay phản hồi tức thì ($< 50\text{ms}$ optimistic UI), dọn dẹp mềm non-destructive (`is_cleared = true`) kèm snackbar hoàn tác trong 5 giây.
-4. **Ngoại tuyến kiên cường (Local-First Offline Resilience)**: Sử dụng `IndexedDB` (thư viện `idb`) lưu trữ danh sách và hàng đợi mutation tại client; sinh sẵn `client_uuid` cho mọi item; khi có mạng lại tự động batch sync lên server với cơ chế Last-Write-Wins có bảo vệ tuyệt đối trạng thái đã mua (`is_checked = true`); giữ an toàn hàng đợi ngay cả khi token hết hạn lúc đang ở tầng hầm siêu thị.
-5. **Xuất bản & In ấn thuần Client**: Sao chép văn bản thuần (plaintext) 1-chạm gửi qua Zalo/SMS và định dạng in ấn `@media print` 2 cột tiết kiệm mực (không sinh endpoint thừa).
+The **040-shopping-list** module provides WikiCook users with a seamless transition from meal planning to actual supermarket shopping:
+1. **Multi-Source Ingestion**: Import ingredients from individual recipes with a serving multiplier ($S_{\text{target}} / S_{\text{base}}$), aggregate in bulk from a weekly plan of 7 days $\times$ 3 meals (Specs 030/031), or manually add grocery/household items.
+2. **Smart Aggregation Engine & Unit Conversion**: Automatically group by standard ingredient ID (`ingredient_id`), perform bidirectional metric conversion ($g \leftrightarrow kg$, $ml \leftrightarrow l$) in Java, round countable units (fruit, roots, eggs) up (`Ceiling`) in the shopping list while preserving fractional quantities in provenance details, and retain qualitative units ("thìa canh", "tép") in separate rows.
+3. **Supermarket Aisle Categorization & Checklist Utilities**: Automatically classify items into six standard aisles (`PRODUCE`, `MEAT_SEAFOOD`, `DAIRY_EGGS`, `PANTRY_SPICES`, `FROZEN`, `GENERAL`), remember custom aisle preferences (`user_aisle_preferences`), provide an instantly responsive one-handed checklist ($< 50\text{ms}$ optimistic UI), and support non-destructive soft-clear (`is_cleared = true`) with a 5-second undo snackbar.
+4. **Local-First Offline Resilience**: Use `IndexedDB` (the `idb` library) to store the list and mutation queue on the client; generate `client_uuid` for every item in advance; automatically batch-sync to the server when connectivity returns using Last-Write-Wins with absolute protection for purchased status (`is_checked = true`); preserve the queue even if tokens expire in a supermarket basement.
+5. **Client-Only Export & Printing**: One-tap plaintext copying for sharing via Zalo/SMS and an ink-saving two-column `@media print` layout (without unnecessary endpoints).
 
 ---
 
 ## Technical Context
 
-**Language/Version**: Java 21 (LTS) cho backend; TypeScript 5.x + React 18 cho frontend.
+**Language/Version**: Java 21 (LTS) for the backend; TypeScript 5.x + React 18 for the frontend.
 
 **Primary Dependencies**: 
 - *Backend*: Spring Boot 3.x (`spring-boot-starter-web`, `spring-boot-starter-data-jpa`, `spring-boot-starter-security`, `spring-boot-starter-validation`), Flyway Migration, `springdoc-openapi-starter-webmvc-ui` (v2.x).
-- *Frontend*: Vite, Tailwind CSS 3.4, thư viện `idb` (v8.x, Promise wrapper nhẹ cho IndexedDB, xem mục Complexity Tracking).
+- *Frontend*: Vite, Tailwind CSS 3.4, `idb` (v8.x, a lightweight Promise wrapper for IndexedDB; see Complexity Tracking).
 
-**Storage**: PostgreSQL 16. Sử dụng đúng 4 bảng theo [Mục 4.8 của `full-schema.md`](../../docs/analysis-and-design/database/full-schema.md#48-shopping-list-040--d) được quản lý qua Flyway migration `V401__shopping_lists.sql`:
-- `shopping_lists`: Khóa chính `id`, `user_id`, `title`, `status`, `archived_at`. Chỉ mục duy nhất có điều kiện: `UNIQUE (user_id) WHERE status = 'ACTIVE'`.
-- `shopping_list_items`: `id`, `list_id`, `client_uuid` (UK), `ingredient_id` (NULL với món tự nhập), `custom_name`, `quantity` (normalized), `unit_id`, `aisle_category_id`, `is_checked`, `is_cleared`, `is_manually_edited`, `cleared_at`, `version` (optimistic locking).
+**Storage**: PostgreSQL 16. Uses exactly four tables from [Section 4.8 of `full-schema.md`](../../docs/analysis-and-design/database/full-schema.md#48-shopping-list-040--d), managed through Flyway migration `V401__shopping_lists.sql`:
+- `shopping_lists`: Primary key `id`, `user_id`, `title`, `status`, `archived_at`. Partial unique index: `UNIQUE (user_id) WHERE status = 'ACTIVE'`.
+- `shopping_list_items`: `id`, `list_id`, `client_uuid` (UK), `ingredient_id` (NULL for custom items), `custom_name`, `quantity` (normalized), `unit_id`, `aisle_category_id`, `is_checked`, `is_cleared`, `is_manually_edited`, `cleared_at`, `version` (optimistic locking).
 - `shopping_list_item_sources`: `id`, `item_id`, `recipe_id`, `meal_plan_item_id`, `recipe_title_snapshot`, `contributed_quantity`, `unit_id`.
-- `user_aisle_preferences`: Khóa chính phức hợp `(user_id, ingredient_id)`, `aisle_category_id`.
+- `user_aisle_preferences`: Composite primary key `(user_id, ingredient_id)`, `aisle_category_id`.
 
 **Testing**: 
-- *Backend*: JUnit 5, Mockito, Testcontainers với PostgreSQL thật (`postgres:16`, không dùng image `pgvector` vì 040 không dùng vector embedding; tuyệt đối không dùng H2 In-Memory DB), JaCoCo coverage $\ge 70\%$ cho package `service`.
-- *Frontend*: Vitest, React Testing Library, Mock Service Worker (`msw`) để giả lập offline network interceptor.
+- *Backend*: JUnit 5, Mockito, Testcontainers with real PostgreSQL (`postgres:16`, not the `pgvector` image because 040 does not use vector embeddings; never H2 In-Memory DB), JaCoCo coverage $\ge 70\%$ for the `service` package.
+- *Frontend*: Vitest, React Testing Library, Mock Service Worker (`msw`) to simulate an offline network interceptor.
 
-**Target Platform**: Linux server (Docker Compose container hóa); trình duyệt web hiện đại (Chrome, Safari, Firefox, Edge) trên desktop và mobile từ 360 px trở lên.
+**Target Platform**: Linux server (containerized with Docker Compose); modern web browsers (Chrome, Safari, Firefox, Edge) on desktop and mobile from 360 px upward.
 
-**Project Type**: Ứng dụng web phân lớp (RESTful API backend + Single Page Application frontend).
+**Project Type**: Layered web application (RESTful API backend + Single Page Application frontend).
 
 **Performance Goals**: 
-- Độ trễ phản hồi tương tác checkbox/gạch bỏ trên màn hình: $< 50\text{ms}$ (Optimistic UI, SC-002).
-- Thời gian đồng bộ ngoại tuyến khi có mạng: $< 3.0\text{s}$ (SC-003).
-- Thời gian gộp toàn bộ nguyên liệu của tuần 21 bữa ($80 - 120$ nguyên liệu thô): $< 1.0\text{s}$ (SC-004).
-- Thời gian phản hồi API backend đọc/ghi P95: $< 500\text{ms}$.
+- On-screen checkbox/strikethrough response latency: $< 50\text{ms}$ (Optimistic UI, SC-002).
+- Offline synchronization time after connectivity returns: $< 3.0\text{s}$ (SC-003).
+- Aggregation time for all ingredients in a 21-meal week ($80 - 120$ raw ingredients): $< 1.0\text{s}$ (SC-004).
+- Backend read/write API response time P95: $< 500\text{ms}$.
 
 **Constraints**: 
-- Đúng 1 active list cho mỗi người dùng (FR-001).
-- Trần tối đa 200 items/list (enforce ở Service backend và pre-check ở client).
-- Không mất dữ liệu mutation khi offline dù Access/Refresh Token hết hạn.
-- Mọi thao tác đều kiểm tra quyền sở hữu `user_id = principal`, ngăn chặn IDOR (Insecure Direct Object Reference).
+- Exactly one active list per user (FR-001).
+- Maximum 200 items/list (enforced in the backend Service and pre-checked on the client).
+- No mutation data loss while offline, even if Access/Refresh Tokens expire.
+- Every operation checks ownership with `user_id = principal`, preventing IDOR (Insecure Direct Object Reference).
 
-**Scale/Scope**: Quản lý danh mục 6 quầy siêu thị, ~10.000 công thức tham chiếu, 1 màn hình checklist chính + 1 modal pre-import + 1 drawer lịch sử.
+**Scale/Scope**: Six supermarket aisle categories, approximately 10,000 referenced recipes, one main checklist screen + one pre-import modal + one history drawer.
 
 ---
 
@@ -59,17 +59,17 @@ Module **040-shopping-list** cung cấp giải pháp chuyển giao liền mạch
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-| Nguyên tắc Hiến pháp | Đánh giá | Phương án giải quyết & Ghi chú |
+| Constitution Principle | Assessment | Resolution & Notes |
 |---|:---:|---|
-| **I. Spec trước, code sau** | ⚠️ Có điều kiện | Bản đặc tả `specs/040-shopping-list/spec.md` đang ở trạng thái `Draft (Ready for Review)`. Bản plan này được thiết lập làm cơ sở thiết kế kỹ thuật. **Tuyệt đối không viết code hiện thực** trước khi spec được nghiệm thu chính thức và branch được gán task Jira chuẩn. Không tự chế mã Jira `SCRUM-xx`, không tự ý sửa spec hay constitution. |
-| **II. Test-First (Không thương lượng)** | ✅ PASS | Mọi acceptance scenario và Functional Requirement (FR-001 đến FR-025) đều được ánh xạ vào ma trận kiểm thử tại Mục 7. Tầng Service cam kết JaCoCo $\ge 70\%$. Kiểm thử tích hợp dùng container PostgreSQL 16 thật qua Testcontainers, không dùng H2. Các kịch bản không automate được trong CI (Airplane Mode thật, đo trễ $<50\text{ms}$) được chuyển giao thành Manual Test Cases trong `docs/test/`. |
-| **III. Kiến trúc phân lớp đơn giản** | ✅ PASS | Tuân thủ luồng: Controller $\to$ Service $\to$ Repository $\to$ Database. DTO Record 100%, không rò rỉ Entity. Module tổ chức theo feature `com.wikicook.shoppinglist`. Giao tiếp với Meal Planner (030/031), Recipe (060), Profile (011) qua Service Facade/Ports (đặc tả tại `contracts/integration.md`), không join bảng cross-module trong repository. |
-| **IV. Bảo mật & dữ liệu người dùng** | ✅ PASS | Spring Security bảo vệ mọi endpoint `/api/v1/shopping-lists/**`. Định danh `user_id` lấy từ `SecurityContext`, URL path `{id}` bắt buộc kiểm tra quyền sở hữu (`user_id = principal`), trả 403 Forbidden nếu vi phạm. Bean Validation (`@Valid`) chặt chẽ phía server. Lỗi trả về dạng RFC 7807 `ProblemDetail`, không lộ stack trace. Cơ chế offline giữ hàng đợi mutation an toàn khi token hết hạn. |
-| **V. Trải nghiệm nhất quán** | ✅ PASS | UI responsive từ 360 px, chuỗi tiếng Việt tập trung. Tái sử dụng component Button, Toast, Modal của hệ thống. **Quyết định phân trang**: Danh sách active tối đa 200 items nên không phân trang để phục vụ checklist đi siêu thị mượt mà liên tục (phù hợp mục đích danh sách cá nhân của Constitution V); Danh sách lịch sử `ARCHIVED` được phân trang (`page`, `size`) theo chuẩn. |
-| **Ràng buộc kỹ thuật** | ✅ PASS | Java 21, Spring Boot 3, Flyway migration (`V401__shopping_lists.sql`), React 18 Vite, RESTful JSON `/api/v1`. |
+| **I. Spec Before Code** | ⚠️ Conditional | `specs/040-shopping-list/spec.md` is `Draft (Ready for Review)`. This plan serves as the technical design basis. **Do not write implementation code** until the specification is formally accepted and the branch has a proper Jira task assigned. Do not invent a Jira key `SCRUM-xx` or independently modify the spec or constitution. |
+| **II. Test-First (Non-Negotiable)** | ✅ PASS | Every acceptance scenario and Functional Requirement (FR-001 through FR-025) is mapped in the test matrix in Section 7. The Service layer commits to JaCoCo $\ge 70\%$. Integration tests use real PostgreSQL 16 through Testcontainers, not H2. Scenarios that cannot be automated in CI (real Airplane Mode, measuring latency $<50\text{ms}$) are handed over as Manual Test Cases in `docs/test/`. |
+| **III. Simple Layered Architecture** | ✅ PASS | Follows Controller $\to$ Service $\to$ Repository $\to$ Database. Uses Record DTOs throughout, without exposing entities. Organized by feature under `com.wikicook.shoppinglist`. Communicates with Meal Planner (030/031), Recipe (060), and Profile (011) through Service Facades/Ports (specified in `contracts/integration.md`), without cross-module table joins in repositories. |
+| **IV. Security & User Data** | ✅ PASS | Spring Security protects every `/api/v1/shopping-lists/**` endpoint. `user_id` comes from `SecurityContext`; URL path `{id}` requires ownership checks (`user_id = principal`), returning 403 Forbidden on violation. Strict server-side Bean Validation (`@Valid`). Errors use RFC 7807 `ProblemDetail` without stack traces. Offline behavior safely preserves the mutation queue when tokens expire. |
+| **V. Consistent User Experience** | ✅ PASS | Responsive UI from 360 px, centralized Vietnamese strings. Reuses system Button, Toast, and Modal components. **Pagination decision**: The active list has at most 200 items and is not paginated to support a smooth, uninterrupted shopping checklist (consistent with the personal-list purpose of Constitution V); `ARCHIVED` history lists use standard pagination (`page`, `size`). |
+| **Technical Constraints** | ✅ PASS | Java 21, Spring Boot 3, Flyway migration (`V401__shopping_lists.sql`), React 18 Vite, RESTful JSON `/api/v1`. |
 
-**Kết quả Gate Phase 0**: **PASS (Đủ điều kiện nghiên cứu & thiết kế)**.  
-**Re-check sau Phase 1**: **PASS** – Lược đồ quan hệ khớp 100% full-schema 4.8; contracts API khớp đầy đủ 14 endpoint; không vi phạm ranh giới module.
+**Phase 0 Gate Result**: **PASS (Eligible for Research & Design)**.  
+**Re-check After Phase 1**: **PASS** – The relational schema fully matches full-schema 4.8; API contracts cover all 14 endpoints; module boundaries are respected.
 
 ---
 
@@ -79,15 +79,15 @@ Module **040-shopping-list** cung cấp giải pháp chuyển giao liền mạch
 
 ```text
 specs/040-shopping-list/
-├── plan.md              # Kế hoạch triển khai tổng thể (file này)
-├── research.md          # Phase 0: Phân tích quyết định kỹ thuật R1 - R7
-├── data-model.md        # Phase 1: Lược đồ CSDL, JPA Entities, Record DTOs, IndexedDB
-├── quickstart.md        # Phase 1: Hướng dẫn chạy local & cURL testing
+├── plan.md              # Overall implementation plan (this file)
+├── research.md          # Phase 0: Technical decisions R1 - R7
+├── data-model.md        # Phase 1: DB schema, JPA Entities, Record DTOs, IndexedDB
+├── quickstart.md        # Phase 1: Local setup & cURL testing guide
 ├── checklists/
-│   └── requirements.md  # Danh mục kiểm tra yêu cầu
-└── contracts/           # Phase 1: Giao ước API và giao tiếp liên module
-    ├── openapi.yaml     # REST API contracts chuẩn OpenAPI 3.0.3
-    └── integration.md   # Service Facade / Ports giao tiếp với 011, 020, 030, 031, 060
+│   └── requirements.md  # Requirements checklist
+└── contracts/           # Phase 1: API and inter-module contracts
+    ├── openapi.yaml     # REST API contracts in OpenAPI 3.0.3
+    └── integration.md   # Service Facades / Ports for 011, 020, 030, 031, 060
 ```
 
 ### Source Code (repository root)
@@ -171,82 +171,82 @@ src/
 
 ## Complexity Tracking
 
-Tuân thủ Hiến pháp **Principle III** (YAGNI & Kiến trúc tối giản), mọi thư viện hoặc mẫu thiết kế bổ sung đều phải được giải trình lý do và so sánh với phương án đơn giản hơn:
+Under Constitution **Principle III** (YAGNI & Simple Architecture), every additional library or design pattern must be justified and compared with simpler alternatives:
 
-| Thành phần bổ sung | Lý do sử dụng (Rationale) | Phương án đơn giản hơn đã loại bỏ & Tại sao |
+| Additional Component | Rationale | Rejected Simpler Alternatives & Reasons |
 |---|---|---|
-| **Thư viện `idb` (v8.x) ở frontend** | Wrapper nhỏ gọn (~1.1 KB gzipped) viết bằng Promise cho API IndexedDB nguyên bản của trình duyệt. Cần thiết để xử lý đọc/ghi transaction bất đồng bộ không gây lag UI khi đi siêu thị (SC-002). | Dùng API `indexedDB` thuần: code callback cồng kềnh, dễ lỗi transaction leak; Dùng `localStorage`: đồng bộ (blocking main thread khi cuộn trang) và giới hạn 5MB không an toàn; Dùng Dexie.js: tính năng quá đồ sộ (~25 KB) vượt quá nhu cầu (vi phạm YAGNI). |
-| **Cấu trúc Service Facade / Port** | Cho phép module 040 đọc dữ liệu từ module 060 (công thức), 030/031 (kế hoạch tuần), và 011 (hồ sơ ăn uống) mà không bị phụ thuộc vòng (circular dependency) và không join SQL cross-module. | Join bảng SQL trực tiếp trong Repository: Làm hỏng ranh giới module, khiến các thành viên merge code dễ bị xung đột Flyway và khó test cô lập; Dùng Microservices/gRPC: Quá tải và không phù hợp với đồ án môn học. |
-| **Quy đổi đơn vị bằng Java Code thay vì Bảng CSDL** | Đơn vị quy đổi trong siêu thị chỉ gói gọn trong hệ metric chuẩn ($g \leftrightarrow kg, ml \leftrightarrow l$). Viết logic trong `UnitConversionService` giúp chạy cực nhanh trong bộ nhớ, không cần query DB mỗi lần tính toán. | Tạo bảng `unit_conversions` và bảng `units` phức tạp: Tốn thêm 2 bảng CSDL và query join chậm, đã được nhóm thống nhất loại bỏ trong `full-schema.md` mục 5 dòng 8. |
-| **Canonical Server Engine vs Client Mirror** | Server luôn là chân lý tối thượng (Single Source of Truth) trong tính toán gộp và phân quầy. Client duy trì một bản mirror logic rút gọn để phục vụ xem trước tức thì và tính toán offline khi mất mạng. | Chỉ tính ở server: Khi offline trong tầng hầm người dùng không thể xem số lượng gộp; Chỉ tính ở client: Dữ liệu dễ bị gian lận hoặc sai lệch giữa các nền tảng thiết bị. |
+| **Frontend `idb` Library (v8.x)** | Compact (~1.1 KB gzipped) Promise wrapper for the browser's native IndexedDB API. Needed for asynchronous transactional reads/writes without UI lag while shopping (SC-002). | Native `indexedDB`: verbose callbacks, prone to transaction leaks; `localStorage`: synchronous (blocks the main thread while scrolling) and its 5MB limit is unsafe; Dexie.js: excessive functionality (~25 KB) beyond requirements (violates YAGNI). |
+| **Service Facade / Port Structure** | Allows module 040 to read data from 060 (recipes), 030/031 (weekly plans), and 011 (dietary profiles) without circular dependencies or cross-module SQL joins. | Direct SQL joins in Repository: break module boundaries, increase Flyway merge conflicts, and hinder isolated testing; Microservices/gRPC: excessive and unsuitable for the course project. |
+| **Java Unit Conversion Instead of Database Tables** | Shopping conversions are limited to standard metric units ($g \leftrightarrow kg, ml \leftrightarrow l$). Logic in `UnitConversionService` runs quickly in memory without database queries for each calculation. | Complex `unit_conversions` and `units` tables: require two extra database tables and slow joins, already rejected by the team in `full-schema.md`, Section 5, row 8. |
+| **Canonical Server Engine vs Client Mirror** | The server remains the Single Source of Truth for aggregation and aisle assignment. The client maintains simplified mirrored logic for instant previews and offline calculations. | Server-only calculations: users cannot see aggregated quantities while offline in a basement; client-only calculations: data is vulnerable to tampering or inconsistencies across devices/platforms. |
 
 ---
 
 ## Traceability & Verification Matrix
 
-Bảng ánh xạ toàn diện từ **Yêu cầu chức năng (FR)** và **Tiêu chí thành công (SC)** sang phương án kiểm thử cụ thể:
+Comprehensive mapping from **Functional Requirements (FR)** and **Success Criteria (SC)** to specific verification approaches:
 
-| Mã Yêu Cầu | Tóm tắt Nghiệp vụ | Phương án Hiện thực & Vị trí Mã nguồn | Loại Kiểm thử & Tên Test Case |
+| Requirement ID | Business Summary | Implementation Approach & Source Location | Test Type & Test Case Name |
 | :---: | :--- | :--- | :--- |
-| **FR-001** | Đúng 1 active list/user | Partial Unique Index `uq_shopping_lists_active_user` + `ShoppingListService.getActiveList()` | `Integration`: `ShoppingListRepositoryIT.testOnlyOneActiveListPerUser()` |
-| **FR-002** | Nút import từ Recipe Detail kèm serving multiplier | `POST /import/recipe` + `RecipeDetailPort` + `PreImportBottomSheet` | `Integration`: `ShoppingListControllerIT.testImportRecipeWithServings()`<br>`Frontend`: `PreImportBottomSheet.test.tsx` |
-| **FR-003** | Công thức scale khẩu phần & Ceiling đơn vị đếm | `IngredientAggregationService.scaleAndCeil()` | `Unit`: `IngredientAggregationServiceTest.testDiscreteUnitCeilingRule()` (0.5 trứng $\to$ 1) |
-| **FR-004** | Import từ Meal Plan tuần (MERGE / ARCHIVE) | `POST /import/meal-plan` + `MealPlanHandoffPort` | `Integration`: `ShoppingListControllerIT.testImportMealPlanMergeAndArchive()` |
-| **FR-005** | Deduplication theo `ingredient_id` | Gom nhóm Map key `ingredient_id` trong `IngredientAggregationService` | `Unit`: `IngredientAggregationServiceTest.testDeduplicationByIngredientId()` |
-| **FR-006** | Gộp số lượng metric tương thích ($g/kg, ml/l$) | `UnitConversionService.aggregateMetric()` | `Unit`: `UnitConversionServiceTest.testAggregateGramsAndKilograms()` (500g + 1kg = 1.5kg) |
-| **FR-007** | Quy đổi metric 2 chiều ($<1kg \to g, \ge 1000g \to kg$) | `UnitConversionService.normalizeAndFormat()` | `Unit`: `UnitConversionServiceTest.testBidirectionalConversionThresholds()` |
-| **FR-008** | Giữ sub-row cho đơn vị định tính ("thìa", "tép") | `IngredientAggregationService.handleIncompatibleUnits()` | `Unit`: `IngredientAggregationServiceTest.testQualitativeUnitsIsolated()` |
-| **FR-009** | Lưu snapshot nguồn gốc (Provenance) | Bảng `shopping_list_item_sources` | `Integration`: `ShoppingListControllerIT.testProvenanceSnapshotPersistence()` |
-| **FR-010** | Phân loại 6 quầy hàng siêu thị chuẩn | Enum / Table `aisle_categories` | `Unit`: `IngredientAggregationServiceTest.testAisleCategorizationDefault()` |
-| **FR-011** | Đổi quầy thủ công + ghi nhớ quầy tùy biến | `PATCH /items/{uuid}` với `aisleCategoryId`; `user_aisle_preferences` upsert khi `rememberAisle=true` | `Integration`: `ShoppingListControllerIT.testChangeItemAisle()` + `UserAislePreferenceRepositoryIT.testUpsertPreference()` |
-| **FR-012** | Tên món tự nhập (Custom item) | `POST /items` + check `num_nonnulls` | `Integration`: `ShoppingListControllerIT.testAddCustomItemGeneralAisle()` |
-| **FR-013** | Checkbox từng món, touch target tối thiểu 48×48 | Checklist UI checkbox 48px | `Frontend`: `ChecklistScreen.test.tsx` (kiểm tra touch target) |
-| **FR-014** | Cập nhật checkmark, strikethrough, progress counter trong <50ms | `PATCH /items/{uuid}` + Optimistic UI | `Frontend`: `ChecklistScreen.test.tsx` + `Manual`: `TC-MAN-040-02` (đo <50ms) |
-| **FR-015** | Chuyển món checked xuống nhóm "Đã mua" collapsible | React State Filter / Grouping | `Frontend`: `ChecklistScreen.test.tsx` (kiểm tra progress X/Y) |
-| **FR-016** | Gộp thêm vào món đã checked thì tự uncheck | `ShoppingListService.mergeItem()` kiểm tra `isChecked` | `Unit`: `ShoppingListServiceTest.testMergeIntoCheckedItemResetsToUnchecked()` |
-| **FR-017** | Sửa số lượng thủ công, đánh dấu `is_manually_edited`, không chạm source recipe | `PATCH /items/{uuid}` quantity → set `is_manually_edited=true` | `Integration`: `ShoppingListControllerIT.testManualQuantityEditSetsFlag()` |
-| **FR-018** | Soft-clear + undo 5s + toggle xem món đã dọn + bảo toàn khi archive | `POST /active/clear-purchased`; `POST /active/undo-clear` với `clearBatchId` | `Integration`: `ShoppingListControllerIT.testSoftClearPurchasedItems()` + `testUndoClearPurchasedItems()` |
-| **FR-019** | Cache toàn bộ active list ở client, offline đủ thao tác đọc/check/sửa/thêm/xóa | IndexedDB (`idb`) + mutation queue | `Manual`: `TC-MAN-040-01` |
-| **FR-020** | Ngoại tuyến không bị chặn bởi JWT | IndexedDB Cache + non-blocking auth banner | `Manual`: `TC-MAN-040-01` |
-| **FR-021** | Sync lô <3s + LWW + xung đột ưu tiên `is_checked = true` | `POST /active/sync` + `ShoppingListSyncService`; logic OR | `Integration`: `ShoppingListSyncServiceIT.testBatchSyncIdempotency()` + `Unit`: `ShoppingListSyncServiceTest.testConflictResolutionCheckedWins()` |
-| **FR-022** | Archive + restore (reset `is_checked`/`is_cleared`, giữ tên/số lượng/quầy) | `POST /active/archive` (cùng transaction tạo fresh active); `POST /{id}/restore` | `Integration`: `ShoppingListControllerIT.testArchiveAndCreateFreshActive()` |
-| **FR-023** | Sao chép Plaintext 1-chạm vào Clipboard | `navigator.clipboard.writeText()` định dạng nhóm quầy | `Frontend`: `useShoppingList.test.ts` (kiểm tra chuỗi plain text sinh ra) |
-| **FR-024** | Định dạng in ấn 2 cột tiết kiệm mực | CSS `@media print` trong `print-checklist.css` | `Manual`: `TC-MAN-040-03` |
-| **FR-025** | Khống chế trần tối đa 200 items/list | `ShoppingListService.checkCapacityLimit()` | `Integration`: `ShoppingListControllerIT.testCapacityLimitExceeded422()` |
+| **FR-001** | Exactly one active list/user | Partial Unique Index `uq_shopping_lists_active_user` + `ShoppingListService.getActiveList()` | `Integration`: `ShoppingListRepositoryIT.testOnlyOneActiveListPerUser()` |
+| **FR-002** | Recipe Detail import button with serving multiplier | `POST /import/recipe` + `RecipeDetailPort` + `PreImportBottomSheet` | `Integration`: `ShoppingListControllerIT.testImportRecipeWithServings()`<br>`Frontend`: `PreImportBottomSheet.test.tsx` |
+| **FR-003** | Serving scaling & Ceiling for countable units | `IngredientAggregationService.scaleAndCeil()` | `Unit`: `IngredientAggregationServiceTest.testDiscreteUnitCeilingRule()` (0.5 egg $\to$ 1) |
+| **FR-004** | Weekly Meal Plan import (MERGE / ARCHIVE) | `POST /import/meal-plan` + `MealPlanHandoffPort` | `Integration`: `ShoppingListControllerIT.testImportMealPlanMergeAndArchive()` |
+| **FR-005** | Deduplication by `ingredient_id` | Group by Map key `ingredient_id` in `IngredientAggregationService` | `Unit`: `IngredientAggregationServiceTest.testDeduplicationByIngredientId()` |
+| **FR-006** | Aggregate compatible metric quantities ($g/kg, ml/l$) | `UnitConversionService.aggregateMetric()` | `Unit`: `UnitConversionServiceTest.testAggregateGramsAndKilograms()` (500g + 1kg = 1.5kg) |
+| **FR-007** | Bidirectional metric conversion ($<1kg \to g, \ge 1000g \to kg$) | `UnitConversionService.normalizeAndFormat()` | `Unit`: `UnitConversionServiceTest.testBidirectionalConversionThresholds()` |
+| **FR-008** | Retain sub-rows for qualitative units ("thìa", "tép") | `IngredientAggregationService.handleIncompatibleUnits()` | `Unit`: `IngredientAggregationServiceTest.testQualitativeUnitsIsolated()` |
+| **FR-009** | Persist provenance snapshots | `shopping_list_item_sources` table | `Integration`: `ShoppingListControllerIT.testProvenanceSnapshotPersistence()` |
+| **FR-010** | Categorize into six standard supermarket aisles | Enum / Table `aisle_categories` | `Unit`: `IngredientAggregationServiceTest.testAisleCategorizationDefault()` |
+| **FR-011** | Manual aisle changes + remembered custom aisles | `PATCH /items/{uuid}` with `aisleCategoryId`; upsert `user_aisle_preferences` when `rememberAisle=true` | `Integration`: `ShoppingListControllerIT.testChangeItemAisle()` + `UserAislePreferenceRepositoryIT.testUpsertPreference()` |
+| **FR-012** | Manually entered item name (Custom item) | `POST /items` + check `num_nonnulls` | `Integration`: `ShoppingListControllerIT.testAddCustomItemGeneralAisle()` |
+| **FR-013** | Per-item checkbox, minimum 48×48 touch target | Checklist UI checkbox 48px | `Frontend`: `ChecklistScreen.test.tsx` (touch target checks) |
+| **FR-014** | Update checkmark, strikethrough, and progress counter within <50ms | `PATCH /items/{uuid}` + Optimistic UI | `Frontend`: `ChecklistScreen.test.tsx` + `Manual`: `TC-MAN-040-02` (measure <50ms) |
+| **FR-015** | Move checked items into collapsible "Đã mua" group | React State Filter / Grouping | `Frontend`: `ChecklistScreen.test.tsx` (check progress X/Y) |
+| **FR-016** | Automatically uncheck an already checked item when more is merged | `ShoppingListService.mergeItem()` checks `isChecked` | `Unit`: `ShoppingListServiceTest.testMergeIntoCheckedItemResetsToUnchecked()` |
+| **FR-017** | Manual quantity edits flag `is_manually_edited` without changing source recipe | `PATCH /items/{uuid}` quantity → set `is_manually_edited=true` | `Integration`: `ShoppingListControllerIT.testManualQuantityEditSetsFlag()` |
+| **FR-018** | Soft-clear + 5s undo + cleared-item visibility toggle + preservation on archive | `POST /active/clear-purchased`; `POST /active/undo-clear` with `clearBatchId` | `Integration`: `ShoppingListControllerIT.testSoftClearPurchasedItems()` + `testUndoClearPurchasedItems()` |
+| **FR-019** | Cache the entire active list on the client; offline read/check/edit/add/delete | IndexedDB (`idb`) + mutation queue | `Manual`: `TC-MAN-040-01` |
+| **FR-020** | JWT expiration does not block offline use | IndexedDB Cache + non-blocking auth banner | `Manual`: `TC-MAN-040-01` |
+| **FR-021** | Batch sync <3s + LWW + conflict priority for `is_checked = true` | `POST /active/sync` + `ShoppingListSyncService`; OR logic | `Integration`: `ShoppingListSyncServiceIT.testBatchSyncIdempotency()` + `Unit`: `ShoppingListSyncServiceTest.testConflictResolutionCheckedWins()` |
+| **FR-022** | Archive + restore (reset `is_checked`/`is_cleared`, retain names/quantities/aisles) | `POST /active/archive` (creates fresh active list in the same transaction); `POST /{id}/restore` | `Integration`: `ShoppingListControllerIT.testArchiveAndCreateFreshActive()` |
+| **FR-023** | One-tap plaintext copy to Clipboard | `navigator.clipboard.writeText()` formatted by aisle group | `Frontend`: `useShoppingList.test.ts` (verify generated plaintext) |
+| **FR-024** | Ink-saving two-column print format | CSS `@media print` in `print-checklist.css` | `Manual`: `TC-MAN-040-03` |
+| **FR-025** | Enforce a maximum of 200 items/list | `ShoppingListService.checkCapacityLimit()` | `Integration`: `ShoppingListControllerIT.testCapacityLimitExceeded422()` |
 
 ---
 
-## Manual Test Cases (Dành cho Kịch bản Thực địa)
+## Manual Test Cases (For Field Scenarios)
 
-Các kịch bản này được đăng ký vào `docs/test/test-cases.md` để nghiệm thu thủ công trong giai đoạn tasks:
+These scenarios are registered in `docs/test/test-cases.md` for manual acceptance during the tasks phase:
 
-### TC-MAN-040-01: Kiểm thử Ngoại tuyến Thực địa (In-Store Airplane Mode Test)
-- **Mục tiêu**: Xác thực khả năng hoạt động liên tục khi mất sóng trong siêu thị và đồng bộ không mất dữ liệu trong $\le 3$ giây khi có sóng lại (SC-003, FR-020, FR-021).
-- **Thiết bị**: Điện thoại thông minh chạy trình duyệt di động (Chrome/Safari).
-- **Các bước thực hiện**:
-  1. Đăng nhập vào WikiCook, mở trang `/shopping-list` với danh sách có sẵn 10 món.
-  2. Bật **Chế độ máy bay (Airplane Mode)** trên điện thoại để ngắt hoàn toàn Wi-Fi và 4G/5G.
-  3. Tick chọn 4 món vào giỏ hàng; thêm 1 món tùy chọn "Bánh mì sandwich, 1 ổ"; sửa số lượng 1 món từ 500g lên 1kg.
-  4. Xác nhận giao diện phản hồi ngay lập tức, không xuất hiện popup lỗi mạng chặn màn hình.
-  5. Tắt Chế độ máy bay để khôi phục kết nối Internet.
-- **Kết quả mong đợi**:
-  - Trong vòng $\le 3.0$ giây, biểu tượng trạng thái chuyển từ "Đang lưu ngoại tuyến" sang "Đã đồng bộ máy chủ".
-  - F5 tải lại trang trên máy tính khác đăng nhập cùng tài khoản: Cả 4 món đã tick, món mới thêm và số lượng cập nhật hiển thị chính xác 100%.
+### TC-MAN-040-01: Offline Field Verification (In-Store Airplane Mode Test)
+- **Objective**: Verify uninterrupted operation during supermarket connectivity loss and lossless synchronization within $\le 3$ seconds after connectivity returns (SC-003, FR-020, FR-021).
+- **Device**: Smartphone running a mobile browser (Chrome/Safari).
+- **Steps**:
+   1. Log in to WikiCook and open `/shopping-list` with an existing list of 10 items.
+   2. Enable **Airplane Mode** on the phone to fully disconnect Wi-Fi and 4G/5G.
+   3. Check four items into the cart; add one custom item "Bánh mì sandwich, 1 ổ"; change one item's quantity from 500g to 1kg.
+   4. Verify immediate UI response without a blocking network-error popup.
+   5. Disable Airplane Mode to restore Internet connectivity.
+- **Expected Results**:
+   - Within $\le 3.0$ seconds, the status icon changes from "Đang lưu ngoại tuyến" to "Đã đồng bộ máy chủ".
+   - Press F5 on another computer logged into the same account: all four checked items, the newly added item, and the updated quantity are displayed with 100% accuracy.
 
-### TC-MAN-040-02: Đo độ trễ phản hồi Checklist 1 tay trên Mobile
-- **Mục tiêu**: Kiểm tra tiêu chí SC-002: Thao tác tick chọn và gạch bỏ phản hồi $< 50\text{ms}$ trên thiết bị tầm trung.
-- **Thiết bị**: Thiết bị Android tầm trung (VD: chip Snapdragon 680 hoặc tương đương).
-- **Các bước thực hiện**:
-  1. Mở danh sách có 50 items trên mobile.
-  2. Sử dụng 1 tay, liên tục bấm tick chọn 5 món ngẫu nhiên.
-- **Kết quả mong đợi**:
-  - Checkbox đổi màu, chữ chuyển gạch ngang và thanh tiến độ dịch chuyển tức thì, không có hiện tượng khựng/lag (Optimistic UI không chờ network roundtrip).
+### TC-MAN-040-02: Measure One-Handed Mobile Checklist Response Latency
+- **Objective**: Verify SC-002: checking and striking through items responds within $< 50\text{ms}$ on a mid-range device.
+- **Device**: Mid-range Android device (e.g., Snapdragon 680 or equivalent).
+- **Steps**:
+   1. Open a list containing 50 items on mobile.
+   2. Using one hand, check five random items in succession.
+- **Expected Results**:
+   - Checkbox color, text strikethrough, and progress bar update instantly, without stutter/lag (Optimistic UI does not wait for a network roundtrip).
 
-### TC-MAN-040-03: Kiểm tra Giao diện In ấn Tiết kiệm mực (@media print)
-- **Mục tiêu**: Kiểm tra tiêu chí in ấn (FR-024).
-- **Các bước thực hiện**:
-  1. Mở danh sách mua sắm trên trình duyệt Desktop.
-  2. Bấm phím tắt `Ctrl + P` (hoặc `Cmd + P` trên macOS).
-- **Kết quả mong đợi**:
-  - Toàn bộ thanh header, navigation, nút bấm floating, footer bị ẩn hoàn toàn.
-  - Nội dung dàn thành 2 cột chữ đen nền trắng rõ nét, có ô vuông `[ ]` sẵn sàng cho việc in ra giấy.
+### TC-MAN-040-03: Verify the Ink-Saving Print Layout (@media print)
+- **Objective**: Verify the printing requirement (FR-024).
+- **Steps**:
+   1. Open the shopping list in a desktop browser.
+   2. Press `Ctrl + P` (or `Cmd + P` on macOS).
+- **Expected Results**:
+   - Headers, navigation, floating buttons, and footers are completely hidden.
+   - Content is arranged in two clear black-on-white columns, with `[ ]` checkboxes ready for printing.
