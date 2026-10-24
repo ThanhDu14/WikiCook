@@ -4,8 +4,8 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 05  
 **Process Model:** Agile Scrum (5 Sprints, replacing the classic RUP lifecycle phases of the `rup_sdpln_sp.dot` template)  
-**Document Version:** 1.3 (Sprint 02 Final Baseline — Project Assignment 2)  
-**Date:** October 16, 2026  
+**Document Version:** 1.4 (Sprint 02 Final Baseline — Project Assignment 2)  
+**Date:** October 24, 2026  
 
 ---
 
@@ -32,7 +32,8 @@
 | **16/10/2026** | `v1.0` | Unified full baseline: merged Risk Matrix (`SCRUM-30`) and 5-stage Build Plan (`SCRUM-45`); eliminated section duplication and synchronized with Jira Board. | Lê Quốc Hưng (`LqHung06` — Chief Editor) |
 | **19/10/2026** | `v1.1` | Section 4.4 (`SCRUM-45`): replaced LLM 5 s timeout and SQL fallback with spec 031 / Vision §7 metrics; added branch coverage, 5xx scope and LCP method. | Mai Văn Hiển (`MaiHien3507`) |
 | **19/10/2026** | `v1.2` | Aligned ASM-02, RSK-02, and Sec 4.3.3 with Spec 031 and Constitution: removed obsolete deterministic/SQL fallback and fallback caching references; reaffirmed explicit AI error reporting with independent manual planning resilience. | Lê Quốc Hưng (`LqHung06`) |
-| **24/10/2026** | `v1.3` | Sprint 02 close-out: corrected group number to Group 05, synchronized deliverable statuses, Sprint 2 Gantt chart and Appendix A with the final Jira board (18/18 Done), and translated Jira task titles into English. | Nguyễn Thành Dự (`ThanhDu14`) |
+| **22/10/2026** | `v1.3` | Final Sprint 02 Audit & Close: Synchronized Appendix A task audit statuses and Table 2.2 deliverables to 100% Verified (DONE) across all 18 tasks matching the live Jira Board and Sprint 02 Report. | Trần Nguyễn Công Chung & Lê Quốc Hưng |
+| **24/10/2026** | `v1.4` | Sprint 02 close-out: corrected group number to Group 05, synchronized deliverable statuses, Sprint 2 Gantt chart and Appendix A with the final Jira board (18/18 Done), and translated Jira task titles into English. | Nguyễn Thành Dự (`ThanhDu14`) |
 
 ---
 
@@ -678,5 +679,6 @@ No Jira task in Sprint 2 or subsequent sprints may be transitioned to the **DONE
 | **`v0.8`** | 16/10/2026 | Mai Văn Hiển (`MaiHien3507`) | Lê Quốc Hưng | Completed Section 4.1 (5-Sprint Roadmap), Section 4.2 (Sprint 2 Breakdown), and Section 4.3 (Schedule & Prelim Backlog) under `SCRUM-29`. |
 | **`v1.0`** | 16/10/2026 | Nguyễn Thành Dự & Mai Văn Hiển | Lê Quốc Hưng (Chief Editor) | Integrated Section 3.2 Risk Management Matrix (`SCRUM-30`) and Section 4.4 Software Build Plan (`SCRUM-45`); resolved duplicate draft sections into a unified, publication-ready baseline. |
 | **`v1.1`** | 19/10/2026 | Mai Văn Hiển (`MaiHien3507`) | Lê Quốc Hưng | Revised Section 4.4 (`SCRUM-45`) to match spec 031 and Vision §7: removed the LLM 5 s timeout and SQL fallback, added AI latency/RAG metrics and branch coverage, and rewrote the demo contingency for LLM failure. |
-| **`v1.2`** | 19/10/2026 | Lê Quốc Hưng (`LqHung06`) | Nguyễn Thành Dự | Aligned ASM-02, RSK-02, and Section 4.3.3 with Spec 031 and the Constitution: removed the obsolete SQL fallback and reaffirmed explicit AI error reporting with an independent manual planner. |
-| **`v1.3`** | 24/10/2026 | Nguyễn Thành Dự (`ThanhDu14`) | Lê Quốc Hưng | Sprint 02 close-out: corrected group number to Group 05, synchronized statuses in Section 2.3, the Sprint 2 Gantt chart and Appendix A with the final Jira board, and translated Jira task titles into English. |
+| **`v1.2`** | 19/10/2026 | Lê Quốc Hưng (`LqHung06`) | Nguyễn Thành Dự | Aligned ASM-02, RSK-02, and Sec 4.3.3 with Spec 031 and Constitution: removed obsolete deterministic/SQL fallback references; reaffirmed explicit AI error reporting with independent manual planning resilience. |
+| **`v1.3`** | 22/10/2026 | Trần Nguyễn Công Chung & Lê Quốc Hưng | Lê Quốc Hưng | Final Sprint 02 Audit & Close: Synchronized Appendix A task audit statuses and Table 2.2 deliverables to 100% Verified (DONE) across all 18 tasks matching the live Jira Board and Sprint 02 Report. |
+| **`v1.4`** | 24/10/2026 | Nguyễn Thành Dự (`ThanhDu14`) | Lê Quốc Hưng | Sprint 02 close-out: corrected group number to Group 05, synchronized statuses in Section 2.3, the Sprint 2 Gantt chart and Appendix A with the final Jira board, and translated Jira task titles into English. |
