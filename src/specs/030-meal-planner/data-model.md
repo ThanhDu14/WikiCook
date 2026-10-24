@@ -2,7 +2,7 @@
 
 **Feature**: [spec.md](spec.md) | **Research**: [research.md](research.md)
 
-Bảng gốc lấy từ [full-schema.md mục 4.6](../../../docs/analysis-and-design/database/full-schema.md#46-meal-planner-030--c),
+Bảng gốc lấy từ [full-schema.md mục 4.6](../../docs/analysis-and-design/database/full-schema.md#46-meal-planner-030--c),
 migration `V301__meal_plans.sql` (C). Cột `created_at`, `updated_at` theo quy ước chung. Spec này
 **không thêm bảng mới**.
 

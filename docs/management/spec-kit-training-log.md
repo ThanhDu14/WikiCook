@@ -1,7 +1,7 @@
 # Spec Kit & Spec-Driven Development (SDD) Training Log
 
 > **Project Name:** WikiCook — Smart Cooking & Recipe Platform  
-> **Course:** Software Engineering (CO3001) — Project Assignment 2 (PA2)  
+> **Course:** CS300 - CSC13002 - Introduction to Software Engineering — Project Assignment 2 (PA2)  
 > **Jira Task ID:** `SCRUM-38` (Spec Kit Training Verification & Member Logs)  
 > **Target Deliverable:** `WikiCook/docs/management/spec-kit-training-log.md`  
 > **Visual Assets Directory:** `WikiCook/docs/assets/spec-kit/`  
@@ -46,7 +46,8 @@ This section documents individual reflections and photographic evidence of compl
 ![Spec Kit Training Proof - Le Quoc Hung](../assets/spec-kit/01_le_quoc_hung_speckit.jpg)
 
 #### Original Reflection
-> *"Qua tìm hiểu về Spec Kit, mình biết được quy trình phát triển phần mềm dựa trên đặc tả yêu cầu, gọi là Spec-Driven Development. Quy trình gồm các bước chính là xác định yêu cầu, lập kế hoạch, chia nhỏ công việc và triển khai code. Cách làm này giúp mọi người hiểu rõ mục tiêu, tổ chức công việc tốt hơn và hạn chế sai sót khi lập trình. Và là một công cụ hỗ trợ hiệu quả trong việc phát triển phần mềm."*
+> *"Through learning about Spec Kit, I came to understand a software development process driven by requirement specifications, called Spec-Driven Development. Its main steps are defining requirements, planning, breaking the work down, and implementing the code. This approach helps everyone understand the goals clearly, organize work better and reduce mistakes while programming. It is an effective tool for supporting software development."*
+> *(Translated from the original Vietnamese reflection.)*
 
 #### Core Takeaways & Competency Acquisition
 * **Structured SDD Lifecycle Orchestration:** Acquired comprehensive understanding of the 4-stage Spec-Driven Development workflow: Requirement Definition (`spec.md`), Technical Architecture Planning (`plan.md`), Granular Task Decomposition (`tasks.md`), and Automated Implementation (`implement`).
@@ -65,7 +66,8 @@ This section documents individual reflections and photographic evidence of compl
 ![Spec Kit Training Proof - Nguyen Duc Duy](../assets/spec-kit/02_nguyen_duc_duy_speckit.jpg)
 
 #### Original Reflection
-> *"Quy trình Spec-Driven Development (phát triển dựa trên đặc tả) là phương pháp xây dựng phần mềm tập trung vào việc tạo ra các tài liệu đặc tả (specification) chi tiết và tách biệt trước khi bắt tay vào lập trình. Quy trình này bắt đầu bằng việc thiết lập một bản hiến pháp (constitution) về các nguyên tắc cốt lõi, sau đó xác định rõ ràng yêu cầu sản phẩm và kế hoạch kỹ thuật. Nhờ việc tách rời hoàn toàn giữa yêu cầu logic và việc thực thi, đội ngũ có thể kiểm soát chất lượng, duy trì tính nhất quán và dễ dàng thay đổi công nghệ mà không làm ảnh hưởng đến cấu trúc tổng thể của dự án."*
+> *"Spec-Driven Development is a way of building software that focuses on creating detailed, separate specification documents before starting to program. The process begins by establishing a constitution of core principles, then clearly defining the product requirements and the technical plan. Because the logical requirements are fully separated from the implementation, the team can control quality, maintain consistency and change technologies easily without affecting the overall structure of the project."*
+> *(Translated from the original Vietnamese reflection.)*
 
 #### Core Takeaways & Competency Acquisition
 * **Specification as a Decoupled, First-Class Citizen:** Mastered the philosophy of crafting self-contained functional specifications that isolate pure business logic, domain boundaries, and user experience rules from technical execution details.
@@ -84,7 +86,8 @@ This section documents individual reflections and photographic evidence of compl
 ![Spec Kit Training Proof - Mai Van Hien](../assets/spec-kit/03_mai_van_hien_speckit.jpg)
 
 #### Original Reflection
-> *"Qua khóa học “Get started with spec-driven development and GitHub Spec Kit”, em đã hiểu được khái niệm phát triển phần mềm dựa trên đặc tả, trong đó yêu cầu được xác định rõ ràng trước khi lập kế hoạch và viết mã. Em đã tìm hiểu cách sử dụng GitHub Spec Kit để xây dựng quy trình phát triển gồm các bước chính như xác định yêu cầu, lập kế hoạch kỹ thuật, phân chia công việc và triển khai. Ngoài ra, em biết rằng Spec Kit có thể tích hợp với nhiều AI coding agent, trong đó có GitHub Copilot và Antigravity. Qua đó, em hiểu được lợi ích của việc chuẩn hóa yêu cầu và quy trình làm việc để giúp AI tạo mã đúng mục tiêu, dễ kiểm tra và bảo trì hơn."*
+> *"Through the course "Get started with spec-driven development and GitHub Spec Kit", I understood the concept of specification-driven software development, in which requirements are clearly defined before planning and writing code. I learned how to use GitHub Spec Kit to build a development process with the main steps of defining requirements, technical planning, dividing the work and implementation. I also learned that Spec Kit can integrate with many AI coding agents, including GitHub Copilot and Antigravity. From this, I understood the benefit of standardizing requirements and workflows so that AI generates code that meets the goal and is easier to test and maintain."*
+> *(Translated from the original Vietnamese reflection.)*
 
 #### Core Takeaways & Competency Acquisition
 * **Mastery of GitHub Spec Kit Framework:** Completed the comprehensive "Get started with spec-driven development and GitHub Spec Kit" course, establishing practical fluency in generating architecture blueprints (`plan.md`) from user specifications.
@@ -103,7 +106,8 @@ This section documents individual reflections and photographic evidence of compl
 ![Spec Kit Training Proof - Nguyen Thanh Du](../assets/spec-kit/04_nguyen_thanh_du_speckit.jpg)
 
 #### Original Reflection
-> *"Speckit-specify : dùng để viết đặc tả, mô tả các tính năng cần có. Speckit-clarify: là hỏi đáp, chỉnh sửa lại specs theo ý của mình. Specs-plan: lên kế hoạch, gồm các file như quickstart, research, data-model, sau đó là viết speckit-task để sinh ra các task cần làm. Trước khi implement để ai code thì nên dùng analyze để mà check đặc tả và plan vs task có đồng bộ hay không, nếu lỗi thì sửa rồi mới implement."*
+> *"Speckit-specify: used to write the specification and describe the features that are needed. Speckit-clarify: questions and answers to adjust the spec to what I want. Speckit-plan: planning, producing files such as quickstart, research and data-model; then speckit-tasks generates the tasks to do. Before implementing (letting the AI write code), use analyze to check whether the spec, plan and tasks are consistent; if there are errors, fix them before implementing."*
+> *(Translated from the original Vietnamese reflection.)*
 
 #### Core Takeaways & Competency Acquisition
 * **Command-Line Workflow Execution:** Gained end-to-end command-line operational expertise across the Spec Kit ecosystem:
@@ -126,7 +130,8 @@ This section documents individual reflections and photographic evidence of compl
 ![Spec Kit Training Proof - Tran Nguyen Cong Chung](../assets/spec-kit/05_tran_nguyen_cong_chung_speckit.png)
 
 #### Original Reflection
-> *"Qua quá trình tìm hiểu, em biết được tư duy là "đặc tả trước rồi mới code sau". Chuyển từ thói quen nghĩ tới đâu code tới đó sang phân tích kỹ luồng dữ liệu và các trường hợp ngoại lệ ngay từ đầu, giảm thiểu việc phải sửa đi sửa lại code sau này. Học được cách dùng tài liệu đặc tả giúp cho các thành viên làm Frontend và Backend có thể code song song với nhau. Cuối cùng, em học được cách tận dụng bản đặc tả rõ ràng để tự động sinh khung code, viết test case, cũng như làm đầu vào chuẩn xác để AI hỗ trợ viết code đúng ý đồ thiết kế hơn."*
+> *"Through this learning process, I adopted the mindset of "specify first, code later": moving from the habit of coding as I think to analyzing data flows and exceptional cases carefully from the start, which reduces repeated code fixes later. I learned how specification documents allow Frontend and Backend members to code in parallel. Finally, I learned how to use a clear specification to generate code skeletons and write test cases automatically, and as precise input so that AI writes code that better matches the design intent."*
+> *(Translated from the original Vietnamese reflection.)*
 
 #### Core Takeaways & Competency Acquisition
 * **Mindset Shift from Ad-Hoc to "Spec-First":** Replaced unstructured coding habits with disciplined upfront analysis of user workflows, data constraints, and boundary exceptions, drastically curtailing regression cycles.

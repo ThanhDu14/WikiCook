@@ -7,7 +7,7 @@ Mỗi mục ghi theo dạng **Decision / Rationale / Alternatives considered**. 
 Không còn mục NEEDS CLARIFICATION; những điểm phụ thuộc người khác nằm ở mục cuối.
 
 > **Đối chiếu với prompt plan**: prompt nhắc bảng `ai_usage` / `ai_generation_requests`, nhưng
-> [full-schema.md mục 4.7](../../../docs/analysis-and-design/database/full-schema.md#47-ai-planner-và-dinh-dưỡng-031-090--c)
+> [full-schema.md mục 4.7](../../docs/analysis-and-design/database/full-schema.md#47-ai-planner-và-dinh-dưỡng-031-090--c)
 > đã gộp chúng (và `nutrition_attempts` của 090) vào **một bảng `ai_requests`**. Plan này dùng
 > `ai_requests`. Package dùng chung `ai` được định nghĩa ở đây vì 031 làm trước 090.
 

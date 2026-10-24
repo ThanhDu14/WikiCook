@@ -11,6 +11,7 @@ File này ghi lại toàn bộ lịch sử sử dụng công cụ AI của **Tr�
 | 5 | 2026-10-19 | Tạo đặc tả chức năng (Feature Specification) cho Dashboard Quản trị & Kiểm duyệt nội dung (`100`) bằng `/speckit-specify` | `specs/100-admin-moderation/` |
 | 6 | 2026-10-19 | Làm rõ yêu cầu kỹ thuật và hành vi biên cho spec 100 (Interactive Clarification) bằng `/speckit-clarify` | `specs/100-admin-moderation/` |
 | 7 | 2026-10-21 | Tổng hợp & Kiểm toán lịch sử sử dụng AI toàn nhóm trong Sprint 2 (`SCRUM-41`) | `docs/management/reports/sprint-02/sprint-02-report.md` (Mục 4) |
+| 8 | 2026-10-21 | Tiến hành kiểm thử chất lượng (QA Audit) hệ thống tài liệu Markdown (`SCRUM-42`) | Toàn bộ `docs/` (`SCRUM-42`) |
 
 ---
 
