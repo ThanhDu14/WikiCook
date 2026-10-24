@@ -24,6 +24,7 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 9 | 2026-10-20, 20:15 – 21:50 | `SCRUM-39`, `SCRUM-40` | Soạn thảo hoàn tất biên bản Weekly Standup 02, đóng task SCRUM-39 và nâng tiến độ v1.3 (11/18 Done) | `ecfe362` | `docs/management/reports/sprint-02/sprint-02-report.md` |
 | 10 | 2026-10-21, 20:00 – 21:45 | `SCRUM-40` | Soạn thảo hoàn tất biên bản Sprint 02 Review & Retrospective, nhúng minh chứng Jira 18/18 Done và đóng task SCRUM-40 | `adf2d17` | `docs/management/reports/sprint-02/sprint-02-report.md` |
 | 11 | 2026-10-24, 19:15 – 19:30 | Module 3.4 Plan | Thiết lập Kế hoạch Kỹ thuật (Implementation Plan) cho module 040-shopping-list bằng `/speckit-plan` | Working Tree | `specs/040-shopping-list/` |
+| 12 | 2026-10-24, 19:45 – 19:55 | Module 3.4 Tasks | Phân rã danh mục công việc kỹ thuật (Implementation Tasks) cho module 040-shopping-list bằng `/speckit-tasks` | Working Tree | `specs/040-shopping-list/tasks.md` |
 
 ---
 
@@ -479,3 +480,41 @@ Hãy giúp tôi:
 - Kiểm tra tính nhất quán của quy tắc làm tròn trần (`Ceiling`) cho đơn vị đếm rời rạc (quả, trứng) ở danh sách mua sắm, bảo toàn số lẻ thập phân ở chi tiết Provenance nguồn gốc.
 - Xác nhận giải pháp Undo-clear 5 giây thông qua `clearBatchId` và quy tắc toán tử OR (`current || mutation`) cho trạng thái `is_checked` khi đồng bộ ngoại tuyến từ nhiều thiết bị.
 - Xác thực toàn bộ các file artifact được sinh đúng vị trí trong cây `specs/040-shopping-list/`, không sinh nhầm vào `src/specs/`.
+
+---
+
+## Mục 12: Phân rã danh mục công việc kỹ thuật (Implementation Tasks) cho module 040 bằng `/speckit-tasks`
+
+| Trường | Nội dung |
+|---|---|
+| **Ngày & Giờ truy cập** | 2026-10-24, 19:45 – 19:55 (Giờ Việt Nam, UTC+7) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Công cụ AI & Phiên bản** | Google Antigravity (Gemini 3.8 Flash), lệnh Spec Kit `/speckit-tasks` |
+| **Nền tảng** | CLI / Visual Studio Code trên Ubuntu Linux 24.04 LTS |
+| **Tài liệu liên quan** | `specs/040-shopping-list/tasks.md`, `specs/040-shopping-list/plan.md`, `specs/040-shopping-list/spec.md`, `specs/040-shopping-list/data-model.md`, `specs/040-shopping-list/contracts/` |
+| **Mục đích sử dụng** | Thực thi quy trình Spec-Driven Development (SDD) tạo tài liệu danh mục công việc kỹ thuật chi tiết (`tasks.md`) cho feature 040-shopping-list (Automated Smart Shopping List & Ingredient Aggregation), phân bổ theo 8 pha với 80 tasks nguyên tử tuân thủ nghiêm ngặt nguyên tắc Test-First (TDD) của Hiến pháp v1.0.0. |
+| **Nhánh Git** | `feature/040-shopping-list` |
+| **Minh chứng (Evidence)** | Phiên làm việc Antigravity CLI c260de22-27a3-4c90-b5ee-bb048e0d209b; file artifact tại `specs/040-shopping-list/tasks.md` |
+
+### Prompt đã sử dụng:
+```text
+/speckit-tasks — Actionable Implementation Task Breakdown cho feature 040-shopping-list
+(Automated Smart Shopping List & Ingredient Aggregation)
+
+0. TÀI LIỆU ĐẦU VÀO: specs/040-shopping-list/plan.md, spec.md, data-model.md, contracts/openapi.yaml, contracts/integration.md, research.md, quickstart.md, src/constitution.md.
+1. QUY TẮC ĐỊNH DẠNG: - [ ] [TaskID] [P?] [Story?] Description with exact file path (T001.. liên tục, 1 task = 1 file/action, cấm gộp file, [P] chuẩn xác).
+2. NGUYÊN TẮC TEST-FIRST: Unit/Integration tests xếp TRƯỚC code hiện thực trong từng User Story.
+3. PHÂN BỔ 8 PHASES: Phase 1 Setup, Phase 2 Foundational (Domain, Repositories, Ports, idb), Phase 3 US1 (P1 - MVP), Phase 4 US2 (P1 - MVP), Phase 5 US3 (P1 - MVP), Phase 6 US4 (P2), Phase 7 US5 (P3), Phase 8 Polish (200 items, manual test cases TC-MAN-040-01..03, quickstart cURL).
+4. MỤC CUỐI: Dependencies & Execution Order, Parallel Execution Examples, Implementation Strategy (MVP First, Incremental Delivery).
+```
+
+### Nội dung do AI sinh ra:
+- Toàn văn tài liệu `specs/040-shopping-list/tasks.md` gồm đúng 80 tasks (T001 đến T080) tuần tự, không nhảy số, chia thành 8 Phase rõ ràng.
+- Toàn bộ các User Story P1 (US1, US2, US3), P2 (US4), P3 (US5) đều được phân tách rạch ròi nhóm task Test trước nhóm task Implementation.
+- Sơ đồ phụ thuộc chi tiết và các ví dụ thực thi song song cụ thể cho môi trường phân công nhóm nhiều lập trình viên.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Trực tiếp kiểm tra và phê duyệt cấu trúc 80 tasks, xác nhận 100% đường dẫn file khớp với Project Structure trong `plan.md` (Spring Boot 3 backend, React 18 TypeScript frontend, Flyway V401 migration).
+- Kiểm tra tính nguyên tử (Atomicity): xác nhận mỗi task gắn với đúng một file mã nguồn hoặc một câu lệnh kiểm chứng độc lập, không có task gộp nhiều file.
+- Xác nhận các kịch bản kiểm thử không thể chạy tự động trong CI (Airplane Mode thực tế, đo trễ thao tác $<50$ms, kiểm tra định dạng in ấn tiết kiệm mực) được giao cho các test case thủ công `TC-MAN-040-01`, `02`, `03` tại `docs/test/test-cases.md`.
+- Kiểm tra không phát sinh commit hoặc push tự động lên Git, tuân thủ kỷ luật quản lý nhánh cá nhân.
