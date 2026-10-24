@@ -1,0 +1,250 @@
+*   7290546  2026-10-24 12:39  Thanhdu14                Merge origin/PA2-docs into docs/pa2-compliance-fixes (HEAD -> docs/pa2-compliance-fixes)
+|\  
+| * 736d749  2026-10-23 09:04  Lê Quốc Hưng             docs(audit): reconcile PA2 deliverables, fix log TOC, update task statuses to DONE (origin/PA2-docs)
+* | 5026d3c  2026-10-24 12:39  Thanhdu14                docs(pa2): fix group number, sync statuses with Jira, translate to English and resync src/specs
+|/  
+*   274533e  2026-10-23 08:39  Lê Quốc Hưng             Merge pull request #38 from ThanhDu14/docs/ai-log-thanhdu (origin/main, origin/HEAD, main)
+|\  
+| * aaec781  2026-10-23 08:05  Thanhdu14                docs(ai_log): align Thanh Du's AI log with guideline fields and add entries 5-13 (origin/docs/ai-log-thanhdu, docs/ai-log-thanhdu)
+* |   c4cfe8a  2026-10-22 22:32  Lê Quốc Hưng             Merge pull request #37 from ThanhDu14/Hien
+|\ \  
+| |/  
+|/|   
+| * 0714e91  2026-10-22 20:29  Hien                     docs(ai_log): add AI usage log for Hien (origin/Hien)
+| * 09b0ab3  2026-10-22 14:30  Hien                     docs(ai-log): fill access time for entry 1 in ai_log_hien
+| * 8ceff27  2026-10-22 14:25  Hien                     docs(ai-log): add access time field and AI Usage Notes summaries to ai_log_hien
+* | da96106  2026-10-22 13:29  Nguyen Thanh Du          Docs/030 031 090 specs db (#28)
+* |   72e161c  2026-10-22 13:28  DuckDee                  Merge pull request #35 from ThanhDu14/PA2-docs
+|\ \  
+| * | adf2d17  2026-10-22 13:22  Lê Quốc Hưng             docs(report): complete SCRUM-40 Sprint 2 review, retrospective, and Jira backlog evidence
+|/ /  
+| | *   9645af1  2026-10-22 13:28  Thanhdu14                Merge origin/main into docs/030-031-090-specs-db (origin/docs/030-031-090-specs-db, docs/030-031-090-specs-db)
+| | |\  
+| |_|/  
+|/| |   
+* | |   3cba8bf  2026-10-22 12:39  Lê Quốc Hưng             Merge pull request #34 from ThanhDu14/Duy
+|\ \ \  
+| * | | d11a588  2026-10-22 12:23  DucDuyNguyen15-IT        docs(ai_log): align entries with AI usage guideline fields (origin/Duy)
+* | | |   bb48381  2026-10-22 12:38  DuckDee                  Merge pull request #33 from ThanhDu14/PA2-docs
+|\ \ \ \  
+| * \ \ \   23373fb  2026-10-22 12:36  Lê Quốc Hưng             Merge branch 'origin/main' into PA2-docs: reconcile Sprint 02 report and integrate Spec Kit training artifacts
+| |\ \ \ \  
+| |/ / / /  
+|/| | | |   
+* | | | |   859dfbe  2026-10-22 12:10  DuckDee                  Merge pull request #32 from ThanhDu14/Chung
+|\ \ \ \ \  
+| |_|/ / /  
+|/| | | |   
+| * | | | 7021e9a  2026-10-21 16:20  weirdy_alien             docs(qa): complete SCRUM-41 AI usage appendix and SCRUM-42 documentation QA audit (origin/Chung)
+| * | | |   e0d8966  2026-10-20 20:35  weirdy_alien             Merge branch 'main' into Chung
+| |\ \ \ \  
+| |/ / / /  
+|/| | | |   
+| * | | | 3ce42d7  2026-10-20 20:35  weirdy_alien             docs(management): add Spec Kit training log without roles (SCRUM-38)
+| | * | | ecfe362  2026-10-20 21:55  Lê Quốc Hưng             docs(scrum): complete Standup 02 minutes, close SCRUM-39, and update Hung's AI log
+| | * | | 79825bc  2026-10-20 21:41  Lê Quốc Hưng             docs(report): update Section 4 AI declaration evidence format for SCRUM-41
+| | * | | 5891d2f  2026-10-20 21:39  Lê Quốc Hưng             docs(ai-log): synchronize Hung's AI usage log timestamps with git commit history
+| |/ / /  
+|/| | |   
+* | | |   c1c9d3c  2026-10-20 13:21  Lê Quốc Hưng             Merge pull request #31 from ThanhDu14/PA2-docs
+|\ \ \ \  
+| * | | | 1849b9e  2026-10-19 17:56  LqHung06                 docs(management): align AI fallback with spec 031 and update sprint 2 progress
+| * | | | ad1bd1b  2026-10-19 17:41  LqHung06                 docs(management): document Weekly Scrum Standup 01 minutes (SCRUM-39)
+|/ / / /  
+* | | |   eae1c14  2026-10-19 17:37  Lê Quốc Hưng             Merge pull request #30 from ThanhDu14/Hien
+|\ \ \ \  
+| | |/ /  
+| |/| |   
+| * | | 4866b9f  2026-10-19 16:19  Hien                     docs(plan): align build plan AI gates with spec 031 (SCRUM-45)
+| * | | d1c0ad1  2026-10-19 16:06  Hien                     docs(spec): align concurrent-user load condition to 100 (010, 030, 080)
+| * | | a90486a  2026-10-19 16:03  Hien                     docs(vision): add section 7 non-functional requirements (SCRUM-36)
+| * | |   93db10d  2026-10-19 15:38  Hien                     Merge branch 'main' of https://github.com/ThanhDu14/WikiCook into Hien
+| |\ \ \  
+| * | | | 87f06a7  2026-10-18 22:52  Hien                     docs(ai-log): add AI usage log for Hien
+| * | | | 39228be  2026-10-18 22:50  Hien                     docs(spec): clarify spec 010 and move profile scope to 011
+| * | | | 069b5b5  2026-10-18 22:49  Hien                     docs(spec): add spec 080 bookmark and collections
+| * | | | 5476edd  2026-10-18 22:49  Hien                     docs(spec): add spec 011 user profile and dietary profile
+* | | | |   5faed71  2026-10-19 17:35  Lê Quốc Hưng             Merge pull request #29 from ThanhDu14/Chung
+|\ \ \ \ \  
+| |_|/ / /  
+|/| | / /   
+| | |/ /    
+| |/| |     
+| * | | f89cd97  2026-10-19 15:35  weirdy_alien             docs(specs): add specs 070, 100 and ai_log_chung
+| |/ /  
+* / / 631610c  2026-10-19 14:37  MaiHien                  Hien (#27)
+|/ /  
+| * 39600e5  2026-10-18 23:36  Thanhdu14                docs(spec-kit): sync 030, 031, 090 plan artifacts to src/specs
+| * 3af5f8a  2026-10-18 23:02  Thanhdu14                docs(plan): add plan, design artifacts and tasks for 090 nutrition analysis
+| * 3835e63  2026-10-18 23:02  Thanhdu14                docs(plan): add plan, design artifacts and tasks for 031 AI weekly planner
+| * 3c64312  2026-10-18 23:02  Thanhdu14                docs(plan): add plan, design artifacts and tasks for 030 meal planner
+| * c76a8c4  2026-10-18 21:18  Thanhdu14                docs(db): add simplified full database schema (39 tables) with crawled-data import mapping
+| * 62508aa  2026-10-18 21:18  Thanhdu14                docs(src): sync specs 010-090 into src/specs and update README
+| * 0765d59  2026-10-18 21:18  Thanhdu14                docs(spec): clarify 031 RAG flow and resolve conflicts across 030, 031, 090
+| * 94d3834  2026-10-18 21:18  Thanhdu14                docs(spec): add 090 nutrition analysis spec with clarifications
+|/  
+*   3ed4acb  2026-10-18 12:57  Lê Quốc Hưng             Merge pull request #26 from ThanhDu14/Duy
+|\  
+| * 1d9aa74  2026-10-17 23:14  DucDuyNguyen15-IT        docs(ai_log): add entry for user workflow diagrams
+| * 426b076  2026-10-17 23:14  DucDuyNguyen15-IT        docs(vision): add Mermaid user workflow diagrams for meal planning and cooking (SCRUM-35)
+| * 134699a  2026-10-17 23:14  DucDuyNguyen15-IT        docs(ai_log): add entry for core product features
+| * a2bc43a  2026-10-17 23:14  DucDuyNguyen15-IT        docs(vision): describe 10 core product features with traceability (SCRUM-34)
+| * 77b703e  2026-10-17 23:14  DucDuyNguyen15-IT        docs(ai_log): add entry for stakeholders, users and product overview
+| * ac97709  2026-10-17 23:14  DucDuyNguyen15-IT        docs(vision): add stakeholder and user descriptions and product overview (SCRUM-33)
+| * 8086b50  2026-10-17 23:14  DucDuyNguyen15-IT        docs(ai_log): add entry for vision introduction and positioning
+| * 7dd7668  2026-10-17 23:14  DucDuyNguyen15-IT        docs(vision): restructure to RUP template and add introduction and positioning (SCRUM-32)
+* |   f9aeb45  2026-10-17 23:34  Lê Quốc Hưng             Merge pull request #23 from ThanhDu14/Hien
+|\ \  
+| * | 464891b  2026-10-17 22:40  Hien                     docs(management): rewrite build & release plan in project-plan Sec 4.4 (SCRUM-45)
+| |\| 
+| * | 20cc9e3  2026-10-15 08:09  Hien                     docs(management): add project plan with 5-sprint roadmap and Sprint 2 breakdown (SCRUM-29)
+* | |   a97a86f  2026-10-17 23:33  Lê Quốc Hưng             Merge pull request #21 from ThanhDu14/feature/040-shopping-list
+|\ \ \  
+| |_|/  
+|/| |   
+| * | c0685eb  2026-10-16 18:26  LqHung06                 docs(specs): add 040-shopping-list spec, checklist and Hung's AI log (origin/feature/040-shopping-list)
+| * | 19500ee  2026-10-16 11:05  LqHung06                 docs(specs): add feature specification and checklist for 050-cooking-mode (origin/feature/050-cooking-mode)
+| * | 21c5185  2026-10-16 11:05  LqHung06                 docs(ai_log): update Hung's AI usage log for spec-050 specify and clarify sessions
+* | |   36df8f0  2026-10-16 21:47  Lê Quốc Hưng             Merge pull request #22 from ThanhDu14/Chung
+|\ \ \  
+| |/ /  
+|/| |   
+| * |   e115e87  2026-10-16 18:58  weirdy_alien             Merge branch 'main' into Chung
+| |\ \  
+| |/ /  
+|/| |   
+* | |   4a93752  2026-10-16 09:59  Lê Quốc Hưng             Merge pull request #16 from ThanhDu14/Hung
+|\ \ \  
+| * | | 95f488d  2026-10-16 09:56  LqHung06                 docs(management): solve conflict in project-plan.md (origin/Hung)
+| * | |   c6e4f6e  2026-10-16 09:41  LqHung06                 Merge remote-tracking branch 'origin/main' into Hung
+| |\ \ \  
+| * \ \ \   834579d  2026-10-15 02:12  LqHung06                 Merge remote-tracking branch 'origin/main' into Hung
+| |\ \ \ \  
+| * | | | | 54dc762  2026-10-15 01:24  LqHung06                 docs: change name project-plan.md
+| * | | | | 2a50330  2026-10-15 01:23  LqHung06                 docs: initialize sprint-02-report.md with 18 Jira tasks and Meeting 1 minutes (SCRUM-27)
+| * | | | | 0ac8f08  2026-10-15 01:05  LqHung06                 docs: initialize project-plan.md and complete sections 1, 2, 3.1, and 5 (SCRUM-28)
+| * | | | | 8e2b502  2026-10-14 16:46  LqHung06                 chore(speckit): init configuration for agy
+| * | | | |   56389b2  2026-10-08 14:56  LqHung06                 docs: resolve documentation logic audit discrepancies and complete merge with main
+| |\ \ \ \ \  
+| * | | | | | 859318b  2026-10-07 22:38  LqHung06                 docs: update sprint-01 report, survey assets, and test specifications
+* | | | | | |   8ee3a08  2026-10-16 09:51  Lê Quốc Hưng             Merge pull request #20 from ThanhDu14/docs/rename-spec-010
+|\ \ \ \ \ \ \  
+| * | | | | | | f69e130  2026-10-16 09:47  Thanhdu14                docs(specs): rename user-authentication-roles spec to 010-user-authentication-roles (origin/docs/rename-spec-010, docs/rename-spec-010)
+| | |_|_|/ / /  
+| |/| | | | |   
+* | | | | | | 482d75a  2026-10-16 09:50  Nguyen Thanh Du          docs(ai_log): move Duy's AI log into docs/ai_log (#19)
+* | | | | | |   81bc45f  2026-10-16 09:49  Lê Quốc Hưng             Merge pull request #18 from ThanhDu14/docs/w1-spec-design-assignment
+|\ \ \ \ \ \ \  
+| |/ / / / / /  
+|/| | | | | |   
+| * | | | | | be977c4  2026-10-16 09:36  Thanhdu14                docs(specs): add meal planner (030) and AI weekly meal planner (031) specs and AI usage log (origin/docs/w1-spec-design-assignment, docs/w1-spec-design-assignment)
+| * | | | | |   7309482  2026-10-08 21:25  Thanhdu14                Merge remote-tracking branch 'origin/main' into docs/w1-spec-design-assignment
+| |\ \ \ \ \ \  
+| * | | | | | | 5d3bde7  2026-10-08 13:52  Thanhdu14                docs(management): add week 12/10-18/10 spec, UI and database assignment
+| * | | | | | | 2061701  2026-10-05 09:14  Thanhdu14                chore(speckit): set up Spec Kit and add user authentication & roles spec (origin/feature/speckit-auth-spec, feature/speckit-auth-spec)
+| | | | | | * | c88ef7d  2026-10-15 21:23  weirdy_alien             docs(spec-kit): sync artifacts to src with comprehensive README for SCRUM-37
+| | | | | | * |   62ffa8a  2026-10-15 21:06  weirdy_alien             Merge branch 'main' into Chung
+| | | | | | |\ \  
+| | | | | | |/ /  
+| | | | | |/| |   
+| | | | | | * |   409d961  2026-10-08 22:20  weirdy_alien             Merge branch 'main' into Chung
+| | | | | | |\ \  
+| | | | | | * \ \   2f2d5ca  2026-10-07 17:14  weirdy_alien             Merge branch 'main' into Chung
+| | | | | | |\ \ \  
+| | | | |_|_|/ / /  
+| | | |/| | | | |   
+| | | | | | * | | c1d2a91  2026-10-06 09:34  weirdy_alien             Comparative Analysis
+| | | | | | | | | * f60c56e  2026-10-16 09:42  Thanhdu14                docs(ai_log): move Duy's AI log into docs/ai_log (origin/docs/move-ai-log-duy, docs/move-ai-log-duy)
+| |_|_|_|_|_|_|_|/  
+|/| | | | | | | |   
+* | | | | | | | | df8411b  2026-10-16 09:08  MaiHien                  docs(management): add project plan with 5-sprint roadmap and Sprint 2 breakdown (SCRUM-29) (#17)
+| |_|_|_|/ / / /  
+|/| | | | | | |   
+* | | | | | | |   bc910bf  2026-10-09 08:39  Lê Quốc Hưng             Merge pull request #15 from ThanhDu14/Duy
+|\ \ \ \ \ \ \ \  
+| |_|_|_|_|_|/ /  
+|/| | | | | | |   
+| * | | | | | | 256bee4  2026-10-08 22:14  DucDuyNguyen15-IT        docs: clarify specs 020 and 060
+| * | | | | | | c899dc5  2026-10-08 22:00  DucDuyNguyen15-IT        docs: add draft schema for recipes and ingredients tables
+| * | | | | | | 3cc1cd3  2026-10-08 21:56  DucDuyNguyen15-IT        docs: add specs 020 recipe search & filter and 060 recipe editor
+| * | | | | | | dce4855  2026-10-08 21:56  DucDuyNguyen15-IT        docs: upgrade Spec Kit templates, scripts and skills to 1.1.1.dev0
+|/ / / / / / /  
+* | / / / / / 4de4721  2026-10-08 21:30  Nguyen Thanh Du          Docs/w1 spec design assignment (#14)
+| |/ / / / /  
+|/| | | | |   
+* | | | | | 0608c0a  2026-10-08 16:19  Nguyen Thanh Du          Docs/unify ai feature name (#13)
+| | | | | | * bf05fd4  2026-10-08 16:09  Thanhdu14                docs: make proposal data flow diagram and meeting overview readable in PDF (origin/docs/unify-ai-feature-name, docs/unify-ai-feature-name)
+| | | | | | * 2be27ef  2026-10-08 16:01  Thanhdu14                docs(contract): set member availability to 22:00
+| | | | | | * 5d7115d  2026-10-08 15:59  Thanhdu14                docs(contract): add response times, availability, coding, review and testing standards
+| | | | | | * 73c4f96  2026-10-08 15:59  Thanhdu14                docs(sprint-01): restructure meeting minutes per weekly report template and fix evidence
+| | | | | | * 1ed8cd0  2026-10-08 15:59  Thanhdu14                docs(survey): add cross-app comparison summary and align AI feature with proposal
+| |_|_|_|_|/  
+|/| | | | |   
+* | | | | | af3a9f3  2026-10-08 15:03  Lê Quốc Hưng             docs: update sprint-01 report, survey assets, and test specifications (#12)
+| |_|/ / /  
+|/| | | |   
+* | | | |   715c2d1  2026-10-08 13:55  Lê Quốc Hưng             Merge pull request #11 from ThanhDu14/Hien
+|\ \ \ \ \  
+| |_|/ / /  
+|/| | | /   
+| | |_|/    
+| |/| |     
+| * | | ff10121  2026-10-08 08:36  Hien                     docs: review and standardize project documentation
+|/ / /  
+* | |   3d243ad  2026-10-07 10:52  Lê Quốc Hưng             Merge pull request #10 from ThanhDu14/Duy
+|\ \ \  
+| * | | 826855d  2026-10-07 03:47  DucDuyNguyen15-IT        docs: fix markdown formatting per team standards (SCRUM-23)
+* | | | 5763f71  2026-10-07 03:44  Lê Quốc Hưng             docs(requirements/management): merge existing app survey and add group-registration (#9)
+|/ / /  
+* | / e288fcd  2026-10-06 09:35  Nguyen Thanh Du          chore(speckit): set up Spec Kit and add user authentication & roles spec (#7)
+| |/  
+|/|   
+* |   6d7101a  2026-10-06 01:59  Lê Quốc Hưng             Merge pull request #8 from ThanhDu14/Hien
+|\ \  
+| |/  
+|/|   
+| * 1b3fdbc  2026-10-05 16:40  Hien                     docs: add AI coding platform account evidence
+| *   3b11250  2026-10-04 12:37  Hien                     Merge remote-tracking branch 'origin/main' into Hien
+| |\  
+| * | 0942d3b  2026-10-03 21:37  Hien                     docs: revise AI weekly meal planner
+| * | db56137  2026-10-03 20:48  Hien                     docs: define code standards and accountability
+| * | bcf01b2  2026-10-02 21:32  Hien                     docs(project-proposal): Add section 4: special feature: AI smart chef assistant
+* | | 34bb1de  2026-10-05 09:06  Lê Quốc Hưng             docs(pa01): update proposal, surveys, contract and meeting minutes (#6)
+| |/  
+|/|   
+* | 077e8dc  2026-10-03 21:56  MaiHien                  Hien (#5)
+* |   11c23a5  2026-10-03 21:15  Nguyen Thanh Du          Merge pull request #2 from ThanhDu14/itzchugnn-patch-1
+|\ \  
+| |/  
+|/|   
+| * 3c4127a  2026-10-03 21:12  weirdy_alien             Update app-survey-myfridgefood.md
+| * 8922e83  2026-10-03 21:11  weirdy_alien             Update app-survey-myfridgefood.md
+| * fd0ed0b  2026-10-03 21:07  weirdy_alien             Add files via upload
+| * 096a85f  2026-10-03 21:07  weirdy_alien             Create .gitkeep
+| * 995f208  2026-10-03 21:06  weirdy_alien             Delete docs/assets/screenshots/existing-app-servey-2 directory
+| * 1a35a7a  2026-10-03 21:04  weirdy_alien             Update app-survey-myfridgefood.md
+| * 0ae46e0  2026-10-02 14:22  weirdy_alien             Remove comments and ratings from recipe details
+| * dba08d7  2026-10-02 14:21  weirdy_alien             Fix image paths in app-survey-myfridgefood.md
+| * fd39e9c  2026-10-02 14:17  weirdy_alien             Add files via upload
+| * fe7ecde  2026-10-02 14:16  weirdy_alien             Create .gitkeep
+| * c1e4e26  2026-10-01 21:49  weirdy_alien             Add files via upload
+| | *   a6010a1  2026-10-05 09:06  Thanhdu14                WIP on main: 47e90e0 docs(survey): add MyFridgeFood existing app survey and screenshots (refs/stash)
+| | |\  
+| | | * 7de43e4  2026-10-05 09:06  Thanhdu14                index on main: 47e90e0 docs(survey): add MyFridgeFood existing app survey and screenshots
+| | |/  
+| | * 47e90e0  2026-10-03 21:39  weirdy_alien             docs(survey): add MyFridgeFood existing app survey and screenshots (backup/main-squash-chung)
+| |/  
+|/|   
+* |   19ed2d1  2026-10-02 08:41  Nguyen Thanh Du          Merge pull request #3 from ThanhDu14/Hung (feature/docs-requirements)
+|\ \  
+| |/  
+|/|   
+| * 80af883  2026-10-01 22:53  LqHung06                 docs(project-proposal): Add section 5  End to End User Journey & Culinary Workflow
+|/  
+*   b3fd2f1  2026-10-01 00:48  Nguyen Thanh Du          Merge pull request #1 from ThanhDu14/feature/docs-requirements
+|\  
+| * b00fcd2  2026-10-01 00:27  DuckDee                  docs: update reviewer to Nguyen Duc Duy
+| * cdedb14  2026-09-30 16:37  Thanhdu14                docs(requirements): update proposal modules and complete existing app survey for angingon.com
+|/  
+* 1da9930  2026-09-29 01:05  DucDuyNguyen15-IT        docs(requirements): complete proposal sections 1, 2, 3 for WikiCook (SCRUM-6, SCRUM-7, SCRUM-8)
+* 44dd258  2026-09-28 12:26  Thanhdu14                Initial commit: Add PA1 project structure and documentation templates
