@@ -556,3 +556,53 @@ Bạn hãy fix 4 vấn đề Low/Medium giúp tôi
 - Trực tiếp rà soát báo cáo phân tích, xác nhận 0 lỗi Critical/High và kiểm chứng mức độ bao phủ 100% của 80 tasks đối với toàn bộ các acceptance scenarios trong spec.
 - Phê duyệt phương án xử lý 4 điểm Low/Medium, đối chiếu với `data-model.md` và `plan.md` để đảm bảo không làm thay đổi ranh giới hay phá vỡ hợp đồng API đã thống nhất.
 - Kiểm tra diff trên Git (`git diff specs/040-shopping-list/spec.md`), xác nhận các thay đổi chỉ tập trung chuẩn hóa câu chữ, thuật ngữ và phương thức nghiệm thu mà không làm phát sinh mâu thuẫn mới.
+ 
+## Mục 14 — Nghiên cứu và lập thiết kế đề xuất feature 050 Cooking Mode
+
+| Thông tin | Nội dung |
+|---|---|
+| **Ngày thực hiện** | 2026-10-25; không ghi giờ cụ thể vì chưa được xác minh |
+| **Công cụ AI** | OpenCode |
+| **Model** | GPT-6.1-sol  |
+| **Người yêu cầu / nhật ký** | Lê Quốc Hưng; nội dung do AI hỗ trợ soạn, sinh viên đã xác nhận review và kiểm chứng tài liệu |
+| **Mục đích** | `/speckit-plan` cho 050 — Hands-free Cooking Mode & Concurrent Timers; chỉ nghiên cứu/thiết kế, không triển khai ứng dụng |
+| **Nhánh** | Branch hiện tại do người dùng chuẩn bị; chưa xác minh theo ràng buộc không thực thi Git |
+| **Minh chứng** | Năm artifact trong `specs/050-cooking-mode/`; không có commit/test-pass/approval được xác nhận |
+
+### Prompt đã sử dụng (tóm tắt trung thực)
+
+```text
+/speckit-plan: lập kế hoạch kỹ thuật feature 050 từ spec hiện có.
+Đọc Constitution, template, spec/checklist 050, architecture/schema, 060/070,
+040 plan/contracts và src/README; chỉ đọc phần cooking/UX/test liên quan trong
+proposal, vision, phân công và docs/test. Tạo plan.md, research.md,
+data-model.md, quickstart.md, contracts/integration.md; chỉ thêm OpenAPI nếu
+050 sở hữu HTTP API. Frontend-first, deadline timers, offline sau tải,
+localStorage từng recipe trong 4h, browser capability adapters/fallback,
+test-first và traceability toàn bộ FR/NFR/SC/acceptance scenarios.
+Không sửa spec/checklist/schema/proposal/mirror/config; không code, scaffold,
+cài dependency, tasks/implement, Jira tự tạo hoặc bất kỳ lệnh Git/script gọi Git.
+Yêu cầu bổ sung cuối: cập nhật AI log phần vừa làm và cho biết model đang dùng.
+```
+
+### Kết quả AI hỗ trợ tạo
+
+- Tạo `plan.md`, `research.md`, `data-model.md`, `quickstart.md`, `contracts/integration.md` tại `specs/050-cooking-mode/`.
+- Thiết kế frontend runtime ở app shell; không bảng/migration/API session hoặc OpenAPI giả. Timer deadline, một alarm coordinator, auto-mute khác acknowledge; viewport baseline, Fullscreen/Wake Lock/voice/audio có fallback.
+- Đối chiếu `timer_seconds` có trong 060/schema draft nhưng read API chưa thống nhất; thiếu field dùng parser, manual timer vẫn có. “1 giờ 30 phút” là yêu cầu US3-AC1; range upper chính/lower phụ giữ nguyên spec.
+- Ma trận thiết kế/test dự kiến phủ FR-001–019, NFR-001–006, SC-001–005 và 32 acceptance scenarios; đề xuất TC-MAN-050-01…08 trong quickstart, không sửa docs/test.
+- Ghi rõ spec Draft chưa đạt gate Constitution (duyệt trước plan), thiếu Jira/skeleton/contracts được duyệt. A01–A11/G01–G10 là quyết định mở/phụ thuộc, không giả là nhóm đã chốt.
+- Tham khảo MDN về Wake Lock, Fullscreen, autoplay, Speech APIs, visibility, LocalStorage và beforeunload; đọc tài liệu không đồng nghĩa kiểm thử khả năng hỗ trợ thực tế.
+
+### Phạm vi và phần chờ kiểm chứng
+
+- Ngoài năm artifact, chỉ cập nhật nhật ký này theo yêu cầu bổ sung; không sửa baseline/mirror/schema/config hoặc mã ứng dụng. Không thực thi lệnh Git hay script setup/prerequisite có thể gọi Git.
+- Chưa chạy ứng dụng, cài dependency, viết/chạy test, build, coverage hoặc manual acceptance. Kiểm tra tài liệu bằng filesystem/link/coverage ID không phải bằng chứng test chức năng PASS.
+- Sinh viên đã xác nhận review và kiểm chứng tài liệu. Nhóm vẫn cần chốt TTL 4h so với timer 24h, precedence/parser, giới hạn browser/storage/voice, contract B/D và completion E/D; hoàn tất spec approval/Jira/toolchain trước triển khai.
+- Trạng thái: **AI đã tạo bản đề xuất; sinh viên đã review và kiểm chứng tài liệu theo xác nhận trực tiếp**. Việc này không đồng nghĩa nhóm đã phê duyệt thiết kế, đã thử browser/thiết bị, chạy test/build hoặc commit kết quả.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+
+- Đã xác nhận đã tự review và kiểm chứng nội dung tài liệu do AI hỗ trợ tạo, gồm phần lập kế hoạch/thiết kế 050 và bản dịch tiếng Anh của các tài liệu lập kế hoạch 040/050.
+- Phần review và kiểm chứng tài liệu là công việc sinh viên thực hiện độc lập; nội dung thiết kế và bản dịch do AI hỗ trợ không được tính là phần sinh viên tự viết.
+- Chưa có thông tin về các hiệu chỉnh cụ thể do sinh viên tự thực hiện; không tự bổ sung thành tích hoặc kết quả kiểm thử chức năng. Xác nhận review tài liệu không thay thế approval của nhóm hay kiểm thử ứng dụng trên thiết bị thật.
