@@ -23,8 +23,9 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 8 | 2026-10-19, 17:35 – 17:55 | `SCRUM-28`, `SCRUM-39` | Hiệu chỉnh giả định kỹ thuật ASM-02, rủi ro RSK-02 và cập nhật bảng tiến độ Mid-Sprint Audit v1.2 | `1849b9e` | `docs/management/project-plan.md`, `reports/sprint-02/` |
 | 9 | 2026-10-20, 20:15 – 21:50 | `SCRUM-39`, `SCRUM-40` | Soạn thảo hoàn tất biên bản Weekly Standup 02, đóng task SCRUM-39 và nâng tiến độ v1.3 (11/18 Done) | `ecfe362` | `docs/management/reports/sprint-02/sprint-02-report.md` |
 | 10 | 2026-10-21, 20:00 – 21:45 | `SCRUM-40` | Soạn thảo hoàn tất biên bản Sprint 02 Review & Retrospective, nhúng minh chứng Jira 18/18 Done và đóng task SCRUM-40 | `adf2d17` | `docs/management/reports/sprint-02/sprint-02-report.md` |
-| 11 | 2026-10-24, 19:15 – 19:30 | Module 3.4 Plan | Thiết lập Kế hoạch Kỹ thuật (Implementation Plan) cho module 040-shopping-list bằng `/speckit-plan` | Working Tree | `specs/040-shopping-list/` |
-| 12 | 2026-10-24, 19:45 – 19:55 | Module 3.4 Tasks | Phân rã danh mục công việc kỹ thuật (Implementation Tasks) cho module 040-shopping-list bằng `/speckit-tasks` | Working Tree | `specs/040-shopping-list/tasks.md` |
+| 11 | 2026-10-24, 19:15 – 19:30 | Module 3.4 Plan | Thiết lập Kế hoạch Kỹ thuật (Implementation Plan) cho module 040-shopping-list bằng `/speckit-plan` | `8b39964`, `82e86c3` | `specs/040-shopping-list/` |
+| 12 | 2026-10-24, 19:45 – 19:55 | Module 3.4 Tasks | Phân rã danh mục công việc kỹ thuật (Implementation Tasks) cho module 040-shopping-list bằng `/speckit-tasks` | `3e5a734` | `specs/040-shopping-list/tasks.md` |
+| 13 | 2026-10-24, 20:06 – 20:25 | Module 3.4 Analyze & Fix | Đối chiếu chéo chất lượng artifact bằng `speckit-analyze` và chuẩn hóa 4 điểm Low/Medium trong spec | Working Tree | `specs/040-shopping-list/spec.md` |
 
 ---
 
@@ -494,7 +495,7 @@ Hãy giúp tôi:
 | **Tài liệu liên quan** | `specs/040-shopping-list/tasks.md`, `specs/040-shopping-list/plan.md`, `specs/040-shopping-list/spec.md`, `specs/040-shopping-list/data-model.md`, `specs/040-shopping-list/contracts/` |
 | **Mục đích sử dụng** | Thực thi quy trình Spec-Driven Development (SDD) tạo tài liệu danh mục công việc kỹ thuật chi tiết (`tasks.md`) cho feature 040-shopping-list (Automated Smart Shopping List & Ingredient Aggregation), phân bổ theo 8 pha với 80 tasks nguyên tử tuân thủ nghiêm ngặt nguyên tắc Test-First (TDD) của Hiến pháp v1.0.0. |
 | **Nhánh Git** | `feature/040-shopping-list` |
-| **Minh chứng (Evidence)** | Phiên làm việc Antigravity CLI c260de22-27a3-4c90-b5ee-bb048e0d209b; file artifact tại `specs/040-shopping-list/tasks.md` |
+| **Minh chứng (Evidence)** | Git commit: `3e5a734`; Phiên làm việc Antigravity CLI c260de22-27a3-4c90-b5ee-bb048e0d209b; file artifact tại `specs/040-shopping-list/tasks.md` |
 
 ### Prompt đã sử dụng:
 ```text
@@ -518,3 +519,40 @@ Hãy giúp tôi:
 - Kiểm tra tính nguyên tử (Atomicity): xác nhận mỗi task gắn với đúng một file mã nguồn hoặc một câu lệnh kiểm chứng độc lập, không có task gộp nhiều file.
 - Xác nhận các kịch bản kiểm thử không thể chạy tự động trong CI (Airplane Mode thực tế, đo trễ thao tác $<50$ms, kiểm tra định dạng in ấn tiết kiệm mực) được giao cho các test case thủ công `TC-MAN-040-01`, `02`, `03` tại `docs/test/test-cases.md`.
 - Kiểm tra không phát sinh commit hoặc push tự động lên Git, tuân thủ kỷ luật quản lý nhánh cá nhân.
+
+---
+
+## Mục 13: Đối chiếu chéo chất lượng artifact bằng `speckit-analyze` và chuẩn hóa các điểm Low/Medium trong spec.md
+
+| Trường | Nội dung |
+|---|---|
+| **Ngày & Giờ truy cập** | 2026-10-24, 20:06 – 20:25 (Giờ Việt Nam, UTC+7) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Công cụ AI & Phiên bản** | Google Antigravity (Gemini 3.8 Flash), lệnh Spec Kit `/speckit-analyze` |
+| **Nền tảng** | CLI / Visual Studio Code trên Ubuntu Linux 24.04 LTS |
+| **Tài liệu liên quan** | `specs/040-shopping-list/spec.md`, `specs/040-shopping-list/plan.md`, `specs/040-shopping-list/tasks.md`, `src/constitution.md` |
+| **Mục đích sử dụng** | Kiểm toán đối chiếu chéo (cross-artifact consistency audit) giữa đặc tả (spec), kế hoạch (plan) và danh mục công việc (tasks) của feature 040 trước khi bước vào giai đoạn hiện thực (implement); phát hiện và xử lý triệt để 4 điểm sai lệch/mơ hồ mức độ Low/Medium. |
+| **Nhánh Git** | `feature/040-shopping-list` |
+| **Minh chứng (Evidence)** | Phiên làm việc Antigravity CLI c260de22-27a3-4c90-b5ee-bb048e0d209b; các thay đổi trực tiếp tại `specs/040-shopping-list/spec.md` |
+
+### Prompt đã sử dụng:
+```text
+speckit-analyze
+```
+*(Tiếp nối sau báo cáo phân tích)*:
+```text
+Bạn hãy fix 4 vấn đề Low/Medium giúp tôi
+```
+
+### Nội dung do AI sinh ra:
+- Báo cáo phân tích chất lượng đặc tả (Specification Analysis Report) đánh giá 25/25 FR và 5/5 SC đạt tỷ lệ bao phủ 100% qua 80 tasks, 0 lỗi Critical/High, và chỉ ra 4 điểm Low/Medium cần tinh chỉnh.
+- Đề xuất và thực hiện chuẩn hóa nội dung trực tiếp trên `specs/040-shopping-list/spec.md`:
+  1. Chuẩn hóa `UnitConversion` thành domain utility service in-memory (`UnitConversionService`) theo đúng quyết định kiến trúc R1 và Hiến pháp III (YAGNI).
+  2. Đồng bộ tên thực thể nghiệp vụ thành `ShoppingListItemSource (Item Provenance)` khớp với bảng `shopping_list_item_sources` (Mục 4.8 `full-schema.md`).
+  3. Tinh chỉnh câu chữ giữa FR-002 (Recipe Detail) và FR-004 (Weekly Meal Plan) dẫn chiếu rõ việc dùng chung component UI `PreImportBottomSheet`.
+  4. Làm rõ tiêu chí nghiệm thu của SC-002: CI kiểm tra hành vi Optimistic UI không chặn mạng, kịch bản thực địa `TC-MAN-040-02` đo đạc độ trễ vật lý $<50$ms.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Trực tiếp rà soát báo cáo phân tích, xác nhận 0 lỗi Critical/High và kiểm chứng mức độ bao phủ 100% của 80 tasks đối với toàn bộ các acceptance scenarios trong spec.
+- Phê duyệt phương án xử lý 4 điểm Low/Medium, đối chiếu với `data-model.md` và `plan.md` để đảm bảo không làm thay đổi ranh giới hay phá vỡ hợp đồng API đã thống nhất.
+- Kiểm tra diff trên Git (`git diff specs/040-shopping-list/spec.md`), xác nhận các thay đổi chỉ tập trung chuẩn hóa câu chữ, thuật ngữ và phương thức nghiệm thu mà không làm phát sinh mâu thuẫn mới.

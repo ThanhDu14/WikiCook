@@ -199,9 +199,9 @@ As a **home cook who shares household chores**, I want to export my shopping lis
 ### Functional Requirements
 
 - **FR-001**: System MUST maintain exactly one active shopping list per authenticated user account at any given time.
-- **FR-002**: System MUST provide an entry point on every published recipe detail view allowing users to select target servings, preview scaled ingredients in an interactive pre-import modal, toggle inclusion checkboxes with a 1-tap "Bỏ chọn gia vị cơ bản" utility, and append selected ingredients into the active shopping list.
+- **FR-002**: System MUST provide an entry point on every published recipe detail view allowing users to select target servings, preview scaled ingredients in an interactive pre-import bottom sheet (`PreImportBottomSheet`), toggle inclusion checkboxes with a 1-tap "Bỏ chọn gia vị cơ bản" utility, and append selected ingredients into the active shopping list.
 - **FR-003**: System MUST calculate recipe ingredient scaling using the formula: $\text{Scaled Quantity} = \text{Base Quantity} \times (\text{Target Servings} / \text{Base Servings})$. For discrete/countable units (e.g., quả, củ, bắp, lon, gói, quả trứng), the primary purchase display MUST automatically round up ($\lceil x \rceil$) to the nearest whole integer, while preserving exact decimal precision in item provenance.
-- **FR-004**: System MUST display an interactive pre-import checklist allowing users to review and filter ingredients (with 1-tap staple deselection) and prompt with a decision modal ("Merge with active list" or "Archive and create new") when generating a shopping list from a Weekly Meal Plan if an active list already contains items.
+- **FR-004**: System MUST provide a bulk generation entry point from the Weekly Meal Plan view reusing the shared `PreImportBottomSheet` component to filter ingredients (with 1-tap staple deselection), and prompting with a decision modal ("Merge with active list" or "Archive and create new") if an active shopping list already exists.
 - **FR-005**: System MUST automatically deduplicate identical ingredients by canonical ingredient identifier across all imported recipes.
 - **FR-006**: System MUST aggregate quantities for identical ingredients sharing compatible metric weight units ($g, kg$) or metric volume units ($ml, l$).
 - **FR-007**: System MUST automatically apply bidirectional unit conversions for metric quantities: converting values $\ge 1000\text{g} \to \text{kg}$ and $\ge 1000\text{ml} \to \text{l}$; and inversely converting fractional values $< 1\text{kg} \to \text{g}$ and $< 1\text{l} \to \text{ml}$.
@@ -233,13 +233,13 @@ As a **home cook who shares household chores**, I want to export my shopping lis
   - Relationships: Belongs to a User; contains zero or more `ShoppingListItem` entities.
 - **`ShoppingListItem`**: Represents an individual grocery item within a shopping list.
   - Attributes: `id`, `listId`, `ingredientId` (optional for custom items), `customName`, `displayQuantity`, `displayUnit`, `normalizedQuantity`, `normalizedUnit`, `aisleCategoryId`, `isChecked`, `isCleared`, `isManuallyEdited`, `createdAt`, `updatedAt`, `clearedAt`.
-  - Relationships: Belongs to a `ShoppingList`; linked to an `AisleCategory`; optionally linked to an `Ingredient`; references one or more `ItemProvenance` records.
-- **`ItemProvenance`**: Represents the recipe source contribution for an aggregated ingredient.
-  - Attributes: `id`, `shoppingListItemId`, `recipeId`, `recipeTitle`, `contributedQuantity`, `unit`, `scaledServings`.
+  - Relationships: Belongs to a `ShoppingList`; linked to an `AisleCategory`; optionally linked to an `Ingredient`; references one or more `ShoppingListItemSource` (Item Provenance) records.
+- **`ShoppingListItemSource` (Item Provenance)**: Represents the recipe source contribution snapshot for an aggregated ingredient (persisted in table `shopping_list_item_sources` per full-schema §4.8; exposed to client via `ItemProvenanceDto`).
+  - Attributes: `id`, `itemId` (FK to `shopping_list_items`), `recipeId`, `mealPlanItemId` (optional FK), `recipeTitleSnapshot`, `contributedQuantity`, `unitId`.
 - **`AisleCategory`**: Represents a standard retail supermarket department.
   - Attributes: `id`, `name`, `code` (`PRODUCE`, `MEAT_SEAFOOD`, `DAIRY_EGGS`, `PANTRY_SPICES`, `FROZEN`, `GENERAL`), `iconName`, `displayOrder`.
-- **`UnitConversion`**: Represents mathematical conversion factors between measurement units of the same physical dimension.
-  - Attributes: `fromUnit`, `toUnit`, `multiplier`, `dimension` (`WEIGHT`, `VOLUME`).
+- **`UnitConversion`**: Domain conversion utility service (`UnitConversionService`) performing in-memory bidirectional conversions between standard metric units ($g \leftrightarrow kg$, $ml \leftrightarrow l$) without database table persistence per R1 architecture decision.
+  - Methods / Rules: `aggregateMetric()`, `normalizeAndFormat()`, metric thresholds ($1000\text{g} = 1\text{kg}$, $1000\text{ml} = 1\text{l}$), continuous 2-decimal rounding.
 - **`UserAislePreference`**: Represents a user's customized department/aisle assignment for a canonical ingredient.
   - Attributes: `id`, `userId`, `ingredientId`, `preferredAisleCategoryId`, `createdAt`, `updatedAt`.
   - Relationships: Belongs to a User; linked to an `Ingredient` and an `AisleCategory`.
@@ -251,7 +251,7 @@ As a **home cook who shares household chores**, I want to export my shopping lis
 ### Measurable Outcomes
 
 - **SC-001 (Aggregation Accuracy)**: 100% of duplicate ingredients sharing compatible metric units ($g/kg, ml/l$) are merged and scaled with mathematical precision, matching manual calculation over test validation fixtures.
-- **SC-002 (In-Store Checklist Responsiveness)**: Checkbox toggles, strikethrough animations, and progress bar updates execute with an on-screen latency $< 50$ milliseconds on mid-tier mobile devices.
+- **SC-002 (In-Store Checklist Responsiveness)**: Checkbox toggles, strikethrough animations, and progress bar updates execute with an on-screen latency $< 50$ milliseconds on mid-tier mobile devices (verified via Chrome DevTools Performance CPU throttling / physical device testing in manual test case `TC-MAN-040-02`; automated CI tests verify immediate optimistic UI state transitions without network blocking).
 - **SC-003 (Offline Data Preservation & Sync)**: 100% of checklist toggles, quantity modifications, and custom items created in an offline state are preserved locally and synchronize successfully with the backend within 3.0 seconds after restoring stable network connectivity.
 - **SC-004 (Bulk Generation Performance)**: The client-side aggregation, unit normalization, and aisle sorting of a full 21-meal weekly plan (containing 80 to 120 raw ingredients) completes in $< 1.0$ second.
 - **SC-005 (Workflow Ergonomics)**: Generating a consolidated shopping list from an existing Weekly Meal Plan requires no more than 3 user taps from the meal planner view.
