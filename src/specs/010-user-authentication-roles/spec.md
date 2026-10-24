@@ -1,6 +1,6 @@
 # Feature Specification: User Authentication & Roles
 
-**Feature Branch**: `feature/SCRUM-27-user-authentication-roles` *(Sprint 02 Backlog)*
+**Feature Branch**: `feature/SCRUM-xx-user-authentication-roles` *(Jira key pending)*
 
 **Created**: 2026-10-02
 
@@ -25,8 +25,27 @@ modules rely on knowing *who* the user is and *what they are allowed to do*.
 password reset, Google sign-in, account lockout after repeated failures, role assignment and
 role-based access, suspended/banned account handling.
 
-**Out of scope** (separate specs): dietary profile & avatar management (Module 3.1 profile part),
-Apple sign-in, two-factor authentication, the admin dashboard UI itself (Module 3.10).
+**Out of scope** (separate specs): editing the display name, changing or setting a password while
+signed in, deleting one's own account, and dietary profile & avatar management — all of these
+belong to `specs/011-user-profile-dietary` (Module 3.1 profile part); Apple sign-in, two-factor
+authentication, the admin dashboard UI itself (Module 3.10).
+
+## Clarifications
+
+### Session 2026-10-18
+
+- Q: (Maintainer instruction) Which scope boundary with spec 011? → A: Editing the display name, changing/setting a password, deleting the account and the dietary profile are owned by spec 011; Out of scope updated.
+- Q: (Maintainer instruction) Who can see personal data (NFR-009)? → A: Email is visible only to the account owner and Administrators; display name and avatar are public (as defined in spec 011).
+- Q: (Maintainer instruction) Does spec 011 need a "deleted" account status? → A: No. Spec 011 removes the account completely, so no "deleted" status is added to User Account; a hashed-email block list entity is added instead (see Key Entities).
+- Q: (Maintainer instruction) Jira key in Feature Branch? → A: SCRUM-27 was the Sprint Planning task, not this feature; branch line now `feature/SCRUM-xx-…` pending a new Jira key; Assumption updated.
+- Q: After an account is deleted (spec 011), can its email be used to register again immediately? → A: Yes, immediately as a brand-new independent account (FR-002, FR-026). Exceptions: a banned account may still delete itself but its email hash goes on a block list and re-registration with that email is refused; a temporarily suspended account cannot delete itself until the suspension ends. Audit entries are kept the full 90 days (FR-025) in anonymised form.
+
+- Q: When someone signs in with Google using an email that belongs to an unverified email/password account, what happens to that account? → A: It is treated as a new account: all data created before verification is deleted (display name, dietary profile of 011, recipe drafts of 060, collections of 080), the old password is disabled, earlier sessions end, the display name comes from Google, and the account is marked verified. Reason: the real email owner must not inherit an allergy profile or content pre-set by someone else (FR-019).
+- Q: How long is an account that never verifies its email kept? → A: 7 days from registration (a new verification link does not extend it); then it is deleted completely with all its data, the email can register again immediately and is not put on the block list (FR-005).
+- Q: Are users notified when an Administrator changes their role or suspends/bans them? → A: Suspension/ban: email with reason, end date (suspensions) and appeal instructions, plus an email when the suspension ends or the ban is lifted. Role change: no email, but an in-app notice at the next sign-in names the new role and changed permissions (especially on demotion). Appeals themselves belong to spec 100 (FR-024a).
+- Q: Can an Administrator be suspended, banned or demoted by another Administrator? → A: Yes, but never by themselves, and at least one active Administrator (not suspended, banned or deleted) must always remain; same rule as spec 011 self-deletion. A Moderator cannot act on a Moderator or Administrator (only a higher role acts on a lower one). Actions on another Administrator require re-authentication and are always audited (FR-022a, FR-023).
+
+- Session 2026-10-19: Concurrent-user load condition changed from 200 to 100 to match the RC acceptance gate in docs/management/project-plan.md §4.4.2 and Vision Document §7 (SCRUM-36).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -161,8 +180,9 @@ is reused.
 1. **Given** a Google account whose email is not registered, **When** the user continues with
    Google and grants consent, **Then** a verified Member account is created and the user is
    signed in.
-2. **Given** a Google account whose email matches an existing WikiCook account, **When** the user
-   continues with Google, **Then** they are signed in to that existing account (same data, same role).
+2. **Given** a Google account whose email matches an existing **verified** WikiCook account, **When**
+   the user continues with Google, **Then** they are signed in to that existing account (same data,
+   same role). If the matching account is **unverified**, it is reset as a new account (FR-019).
 3. **Given** the user cancels or denies consent on the Google screen, **When** they return,
    **Then** they are back on the sign-in page with a neutral message and no account is created.
 
@@ -187,10 +207,20 @@ is reused.
 - **Double-click on submit** does not create two accounts or send two emails.
 - **Google account without an email address** or with an unverified email → sign-in refused
   with a message suggesting email/password registration.
-- **Last Administrator** cannot remove their own Administrator role or be demoted, so the platform
-  never ends up with zero administrators.
+- **Last active Administrator** cannot be demoted, suspended, banned or deleted, and no
+  Administrator can do any of this to themselves, so the platform never ends up with zero active
+  administrators (FR-022a, FR-023).
 - **Email delivery failure** (verification or reset) → user can request the email again, limited
   to 3 requests per 15 minutes per email address.
+- **Unverified account reaches 7 days** → deleted automatically with all its data (FR-005); if the
+  user is signed in at that moment, their next request ends the session. The same data-deletion
+  event as the Google reset (Integration Points) is sent to specs 011, 060 and 080.
+- **Google sign-in matches an unverified email/password account** → the old account is reset to a
+  brand-new one: everything created before verification (display name, dietary profile, recipe
+  drafts, collections, any other data) is deleted, the old password is disabled, all earlier
+  sessions are ended, the display name is taken from the Google account, and the account becomes
+  verified (FR-019). This stops a third party from pre-loading an email owner's account with
+  data (e.g. an allergy profile) or a password.
 - **Simultaneous sessions** on multiple devices are allowed; signing out on one device does not
   sign out the others (except after a password reset, see US4-2).
 
@@ -203,12 +233,16 @@ is reused.
 - **FR-001**: System MUST let a visitor register with display name, email, password and password
   confirmation.
 - **FR-002**: System MUST treat emails as case-insensitive and trim surrounding spaces; each email
-  can belong to only one account.
+  can belong to only one account. An email whose account was deleted (spec 011) becomes free
+  immediately, except emails on the Blocked Email list (FR-026).
 - **FR-003**: System MUST assign the **Member** role to every newly registered account.
 - **FR-004**: Passwords MUST be 8–128 characters and contain at least one letter and one digit;
   the system MUST reject passwords that equal the user's email.
 - **FR-005**: System MUST send a verification email whose link is single-use and expires after
-  24 hours, and MUST let the user request a new link.
+  24 hours, and MUST let the user request a new link. An account that is still unverified 7 days
+  after registration MUST be deleted automatically and completely (account and all its data); the
+  7 days are counted from registration and requesting a new link does not extend them. The email is
+  then free to register again immediately and is NOT added to the Blocked Email list.
 - **FR-006**: Unverified accounts MUST be able to sign in but MUST NOT be able to publish content
   (recipes, reviews, cooksnaps, comments).
 
@@ -239,8 +273,11 @@ is reused.
 **Google sign-in**
 
 - **FR-018**: Users MUST be able to sign in with a Google account that has a verified email.
-- **FR-019**: If the Google email matches an existing account, the system MUST link and sign in to
-  that account rather than create a duplicate.
+- **FR-019**: If the Google email matches an existing **verified** account, the system MUST link and
+  sign in to that account rather than create a duplicate. If it matches an **unverified** account,
+  the system MUST treat it as a new account: delete all data created before verification, disable
+  the old password, end all earlier sessions, take the display name from the Google account and mark
+  the account verified.
 
 **Roles & access control**
 
@@ -249,12 +286,35 @@ is reused.
 - **FR-021**: System MUST enforce the permission matrix below for every protected action, on every
   request (not only by hiding buttons).
 - **FR-022**: Only Administrators MUST be able to change a user's role or suspend/ban an account.
-- **FR-023**: System MUST prevent removing the Administrator role from the last remaining
-  Administrator.
+- **FR-022a**: Only a higher role may act on a lower role. A Moderator MUST NOT suspend, ban or
+  change the role of another Moderator or of an Administrator. An Administrator MAY act on another
+  Administrator, but MUST NOT suspend, ban, demote or delete themselves. Any action on another
+  Administrator MUST require the acting Administrator to re-authenticate and MUST always be
+  audited (FR-025).
+- **FR-023**: System MUST prevent removing the Administrator role from, suspending, banning or
+  deleting the last remaining **active** Administrator. "Active Administrator" means an
+  Administrator account that is not suspended, banned or deleted; the system MUST always keep at
+  least one. Spec 011 uses the same rule for self-deletion.
 - **FR-024**: Role changes, suspensions and bans MUST take effect no later than the affected
   user's next request.
+- **FR-024a**: System MUST email the account owner when the account is suspended or banned, stating
+  the reason, the end date (for suspensions) and how to appeal; it MUST also email them when a
+  suspension ends or a ban is lifted. A role change MUST NOT send an email; instead, at the user's
+  next sign-in (or next request if already signed in) the app MUST show a notice naming the new
+  role and the permissions that changed, stressing any permissions lost on a demotion. The notice
+  is shown once and then dismissed.
 - **FR-025**: System MUST record an audit entry (who, what, when, target account) for sign-in
-  successes and failures, lockouts, password resets, role changes, suspensions and bans.
+  successes and failures, lockouts, password resets, role changes, suspensions and bans. When the
+  target account is deleted, its audit entries MUST be kept for the full retention period (NFR-008)
+  in anonymised form (no email or display name).
+
+**Account deletion rules** *(deletion itself is specified in spec 011)*
+
+- **FR-026**: A user whose account is **banned** MAY still delete their account, but the system
+  MUST then store only a hash of the email on a block list (never the plain email) and MUST refuse
+  registration and Google sign-in creation with any email matching it. A user who is **temporarily
+  suspended** MUST NOT be able to delete their account until the suspension ends. For all other
+  deleted accounts nothing is kept on the block list.
 
 **Permission matrix** (✓ = allowed)
 
@@ -278,7 +338,7 @@ is reused.
 - **NFR-003 (Security – privacy)**: Error messages and response timing MUST NOT reveal whether an
   email is registered (sign-in, reset).
 - **NFR-004 (Performance)**: 95% of sign-in attempts MUST complete in under 2 seconds under normal
-  load (up to 200 concurrent users).
+  load (up to 100 concurrent users).
 - **NFR-005 (Availability)**: Sign-in MUST remain available when the Google sign-in provider is
   unreachable (email/password still works).
 - **NFR-006 (Usability)**: Sign-in and sign-up pages MUST be fully usable on screens from 360 px
@@ -287,8 +347,8 @@ is reused.
   visible label, and error messages MUST be announced next to the related field.
 - **NFR-008 (Auditability)**: Audit entries (FR-025) MUST be retained for at least 90 days and be
   viewable by Administrators.
-- **NFR-009 (Data protection)**: Users' personal data collected here (email, display name) MUST be
-  visible only to the account owner and Administrators.
+- **NFR-009 (Data protection)**: A user's email MUST be visible only to the account owner and
+  Administrators. Display name and avatar are public (as defined in spec 011).
 
 ### Key Entities
 
@@ -303,7 +363,13 @@ is reused.
   "remember me" flag, expiry.
 - **One-time Token**: an email verification or password reset link — owner account, purpose,
   expiry, used/unused.
-- **Audit Entry**: a security-relevant event — actor, action, target account, time, outcome.
+- **Audit Entry**: a security-relevant event — actor, action, target account, time, outcome. After
+  the target account is deleted, the entry is kept but anonymised.
+- **Blocked Email**: a one-way hash (never the plain email) of the email of a banned account
+  that deleted itself; used only to refuse re-registration.
+
+*No "deleted" account status exists: spec 011 removes the User Account completely, so a deleted
+account is simply absent (its public content shows "Người dùng đã xóa").*
 
 ## Success Criteria *(mandatory)*
 
@@ -331,7 +397,33 @@ is reused.
   account; it can be added later without changing roles or sessions.
 - Two-factor authentication is not required for this course project.
 - An email-sending service is available for verification, reset and lockout notification emails.
-- Dietary profile, avatar and household size (Module 3.1 profile part) are covered by a separate
-  "user profile" spec that depends on this one.
-- Jira key for this feature is not yet assigned; it must be added to the branch name per the
-  constitution (Principle I).
+- Dietary profile, avatar, household size, display-name editing, password change/set and account
+  deletion are covered by `specs/011-user-profile-dietary`, which depends on this one.
+- SCRUM-27 is the Sprint Planning task on Jira, not this feature. A new Jira key for this feature
+  is not yet assigned; once created, replace `SCRUM-xx` in the branch name per the constitution
+  (Principle I).
+
+## Integration Points
+
+- **Spec 011 – account deletion flow**: 011 performs the deletion (re-authentication, typing
+  `DELETE`, anonymising content). 010 adds: (1) a banned user may delete, and 011 MUST call 010 to
+  store the email hash on the Blocked Email list; (2) a temporarily suspended user is refused until
+  the suspension ends; (3) the email is freed immediately otherwise; (4) audit entries are
+  anonymised, not deleted (FR-025/FR-026).
+- **Specs 011, 060, 080 – reset of an unverified account on Google sign-in (FR-019)**: 010 emits
+  an "account reset" event when Google sign-in takes over an unverified account. 011 MUST delete
+  the dietary profile (and bio/avatar), 060 MUST delete the user's recipe drafts and any other
+  recipes, and 080 MUST delete the user's collections and bookmarks; none of them may keep data
+  created before verification. Data created after verification is never affected.
+- **Specs 011 and 100 – active Administrator rule (FR-022a, FR-023)**: "Active Administrator" =
+  not suspended, banned or deleted. 011 MUST refuse self-deletion of the last active Administrator
+  using this rule. 100 MUST enforce the role hierarchy (Moderator cannot act on Moderator or
+  Administrator; Administrator may act on Administrator but never on themselves), require
+  re-authentication before any action on another Administrator, refuse any action that would leave
+  zero active Administrators, and always write an audit entry.
+- **Spec 100 – ban / suspension and appeals**: 100 owns the moderation actions and the appeal
+  process; 010 owns the account status, the Blocked Email list and sending the suspension/ban,
+  end-of-suspension and ban-lifted emails (FR-024a). 100 MUST supply the reason, the end date and
+  the appeal link/instructions for each email, and MUST notify 010 when a suspension expires or a
+  ban is lifted. Role-change notices are in-app only. Ban and suspend actions MUST use FR-022/FR-024, and 100 reads the
+  block list only through 010 (registration refusal), never the plain email.

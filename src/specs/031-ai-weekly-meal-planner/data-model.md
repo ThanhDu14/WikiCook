@@ -2,7 +2,7 @@
 
 **Feature**: [spec.md](spec.md) | **Research**: [research.md](research.md)
 
-Bảng gốc lấy từ [full-schema.md mục 4.7](../../../docs/analysis-and-design/database/full-schema.md#47-ai-planner-và-dinh-dưỡng-031-090--c).
+Bảng gốc lấy từ [full-schema.md mục 4.7](../../docs/analysis-and-design/database/full-schema.md#47-ai-planner-và-dinh-dưỡng-031-090--c).
 Migration `V302__ai_requests_embeddings.sql` (research R18). Spec này **không thêm bảng** ngoài
 schema; draft không được lưu.
 

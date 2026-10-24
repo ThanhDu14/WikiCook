@@ -1,4 +1,4 @@
-| 9 | 2026-10-17, 22:36 – 23:01 || 8 | 2026-10-17, 22:36 – 23:01 || 7 | 2026-10-17, 22:36 – 23:01 || 6 | 2026-10-17, 22:36 – 23:01 || 5 | 2026-10-08, 22:09 – 22:14 || 4 | 2026-10-08, 22:06 – 22:09 || 3 | 2026-10-08, 21:56 – 21:59 || 2 | 2026-10-08, 21:43 – 21:46 || 1 | 2026-10-08, 21:39 – 21:42 |# Nhật ký sử dụng AI – Nguyễn Đức Duy
+# Nhật ký sử dụng AI – Nguyễn Đức Duy
 
 Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễn Đức Duy** (mã **B**, Product Owner & Requirements Lead, phụ trách spec `020-recipe-search-filter` và `060-recipe-editor` theo [phân công tuần 12/10 – 18/10](../management/w1-spec-design-assignment.md), và Mục 1–6 của Vision Document theo Sprint 2 – `SCRUM-32` → `SCRUM-35` trong [project plan](../management/project-plan.md)). Mỗi lần dùng AI là một mục mới, mục mới nhất ở cuối.
 
@@ -16,11 +16,11 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 
 | # | Thời gian (UTC+7) | Nội dung | Spec / Tài liệu |
 |---|---|---|---|
-| 1 | 2026-10-08, 21:39 | Viết spec 020 (tìm kiếm và lọc công thức) bằng `/speckit-specify` | 020 |
-| 2 | 2026-10-08, 21:43 | Viết spec 060 (wizard tạo công thức, "Công thức của tôi") bằng `/speckit-specify` | 060 |
-| 3 | 2026-10-08, 21:56 | Soạn bản nháp schema nhóm bảng `recipes` / `ingredients` gửi cả nhóm | 020, 060 |
-| 4 | 2026-10-08, 22:06 | Làm rõ spec 020 bằng `/speckit-clarify` (5 câu hỏi) | 020 |
-| 5 | 2026-10-08, 22:09 | Làm rõ spec 060 bằng `/speckit-clarify` (5 câu hỏi) | 060 |
+| 1 | 2026-10-08, 21:39 – 21:42 | Viết spec 020 (tìm kiếm và lọc công thức) bằng `/speckit-specify` | 020 |
+| 2 | 2026-10-08, 21:43 – 21:46 | Viết spec 060 (wizard tạo công thức, "Công thức của tôi") bằng `/speckit-specify` | 060 |
+| 3 | 2026-10-08, 21:56 – 21:59 | Soạn bản nháp schema nhóm bảng `recipes` / `ingredients` gửi cả nhóm | 020, 060 |
+| 4 | 2026-10-08, 22:06 – 22:09 | Làm rõ spec 020 bằng `/speckit-clarify` (5 câu hỏi) | 020 |
+| 5 | 2026-10-08, 22:09 – 22:14 | Làm rõ spec 060 bằng `/speckit-clarify` (5 câu hỏi) | 060 |
 | 6 | 2026-10-17, 22:36 – 23:01 | Soạn Vision Document Mục 1 (Introduction) và Mục 2 (Positioning) theo mẫu RUP (`SCRUM-32`) | Vision §1–2 |
 | 7 | 2026-10-17, 22:36 – 23:01 | Soạn Vision Document Mục 3 (Stakeholder & User Descriptions) và Mục 4 (Product Overview) (`SCRUM-33`) | Vision §3–4 |
 | 8 | 2026-10-17, 22:36 – 23:01 | Viết 10 tính năng cốt lõi dạng đoạn văn What/Why/Who ở Mục 5 (`SCRUM-34`) | Vision §5 |

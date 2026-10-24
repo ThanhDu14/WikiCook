@@ -2,10 +2,10 @@
 
 **Course:** CS300 - CSC13002 - Introduction to Software Engineering  
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
-**Team:** Group 06  
+**Team:** Group 05  
 **Template:** Adapted from the RUP Vision template for small projects (`rup_vision_sp.docx`)  
-**Document Version:** 0.9 (Sprint 02 Draft — Sections 1–6, Project Assignment 2)  
-**Date:** October 17, 2026  
+**Document Version:** 1.0 (Sprint 02 Baseline — Sections 1–7, Project Assignment 2)  
+**Date:** October 24, 2026  
 
 ---
 
@@ -31,6 +31,7 @@
 | **17/10/2026** | `v0.8` | Authored Section 5: 10 core product features and traceability (`SCRUM-34`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **17/10/2026** | `v0.9` | Authored Section 6: 2 Mermaid user workflow diagrams (`SCRUM-35`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **19/10/2026** | `v0.10` | Authored Section 7: quantifiable non-functional requirements grouped by ISO/IEC 25010, with applicable standards and verification approach (`SCRUM-36`). | Mai Văn Hiển (`MaiHien3507`) |
+| **24/10/2026** | `v1.0` | Sprint 02 baseline for PA2 submission: Sections 1–7 complete; corrected group number to Group 05 and updated the document header. | Nguyễn Thành Dự (`ThanhDu14`) |
 
 ---
 
@@ -47,7 +48,7 @@ The purpose of this Vision Document is to collect, analyze and define the high-l
 
 ### 1.2. Scope
 
-This document covers **WikiCook**, a responsive web application (Single-Page Application, usable from a 360 px mobile screen up to a desktop monitor) that helps home cooks decide what to cook, plan their week, shop for groceries, cook step by step and share recipes with a community. The product is developed by Group 06 over five Scrum Sprints (PA1–PA5) of the Fall 2026–2027 semester.
+This document covers **WikiCook**, a responsive web application (Single-Page Application, usable from a 360 px mobile screen up to a desktop monitor) that helps home cooks decide what to cook, plan their week, shop for groceries, cook step by step and share recipes with a community. The product is developed by Group 05 over five Scrum Sprints (PA1–PA5) of the Fall 2026–2027 semester.
 
 - **In scope:** the ten core features described in Section 5 — user authentication and dietary profile, smart recipe discovery, AI weekly meal planner, smart shopping list, hands-free cooking mode, community recipe contribution, Cooksnaps and reviews, custom collections, nutrition and allergen analysis, and admin content moderation.
 - **Out of scope:** native iOS/Android store applications, online grocery ordering and payment, smart-kitchen (IoT) device integration, AI-generated recipes (the AI only plans with recipes that already exist in WikiCook), and medical or clinical dietary advice.

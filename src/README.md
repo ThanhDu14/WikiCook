@@ -1,7 +1,7 @@
 # WikiCook - Source Code & Spec Kit Artifacts Directory
 
 > **Project:** WikiCook — Smart Cooking & Recipe Platform  
-> **Course:** Software Engineering (CO3001) — Project Assignment 2 (PA2)  
+> **Course:** CS300 - CSC13002 - Introduction to Software Engineering — Project Assignment 2 (PA2)  
 > **Directory Scope:** `WikiCook/src/`  
 > **Task Tracking:** `SCRUM-37` (Spec Kit Compliance & Artifact Synchronization)  
 
@@ -43,6 +43,11 @@ WikiCook/src/
     │   └── checklists/
     │       └── requirements.md    # Pre-implementation verification checklist
     │
+    ├── 011-user-profile-dietary/  # Personal profile & dietary profile
+    │   ├── spec.md                # Allergens, excluded ingredients, diet type & household size
+    │   └── checklists/
+    │       └── requirements.md    # Quality checklist for user profile
+    │
     ├── 020-recipe-search-filter/  # Sprint 2: Recipe search & multi-facet filtering
     │   ├── spec.md                # Search algorithm, filters & query specifications
     │   └── checklists/
@@ -73,10 +78,25 @@ WikiCook/src/
     │   └── checklists/
     │       └── requirements.md    # Quality checklist for editor functionality
     │
-    └── 090-nutrition-analysis/    # AI nutrition estimate & allergen warnings
-        ├── spec.md                # Estimate on approval, plausibility checks & admin recalculation
+    ├── 070-review-cooksnap/       # Reviews, Cooksnaps & ratings
+    │   ├── spec.md                # Star ratings, comments, photo proofs & reporting
+    │   └── checklists/
+    │       └── requirements.md    # Quality checklist for reviews & Cooksnaps
+    │
+    ├── 080-bookmark-collection/   # Bookmarks & custom collections
+    │   ├── spec.md                # Saved recipes, named collections & privacy
+    │   └── checklists/
+    │       └── requirements.md    # Quality checklist for collections
+    │
+    ├── 090-nutrition-analysis/    # AI nutrition estimate & allergen warnings
+    │   ├── spec.md                # Estimate on approval, plausibility checks & admin recalculation
+    │   └── checklists/
+    │       └── requirements.md    # Quality checklist for nutrition analysis
+    │
+    └── 100-admin-moderation/      # Admin dashboard & content moderation
+        ├── spec.md                # Moderation queue, taxonomy, reports, suspensions & audit log
         └── checklists/
-            └── requirements.md    # Quality checklist for nutrition analysis
+            └── requirements.md    # Quality checklist for admin moderation
 ```
 
 ---
@@ -116,6 +136,11 @@ The `specs/` directory hosts living specification packages generated through Spe
   * *Deliverables:* [`spec.md`](./specs/010-user-authentication-roles/spec.md), [`checklists/requirements.md`](./specs/010-user-authentication-roles/checklists/requirements.md).
   * *Scope:* Registration, login, password recovery, JWT token lifecycles, and Role-Based Access Control (Admin vs. Cook).
 
+* **User Profile & Dietary Profile ([`specs/011-user-profile-dietary/`](./specs/011-user-profile-dietary/)):**
+  * *Sprint:* Not yet assigned (Jira key pending).
+  * *Deliverables:* [`spec.md`](./specs/011-user-profile-dietary/spec.md), [`checklists/requirements.md`](./specs/011-user-profile-dietary/checklists/requirements.md).
+  * *Scope:* Personal profile and avatar, dietary profile (allergens, excluded ingredients, diet type, preferred cuisines, maximum cooking time, household size) and account deletion.
+
 * **Recipe Search & Filter ([`specs/020-recipe-search-filter/`](./specs/020-recipe-search-filter/)):**
   * *Sprint:* Sprint 2 (Discovery engine).
   * *Deliverables:* [`spec.md`](./specs/020-recipe-search-filter/spec.md), [`checklists/requirements.md`](./specs/020-recipe-search-filter/checklists/requirements.md).
@@ -150,6 +175,21 @@ The `specs/` directory hosts living specification packages generated through Spe
   * *Sprint:* Not yet assigned (Jira key pending).
   * *Deliverables:* [`spec.md`](./specs/090-nutrition-analysis/spec.md), [`checklists/requirements.md`](./specs/090-nutrition-analysis/checklists/requirements.md).
   * *Scope:* One-time AI nutrition estimate per recipe on approval or import, plausibility checks, nutrition block with AI disclaimer, allergen warnings from ingredient data, calorie source for search and the meal planner, and Administrator recalculate/hide.
+
+* **Reviews & Cooksnaps ([`specs/070-review-cooksnap/`](./specs/070-review-cooksnap/)):**
+  * *Sprint:* Not yet assigned (Jira key pending).
+  * *Deliverables:* [`spec.md`](./specs/070-review-cooksnap/spec.md), [`checklists/requirements.md`](./specs/070-review-cooksnap/checklists/requirements.md).
+  * *Scope:* Star ratings, comments and tips, Cooksnap photo uploads with EXIF stripping, rating aggregation and reporting to moderators.
+
+* **Bookmarks & Collections ([`specs/080-bookmark-collection/`](./specs/080-bookmark-collection/)):**
+  * *Sprint:* Not yet assigned (Jira key pending).
+  * *Deliverables:* [`spec.md`](./specs/080-bookmark-collection/spec.md), [`checklists/requirements.md`](./specs/080-bookmark-collection/checklists/requirements.md).
+  * *Scope:* One-tap saving, named private collections, adding a recipe to several collections, and renaming, reordering or deleting collections.
+
+* **Admin Dashboard & Content Moderation ([`specs/100-admin-moderation/`](./specs/100-admin-moderation/)):**
+  * *Sprint:* Not yet assigned (Jira key pending).
+  * *Deliverables:* [`spec.md`](./specs/100-admin-moderation/spec.md), [`checklists/requirements.md`](./specs/100-admin-moderation/checklists/requirements.md).
+  * *Scope:* Recipe review queue (approve, reject, request revision), taxonomy management, abuse reports, suspensions and bans, and an append-only audit log.
 
 ---
 
