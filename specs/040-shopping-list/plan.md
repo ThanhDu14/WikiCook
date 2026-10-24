@@ -197,19 +197,19 @@ Bảng ánh xạ toàn diện từ **Yêu cầu chức năng (FR)** và **Tiêu 
 | **FR-007** | Quy đổi metric 2 chiều ($<1kg \to g, \ge 1000g \to kg$) | `UnitConversionService.normalizeAndFormat()` | `Unit`: `UnitConversionServiceTest.testBidirectionalConversionThresholds()` |
 | **FR-008** | Giữ sub-row cho đơn vị định tính ("thìa", "tép") | `IngredientAggregationService.handleIncompatibleUnits()` | `Unit`: `IngredientAggregationServiceTest.testQualitativeUnitsIsolated()` |
 | **FR-009** | Lưu snapshot nguồn gốc (Provenance) | Bảng `shopping_list_item_sources` | `Integration`: `ShoppingListControllerIT.testProvenanceSnapshotPersistence()` |
-| **FR-010** | Tên món tự nhập (Custom item) | `POST /items` + check `num_nonnulls` | `Integration`: `ShoppingListControllerIT.testAddCustomItemGeneralAisle()` |
-| **FR-011** | Phân loại 6 quầy hàng siêu thị chuẩn | Enum / Table `aisle_categories` | `Unit`: `IngredientAggregationServiceTest.testAisleCategorizationDefault()` |
-| **FR-012** | Đổi quầy hàng thủ công cho mặt hàng | `PATCH /items/{uuid}` với `aisleCategoryId` | `Integration`: `ShoppingListControllerIT.testChangeItemAisle()` |
-| **FR-013** | Ghi nhớ quầy tùy biến (`user_aisle_preferences`) | `user_aisle_preferences` Upsert khi `rememberAisle=true` | `Integration`: `UserAislePreferenceRepositoryIT.testUpsertPreference()` |
-| **FR-014** | Thao tác tick/gạch bỏ món trong giỏ hàng | `PATCH /items/{uuid}` + Optimistic UI | `Frontend`: `ChecklistScreen.test.tsx` (kiểm tra class `line-through`) |
-| **FR-015** | Tự động chuyển xuống nhóm "Đã mua" & thanh tiến độ | React State Filter / Grouping | `Frontend`: `ChecklistScreen.test.tsx` (kiểm tra progress bar $X/Y$ items) |
+| **FR-010** | Phân loại 6 quầy hàng siêu thị chuẩn | Enum / Table `aisle_categories` | `Unit`: `IngredientAggregationServiceTest.testAisleCategorizationDefault()` |
+| **FR-011** | Đổi quầy thủ công + ghi nhớ quầy tùy biến | `PATCH /items/{uuid}` với `aisleCategoryId`; `user_aisle_preferences` upsert khi `rememberAisle=true` | `Integration`: `ShoppingListControllerIT.testChangeItemAisle()` + `UserAislePreferenceRepositoryIT.testUpsertPreference()` |
+| **FR-012** | Tên món tự nhập (Custom item) | `POST /items` + check `num_nonnulls` | `Integration`: `ShoppingListControllerIT.testAddCustomItemGeneralAisle()` |
+| **FR-013** | Checkbox từng món, touch target tối thiểu 48×48 | Checklist UI checkbox 48px | `Frontend`: `ChecklistScreen.test.tsx` (kiểm tra touch target) |
+| **FR-014** | Cập nhật checkmark, strikethrough, progress counter trong <50ms | `PATCH /items/{uuid}` + Optimistic UI | `Frontend`: `ChecklistScreen.test.tsx` + `Manual`: `TC-MAN-040-02` (đo <50ms) |
+| **FR-015** | Chuyển món checked xuống nhóm "Đã mua" collapsible | React State Filter / Grouping | `Frontend`: `ChecklistScreen.test.tsx` (kiểm tra progress X/Y) |
 | **FR-016** | Gộp thêm vào món đã checked thì tự uncheck | `ShoppingListService.mergeItem()` kiểm tra `isChecked` | `Unit`: `ShoppingListServiceTest.testMergeIntoCheckedItemResetsToUnchecked()` |
-| **FR-017** | Dọn dẹp mềm non-destructive (`is_cleared = true`) | `POST /active/clear-purchased` | `Integration`: `ShoppingListControllerIT.testSoftClearPurchasedItems()` |
-| **FR-018** | Hoàn tác dọn dẹp trong 5 giây | `POST /active/undo-clear` với `clearBatchId` | `Integration`: `ShoppingListControllerIT.testUndoClearPurchasedItems()` |
-| **FR-019** | Lưu trữ danh sách vào lịch sử & tạo list trắng | `POST /active/archive` (trong cùng 1 transaction) | `Integration`: `ShoppingListControllerIT.testArchiveAndCreateFreshActive()` |
-| **FR-020** | Ngoại tuyến không bị chặn bởi JWT | IndexedDB Cache + non-blocking auth banner | `Manual`: `TC-MAN-040-01` (xem dưới) |
-| **FR-021** | Đồng bộ lô ngoại tuyến với `client_uuid` idempotent | `POST /active/sync` + `ShoppingListSyncService` | `Integration`: `ShoppingListSyncServiceIT.testBatchSyncIdempotency()` |
-| **FR-022** | Giải quyết xung đột ưu tiên `is_checked = true` | Logic OR: `current.isChecked \|\| mutation.isChecked` | `Unit`: `ShoppingListSyncServiceTest.testConflictResolutionCheckedWins()` |
+| **FR-017** | Sửa số lượng thủ công, đánh dấu `is_manually_edited`, không chạm source recipe | `PATCH /items/{uuid}` quantity → set `is_manually_edited=true` | `Integration`: `ShoppingListControllerIT.testManualQuantityEditSetsFlag()` |
+| **FR-018** | Soft-clear + undo 5s + toggle xem món đã dọn + bảo toàn khi archive | `POST /active/clear-purchased`; `POST /active/undo-clear` với `clearBatchId` | `Integration`: `ShoppingListControllerIT.testSoftClearPurchasedItems()` + `testUndoClearPurchasedItems()` |
+| **FR-019** | Cache toàn bộ active list ở client, offline đủ thao tác đọc/check/sửa/thêm/xóa | IndexedDB (`idb`) + mutation queue | `Manual`: `TC-MAN-040-01` |
+| **FR-020** | Ngoại tuyến không bị chặn bởi JWT | IndexedDB Cache + non-blocking auth banner | `Manual`: `TC-MAN-040-01` |
+| **FR-021** | Sync lô <3s + LWW + xung đột ưu tiên `is_checked = true` | `POST /active/sync` + `ShoppingListSyncService`; logic OR | `Integration`: `ShoppingListSyncServiceIT.testBatchSyncIdempotency()` + `Unit`: `ShoppingListSyncServiceTest.testConflictResolutionCheckedWins()` |
+| **FR-022** | Archive + restore (reset `is_checked`/`is_cleared`, giữ tên/số lượng/quầy) | `POST /active/archive` (cùng transaction tạo fresh active); `POST /{id}/restore` | `Integration`: `ShoppingListControllerIT.testArchiveAndCreateFreshActive()` |
 | **FR-023** | Sao chép Plaintext 1-chạm vào Clipboard | `navigator.clipboard.writeText()` định dạng nhóm quầy | `Frontend`: `useShoppingList.test.ts` (kiểm tra chuỗi plain text sinh ra) |
 | **FR-024** | Định dạng in ấn 2 cột tiết kiệm mực | CSS `@media print` trong `print-checklist.css` | `Manual`: `TC-MAN-040-03` |
 | **FR-025** | Khống chế trần tối đa 200 items/list | `ShoppingListService.checkCapacityLimit()` | `Integration`: `ShoppingListControllerIT.testCapacityLimitExceeded422()` |
