@@ -22,7 +22,8 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 7 | 2026-10-18 (sáng) & 19/10, 17:00 | `SCRUM-39` | Soạn thảo biên bản Weekly Scrum Standup 01 và cập nhật tiến độ kiểm toán 18 Jira tasks | `ad1bd1b` | `docs/management/reports/sprint-02/sprint-02-report.md` |
 | 8 | 2026-10-19, 17:35 – 17:55 | `SCRUM-28`, `SCRUM-39` | Hiệu chỉnh giả định kỹ thuật ASM-02, rủi ro RSK-02 và cập nhật bảng tiến độ Mid-Sprint Audit v1.2 | `1849b9e` | `docs/management/project-plan.md`, `reports/sprint-02/` |
 | 9 | 2026-10-20, 20:15 – 21:50 | `SCRUM-39`, `SCRUM-40` | Soạn thảo hoàn tất biên bản Weekly Standup 02, đóng task SCRUM-39 và nâng tiến độ v1.3 (11/18 Done) | `ecfe362` | `docs/management/reports/sprint-02/sprint-02-report.md` |
-| 10 | 2026-10-21, 20:00 – 21:45 | `SCRUM-40` | Soạn thảo hoàn tất biên bản Sprint 02 Review & Retrospective, nhúng minh chứng Jira 18/18 Done và đóng task SCRUM-40 | Working Tree (Pending commit) | `docs/management/reports/sprint-02/sprint-02-report.md` |
+| 10 | 2026-10-21, 20:00 – 21:45 | `SCRUM-40` | Soạn thảo hoàn tất biên bản Sprint 02 Review & Retrospective, nhúng minh chứng Jira 18/18 Done và đóng task SCRUM-40 | `adf2d17` | `docs/management/reports/sprint-02/sprint-02-report.md` |
+| 11 | 2026-10-24, 19:15 – 19:30 | Module 3.4 Plan | Thiết lập Kế hoạch Kỹ thuật (Implementation Plan) cho module 040-shopping-list bằng `/speckit-plan` | Working Tree | `specs/040-shopping-list/` |
 
 ---
 
@@ -434,3 +435,47 @@ Hãy giúp tôi:
 - Tự tay sao chép 2 ảnh chụp từ thư mục tải lên sang kho lưu trữ tại `docs/assets/jira/jira_sprint2_tasks_list_part1.png` và `docs/assets/jira/jira_sprint2_tasks_list_part2.png`, kiểm tra hiển thị liên kết markdown không bị lỗi đường dẫn.
 - Rà soát các bài học kinh nghiệm và nguyên nhân gốc rễ (RCA) trong Retrospective để đảm bảo phản ánh chân thực quá trình làm việc của nhóm WikiCook trong Sprint 2.
 - Ký duyệt chuyển trạng thái `SCRUM-40` thành `DONE` trên hệ thống Jira Software Cloud.
+
+---
+
+## Mục 11: Lập Kế hoạch Thực thi Kỹ thuật (Technical Implementation Plan) cho module 040 bằng `/speckit-plan`
+
+| Trường | Nội dung |
+|---|---|
+| **Ngày & Giờ truy cập** | 2026-10-24, 19:15 – 19:30 (Giờ Việt Nam, UTC+7) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Công cụ AI & Phiên bản** | Google Antigravity (Gemini 3.8 Flash), lệnh Spec Kit `/speckit-plan` |
+| **Nền tảng** | CLI / Visual Studio Code trên Ubuntu Linux 24.04 LTS |
+| **Tài liệu liên quan** | `specs/040-shopping-list/`, `src/constitution.md`, `docs/analysis-and-design/database/full-schema.md` (Mục 4.8), `docs/analysis-and-design/architecture.md` |
+| **Mục đích sử dụng** | Thực thi quy trình Spec-Driven Development (SDD) tạo bộ tài liệu thiết kế kỹ thuật hoàn chỉnh cho feature 040-shopping-list (Automated Smart Shopping List & Ingredient Aggregation), bao gồm: `plan.md`, `research.md` (Phase 0), `data-model.md`, `contracts/openapi.yaml`, `contracts/integration.md`, và `quickstart.md` (Phase 1). |
+| **Nhánh Git** | `feature/040-shopping-list` |
+| **Minh chứng (Evidence)** | Phiên làm việc Antigravity CLI c260de22-27a3-4c90-b5ee-bb048e0d209b; các file artifacts tại `specs/040-shopping-list/` |
+
+### Prompt đã sử dụng:
+```text
+/speckit-plan — Technical Implementation Plan cho feature 040-shopping-list
+(Automated Smart Shopping List & Ingredient Aggregation)
+
+0. ĐẦU VÀO BẮT BUỘC: specs/040-shopping-list/spec.md, src/constitution.md, full-schema.md Mục 4.8, architecture.md.
+1. NGỮ CẢNH KỸ THUẬT: Java 21, Spring Boot 3.x, Flyway V401__shopping_lists.sql, React 18 Vite + Tailwind CSS + IndexedDB (idb), PostgreSQL 16 (4 bảng đúng full-schema 4.8), Testcontainers postgres:16 (JaCoCo >= 70%), RESTful /api/v1.
+2. ARTIFACTS ĐẦU RA: plan.md, research.md, data-model.md, contracts/openapi.yaml, contracts/integration.md, quickstart.md (CHỈ viết trong cây specs/).
+3. PHASE 0 (research.md): R1 (gộp & quy đổi metric 2 chiều, discrete ceiling rule, single quantity column normalized in DB), R2 (IndexedDB + mutation queue, client_uuid, idempotent batch sync, LWW với ưu tiên tuyệt đối is_checked=true, refresh token expiry handling), R3 (pre-import modal, 1-tap staple exclusion, meal plan merge vs archive mode), R4 (trần 200 items, soft-clear non-destructive kèm 5s undo-clear).
+4. KIẾN TRÚC: com.wikicook.shoppinglist, Service Facade/Ports với 011, 020, 030, 031, 060 (YAGNI complexity tracking).
+5. CONTRACTS: openapi.yaml (14 endpoints), integration.md (RecipeDetailPort, MealPlanHandoffPort, DietaryProfilePort).
+6. CONSTITUTION CHECK: Đánh giá chi tiết 6 điểm (SC-004 vs Principle III, FR-020 vs Principle IV, airplane mode vs Principle II, v.v.).
+7. KIỂM THỬ: Bảng map FR-001..FR-025, performance budgets, 3 manual test cases (TC-MAN-040-01..03).
+```
+
+### Nội dung do AI sinh ra:
+- Toàn văn tài liệu `specs/040-shopping-list/research.md` giải quyết triệt để 7 quyết định kỹ thuật R1–R7 theo mẫu Decision / Rationale / Alternatives considered.
+- Bản đặc tả CSDL và DTO `specs/040-shopping-list/data-model.md` chuẩn hóa JPA Entity, 4 bảng CSDL Flyway và schema IndexedDB phía client.
+- Hợp đồng REST API đầy đủ 14 endpoint chuẩn OpenAPI 3.0.3 tại `specs/040-shopping-list/contracts/openapi.yaml`.
+- Giao ước tích hợp liên module `specs/040-shopping-list/contracts/integration.md` với các Port Interface Java.
+- Hướng dẫn chạy và cURL kiểm thử tại `specs/040-shopping-list/quickstart.md`.
+- Kế hoạch triển khai tổng thể `specs/040-shopping-list/plan.md` đạt chuẩn Constitution Gate.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Trực tiếp đối chiếu thiết kế 4 bảng với Mục 4.8 của `full-schema.md`, xác nhận chuẩn xác tên bảng `shopping_lists`, `shopping_list_items`, `shopping_list_item_sources`, `user_aisle_preferences` và chỉ mục `UNIQUE (user_id) WHERE status = 'ACTIVE'`.
+- Kiểm tra tính nhất quán của quy tắc làm tròn trần (`Ceiling`) cho đơn vị đếm rời rạc (quả, trứng) ở danh sách mua sắm, bảo toàn số lẻ thập phân ở chi tiết Provenance nguồn gốc.
+- Xác nhận giải pháp Undo-clear 5 giây thông qua `clearBatchId` và quy tắc toán tử OR (`current || mutation`) cho trạng thái `is_checked` khi đồng bộ ngoại tuyến từ nhiều thiết bị.
+- Xác thực toàn bộ các file artifact được sinh đúng vị trí trong cây `specs/040-shopping-list/`, không sinh nhầm vào `src/specs/`.
