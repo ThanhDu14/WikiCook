@@ -122,9 +122,12 @@
 - [ ] T045 [US2] Implement recipe and meal plan import endpoints (`POST /api/v1/shopping-lists/active/import/recipe`, `POST /api/v1/shopping-lists/active/import/meal-plan`, and `GET /api/v1/shopping-lists/active/items/{clientUuid}/provenance`) in `src/backend/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListController.java` (depends on T038, T044)
 - [ ] T046 [P] [US2] Implement `useIngredientAggregation` hook managing client-side preview aggregation and scaling multipliers in `src/frontend/src/features/shopping-list/hooks/useIngredientAggregation.ts`
 - [ ] T047 [P] [US2] Implement `PreImportBottomSheet` modal component with checklist and 1-tap "Bỏ chọn gia vị cơ bản" button in `src/frontend/src/features/shopping-list/components/PreImportBottomSheet.tsx` (depends on T039)
-- [ ] T048 [P] [US2] Implement `ItemProvenanceModal` drawer component displaying contribution breakdown in `src/frontend/src/features/shopping-list/components/ItemProvenanceModal.tsx` (depends on T040)
-- [ ] T049 [US2] Update `shoppingListApi.ts` to include import and provenance fetching functions in `src/frontend/src/features/shopping-list/services/shoppingListApi.ts` (depends on T045)
-- [ ] T050 [US2] Verify User Story 2 acceptance scenarios and run independent test (`Run: mvn test -Dtest=UnitConversionServiceTest,IngredientAggregationServiceTest && npm test -- run PreImportBottomSheet ItemProvenanceModal`)
+- [ ] T048 [US2] Implement serving selector + "Add to shopping list" entry button on the 020 recipe detail view (depends on T047) in `src/frontend/src/features/shopping-list/components/` (exact 020 view file TBD - view owned by recipe module; confirm path before implementation)
+  - Acceptance: selector rescales every displayed quantity; button opens PreImportBottomSheet with serving count + scaled quantities; manual-edit flag/PATCH behaviour unchanged; no duplicate entry point.
+  - Tests (test-first): Vitest selector rescale test; Vitest button tap calls RecipeDetailPort with scaled quantities and opens PreImportBottomSheet; manual 020 check.
+- [ ] T049 [P] [US2] Implement `ItemProvenanceModal` drawer component displaying contribution breakdown in `src/frontend/src/features/shopping-list/components/ItemProvenanceModal.tsx` (depends on T040)
+- [ ] T050 [US2] Update `shoppingListApi.ts` to include import and provenance fetching functions in `src/frontend/src/features/shopping-list/services/shoppingListApi.ts` (depends on T045)
+- [ ] T051 [US2] Verify User Story 2 acceptance scenarios and run independent test (`Run: mvn test -Dtest=UnitConversionServiceTest,IngredientAggregationServiceTest && npm test -- run PreImportBottomSheet ItemProvenanceModal`)
 
 **Checkpoint**: User Story 2 is fully functional and independently verified.
 
@@ -138,18 +141,18 @@
 
 ### Tests for User Story 3 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T051 [P] [US3] Create integration tests for aisle reclassification (`PATCH /items/{clientUuid}`), aisle preference persistence (`rememberAisle`), soft-clear (`POST /clear-purchased`), and undo-clear (`POST /undo-clear`) in `src/backend/src/test/java/com/wikicook/shoppinglist/controller/ShoppingListControllerIT.java`
-- [ ] T052 [P] [US3] Create component and interaction tests for `ChecklistScreen` (asserting immediate optimistic checkbox toggle, strikethrough styling, dynamic progress meter calculation, and undo snackbar appearance without waiting for network; latency $<50\text{ms}$ is delegated to manual test `TC-MAN-040-02`) in `src/frontend/src/features/shopping-list/components/ChecklistScreen.test.tsx` *(bổ sung ngoài Project Structure)*
+- [ ] T052 [P] [US3] Create integration tests for aisle reclassification (`PATCH /items/{clientUuid}`), aisle preference persistence (`rememberAisle`), soft-clear (`POST /clear-purchased`), and undo-clear (`POST /undo-clear`) in `src/backend/src/test/java/com/wikicook/shoppinglist/controller/ShoppingListControllerIT.java`
+- [ ] T053 [P] [US3] Create component and interaction tests for `ChecklistScreen` (asserting immediate optimistic checkbox toggle, strikethrough styling, dynamic progress meter calculation, and undo snackbar appearance without waiting for network; latency $<50\text{ms}$ is delegated to manual test `TC-MAN-040-02`) in `src/frontend/src/features/shopping-list/components/ChecklistScreen.test.tsx` *(bổ sung ngoài Project Structure)*
 
 ### Implementation for User Story 3
 
-- [ ] T053 [P] [US3] Create Java Record DTOs (`AisleGroupDto`, `ChangeAisleRequest`, `ClearPurchasedResponse`, `UndoClearRequest`) in `src/backend/src/main/java/com/wikicook/shoppinglist/dto/`
-- [ ] T054 [US3] Implement aisle grouping logic, `UserAislePreference` upsert, soft-clear batching (`is_cleared = true`, `cleared_at`), and undo-clear within 5-second window in `src/backend/src/main/java/com/wikicook/shoppinglist/service/ShoppingListService.java` (depends on T051, T053)
-- [ ] T055 [US3] Add aisle change and soft-clear/undo endpoints (`PATCH /api/v1/shopping-lists/active/items/{clientUuid}`, `POST /api/v1/shopping-lists/active/clear-purchased`, `POST /api/v1/shopping-lists/active/undo-clear`) in `src/backend/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListController.java` (depends on T054)
-- [ ] T056 [P] [US3] Implement `ShoppingItemRow` component with $\ge 48\times 48\text{px}$ touch target checkbox, line-through styling, quantity badge, manual edit indicator `(đã chỉnh sửa)`, and optimistic state toggle in `src/frontend/src/features/shopping-list/components/ShoppingItemRow.tsx`
-- [ ] T057 [P] [US3] Implement `AisleSection` accordion component displaying aisle header icon, badge count of unpurchased items, and collapsible "Đã mua" subsection in `src/frontend/src/features/shopping-list/components/AisleSection.tsx` (depends on T056)
-- [ ] T058 [US3] Assemble in-store checklist view in `ChecklistScreen.tsx` with sticky progress bar ("Đã mua X/Y món (%)"), soft-clear action, 5-second undo snackbar, and "Xem các món đã dọn dẹp" toggle (`?includeCleared=true`) in `src/frontend/src/features/shopping-list/components/ChecklistScreen.tsx` (depends on T052, T057)
-- [ ] T059 [US3] Verify User Story 3 acceptance scenarios and run independent test (`Run: mvn test -Dtest=ShoppingListControllerIT#testAisleAndSoftClear && npm test -- run ChecklistScreen`)
+- [ ] T054 [P] [US3] Create Java Record DTOs (`AisleGroupDto`, `ChangeAisleRequest`, `ClearPurchasedResponse`, `UndoClearRequest`) in `src/backend/src/main/java/com/wikicook/shoppinglist/dto/`
+- [ ] T055 [US3] Implement aisle grouping logic, `UserAislePreference` upsert, soft-clear batching (`is_cleared = true`, `cleared_at`), and undo-clear within 5-second window in `src/backend/src/main/java/com/wikicook/shoppinglist/service/ShoppingListService.java` (depends on T052, T054)
+- [ ] T056 [US3] Add aisle change and soft-clear/undo endpoints (`PATCH /api/v1/shopping-lists/active/items/{clientUuid}`, `POST /api/v1/shopping-lists/active/clear-purchased`, `POST /api/v1/shopping-lists/active/undo-clear`) in `src/backend/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListController.java` (depends on T055)
+- [ ] T057 [P] [US3] Implement `ShoppingItemRow` component with $\ge 48\times 48\text{px}$ touch target checkbox, line-through styling, quantity badge, manual edit indicator `(đã chỉnh sửa)`, and optimistic state toggle in `src/frontend/src/features/shopping-list/components/ShoppingItemRow.tsx`
+- [ ] T058 [P] [US3] Implement `AisleSection` accordion component displaying aisle header icon, badge count of unpurchased items, and collapsible "Đã mua" subsection in `src/frontend/src/features/shopping-list/components/AisleSection.tsx` (depends on T057)
+- [ ] T059 [US3] Assemble in-store checklist view in `ChecklistScreen.tsx` with sticky progress bar ("Đã mua X/Y món (%)"), soft-clear action, 5-second undo snackbar, and "Xem các món đã dọn dẹp" toggle (`?includeCleared=true`) in `src/frontend/src/features/shopping-list/components/ChecklistScreen.tsx` (depends on T053, T058)
+- [ ] T060 [US3] Verify User Story 3 acceptance scenarios and run independent test (`Run: mvn test -Dtest=ShoppingListControllerIT#testAisleAndSoftClear && npm test -- run ChecklistScreen`)
 
 **Checkpoint**: Core MVP (User Stories 1, 2, and 3) is complete, providing a fully functional smart shopping list and in-store checklist.
 
@@ -163,18 +166,18 @@
 
 ### Tests for User Story 4 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T060 [P] [US4] Create unit tests for `ShoppingListSyncService` (verifying batch mutation processing, idempotency by `client_uuid`, LWW conflict resolution with `is_checked = true` priority, and 404 handling for mutations on non-existent items) in `src/backend/src/test/java/com/wikicook/shoppinglist/service/ShoppingListSyncServiceTest.java`
-- [ ] T061 [P] [US4] Create unit and mock tests for `useOfflineSync` hook (offline event detection, mutation queueing, automatic sync trigger on network restore, non-blocking offline banner, bypass auth redirect while offline) in `src/frontend/src/features/shopping-list/hooks/useOfflineSync.test.ts` *(bổ sung ngoài Project Structure)*
+- [ ] T061 [P] [US4] Create unit tests for `ShoppingListSyncService` (verifying batch mutation processing, idempotency by `client_uuid`, LWW conflict resolution with `is_checked = true` priority, and 404 handling for mutations on non-existent items) in `src/backend/src/test/java/com/wikicook/shoppinglist/service/ShoppingListSyncServiceTest.java`
+- [ ] T062 [P] [US4] Create unit and mock tests for `useOfflineSync` hook (offline event detection, mutation queueing, automatic sync trigger on network restore, non-blocking offline banner, bypass auth redirect while offline) in `src/frontend/src/features/shopping-list/hooks/useOfflineSync.test.ts` *(bổ sung ngoài Project Structure)*
 
 ### Implementation for User Story 4
 
-- [ ] T062 [P] [US4] Create Java Record DTOs (`SyncBatchRequest`, `ItemMutationDto`, `SyncBatchResponse`, `ItemSyncResultDto`) in `src/backend/src/main/java/com/wikicook/shoppinglist/dto/`
-- [ ] T063 [US4] Implement `ShoppingListSyncService` executing idempotent batch synchronization with optimistic locking and `is_checked` priority rule in `src/backend/src/main/java/com/wikicook/shoppinglist/service/ShoppingListSyncService.java` (depends on T060, T062)
-- [ ] T064 [US4] Implement `ShoppingListSyncController` endpoint (`POST /api/v1/shopping-lists/active/sync`) returning per-item accepted/rejected statuses in `src/backend/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListSyncController.java` (depends on T063)
-- [ ] T065 [US4] Expand `offlineShoppingDb.ts` to manage offline mutation queue store, pending status flags, and `client_uuid` generation in `src/frontend/src/features/shopping-list/services/offlineShoppingDb.ts` (depends on T020)
-- [ ] T066 [US4] Implement `useOfflineSync` hook with `window.addEventListener('online'/'offline')`, background sync dispatcher, non-blocking offline indicator, and auth bypass guard in `src/frontend/src/features/shopping-list/hooks/useOfflineSync.ts` (depends on T061, T065)
-- [ ] T067 [US4] Integrate offline banner ("Đang ngoại tuyến - Dữ liệu được lưu trên máy"), sync status transitions ("Đang lưu ngoại tuyến" $\to$ "Đã đồng bộ"), and logout unsaved mutation warning into `ChecklistScreen.tsx` in `src/frontend/src/features/shopping-list/components/ChecklistScreen.tsx` (depends on T066)
-- [ ] T068 [US4] Verify User Story 4 acceptance scenarios and run independent test (`Run: mvn test -Dtest=ShoppingListSyncServiceTest && npm test -- run useOfflineSync`)
+- [ ] T063 [P] [US4] Create Java Record DTOs (`SyncBatchRequest`, `ItemMutationDto`, `SyncBatchResponse`, `ItemSyncResultDto`) in `src/backend/src/main/java/com/wikicook/shoppinglist/dto/`
+- [ ] T064 [US4] Implement `ShoppingListSyncService` executing idempotent batch synchronization with optimistic locking and `is_checked` priority rule in `src/backend/src/main/java/com/wikicook/shoppinglist/service/ShoppingListSyncService.java` (depends on T061, T063)
+- [ ] T065 [US4] Implement `ShoppingListSyncController` endpoint (`POST /api/v1/shopping-lists/active/sync`) returning per-item accepted/rejected statuses in `src/backend/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListSyncController.java` (depends on T064)
+- [ ] T066 [US4] Expand `offlineShoppingDb.ts` to manage offline mutation queue store, pending status flags, and `client_uuid` generation in `src/frontend/src/features/shopping-list/services/offlineShoppingDb.ts` (depends on T020)
+- [ ] T067 [US4] Implement `useOfflineSync` hook with `window.addEventListener('online'/'offline')`, background sync dispatcher, non-blocking offline indicator, and auth bypass guard in `src/frontend/src/features/shopping-list/hooks/useOfflineSync.ts` (depends on T062, T066)
+- [ ] T068 [US4] Integrate offline banner ("Đang ngoại tuyến - Dữ liệu được lưu trên máy"), sync status transitions ("Đang lưu ngoại tuyến" $\to$ "Đã đồng bộ"), and logout unsaved mutation warning into `ChecklistScreen.tsx` in `src/frontend/src/features/shopping-list/components/ChecklistScreen.tsx` (depends on T067)
+- [ ] T069 [US4] Verify User Story 4 acceptance scenarios and run independent test (`Run: mvn test -Dtest=ShoppingListSyncServiceTest && npm test -- run useOfflineSync`)
 
 **Checkpoint**: User Story 4 is complete, guaranteeing high offline resilience in subterranean supermarket dead zones.
 
@@ -188,15 +191,15 @@
 
 ### Tests for User Story 5 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T069 [P] [US5] Create unit tests for plaintext list generation utility (verifying header formatting, aisle grouping, and `[ ]` item brackets) in `src/frontend/src/features/shopping-list/services/formatShoppingListText.test.ts` *(bổ sung ngoài Project Structure)*
-- [ ] T070 [P] [US5] Create component and style render tests for print layout (verifying `@media print` classes, 2-column layout, and hidden elements) in `src/frontend/src/features/shopping-list/components/print-checklist.test.tsx` *(bổ sung ngoài Project Structure)*
+- [ ] T070 [P] [US5] Create unit tests for plaintext list generation utility (verifying header formatting, aisle grouping, and `[ ]` item brackets) in `src/frontend/src/features/shopping-list/services/formatShoppingListText.test.ts` *(bổ sung ngoài Project Structure)*
+- [ ] T071 [P] [US5] Create component and style render tests for print layout (verifying `@media print` classes, 2-column layout, and hidden elements) in `src/frontend/src/features/shopping-list/components/print-checklist.test.tsx` *(bổ sung ngoài Project Structure)*
 
 ### Implementation for User Story 5
 
-- [ ] T071 [P] [US5] Implement `formatShoppingListText` utility function and clipboard copy handler with system toast notification in `src/frontend/src/features/shopping-list/services/shoppingListApi.ts` (depends on T069)
-- [ ] T072 [P] [US5] Create print stylesheet `@media print` (monochrome, 2-column ink-saving paper format, hiding navigation headers, buttons, footers, and floating controls) in `src/frontend/src/styles/print-checklist.css` (depends on T070)
-- [ ] T073 [US5] Add "Sao chép danh sách" and "In danh sách" action buttons to header menu in `ChecklistScreen.tsx` and link print stylesheet in `src/frontend/src/features/shopping-list/components/ChecklistScreen.tsx` (depends on T071, T072)
-- [ ] T074 [US5] Verify User Story 5 acceptance scenarios and run independent test (`Run: npm test -- run formatShoppingListText print-checklist`)
+- [ ] T072 [P] [US5] Implement `formatShoppingListText` utility function and clipboard copy handler with system toast notification in `src/frontend/src/features/shopping-list/services/shoppingListApi.ts` (depends on T070)
+- [ ] T073 [P] [US5] Create print stylesheet `@media print` (monochrome, 2-column ink-saving paper format, hiding navigation headers, buttons, footers, and floating controls) in `src/frontend/src/styles/print-checklist.css` (depends on T071)
+- [ ] T074 [US5] Add "Sao chép danh sách" and "In danh sách" action buttons to header menu in `ChecklistScreen.tsx` and link print stylesheet in `src/frontend/src/features/shopping-list/components/ChecklistScreen.tsx` (depends on T072, T073)
+- [ ] T075 [US5] Verify User Story 5 acceptance scenarios and run independent test (`Run: npm test -- run formatShoppingListText print-checklist`)
 
 **Checkpoint**: All 5 User Stories are complete, tested, and independently verified.
 
@@ -206,12 +209,12 @@
 
 **Purpose**: Validate cross-cutting non-functional requirements, record manual field test cases, run end-to-end verification flows, and guarantee deployment readiness.
 
-- [ ] T075 Verify 200 items/list capacity limit enforcement at both service and controller layers (`Run: mvn test -Dtest=ShoppingListControllerIT#testCapacityLimitExceeded422`)
-- [ ] T076 [P] Add manual test case specifications (`TC-MAN-040-01` Offline Mode & JWT Expiry, `TC-MAN-040-02` In-Store $<50\text{ms}$ Checklist Latency, `TC-MAN-040-03` Print Ink-Saving Layout) to `docs/test/test-cases.md` and link in `docs/test/test-plan.md`
-- [ ] T077 Execute complete end-to-end cURL verification workflow (6 steps: active list $\to$ custom item $\to$ import recipe $\to$ offline sync $\to$ soft-clear/undo $\to$ archive) per `specs/040-shopping-list/quickstart.md`
-- [ ] T078 Verify runtime springdoc OpenAPI endpoint generation matches `specs/040-shopping-list/contracts/openapi.yaml` (14 operations across 12 paths with RFC 7807 `ProblemDetail`)
-- [ ] T079 Execute full project verification and assert JaCoCo service layer code coverage $\ge 70\%$ and frontend production build (`Run: mvn clean verify && cd src/frontend && npm run build && npm test`)
-- [ ] T080 Final Constitution re-check and Definition of Done (DoD) verification before opening Pull Request for peer review
+- [ ] T076 Verify 200 items/list capacity limit enforcement at both service and controller layers (`Run: mvn test -Dtest=ShoppingListControllerIT#testCapacityLimitExceeded422`)
+- [ ] T077 [P] Add manual test case specifications (`TC-MAN-040-01` Offline Mode & JWT Expiry, `TC-MAN-040-02` In-Store $<50\text{ms}$ Checklist Latency, `TC-MAN-040-03` Print Ink-Saving Layout) to `docs/test/test-cases.md` and link in `docs/test/test-plan.md`
+- [ ] T078 Execute complete end-to-end cURL verification workflow (6 steps: active list $\to$ custom item $\to$ import recipe $\to$ offline sync $\to$ soft-clear/undo $\to$ archive) per `specs/040-shopping-list/quickstart.md`
+- [ ] T079 Verify runtime springdoc OpenAPI endpoint generation matches `specs/040-shopping-list/contracts/openapi.yaml` (14 operations across 12 paths with RFC 7807 `ProblemDetail`)
+- [ ] T080 Execute full project verification and assert JaCoCo service layer code coverage $\ge 70\%$ and frontend production build (`Run: mvn clean verify && cd src/frontend && npm run build && npm test`)
+- [ ] T081 Final Constitution re-check and Definition of Done (DoD) verification before opening Pull Request for peer review
 
 ---
 
@@ -234,27 +237,27 @@
            │
            ├───────────────────────────────────────┐
 ┌──────────▼───────────────────────────┐           │
-│ Phase 4: User Story 2 (T036 - T050)  │           │
+│ Phase 4: User Story 2 (T036 - T051)  │           │
 │ P1 Deduplication & Scaling Engine    │           │
 └──────────┬───────────────────────────┘           │
            │                                       │
 ┌──────────▼───────────────────────────┐           │
-│ Phase 5: User Story 3 (T051 - T059)  │           │
+│ Phase 5: User Story 3 (T052 - T060)  │           │
 │ P1 In-Store Checklist & Aisle Sort   │           │
 └──────────┬───────────────────────────┘           │
            │                                       │
 ┌──────────▼───────────────────────────┐           │
-│ Phase 6: User Story 4 (T060 - T068)  │           │
+│ Phase 6: User Story 4 (T061 - T069)  │           │
 │ P2 Local-First Offline & Sync        │           │
 └──────────┬───────────────────────────┘           │
            │                                       │
 ┌──────────▼───────────────────────────┐           │
-│ Phase 7: User Story 5 (T069 - T074)  │ ◄─────────┘ (Depends only on US1 List container)
+│ Phase 7: User Story 5 (T070 - T075)  │ ◄─────────┘ (Depends only on US1 List container)
 │ P3 Plaintext Export & Print Layout   │
 └──────────┬───────────────────────────┘
            │
 ┌──────────▼───────────────────────────┐
-│ Phase 8: Polish (T075 - T080)        │
+│ Phase 8: Polish (T076 - T081)        │
 └──────────────────────────────────────┘
 ```
 
@@ -319,7 +322,7 @@ Task: "T036 UnitConversionServiceTest" -> "T042 UnitConversionService" -> "T043 
 
 # Frontend Developer:
 Task: "T039 PreImportBottomSheet.test.tsx" -> "T047 PreImportBottomSheet.tsx"
-Task: "T070 print-checklist.test.tsx" -> "T072 print-checklist.css" (US5 parallel work)
+Task: "T071 print-checklist.test.tsx" -> "T073 print-checklist.css" (US5 parallel work)
 ```
 
 ---
@@ -331,15 +334,15 @@ Task: "T070 print-checklist.test.tsx" -> "T072 print-checklist.css" (US5 paralle
 1. Complete **Phase 1: Setup** (T001–T005) $\to$ Build environment ready.
 2. Complete **Phase 2: Foundational** (T006–T020) $\to$ Database schema, entities, and repositories locked.
 3. Complete **Phase 3: User Story 1** (T021–T035) $\to$ Base shopping list container and custom item management functional.
-4. Complete **Phase 4: User Story 2** (T036–T050) $\to$ Dynamic recipe scaling, metric deduplication, and provenance operational.
-5. Complete **Phase 5: User Story 3** (T051–T059) $\to$ Supermarket aisle grouping, single-handed checklist, and soft-clear ready.
+4. Complete **Phase 4: User Story 2** (T036–T051) $\to$ Dynamic recipe scaling, metric deduplication, and provenance operational.
+5. Complete **Phase 5: User Story 3** (T052–T060) $\to$ Supermarket aisle grouping, single-handed checklist, and soft-clear ready.
 6. **STOP & DEMO MVP**: At this checkpoint, WikiCook has a market-competitive smart shopping list ready for kitchen and supermarket use.
 
 ### 2. Incremental Delivery (P2 & P3 Extensions)
 
-1. Deliver **Phase 6: User Story 4** (T060–T068) $\to$ Adds offline resilience and background sync for basement supermarkets.
-2. Deliver **Phase 7: User Story 5** (T069–T074) $\to$ Adds 1-tap plaintext sharing (Zalo/SMS) and print-friendly formatting.
-3. Deliver **Phase 8: Polish** (T075–T080) $\to$ Executes 200-item stress test, documents manual field tests, asserts $\ge 70\%$ JaCoCo service coverage, and finalizes PR.
+1. Deliver **Phase 6: User Story 4** (T061–T069) $\to$ Adds offline resilience and background sync for basement supermarkets.
+2. Deliver **Phase 7: User Story 5** (T070–T075) $\to$ Adds 1-tap plaintext sharing (Zalo/SMS) and print-friendly formatting.
+3. Deliver **Phase 8: Polish** (T076–T081) $\to$ Executes 200-item stress test, documents manual field tests, asserts $\ge 70\%$ JaCoCo service coverage, and finalizes PR.
 
 ---
 
