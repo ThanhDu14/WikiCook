@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WikiCook Architecture</title>
+<style>
+  :root {
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --ink: #1d1f23;
+    --muted: #5d6470;
+    --line: #d6d3ca;
+    --accent: #c2541b;
+    --client: #e8f0fb;  --client-b: #4a78c2;
+    --api: #fdf1e6;     --api-b: #c2541b;
+    --svc: #eaf6ec;     --svc-b: #3f8f52;
+    --repo: #f3ecfa;    --repo-b: #7f56b8;
+    --db: #eef1f4;      --db-b: #4f5d6e;
+    --ext: #fbeef0;     --ext-b: #b8475b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15171a; --surface: #1e2125; --ink: #e9e7e2; --muted: #a3a9b3; --line: #353a41; --accent: #f08a4b;
+      --client: #1b2738; --client-b: #79a3e6;
+      --api: #33241a;    --api-b: #f08a4b;
+      --svc: #1b2e21;    --svc-b: #6fc184;
+      --repo: #2a2135;   --repo-b: #b293e0;
+      --db: #23282e;     --db-b: #9fb0c3;
+      --ext: #351e24;    --ext-b: #e87f92;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15171a; --surface: #1e2125; --ink: #e9e7e2; --muted: #a3a9b3; --line: #353a41; --accent: #f08a4b;
+    --client: #1b2738; --client-b: #79a3e6;
+    --api: #33241a;    --api-b: #f08a4b;
+    --svc: #1b2e21;    --svc-b: #6fc184;
+    --repo: #2a2135;   --repo-b: #b293e0;
+    --db: #23282e;     --db-b: #9fb0c3;
+    --ext: #351e24;    --ext-b: #e87f92;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 1040px; margin: 0 auto; padding: 32px 16px 64px; }
+  header h1 { margin: 0 0 4px; font-size: 28px; letter-spacing: -0.01em; }
+  header p { margin: 0; color: var(--muted); }
+  nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 8px; }
+  nav a {
+    text-decoration: none; color: var(--ink); font-size: 13px;
+    border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; background: var(--surface);
+  }
+  nav a:hover { border-color: var(--accent); }
+
+  section {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 24px; margin-top: 24px;
+  }
+  section h2 { margin: 0 0 4px; font-size: 20px; }
+  section h2 .n { color: var(--accent); margin-right: 6px; }
+  .lead { margin: 0 0 20px; color: var(--muted); }
+  .src { margin-top: 16px; font-size: 12.5px; color: var(--muted); }
+  code { font: 12.5px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  .box {
+    border: 1.5px solid; border-radius: 10px; padding: 12px 14px; background: var(--surface);
+  }
+  .box h3 { margin: 0 0 4px; font-size: 15px; }
+  .box p, .box ul { margin: 0; font-size: 13px; color: var(--muted); }
+  .box ul { padding-left: 18px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .04em;
+         text-transform: uppercase; margin-bottom: 4px; }
+  .c-client { background: var(--client); border-color: var(--client-b); } .c-client .tag { color: var(--client-b); }
+  .c-api    { background: var(--api);    border-color: var(--api-b); }    .c-api .tag    { color: var(--api-b); }
+  .c-svc    { background: var(--svc);    border-color: var(--svc-b); }    .c-svc .tag    { color: var(--svc-b); }
+  .c-repo   { background: var(--repo);   border-color: var(--repo-b); }   .c-repo .tag   { color: var(--repo-b); }
+  .c-db     { background: var(--db);     border-color: var(--db-b); }     .c-db .tag     { color: var(--db-b); }
+  .c-ext    { background: var(--ext);    border-color: var(--ext-b); border-style: dashed; } .c-ext .tag { color: var(--ext-b); }
+
+  /* arrows */
+  .arrow-h, .arrow-v { display: flex; align-items: center; justify-content: center; color: var(--muted);
+                       font-size: 12px; text-align: center; }
+  .arrow-h { flex-direction: column; min-width: 120px; padding: 0 6px; }
+  .arrow-h .shaft { width: 100%; height: 2px; background: var(--muted); position: relative; margin: 6px 0; }
+  .arrow-h .shaft::after { content: ""; position: absolute; right: -1px; top: -5px;
+                           border: 6px solid transparent; border-left: 9px solid var(--muted); border-right: 0; }
+  .arrow-h.both .shaft::before { content: ""; position: absolute; left: -1px; top: -5px;
+                           border: 6px solid transparent; border-right: 9px solid var(--muted); border-left: 0; }
+  .arrow-v { flex-direction: row; gap: 10px; height: 40px; }
+  .arrow-v .shaft { width: 2px; height: 100%; background: var(--muted); position: relative; }
+  .arrow-v .shaft::after { content: ""; position: absolute; bottom: -1px; left: -5px;
+                           border: 6px solid transparent; border-top: 9px solid var(--muted); border-bottom: 0; }
+  .arrow-v.both .shaft::before { content: ""; position: absolute; top: -1px; left: -5px;
+                           border: 6px solid transparent; border-bottom: 9px solid var(--muted); border-top: 0; }
+
+  /* 1. client-server */
+  .cs { display: flex; align-items: stretch; }
+  .cs > .box { flex: 1; }
+  .server-col { flex: 1.3; display: flex; flex-direction: column; gap: 10px; }
+  .server-col .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* 2. layered */
+  .layers { display: flex; flex-direction: column; }
+  .layer { display: grid; grid-template-columns: 170px 1fr; gap: 14px; align-items: center; }
+  .layer .name { font-weight: 600; font-size: 14px; }
+  .layer .name small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+  .layer .arrow-v { grid-column: 2; }
+  .rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 18px; }
+  .rule { border-left: 3px solid var(--accent); padding: 6px 10px; font-size: 13px; background: var(--bg); border-radius: 0 6px 6px 0; }
+  .boundary { border: 1.5px dashed var(--line); border-radius: 12px; padding: 12px; position: relative; margin-top: 6px; }
+  .boundary > .label { position: absolute; top: -10px; left: 12px; background: var(--surface); padding: 0 6px;
+                       font-size: 12px; color: var(--muted); }
+
+  /* 3. repository */
+  .modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .module { padding: 10px; }
+  .module .stack { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+  .module .stack span { font: 11.5px ui-monospace, Menlo, monospace; padding: 3px 6px; border-radius: 5px;
+                        border: 1px solid var(--line); background: var(--surface); overflow-wrap: anywhere; }
+  .module .stack span.r { border-color: var(--repo-b); color: var(--repo-b); font-weight: 600; }
+  .ports { margin: 10px 0 0; padding: 8px 12px; border: 1px dashed var(--accent); border-radius: 8px;
+           font-size: 13px; color: var(--muted); text-align: center; }
+  .central { text-align: center; max-width: 520px; margin: 0 auto; }
+  .tables { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
+  .tables span { font: 11.5px ui-monospace, Menlo, monospace; padding: 2px 7px; border-radius: 5px;
+                 border: 1px solid var(--db-b); background: var(--surface); }
+
+  /* 4. pipe and filter */
+  .pipe { display: flex; align-items: stretch; }
+  .pipe .box { min-width: 0; flex: 1; padding: 10px; }
+  .pipe .box h3 { font-size: 14px; }
+  .pipe .arrow-h { min-width: 30px; padding: 0 4px; }
+  .step { font: 600 11px ui-monospace, Menlo, monospace; color: var(--accent); }
+  .pipe-io { display: flex; justify-content: space-between; gap: 10px; font-size: 12.5px; color: var(--muted); margin: 8px 0 0; }
+  .fallback { margin-top: 10px; display: flex; gap: 10px; align-items: center; font-size: 13px; color: var(--muted); }
+  .fallback .box { flex: 0 0 auto; }
+  h4 { margin: 26px 0 10px; font-size: 15px; }
+
+  @media (max-width: 760px) {
+    .cs { flex-direction: column; }
+    .cs .arrow-h { min-height: 64px; }
+    .cs .arrow-h .shaft { width: 2px; height: 40px; margin: 0 6px; }
+    .cs .arrow-h { flex-direction: row; }
+    .cs .arrow-h .shaft::after { right: auto; top: auto; bottom: -1px; left: -5px;
+      border: 6px solid transparent; border-top: 9px solid var(--muted); border-bottom: 0; }
+    .cs .arrow-h.both .shaft::before { left: -5px; top: -1px;
+      border: 6px solid transparent; border-bottom: 9px solid var(--muted); border-top: 0; }
+    .server-col .row { grid-template-columns: 1fr; }
+    .layer { grid-template-columns: 1fr; gap: 4px; }
+    .layer .arrow-v { grid-column: 1; }
+    .pipe { flex-direction: column; overflow: visible; }
+    .pipe .arrow-h { min-height: 34px; flex-direction: row; }
+    .pipe .arrow-h .shaft { width: 2px; height: 24px; margin: 0; }
+    .pipe .arrow-h .shaft::after { right: auto; top: auto; bottom: -1px; left: -5px;
+      border: 6px solid transparent; border-top: 9px solid var(--muted); border-bottom: 0; }
+    section { padding: 18px 14px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Kiến trúc WikiCook</h1>
+    <p>Layered Client–Server làm nền · Repository cho tầng dữ liệu · Pipe-and-filter cho pipeline AI và bảo mật</p>
+  </header>
+  <nav>
+    <a href="#client-server">1. Client–Server</a>
+    <a href="#layered">2. Layered</a>
+    <a href="#repository">3. Repository</a>
+    <a href="#pipe-filter">4. Pipe-and-filter</a>
+  </nav>
+
+  <!-- 1. CLIENT–SERVER -->
+  <section id="client-server">
+    <h2><span class="n">1</span>Client–Server</h2>
+    <p class="lead">Client chỉ hiển thị và gọi API. Mọi xử lý nghiệp vụ, dữ liệu và lời gọi LLM nằm ở server.</p>
+
+    <div class="cs">
+      <div class="box c-client">
+        <span class="tag">Client</span>
+        <h3>React 18 SPA / PWA (Vite)</h3>
+        <ul>
+          <li>Trình duyệt desktop &amp; mobile</li>
+          <li>Lớp API client dùng chung</li>
+          <li>Lưu JWT, render UI</li>
+          <li>Draft AI plan chỉ giữ ở client</li>
+        </ul>
+      </div>
+
+      <div class="arrow-h both">
+        <span>HTTPS · REST/JSON</span>
+        <div class="shaft"></div>
+        <span><code>/api/v1</code> + JWT</span>
+      </div>
+
+      <div class="server-col">
+        <div class="box c-api">
+          <span class="tag">Server</span>
+          <h3>Spring Boot 3.x (Java 21)</h3>
+          <p>REST API stateless · Spring Security · Service · Repository</p>
+        </div>
+        <div class="row">
+          <div class="box c-db">
+            <span class="tag">Data server</span>
+            <h3>PostgreSQL 16 + pgvector</h3>
+            <p>Quản lý schema bằng Flyway</p>
+          </div>
+          <div class="box c-ext">
+            <span class="tag">Dịch vụ ngoài</span>
+            <h3>Gemini API (LLM)</h3>
+            <p>API key chỉ nằm ở backend</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="src">Nguồn: <code>docs/analysis-and-design/architecture.md</code> §1–2, <code>src/constitution.md</code> (Ràng buộc kỹ thuật)</p>
+  </section>
+
+  <!-- 2. LAYERED -->
+  <section id="layered">
+    <h2><span class="n">2</span>Layered</h2>
+    <p class="lead">Phân lớp chặt: mỗi lớp chỉ gọi lớp ngay bên dưới, không được nhảy cóc.</p>
+
+    <div class="layers">
+      <div class="layer">
+        <div class="name">Presentation<small>Client</small></div>
+        <div class="box c-client"><h3>React UI</h3><p>Pages, components, API client</p></div>
+      </div>
+      <div class="layer"><div class="arrow-v both"><div class="shaft"></div><span>JSON DTO</span></div></div>
+
+      <div class="layer">
+        <div class="name">API / Controller<small><code>controller/</code></small></div>
+        <div class="box c-api">
+          <h3>@RestController + Security Filter Chain</h3>
+          <p>Nhận request, Bean Validation, map DTO, ProblemDetail · VD: <code>MealPlanController</code>, <code>AiPlannerController</code></p>
+        </div>
+      </div>
+      <div class="layer"><div class="arrow-v"><div class="shaft"></div><span>gọi Service</span></div></div>
+
+      <div class="layer">
+        <div class="name">Business / Service<small><code>service/</code></small></div>
+        <div class="box c-svc">
+          <h3>Domain services</h3>
+          <p>Toàn bộ business logic · VD: <code>MealPlanService</code>, <code>SlotMoveService</code>, <code>AiQuotaService</code>, AI orchestration</p>
+        </div>
+      </div>
+      <div class="layer"><div class="arrow-v"><div class="shaft"></div><span>gọi Repository</span></div></div>
+
+      <div class="layer">
+        <div class="name">Persistence<small><code>repository/</code></small></div>
+        <div class="box c-repo">
+          <h3>Spring Data JPA Repositories</h3>
+          <p>Entity ↔ bảng, query tham số hóa · VD: <code>MealPlanRepository</code>, <code>RecipeEmbeddingRepository</code></p>
+        </div>
+      </div>
+      <div class="layer"><div class="arrow-v"><div class="shaft"></div><span>SQL / JDBC</span></div></div>
+
+      <div class="layer">
+        <div class="name">Database</div>
+        <div class="box c-db"><h3>PostgreSQL 16 + pgvector</h3><p>Migration Flyway (<code>V301</code>, <code>V303</code>…)</p></div>
+      </div>
+    </div>
+
+    <div class="rules">
+      <div class="rule">Controller <b>không được</b> gọi thẳng Repository</div>
+      <div class="rule">Business logic chỉ nằm ở Service</div>
+      <div class="rule">API trả DTO record, <b>không</b> trả Entity JPA</div>
+      <div class="rule">Package theo tính năng: <code>controller/ service/ repository/ dto/</code></div>
+    </div>
+    <p class="src">Nguồn: <code>src/constitution.md</code> Nguyên tắc III · <code>src/specs/030-meal-planner/plan.md</code> (Source Code)</p>
+  </section>
+
+  <!-- 3. REPOSITORY -->
+  <section id="repository">
+    <h2><span class="n">3</span>Repository</h2>
+    <p class="lead">Các module tính năng dùng chung một kho dữ liệu trung tâm. Mỗi module có Repository riêng và chỉ ghi vào bảng của mình. Muốn dùng dữ liệu module khác thì đi qua port/facade.</p>
+
+    <div class="modules">
+      <div class="box c-svc module"><h3>auth / user</h3><div class="stack"><span>UserService</span><span class="r">UserRepository</span></div></div>
+      <div class="box c-svc module"><h3>recipe</h3><div class="stack"><span>RecipeService</span><span class="r">RecipeRepository</span></div></div>
+      <div class="box c-svc module"><h3>mealplan</h3><div class="stack"><span>MealPlanService</span><span class="r">MealPlanRepository</span><span class="r">MealPlanItemRepository</span></div></div>
+      <div class="box c-svc module"><h3>aiplanner</h3><div class="stack"><span>AiPlannerService</span><span class="r">RecipeEmbeddingRepository</span><span class="r">AiRequestRepository</span></div></div>
+      <div class="box c-svc module"><h3>nutrition</h3><div class="stack"><span>NutritionService</span><span class="r">RecipeNutritionRepository</span></div></div>
+      <div class="box c-svc module"><h3>shopping</h3><div class="stack"><span>ShoppingService</span><span class="r">ShoppingListRepository</span></div></div>
+    </div>
+
+    <div class="ports">
+      ⇄ Giao tiếp giữa module qua <b>port / facade</b>: <code>DietaryProfilePort</code>, <code>RecipeSummaryPort</code>, <code>MealPlanWriteFacade</code>, <code>MealPlanShoppingFacade</code>
+    </div>
+
+    <div class="arrow-v" style="height:48px"><div class="shaft"></div><span>đọc / ghi qua Repository</span></div>
+
+    <div class="box c-db central">
+      <span class="tag">Shared data repository</span>
+      <h3>PostgreSQL 16 + pgvector</h3>
+      <div class="tables">
+        <span>users</span><span>recipes</span><span>ingredients</span><span>meal_plans</span><span>meal_plan_items</span>
+        <span>recipe_embeddings</span><span>recipe_nutrition</span><span>ai_requests</span><span>shopping_lists</span>
+      </div>
+    </div>
+    <p class="src">Nguồn: <code>docs/analysis-and-design/database/full-schema.md</code> · plan 030 / 031 / 090. Tên Service/Repository của auth, recipe, shopping là minh họa, chưa có plan chi tiết.</p>
+  </section>
+
+  <!-- 4. PIPE AND FILTER -->
+  <section id="pipe-filter">
+    <h2><span class="n">4</span>Pipe-and-filter</h2>
+    <p class="lead">Dữ liệu chảy qua một chuỗi filter độc lập. Đầu ra của filter trước là đầu vào của filter sau.</p>
+
+    <h4>a) Pipeline RAG của AI Weekly Meal Planner (spec 031)</h4>
+    <div class="pipe">
+      <div class="box c-db"><div class="step">INPUT</div><h3>Hồ sơ người dùng</h3><p>Dị ứng, kiểu ăn, thời gian nấu, số bữa</p></div>
+      <div class="arrow-h"><div class="shaft"></div></div>
+      <div class="box c-svc"><div class="step">FILTER 1</div><h3>Lọc hard rule</h3><p>SQL: dị ứng, loại trừ, PUBLISHED, hợp bữa</p></div>
+      <div class="arrow-h"><div class="shaft"></div></div>
+      <div class="box c-repo"><div class="step">FILTER 2</div><h3>Truy hồi top-K</h3><p>pgvector trên <code>recipe_embeddings</code></p></div>
+      <div class="arrow-h"><div class="shaft"></div></div>
+      <div class="box c-ext"><div class="step">FILTER 3</div><h3>LLM xếp ô</h3><p>Gemini Flash, JSON mode</p></div>
+      <div class="arrow-h"><div class="shaft"></div></div>
+      <div class="box c-api"><div class="step">FILTER 4</div><h3>Validate</h3><p>Kiểm từng pick; JSON hỏng → retry 1 lần</p></div>
+      <div class="arrow-h"><div class="shaft"></div></div>
+      <div class="box c-client"><div class="step">OUTPUT</div><h3>Draft kế hoạch tuần</h3><p>Trả về client để xác nhận</p></div>
+    </div>
+    <div class="fallback">
+      <div class="box c-ext" style="border-style:solid"><div class="step">FILTER 5</div><h3>Fallback greedy</h3><p>Tất định, ≤ 2 s</p></div>
+      <span>Chạy thay cho filter 3–4 khi AI lỗi, quá 60 s hoặc hết hạn mức ngày.</span>
+    </div>
+
+    <h4>b) Spring Security Filter Chain (mọi request)</h4>
+    <div class="pipe">
+      <div class="box c-client"><div class="step">INPUT</div><h3>HTTP request</h3></div>
+      <div class="arrow-h"><div class="shaft"></div></div>
+      <div class="box c-api"><div class="step">FILTER</div><h3>CORS</h3></div>
+      <div class="arrow-h"><div class="shaft"></div></div>
+      <div class="box c-api"><div class="step">FILTER</div><h3>JWT authentication</h3><p>Giải mã token → SecurityContext</p></div>
+      <div class="arrow-h"><div class="shaft"></div></div>
+      <div class="box c-api"><div class="step">FILTER</div><h3>Authorization (RBAC)</h3><p>Kiểm role</p></div>
+      <div class="arrow-h"><div class="shaft"></div></div>
+      <div class="box c-svc"><div class="step">OUTPUT</div><h3>@RestController</h3></div>
+    </div>
+    <p class="src">Nguồn: <code>src/specs/031-ai-weekly-meal-planner/plan.md</code> (5 bước RAG) · <code>architecture.md</code> §2 (Security Filter Chain)</p>
+  </section>
+</main>
+</body>
+</html>
