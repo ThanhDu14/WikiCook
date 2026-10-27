@@ -28,6 +28,7 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 13 | 2026-10-24, 20:06 – 20:25 | Module 3.4 Analyze & Fix | Đối chiếu chéo chất lượng artifact bằng `speckit-analyze` và chuẩn hóa 4 điểm Low/Medium trong spec | `7bf15ff` | `specs/040-shopping-list/spec.md` |
 | 14 | 2026-10-25 (buổi tối) | Module 3.5 Plan | Nghiên cứu và lập thiết kế đề xuất kỹ thuật cho feature 050 Cooking Mode bằng `/speckit-plan` | `4a601af` | `specs/050-cooking-mode/` |
 | 15 | 2026-10-28, 00:05 – 00:20 | Module 3.5 Tasks | Phân rã danh mục công việc kỹ thuật bản nháp (Implementation Tasks) cho module 050 bằng `/speckit-tasks` | Working Tree | `specs/050-cooking-mode/tasks.md` |
+| 16 | 2026-10-28, 00:22 – 00:35 | Module 3.5 Analyze & Fix | Đối chiếu chéo chất lượng artifact bằng `speckit-analyze` và giải quyết các điểm High/Medium cho feature 050 | Working Tree | `specs/050-cooking-mode/`, `src/README.md` |
 
 ---
 
@@ -650,3 +651,40 @@ Yêu cầu bổ sung cuối: cập nhật AI log phần vừa làm và cho biế
 - Kiểm tra tính nguyên tử (Atomicity): xác nhận mỗi task gắn với đúng một file code/test hoặc một câu lệnh kiểm thử cụ thể; 3 file test bổ sung ngoài Project Structure đều được gắn nhãn cảnh báo rõ ràng.
 - Xác nhận các quyết định mở A01–A11 và G01–G10 được gắn nhãn TBD kèm người phê duyệt chính xác, giữ nguyên tính độc lập để nhóm họp bàn duyệt trước khi triển khai.
 - Kiểm tra không phát sinh commit hoặc push tự động lên Git, tuân thủ kỷ luật quản lý nhánh cá nhân.
+
+---
+
+## Mục 16: Đối chiếu chéo chất lượng artifact bằng `speckit-analyze` và giải quyết các điểm High/Medium cho feature 050
+
+| Trường | Nội dung |
+|---|---|
+| **Ngày & Giờ truy cập** | 2026-10-28, 00:22 – 00:35 (Giờ Việt Nam, UTC+7) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Công cụ AI & Phiên bản** | Google Antigravity (Gemini 3.8 Flash), lệnh Spec Kit `/speckit-analyze` |
+| **Nền tảng** | CLI / Visual Studio Code trên Ubuntu Linux 24.04 LTS |
+| **Tài liệu liên quan** | `specs/050-cooking-mode/spec.md`, `specs/050-cooking-mode/plan.md`, `specs/050-cooking-mode/tasks.md`, `src/README.md` |
+| **Mục đích sử dụng** | Thực thi lệnh `speckit-analyze` đối chiếu chéo tính nhất quán và chất lượng giữa các artifacts của feature 050 Cooking Mode; phát hiện các điểm nghẽn và giải quyết dứt điểm các vấn đề High/Medium về độ bao dung schema và cấu trúc quy hoạch thư mục source code. |
+| **Nhánh Git** | `feature/050-cooking-mode` |
+| **Minh chứng (Evidence)** | Phiên làm việc Antigravity CLI c260de22-27a3-4c90-b5ee-bb048e0d209b; các thay đổi trực tiếp tại `src/README.md` và `specs/050-cooking-mode/spec.md` |
+
+### Prompt đã sử dụng:
+```text
+speckit-analyze
+```
+*(Tiếp nối sau báo cáo phân tích)*:
+```text
+Có, và giải quyết vấn đề High/Medium giúp tôi
+```
+
+### Nội dung do AI sinh ra:
+- Báo cáo phân tích chất lượng đặc tả xác nhận độ bao phủ 100% (19/19 FR, 5/5 SC, 32/32 AC qua 54 tasks), chỉ ra 1 rào cản quy trình Critical (chưa họp nghiệm thu spec & cấp Jira per-story) cùng các điểm High/Medium về hạ tầng và tài liệu.
+- Đề xuất và thực hiện điều chỉnh chuẩn hóa tài liệu:
+  1. Cập nhật `src/README.md` mục 4: thay thế cấu trúc thư mục quy hoạch cũ (`src/main/`, `src/web/`) sang cấu trúc chuẩn mực hiện đại `src/backend/` và `src/frontend/` đã được thống nhất trong `plan.md` của cả feature 040 và 050 (giải quyết triệt để vấn đề I1).
+  2. Bổ sung ghi chú Data Model trong `specs/050-cooking-mode/spec.md`: làm rõ ràng yêu cầu mapper phía client (`recipeSnapshotMapper`) phải có tính chịu lỗi (tolerant) với văn bản bước hướng dẫn lên tới 3.000 ký tự và nhiều ảnh minh họa kèm fallback placeholder (giải quyết triệt để vấn đề D1).
+  3. Làm rõ điều kiện gỡ bỏ cờ `[BLOCKED]` của task `T001` khi nhóm khởi tạo platform skeleton `src/frontend/` (giải quyết định hướng cho vấn đề B1).
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Trực tiếp kiểm tra và phê duyệt các điểm chỉnh sửa trong `src/README.md` và `specs/050-cooking-mode/spec.md`, xác nhận việc cập nhật đồng bộ cấu trúc thư mục `src/frontend/` và `src/backend/` giúp giải quyết triệt để sự mâu thuẫn giữa tài liệu hướng dẫn chung và các kế hoạch kỹ thuật.
+- Rà soát báo cáo phân tích, xác nhận không có bất kỳ mâu thuẫn hay lỗ hổng nào trong ma trận 32 kịch bản chấp nhận (ACs) của Cooking Mode.
+- Tái khẳng định quyết định không tự ý scaffold toolchain hay tự viết code implementation khi chưa họp nghiệm thu đặc tả spec 050 và chưa có Jira per-story, tuân thủ nghiêm ngặt Hiến pháp Nguyên tắc I.
+- Kiểm tra diff trên Git (`git diff`), xác nhận các thay đổi chính xác, không phát sinh lỗi và không tự động commit/push lên remote.

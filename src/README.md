@@ -203,20 +203,22 @@ From **Sprint 3 (PA3)** onwards, this directory (`src/`) will accommodate the ap
 
 ```text
 src/
-├── main/                          # Backend application source (Java 21 / Spring Boot 3)
-│   ├── java/com/wikicook/
-│   │   ├── auth/                  # Authentication & authorization module
-│   │   ├── recipe/                # Recipe management & search module
-│   │   └── user/                  # User profile & dietary preference module
-│   └── resources/
-│       ├── db/migration/          # Flyway SQL migration scripts
-│       └── application.yml        # Spring Boot configuration profiles
-├── test/                          # Automated test suites (Unit, Integration, Architecture)
-├── web/                           # Frontend application source (React 18 / TypeScript / Vite)
-│   ├── src/components/            # Reusable UI component library
-│   ├── src/pages/                 # Page-level route views
-│   └── package.json               # Frontend dependencies & build scripts
-├── constitution.md                # Preserved Spec Kit governance
+├── backend/                       # Backend application source (Java 21 / Spring Boot 3 / Maven)
+│   ├── pom.xml                    # Maven root build configuration
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/wikicook/ # Modular service packages (auth, recipe, shoppinglist, etc.)
+│       │   └── resources/
+│       │       ├── db/migration/  # Flyway SQL migration scripts (V001.., V401..)
+│       │       └── application.yml# Spring Boot configuration profiles
+│       └── test/                  # Test suites (JUnit 5, Mockito, Testcontainers PostgreSQL 16)
+├── frontend/                      # Frontend Single Page Application (React 18 / TypeScript / Vite)
+│   ├── package.json               # Frontend dependencies & build/test scripts
+│   └── src/
+│       ├── app/                   # App shell providers and top-level layout
+│       ├── features/              # Modular feature slices (cooking-mode, shopping-list, etc.)
+│       └── shared/                # Shared UI primitives, design tokens & API client
+├── constitution.md                # Preserved Spec Kit governance (v1.0.0)
 ├── templates/                     # Preserved Spec Kit templates
 └── specs/                         # Preserved Spec Kit specifications
 ```
