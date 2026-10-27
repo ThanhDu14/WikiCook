@@ -4,6 +4,7 @@ node_modules/
 env/
 
 # Build outputs
+target/
 dist/
 build/
 *.zip
