@@ -871,7 +871,7 @@ Index `(created_at DESC)`, `(target_type, target_id)`. Ai đặt/bỏ món nổi
 
 ---
 
-## 5. Nạp dữ liệu cào (`~/angingon-scraper/data/recipes.jsonl`)
+## 5. Nạp dữ liệu cào (`tools/angingon-scraper/data/recipes.jsonl`)
 
 Script nhập một lần (thuộc plan của 031, chạy sau migration). Mỗi công thức một transaction; trùng `source_url` thì bỏ qua. Ba file ánh xạ ✂️ đi kèm script thay cho bảng alias trong CSDL:
 
