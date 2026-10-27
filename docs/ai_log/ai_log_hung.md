@@ -25,7 +25,9 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 10 | 2026-10-21, 20:00 – 21:45 | `SCRUM-40` | Soạn thảo hoàn tất biên bản Sprint 02 Review & Retrospective, nhúng minh chứng Jira 18/18 Done và đóng task SCRUM-40 | `adf2d17` | `docs/management/reports/sprint-02/sprint-02-report.md` |
 | 11 | 2026-10-24, 19:15 – 19:30 | Module 3.4 Plan | Thiết lập Kế hoạch Kỹ thuật (Implementation Plan) cho module 040-shopping-list bằng `/speckit-plan` | `8b39964`, `82e86c3` | `specs/040-shopping-list/` |
 | 12 | 2026-10-24, 19:45 – 19:55 | Module 3.4 Tasks | Phân rã danh mục công việc kỹ thuật (Implementation Tasks) cho module 040-shopping-list bằng `/speckit-tasks` | `3e5a734` | `specs/040-shopping-list/tasks.md` |
-| 13 | 2026-10-24, 20:06 – 20:25 | Module 3.4 Analyze & Fix | Đối chiếu chéo chất lượng artifact bằng `speckit-analyze` và chuẩn hóa 4 điểm Low/Medium trong spec | Working Tree | `specs/040-shopping-list/spec.md` |
+| 13 | 2026-10-24, 20:06 – 20:25 | Module 3.4 Analyze & Fix | Đối chiếu chéo chất lượng artifact bằng `speckit-analyze` và chuẩn hóa 4 điểm Low/Medium trong spec | `7bf15ff` | `specs/040-shopping-list/spec.md` |
+| 14 | 2026-10-25 (buổi tối) | Module 3.5 Plan | Nghiên cứu và lập thiết kế đề xuất kỹ thuật cho feature 050 Cooking Mode bằng `/speckit-plan` | `4a601af` | `specs/050-cooking-mode/` |
+| 15 | 2026-10-28, 00:05 – 00:20 | Module 3.5 Tasks | Phân rã danh mục công việc kỹ thuật bản nháp (Implementation Tasks) cho module 050 bằng `/speckit-tasks` | Working Tree | `specs/050-cooking-mode/tasks.md` |
 
 ---
 
@@ -606,3 +608,45 @@ Yêu cầu bổ sung cuối: cập nhật AI log phần vừa làm và cho biế
 - Đã xác nhận đã tự review và kiểm chứng nội dung tài liệu do AI hỗ trợ tạo, gồm phần lập kế hoạch/thiết kế 050 và bản dịch tiếng Anh của các tài liệu lập kế hoạch 040/050.
 - Phần review và kiểm chứng tài liệu là công việc sinh viên thực hiện độc lập; nội dung thiết kế và bản dịch do AI hỗ trợ không được tính là phần sinh viên tự viết.
 - Chưa có thông tin về các hiệu chỉnh cụ thể do sinh viên tự thực hiện; không tự bổ sung thành tích hoặc kết quả kiểm thử chức năng. Xác nhận review tài liệu không thay thế approval của nhóm hay kiểm thử ứng dụng trên thiết bị thật.
+
+---
+
+## Mục 15: Phân rã danh mục công việc kỹ thuật bản nháp (Implementation Tasks) cho module 050 bằng `/speckit-tasks`
+
+| Trường | Nội dung |
+|---|---|
+| **Ngày & Giờ truy cập** | 2026-10-28, 00:05 – 00:20 (Giờ Việt Nam, UTC+7) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Công cụ AI & Phiên bản** | Google Antigravity (Gemini 3.8 Flash), lệnh Spec Kit `/speckit-tasks` |
+| **Nền tảng** | CLI / Visual Studio Code trên Ubuntu Linux 24.04 LTS |
+| **Tài liệu liên quan** | `specs/050-cooking-mode/tasks.md`, `specs/050-cooking-mode/plan.md`, `specs/050-cooking-mode/spec.md`, `specs/050-cooking-mode/data-model.md`, `specs/050-cooking-mode/contracts/integration.md` |
+| **Mục đích sử dụng** | Phân rã danh mục công việc kỹ thuật chi tiết (Implementation Tasks) bản nháp cho feature 050-cooking-mode (Hands-free Cooking Mode & Concurrent Timers) gồm 54 tasks phân bổ theo 8 pha, tuân thủ nguyên tắc Test-First (TDD) của Hiến pháp v1.0.0, đóng khung tính chất thuần Frontend (không backend/DB), và thiết lập ma trận truy vết đầy đủ 32 AC cùng 19 FR. |
+| **Nhánh Git** | `feature/050-cooking-mode` |
+| **Minh chứng (Evidence)** | Phiên làm việc Antigravity CLI c260de22-27a3-4c90-b5ee-bb048e0d209b; file artifact tại `specs/050-cooking-mode/tasks.md` |
+
+### Prompt đã sử dụng:
+```text
+/speckit-tasks — Actionable Implementation Task Breakdown cho feature 050-cooking-mode
+(Hands-free Cooking Mode & Concurrent Timers) — BẢN NHÁP, CHƯA PHẢI ỦY QUYỀN IMPLEMENTATION
+
+0. TRẠNG THÁI VÀ RANH GIỚI: Output DUY NHẤT specs/050-cooking-mode/tasks.md. Bản NHÁP để team review, chưa phải ủy quyền implement (Spec Draft, Constitution gate NOT MET). CẤM backend Java/Spring Boot, CẤM bảng DB/Flyway/OpenAPI. Dữ liệu thuần LocalStorage key cooking_session_{recipe_id}, TTL 4h.
+1. TÀI LIỆU ĐẦU VÀO: plan.md, spec.md (32 ACs, FR-001..019), data-model.md, contracts/integration.md, research.md (R1-R9, A01-A11, G01-G10), quickstart.md (TC-MAN-050-01..08), requirements.md, constitution.md v1.0.0.
+2. CÁC MỤC CHƯA DUYỆT (TBD): Đánh dấu [TBD-Axx] / [TBD-Gxx] kèm approver cho task chạm quyết định mở. Ranh giới 060 (PUBLISHED, string ID, no keyword guessing) và 070 (070 owns review prompt/auth).
+3. QUY TẮC ĐƯỜNG DẪN & ĐỊNH DẠNG: Bám sát plan.md Project Structure. File ngoài plan ghi chú "(bổ sung ngoài Project Structure — cần team xác nhận)". Cú pháp - [ ] [TaskID] [P?] [Story?] Description with exact file path. 1 task = 1 file/action.
+4. NGUYÊN TẮC TEST-FIRST: Vitest + React Testing Library + Fake Timers viết TRƯỚC và FAIL trước khi code.
+5. PHÂN BỔ 8 PHASES: Phase 1 Setup, Phase 2 Foundational (timerEngine, durationParser, adapters, runtime), Phase 3 US1 (P1 MVP Fullscreen/WakeLock), Phase 4 US2 (P1 MVP Step Nav >=64px, Ingredients), Phase 5 US3 (P2 Multi-timer, Alarms 60s auto-mute), Phase 6 US4 (P3 Voice vi-VN 5 commands), Phase 7 US5 (P3 LocalStorage 4h, Resume F5, Floating widget), Phase 8 Polish.
+6. QUY TẮC NGHIỆP VỤ & CHUỖI TIẾNG VIỆT: Deadline Date.now() không drift; parser gộp "1 giờ 30 phút"; alarm coordinator không đè nhau, 60s auto-mute ≠ acknowledge, chặn click-through; chuỗi tiếng Việt nguyên văn.
+7. PHỤ LỤC: Ma trận Traceability đủ 32 ACs và FR-001..FR-019, Bảng Unresolved A01-A11 / G01-G10 và 4 Blockers.
+```
+
+### Nội dung do AI sinh ra:
+- Toàn văn tài liệu `specs/050-cooking-mode/tasks.md` gồm đúng 54 tasks (T001 đến T054) tuần tự, chia thành 8 Phase rõ ràng với nhãn cảnh báo bản nháp ở đầu.
+- Nhóm task Test luôn đứng trước Implementation cho cả 5 User Stories và tầng Foundational.
+- Phụ lục Traceability ánh xạ 100% (32/32 Acceptance Scenarios và 19/19 Functional Requirements).
+- Phụ lục Unresolved Decisions & Blockers liệt kê chi tiết 11 mục A01–A11, 10 điều kiện G01–G10 cùng 4 rào cản tiên quyết chặn implementation.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Trực tiếp rà soát và kiểm chứng tính chuẩn xác của 54 tasks, xác nhận 100% đường dẫn thuộc `src/frontend/src/` và không có bất kỳ thành phần backend Java hay bảng CSDL nào bị sinh nhầm.
+- Kiểm tra tính nguyên tử (Atomicity): xác nhận mỗi task gắn với đúng một file code/test hoặc một câu lệnh kiểm thử cụ thể; 3 file test bổ sung ngoài Project Structure đều được gắn nhãn cảnh báo rõ ràng.
+- Xác nhận các quyết định mở A01–A11 và G01–G10 được gắn nhãn TBD kèm người phê duyệt chính xác, giữ nguyên tính độc lập để nhóm họp bàn duyệt trước khi triển khai.
+- Kiểm tra không phát sinh commit hoặc push tự động lên Git, tuân thủ kỷ luật quản lý nhánh cá nhân.
