@@ -50,6 +50,12 @@
             <artifactId>pgvector</artifactId>
         </dependency>
 
+        <!-- Schema for *IT tests; the app ships wikicook-db itself. -->
+        <dependency>
+            <groupId>com.wikicook</groupId>
+            <artifactId>wikicook-db</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

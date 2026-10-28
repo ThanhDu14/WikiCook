@@ -12,7 +12,7 @@ Module này **không phụ thuộc** `wikicook-app`; `wikicook-app` phụ thuộ
 | `ai.llm` | `LlmClient`, `LlmRequest`, `LlmResult`, `CancellationToken`; `MockLlmClient`, `OfflineLlmClient` |
 | `ai.embedding` | `EmbeddingClient`, `EmbeddingTask`; `MockEmbeddingClient` (vector cố định theo hash), `OfflineEmbeddingClient` |
 | `ai.config` | `AiProperties` (`wikicook.ai.*`), `AiClientConfig` chọn client theo `wikicook.ai.mode` |
-| `db/migration` | `V001__extensions.sql`: `unaccent`, `pg_trgm`, `vector`, hàm `f_unaccent` |
+| (test) `wikicook-db` | Migration Flyway dùng chung (`V001__extensions.sql` … `V303`); test `*IT` chạy toàn bộ trên Testcontainers |
 
 Chưa có: `GeminiLlmClient`, `GeminiEmbeddingClient` (031 T018, T019), truy hồi RAG và importer dữ liệu cào. Hiện `wikicook.ai.mode=live` làm ứng dụng dừng khi khởi động, kèm thông báo rõ ràng.
 

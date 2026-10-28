@@ -18,12 +18,14 @@
     <name>WikiCook backend</name>
 
     <!--
+        wikicook-db : Flyway migrations only (classpath:db/migration), also mounted by docker-compose.
         wikicook-ai : LLM, embedding, RAG retrieval and the scraped-data importer (com.wikicook.ai).
                       Must not depend on wikicook-app.
         wikicook-app: the Spring Boot application (com.wikicook.*), depends on wikicook-ai.
                       Added by the Tech Lead together with the v0.5 skeleton.
     -->
     <modules>
+        <module>wikicook-db</module>
         <module>wikicook-ai</module>
     </modules>
 
@@ -35,6 +37,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.wikicook</groupId>
+                <artifactId>wikicook-db</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.wikicook</groupId>
                 <artifactId>wikicook-ai</artifactId>
