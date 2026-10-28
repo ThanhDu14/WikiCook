@@ -29,7 +29,8 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 14 | 2026-10-25 (buổi tối) | Module 3.5 Plan | Nghiên cứu và lập thiết kế đề xuất kỹ thuật cho feature 050 Cooking Mode bằng `/speckit-plan` | `4a601af` | `specs/050-cooking-mode/` |
 | 15 | 2026-10-28, 00:05 – 00:20 | Module 3.5 Tasks | Phân rã danh mục công việc kỹ thuật bản nháp (Implementation Tasks) cho module 050 bằng `/speckit-tasks` | Working Tree | `specs/050-cooking-mode/tasks.md` |
 | 16 | 2026-10-28, 00:22 – 00:35 | Module 3.5 Analyze & Fix | Đối chiếu chéo chất lượng artifact bằng `speckit-analyze` và giải quyết các điểm High/Medium cho feature 050 | `175e8a3` | `specs/050-cooking-mode/`, `src/README.md` |
-| 17 | 2026-10-28, 22:00 – 22:45 | `SCRUM-46` (Sprint 03 Kickoff) | Khởi tạo báo cáo Sprint 03 (`sprint-03-report.md` v1.0), thiết lập Master Backlog 22 task và ghi biên bản họp Planning | Working Tree | `docs/management/reports/sprint-03/` |
+| 17 | 2026-10-28, 22:00 – 22:45 | `SCRUM-46` (Sprint 03 Kickoff) | Khởi tạo báo cáo Sprint 03 (`sprint-03-report.md` v1.0), thiết lập Master Backlog 22 task và ghi biên bản họp Planning | `efd8011` | `docs/management/reports/sprint-03/` |
+| 18 | 2026-10-28, 23:08 – 23:25 | `SCRUM-53` (Use-Case Spec 040 & 050) | Soạn thảo chi tiết Use-Case Specification cho 10 use cases thuộc Feature 040 và 050 kèm ma trận truy vết và phân tích gap UI | `7227d72` | `docs/requirements/use-case-specification.md` |
 
 ---
 
@@ -729,3 +730,74 @@ Vậy bạn hãy tiến hành soạn tài lieueyj sprint-03-report cho ngày hô
 - Điều phối biểu quyết và chốt đồng thuận 100% cho 5 quyết định chiến lược của Sprint 03, đặc biệt là việc kiên quyết chọn Feature 040 (US1 + US2) cho phần E để đảm bảo tính khả thi và an toàn kỹ thuật, loại trừ rủi ro từ các module AI phức tạp hay các module đang bị chặn.
 - Kiểm tra tính nhất quán giữa 22 task Jira trên board thực tế và bảng phân công trong báo cáo, đảm bảo không có task nào bị tạo dồn sau khi hoàn thành.
 - Rà soát tính chính xác của tài liệu bằng tiếng Anh chuyên ngành phần mềm, đảm bảo đúng định dạng bảng Markdown và chuẩn siêu dữ liệu 3 cấp trước khi lưu vào repo.
+
+---
+
+## Mục 18: Soạn thảo chi tiết Use-Case Specification cho 10 use cases thuộc Feature 040 và 050 (`SCRUM-53`)
+
+| Trường | Nội dung |
+|---|---|
+| **Ngày & Giờ truy cập** | 2026-10-28, 23:08 – 23:25 (Giờ Việt Nam, UTC+7) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Công cụ AI & Phiên bản** | Google Antigravity (Gemini 3.8 Flash) |
+| **Nền tảng** | CLI / Visual Studio Code trên Ubuntu Linux 24.04 LTS |
+| **Tài liệu liên quan** | `WikiCook/docs/requirements/use-case-specification.md`, `specs/040-shopping-list/spec.md`, `specs/050-cooking-mode/spec.md`, `docs/requirements/vision-document.md`, `specs/040-shopping-list/data-model.md`, `specs/050-cooking-mode/data-model.md`, `tasks/PA3/wikicook-pa3-team-assignment.md` |
+| **Mục đích sử dụng** | Thực thi task `SCRUM-53`, soạn thảo toàn diện tài liệu Use-Case Specification cho 10 use cases thuộc 2 feature 040 (Shopping List) và 050 (Cooking Mode) theo chuẩn RUP và cấu trúc 8 mục bắt buộc của đề PA3; thiết lập ma trận truy vết yêu cầu 100% (44 FRs, 10 USs) và phân tích khoảng trống giao diện UI để bàn giao cho task chụp ảnh prototype `SCRUM-58`. |
+| **Nhánh Git** | `PA3-docs` |
+| **Minh chứng (Evidence)** | Phiên làm việc Antigravity CLI c260de22-27a3-4c90-b5ee-bb048e0d209b; commit `7227d72`; tệp mới `WikiCook/docs/requirements/use-case-specification.md` (866 dòng) |
+
+### Prompt đã sử dụng:
+```text
+Bạn làm task SCRUM-53 cho WikiCook, môn CSC13002, Group 05, repo ThanhDu14/WikiCook,
+nhánh PA3-docs. Người dùng là Lê Quốc Hưng, gọi là "Đại ca".
+
+TASK: Viết Use-Case Specification cho các use case thuộc spec 040 Shopping List
+và spec 050 Cooking Mode, vào file docs/requirements/use-case-specification.md.
+- Assignee: Lê Quốc Hưng (@LqHung06). Reviewer: Trần Nguyễn Công Chung (@itzchugnn).
+- Start: 29/10/2026. Bản đầu: 01/11/2026. Bản sửa sau review: 03/11/2026.
+- Ngôn ngữ tài liệu nộp: tiếng Anh (như mọi tài liệu PA3).
+
+ĐỌC TRƯỚC, THEO THỨ TỰ NÀY — KHÔNG VIẾT KHI CHƯA ĐỌC:
+1. specs/040-shopping-list/spec.md — toàn bộ, đặc biệt User Stories US1–US5,
+   Functional Requirements FR-001 đến FR-025, Edge Cases 1–7.
+2. specs/050-cooking-mode/spec.md — toàn bộ, đặc biệt User Stories US1–US5,
+   Functional Requirements FR-001 đến FR-019, Non-Functional Requirements,
+   Edge Cases 1–8.
+3. docs/requirements/use-case-model.md (task SCRUM-49, Duy, freeze 02/11) và
+   docs/requirements/vision-document.md §5.
+   Nếu file use-case-model.md chưa có hoặc chưa có UC cho 040/050 thì báo ngay,
+   đừng tự bịa ID UC rồi viết tiếp.
+4. File team assignment: tasks/PA3/wikicook-pa3-team-assignment.md, mục SCRUM-53
+...
+PHẠM VI: Mô tả TOÀN BỘ 040 và 050 theo spec gốc, KHÔNG giới hạn ở slice US1 + US2 của phần E.
+ĐỊNH DẠNG: Mỗi UC đủ 8 mục bắt buộc, metadata Performed/Reviewed/Edited sau mỗi header.
+ALTERNATIVE FLOWS: Lấy đầy đủ từ Acceptance Scenarios và Edge Cases của spec gốc.
+SCREENSHOTS: Liệt kê ID màn hình tương ứng (SL01-SL08, CK01-CK09), luồng nào thiếu thì ghi gap cho SCRUM-58.
+```
+
+### Nội dung do AI sinh ra:
+- Tạo mới toàn bộ tệp tài liệu đặc tả ca sử dụng `WikiCook/docs/requirements/use-case-specification.md` (866 dòng, tiếng Anh học thuật):
+  1. Header siêu dữ liệu 3 cấp và thông báo đồng bộ: ghi nhận `docs/requirements/use-case-model.md` đang được Duy hoàn thiện trong `SCRUM-49` (freeze 02/11), thiết lập 10 UC ID dưới dạng Đề xuất kỹ thuật chính thức (Proposal) sẵn sàng đối chiếu.
+  2. Soạn thảo 5 Use Cases chi tiết cho Feature 040:
+     - `UC-040-01`: Quản lý danh sách active & custom items (thêm, sửa tên inline, lưu trữ archive và khôi phục từ lịch sử reset purchase states).
+     - `UC-040-02`: Import nguyên liệu từ recipe hoặc meal plan 7 ngày (nhân khẩu phần, gộp trùng, chuyển đổi metric g<->kg/ml<->l, tách sub-row đơn vị không tương thích, nút 1-tap "Bỏ chọn gia vị cơ bản").
+     - `UC-040-03`: Thao tác checklist tại siêu thị theo quầy hàng (tick checkbox >=48x48px phản hồi <50ms, tự động gom vào mục Đã mua, soft-clear kèm thanh hoàn tác 5 giây, chuyển quầy ghi nhớ tùy chọn).
+     - `UC-040-04`: Hoạt động ngoại tuyến (offline) trong siêu thị tầng hầm & đồng bộ nền trong 3 giây khi có mạng, bảo vệ JWT token không bị văng ra trang login, thuật toán dung hòa xung đột đa thiết bị theo OR cho checked items.
+     - `UC-040-05`: Xuất bản plain-text sao chép Zalo/SMS và in ấn checklist 2 cột tiết kiệm mực (`@media print`).
+  3. Soạn thảo 5 Use Cases chi tiết cho Feature 050:
+     - `UC-050-01`: Kích hoạt chế độ nấu toàn màn hình, giữ sáng màn hình Screen Wake Lock, bật tắt chế độ tương phản cao thuần đen `#000000`, mở khóa gesture Web Audio.
+     - `UC-050-02`: Điều hướng bước nấu bằng nút bấm siêu lớn >=64x64px hoặc bàn phím (Spacebar, phím mũi tên), hiển thị nguyên liệu theo bước hoặc mở drawer nguyên liệu toàn công thức.
+     - `UC-050-03`: Quản lý nhiều bộ đếm giờ đồng thời không trôi thời gian, tự động bắt thời gian từ câu chữ, chuông báo 60 giây tự ngắt kèm badge "Đã quá hạn X phút" đỏ nhấp nháy, gia hạn tức thì +1/+5 phút.
+     - `UC-050-04`: Điều khiển rảnh tay bằng giọng nói tiếng Việt ("Tiếp theo", "Quay lại", "Đọc lại", "Hẹn giờ", "Tắt chuông"), lọc nhiễu âm thanh bếp với ngưỡng tin cậy >=70%, đọc to hướng dẫn bằng TTS `vi-VN` với fallback earcon/viền sáng.
+     - `UC-050-05`: Khôi phục phiên nấu gián đoạn sau F5/đóng tab từ LocalStorage trong khung thời gian TTL 4 giờ, tính toán lại thời gian timer quá hạn, hộp thoại cảnh báo bảo vệ timer chạy ngầm khi thoát.
+  4. Đảm bảo 100% ca sử dụng có đủ 8 mục bắt buộc, không thiếu bất kỳ mục nào.
+  5. Xây dựng Ma trận truy vết Traceability Matrix ánh xạ 100% (25/25 FRs, 5/5 USs của 040; 19/19 FRs, 5/5 USs của 050; 0 thiếu sót).
+  6. Xây dựng Bảng đối chiếu 17 màn hình prototype `.dc.html` và phân tích chi tiết 8 khoảng trống UI (gaps) để bàn giao cho Chung chụp ảnh trong `SCRUM-58`.
+  7. Ghi nhận 3 Câu hỏi mở (Open Questions) phục vụ buổi họp nhóm ngày 02/11.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Trực tiếp kiểm tra và xác nhận `docs/requirements/use-case-model.md` chưa xuất hiện trong repo do Duy (`SCRUM-49`) đang thực hiện; ra quyết định chuẩn hóa 10 UC ID thành dạng Đề xuất (Proposal) bám sát User Stories của spec gốc thay vì đoán mò.
+- Rà soát kỹ lưỡng các số liệu và ngưỡng kỹ thuật để đảm bảo tính chuẩn xác tuyệt đối: nút bấm $64 \times 64$px và $48 \times 48$px, phản hồi $< 50$ms, trần 200 món, độ trôi timer $< 1$s/60 phút, độ tin cậy giọng nói $\ge 70\%$, thời gian chuông reo tối đa 60 giây, TTL 4 giờ, đồng bộ trong 3 giây.
+- Kiểm tra và đảm bảo không cắt xén phạm vi của UC spec theo slice code của phần E (mô tả toàn bộ US1–US5 cho cả hai feature).
+- Xác nhận phân chia ranh giới rõ ràng: không tự sinh ảnh screenshot lệch spec mà lập bảng phân tích khoảng trống UI chi tiết để bàn giao cho Chung (`SCRUM-58`).
+- Kiểm tra trạng thái Git (`git status`), xác nhận tệp tài liệu mới nằm đúng thư mục `docs/requirements/` trên nhánh `PA3-docs` và không tự động push lên remote.
