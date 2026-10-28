@@ -34,6 +34,7 @@
 *Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 ### UC-040-01: Manage Active Shopping List & Custom Items
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-040-01`
@@ -53,7 +54,7 @@ Enables an authenticated user to maintain a centralized active shopping list (`S
 1. **Navigate to List:** The actor navigates to the `/shopping-list` route via the main navigation bar or mobile tab bar.
 2. **Display Active List:** The system queries for an active list owned by the user. Finding one, the system displays the shopping list screen showing the list title, total item count, progress meter, categorized aisle sections, and the floating action button `"+ Thêm món"` (Add Item).
 3. **Trigger Add Custom Item:** The actor taps the `"+ Thêm món"` button.
-4. **Display Input Dialog:** The system opens the `AddCustomItemDialog` modal featuring fields for Item Name (text, mandatory), Quantity (numeric, optional), Unit (dropdown/text, optional), and Aisle Category (dropdown defaulting to "Đồ dùng khác" / General).
+4. **Display Input Dialog:** The system opens the add-item dialog modal featuring fields for Item Name (text, mandatory), Quantity (numeric, optional), Unit (dropdown/text, optional), and Aisle Category (dropdown defaulting to "Đồ dùng khác" / General).
 5. **Enter Details:** The actor enters the item name (e.g., "Nước rửa chén"), enters quantity `1`, selects unit "chai", confirms the aisle "Đồ dùng khác", and taps "Thêm vào danh sách".
 6. **Persist and Render:** The system validates the input, creates a new `ShoppingListItem` entity (setting `isChecked = false`, `isCleared = false`, `isManuallyEdited = false`), appends it to the active shopping list, and renders it immediately under the "Đồ dùng khác" header with an optimistic UI update.
 7. **Rename List:** The actor clicks on the shopping list title header. The title morphs into an inline editable text field. The actor modifies the title (e.g., "Tiệc cuối tuần nhà Hưng") and presses `Enter` or clicks outside (blur).
@@ -90,24 +91,24 @@ Enables an authenticated user to maintain a centralized active shopping list (`S
   - *Trigger:* At Step 5, the actor leaves the Item Name field empty or enters whitespace only.
   - *Steps:*
     1. The system highlights the field with a red validation error: *"Tên món không được để trống"*.
-    2. The submit button remains disabled until valid text (1–100 characters) is entered.
+    2. The submit button remains disabled until valid non-empty text is entered.
 
 #### 7. Postconditions
 - The active shopping list contains the newly created or restored items.
 - All additions and title modifications are persisted locally and synchronized to the backend.
 
 #### 8. Special Requirements
-- **Touch Targets:** The `"+ Thêm món"` floating button and dialog submit buttons MUST have a minimum interactive touch target of $48 \times 48$ pixels.
 - **Optimistic UI:** Custom items must appear in the checklist in $< 50$ms prior to server network confirmation.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
-- **Basic Flow:** [`SL01-List.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/SL01-List.dc.html), [`SL04-AddItem.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/SL04-AddItem.dc.html).
-- **Alternative Flows:** [`SL02-Empty.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/SL02-Empty.dc.html), [`SL07-History.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/SL07-History.dc.html).
+- **Basic Flow:** [`SL01-List.dc.html`](../analysis-and-design/ui-ux/screens/SL01-List.dc.html), [`SL04-AddItem.dc.html`](../analysis-and-design/ui-ux/screens/SL04-AddItem.dc.html).
+- **Alternative Flows:** [`SL02-Empty.dc.html`](../analysis-and-design/ui-ux/screens/SL02-Empty.dc.html), [`SL07-History.dc.html`](../analysis-and-design/ui-ux/screens/SL07-History.dc.html).
 - **UI Asset Gap for SCRUM-58:** Needs confirmation modal screenshot for AF 1.2 ("Lưu trữ danh sách cũ để khôi phục").
 
 ---
 
 ### UC-040-02: Import Ingredients from Recipe or Meal Plan with Scaling & Unit Conversion
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-040-02`
@@ -187,13 +188,14 @@ Allows a cook to import ingredient sets into their active shopping list from an 
 - **Performance:** Bulk generation of 21 meals (80–120 raw ingredients) MUST complete in $< 1.0$s on client devices (SC-004).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
-- **Basic Flow:** [`SL03-ImportPreview.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/SL03-ImportPreview.dc.html), [`SL04b-Breakdown.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/SL04b-Breakdown.dc.html).
-- **Alternative Flows:** [`W-SL03-ImportPreview.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/W-SL03-ImportPreview.dc.html) (Desktop dialog variant).
+- **Basic Flow:** [`SL03-ImportPreview.dc.html`](../analysis-and-design/ui-ux/screens/SL03-ImportPreview.dc.html), [`SL04b-Breakdown.dc.html`](../analysis-and-design/ui-ux/screens/SL04b-Breakdown.dc.html).
+- **Alternative Flows:** [`W-SL03-ImportPreview.dc.html`](../analysis-and-design/ui-ux/screens/W-SL03-ImportPreview.dc.html) (Desktop dialog variant).
 - **UI Asset Gap for SCRUM-58:** Pre-import modal showing the active "Bỏ chọn gia vị cơ bản" state.
 
 ---
 
 ### UC-040-03: In-Store Supermarket Checklist & Aisle Organization
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-040-03`
@@ -268,13 +270,14 @@ Provides the primary in-store shopping experience. Items are grouped under stand
 - **Latency:** Checkbox state transitions and progress meter recalculations MUST execute in $< 50$ms (SC-002).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
-- **Basic Flow:** [`SL01-List.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/SL01-List.dc.html).
-- **Alternative Flows:** [`SL05-ItemDetail.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/SL05-ItemDetail.dc.html), [`SL06-MoveAisle.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/SL06-MoveAisle.dc.html).
+- **Basic Flow:** [`SL01-List.dc.html`](../analysis-and-design/ui-ux/screens/SL01-List.dc.html).
+- **Alternative Flows:** [`SL05-ItemDetail.dc.html`](../analysis-and-design/ui-ux/screens/SL05-ItemDetail.dc.html), [`SL06-MoveAisle.dc.html`](../analysis-and-design/ui-ux/screens/SL06-MoveAisle.dc.html).
 - **UI Asset Gap for SCRUM-58:** Screenshot of the 5-second transient undo snackbar.
 
 ---
 
 ### UC-040-04: Offline Shopping Mode & Background Synchronization
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-040-04`
@@ -293,10 +296,10 @@ Guarantees uninterrupted shopping list usability when cellular and Wi-Fi signals
 #### 5. Basic Flow
 1. **Network Disconnection:** The actor enters a basement supermarket. Mobile network connectivity drops to offline (`navigator.onLine = false`).
 2. **Display Offline Status:** The system detects the `offline` event and displays a non-blocking subtle banner at the top: *"Đang ngoại tuyến — Dữ liệu được lưu an toàn trên máy"* (`SL08-Offline`).
-3. **Execute Offline Interactions:** The actor continues shopping: checks off 6 items, modifies 1 quantity, and adds a custom item "Khăn giấy".
-4. **Local Persistence & Mutation Queue:** The system intercepts all mutation API calls, updates the local IndexedDB database immediately, and enqueues mutation events with UTC timestamps into a persistent offline sync queue (`IndexedDB.sync_queue`).
+3. **Execute Offline Interactions:** The actor continues shopping offline without network access: checks off items, modifies item quantities, adds custom items, and deletes unwanted items.
+4. **Local Persistence & Mutation Queue:** The system intercepts all mutation API calls, updates the local IndexedDB database immediately, and enqueues mutation events with UTC timestamps into a persistent local offline queue.
 5. **Network Restoration:** The actor finishes shopping and approaches the supermarket checkout near the store entrance. The device regains cellular connectivity (`navigator.onLine = true`).
-6. **Trigger Background Sync:** The system's background sync engine detects network recovery, changes the status banner to *"Đang đồng bộ..."*, and flushes the queued mutation events to the backend REST endpoint `/api/v1/shopping-lists/sync` in a single batch.
+6. **Trigger Background Sync:** The system's background sync engine detects network recovery, changes the status banner to *"Đang đồng bộ..."*, and flushes the queued mutation events to synchronize to the backend in a single batch.
 7. **Sync Completion:** The server processes the mutations and returns the reconciled list state. In $< 3.0$ seconds (SC-003), the sync queue empties, the banner transitions to a brief green check *"Đã đồng bộ dữ liệu"*, and smoothly fades away.
 
 #### 6. Alternative Flows
@@ -323,7 +326,7 @@ Guarantees uninterrupted shopping list usability when cellular and Wi-Fi signals
   - *Steps:*
     1. The system checks `navigator.onLine`.
     2. Because weekly meal plan generation requires server-side recipe aggregation and database queries, the system disallows the action.
-    3. The system displays a non-blocking toast: *"Cần kết nối mạng để tải kế hoạch tuần mới"* (FR-005, Acceptance Scenario 4.5).
+    3. The system displays a non-blocking toast: *"Cần kết nối mạng để tải kế hoạch tuần mới"* (US4 AC5, within the context of FR-019 and FR-021 regarding offline resilience).
     4. The current local active list remains completely undisturbed.
 
 #### 7. Postconditions
@@ -335,12 +338,13 @@ Guarantees uninterrupted shopping list usability when cellular and Wi-Fi signals
 - **Storage Resilience:** Client-side store MUST reserve at least 1.0 MB storage to handle queued mutations without quota exceptions.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
-- **Basic Flow:** [`SL08-Offline.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/SL08-Offline.dc.html).
+- **Basic Flow:** [`SL08-Offline.dc.html`](../analysis-and-design/ui-ux/screens/SL08-Offline.dc.html).
 - **UI Asset Gap for SCRUM-58:** Screenshot of the sync success toast banner ("Đã đồng bộ dữ liệu").
 
 ---
 
 ### UC-040-05: Export, Plaintext Copy & Print Shopping List
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-040-05`
@@ -397,7 +401,7 @@ Allows a user to export the active shopping list into clean, structured plain te
 - **Print Optimization:** Print media styles MUST eliminate all background fills, navigation controls, and floating action buttons, formatting the list in a compact 2-column layout.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
-- **Basic Flow:** [`SL01-List.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/SL01-List.dc.html) (Share popover menu).
+- **Basic Flow:** [`SL01-List.dc.html`](../analysis-and-design/ui-ux/screens/SL01-List.dc.html) (Share popover menu).
 - **UI Asset Gap for SCRUM-58:** Dedicated print stylesheet preview screenshot (`@media print` 2-column rendering).
 
 ---
@@ -406,6 +410,7 @@ Allows a user to export the active shopping list into clean, structured plain te
 *Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 ### UC-050-01: Launch Full-Screen Cooking Mode & Keep Display Awake
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-050-01`
@@ -428,7 +433,7 @@ Provides the initial transition into the kitchen execution environment. From any
 4. **Acquire Screen Wake Lock:** The system calls `navigator.wakeLock.request('screen')`. The OS grants the wake lock.
 5. **Render Step 1:** The system initializes `CookingSession` for this `recipeId`, sets `currentStepIndex = 0` (Step 1), and renders the full-screen view (`CK01-Step`):
    - Oversized step number "Bước 1 / N"
-   - Large instruction text (minimum 20px, scalable up to 28px)
+   - Scalable large instruction text (FR-006) readable from a distance of 1.5 meters, maintaining a minimum 7:1 contrast ratio in High-Contrast Mode (NFR-001)
    - Embedded step ingredients (or "Xem nguyên liệu" button)
    - Oversized bottom navigation controls
    - Header bar with High-Contrast toggle, Voice toggle, and Exit button.
@@ -474,13 +479,14 @@ Provides the initial transition into the kitchen execution environment. From any
 - **Latency:** Initial transition to full-screen view MUST execute in $< 100$ms (NFR-002).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
-- **Basic Flow:** [`CK01-Step.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/CK01-Step.dc.html).
-- **Alternative Flows:** [`CK02-StepHC.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/CK02-StepHC.dc.html).
+- **Basic Flow:** [`CK01-Step.dc.html`](../analysis-and-design/ui-ux/screens/CK01-Step.dc.html).
+- **Alternative Flows:** [`CK02-StepHC.dc.html`](../analysis-and-design/ui-ux/screens/CK02-StepHC.dc.html).
 - **UI Asset Gap for SCRUM-58:** Screen Wake Lock unsupported warning banner.
 
 ---
 
 ### UC-050-02: Step-by-Step Cooking Navigation & Ingredient View
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-050-02`
@@ -536,13 +542,14 @@ Enables the cook to navigate forward and backward through recipe instructions us
 - **Transition Latency:** Step transitions MUST execute in $< 100$ms (NFR-002).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
-- **Basic Flow:** [`CK01-Step.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/CK01-Step.dc.html).
-- **Alternative Flows:** [`CK05-Ingredients.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/CK05-Ingredients.dc.html), [`CK09-Finished.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/CK09-Finished.dc.html).
+- **Basic Flow:** [`CK01-Step.dc.html`](../analysis-and-design/ui-ux/screens/CK01-Step.dc.html).
+- **Alternative Flows:** [`CK05-Ingredients.dc.html`](../analysis-and-design/ui-ux/screens/CK05-Ingredients.dc.html), [`CK09-Finished.dc.html`](../analysis-and-design/ui-ux/screens/CK09-Finished.dc.html).
 - **UI Asset Gap for SCRUM-58:** None (Screens CK01, CK05, CK09 cover all states).
 
 ---
 
 ### UC-050-03: Manage Concurrent Kitchen Timers & Alarms
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-050-03`
@@ -600,23 +607,31 @@ Provides parallel kitchen countdown timers directly integrated into cooking step
     2. The timer engine calculates remaining time strictly using `remainingMs = targetEndTimestamp - Date.now()` (hardware clock differential per Edge Case 2).
     3. When the tab regains focus, remaining durations display with exact zero cumulative drift.
   - *Outcome:* Clock accuracy is 100% immune to background CPU throttling.
+- **AF 3.5: Pause, Resume, and Delete Kitchen Timers (FR-011):**
+  - *Trigger:* The cook needs to temporarily pause a timer, resume a paused timer, or delete an unwanted timer card.
+  - *Steps:*
+    1. *Pause Timer:* On a `RUNNING` timer card, the cook taps the "Tạm dừng" (Pause) button. The system reconciles the remaining duration against the hardware clock: if `now >= deadline`, the timer transitions to `EXPIRED`; if not expired, the timer transitions to `PAUSED` and records `remainingMs` (`specs/050-cooking-mode/data-model.md §2`).
+    2. *Resume Timer:* On a `PAUSED` timer card, the cook taps the "Tiếp tục" (Resume) button. The system transitions the timer back to `RUNNING` and sets a new target deadline: `targetEndTimestamp = Date.now() + remainingMs`.
+    3. *Delete Timer:* On any timer card (idle, running, paused, or expired), the cook taps the "Xóa" (Delete) button. The system transitions the timer to `DISMISSED` and immediately purges it from the session timer list. If this was the only sounding timer, the audible alarm output stops immediately.
+  - *Outcome:* Granular control over individual timers without affecting other concurrent running timers. (Silencing an expired timer transitions it to acknowledged `EXPIRED` displaying "Hoàn thành", distinct from `DISMISSED`).
 
 #### 7. Postconditions
 - Active timers are persisted in `cooking_session_{recipeId}` in LocalStorage.
 - Completed timers remain visible until dismissed.
 
 #### 8. Special Requirements
-- **Audio Autoplay & 60s Mute:** Audio MUST play unblocked and auto-silence at exactly 60 seconds if unacknowledged (FR-013, SC-004).
+- **Audio Autoplay & 60s Mute:** Audio MUST play unblocked and auto-silence at exactly 60 seconds if unacknowledged (FR-013).
 - **Drift Tolerance:** Cumulative timer drift MUST remain $< 1.0$ second per 60 minutes (NFR-003).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
-- **Basic Flow:** [`CK01-Step.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/CK01-Step.dc.html), [`CK04-AddTimer.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/CK04-AddTimer.dc.html).
-- **Alternative Flows:** [`CK03-TimerOverdue.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/CK03-TimerOverdue.dc.html).
+- **Basic Flow:** [`CK01-Step.dc.html`](../analysis-and-design/ui-ux/screens/CK01-Step.dc.html), [`CK04-AddTimer.dc.html`](../analysis-and-design/ui-ux/screens/CK04-AddTimer.dc.html).
+- **Alternative Flows:** [`CK03-TimerOverdue.dc.html`](../analysis-and-design/ui-ux/screens/CK03-TimerOverdue.dc.html).
 - **UI Asset Gap for SCRUM-58:** Screenshot of multiple simultaneous expired timer cards.
 
 ---
 
 ### UC-050-04: Hands-Free Voice-Assisted Cooking Navigation
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-050-04`
@@ -641,6 +656,7 @@ Provides an optional online progressive enhancement allowing the cook to advance
 5. **Execute Action:** The system validates confidence $\ge 70\%$ (FR-016), triggers a brief green border pulse confirmation, and advances Cooking Mode to the next step within 1.0 second.
 6. **Command "Đọc lại" (Read Aloud):** On the next step, the cook speaks: `"Đọc lại"`. The system matches the command and utilizes the Web Speech Synthesis API (`window.speechSynthesis`) with a Vietnamese voice package (`vi-VN`) to speak the entire instruction text aloud.
 7. **Silence Alarm via Voice:** When a timer alarm sounds, the cook speaks: `"Tắt chuông"`. The system silences the alarm immediately.
+8. **Command "Hẹn giờ" (Timer Action):** The cook speaks: `"Hẹn giờ"`. The system matches the command with recognition confidence $\ge 70\%$, triggers a green border pulse visual confirmation, and initiates the corresponding timer action within 1.0 second (US4 AC2, FR-015).
 
 #### 6. Alternative Flows
 - **AF 4.1: Kitchen Noise & Low Confidence Rejection:**
@@ -684,12 +700,13 @@ Provides an optional online progressive enhancement allowing the cook to advance
 - **Execution Latency:** Command processing to UI transition MUST complete within 1.0 second (Acceptance Scenario 4.2).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
-- **Basic Flow:** [`CK06-Voice.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/CK06-Voice.dc.html).
+- **Basic Flow:** [`CK06-Voice.dc.html`](../analysis-and-design/ui-ux/screens/CK06-Voice.dc.html).
 - **UI Asset Gap for SCRUM-58:** Amber indicator toast for rejected low-confidence audio ("Không rõ khẩu lệnh").
 
 ---
 
 ### UC-050-05: Session Recovery & Interruption Protection
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-050-05`
@@ -761,8 +778,8 @@ Safeguards the cooking progress and active timers against catastrophic loss caus
 - **Timer Recalculation:** Timer restoration MUST use absolute hardware clock comparison to avoid elapsed time discrepancies (SC-005).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
-- **Basic Flow:** [`CK07-Resume.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/CK07-Resume.dc.html).
-- **Alternative Flows:** [`CK08-ExitTimers.dc.html`](file:///home/hungj2020/Documents/User/hc%20tap/hk1-3/Software.../WikiCook/docs/analysis-and-design/ui-ux/screens/CK08-ExitTimers.dc.html).
+- **Basic Flow:** [`CK07-Resume.dc.html`](../analysis-and-design/ui-ux/screens/CK07-Resume.dc.html).
+- **Alternative Flows:** [`CK08-ExitTimers.dc.html`](../analysis-and-design/ui-ux/screens/CK08-ExitTimers.dc.html).
 - **UI Asset Gap for SCRUM-58:** Compact floating background widget screenshot on the recipe overview page.
 
 ---
@@ -774,11 +791,11 @@ Safeguards the cooking progress and active timers against catastrophic loss caus
 
 | Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Success Criteria |
 | :---: | :--- | :---: | :--- | :---: |
-| **`UC-040-01`** | Manage Active Shopping List & Custom Items | `US1` (AC 1–5) | `FR-001`, `FR-012`, `FR-022`, `FR-025` | `SC-002` |
+| **`UC-040-01`** | Manage Active Shopping List & Custom Items | `US1` (AC 1–5) | `FR-001`, `FR-012`, `FR-022`, `FR-025` | - |
 | **`UC-040-02`** | Import Ingredients with Scaling & Unit Conversion | `US2` (AC 1–8) | `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-006`, `FR-007`, `FR-008`, `FR-009`, `FR-016` | `SC-001`, `SC-004`, `SC-005` |
 | **`UC-040-03`** | In-Store Checklist & Aisle Organization | `US3` (AC 1–6) | `FR-010`, `FR-011`, `FR-013`, `FR-014`, `FR-015`, `FR-017`, `FR-018` | `SC-002` |
 | **`UC-040-04`** | Offline Shopping & Background Sync | `US4` (AC 1–5) | `FR-019`, `FR-020`, `FR-021` | `SC-003` |
-| **`UC-040-05`** | Export, Plaintext Copy & Print Shopping List | `US5` (AC 1–2) | `FR-023`, `FR-024` | `SC-002` |
+| **`UC-040-05`** | Export, Plaintext Copy & Print Shopping List | `US5` (AC 1–2) | `FR-023`, `FR-024` | - |
 
 *Verification:* 100% of Feature 040 requirements (25/25 FRs, 5/5 USs, 26 Acceptance Scenarios) are mapped.
 
