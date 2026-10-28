@@ -227,4 +227,5 @@ As a **cook who accidentally refreshed the browser or closed the tab**, I want m
 
 ### Data Model Dependencies
 - **Recipe Step Granularity**: It is assumed that recipes in WikiCook maintain a sequential list of steps (`InstructionStep`). If the existing data schema does not support per-step ingredient linkages (`recipe_step_ingredients`), the interface falls back to providing a full recipe ingredient drawer accessible via a single tap.
+- **Tolerant Step & Media Content Bounds**: The client-side snapshot mapper (`recipeSnapshotMapper`) gracefully accommodates instruction step text up to 3,000 characters without truncating scraped recipe content, and accepts multiple step images with graceful fallback placeholders for failed image loads without interrupting active cooking mode.
 - **Storage Availability**: Browser LocalStorage is assumed to have at least 50 KB of available storage to preserve session state and active timer timestamps.

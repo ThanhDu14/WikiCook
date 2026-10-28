@@ -22,7 +22,13 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 7 | 2026-10-18 (sáng) & 19/10, 17:00 | `SCRUM-39` | Soạn thảo biên bản Weekly Scrum Standup 01 và cập nhật tiến độ kiểm toán 18 Jira tasks | `ad1bd1b` | `docs/management/reports/sprint-02/sprint-02-report.md` |
 | 8 | 2026-10-19, 17:35 – 17:55 | `SCRUM-28`, `SCRUM-39` | Hiệu chỉnh giả định kỹ thuật ASM-02, rủi ro RSK-02 và cập nhật bảng tiến độ Mid-Sprint Audit v1.2 | `1849b9e` | `docs/management/project-plan.md`, `reports/sprint-02/` |
 | 9 | 2026-10-20, 20:15 – 21:50 | `SCRUM-39`, `SCRUM-40` | Soạn thảo hoàn tất biên bản Weekly Standup 02, đóng task SCRUM-39 và nâng tiến độ v1.3 (11/18 Done) | `ecfe362` | `docs/management/reports/sprint-02/sprint-02-report.md` |
-| 10 | 2026-10-21, 20:00 – 21:45 | `SCRUM-40` | Soạn thảo hoàn tất biên bản Sprint 02 Review & Retrospective, nhúng minh chứng Jira 18/18 Done và đóng task SCRUM-40 | Working Tree (Pending commit) | `docs/management/reports/sprint-02/sprint-02-report.md` |
+| 10 | 2026-10-21, 20:00 – 21:45 | `SCRUM-40` | Soạn thảo hoàn tất biên bản Sprint 02 Review & Retrospective, nhúng minh chứng Jira 18/18 Done và đóng task SCRUM-40 | `adf2d17` | `docs/management/reports/sprint-02/sprint-02-report.md` |
+| 11 | 2026-10-24, 19:15 – 19:30 | Module 3.4 Plan | Thiết lập Kế hoạch Kỹ thuật (Implementation Plan) cho module 040-shopping-list bằng `/speckit-plan` | `8b39964`, `82e86c3` | `specs/040-shopping-list/` |
+| 12 | 2026-10-24, 19:45 – 19:55 | Module 3.4 Tasks | Phân rã danh mục công việc kỹ thuật (Implementation Tasks) cho module 040-shopping-list bằng `/speckit-tasks` | `3e5a734` | `specs/040-shopping-list/tasks.md` |
+| 13 | 2026-10-24, 20:06 – 20:25 | Module 3.4 Analyze & Fix | Đối chiếu chéo chất lượng artifact bằng `speckit-analyze` và chuẩn hóa 4 điểm Low/Medium trong spec | `7bf15ff` | `specs/040-shopping-list/spec.md` |
+| 14 | 2026-10-25 (buổi tối) | Module 3.5 Plan | Nghiên cứu và lập thiết kế đề xuất kỹ thuật cho feature 050 Cooking Mode bằng `/speckit-plan` | `4a601af` | `specs/050-cooking-mode/` |
+| 15 | 2026-10-28, 00:05 – 00:20 | Module 3.5 Tasks | Phân rã danh mục công việc kỹ thuật bản nháp (Implementation Tasks) cho module 050 bằng `/speckit-tasks` | Working Tree | `specs/050-cooking-mode/tasks.md` |
+| 16 | 2026-10-28, 00:22 – 00:35 | Module 3.5 Analyze & Fix | Đối chiếu chéo chất lượng artifact bằng `speckit-analyze` và giải quyết các điểm High/Medium cho feature 050 | Working Tree | `specs/050-cooking-mode/`, `src/README.md` |
 
 ---
 
@@ -434,3 +440,251 @@ Hãy giúp tôi:
 - Tự tay sao chép 2 ảnh chụp từ thư mục tải lên sang kho lưu trữ tại `docs/assets/jira/jira_sprint2_tasks_list_part1.png` và `docs/assets/jira/jira_sprint2_tasks_list_part2.png`, kiểm tra hiển thị liên kết markdown không bị lỗi đường dẫn.
 - Rà soát các bài học kinh nghiệm và nguyên nhân gốc rễ (RCA) trong Retrospective để đảm bảo phản ánh chân thực quá trình làm việc của nhóm WikiCook trong Sprint 2.
 - Ký duyệt chuyển trạng thái `SCRUM-40` thành `DONE` trên hệ thống Jira Software Cloud.
+
+---
+
+## Mục 11: Lập Kế hoạch Thực thi Kỹ thuật (Technical Implementation Plan) cho module 040 bằng `/speckit-plan`
+
+| Trường | Nội dung |
+|---|---|
+| **Ngày & Giờ truy cập** | 2026-10-24, 19:15 – 19:30 (Giờ Việt Nam, UTC+7) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Công cụ AI & Phiên bản** | Google Antigravity (Gemini 3.8 Flash), lệnh Spec Kit `/speckit-plan` |
+| **Nền tảng** | CLI / Visual Studio Code trên Ubuntu Linux 24.04 LTS |
+| **Tài liệu liên quan** | `specs/040-shopping-list/`, `src/constitution.md`, `docs/analysis-and-design/database/full-schema.md` (Mục 4.8), `docs/analysis-and-design/architecture.md` |
+| **Mục đích sử dụng** | Thực thi quy trình Spec-Driven Development (SDD) tạo bộ tài liệu thiết kế kỹ thuật hoàn chỉnh cho feature 040-shopping-list (Automated Smart Shopping List & Ingredient Aggregation), bao gồm: `plan.md`, `research.md` (Phase 0), `data-model.md`, `contracts/openapi.yaml`, `contracts/integration.md`, và `quickstart.md` (Phase 1). |
+| **Nhánh Git** | `feature/040-shopping-list` |
+| **Minh chứng (Evidence)** | Phiên làm việc Antigravity CLI c260de22-27a3-4c90-b5ee-bb048e0d209b; các file artifacts tại `specs/040-shopping-list/` |
+
+### Prompt đã sử dụng:
+```text
+/speckit-plan — Technical Implementation Plan cho feature 040-shopping-list
+(Automated Smart Shopping List & Ingredient Aggregation)
+
+0. ĐẦU VÀO BẮT BUỘC: specs/040-shopping-list/spec.md, src/constitution.md, full-schema.md Mục 4.8, architecture.md.
+1. NGỮ CẢNH KỸ THUẬT: Java 21, Spring Boot 3.x, Flyway V401__shopping_lists.sql, React 18 Vite + Tailwind CSS + IndexedDB (idb), PostgreSQL 16 (4 bảng đúng full-schema 4.8), Testcontainers postgres:16 (JaCoCo >= 70%), RESTful /api/v1.
+2. ARTIFACTS ĐẦU RA: plan.md, research.md, data-model.md, contracts/openapi.yaml, contracts/integration.md, quickstart.md (CHỈ viết trong cây specs/).
+3. PHASE 0 (research.md): R1 (gộp & quy đổi metric 2 chiều, discrete ceiling rule, single quantity column normalized in DB), R2 (IndexedDB + mutation queue, client_uuid, idempotent batch sync, LWW với ưu tiên tuyệt đối is_checked=true, refresh token expiry handling), R3 (pre-import modal, 1-tap staple exclusion, meal plan merge vs archive mode), R4 (trần 200 items, soft-clear non-destructive kèm 5s undo-clear).
+4. KIẾN TRÚC: com.wikicook.shoppinglist, Service Facade/Ports với 011, 020, 030, 031, 060 (YAGNI complexity tracking).
+5. CONTRACTS: openapi.yaml (14 endpoints), integration.md (RecipeDetailPort, MealPlanHandoffPort, DietaryProfilePort).
+6. CONSTITUTION CHECK: Đánh giá chi tiết 6 điểm (SC-004 vs Principle III, FR-020 vs Principle IV, airplane mode vs Principle II, v.v.).
+7. KIỂM THỬ: Bảng map FR-001..FR-025, performance budgets, 3 manual test cases (TC-MAN-040-01..03).
+```
+
+### Nội dung do AI sinh ra:
+- Toàn văn tài liệu `specs/040-shopping-list/research.md` giải quyết triệt để 7 quyết định kỹ thuật R1–R7 theo mẫu Decision / Rationale / Alternatives considered.
+- Bản đặc tả CSDL và DTO `specs/040-shopping-list/data-model.md` chuẩn hóa JPA Entity, 4 bảng CSDL Flyway và schema IndexedDB phía client.
+- Hợp đồng REST API đầy đủ 14 endpoint chuẩn OpenAPI 3.0.3 tại `specs/040-shopping-list/contracts/openapi.yaml`.
+- Giao ước tích hợp liên module `specs/040-shopping-list/contracts/integration.md` với các Port Interface Java.
+- Hướng dẫn chạy và cURL kiểm thử tại `specs/040-shopping-list/quickstart.md`.
+- Kế hoạch triển khai tổng thể `specs/040-shopping-list/plan.md` đạt chuẩn Constitution Gate.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Trực tiếp đối chiếu thiết kế 4 bảng với Mục 4.8 của `full-schema.md`, xác nhận chuẩn xác tên bảng `shopping_lists`, `shopping_list_items`, `shopping_list_item_sources`, `user_aisle_preferences` và chỉ mục `UNIQUE (user_id) WHERE status = 'ACTIVE'`.
+- Kiểm tra tính nhất quán của quy tắc làm tròn trần (`Ceiling`) cho đơn vị đếm rời rạc (quả, trứng) ở danh sách mua sắm, bảo toàn số lẻ thập phân ở chi tiết Provenance nguồn gốc.
+- Xác nhận giải pháp Undo-clear 5 giây thông qua `clearBatchId` và quy tắc toán tử OR (`current || mutation`) cho trạng thái `is_checked` khi đồng bộ ngoại tuyến từ nhiều thiết bị.
+- Xác thực toàn bộ các file artifact được sinh đúng vị trí trong cây `specs/040-shopping-list/`, không sinh nhầm vào `src/specs/`.
+
+---
+
+## Mục 12: Phân rã danh mục công việc kỹ thuật (Implementation Tasks) cho module 040 bằng `/speckit-tasks`
+
+| Trường | Nội dung |
+|---|---|
+| **Ngày & Giờ truy cập** | 2026-10-24, 19:45 – 19:55 (Giờ Việt Nam, UTC+7) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Công cụ AI & Phiên bản** | Google Antigravity (Gemini 3.8 Flash), lệnh Spec Kit `/speckit-tasks` |
+| **Nền tảng** | CLI / Visual Studio Code trên Ubuntu Linux 24.04 LTS |
+| **Tài liệu liên quan** | `specs/040-shopping-list/tasks.md`, `specs/040-shopping-list/plan.md`, `specs/040-shopping-list/spec.md`, `specs/040-shopping-list/data-model.md`, `specs/040-shopping-list/contracts/` |
+| **Mục đích sử dụng** | Thực thi quy trình Spec-Driven Development (SDD) tạo tài liệu danh mục công việc kỹ thuật chi tiết (`tasks.md`) cho feature 040-shopping-list (Automated Smart Shopping List & Ingredient Aggregation), phân bổ theo 8 pha với 80 tasks nguyên tử tuân thủ nghiêm ngặt nguyên tắc Test-First (TDD) của Hiến pháp v1.0.0. |
+| **Nhánh Git** | `feature/040-shopping-list` |
+| **Minh chứng (Evidence)** | Git commit: `3e5a734`; Phiên làm việc Antigravity CLI c260de22-27a3-4c90-b5ee-bb048e0d209b; file artifact tại `specs/040-shopping-list/tasks.md` |
+
+### Prompt đã sử dụng:
+```text
+/speckit-tasks — Actionable Implementation Task Breakdown cho feature 040-shopping-list
+(Automated Smart Shopping List & Ingredient Aggregation)
+
+0. TÀI LIỆU ĐẦU VÀO: specs/040-shopping-list/plan.md, spec.md, data-model.md, contracts/openapi.yaml, contracts/integration.md, research.md, quickstart.md, src/constitution.md.
+1. QUY TẮC ĐỊNH DẠNG: - [ ] [TaskID] [P?] [Story?] Description with exact file path (T001.. liên tục, 1 task = 1 file/action, cấm gộp file, [P] chuẩn xác).
+2. NGUYÊN TẮC TEST-FIRST: Unit/Integration tests xếp TRƯỚC code hiện thực trong từng User Story.
+3. PHÂN BỔ 8 PHASES: Phase 1 Setup, Phase 2 Foundational (Domain, Repositories, Ports, idb), Phase 3 US1 (P1 - MVP), Phase 4 US2 (P1 - MVP), Phase 5 US3 (P1 - MVP), Phase 6 US4 (P2), Phase 7 US5 (P3), Phase 8 Polish (200 items, manual test cases TC-MAN-040-01..03, quickstart cURL).
+4. MỤC CUỐI: Dependencies & Execution Order, Parallel Execution Examples, Implementation Strategy (MVP First, Incremental Delivery).
+```
+
+### Nội dung do AI sinh ra:
+- Toàn văn tài liệu `specs/040-shopping-list/tasks.md` gồm đúng 80 tasks (T001 đến T080) tuần tự, không nhảy số, chia thành 8 Phase rõ ràng.
+- Toàn bộ các User Story P1 (US1, US2, US3), P2 (US4), P3 (US5) đều được phân tách rạch ròi nhóm task Test trước nhóm task Implementation.
+- Sơ đồ phụ thuộc chi tiết và các ví dụ thực thi song song cụ thể cho môi trường phân công nhóm nhiều lập trình viên.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Trực tiếp kiểm tra và phê duyệt cấu trúc 80 tasks, xác nhận 100% đường dẫn file khớp với Project Structure trong `plan.md` (Spring Boot 3 backend, React 18 TypeScript frontend, Flyway V401 migration).
+- Kiểm tra tính nguyên tử (Atomicity): xác nhận mỗi task gắn với đúng một file mã nguồn hoặc một câu lệnh kiểm chứng độc lập, không có task gộp nhiều file.
+- Xác nhận các kịch bản kiểm thử không thể chạy tự động trong CI (Airplane Mode thực tế, đo trễ thao tác $<50$ms, kiểm tra định dạng in ấn tiết kiệm mực) được giao cho các test case thủ công `TC-MAN-040-01`, `02`, `03` tại `docs/test/test-cases.md`.
+- Kiểm tra không phát sinh commit hoặc push tự động lên Git, tuân thủ kỷ luật quản lý nhánh cá nhân.
+
+---
+
+## Mục 13: Đối chiếu chéo chất lượng artifact bằng `speckit-analyze` và chuẩn hóa các điểm Low/Medium trong spec.md
+
+| Trường | Nội dung |
+|---|---|
+| **Ngày & Giờ truy cập** | 2026-10-24, 20:06 – 20:25 (Giờ Việt Nam, UTC+7) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Công cụ AI & Phiên bản** | Google Antigravity (Gemini 3.8 Flash), lệnh Spec Kit `/speckit-analyze` |
+| **Nền tảng** | CLI / Visual Studio Code trên Ubuntu Linux 24.04 LTS |
+| **Tài liệu liên quan** | `specs/040-shopping-list/spec.md`, `specs/040-shopping-list/plan.md`, `specs/040-shopping-list/tasks.md`, `src/constitution.md` |
+| **Mục đích sử dụng** | Kiểm toán đối chiếu chéo (cross-artifact consistency audit) giữa đặc tả (spec), kế hoạch (plan) và danh mục công việc (tasks) của feature 040 trước khi bước vào giai đoạn hiện thực (implement); phát hiện và xử lý triệt để 4 điểm sai lệch/mơ hồ mức độ Low/Medium. |
+| **Nhánh Git** | `feature/040-shopping-list` |
+| **Minh chứng (Evidence)** | Phiên làm việc Antigravity CLI c260de22-27a3-4c90-b5ee-bb048e0d209b; các thay đổi trực tiếp tại `specs/040-shopping-list/spec.md` |
+
+### Prompt đã sử dụng:
+```text
+speckit-analyze
+```
+*(Tiếp nối sau báo cáo phân tích)*:
+```text
+Bạn hãy fix 4 vấn đề Low/Medium giúp tôi
+```
+
+### Nội dung do AI sinh ra:
+- Báo cáo phân tích chất lượng đặc tả (Specification Analysis Report) đánh giá 25/25 FR và 5/5 SC đạt tỷ lệ bao phủ 100% qua 80 tasks, 0 lỗi Critical/High, và chỉ ra 4 điểm Low/Medium cần tinh chỉnh.
+- Đề xuất và thực hiện chuẩn hóa nội dung trực tiếp trên `specs/040-shopping-list/spec.md`:
+  1. Chuẩn hóa `UnitConversion` thành domain utility service in-memory (`UnitConversionService`) theo đúng quyết định kiến trúc R1 và Hiến pháp III (YAGNI).
+  2. Đồng bộ tên thực thể nghiệp vụ thành `ShoppingListItemSource (Item Provenance)` khớp với bảng `shopping_list_item_sources` (Mục 4.8 `full-schema.md`).
+  3. Tinh chỉnh câu chữ giữa FR-002 (Recipe Detail) và FR-004 (Weekly Meal Plan) dẫn chiếu rõ việc dùng chung component UI `PreImportBottomSheet`.
+  4. Làm rõ tiêu chí nghiệm thu của SC-002: CI kiểm tra hành vi Optimistic UI không chặn mạng, kịch bản thực địa `TC-MAN-040-02` đo đạc độ trễ vật lý $<50$ms.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Trực tiếp rà soát báo cáo phân tích, xác nhận 0 lỗi Critical/High và kiểm chứng mức độ bao phủ 100% của 80 tasks đối với toàn bộ các acceptance scenarios trong spec.
+- Phê duyệt phương án xử lý 4 điểm Low/Medium, đối chiếu với `data-model.md` và `plan.md` để đảm bảo không làm thay đổi ranh giới hay phá vỡ hợp đồng API đã thống nhất.
+- Kiểm tra diff trên Git (`git diff specs/040-shopping-list/spec.md`), xác nhận các thay đổi chỉ tập trung chuẩn hóa câu chữ, thuật ngữ và phương thức nghiệm thu mà không làm phát sinh mâu thuẫn mới.
+ 
+## Mục 14 — Nghiên cứu và lập thiết kế đề xuất feature 050 Cooking Mode
+
+| Thông tin | Nội dung |
+|---|---|
+| **Ngày thực hiện** | 2026-10-25; không ghi giờ cụ thể vì chưa được xác minh |
+| **Công cụ AI** | OpenCode |
+| **Model** | GPT-6.1-sol  |
+| **Người yêu cầu / nhật ký** | Lê Quốc Hưng; nội dung do AI hỗ trợ soạn, sinh viên đã xác nhận review và kiểm chứng tài liệu |
+| **Mục đích** | `/speckit-plan` cho 050 — Hands-free Cooking Mode & Concurrent Timers; chỉ nghiên cứu/thiết kế, không triển khai ứng dụng |
+| **Nhánh** | Branch hiện tại do người dùng chuẩn bị; chưa xác minh theo ràng buộc không thực thi Git |
+| **Minh chứng** | Năm artifact trong `specs/050-cooking-mode/`; không có commit/test-pass/approval được xác nhận |
+
+### Prompt đã sử dụng (tóm tắt trung thực)
+
+```text
+/speckit-plan: lập kế hoạch kỹ thuật feature 050 từ spec hiện có.
+Đọc Constitution, template, spec/checklist 050, architecture/schema, 060/070,
+040 plan/contracts và src/README; chỉ đọc phần cooking/UX/test liên quan trong
+proposal, vision, phân công và docs/test. Tạo plan.md, research.md,
+data-model.md, quickstart.md, contracts/integration.md; chỉ thêm OpenAPI nếu
+050 sở hữu HTTP API. Frontend-first, deadline timers, offline sau tải,
+localStorage từng recipe trong 4h, browser capability adapters/fallback,
+test-first và traceability toàn bộ FR/NFR/SC/acceptance scenarios.
+Không sửa spec/checklist/schema/proposal/mirror/config; không code, scaffold,
+cài dependency, tasks/implement, Jira tự tạo hoặc bất kỳ lệnh Git/script gọi Git.
+Yêu cầu bổ sung cuối: cập nhật AI log phần vừa làm và cho biết model đang dùng.
+```
+
+### Kết quả AI hỗ trợ tạo
+
+- Tạo `plan.md`, `research.md`, `data-model.md`, `quickstart.md`, `contracts/integration.md` tại `specs/050-cooking-mode/`.
+- Thiết kế frontend runtime ở app shell; không bảng/migration/API session hoặc OpenAPI giả. Timer deadline, một alarm coordinator, auto-mute khác acknowledge; viewport baseline, Fullscreen/Wake Lock/voice/audio có fallback.
+- Đối chiếu `timer_seconds` có trong 060/schema draft nhưng read API chưa thống nhất; thiếu field dùng parser, manual timer vẫn có. “1 giờ 30 phút” là yêu cầu US3-AC1; range upper chính/lower phụ giữ nguyên spec.
+- Ma trận thiết kế/test dự kiến phủ FR-001–019, NFR-001–006, SC-001–005 và 32 acceptance scenarios; đề xuất TC-MAN-050-01…08 trong quickstart, không sửa docs/test.
+- Ghi rõ spec Draft chưa đạt gate Constitution (duyệt trước plan), thiếu Jira/skeleton/contracts được duyệt. A01–A11/G01–G10 là quyết định mở/phụ thuộc, không giả là nhóm đã chốt.
+- Tham khảo MDN về Wake Lock, Fullscreen, autoplay, Speech APIs, visibility, LocalStorage và beforeunload; đọc tài liệu không đồng nghĩa kiểm thử khả năng hỗ trợ thực tế.
+
+### Phạm vi và phần chờ kiểm chứng
+
+- Ngoài năm artifact, chỉ cập nhật nhật ký này theo yêu cầu bổ sung; không sửa baseline/mirror/schema/config hoặc mã ứng dụng. Không thực thi lệnh Git hay script setup/prerequisite có thể gọi Git.
+- Chưa chạy ứng dụng, cài dependency, viết/chạy test, build, coverage hoặc manual acceptance. Kiểm tra tài liệu bằng filesystem/link/coverage ID không phải bằng chứng test chức năng PASS.
+- Sinh viên đã xác nhận review và kiểm chứng tài liệu. Nhóm vẫn cần chốt TTL 4h so với timer 24h, precedence/parser, giới hạn browser/storage/voice, contract B/D và completion E/D; hoàn tất spec approval/Jira/toolchain trước triển khai.
+- Trạng thái: **AI đã tạo bản đề xuất; sinh viên đã review và kiểm chứng tài liệu theo xác nhận trực tiếp**. Việc này không đồng nghĩa nhóm đã phê duyệt thiết kế, đã thử browser/thiết bị, chạy test/build hoặc commit kết quả.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+
+- Đã xác nhận đã tự review và kiểm chứng nội dung tài liệu do AI hỗ trợ tạo, gồm phần lập kế hoạch/thiết kế 050 và bản dịch tiếng Anh của các tài liệu lập kế hoạch 040/050.
+- Phần review và kiểm chứng tài liệu là công việc sinh viên thực hiện độc lập; nội dung thiết kế và bản dịch do AI hỗ trợ không được tính là phần sinh viên tự viết.
+- Chưa có thông tin về các hiệu chỉnh cụ thể do sinh viên tự thực hiện; không tự bổ sung thành tích hoặc kết quả kiểm thử chức năng. Xác nhận review tài liệu không thay thế approval của nhóm hay kiểm thử ứng dụng trên thiết bị thật.
+
+---
+
+## Mục 15: Phân rã danh mục công việc kỹ thuật bản nháp (Implementation Tasks) cho module 050 bằng `/speckit-tasks`
+
+| Trường | Nội dung |
+|---|---|
+| **Ngày & Giờ truy cập** | 2026-10-28, 00:05 – 00:20 (Giờ Việt Nam, UTC+7) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Công cụ AI & Phiên bản** | Google Antigravity (Gemini 3.8 Flash), lệnh Spec Kit `/speckit-tasks` |
+| **Nền tảng** | CLI / Visual Studio Code trên Ubuntu Linux 24.04 LTS |
+| **Tài liệu liên quan** | `specs/050-cooking-mode/tasks.md`, `specs/050-cooking-mode/plan.md`, `specs/050-cooking-mode/spec.md`, `specs/050-cooking-mode/data-model.md`, `specs/050-cooking-mode/contracts/integration.md` |
+| **Mục đích sử dụng** | Phân rã danh mục công việc kỹ thuật chi tiết (Implementation Tasks) bản nháp cho feature 050-cooking-mode (Hands-free Cooking Mode & Concurrent Timers) gồm 54 tasks phân bổ theo 8 pha, tuân thủ nguyên tắc Test-First (TDD) của Hiến pháp v1.0.0, đóng khung tính chất thuần Frontend (không backend/DB), và thiết lập ma trận truy vết đầy đủ 32 AC cùng 19 FR. |
+| **Nhánh Git** | `feature/050-cooking-mode` |
+| **Minh chứng (Evidence)** | Phiên làm việc Antigravity CLI c260de22-27a3-4c90-b5ee-bb048e0d209b; file artifact tại `specs/050-cooking-mode/tasks.md` |
+
+### Prompt đã sử dụng:
+```text
+/speckit-tasks — Actionable Implementation Task Breakdown cho feature 050-cooking-mode
+(Hands-free Cooking Mode & Concurrent Timers) — BẢN NHÁP, CHƯA PHẢI ỦY QUYỀN IMPLEMENTATION
+
+0. TRẠNG THÁI VÀ RANH GIỚI: Output DUY NHẤT specs/050-cooking-mode/tasks.md. Bản NHÁP để team review, chưa phải ủy quyền implement (Spec Draft, Constitution gate NOT MET). CẤM backend Java/Spring Boot, CẤM bảng DB/Flyway/OpenAPI. Dữ liệu thuần LocalStorage key cooking_session_{recipe_id}, TTL 4h.
+1. TÀI LIỆU ĐẦU VÀO: plan.md, spec.md (32 ACs, FR-001..019), data-model.md, contracts/integration.md, research.md (R1-R9, A01-A11, G01-G10), quickstart.md (TC-MAN-050-01..08), requirements.md, constitution.md v1.0.0.
+2. CÁC MỤC CHƯA DUYỆT (TBD): Đánh dấu [TBD-Axx] / [TBD-Gxx] kèm approver cho task chạm quyết định mở. Ranh giới 060 (PUBLISHED, string ID, no keyword guessing) và 070 (070 owns review prompt/auth).
+3. QUY TẮC ĐƯỜNG DẪN & ĐỊNH DẠNG: Bám sát plan.md Project Structure. File ngoài plan ghi chú "(bổ sung ngoài Project Structure — cần team xác nhận)". Cú pháp - [ ] [TaskID] [P?] [Story?] Description with exact file path. 1 task = 1 file/action.
+4. NGUYÊN TẮC TEST-FIRST: Vitest + React Testing Library + Fake Timers viết TRƯỚC và FAIL trước khi code.
+5. PHÂN BỔ 8 PHASES: Phase 1 Setup, Phase 2 Foundational (timerEngine, durationParser, adapters, runtime), Phase 3 US1 (P1 MVP Fullscreen/WakeLock), Phase 4 US2 (P1 MVP Step Nav >=64px, Ingredients), Phase 5 US3 (P2 Multi-timer, Alarms 60s auto-mute), Phase 6 US4 (P3 Voice vi-VN 5 commands), Phase 7 US5 (P3 LocalStorage 4h, Resume F5, Floating widget), Phase 8 Polish.
+6. QUY TẮC NGHIỆP VỤ & CHUỖI TIẾNG VIỆT: Deadline Date.now() không drift; parser gộp "1 giờ 30 phút"; alarm coordinator không đè nhau, 60s auto-mute ≠ acknowledge, chặn click-through; chuỗi tiếng Việt nguyên văn.
+7. PHỤ LỤC: Ma trận Traceability đủ 32 ACs và FR-001..FR-019, Bảng Unresolved A01-A11 / G01-G10 và 4 Blockers.
+```
+
+### Nội dung do AI sinh ra:
+- Toàn văn tài liệu `specs/050-cooking-mode/tasks.md` gồm đúng 54 tasks (T001 đến T054) tuần tự, chia thành 8 Phase rõ ràng với nhãn cảnh báo bản nháp ở đầu.
+- Nhóm task Test luôn đứng trước Implementation cho cả 5 User Stories và tầng Foundational.
+- Phụ lục Traceability ánh xạ 100% (32/32 Acceptance Scenarios và 19/19 Functional Requirements).
+- Phụ lục Unresolved Decisions & Blockers liệt kê chi tiết 11 mục A01–A11, 10 điều kiện G01–G10 cùng 4 rào cản tiên quyết chặn implementation.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Trực tiếp rà soát và kiểm chứng tính chuẩn xác của 54 tasks, xác nhận 100% đường dẫn thuộc `src/frontend/src/` và không có bất kỳ thành phần backend Java hay bảng CSDL nào bị sinh nhầm.
+- Kiểm tra tính nguyên tử (Atomicity): xác nhận mỗi task gắn với đúng một file code/test hoặc một câu lệnh kiểm thử cụ thể; 3 file test bổ sung ngoài Project Structure đều được gắn nhãn cảnh báo rõ ràng.
+- Xác nhận các quyết định mở A01–A11 và G01–G10 được gắn nhãn TBD kèm người phê duyệt chính xác, giữ nguyên tính độc lập để nhóm họp bàn duyệt trước khi triển khai.
+- Kiểm tra không phát sinh commit hoặc push tự động lên Git, tuân thủ kỷ luật quản lý nhánh cá nhân.
+
+---
+
+## Mục 16: Đối chiếu chéo chất lượng artifact bằng `speckit-analyze` và giải quyết các điểm High/Medium cho feature 050
+
+| Trường | Nội dung |
+|---|---|
+| **Ngày & Giờ truy cập** | 2026-10-28, 00:22 – 00:35 (Giờ Việt Nam, UTC+7) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Công cụ AI & Phiên bản** | Google Antigravity (Gemini 3.8 Flash), lệnh Spec Kit `/speckit-analyze` |
+| **Nền tảng** | CLI / Visual Studio Code trên Ubuntu Linux 24.04 LTS |
+| **Tài liệu liên quan** | `specs/050-cooking-mode/spec.md`, `specs/050-cooking-mode/plan.md`, `specs/050-cooking-mode/tasks.md`, `src/README.md` |
+| **Mục đích sử dụng** | Thực thi lệnh `speckit-analyze` đối chiếu chéo tính nhất quán và chất lượng giữa các artifacts của feature 050 Cooking Mode; phát hiện các điểm nghẽn và giải quyết dứt điểm các vấn đề High/Medium về độ bao dung schema và cấu trúc quy hoạch thư mục source code. |
+| **Nhánh Git** | `feature/050-cooking-mode` |
+| **Minh chứng (Evidence)** | Phiên làm việc Antigravity CLI c260de22-27a3-4c90-b5ee-bb048e0d209b; các thay đổi trực tiếp tại `src/README.md` và `specs/050-cooking-mode/spec.md` |
+
+### Prompt đã sử dụng:
+```text
+speckit-analyze
+```
+*(Tiếp nối sau báo cáo phân tích)*:
+```text
+Có, và giải quyết vấn đề High/Medium giúp tôi
+```
+
+### Nội dung do AI sinh ra:
+- Báo cáo phân tích chất lượng đặc tả xác nhận độ bao phủ 100% (19/19 FR, 5/5 SC, 32/32 AC qua 54 tasks), chỉ ra 1 rào cản quy trình Critical (chưa họp nghiệm thu spec & cấp Jira per-story) cùng các điểm High/Medium về hạ tầng và tài liệu.
+- Đề xuất và thực hiện điều chỉnh chuẩn hóa tài liệu:
+  1. Cập nhật `src/README.md` mục 4: thay thế cấu trúc thư mục quy hoạch cũ (`src/main/`, `src/web/`) sang cấu trúc chuẩn mực hiện đại `src/backend/` và `src/frontend/` đã được thống nhất trong `plan.md` của cả feature 040 và 050 (giải quyết triệt để vấn đề I1).
+  2. Bổ sung ghi chú Data Model trong `specs/050-cooking-mode/spec.md`: làm rõ ràng yêu cầu mapper phía client (`recipeSnapshotMapper`) phải có tính chịu lỗi (tolerant) với văn bản bước hướng dẫn lên tới 3.000 ký tự và nhiều ảnh minh họa kèm fallback placeholder (giải quyết triệt để vấn đề D1).
+  3. Làm rõ điều kiện gỡ bỏ cờ `[BLOCKED]` của task `T001` khi nhóm khởi tạo platform skeleton `src/frontend/` (giải quyết định hướng cho vấn đề B1).
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Trực tiếp kiểm tra và phê duyệt các điểm chỉnh sửa trong `src/README.md` và `specs/050-cooking-mode/spec.md`, xác nhận việc cập nhật đồng bộ cấu trúc thư mục `src/frontend/` và `src/backend/` giúp giải quyết triệt để sự mâu thuẫn giữa tài liệu hướng dẫn chung và các kế hoạch kỹ thuật.
+- Rà soát báo cáo phân tích, xác nhận không có bất kỳ mâu thuẫn hay lỗ hổng nào trong ma trận 32 kịch bản chấp nhận (ACs) của Cooking Mode.
+- Tái khẳng định quyết định không tự ý scaffold toolchain hay tự viết code implementation khi chưa họp nghiệm thu đặc tả spec 050 và chưa có Jira per-story, tuân thủ nghiêm ngặt Hiến pháp Nguyên tắc I.
+- Kiểm tra diff trên Git (`git diff`), xác nhận các thay đổi chính xác, không phát sinh lỗi và không tự động commit/push lên remote.

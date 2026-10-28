@@ -1,0 +1,847 @@
+openapi: 3.0.3
+info:
+  title: WikiCook Smart Shopping List & Ingredient Aggregation API
+  description: RESTful API contracts for Module 040 (Automated Smart Shopping List & Ingredient Aggregation).
+  version: 1.0.0
+servers:
+  - url: /api/v1
+    description: Production & Local Gateway Base Path
+
+security:
+  - bearerAuth: []
+
+paths:
+  /shopping-lists/active:
+    get:
+      summary: Lấy danh sách mua sắm hiện hành (Active Shopping List)
+      description: Trả về danh sách đang hoạt động của người dùng đã xác thực, phân nhóm theo quầy siêu thị. Mặc định loại bỏ các món đã soft-clear trừ khi có query includeCleared=true.
+      operationId: getActiveShoppingList
+      parameters:
+        - name: includeCleared
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+          description: Nếu true, bao gồm cả các món đã dọn dẹp (soft-cleared).
+      responses:
+        '200':
+          description: Lấy danh sách thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    patch:
+      summary: Đổi tên danh sách mua sắm hiện hành
+      description: Cho phép người dùng tùy chỉnh tiêu đề danh sách mua sắm (từ 1 đến 60 ký tự).
+      operationId: renameActiveShoppingList
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTitleRequest'
+      responses:
+        '200':
+          description: Đổi tên thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /shopping-lists/active/archive:
+    post:
+      summary: Lưu trữ danh sách hiện hành và tạo mới danh sách trắng
+      description: Chuyển active shopping list sang ARCHIVED và tự động khởi tạo 1 danh sách active trống mới trong cùng transaction.
+      operationId: archiveActiveShoppingList
+      responses:
+        '201':
+          description: Lưu trữ thành công và trả về danh sách active mới.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /shopping-lists/active/clear-purchased:
+    post:
+      summary: Dọn dẹp mềm các món đã mua (Soft-Clear)
+      description: Đánh dấu is_cleared = true cho toàn bộ các món đang checked. Trả về clearBatchId phục vụ nút Hoàn tác (Undo) trong 5 giây.
+      operationId: clearPurchasedItems
+      responses:
+        '200':
+          description: Dọn dẹp thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClearPurchasedResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /shopping-lists/active/undo-clear:
+    post:
+      summary: Hoàn tác đợt dọn dẹp mềm vừa thực hiện
+      description: Khôi phục lại toàn bộ các món thuộc đợt clearBatchId mới nhất về trạng thái chưa dọn (is_cleared = false).
+      operationId: undoClearPurchased
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - clearBatchId
+              properties:
+                clearBatchId:
+                  type: string
+                  example: "batch-20261024-193000"
+      responses:
+        '200':
+          description: Hoàn tác thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UndoClearResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /shopping-lists/active/sync:
+    post:
+      summary: Đồng bộ ngoại tuyến theo lô (Batch Offline Sync)
+      description: Gửi hàng đợi các thay đổi phát sinh lúc offline lên server. Xử lý idempotent dựa vào client_uuid và ưu tiên tuyệt đối trạng thái is_checked = true.
+      operationId: syncOfflineMutations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncBatchRequest'
+      responses:
+        '200':
+          description: Đồng bộ hoàn tất.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncBatchResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /shopping-lists:
+    get:
+      summary: Lấy lịch sử danh sách đã lưu trữ (Archived Lists)
+      description: Phân trang danh sách lịch sử theo quy chuẩn Constitution V.
+      operationId: getArchivedShoppingLists
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [ARCHIVED]
+            default: ARCHIVED
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+      responses:
+        '200':
+          description: Lấy lịch sử thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedShoppingListHistory'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /shopping-lists/{id}:
+    get:
+      summary: Xem chi tiết một danh sách mua sắm cũ trong lịch sử
+      description: Xem danh sách lưu trữ ở chế độ chỉ đọc. Kiểm tra nghiêm ngặt quyền sở hữu user_id, trả 403 nếu không phải chủ sở hữu.
+      operationId: getShoppingListById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Trả về chi tiết danh sách lịch sử.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /shopping-lists/{id}/restore:
+    post:
+      summary: Khôi phục danh sách cũ thành danh sách hiện hành (Restore to Active)
+      description: Archive danh sách active hiện tại và kích hoạt lại danh sách cũ trong 1 transaction. Toàn bộ is_checked và is_cleared được reset về false.
+      operationId: restoreArchivedShoppingList
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Khôi phục thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /shopping-lists/items:
+    post:
+      summary: Thêm món tự do thủ công vào danh sách
+      description: Thêm món mới với client_uuid sinh tại client. Kiểm tra trần 200 món/list. Nếu món không khớp catalogue thì mặc định quầy GENERAL.
+      operationId: createCustomItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomItemRequest'
+      responses:
+        '201':
+          description: Thêm món thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListItemDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /shopping-lists/items/{clientUuid}:
+    patch:
+      summary: Cập nhật thông tin món trong danh sách
+      description: Cập nhật trạng thái tick (isChecked), số lượng, quầy hoặc dọn dẹp. Nếu đổi quầy kèm rememberAisle=true thì tự động cập nhật user_aisle_preferences.
+      operationId: updateShoppingListItem
+      parameters:
+        - name: clientUuid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateItemRequest'
+      responses:
+        '200':
+          description: Cập nhật thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListItemDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Không tìm thấy món (món chưa từng sync lên server, client cần đưa vào batch /sync).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+    delete:
+      summary: Xóa một món khỏi danh sách mua sắm
+      operationId: deleteShoppingListItem
+      parameters:
+        - name: clientUuid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Xóa thành công, không trả nội dung.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /shopping-lists/import/recipe:
+    post:
+      summary: Gộp nguyên liệu từ công thức nấu ăn lẻ vào danh sách
+      description: Nhân hệ số khẩu phần, lọc danh sách excludedIngredientIds, gộp số lượng và quy đổi đơn vị. Chống double-tap bằng Idempotency-Key.
+      operationId: importRecipeIngredients
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: false
+          schema:
+            type: string
+            format: uuid
+          description: Khóa duy nhất do client sinh ra để chống gửi trùng lặp yêu cầu.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportRecipeRequest'
+      responses:
+        '200':
+          description: Gộp nguyên liệu từ công thức thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /shopping-lists/import/meal-plan:
+    post:
+      summary: Tạo hoặc gộp danh sách mua sắm từ Kế hoạch ăn tuần (Weekly Meal Plan 030/031)
+      description: Nhận mealPlanId, chế độ (MERGE hoặc ARCHIVE_AND_NEW), danh sách excludedIngredientIds và servingOverrides. Chống gửi trùng lặp bằng Idempotency-Key.
+      operationId: importMealPlanIngredients
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: false
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportMealPlanRequest'
+      responses:
+        '200':
+          description: Nhập nguyên liệu từ kế hoạch tuần thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ShoppingListResponse:
+      type: object
+      required:
+        - id
+        - title
+        - status
+        - totalItems
+        - checkedItems
+        - clearedItems
+        - aisleGroups
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+          example: "Danh sách mua sắm tuần 43"
+        status:
+          type: string
+          enum: [ACTIVE, ARCHIVED]
+        totalItems:
+          type: integer
+          example: 12
+        checkedItems:
+          type: integer
+          example: 5
+        clearedItems:
+          type: integer
+          example: 0
+        aisleGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/AisleGroupDto'
+
+    AisleGroupDto:
+      type: object
+      required:
+        - aisleId
+        - aisleCode
+        - aisleName
+        - displayOrder
+        - items
+      properties:
+        aisleId:
+          type: integer
+          format: int64
+        aisleCode:
+          type: string
+          example: "PRODUCE"
+        aisleName:
+          type: string
+          example: "Rau củ & Trái cây"
+        displayOrder:
+          type: integer
+          example: 1
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShoppingListItemDto'
+
+    ShoppingListItemDto:
+      type: object
+      required:
+        - clientUuid
+        - displayName
+        - isChecked
+        - isCleared
+        - isManuallyEdited
+        - aisleCategoryId
+      properties:
+        clientUuid:
+          type: string
+          format: uuid
+        ingredientId:
+          type: integer
+          format: int64
+          nullable: true
+        displayName:
+          type: string
+          example: "Thịt ba chỉ"
+        displayQuantity:
+          type: number
+          format: double
+          example: 1.5
+        displayUnit:
+          type: string
+          example: "kg"
+        normalizedQuantity:
+          type: number
+          format: double
+          example: 1500.0
+        normalizedUnit:
+          type: string
+          example: "g"
+        aisleCategoryId:
+          type: integer
+          format: int64
+        isChecked:
+          type: boolean
+          example: false
+        isCleared:
+          type: boolean
+          example: false
+        isManuallyEdited:
+          type: boolean
+          example: false
+        sourceRecipeCount:
+          type: integer
+          example: 2
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemProvenanceDto'
+
+    ItemProvenanceDto:
+      type: object
+      required:
+        - sourceId
+        - recipeTitleSnapshot
+        - contributedQuantity
+        - unitName
+      properties:
+        sourceId:
+          type: integer
+          format: int64
+        recipeId:
+          type: integer
+          format: int64
+          nullable: true
+        mealPlanItemId:
+          type: integer
+          format: int64
+          nullable: true
+        recipeTitleSnapshot:
+          type: string
+          example: "Thịt kho tàu"
+        contributedQuantity:
+          type: number
+          format: double
+          example: 500.0
+        unitName:
+          type: string
+          example: "g"
+
+    ClearPurchasedResponse:
+      type: object
+      required:
+        - clearBatchId
+        - clearedCount
+        - clearedAt
+      properties:
+        clearBatchId:
+          type: string
+          example: "batch-20261024-193000"
+        clearedCount:
+          type: integer
+          example: 4
+        clearedAt:
+          type: string
+          format: date-time
+
+    UndoClearResponse:
+      type: object
+      required:
+        - restoredCount
+        - message
+      properties:
+        restoredCount:
+          type: integer
+          example: 4
+        message:
+          type: string
+          example: "Đã khôi phục 4 món vừa dọn dẹp"
+
+    SyncBatchRequest:
+      type: object
+      required:
+        - mutations
+      properties:
+        mutations:
+          type: array
+          items:
+            $ref: '#/components/schemas/SyncMutationDto'
+
+    SyncMutationDto:
+      type: object
+      required:
+        - clientUuid
+        - action
+        - clientTimestamp
+      properties:
+        clientUuid:
+          type: string
+          format: uuid
+        action:
+          type: string
+          enum: [CREATE, TOGGLE_CHECK, UPDATE_QTY, CHANGE_AISLE, DELETE, SOFT_CLEAR]
+        expectedVersion:
+          type: integer
+          nullable: true
+        ingredientId:
+          type: integer
+          format: int64
+          nullable: true
+        customName:
+          type: string
+          nullable: true
+        quantity:
+          type: number
+          nullable: true
+        unitName:
+          type: string
+          nullable: true
+        aisleCategoryId:
+          type: integer
+          format: int64
+          nullable: true
+        isChecked:
+          type: boolean
+          nullable: true
+        isCleared:
+          type: boolean
+          nullable: true
+        clientTimestamp:
+          type: string
+          format: date-time
+
+    SyncBatchResponse:
+      type: object
+      required:
+        - processedCount
+        - acceptedCount
+        - rejectedCount
+        - itemResults
+      properties:
+        processedCount:
+          type: integer
+          example: 3
+        acceptedCount:
+          type: integer
+          example: 3
+        rejectedCount:
+          type: integer
+          example: 0
+        itemResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/SyncItemResultDto'
+
+    SyncItemResultDto:
+      type: object
+      required:
+        - clientUuid
+        - status
+      properties:
+        clientUuid:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [ACCEPTED, CONFLICT_RESOLVED, REJECTED]
+        serverVersion:
+          type: integer
+          nullable: true
+        message:
+          type: string
+          nullable: true
+
+    CreateCustomItemRequest:
+      type: object
+      required:
+        - clientUuid
+        - customName
+      properties:
+        clientUuid:
+          type: string
+          format: uuid
+        customName:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: "Nước rửa chén"
+        quantity:
+          type: number
+          nullable: true
+          example: 1.0
+        unitName:
+          type: string
+          nullable: true
+          example: "chai"
+        aisleCategoryId:
+          type: integer
+          format: int64
+          nullable: true
+
+    UpdateItemRequest:
+      type: object
+      properties:
+        isChecked:
+          type: boolean
+        isCleared:
+          type: boolean
+        quantity:
+          type: number
+        unitName:
+          type: string
+        aisleCategoryId:
+          type: integer
+          format: int64
+        rememberAisle:
+          type: boolean
+          default: false
+
+    UpdateTitleRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 60
+          example: "Đi siêu thị BigC cuối tuần"
+
+    ImportRecipeRequest:
+      type: object
+      required:
+        - recipeId
+        - targetServings
+      properties:
+        recipeId:
+          type: integer
+          format: int64
+        targetServings:
+          type: number
+          minimum: 0.5
+          example: 4.0
+        excludedIngredientIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    ImportMealPlanRequest:
+      type: object
+      required:
+        - mealPlanId
+        - mode
+      properties:
+        mealPlanId:
+          type: integer
+          format: int64
+        mode:
+          type: string
+          enum: [MERGE, ARCHIVE_AND_NEW]
+        servingOverrides:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServingOverrideDto'
+        excludedIngredientIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    ServingOverrideDto:
+      type: object
+      required:
+        - mealPlanItemId
+        - targetServings
+      properties:
+        mealPlanItemId:
+          type: integer
+          format: int64
+        targetServings:
+          type: number
+          minimum: 0.5
+
+    PagedShoppingListHistory:
+      type: object
+      required:
+        - content
+        - totalElements
+        - totalPages
+        - page
+        - size
+      properties:
+        content:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int64
+              title:
+                type: string
+              archivedAt:
+                type: string
+                format: date-time
+              totalItems:
+                type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+
+    ProblemDetail:
+      type: object
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          example: "about:blank"
+        title:
+          type: string
+          example: "Not Found"
+        status:
+          type: integer
+          example: 404
+        detail:
+          type: string
+          example: "Shopping list item with client_uuid not found"
+        instance:
+          type: string
+          example: "/api/v1/shopping-lists/items/e8b7c53d-..."
+
+  responses:
+    BadRequest:
+      description: Dữ liệu gửi lên không hợp lệ.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    Unauthorized:
+      description: Chưa xác thực JWT hoặc token không hợp lệ.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    Forbidden:
+      description: Không có quyền truy cập danh sách của người khác.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    NotFound:
+      description: Không tìm thấy tài nguyên.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    UnprocessableEntity:
+      description: Vi phạm quy tắc nghiệp vụ (vượt trần 200 items).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
