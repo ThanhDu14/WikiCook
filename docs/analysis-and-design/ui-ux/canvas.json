@@ -1,0 +1,2116 @@
+{
+  "attachments": {},
+  "boards": {
+    "AD01-Dashboard.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s100",
+      "title": "AD-01 Bảng điều khiển",
+      "w": 1280,
+      "x": 0,
+      "y": 0
+    },
+    "AD02-Queue.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s100",
+      "title": "AD-02 Hàng đợi duyệt",
+      "w": 1280,
+      "x": 1360,
+      "y": 0
+    },
+    "AD03-ReviewDetail.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s100",
+      "title": "AD-03 Xem chi tiết và so sánh thay đổi",
+      "w": 1280,
+      "x": 2720,
+      "y": 0
+    },
+    "AD04-RejectDialog.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s100",
+      "title": "AD-04 Từ chối hoặc yêu cầu chỉnh sửa",
+      "w": 1280,
+      "x": 0,
+      "y": 1000
+    },
+    "AD05-Reports.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s100",
+      "title": "AD-05 Xử lý báo cáo",
+      "w": 1280,
+      "x": 1360,
+      "y": 1000
+    },
+    "AD06-ReportDetail.dc.html": {
+      "expand": "fill",
+      "h": 980,
+      "page": "s100",
+      "title": "AD-06 Chi tiết báo cáo",
+      "w": 1280,
+      "x": 2720,
+      "y": 1000
+    },
+    "AD07-Users.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s100",
+      "title": "AD-07 Quản lý người dùng",
+      "w": 1280,
+      "x": 0,
+      "y": 2100
+    },
+    "AD08-Taxonomy.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s100",
+      "title": "AD-08 Danh mục",
+      "w": 1280,
+      "x": 1360,
+      "y": 2100
+    },
+    "AD09-Featured.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s100",
+      "title": "AD-09 Công thức nổi bật",
+      "w": 1280,
+      "x": 2720,
+      "y": 2100
+    },
+    "AD10-AuditLog.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s100",
+      "title": "AD-10 Nhật ký kiểm toán",
+      "w": 1280,
+      "x": 0,
+      "y": 3100
+    },
+    "AD11-IngredientProposals.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s100",
+      "title": "AD-11 Nguyên liệu đề xuất (spec chưa có)",
+      "w": 1280,
+      "x": 1360,
+      "y": 3100
+    },
+    "AI01-Constraints.dc.html": {
+      "h": 900,
+      "page": "s031",
+      "title": "AI-01 Xác nhận ràng buộc",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "AI02-Generating.dc.html": {
+      "h": 844,
+      "page": "s031",
+      "title": "AI-02 Đang tạo",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "AI03-Draft.dc.html": {
+      "h": 1000,
+      "page": "s031",
+      "title": "AI-03 Bản nháp",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "AI04-LeaveDraft.dc.html": {
+      "h": 900,
+      "page": "s031",
+      "title": "AI-04 Rời trang khi chưa lưu",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "AI05-Saved.dc.html": {
+      "h": 900,
+      "page": "s031",
+      "title": "AI-05 Đã lưu thực đơn",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "AI06-NotEnough.dc.html": {
+      "h": 844,
+      "page": "s031",
+      "title": "AI-06 Không đủ công thức",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "AI07-LimitReached.dc.html": {
+      "h": 844,
+      "page": "s031",
+      "title": "AI-07 Hết lượt trong giờ",
+      "w": 390,
+      "x": 0,
+      "y": 1120
+    },
+    "AI08-Fallback.dc.html": {
+      "h": 960,
+      "page": "s031",
+      "title": "AI-08 AI lỗi · bản nháp dự phòng",
+      "w": 390,
+      "x": 470,
+      "y": 1120
+    },
+    "AI09-SlotSuggest.dc.html": {
+      "h": 960,
+      "page": "s031",
+      "title": "AI-09 Gợi ý cho một ô",
+      "w": 390,
+      "x": 940,
+      "y": 1120
+    },
+    "AU02-Register.dc.html": {
+      "h": 900,
+      "page": "s010",
+      "title": "AU-02 Đăng ký · mật khẩu chưa đạt",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "AU03-CheckEmail.dc.html": {
+      "h": 844,
+      "page": "s010",
+      "title": "AU-03 Kiểm tra email",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "AU04-LinkExpired.dc.html": {
+      "h": 844,
+      "page": "s010",
+      "title": "AU-04 Link xác minh hết hạn",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "AU05-ForgotPassword.dc.html": {
+      "h": 844,
+      "page": "s010",
+      "title": "AU-05 Quên mật khẩu · đã gửi",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "AU06-ResetPassword.dc.html": {
+      "h": 844,
+      "page": "s010",
+      "title": "AU-06 Đặt mật khẩu mới",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "AU07-Locked.dc.html": {
+      "h": 844,
+      "page": "s010",
+      "title": "AU-07 Tạm khóa và bị đình chỉ",
+      "w": 390,
+      "x": 0,
+      "y": 1020
+    },
+    "AU08-SignInPrompt.dc.html": {
+      "h": 844,
+      "page": "s010",
+      "title": "AU-08 Khách bấm Lưu · mời đăng nhập",
+      "w": 390,
+      "x": 470,
+      "y": 1020
+    },
+    "AU09-AccessDenied.dc.html": {
+      "h": 844,
+      "page": "s010",
+      "title": "AU-09 Không có quyền truy cập",
+      "w": 390,
+      "x": 940,
+      "y": 1020
+    },
+    "BM01-Collections.dc.html": {
+      "h": 900,
+      "page": "s080",
+      "title": "BM-01 Bộ sưu tập của tôi",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "BM02-Empty.dc.html": {
+      "h": 844,
+      "page": "s080",
+      "title": "BM-02 Chưa lưu gì",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "BM03-CollectionDetail.dc.html": {
+      "h": 900,
+      "page": "s080",
+      "title": "BM-03 Chi tiết bộ sưu tập",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "BM04-SaveDialog.dc.html": {
+      "h": 900,
+      "page": "s080",
+      "title": "BM-04 Lưu vào bộ sưu tập",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "BM05-SavedToast.dc.html": {
+      "h": 844,
+      "page": "s080",
+      "title": "BM-05 Vừa lưu công thức",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "BM06-UnsaveConfirm.dc.html": {
+      "h": 844,
+      "page": "s080",
+      "title": "BM-06 Bỏ lưu khỏi nhiều bộ sưu tập",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "CK01-Step.dc.html": {
+      "h": 844,
+      "page": "s050",
+      "title": "CK-01 Một bước · cook-light",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "CK02-StepHC.dc.html": {
+      "h": 844,
+      "page": "s050",
+      "title": "CK-02 Một bước · tương phản cao",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "CK03-TimerOverdue.dc.html": {
+      "h": 844,
+      "page": "s050",
+      "title": "CK-03 Hẹn giờ quá hạn",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "CK04-AddTimer.dc.html": {
+      "h": 844,
+      "page": "s050",
+      "title": "CK-04 Thêm hẹn giờ",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "CK05-Ingredients.dc.html": {
+      "h": 844,
+      "page": "s050",
+      "title": "CK-05 Sheet nguyên liệu",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "CK06-Voice.dc.html": {
+      "h": 844,
+      "page": "s050",
+      "title": "CK-06 Giọng nói",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "CK07-Resume.dc.html": {
+      "h": 844,
+      "page": "s050",
+      "title": "CK-07 Tiếp tục phiên nấu",
+      "w": 390,
+      "x": 0,
+      "y": 964
+    },
+    "CK08-ExitTimers.dc.html": {
+      "h": 844,
+      "page": "s050",
+      "title": "CK-08 Thoát khi còn hẹn giờ",
+      "w": 390,
+      "x": 470,
+      "y": 964
+    },
+    "CK09-Finished.dc.html": {
+      "h": 844,
+      "page": "s050",
+      "title": "CK-09 Hoàn thành và mời đánh giá",
+      "w": 390,
+      "x": 940,
+      "y": 964
+    },
+    "CM01-NotFound.dc.html": {
+      "h": 844,
+      "page": "s000",
+      "title": "CM-01 Không tìm thấy (404)",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "CM02-Notifications.dc.html": {
+      "h": 844,
+      "page": "s000",
+      "title": "CM-02 Thông báo (spec chưa có)",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "CM03-ReportRecipe.dc.html": {
+      "h": 900,
+      "page": "s000",
+      "title": "CM-03 Báo cáo công thức hoặc người dùng (spec chưa có)",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "CM04-OfflinePage.dc.html": {
+      "h": 844,
+      "page": "s000",
+      "title": "CM-04 Mất mạng toàn trang",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "MP01-Week.dc.html": {
+      "h": 900,
+      "page": "s030",
+      "title": "MP-01 Thực đơn theo ngày",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "MP02-SlotMenu.dc.html": {
+      "h": 900,
+      "page": "s030",
+      "title": "MP-02 Menu của món",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "MP03-MoveTo.dc.html": {
+      "h": 844,
+      "page": "s030",
+      "title": "MP-03 Chuyển sang…",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "MP04-Picker.dc.html": {
+      "h": 844,
+      "page": "s030",
+      "title": "MP-04 Chọn món cho ô",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "MP05-AddFromRecipe.dc.html": {
+      "h": 900,
+      "page": "s030",
+      "title": "MP-05 Thêm vào thực đơn từ công thức",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "MP06-EmptyWeek.dc.html": {
+      "h": 844,
+      "page": "s030",
+      "title": "MP-06 Tuần chưa có món",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "MP07-Offline.dc.html": {
+      "h": 844,
+      "page": "s030",
+      "title": "MP-07 Mất mạng",
+      "w": 390,
+      "x": 0,
+      "y": 1020
+    },
+    "Main.dc.html": {
+      "h": 900,
+      "page": "s010",
+      "title": "AU-01 Đăng nhập · lỗi chung",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "NU01-Detail.dc.html": {
+      "h": 980,
+      "page": "s090",
+      "title": "NU-01 Chi tiết công thức",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "NU02-Nutrition.dc.html": {
+      "h": 1000,
+      "page": "s090",
+      "title": "NU-02 Tab dinh dưỡng · có dị ứng của bạn",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "NU03-NutritionStates.dc.html": {
+      "h": 900,
+      "page": "s090",
+      "title": "NU-03 Các trạng thái khối dinh dưỡng",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "NU04-Unavailable.dc.html": {
+      "h": 844,
+      "page": "s090",
+      "title": "NU-04 Công thức không còn khả dụng",
+      "w": 390,
+      "x": 0,
+      "y": 1120
+    },
+    "NU05-AdminEstimates.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s090",
+      "title": "NU-05 Quản trị · Ước tính dinh dưỡng",
+      "w": 1280,
+      "x": 470,
+      "y": 1120
+    },
+    "PF01-Me.dc.html": {
+      "h": 844,
+      "page": "s011",
+      "title": "PF-01 Trang Tôi",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "PF02-DietEmpty.dc.html": {
+      "h": 844,
+      "page": "s011",
+      "title": "PF-02 Hồ sơ ăn uống · chưa có",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "PF03-DietForm.dc.html": {
+      "h": 1180,
+      "page": "s011",
+      "title": "PF-03 Hồ sơ ăn uống · đang sửa",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "PF04-EditProfile.dc.html": {
+      "h": 844,
+      "page": "s011",
+      "title": "PF-04 Sửa hồ sơ công khai",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "PF05-PublicProfile.dc.html": {
+      "h": 844,
+      "page": "s011",
+      "title": "PF-05 Hồ sơ công khai (người khác xem)",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "PF06-Security.dc.html": {
+      "h": 1000,
+      "page": "s011",
+      "title": "PF-06 Mật khẩu và bảo mật",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "PF07-DeleteAccount.dc.html": {
+      "h": 980,
+      "page": "s011",
+      "title": "PF-07 Xóa tài khoản",
+      "w": 390,
+      "x": 0,
+      "y": 1300
+    },
+    "PF08-Goodbye.dc.html": {
+      "h": 844,
+      "page": "s011",
+      "title": "PF-08 Đã xóa tài khoản",
+      "w": 390,
+      "x": 470,
+      "y": 1300
+    },
+    "RE01-MyRecipes.dc.html": {
+      "h": 1000,
+      "page": "s060",
+      "title": "RE-01 Công thức của tôi",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "RE02-General.dc.html": {
+      "h": 1080,
+      "page": "s060",
+      "title": "RE-02 Bước 1 · Thông tin chung (lỗi)",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "RE03-Ingredients.dc.html": {
+      "h": 980,
+      "page": "s060",
+      "title": "RE-03 Bước 2 · Nguyên liệu",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "RE04-Equipment.dc.html": {
+      "h": 844,
+      "page": "s060",
+      "title": "RE-04 Bước 3 · Dụng cụ",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "RE05-Steps.dc.html": {
+      "h": 980,
+      "page": "s060",
+      "title": "RE-05 Bước 4 · Các bước",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "RE06-Video.dc.html": {
+      "h": 844,
+      "page": "s060",
+      "title": "RE-06 Bước 5 · Video",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "RE07-Review.dc.html": {
+      "h": 900,
+      "page": "s060",
+      "title": "RE-07 Bước 6 · Xem trước và gửi duyệt",
+      "w": 390,
+      "x": 0,
+      "y": 1200
+    },
+    "RE08-RevisionNote.dc.html": {
+      "h": 844,
+      "page": "s060",
+      "title": "RE-08 Kiểm duyệt yêu cầu chỉnh sửa",
+      "w": 390,
+      "x": 470,
+      "y": 1200
+    },
+    "RE09-Rejected.dc.html": {
+      "h": 844,
+      "page": "s060",
+      "title": "RE-09 Bị từ chối (chỉ đọc)",
+      "w": 390,
+      "x": 940,
+      "y": 1200
+    },
+    "RE10-Conflict.dc.html": {
+      "h": 844,
+      "page": "s060",
+      "title": "RE-10 Xung đột phiên bản",
+      "w": 390,
+      "x": 1410,
+      "y": 1200
+    },
+    "RV01-Reviews.dc.html": {
+      "h": 1060,
+      "page": "s070",
+      "title": "RV-01 Khối đánh giá",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "RV02-WriteReview.dc.html": {
+      "h": 1000,
+      "page": "s070",
+      "title": "RV-02 Viết đánh giá (lỗi)",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "RV03-Lightbox.dc.html": {
+      "h": 844,
+      "page": "s070",
+      "title": "RV-03 Xem Cooksnap",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "RV04-OwnReview.dc.html": {
+      "h": 844,
+      "page": "s070",
+      "title": "RV-04 Sửa hoặc xóa đánh giá của mình",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "RV05-Report.dc.html": {
+      "h": 900,
+      "page": "s070",
+      "title": "RV-05 Báo cáo đánh giá",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "RV06-Empty.dc.html": {
+      "h": 844,
+      "page": "s070",
+      "title": "RV-06 Chưa có đánh giá",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "SL01-List.dc.html": {
+      "h": 1060,
+      "page": "s040",
+      "title": "SL-01 Danh sách theo quầy",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "SL02-Empty.dc.html": {
+      "h": 844,
+      "page": "s040",
+      "title": "SL-02 Danh sách trống",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "SL03-ImportPreview.dc.html": {
+      "h": 900,
+      "page": "s040",
+      "title": "SL-03 Xem trước khi nhập",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "SL04-AddItem.dc.html": {
+      "h": 844,
+      "page": "s040",
+      "title": "SL-04 Thêm món tự do",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "SL04b-Breakdown.dc.html": {
+      "h": 1180,
+      "page": "s040",
+      "title": "SL-04b Bóc tách nguyên liệu",
+      "w": 390,
+      "x": 2820,
+      "y": 0
+    },
+    "SL05-ItemDetail.dc.html": {
+      "h": 844,
+      "page": "s040",
+      "title": "SL-05 Nguồn gốc và sửa số lượng",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "SL06-MoveAisle.dc.html": {
+      "h": 900,
+      "page": "s040",
+      "title": "SL-06 Chuyển quầy",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "SL07-History.dc.html": {
+      "h": 844,
+      "page": "s040",
+      "title": "SL-07 Lịch sử mua sắm",
+      "w": 390,
+      "x": 0,
+      "y": 1180
+    },
+    "SL08-Offline.dc.html": {
+      "h": 844,
+      "page": "s040",
+      "title": "SL-08 Đang ngoại tuyến",
+      "w": 390,
+      "x": 470,
+      "y": 1180
+    },
+    "SR01-Home.dc.html": {
+      "h": 1060,
+      "page": "s020",
+      "title": "SR-01 Trang chủ",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "SR02-Results.dc.html": {
+      "h": 1000,
+      "page": "s020",
+      "title": "SR-02 Kết quả, bộ lọc đang bật",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "SR03-FilterSheet.dc.html": {
+      "h": 900,
+      "page": "s020",
+      "title": "SR-03 Bộ lọc (bottom sheet)",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "SR04-NoResults.dc.html": {
+      "h": 844,
+      "page": "s020",
+      "title": "SR-04 Không có kết quả",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "SR05-AllHidden.dc.html": {
+      "h": 844,
+      "page": "s020",
+      "title": "SR-05 Tất cả bị ẩn theo hồ sơ",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "SR06-ShownWithWarning.dc.html": {
+      "h": 900,
+      "page": "s020",
+      "title": "SR-06 Đang hiện món bị ẩn",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "SR07-LoadingError.dc.html": {
+      "h": 900,
+      "page": "s020",
+      "title": "SR-07 Đang tải và lỗi",
+      "w": 390,
+      "x": 0,
+      "y": 1180
+    },
+    "W-AI01-Constraints.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s031",
+      "title": "AI-01 Xác nhận ràng buộc",
+      "w": 1440,
+      "x": 0,
+      "y": 2500
+    },
+    "W-AI02-Generating.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s031",
+      "title": "AI-02 Đang tạo",
+      "w": 1440,
+      "x": 1520,
+      "y": 2500
+    },
+    "W-AI03-Draft.dc.html": {
+      "expand": "fill",
+      "h": 1180,
+      "page": "s031",
+      "title": "AI-03 Bản nháp",
+      "w": 1440,
+      "x": 3040,
+      "y": 2500
+    },
+    "W-AI04-LeaveDraft.dc.html": {
+      "expand": "fill",
+      "h": 1180,
+      "page": "s031",
+      "title": "AI-04 Rời trang khi chưa lưu",
+      "w": 1440,
+      "x": 0,
+      "y": 3800
+    },
+    "W-AI05-Saved.dc.html": {
+      "expand": "fill",
+      "h": 1180,
+      "page": "s031",
+      "title": "AI-05 Đã lưu thực đơn",
+      "w": 1440,
+      "x": 1520,
+      "y": 3800
+    },
+    "W-AI06-NotEnough.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s031",
+      "title": "AI-06 Không đủ công thức",
+      "w": 1440,
+      "x": 3040,
+      "y": 3800
+    },
+    "W-AI07-LimitReached.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s031",
+      "title": "AI-07 Hết lượt trong giờ",
+      "w": 1440,
+      "x": 0,
+      "y": 5100
+    },
+    "W-AI08-Fallback.dc.html": {
+      "expand": "fill",
+      "h": 1180,
+      "page": "s031",
+      "title": "AI-08 AI lỗi · bản nháp dự phòng",
+      "w": 1440,
+      "x": 1520,
+      "y": 5100
+    },
+    "W-AI09-SlotSuggest.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s031",
+      "title": "AI-09 Gợi ý cho một ô",
+      "w": 1440,
+      "x": 3040,
+      "y": 5100
+    },
+    "W-AU01-Login.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s010",
+      "title": "AU-01 Đăng nhập · lỗi chung",
+      "w": 1440,
+      "x": 0,
+      "y": 2284
+    },
+    "W-AU02-Register.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "page": "s010",
+      "title": "AU-02 Đăng ký · mật khẩu chưa đạt",
+      "w": 1440,
+      "x": 1520,
+      "y": 2284
+    },
+    "W-AU03-CheckEmail.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s010",
+      "title": "AU-03 Kiểm tra email",
+      "w": 1440,
+      "x": 3040,
+      "y": 2284
+    },
+    "W-AU04-LinkExpired.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s010",
+      "title": "AU-04 Link xác minh hết hạn",
+      "w": 1440,
+      "x": 0,
+      "y": 3364
+    },
+    "W-AU05-ForgotPassword.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s010",
+      "title": "AU-05 Quên mật khẩu · đã gửi",
+      "w": 1440,
+      "x": 1520,
+      "y": 3364
+    },
+    "W-AU06-ResetPassword.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s010",
+      "title": "AU-06 Đặt mật khẩu mới",
+      "w": 1440,
+      "x": 3040,
+      "y": 3364
+    },
+    "W-AU07-Locked.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s010",
+      "title": "AU-07 Tạm khóa và bị đình chỉ",
+      "w": 1440,
+      "x": 0,
+      "y": 4384
+    },
+    "W-AU08-SignInPrompt.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s010",
+      "title": "AU-08 Khách bấm Lưu · mời đăng nhập",
+      "w": 1440,
+      "x": 1520,
+      "y": 4384
+    },
+    "W-AU09-AccessDenied.dc.html": {
+      "expand": "fill",
+      "h": 760,
+      "page": "s010",
+      "title": "AU-09 Không có quyền truy cập",
+      "w": 1440,
+      "x": 3040,
+      "y": 4384
+    },
+    "W-BM01-Collections.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s080",
+      "title": "BM-01 Bộ sưu tập của tôi",
+      "w": 1440,
+      "x": 0,
+      "y": 1320
+    },
+    "W-BM02-Empty.dc.html": {
+      "expand": "fill",
+      "h": 760,
+      "page": "s080",
+      "title": "BM-02 Chưa lưu gì",
+      "w": 1440,
+      "x": 1520,
+      "y": 1320
+    },
+    "W-BM03-CollectionDetail.dc.html": {
+      "expand": "fill",
+      "h": 1200,
+      "page": "s080",
+      "title": "BM-03 Chi tiết bộ sưu tập",
+      "w": 1440,
+      "x": 3040,
+      "y": 1320
+    },
+    "W-BM04-SaveDialog.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s080",
+      "title": "BM-04 Lưu vào bộ sưu tập",
+      "w": 1440,
+      "x": 0,
+      "y": 2640
+    },
+    "W-BM05-SavedToast.dc.html": {
+      "expand": "fill",
+      "h": 800,
+      "page": "s080",
+      "title": "BM-05 Vừa lưu công thức",
+      "w": 1440,
+      "x": 1520,
+      "y": 2640
+    },
+    "W-BM06-UnsaveConfirm.dc.html": {
+      "expand": "fill",
+      "h": 1100,
+      "page": "s080",
+      "title": "BM-06 Bỏ lưu khỏi nhiều bộ sưu tập",
+      "w": 1440,
+      "x": 3040,
+      "y": 2640
+    },
+    "W-CK01-Step.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s050",
+      "title": "CK-01 Một bước · cook-light",
+      "w": 1440,
+      "x": 0,
+      "y": 2228
+    },
+    "W-CK02-StepHC.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s050",
+      "title": "CK-02 Một bước · tương phản cao",
+      "w": 1440,
+      "x": 1520,
+      "y": 2228
+    },
+    "W-CK03-TimerOverdue.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s050",
+      "title": "CK-03 Hẹn giờ quá hạn",
+      "w": 1440,
+      "x": 3040,
+      "y": 2228
+    },
+    "W-CK04-AddTimer.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s050",
+      "title": "CK-04 Thêm hẹn giờ",
+      "w": 1440,
+      "x": 0,
+      "y": 3248
+    },
+    "W-CK05-Ingredients.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s050",
+      "title": "CK-05 Danh sách nguyên liệu",
+      "w": 1440,
+      "x": 1520,
+      "y": 3248
+    },
+    "W-CK06-Voice.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s050",
+      "title": "CK-06 Giọng nói",
+      "w": 1440,
+      "x": 3040,
+      "y": 3248
+    },
+    "W-CK07-Resume.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s050",
+      "title": "CK-07 Tiếp tục phiên nấu",
+      "w": 1440,
+      "x": 0,
+      "y": 4268
+    },
+    "W-CK08-ExitTimers.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s050",
+      "title": "CK-08 Thoát khi còn hẹn giờ",
+      "w": 1440,
+      "x": 1520,
+      "y": 4268
+    },
+    "W-CK09-Finished.dc.html": {
+      "expand": "fill",
+      "h": 880,
+      "page": "s050",
+      "title": "CK-09 Hoàn thành và mời đánh giá",
+      "w": 1440,
+      "x": 3040,
+      "y": 4268
+    },
+    "W-CM01-NotFound.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s000",
+      "title": "CM-01 Không tìm thấy (404)",
+      "w": 1440,
+      "x": 0,
+      "y": 1320
+    },
+    "W-CM02-Notifications.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s000",
+      "title": "CM-02 Thông báo (spec chưa có)",
+      "w": 1440,
+      "x": 1520,
+      "y": 1320
+    },
+    "W-CM03-ReportRecipe.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s000",
+      "title": "CM-03 Báo cáo công thức hoặc người dùng (spec chưa có)",
+      "w": 1440,
+      "x": 3040,
+      "y": 1320
+    },
+    "W-CM04-OfflinePage.dc.html": {
+      "expand": "fill",
+      "h": 800,
+      "page": "s000",
+      "title": "CM-04 Mất mạng toàn trang",
+      "w": 1440,
+      "x": 0,
+      "y": 2340
+    },
+    "W-MP01-Week.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s030",
+      "title": "MP-01 Thực đơn cả tuần",
+      "w": 1440,
+      "x": 0,
+      "y": 2284
+    },
+    "W-MP02-SlotMenu.dc.html": {
+      "expand": "fill",
+      "h": 1080,
+      "page": "s030",
+      "title": "MP-02 Menu của món",
+      "w": 1440,
+      "x": 1520,
+      "y": 2284
+    },
+    "W-MP03-MoveTo.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s030",
+      "title": "MP-03 Chuyển sang…",
+      "w": 1440,
+      "x": 3040,
+      "y": 2284
+    },
+    "W-MP04-Picker.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s030",
+      "title": "MP-04 Chọn món cho ô",
+      "w": 1440,
+      "x": 0,
+      "y": 3484
+    },
+    "W-MP05-AddFromRecipe.dc.html": {
+      "expand": "fill",
+      "h": 726,
+      "page": "s030",
+      "title": "MP-05 Thêm vào thực đơn từ công thức",
+      "w": 1440,
+      "x": 1520,
+      "y": 3484
+    },
+    "W-MP06-EmptyWeek.dc.html": {
+      "expand": "fill",
+      "h": 1100,
+      "page": "s030",
+      "title": "MP-06 Tuần chưa có món",
+      "w": 1440,
+      "x": 3040,
+      "y": 3484
+    },
+    "W-MP07-Offline.dc.html": {
+      "expand": "fill",
+      "h": 760,
+      "page": "s030",
+      "title": "MP-07 Mất mạng",
+      "w": 1440,
+      "x": 0,
+      "y": 4704
+    },
+    "W-NU01-Detail.dc.html": {
+      "expand": "fill",
+      "h": 1500,
+      "page": "s090",
+      "title": "NU-01 Chi tiết công thức",
+      "w": 1440,
+      "x": 0,
+      "y": 2420
+    },
+    "W-NU02-Nutrition.dc.html": {
+      "expand": "fill",
+      "h": 1600,
+      "page": "s090",
+      "title": "NU-02 Dinh dưỡng · có dị ứng của bạn",
+      "w": 1440,
+      "x": 1520,
+      "y": 2420
+    },
+    "W-NU03-NutritionStates.dc.html": {
+      "expand": "fill",
+      "h": 760,
+      "page": "s090",
+      "title": "NU-03 Các trạng thái khối dinh dưỡng",
+      "w": 1440,
+      "x": 3040,
+      "y": 2420
+    },
+    "W-NU04-Unavailable.dc.html": {
+      "expand": "fill",
+      "h": 1100,
+      "page": "s090",
+      "title": "NU-04 Công thức không còn khả dụng",
+      "w": 1440,
+      "x": 0,
+      "y": 4140
+    },
+    "W-PF01-Me.dc.html": {
+      "expand": "fill",
+      "h": 820,
+      "page": "s011",
+      "title": "PF-01 Trang Tôi",
+      "w": 1440,
+      "x": 0,
+      "y": 2700
+    },
+    "W-PF02-DietEmpty.dc.html": {
+      "expand": "fill",
+      "h": 820,
+      "page": "s011",
+      "title": "PF-02 Hồ sơ ăn uống · chưa có",
+      "w": 1440,
+      "x": 1520,
+      "y": 2700
+    },
+    "W-PF03-DietForm.dc.html": {
+      "expand": "fill",
+      "h": 1080,
+      "page": "s011",
+      "title": "PF-03 Hồ sơ ăn uống · đang sửa",
+      "w": 1440,
+      "x": 3040,
+      "y": 2700
+    },
+    "W-PF04-EditProfile.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s011",
+      "title": "PF-04 Sửa hồ sơ công khai",
+      "w": 1440,
+      "x": 0,
+      "y": 3900
+    },
+    "W-PF05-PublicProfile.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s011",
+      "title": "PF-05 Hồ sơ công khai (người khác xem)",
+      "w": 1440,
+      "x": 1520,
+      "y": 3900
+    },
+    "W-PF06-Security.dc.html": {
+      "expand": "fill",
+      "h": 1080,
+      "page": "s011",
+      "title": "PF-06 Mật khẩu và bảo mật",
+      "w": 1440,
+      "x": 3040,
+      "y": 3900
+    },
+    "W-PF07-DeleteAccount.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s011",
+      "title": "PF-07 Xóa tài khoản",
+      "w": 1440,
+      "x": 0,
+      "y": 5100
+    },
+    "W-PF08-Goodbye.dc.html": {
+      "expand": "fill",
+      "h": 720,
+      "page": "s011",
+      "title": "PF-08 Đã xóa tài khoản",
+      "w": 1440,
+      "x": 1520,
+      "y": 5100
+    },
+    "W-RE01-MyRecipes.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s060",
+      "title": "RE-01 Công thức của tôi",
+      "w": 1440,
+      "x": 0,
+      "y": 2520
+    },
+    "W-RE02-General.dc.html": {
+      "expand": "fill",
+      "h": 1180,
+      "page": "s060",
+      "title": "RE-02 Bước 1 · Thông tin chung (lỗi)",
+      "w": 1440,
+      "x": 1520,
+      "y": 2520
+    },
+    "W-RE03-Ingredients.dc.html": {
+      "expand": "fill",
+      "h": 1100,
+      "page": "s060",
+      "title": "RE-03 Bước 2 · Nguyên liệu",
+      "w": 1440,
+      "x": 3040,
+      "y": 2520
+    },
+    "W-RE04-Equipment.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s060",
+      "title": "RE-04 Bước 3 · Dụng cụ",
+      "w": 1440,
+      "x": 0,
+      "y": 3820
+    },
+    "W-RE05-Steps.dc.html": {
+      "expand": "fill",
+      "h": 1100,
+      "page": "s060",
+      "title": "RE-05 Bước 4 · Các bước",
+      "w": 1440,
+      "x": 1520,
+      "y": 3820
+    },
+    "W-RE06-Video.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s060",
+      "title": "RE-06 Bước 5 · Video",
+      "w": 1440,
+      "x": 3040,
+      "y": 3820
+    },
+    "W-RE07-Review.dc.html": {
+      "expand": "fill",
+      "h": 1100,
+      "page": "s060",
+      "title": "RE-07 Bước 6 · Xem trước và gửi duyệt",
+      "w": 1440,
+      "x": 0,
+      "y": 5040
+    },
+    "W-RE08-RevisionNote.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s060",
+      "title": "RE-08 Kiểm duyệt yêu cầu chỉnh sửa",
+      "w": 1440,
+      "x": 1520,
+      "y": 5040
+    },
+    "W-RE09-Rejected.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s060",
+      "title": "RE-09 Bị từ chối (chỉ đọc)",
+      "w": 1440,
+      "x": 3040,
+      "y": 5040
+    },
+    "W-RE10-Conflict.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s060",
+      "title": "RE-10 Xung đột phiên bản",
+      "w": 1440,
+      "x": 0,
+      "y": 6260
+    },
+    "W-RV01-Reviews.dc.html": {
+      "expand": "fill",
+      "h": 1200,
+      "page": "s070",
+      "title": "RV-01 Khối đánh giá",
+      "w": 1440,
+      "x": 0,
+      "y": 1480
+    },
+    "W-RV02-WriteReview.dc.html": {
+      "expand": "fill",
+      "h": 1100,
+      "page": "s070",
+      "title": "RV-02 Viết đánh giá (lỗi)",
+      "w": 1440,
+      "x": 1520,
+      "y": 1480
+    },
+    "W-RV03-Lightbox.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s070",
+      "title": "RV-03 Xem Cooksnap",
+      "w": 1440,
+      "x": 3040,
+      "y": 1480
+    },
+    "W-RV04-OwnReview.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s070",
+      "title": "RV-04 Sửa hoặc xóa đánh giá của mình",
+      "w": 1440,
+      "x": 0,
+      "y": 2800
+    },
+    "W-RV04b-DeleteConfirm.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s070",
+      "title": "RV-04 Xác nhận xóa đánh giá",
+      "w": 1440,
+      "x": 1520,
+      "y": 2800
+    },
+    "W-RV05-Report.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s070",
+      "title": "RV-05 Báo cáo đánh giá",
+      "w": 1440,
+      "x": 3040,
+      "y": 2800
+    },
+    "W-RV06-Empty.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s070",
+      "title": "RV-06 Chưa có đánh giá",
+      "w": 1440,
+      "x": 0,
+      "y": 3920
+    },
+    "W-SL01-List.dc.html": {
+      "expand": "fill",
+      "h": 1060,
+      "page": "s040",
+      "title": "SL-01 Danh sách theo quầy",
+      "w": 1440,
+      "x": 0,
+      "y": 2444
+    },
+    "W-SL02-Empty.dc.html": {
+      "expand": "fill",
+      "h": 760,
+      "page": "s040",
+      "title": "SL-02 Danh sách trống",
+      "w": 1440,
+      "x": 1520,
+      "y": 2444
+    },
+    "W-SL03-ImportPreview.dc.html": {
+      "expand": "fill",
+      "h": 1060,
+      "page": "s040",
+      "title": "SL-03 Xem trước khi nhập",
+      "w": 1440,
+      "x": 3040,
+      "y": 2444
+    },
+    "W-SL04-AddItem.dc.html": {
+      "expand": "fill",
+      "h": 1060,
+      "page": "s040",
+      "title": "SL-04 Thêm từ món ăn (giỏ)",
+      "w": 1440,
+      "x": 0,
+      "y": 3624
+    },
+    "W-SL04b-Breakdown.dc.html": {
+      "expand": "fill",
+      "h": 1060,
+      "page": "s040",
+      "title": "SL-04b Bóc tách nguyên liệu",
+      "w": 1440,
+      "x": 3040,
+      "y": 4804
+    },
+    "W-SL05-ItemDetail.dc.html": {
+      "expand": "fill",
+      "h": 1060,
+      "page": "s040",
+      "title": "SL-05 Nguồn gốc và sửa số lượng",
+      "w": 1440,
+      "x": 1520,
+      "y": 3624
+    },
+    "W-SL06-MoveAisle.dc.html": {
+      "expand": "fill",
+      "h": 1060,
+      "page": "s040",
+      "title": "SL-06 Chuyển quầy",
+      "w": 1440,
+      "x": 3040,
+      "y": 3624
+    },
+    "W-SL07-History.dc.html": {
+      "expand": "fill",
+      "h": 820,
+      "page": "s040",
+      "title": "SL-07 Lịch sử mua sắm",
+      "w": 1440,
+      "x": 0,
+      "y": 4804
+    },
+    "W-SL08-Offline.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "s040",
+      "title": "SL-08 Đang ngoại tuyến",
+      "w": 1440,
+      "x": 1520,
+      "y": 4804
+    },
+    "W-SR01-Home.dc.html": {
+      "expand": "fill",
+      "h": 1500,
+      "page": "s020",
+      "title": "SR-01 Trang chủ",
+      "w": 1440,
+      "x": 0,
+      "y": 2500
+    },
+    "W-SR02-Results.dc.html": {
+      "expand": "fill",
+      "h": 1340,
+      "page": "s020",
+      "title": "SR-02 Kết quả, bộ lọc đang bật",
+      "w": 1440,
+      "x": 1520,
+      "y": 2500
+    },
+    "W-SR03-FilterSheet.dc.html": {
+      "expand": "fill",
+      "h": 1240,
+      "page": "s020",
+      "title": "SR-03 Bộ lọc (thanh bên đang sửa)",
+      "w": 1440,
+      "x": 3040,
+      "y": 2500
+    },
+    "W-SR04-NoResults.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s020",
+      "title": "SR-04 Không có kết quả",
+      "w": 1440,
+      "x": 0,
+      "y": 4120
+    },
+    "W-SR05-AllHidden.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "page": "s020",
+      "title": "SR-05 Tất cả bị ẩn theo hồ sơ",
+      "w": 1440,
+      "x": 1520,
+      "y": 4120
+    },
+    "W-SR06-ShownWithWarning.dc.html": {
+      "expand": "fill",
+      "h": 1120,
+      "page": "s020",
+      "title": "SR-06 Đang hiện món bị ẩn",
+      "w": 1440,
+      "x": 3040,
+      "y": 4120
+    },
+    "W-SR07-LoadingError.dc.html": {
+      "expand": "fill",
+      "h": 1240,
+      "page": "s020",
+      "title": "SR-07 Đang tải và lỗi",
+      "w": 1440,
+      "x": 0,
+      "y": 5360
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-28T03:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "page": "s010",
+    "view": "canvas"
+  },
+  "noteOrder": [
+    "ws070",
+    "ws080",
+    "ws090",
+    "ws000",
+    "ws060",
+    "ws040",
+    "ws050",
+    "ws030",
+    "ws031",
+    "ws011",
+    "ws020",
+    "ws010",
+    "ts000",
+    "ts010",
+    "ts011",
+    "ts020",
+    "ts030",
+    "ts031",
+    "ts040",
+    "ts050",
+    "ts060",
+    "ts070",
+    "ts080",
+    "ts090",
+    "ts100"
+  ],
+  "notes": {
+    "ts000": {
+      "kind": "title1",
+      "maxW": 1800,
+      "page": "s000",
+      "text": "Dùng chung và màn spec còn thiếu",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "ts010": {
+      "kind": "title1",
+      "maxW": 2740,
+      "page": "s010",
+      "text": "010 · Đăng nhập và tài khoản",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "ts011": {
+      "kind": "title1",
+      "maxW": 2740,
+      "page": "s011",
+      "text": "011 · Hồ sơ và hồ sơ ăn uống",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "ts020": {
+      "kind": "title1",
+      "maxW": 2740,
+      "page": "s020",
+      "text": "020 · Trang chủ và tìm kiếm",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "ts030": {
+      "kind": "title1",
+      "maxW": 2740,
+      "page": "s030",
+      "text": "030 · Thực đơn tuần",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "ts031": {
+      "kind": "title1",
+      "maxW": 2740,
+      "page": "s031",
+      "text": "031 · Thực đơn AI",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "ts040": {
+      "kind": "title1",
+      "maxW": 2740,
+      "page": "s040",
+      "text": "040 · Danh sách đi chợ",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "ts050": {
+      "kind": "title1",
+      "maxW": 2740,
+      "page": "s050",
+      "text": "050 · Chế độ nấu",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "ts060": {
+      "kind": "title1",
+      "maxW": 2740,
+      "page": "s060",
+      "text": "060 · Soạn công thức",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "ts070": {
+      "kind": "title1",
+      "maxW": 2740,
+      "page": "s070",
+      "text": "070 · Đánh giá và Cooksnap",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "ts080": {
+      "kind": "title1",
+      "maxW": 2740,
+      "page": "s080",
+      "text": "080 · Đã lưu và bộ sưu tập",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "ts090": {
+      "kind": "title1",
+      "maxW": 1330,
+      "page": "s090",
+      "text": "090 · Chi tiết công thức và dinh dưỡng",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "ts100": {
+      "kind": "title1",
+      "maxW": 4000,
+      "page": "s100",
+      "text": "100 · Quản trị và kiểm duyệt",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "ws000": {
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "s000",
+      "text": "Web · Dùng chung và màn spec còn thiếu",
+      "x": 0,
+      "y": 1020
+    },
+    "ws010": {
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "s010",
+      "text": "Web · 010 · Đăng nhập và tài khoản",
+      "x": 0,
+      "y": 1984
+    },
+    "ws011": {
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "s011",
+      "text": "Web · 011 · Hồ sơ và hồ sơ ăn uống",
+      "x": 0,
+      "y": 2400
+    },
+    "ws020": {
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "s020",
+      "text": "Web · 020 · Trang chủ và tìm kiếm",
+      "x": 0,
+      "y": 2200
+    },
+    "ws030": {
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "s030",
+      "text": "Web · 030 · Thực đơn tuần",
+      "x": 0,
+      "y": 1984
+    },
+    "ws031": {
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "s031",
+      "text": "Web · 031 · Thực đơn AI",
+      "x": 0,
+      "y": 2200
+    },
+    "ws040": {
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "s040",
+      "text": "Web · 040 · Danh sách đi chợ",
+      "x": 0,
+      "y": 2144
+    },
+    "ws050": {
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "s050",
+      "text": "Web · 050 · Chế độ nấu",
+      "x": 0,
+      "y": 1928
+    },
+    "ws060": {
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "s060",
+      "text": "Web · 060 · Soạn công thức",
+      "x": 0,
+      "y": 2220
+    },
+    "ws070": {
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "s070",
+      "text": "Web · 070 · Đánh giá và Cooksnap",
+      "x": 0,
+      "y": 1180
+    },
+    "ws080": {
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "s080",
+      "text": "Web · 080 · Đã lưu và bộ sưu tập",
+      "x": 0,
+      "y": 1020
+    },
+    "ws090": {
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "s090",
+      "text": "Web · 090 · Chi tiết công thức và dinh dưỡng",
+      "x": 0,
+      "y": 2120
+    }
+  },
+  "order": [
+    "SL04b-Breakdown.dc.html",
+    "W-SL04b-Breakdown.dc.html",
+    "W-NU01-Detail.dc.html",
+    "W-NU02-Nutrition.dc.html",
+    "W-NU03-NutritionStates.dc.html",
+    "W-NU04-Unavailable.dc.html",
+    "W-CM01-NotFound.dc.html",
+    "W-CM02-Notifications.dc.html",
+    "W-CM03-ReportRecipe.dc.html",
+    "W-CM04-OfflinePage.dc.html",
+    "W-RV01-Reviews.dc.html",
+    "W-RV02-WriteReview.dc.html",
+    "W-RV03-Lightbox.dc.html",
+    "W-RV04-OwnReview.dc.html",
+    "W-RV04b-DeleteConfirm.dc.html",
+    "W-RV05-Report.dc.html",
+    "W-RV06-Empty.dc.html",
+    "W-BM01-Collections.dc.html",
+    "W-BM02-Empty.dc.html",
+    "W-BM03-CollectionDetail.dc.html",
+    "W-BM04-SaveDialog.dc.html",
+    "W-BM05-SavedToast.dc.html",
+    "W-BM06-UnsaveConfirm.dc.html",
+    "W-AI01-Constraints.dc.html",
+    "W-AI02-Generating.dc.html",
+    "W-AI03-Draft.dc.html",
+    "W-AI04-LeaveDraft.dc.html",
+    "W-AI05-Saved.dc.html",
+    "W-AI06-NotEnough.dc.html",
+    "W-AI07-LimitReached.dc.html",
+    "W-AI08-Fallback.dc.html",
+    "W-AI09-SlotSuggest.dc.html",
+    "W-AU01-Login.dc.html",
+    "W-AU02-Register.dc.html",
+    "W-AU03-CheckEmail.dc.html",
+    "W-AU04-LinkExpired.dc.html",
+    "W-AU05-ForgotPassword.dc.html",
+    "W-AU06-ResetPassword.dc.html",
+    "W-AU07-Locked.dc.html",
+    "W-AU08-SignInPrompt.dc.html",
+    "W-AU09-AccessDenied.dc.html",
+    "W-CK01-Step.dc.html",
+    "W-CK02-StepHC.dc.html",
+    "W-CK03-TimerOverdue.dc.html",
+    "W-CK04-AddTimer.dc.html",
+    "W-CK05-Ingredients.dc.html",
+    "W-CK06-Voice.dc.html",
+    "W-CK07-Resume.dc.html",
+    "W-CK08-ExitTimers.dc.html",
+    "W-CK09-Finished.dc.html",
+    "W-MP01-Week.dc.html",
+    "W-MP02-SlotMenu.dc.html",
+    "W-MP03-MoveTo.dc.html",
+    "W-MP04-Picker.dc.html",
+    "W-MP05-AddFromRecipe.dc.html",
+    "W-MP06-EmptyWeek.dc.html",
+    "W-MP07-Offline.dc.html",
+    "W-PF01-Me.dc.html",
+    "W-PF02-DietEmpty.dc.html",
+    "W-PF03-DietForm.dc.html",
+    "W-PF04-EditProfile.dc.html",
+    "W-PF05-PublicProfile.dc.html",
+    "W-PF06-Security.dc.html",
+    "W-PF07-DeleteAccount.dc.html",
+    "W-PF08-Goodbye.dc.html",
+    "W-RE01-MyRecipes.dc.html",
+    "W-RE02-General.dc.html",
+    "W-RE03-Ingredients.dc.html",
+    "W-RE04-Equipment.dc.html",
+    "W-RE05-Steps.dc.html",
+    "W-RE06-Video.dc.html",
+    "W-RE07-Review.dc.html",
+    "W-RE08-RevisionNote.dc.html",
+    "W-RE09-Rejected.dc.html",
+    "W-RE10-Conflict.dc.html",
+    "W-SL01-List.dc.html",
+    "W-SL02-Empty.dc.html",
+    "W-SL03-ImportPreview.dc.html",
+    "W-SL04-AddItem.dc.html",
+    "W-SL05-ItemDetail.dc.html",
+    "W-SL06-MoveAisle.dc.html",
+    "W-SL07-History.dc.html",
+    "W-SL08-Offline.dc.html",
+    "W-SR01-Home.dc.html",
+    "W-SR02-Results.dc.html",
+    "W-SR03-FilterSheet.dc.html",
+    "W-SR04-NoResults.dc.html",
+    "W-SR05-AllHidden.dc.html",
+    "W-SR06-ShownWithWarning.dc.html",
+    "W-SR07-LoadingError.dc.html",
+    "Main.dc.html",
+    "AU02-Register.dc.html",
+    "AU03-CheckEmail.dc.html",
+    "AU04-LinkExpired.dc.html",
+    "AU05-ForgotPassword.dc.html",
+    "AU06-ResetPassword.dc.html",
+    "AU07-Locked.dc.html",
+    "AU08-SignInPrompt.dc.html",
+    "AU09-AccessDenied.dc.html",
+    "PF01-Me.dc.html",
+    "PF02-DietEmpty.dc.html",
+    "PF03-DietForm.dc.html",
+    "PF04-EditProfile.dc.html",
+    "PF05-PublicProfile.dc.html",
+    "PF06-Security.dc.html",
+    "PF07-DeleteAccount.dc.html",
+    "PF08-Goodbye.dc.html",
+    "SR01-Home.dc.html",
+    "SR02-Results.dc.html",
+    "SR03-FilterSheet.dc.html",
+    "SR04-NoResults.dc.html",
+    "SR05-AllHidden.dc.html",
+    "SR06-ShownWithWarning.dc.html",
+    "SR07-LoadingError.dc.html",
+    "MP01-Week.dc.html",
+    "MP02-SlotMenu.dc.html",
+    "MP03-MoveTo.dc.html",
+    "MP04-Picker.dc.html",
+    "MP05-AddFromRecipe.dc.html",
+    "MP06-EmptyWeek.dc.html",
+    "MP07-Offline.dc.html",
+    "AI01-Constraints.dc.html",
+    "AI02-Generating.dc.html",
+    "AI03-Draft.dc.html",
+    "AI04-LeaveDraft.dc.html",
+    "AI05-Saved.dc.html",
+    "AI06-NotEnough.dc.html",
+    "AI07-LimitReached.dc.html",
+    "AI08-Fallback.dc.html",
+    "AI09-SlotSuggest.dc.html",
+    "SL01-List.dc.html",
+    "SL02-Empty.dc.html",
+    "SL03-ImportPreview.dc.html",
+    "SL04-AddItem.dc.html",
+    "SL05-ItemDetail.dc.html",
+    "SL06-MoveAisle.dc.html",
+    "SL07-History.dc.html",
+    "SL08-Offline.dc.html",
+    "CK01-Step.dc.html",
+    "CK02-StepHC.dc.html",
+    "CK03-TimerOverdue.dc.html",
+    "CK04-AddTimer.dc.html",
+    "CK05-Ingredients.dc.html",
+    "CK06-Voice.dc.html",
+    "CK07-Resume.dc.html",
+    "CK08-ExitTimers.dc.html",
+    "CK09-Finished.dc.html",
+    "RE01-MyRecipes.dc.html",
+    "RE02-General.dc.html",
+    "RE03-Ingredients.dc.html",
+    "RE04-Equipment.dc.html",
+    "RE05-Steps.dc.html",
+    "RE06-Video.dc.html",
+    "RE07-Review.dc.html",
+    "RE08-RevisionNote.dc.html",
+    "RE09-Rejected.dc.html",
+    "RE10-Conflict.dc.html",
+    "RV01-Reviews.dc.html",
+    "RV02-WriteReview.dc.html",
+    "RV03-Lightbox.dc.html",
+    "RV04-OwnReview.dc.html",
+    "RV05-Report.dc.html",
+    "RV06-Empty.dc.html",
+    "BM01-Collections.dc.html",
+    "BM02-Empty.dc.html",
+    "BM03-CollectionDetail.dc.html",
+    "BM04-SaveDialog.dc.html",
+    "BM05-SavedToast.dc.html",
+    "BM06-UnsaveConfirm.dc.html",
+    "NU01-Detail.dc.html",
+    "NU02-Nutrition.dc.html",
+    "NU03-NutritionStates.dc.html",
+    "NU04-Unavailable.dc.html",
+    "NU05-AdminEstimates.dc.html",
+    "AD01-Dashboard.dc.html",
+    "AD02-Queue.dc.html",
+    "AD03-ReviewDetail.dc.html",
+    "AD04-RejectDialog.dc.html",
+    "AD05-Reports.dc.html",
+    "AD06-ReportDetail.dc.html",
+    "AD07-Users.dc.html",
+    "AD08-Taxonomy.dc.html",
+    "AD09-Featured.dc.html",
+    "AD10-AuditLog.dc.html",
+    "AD11-IngredientProposals.dc.html",
+    "CM01-NotFound.dc.html",
+    "CM02-Notifications.dc.html",
+    "CM03-ReportRecipe.dc.html",
+    "CM04-OfflinePage.dc.html"
+  ],
+  "pages": [
+    {
+      "id": "s010",
+      "name": "010 · Đăng nhập và tài khoản"
+    },
+    {
+      "id": "s011",
+      "name": "011 · Hồ sơ và hồ sơ ăn uống"
+    },
+    {
+      "id": "s020",
+      "name": "020 · Trang chủ và tìm kiếm"
+    },
+    {
+      "id": "s030",
+      "name": "030 · Thực đơn tuần"
+    },
+    {
+      "id": "s031",
+      "name": "031 · Thực đơn AI"
+    },
+    {
+      "id": "s040",
+      "name": "040 · Danh sách đi chợ"
+    },
+    {
+      "id": "s050",
+      "name": "050 · Chế độ nấu"
+    },
+    {
+      "id": "s060",
+      "name": "060 · Soạn công thức"
+    },
+    {
+      "id": "s070",
+      "name": "070 · Đánh giá và Cooksnap"
+    },
+    {
+      "id": "s080",
+      "name": "080 · Đã lưu và bộ sưu tập"
+    },
+    {
+      "id": "s090",
+      "name": "090 · Chi tiết công thức và dinh dưỡng"
+    },
+    {
+      "id": "s100",
+      "name": "100 · Quản trị và kiểm duyệt"
+    },
+    {
+      "id": "s000",
+      "name": "Dùng chung và màn spec còn thiếu"
+    }
+  ],
+  "title": "WikiCook Soft Editorial · Screens",
+  "v": 3
+}
