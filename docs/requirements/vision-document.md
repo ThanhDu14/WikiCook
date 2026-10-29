@@ -162,12 +162,13 @@ Stakeholders are people or organisations who influence or are affected by the pr
 - **Authoring and moderation:** recipe creators and moderators mostly work on a desktop or laptop where long forms, photo uploads and review queues are comfortable, but authoring must remain usable on mobile.
 - **Platforms:** modern browsers — Chrome/Edge 100+, Firefox 100+, Safari 15+ on Windows, macOS, Linux, Android and iOS — from 360 px wide screens up to 4K desktops. An internet connection is required for search, synchronisation and AI features.
 - **Other applications:** users share shopping lists through messaging apps such as Zalo or Messenger, and recipe creators link cooking videos from YouTube or TikTok.
+- **Development and deployment environment:** the team develops and demonstrates WikiCook on its own laptops (Windows, macOS, Linux) with no hosting budget. The whole stack runs locally from one Docker Compose file at the repository root: PostgreSQL 16 with `pgvector` (with Flyway migrations) is available from Sprint 3, the Spring Boot 3 / Java 21 backend and the React 18 + Vite frontend are added to the same Compose stack in Sprint 3 (`SCRUM-48`, `SCRUM-66`), and Redis 7 follows as described in the Software Architecture Document. Secrets such as database passwords and the LLM API key live in a git-ignored `.env` file; only `.env.example` is committed. The demo runs on a primary and a backup laptop with the Mock LLM available when the external AI service is unreachable (see Section 7.2 and the Project Plan).
 
 ### 3.4. Summary of Key Stakeholder or User Needs
 
 | Need | Priority | Concerns | Current Solution | Proposed Solution |
 | :--- | :---: | :--- | :--- | :--- |
-| **N1.** Decide quickly what to cook | High | 15–30 minutes of daily decision fatigue; recipes that need ingredients the user does not have | Scroll recipe blogs; tick a long checkbox list on MyFridgeFood | Keyword search with combinable filters and one-tap presets, plus pantry matching (Feature 2) |
+| **N1.** Decide quickly what to cook | High | 15–30 minutes of daily decision fatigue; recipes that need ingredients the user does not have | Scroll recipe blogs; tick a long checkbox list on MyFridgeFood | Keyword search with combinable filters and one-tap presets; pantry matching as a planned increment (Feature 2) |
 | **N2.** Plan the week and shop efficiently | High | Repetitive menus; forgotten or duplicate purchases; manual quantity arithmetic | Paper notes; Ăn Gì Ngon's planner with a basic, ungrouped list | AI Weekly Meal Planner (Feature 3) feeding an aisle-grouped Smart Shopping List (Feature 4) |
 | **N3.** Follow a recipe with busy, messy hands | High | Smudged devices, lost place in the recipe, overcooked stages, screen locking | Scroll static recipe pages; separate phone timer app | Hands-free Cooking Mode with parallel timers (Feature 5) |
 | **N4.** Stay safe from allergens and within a diet | High | Accidental allergen exposure; unknown calories and macros | Read every ingredient manually; neither surveyed app helps | Dietary profile enforced across search and planning (Feature 1), allergen badges and nutrition estimates (Feature 9) |
@@ -201,7 +202,7 @@ Users also rely on general recipe blogs and YouTube videos (rich content but ad-
 | Capability | MyFridgeFood | Ăn Gì Ngon | WikiCook |
 | :--- | :---: | :---: | :---: |
 | Keyword search and multi-criteria filters | 🟡 | 🟢 | 🟢 |
-| Search by on-hand ingredients | 🟢 | ❌ | 🟢 |
+| Search by on-hand ingredients | 🟢 | ❌ | 🟡 *(planned increment)* |
 | Dietary profile and automatic allergen filtering | ❌ | ❌ | 🟢 |
 | Weekly meal planner | ❌ | 🟢 | 🟢 |
 | AI meal planning grounded in the platform's own recipes, with dietary enforcement | ❌ | 🟡 | 🟢 |
@@ -212,7 +213,7 @@ Users also rely on general recipe blogs and YouTube videos (rich content but ad-
 | Nutrition estimates and allergen badges | ❌ | ❌ | 🟢 |
 | Content moderation | ❌ | ➖ (editorial) | 🟢 |
 
-*Notation:* 🟢 supported · 🟡 partial · ❌ not supported · ➖ not applicable. Ratings for MyFridgeFood and Ăn Gì Ngon come from the PA1 survey feature matrices.
+*Notation:* 🟢 supported · 🟡 partial (for WikiCook: planned increment, not in the current release) · ❌ not supported · ➖ not applicable. Ratings for MyFridgeFood and Ăn Gì Ngon come from the PA1 survey feature matrices.
 
 **Conclusion.** Each competitor is strong in one model and absent in the other: MyFridgeFood has community and pantry search without planning; Ăn Gì Ngon has planning without community. WikiCook's differentiation is not a single feature but the **connected workflow** — discover → plan → shop → cook → share — combined with three capabilities neither competitor offers: dietary-profile enforcement, hands-free cooking and nutrition/allergen information.
 
