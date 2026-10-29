@@ -108,3 +108,66 @@ flowchart BT
 Because of this generalization, the diagrams in Section 4 connect each use case only to the **lowest** actor that may perform it. For example, a use case associated with Guest is also available to every signed-in actor.
 
 ---
+
+## 3. SYSTEM OVERVIEW DIAGRAM
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+The overview shows the ten features of Vision §5 as use-case packages inside the WikiCook boundary and the actors that interact with each package. The detailed use cases of each package are drawn in Section 4.
+
+```mermaid
+flowchart LR
+    GUEST["«actor»<br/>Guest"]
+    MEMBER["«actor»<br/>Member"]
+    MOD["«actor»<br/>Moderator"]
+    ADMIN["«actor»<br/>Administrator"]
+
+    subgraph WIKICOOK["WikiCook"]
+        direction TB
+        F51(["5.1 Authentication &<br/>Dietary Profile<br/>(010, 011)"])
+        F52(["5.2 Recipe Discovery<br/>& Filters (020)"])
+        F53(["5.3 Meal Planner<br/>Manual + AI (030, 031)"])
+        F54(["5.4 Smart Shopping<br/>List (040)"])
+        F55(["5.5 Hands-free<br/>Cooking Mode (050)"])
+        F56(["5.6 Community Recipe<br/>Contribution (060)"])
+        F57(["5.7 Reviews &<br/>Cooksnaps (070)"])
+        F58(["5.8 Recipe<br/>Collections (080)"])
+        F59(["5.9 Nutrition &<br/>Allergen Analyzer (090)"])
+        F510(["5.10 Admin Content<br/>Moderation (100)"])
+    end
+
+    LLM["«actor»<br/>LLM Service"]
+    GOOGLE["«actor»<br/>Google OAuth"]
+    EMAIL["«actor»<br/>Email Service"]
+
+    GUEST --- F51
+    GUEST --- F52
+    GUEST --- F55
+    GUEST --- F57
+    GUEST --- F59
+    MEMBER --- F51
+    MEMBER --- F53
+    MEMBER --- F54
+    MEMBER --- F56
+    MEMBER --- F57
+    MEMBER --- F58
+    MOD --- F510
+    ADMIN --- F510
+    ADMIN --- F59
+
+    F51 --- GOOGLE
+    F51 --- EMAIL
+    F510 --- EMAIL
+    F53 --- LLM
+    F59 --- LLM
+
+    classDef actor fill:#e8f1fb,stroke:#2f6db5,color:#0b2545
+    classDef system fill:#eeeeee,stroke:#666666,color:#222222
+    classDef pkg fill:#fff7e6,stroke:#c98a1b,color:#3d2a00
+    class GUEST,MEMBER,MOD,ADMIN actor
+    class LLM,GOOGLE,EMAIL system
+    class F51,F52,F53,F54,F55,F56,F57,F58,F59,F510 pkg
+```
+
+Contributor is omitted from the overview because it has no use case of its own; it inherits every Member use case (Section 2.2).
+
+---
