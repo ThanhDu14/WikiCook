@@ -4,8 +4,8 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 05  
 **Template:** Adapted from the RUP Vision template for small projects (`rup_vision_sp.docx`)  
-**Document Version:** 1.1 (Sprint 02 Final Baseline — Sections 1–7, Project Assignment 2)  
-**Date:** October 24, 2026  
+**Document Version:** 2.0-draft (Second Edition — Project Assignment 3, Part B; draft 02/11/2026, final 05/11/2026)  
+**Date:** October 29, 2026  
 
 ---
 
@@ -20,6 +20,8 @@
 | **Section 5** | Product Features (10 Core Features) | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-34` |
 | **Section 6** | User Workflow Diagrams | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-35` |
 | **Section 7** | Non-Functional Requirements | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-36` |
+| **Section 8** | Traceability to the Use-Case Model | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Trần Nguyễn Công Chung (itzchugnn)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-60` |
+| **Second Edition** | Revisions to Sections 1, 3, 5 and 6 (see Revision History `v2.0`) | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Trần Nguyễn Công Chung (itzchugnn)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-60` |
 
 ### Revision History
 
@@ -33,6 +35,7 @@
 | **19/10/2026** | `v0.10` | Authored Section 7: quantifiable non-functional requirements grouped by ISO/IEC 25010, with applicable standards and verification approach (`SCRUM-36`). | Mai Văn Hiển (`MaiHien3507`) |
 | **22/10/2026** | `v1.0` | Sprint 02 Final Baseline: Completed cross-peer review, synchronized traceability across all 10 features & NFRs, and finalized documentation for submission. | Nguyễn Đức Duy & Lê Quốc Hưng |
 | **24/10/2026** | `v1.1` | PA2 submission fixes: corrected group number to Group 05 and updated the document header. | Nguyễn Thành Dự (`ThanhDu14`) |
+| **29/10/2026** | `v2.0-draft` | Second Edition draft (`SCRUM-60`): aligned with the Use-Case Model (`SCRUM-49`) and Use-Case Specifications (`SCRUM-50` – `54`); added Section 8 with bidirectional traceability between user needs, features and the 64 use cases; marked pantry matching as a planned increment (§1.2, §3.4, §3.5.4, §5.2, §6.2); corrected specification names in §5.11 and removed the non-existent `101-admin-analytics`; completed the references and definitions (§1.3, §1.4); added the development and deployment environment (§3.3). TA feedback on PA2 (`SCRUM-47`) will be incorporated if and when it is received. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 
 ---
 
@@ -51,7 +54,7 @@ The purpose of this Vision Document is to collect, analyze and define the high-l
 
 This document covers **WikiCook**, a responsive web application (Single-Page Application, usable from a 360 px mobile screen up to a desktop monitor) that helps home cooks decide what to cook, plan their week, shop for groceries, cook step by step and share recipes with a community. The product is developed by Group 05 over five Scrum Sprints (PA1–PA5) of the Fall 2026–2027 semester.
 
-- **In scope:** the ten core features described in Section 5 — user authentication and dietary profile, smart recipe discovery, AI weekly meal planner, smart shopping list, hands-free cooking mode, community recipe contribution, Cooksnaps and reviews, custom collections, nutrition and allergen analysis, and admin content moderation.
+- **In scope:** the ten core features described in Section 5 — user authentication and dietary profile, smart recipe discovery, AI weekly meal planner, smart shopping list, hands-free cooking mode, community recipe contribution, Cooksnaps and reviews, custom collections, nutrition and allergen analysis, and admin content moderation. Pantry matching (Section 5.2) is part of the product vision but is scheduled as a later increment; it is not part of the current release of specification `020`.
 - **Out of scope:** native iOS/Android store applications, online grocery ordering and payment, smart-kitchen (IoT) device integration, AI-generated recipes (the AI only plans with recipes that already exist in WikiCook), and medical or clinical dietary advice.
 
 ### 1.3. Definitions, Acronyms and Abbreviations
@@ -68,21 +71,26 @@ This document covers **WikiCook**, a responsive web application (Single-Page App
 | **Guest / Member / Contributor / Moderator / Administrator** | The access roles defined in spec `010-user-authentication-roles`. |
 | **PA1–PA5** | Project Assignments 1–5 of course CS300, each corresponding to one Scrum Sprint. |
 | **RUP** | Rational Unified Process — the source of the Vision template used by this document. |
+| **Use case (UC)** | A goal that an actor achieves with WikiCook, identified as `UC-<spec>-<NN>` (e.g., `UC-020-01`) in the Use-Case Model and specified in the Use-Case Specifications. |
+| **Planned increment** | A capability that belongs to the product vision but is not specified for the current release; it is kept in the Use-Case Model at the Brief level. |
 
 ### 1.4. References
 
 1. **IEEE Std 830-1998**, *IEEE Recommended Practice for Software Requirements Specifications* — guidance on writing complete, consistent and verifiable requirements (superseded by ISO/IEC/IEEE 29148, used here as the course reference).
 2. **RUP Vision Template for Small Projects** (`rup_vision_sp.docx`) — section structure of this document.
-3. **Course guidelines:** *CS300 Project Assignment 1* (`PA1-2026.pdf`) and *Project Assignment 2* (`PA2-2026.pdf`).
+3. **Course guidelines:** *CS300 Project Assignment 1* (`PA1-2026.pdf`), *Project Assignment 2* (`PA2-2026.pdf`) and *Project Assignment 3* (`PA3-2026.pdf`).
 4. **PA1 Project Proposal:** [`docs/requirements/project-proposal.md`](project-proposal.md) — problem statement, personas, 10 functional modules and the AI Weekly Meal Planner design.
 5. **PA1 Existing App Survey:** [`docs/requirements/existing-app-survey.md`](existing-app-survey.md) and [`docs/requirements/comparative-analysis.md`](comparative-analysis.md) — survey of *MyFridgeFood* and *Ăn Gì Ngon*.
 6. **Project Plan:** [`docs/management/project-plan.md`](../management/project-plan.md) — Scrum roadmap, roles, constraints and assumptions.
 7. **Software Architecture Document:** [`docs/analysis-and-design/architecture.md`](../analysis-and-design/architecture.md).
-8. **Feature specifications (Spec Kit):** `specs/010-user-authentication-roles`, `specs/020-recipe-search-filter`, `specs/030-meal-planner`, `specs/031-ai-weekly-meal-planner`, `specs/060-recipe-editor` and the project constitution `src/constitution.md`.
+8. **Feature specifications (Spec Kit):** `specs/010-user-authentication-roles`, `specs/011-user-profile-dietary`, `specs/020-recipe-search-filter`, `specs/030-meal-planner`, `specs/031-ai-weekly-meal-planner`, `specs/040-shopping-list`, `specs/050-cooking-mode`, `specs/060-recipe-editor`, `specs/070-review-cooksnap`, `specs/080-bookmark-collection`, `specs/090-nutrition-analysis`, `specs/100-admin-moderation` and the project constitution `src/constitution.md`.
+9. **Use-Case Model:** [`docs/requirements/use-case-model.md`](use-case-model.md) — actors, use-case diagrams of the ten features and the catalogue of use-case IDs (`SCRUM-49`).
+10. **Use-Case Specifications:** [`docs/requirements/use-case-specification.md`](use-case-specification.md) — fully dressed specifications of the use cases (`SCRUM-50` – `SCRUM-54`).
+11. **Sprint 03 Report:** [`docs/management/reports/sprint-03/sprint-03-report.md`](../management/reports/sprint-03/sprint-03-report.md) — PA3 plan, decisions and task assignment.
 
 ### 1.5. Overview
 
-Section 2 positions WikiCook through its business opportunity, problem statement and product position statement. Section 3 describes the stakeholders, the users, their working environment, their key needs and the alternatives they use today. Section 4 places the product in its technical context and lists the assumptions and dependencies it relies on. Section 5 describes the ten core features, and Section 6 illustrates two end-to-end user workflows. Section 7 defines the quantifiable non-functional requirements.
+Section 2 positions WikiCook through its business opportunity, problem statement and product position statement. Section 3 describes the stakeholders, the users, their working environment, their key needs and the alternatives they use today. Section 4 places the product in its technical context and lists the assumptions and dependencies it relies on. Section 5 describes the ten core features, and Section 6 illustrates two end-to-end user workflows. Section 7 defines the quantifiable non-functional requirements. Section 8 traces the user needs and features of this document to the use cases of the Use-Case Model in both directions.
 
 ---
 
@@ -154,12 +162,13 @@ Stakeholders are people or organisations who influence or are affected by the pr
 - **Authoring and moderation:** recipe creators and moderators mostly work on a desktop or laptop where long forms, photo uploads and review queues are comfortable, but authoring must remain usable on mobile.
 - **Platforms:** modern browsers — Chrome/Edge 100+, Firefox 100+, Safari 15+ on Windows, macOS, Linux, Android and iOS — from 360 px wide screens up to 4K desktops. An internet connection is required for search, synchronisation and AI features.
 - **Other applications:** users share shopping lists through messaging apps such as Zalo or Messenger, and recipe creators link cooking videos from YouTube or TikTok.
+- **Development and deployment environment:** the team develops and demonstrates WikiCook on its own laptops (Windows, macOS, Linux) with no hosting budget. The whole stack runs locally from one Docker Compose file at the repository root: PostgreSQL 16 with `pgvector` (with Flyway migrations) is available from Sprint 3, the Spring Boot 3 / Java 21 backend and the React 18 + Vite frontend are added to the same Compose stack in Sprint 3 (`SCRUM-48`, `SCRUM-66`), and Redis 7 follows as described in the Software Architecture Document. Secrets such as database passwords and the LLM API key live in a git-ignored `.env` file; only `.env.example` is committed. The demo runs on a primary and a backup laptop with the Mock LLM available when the external AI service is unreachable (see Section 7.2 and the Project Plan).
 
 ### 3.4. Summary of Key Stakeholder or User Needs
 
 | Need | Priority | Concerns | Current Solution | Proposed Solution |
 | :--- | :---: | :--- | :--- | :--- |
-| **N1.** Decide quickly what to cook | High | 15–30 minutes of daily decision fatigue; recipes that need ingredients the user does not have | Scroll recipe blogs; tick a long checkbox list on MyFridgeFood | Keyword search with combinable filters and one-tap presets, plus pantry matching (Feature 2) |
+| **N1.** Decide quickly what to cook | High | 15–30 minutes of daily decision fatigue; recipes that need ingredients the user does not have | Scroll recipe blogs; tick a long checkbox list on MyFridgeFood | Keyword search with combinable filters and one-tap presets; pantry matching as a planned increment (Feature 2) |
 | **N2.** Plan the week and shop efficiently | High | Repetitive menus; forgotten or duplicate purchases; manual quantity arithmetic | Paper notes; Ăn Gì Ngon's planner with a basic, ungrouped list | AI Weekly Meal Planner (Feature 3) feeding an aisle-grouped Smart Shopping List (Feature 4) |
 | **N3.** Follow a recipe with busy, messy hands | High | Smudged devices, lost place in the recipe, overcooked stages, screen locking | Scroll static recipe pages; separate phone timer app | Hands-free Cooking Mode with parallel timers (Feature 5) |
 | **N4.** Stay safe from allergens and within a diet | High | Accidental allergen exposure; unknown calories and macros | Read every ingredient manually; neither surveyed app helps | Dietary profile enforced across search and planning (Feature 1), allergen badges and nutrition estimates (Feature 9) |
@@ -193,7 +202,7 @@ Users also rely on general recipe blogs and YouTube videos (rich content but ad-
 | Capability | MyFridgeFood | Ăn Gì Ngon | WikiCook |
 | :--- | :---: | :---: | :---: |
 | Keyword search and multi-criteria filters | 🟡 | 🟢 | 🟢 |
-| Search by on-hand ingredients | 🟢 | ❌ | 🟢 |
+| Search by on-hand ingredients | 🟢 | ❌ | 🟡 *(planned increment)* |
 | Dietary profile and automatic allergen filtering | ❌ | ❌ | 🟢 |
 | Weekly meal planner | ❌ | 🟢 | 🟢 |
 | AI meal planning grounded in the platform's own recipes, with dietary enforcement | ❌ | 🟡 | 🟢 |
@@ -204,7 +213,7 @@ Users also rely on general recipe blogs and YouTube videos (rich content but ad-
 | Nutrition estimates and allergen badges | ❌ | ❌ | 🟢 |
 | Content moderation | ❌ | ➖ (editorial) | 🟢 |
 
-*Notation:* 🟢 supported · 🟡 partial · ❌ not supported · ➖ not applicable. Ratings for MyFridgeFood and Ăn Gì Ngon come from the PA1 survey feature matrices.
+*Notation:* 🟢 supported · 🟡 partial (for WikiCook: planned increment, not in the current release) · ❌ not supported · ➖ not applicable. Ratings for MyFridgeFood and Ăn Gì Ngon come from the PA1 survey feature matrices.
 
 **Conclusion.** Each competitor is strong in one model and absent in the other: MyFridgeFood has community and pantry search without planning; Ăn Gì Ngon has planning without community. WikiCook's differentiation is not a single feature but the **connected workflow** — discover → plan → shop → cook → share — combined with three capabilities neither competitor offers: dietary-profile enforcement, hands-free cooking and nutrition/allergen information.
 
@@ -274,7 +283,7 @@ WikiCook lets visitors register with an email and password or sign in with Googl
 
 ### 5.2. Smart Recipe Discovery & Filters
 
-Smart Recipe Discovery combines full-text keyword search, which ignores Vietnamese diacritics and letter case so that "pho bo" finds "Phở bò", with combinable filters for total time, cuisine, difficulty, cooking method, category and calories per serving. One-tap presets such as "Under 30 minutes" or "Vegetarian" sit on the homepage, and every query, filter and page number is kept in the URL so that results can be shared, reloaded or revisited with the Back button. A pantry-matching mode extends the same engine: the user selects the ingredients already in the fridge, and WikiCook ranks recipes by how many of their ingredients are covered and shows what is still missing. The feature answers the daily question "What can I cook today?", which the PA1 proposal estimates costs 15 to 30 minutes, and replaces MyFridgeFood's cluttered checkbox wall with a fast, modern interface. Guests and busy home cooks use it as their entry point to the product, while dietary-restricted members also have conflicting recipes hidden automatically.
+Smart Recipe Discovery combines full-text keyword search, which ignores Vietnamese diacritics and letter case so that "pho bo" finds "Phở bò", with combinable filters for total time, cuisine, difficulty, cooking method, category and calories per serving. One-tap presets such as "Under 30 minutes" or "Vegetarian" sit on the homepage, and every query, filter and page number is kept in the URL so that results can be shared, reloaded or revisited with the Back button. A pantry-matching mode will extend the same engine in a later increment: the user selects the ingredients already in the fridge, and WikiCook ranks recipes by how many of their ingredients are covered and shows what is still missing. It is kept in the Use-Case Model as `UC-020-05` but is not part of the current release of specification `020`. The feature answers the daily question "What can I cook today?", which the PA1 proposal estimates costs 15 to 30 minutes, and replaces MyFridgeFood's cluttered checkbox wall with a fast, modern interface. Guests and busy home cooks use it as their entry point to the product, while dietary-restricted members also have conflicting recipes hidden automatically.
 
 ### 5.3. AI Weekly Meal Planner
 
@@ -310,18 +319,18 @@ Admin Content Moderation provides a back-office dashboard where moderators revie
 
 ### 5.11. Feature Traceability
 
-| # | Feature | User Needs (3.4) | PA1 Module | Specification(s) |
-| :---: | :--- | :--- | :---: | :--- |
-| 5.1 | User Authentication & Dietary Profile | N4 | 3.1 | `010-user-authentication-roles`, `011` (dietary profile) |
-| 5.2 | Smart Recipe Discovery & Filters | N1, N4 | 3.2 | `020-recipe-search-filter` (pantry matching in a later increment) |
-| 5.3 | AI Weekly Meal Planner | N2, N4 | 3.3, Section 4 | `030-meal-planner`, `031-ai-weekly-meal-planner` |
-| 5.4 | Smart Shopping List | N2 | 3.4 | `040-shopping-list` |
-| 5.5 | Hands-free Cooking Mode & Timers | N3 | 3.5 | `050-cooking-mode` |
-| 5.6 | Community Recipe Contribution | N5 | 3.6 | `060-recipe-editor` |
-| 5.7 | Social Cooksnaps & Reviews | N5, N6 | 3.7 | `070` (reviews and Cooksnaps) |
-| 5.8 | Custom Recipe Collections | N7 | 3.8 | `080` (collections) |
-| 5.9 | Nutrition & Allergen Analyzer | N4 | 3.9 | `090` (nutrition analyzer) |
-| 5.10 | Admin Content Moderation | N8 | 3.10 | `100-admin-moderation`, `101-admin-analytics` |
+| # | Feature | User Needs (3.4) | PA1 Module | Specification(s) | Use Cases (Section 8) |
+| :---: | :--- | :--- | :---: | :--- | :--- |
+| 5.1 | User Authentication & Dietary Profile | N4 | 3.1 | `010-user-authentication-roles`, `011-user-profile-dietary` | `UC-010-01` – `04`, `UC-011-01` – `05` |
+| 5.2 | Smart Recipe Discovery & Filters | N1, N4 | 3.2 | `020-recipe-search-filter` (pantry matching in a later increment) | `UC-020-01` – `06` |
+| 5.3 | AI Weekly Meal Planner | N2, N4 | 3.3, Section 4 | `030-meal-planner`, `031-ai-weekly-meal-planner` | `UC-030-01` – `05`, `UC-031-01` – `06` |
+| 5.4 | Smart Shopping List | N2 | 3.4 | `040-shopping-list` | `UC-040-01` – `05` |
+| 5.5 | Hands-free Cooking Mode & Timers | N3 | 3.5 | `050-cooking-mode` | `UC-050-01` – `05` |
+| 5.6 | Community Recipe Contribution | N5 | 3.6 | `060-recipe-editor` | `UC-060-01` – `07` |
+| 5.7 | Social Cooksnaps & Reviews | N5, N6 | 3.7 | `070-review-cooksnap` | `UC-070-01` – `06` |
+| 5.8 | Custom Recipe Collections | N7 | 3.8 | `080-bookmark-collection` | `UC-080-01` – `04` |
+| 5.9 | Nutrition & Allergen Analyzer | N4 | 3.9 | `090-nutrition-analysis` | `UC-090-01` – `05` |
+| 5.10 | Admin Content Moderation | N8 | 3.10 | `100-admin-moderation` (analytics and the audit trail are its User Story 6) | `UC-100-01` – `06` |
 
 ---
 
@@ -375,15 +384,15 @@ flowchart TD
     class D1,D2,D3,D4 decision
 ```
 
-| Step | Actor | Description | Feature |
-| :---: | :--- | :--- | :---: |
-| 1–2 | Member | Confirms or adjusts the constraints pre-filled from the dietary profile; invalid input (no day selected, servings out of range) is rejected before any AI call. | 5.1, 5.3 |
-| 3–4 | AI services | The constraints are embedded and used to retrieve semantically similar published recipes from the `pgvector` index (RAG), so the LLM only ever sees real WikiCook recipes. | 5.3 |
-| 5–6 | System | Allergens, excluded ingredients and over-time recipes are removed as hard rules; if too few candidates remain, the user is asked to relax constraints instead of receiving a repetitive or unsafe plan. | 5.3 |
-| 7 | AI services | The LLM arranges the candidates into a draft for the selected days and meals, aiming for variety and ingredient reuse; on timeout or malformed output the call is retried once, then the manual planner is offered. | 5.3 |
-| 8–9 | System | Every pick is checked against the database; invalid picks are never shown and their slots are flagged for manual selection. | 5.3 |
-| 10 | Member | Swaps, moves or removes dishes with the normal planner tools, regenerates, or confirms the draft. | 5.3 |
-| 11–13 | System | The confirmed plan is saved and its ingredients are scaled, merged and grouped by supermarket aisle into the Smart Shopping List. | 5.4 |
+| Step | Actor | Description | Feature | Use Case(s) |
+| :---: | :--- | :--- | :---: | :--- |
+| 1–2 | Member | Confirms or adjusts the constraints pre-filled from the dietary profile; invalid input (no day selected, servings out of range) is rejected before any AI call. | 5.1, 5.3 | `UC-031-01` |
+| 3–4 | AI services | The constraints are embedded and used to retrieve semantically similar published recipes from the `pgvector` index (RAG), so the LLM only ever sees real WikiCook recipes. | 5.3 | `UC-031-01`, `UC-031-06` |
+| 5–6 | System | Allergens, excluded ingredients and over-time recipes are removed as hard rules; if too few candidates remain, the user is asked to relax constraints instead of receiving a repetitive or unsafe plan. | 5.3 | `UC-011-05` (included by `UC-031-01`) |
+| 7 | AI services | The LLM arranges the candidates into a draft for the selected days and meals, aiming for variety and ingredient reuse; on timeout or malformed output the call is retried once, then the manual planner is offered. | 5.3 | `UC-031-01`; fallback `UC-031-04`, `UC-030-01` |
+| 8–9 | System | Every pick is checked against the database; invalid picks are never shown and their slots are flagged for manual selection. | 5.3 | `UC-031-03` |
+| 10 | Member | Swaps, moves or removes dishes with the normal planner tools, regenerates, or confirms the draft. | 5.3 | `UC-031-02` |
+| 11–13 | System | The confirmed plan is saved and its ingredients are scaled, merged and grouped by supermarket aisle into the Smart Shopping List. | 5.4 | `UC-030-05`, `UC-040-02`, `UC-040-03` |
 
 ### 6.2. Workflow 2 — Pantry Search & Hands-free Cooking
 
@@ -426,14 +435,16 @@ flowchart TD
     class D1,D2,D3,D4 decision
 ```
 
-| Step | Actor | Description | Feature |
-| :---: | :--- | :--- | :---: |
-| 1–3 | Cook | Picks the ingredients at hand; WikiCook ranks published recipes by coverage and, for signed-in users, hides recipes that conflict with the dietary profile. If nothing fits, the cook adds ingredients or loosens filters. | 5.1, 5.2 |
-| 4 | Cook | Reviews the recipe, including any missing ingredients, total time, estimated nutrition and allergen badges. | 5.2, 5.9 |
-| 5–6 | System, Cook | Cooking Mode opens full screen and keeps the display awake; the cook advances with large buttons, the keyboard or a voice command, without precise touch. | 5.5 |
-| 7–8 | System | A step with a duration offers a timer; timers keep running in the background while the cook moves on, and each one raises an audible and visual alarm when it ends. | 5.5 |
-| 9–10 | Cook | The loop repeats until the last step is completed and the session ends. | 5.5 |
-| 11–13 | Cook, System | The cook optionally posts a Cooksnap with a rating and tip (sign-in required); it appears on the recipe, and other users can report it to moderators. | 5.7, 5.10 |
+| Step | Actor | Description | Feature | Use Case(s) |
+| :---: | :--- | :--- | :---: | :--- |
+| 1–3 | Cook | Picks the ingredients at hand; WikiCook ranks published recipes by coverage and, for signed-in users, hides recipes that conflict with the dietary profile. If nothing fits, the cook adds ingredients or loosens filters. | 5.1, 5.2 | `UC-020-05` *(planned increment)*, `UC-020-03`; in the current release `UC-020-01`, `UC-020-02` |
+| 4 | Cook | Reviews the recipe, including any missing ingredients, total time, estimated nutrition and allergen badges. | 5.2, 5.9 | `UC-020-06`, `UC-090-01`, `UC-090-04` |
+| 5–6 | System, Cook | Cooking Mode opens full screen and keeps the display awake; the cook advances with large buttons, the keyboard or a voice command, without precise touch. | 5.5 | `UC-050-01`, `UC-050-02`, `UC-050-04` |
+| 7–8 | System | A step with a duration offers a timer; timers keep running in the background while the cook moves on, and each one raises an audible and visual alarm when it ends. | 5.5 | `UC-050-03` |
+| 9–10 | Cook | The loop repeats until the last step is completed and the session ends. | 5.5 | `UC-050-02`, `UC-050-05` |
+| 11–13 | Cook, System | The cook optionally posts a Cooksnap with a rating and tip (sign-in required); it appears on the recipe, and other users can report it to moderators. | 5.7, 5.10 | `UC-070-06`, `UC-070-01`, `UC-070-02`, `UC-070-05`, `UC-100-02` |
+
+*Note (Second Edition):* steps 1–3 describe pantry matching, which is a planned increment (Section 5.2). Until it is specified, the same journey starts with a keyword search and filters (`UC-020-01`, `UC-020-02`), and the rest of the workflow is unchanged.
 
 ---
 
@@ -603,3 +614,53 @@ Each requirement is verified at the build gate of the Sprint in which its featur
 | **Sprint 5 — Build v1.0 RC** | RC tag 18/12/2026; demo 25/12/2026 | Full verification of all rows. Load rows NFR-PERF-01, NFR-PERF-02, NFR-PERF-05 and NFR-PERF-06 are measured at 100 concurrent users for 10 minutes. The remaining PERF rows, NFR-REL-03 and NFR-REL-05 to NFR-REL-11, NFR-USA-01 to NFR-USA-08, NFR-COM-01 to NFR-COM-06, NFR-AI-13, NFR-PRV-06 to NFR-PRV-08 and NFR-PRV-10 are verified with the Playwright suite and the two demo dry runs. NFR-MNT-01 applies to all backend business logic. |
 
 The Plan 4.4.2 gate criteria currently list the performance, coverage, RBAC and stability checks above. The accessibility audit (NFR-USA-01), the browser matrix (NFR-COM-01) and the OWASP ZAP scan (NFR-SEC-11) are proposed additions to the RC gate under `SCRUM-36` and take effect once the team approves them.
+
+---
+
+## 8. TRACEABILITY TO THE USE-CASE MODEL
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
+
+This section links the user needs (Section 3.4) and features (Section 5) of this document to the use cases of the [Use-Case Model](use-case-model.md) (`SCRUM-49`), whose detailed behavior is written in the [Use-Case Specifications](use-case-specification.md). The trace works in both directions: **forward**, every need and every feature is realized by at least one use case; **backward**, every use case in the model serves at least one feature and one need. Use-case IDs follow the format `UC-<spec>-<NN>` of the model's catalogue (Use-Case Model Section 5).
+
+### 8.1. Forward Trace — User Needs to Use Cases
+
+| Need (3.4) | Feature(s) | Realizing Use Cases |
+| :--- | :--- | :--- |
+| **N1.** Decide quickly what to cook | 5.2 | `UC-020-01` Search Recipes by Keyword, `UC-020-02` Filter Search Results, `UC-020-04` Sort, Paginate & Share Results, `UC-020-06` View Recipe Details; `UC-020-05` Find Recipes by Pantry Ingredients *(planned increment)* |
+| **N2.** Plan the week and shop efficiently | 5.3, 5.4 | `UC-030-01` – `UC-030-05` (manual planner), `UC-031-01` – `UC-031-06` (AI planner), `UC-040-01` – `UC-040-05` (shopping list) |
+| **N3.** Follow a recipe with busy, messy hands | 5.5 | `UC-050-01` – `UC-050-05` |
+| **N4.** Stay safe from allergens and within a diet | 5.1, 5.2, 5.3, 5.9 | `UC-011-01` Set Up Dietary Profile, `UC-011-05` Apply Dietary Hard Rules, `UC-020-03` Hide Recipes Conflicting with Dietary Profile, `UC-031-01` Generate AI Weekly Meal Plan, `UC-031-03` Validate AI Recipe Picks, `UC-090-01` – `UC-090-05` (nutrition and allergens) |
+| **N5.** Share own recipes and receive feedback | 5.6, 5.7 | `UC-060-01` – `UC-060-07` (recipe contribution), `UC-070-01` Rate & Review Recipe, `UC-070-02` Upload Cooksnap Photos, `UC-070-04` Browse, Sort & Filter Reviews |
+| **N6.** Trust a recipe before cooking it | 5.7 | `UC-070-01` – `UC-070-06` |
+| **N7.** Find favourite recipes again | 5.8 | `UC-080-01` – `UC-080-04` |
+| **N8.** Keep the catalogue clean and safe *(admin)* | 5.10 | `UC-100-01` – `UC-100-06`; supported by `UC-070-05` Report Review or Cooksnap and `UC-090-05` Review, Recalculate & Hide Estimates |
+
+**Account enablers.** `UC-010-01` – `UC-010-04` (register, sign in, reset password, sign in with Google) and `UC-011-02` – `UC-011-04` (public profile, password, account deletion) do not answer a single need on their own; they give every Member-level use case its actor and protect the personal data behind N2, N4, N5 and N7 (Section 7.10).
+
+### 8.2. Feature Coverage
+
+| Feature | Use Cases | Count | Primary Actors | Specification · UC Spec Owner (Jira) |
+| :--- | :--- | :---: | :--- | :--- |
+| 5.1 User Authentication & Dietary Profile | `UC-010-01` – `04`, `UC-011-01` – `05` | 9 | Guest, Member | `010`, `011` · Mai Văn Hiển (`SCRUM-50`) |
+| 5.2 Smart Recipe Discovery & Filters | `UC-020-01` – `06` | 6 | Guest, Member | `020` · Nguyễn Đức Duy (`SCRUM-51`) |
+| 5.3 AI Weekly Meal Planner | `UC-030-01` – `05`, `UC-031-01` – `06` | 11 | Member | `030`, `031` · Nguyễn Thành Dự (`SCRUM-52`) |
+| 5.4 Smart Shopping List | `UC-040-01` – `05` | 5 | Member | `040` · Lê Quốc Hưng (`SCRUM-53`) |
+| 5.5 Hands-free Cooking Mode & Timers | `UC-050-01` – `05` | 5 | Guest | `050` · Lê Quốc Hưng (`SCRUM-53`) |
+| 5.6 Community Recipe Contribution | `UC-060-01` – `07` | 7 | Member | `060` · Nguyễn Đức Duy (`SCRUM-51`) |
+| 5.7 Social Cooksnaps & Reviews | `UC-070-01` – `06` | 6 | Guest, Member | `070` · Trần Nguyễn Công Chung (`SCRUM-54`) |
+| 5.8 Custom Recipe Collections | `UC-080-01` – `04` | 4 | Member | `080` · Mai Văn Hiển (`SCRUM-50`) |
+| 5.9 Nutrition & Allergen Analyzer | `UC-090-01` – `05` | 5 | Guest, Administrator | `090` · Nguyễn Thành Dự (`SCRUM-52`) |
+| 5.10 Admin Content Moderation | `UC-100-01` – `06` | 6 | Moderator, Administrator | `100` · Trần Nguyễn Công Chung (`SCRUM-54`) |
+| **Total** | | **64** | | |
+
+### 8.3. Backward Trace and Consistency Check
+
+- **Every use case traces back.** All 64 use cases of the Use-Case Model catalogue belong to exactly one feature of Section 5 (table 8.2), and each feature serves at least one need (table 5.11). No use case exists without a feature, and no feature exists without a use case.
+- **Every need is realized.** Needs N1–N8 each have at least one realizing use case (table 8.1).
+- **Planned increments.** One use case, `UC-020-05` (pantry matching), is described in this document but not yet specified; it is written at the Brief level and shown as a planned increment in Sections 1.2, 3.4, 3.5.4, 5.2 and 6.2.
+- **Workflows.** Every step of the two workflows in Section 6 names the use cases it exercises.
+- **Corrections made in the Second Edition.** The non-existent specification `101-admin-analytics` was removed from Section 5.11 because analytics and the audit trail are User Story 6 of `100-admin-moderation` (`UC-100-06`); the short specification names in Section 5.11 were replaced with the folder names under `specs/`.
+
+### 8.4. Change Control
+
+When a use case is added, removed or renamed in the Use-Case Model, the Product Owner updates tables 5.11, 8.1 and 8.2 in the same pull request, and the change is recorded in `Changes.md`. A new capability that has no feature in Section 5 is first discussed with the Product Owner and added here before it is modelled as a use case.

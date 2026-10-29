@@ -773,3 +773,71 @@ Dự review.
 - Đối chiếu thủ công bảng truy vết với spec: 020 phủ 27/27 FR (gồm `FR-014a`), 7/7 NFR, 4/4 US (27 acceptance scenario); 060 phủ 33/33 FR, 7/7 NFR, 6/6 US (36 acceptance scenario).
 - `git diff --check` sạch, file vẫn dùng CRLF như bản gốc của Hưng.
 - Chưa xem render trên GitHub; Dự review sau khi mở PR, bản sửa hạn 03/11.
+
+---
+
+## Mục 12: Sửa Vision Document lần 2 và đồng bộ Use-Case Model v0.2
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-10-29, 12:55 – 13:20 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `docs/requirements/vision-document.md` (Jira `SCRUM-60`, PA3 phần B – 5 điểm), `docs/requirements/use-case-model.md` (`SCRUM-49`, bản v0.2) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.312 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), chạy trong extension VS Code trên Windows 11 |
+| Mục đích | Có bản nháp Vision lần 2 truy vết hai chiều với Use-Case Model 10 feature và sửa các chỗ lệch giữa Vision, spec và model trước ngày freeze 02/11 |
+| Nhánh Git | `docs/scrum-60-vision-revision` (PR #49), `docs/scrum-49-use-case-model` (PR #50) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `e0464339-7da7-42a3-81aa-754821231243` (file `e0464339-7da7-42a3-81aa-754821231243.jsonl`) |
+
+### Prompt đã dùng
+
+Mình yêu cầu ngắn "làm cho xong hết việc của mình"; AI chọn các việc làm được ngay là `SCRUM-60` và phần đồng bộ model còn lại của `SCRUM-49`, rồi viết lại thành prompt đầy đủ dưới đây; mình đọc lại và đồng ý ghi nguyên văn. Trước khi sửa, AI đã đọc toàn bộ Vision v1.1, yêu cầu phần B trong `sprint-03-report.md`, catalogue 64 use case của model, `docker-compose.yml` và `architecture.md`.
+
+```
+Bối cảnh: WikiCook PA3. Task SCRUM-60 yêu cầu sửa Vision Document lần 2 (Part B, 5 điểm; bản nháp
+02/11, chốt 05/11; reviewer Chung, editor Hưng). Theo sprint-03-report, Vision phải truy vết đầy đủ
+hai chiều với Use-Case Model 10 feature, cập nhật hồ sơ đối thủ và cấu hình môi trường, và có mục
+riêng trong Changes.md. Cùng lúc cần đồng bộ Use-Case Model (SCRUM-49) với UC Spec v1.1.
+Yêu cầu:
+(1) Thêm Section 8 truy vết nhu cầu N1–N8 → feature → 64 use case, kèm kiểm tra ngược: use case nào
+    cũng thuộc một feature và một nhu cầu.
+(2) Sửa §5.11: thêm cột use case, dùng đúng tên thư mục spec, bỏ 101-admin-analytics.
+(3) Ghi pantry matching là planned increment ở mọi chỗ nhắc tới, cho khớp spec 020 và UC-020-05.
+(4) Gắn use case vào từng bước của 2 workflow ở §6.
+(5) Bổ sung tài liệu tham chiếu, định nghĩa và môi trường phát triển/triển khai theo docker-compose
+    và tài liệu kiến trúc.
+(6) Model: thêm UC-060-05 «include» UC-060-02, thêm cột trạng thái cho open issues.
+Ràng buộc: tiếng Anh; giữ nguyên Section 7 của Hiển; không bịa feedback TA hay thông tin đối thủ chưa
+kiểm chứng; giữ CRLF/LF như file gốc; mỗi phần một commit; parse lại toàn bộ Mermaid.
+Kết quả mong muốn: Vision v2.0-draft và model v0.2, mỗi cái một PR, kèm danh sách thay đổi cho
+Changes.md.
+```
+
+### Nội dung do AI tạo
+
+- `vision-document.md` lên `v2.0-draft`, chia 5 commit:
+  - Header, bảng metadata (thêm dòng Section 8 và Second Edition, reviewer Chung, editor Hưng), Revision History `v2.0-draft`;
+  - §1: phạm vi ghi rõ pantry matching để sau, thêm 2 định nghĩa (use case, planned increment), tài liệu tham chiếu đủ 12 spec, Use-Case Model, UC Spec, PA3 và Sprint 03 Report;
+  - §3: nhu cầu N1 và bảng so sánh đối thủ ghi pantry matching là 🟡 planned increment; §3.3 thêm môi trường phát triển và triển khai (Docker Compose, PostgreSQL 16 + pgvector, backend/frontend thêm trong Sprint 3, `.env` không commit, máy demo chính và dự phòng);
+  - §5: sửa đoạn 5.2; bảng 5.11 thêm cột use case, đổi sang tên thư mục spec, bỏ `101-admin-analytics`;
+  - §6: thêm cột use case cho từng bước của 2 workflow và ghi chú cho bước pantry matching;
+  - §8 mới: truy vết xuôi nhu cầu → use case, bảng phủ feature (64 use case, chủ spec, task Jira), kiểm tra ngược, quy tắc kiểm soát thay đổi.
+- `use-case-model.md` lên `v0.2`, 2 commit: thêm quan hệ `UC-060-05 «include» UC-060-02`, cột trạng thái cho 5 open issue (issue 1–3 đã giải quyết), nguồn UC Spec v1.1.
+- Mở PR #49 (Vision) và PR #50 (model; mở lại vì PR #46 đã merge trước khi đẩy bản v0.2), kèm danh sách thay đổi để Hưng chép vào `Changes.md`.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Không ghi "không có feedback TA" vào Revision History | Dùng | `SCRUM-47` chưa kiểm tra xong các kênh; chỉ ghi là feedback sẽ đưa vào bản chốt |
+| Chưa cập nhật hồ sơ đối thủ | Để lại cho bản chốt 05/11 | Lúc làm không truy cập được các trang đối thủ; không viết thông tin chưa kiểm chứng |
+| Không ghi Redis đã có trong Compose | Dùng | `docker-compose.yml` hiện chỉ có database; Redis chỉ ghi theo tài liệu kiến trúc |
+| Không sửa Section 7 của Hiển | Dùng | Ngoài phạm vi `SCRUM-60`; NFR vẫn khớp với các spec |
+| Nhóm use case tài khoản (`UC-010-xx`, `UC-011-02` – `04`) là "enabler" chứ không gán cho một nhu cầu | Dùng | Đăng ký, đăng nhập không trả lời trực tiếp nhu cầu nào trong 3.4 nhưng là điều kiện cho mọi use case của Member |
+
+### Cách sinh viên kiểm chứng
+
+- Script đối chiếu: mọi mã UC trong Vision đều có trong catalogue của model; tổng số use case theo feature ở §8.2 là 64, khớp catalogue; chủ spec và task Jira từng feature khớp cột cuối của catalogue.
+- Parse Mermaid bằng `mermaid@11.17.2`: Vision 3/3 sơ đồ hợp lệ, model 13/13 sơ đồ hợp lệ (có kiểm tra đối chứng bằng một sơ đồ cố tình sai).
+- Đối chiếu spec 100: User Story 6 là "Audit Trail & Analytics Dashboard", nên bỏ `101-admin-analytics` là đúng.
+- `file` xác nhận Vision vẫn CRLF, model vẫn LF như bản gốc; không còn chuỗi `101-admin` ngoài Revision History và §8.3.
+- Chưa xem render trên GitHub; Chung review PR #49, Hiển review PR #50.
