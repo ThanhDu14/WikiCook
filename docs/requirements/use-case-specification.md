@@ -885,3 +885,436 @@ To support Trần Nguyễn Công Chung (`@itzchugnn`) in task **`SCRUM-58`** (em
 - **Metric Scaling Thresholds:** $1000\text{g} = 1\text{kg}$; $1000\text{ml} = 1\text{l}$. Non-convertible qualitative units (e.g., "thìa canh", "nhánh", "quả") remain on discrete sub-rows.
 - **Audible Alert Bound:** The timer expiration alert plays a continuous alarm for a maximum of 60 seconds, auto-muting thereafter to prevent battery exhaustion.
 - **Session Expiration:** Cooking sessions in LocalStorage enforce a strict 4-hour TTL window from initialization.
+
+---
+
+## 6. USE-CASE SPECIFICATIONS FOR FEATURE 020: RECIPE DISCOVERY, FILTERS & RECIPE DETAIL
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+> [!NOTE]
+> **Sources:** `specs/020-recipe-search-filter/spec.md` (US1–US4, FR-001 – FR-026, NFR-001 – NFR-007), [Vision Document](vision-document.md) §5.2 and the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.2 and §4.11 (`SCRUM-49`). Actors follow the model: **Guest** is any visitor; **Member** is a signed-in user and inherits every use case of Guest. `UC-020-05` is written at the Brief level (planned increment); `UC-020-06` is the shared Recipe Detail page whose blocks are owned by other features (see §4.11 of the model).
+
+### UC-020-01: Search Recipes by Keyword
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-020-01`
+- **Use Case Name:** Search Published Recipes by Keyword (Diacritic- and Case-Insensitive)
+
+#### 2. Actor(s)
+- **Primary Actor:** **Guest** — any visitor, signed in or not (Vision §3.2 "Busy Home Cook"; Member inherits this use case).
+
+#### 3. Description
+Lets any visitor type the name of a dish or an ingredient and immediately see matching **published** recipes. The keyword is matched against recipe name, description, ingredient names and tags, ignoring letter case and Vietnamese diacritics ("pho bo" finds "Phở bò"; "đ" ↔ "d"). Results are ranked by relevance and shown as numbered pages of 20 recipe cards. This is the base use case of Feature 020: filters (`UC-020-02`), dietary exclusion (`UC-020-03`) and sorting/paging/sharing (`UC-020-04`) extend it.
+
+#### 4. Preconditions
+- The actor can reach the WikiCook web application (no account is required).
+- The recipe catalogue contains recipes in `PUBLISHED` status (`060` FR-023). Recipes in any other status are never searchable (FR-002).
+
+#### 5. Basic Flow
+1. **Open Home Page:** The actor opens the home page (`/`). The system shows the greeting "Hôm nay nấu gì?", a prominent search box and at least three one-tap quick filters ("Dưới 30 phút", "Món chay", "Dễ làm") (FR-001).
+2. **Enter Keyword:** The actor types `ga` into the search box and presses `Enter` (or taps the search icon).
+3. **Normalize Keyword:** The system trims the keyword, limits it to 100 characters, treats every character as plain text, and normalizes it by removing diacritics and letter case (FR-004, FR-006).
+4. **Show Loading State:** Within 300 ms the system navigates to the results page and shows skeleton result cards (FR-025).
+5. **Execute Search:** The system searches only `PUBLISHED` recipes, matching the normalized keyword against recipe name, description, ingredient names and tags (FR-002, FR-003).
+6. **Rank Results:** The system orders matches by relevance: name matches above tag/ingredient matches, which rank above description-only matches; recipes matching more of the keyword's words rank higher; ties are broken by publication date, newest first, then by a stable unique order (FR-005, FR-015).
+7. **Display Results:** The system shows the results page with the heading "Kết quả cho “ga”", the total number of matching recipes (e.g., "42 công thức") and the first page of 20 cards. Each card shows the cover image, recipe name, total time (preparation + cooking), difficulty, average rating and number of reviews (FR-013, FR-016).
+8. **Update Address:** The system writes the keyword, sort order and page into the page address so the search can be reloaded, shared and navigated with Back/Forward (FR-023; detailed in `UC-020-04`).
+9. **Open a Recipe:** The actor selects a card (e.g., "Gà kho gừng"). The use case ends and `UC-020-06` View Recipe Details begins.
+
+#### 6. Alternative Flows
+- **AF 1.1: Empty or Whitespace-Only Keyword (Browse All):**
+  - *Trigger:* At Step 2, the actor submits an empty search box or only spaces.
+  - *Steps:*
+    1. The system treats the keyword as blank (FR-006).
+    2. The system lists all published recipes, newest first, with the total count (US1 AS6).
+  - *Outcome:* The actor browses the whole catalogue; "Relevance" sorting is not offered (`UC-020-04`).
+- **AF 1.2: Keyword Longer Than 100 Characters:**
+  - *Trigger:* At Step 3, the keyword exceeds 100 characters.
+  - *Steps:*
+    1. The system cuts the keyword to its first 100 characters.
+    2. The system runs the search and displays an inline notice that the keyword was shortened.
+- **AF 1.3: Special Characters in Keyword:**
+  - *Trigger:* At Step 2, the keyword contains quotes, `%`, `*`, `<`, `>` or emoji.
+  - *Steps:*
+    1. The system treats them as plain text: they are not wildcards and never change the meaning of the query (NFR-004).
+    2. The keyword echoed in "Kết quả cho “…”" is displayed escaped, never interpreted as markup.
+- **AF 1.4: No Matching Recipes:**
+  - *Trigger:* At Step 5, no published recipe matches.
+  - *Steps:*
+    1. The system shows the empty state "Không tìm thấy “pho cuon chay”" with suggestions: check spelling, use a shorter keyword, remove the last filter (one tap) or clear all filters.
+    2. The system offers the quick filters as "Thử nhanh" shortcuts.
+  - *Outcome:* The actor can recover in one tap without retyping.
+- **AF 1.5: Network or Server Failure:**
+  - *Trigger:* At Step 5, the request fails or times out.
+  - *Steps:*
+    1. The system shows "Không tải được kết quả" with the explanation "Từ khóa và bộ lọc vẫn được giữ nguyên." and a "Thử lại" button (FR-025).
+    2. The actor taps "Thử lại"; the system repeats the same search with the same keyword, filters, sort order and page.
+- **AF 1.6: Repeated Submissions and Out-of-Order Responses:**
+  - *Trigger:* The actor taps "Search" several times, or types a new keyword before the previous response arrives.
+  - *Steps:*
+    1. The system ignores duplicate submissions of the same search.
+    2. When a newer search has started, the system discards any older response that arrives later (FR-026).
+  - *Outcome:* The displayed results always belong to the latest search.
+- **AF 1.7: Search Rate Limit Exceeded:**
+  - *Trigger:* A single client sends more than 60 searches per minute (NFR-007).
+  - *Steps:*
+    1. The system refuses further searches for the rest of the window.
+    2. The system shows a friendly "please slow down" message; the current results stay on screen.
+- **AF 1.8: Card Without Cover Image or Reviews:**
+  - *Trigger:* At Step 7, a recipe has no cover image or no reviews.
+  - *Steps:*
+    1. The system shows a neutral placeholder image instead of the cover.
+    2. The system shows "Chưa có đánh giá" instead of the rating.
+
+#### 7. Postconditions
+- **Success:** The results page shows the published recipes that match the keyword, ranked by relevance, with the total count, and the page address reflects the search state.
+- **Always:** No search history is stored per user and no data about unpublished recipes (titles, counts or authors) is revealed (NFR-005).
+
+#### 8. Special Requirements
+- **Performance:** 95% of searches, with or without filters, return results in under 1 second with 10,000 published recipes (NFR-001, SC-001).
+- **Diacritic Matching:** For a test set of 30 common Vietnamese dish names typed without diacritics, the intended recipe appears on the first page in 100% of cases (SC-002).
+- **Security:** Keywords are validated on the server and can never change the meaning of a query or inject content into the page (NFR-004).
+- **Accessibility & Language:** The search box is keyboard-operable with a visible label; the updated result count is announced to screen readers (NFR-006). All texts are in Vietnamese and kept in the shared string store (NFR-003).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`SR01-Home.dc.html`](../analysis-and-design/ui-ux/screens/SR01-Home.dc.html), [`SR02-Results.dc.html`](../analysis-and-design/ui-ux/screens/SR02-Results.dc.html).
+- **Alternative Flows:** [`SR04-NoResults.dc.html`](../analysis-and-design/ui-ux/screens/SR04-NoResults.dc.html) (AF 1.4), [`SR07-LoadingError.dc.html`](../analysis-and-design/ui-ux/screens/SR07-LoadingError.dc.html) (Step 4, AF 1.5).
+- **UI Asset Gap for SCRUM-58:** No screen yet for the shortened-keyword notice (AF 1.2) and the rate-limit message (AF 1.7) — *Gap 020-A*.
+
+---
+
+### UC-020-02: Filter Search Results
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-020-02`
+- **Use Case Name:** Narrow Search Results with Combinable Filters and Quick Filters
+
+#### 2. Actor(s)
+- **Primary Actor:** **Guest** (Vision §3.2 "Health-conscious cook with limited time"; Member inherits this use case).
+
+#### 3. Description
+Extends `UC-020-01` at the results page. The actor narrows the results by total time, cuisine, difficulty, cooking method, category and calories per serving. Filters from different groups combine with **AND**; several values inside one group combine with **OR** (total time allows one choice only). Active filters are shown as removable chips. On narrow screens the filters open in a bottom sheet. Home-page quick filters are a shortcut into this use case.
+
+#### 4. Preconditions
+- The actor is on the results page of `UC-020-01` (with or without a keyword), or on the home page for a quick filter.
+- Cuisines, categories and cooking methods are loaded from the lists managed by administrators (`100`); they are not hard-coded (FR-009).
+
+#### 5. Basic Flow
+*(Wide screen, ≥ 768 px)*
+1. **View Filter Panel:** On the results page the system shows the filter groups: Total time (≤ 15, ≤ 30, ≤ 60, > 60 minutes), Cuisine, Difficulty (Dễ, Vừa, Khó), Cooking method, Category and Calories per serving (< 300, 300–500, 500–800, > 800 kcal) (FR-007).
+2. **Select Filters:** The actor selects cuisine "Việt Nam" and total time "Dưới 30 phút".
+3. **Apply Filters:** The system combines the two groups with AND and returns only Vietnamese recipes whose preparation + cooking time is 30 minutes or less (FR-008, US2 AS3).
+4. **Reset Page and Refresh:** The system returns to page 1, updates the result count and cards, and writes the filters into the page address (FR-017, FR-023).
+5. **Show Chips:** The system shows each active filter as a removable chip ("Việt Nam ×", "Dưới 30 phút ×") and a "Xóa tất cả" action (FR-011).
+6. **Add a Value in the Same Group:** The actor also selects cuisine "Nhật Bản". The system shows recipes of either cuisine that still satisfy the time filter (OR inside the group, US2 AS2).
+7. **Remove One Chip:** The actor removes the chip "Nhật Bản". The system refreshes the results without resetting the keyword or the other filters (US2 AS5).
+8. **Clear All:** The actor taps "Xóa tất cả". The system removes all filters but keeps the keyword (US2 AS8).
+
+#### 6. Alternative Flows
+- **AF 2.1: Quick Filter from the Home Page:**
+  - *Trigger:* On the home page the actor taps a quick filter (e.g., "Dưới 30 phút").
+  - *Steps:*
+    1. The system opens the results page with that filter already applied and no keyword (US2 AS6).
+  - *Outcome:* Filtered results are reached in at most 2 taps (SC-006).
+- **AF 2.2: Mobile Bottom Sheet (screen < 768 px):**
+  - *Trigger:* At Step 1, the screen is narrower than 768 px and the actor taps "Bộ lọc".
+  - *Steps:*
+    1. The system opens the filters in a bottom sheet.
+    2. While the actor changes options, the sheet shows the number of matching results on its apply button ("Hiện N kết quả").
+    3. The actor taps "Hiện N kết quả"; the system applies the filters and continues at Step 4.
+    4. *Alternative:* The actor closes the sheet without applying; the system discards the changes and keeps the previous filters (FR-012).
+- **AF 2.3: Calories Filter Active:**
+  - *Trigger:* At Step 2, the actor selects a calories range (e.g., 300–500 kcal).
+  - *Steps:*
+    1. The system shows only recipes whose estimated calories per serving (from `090`) are in that range.
+    2. The system excludes recipes without a calorie estimate and shows a note explaining this (FR-010, US2 AS4).
+  - *Note:* While Feature 090 provides no estimates, the calories group is hidden rather than broken (spec 020 Assumptions).
+- **AF 2.4: Filters Leave No Results:**
+  - *Trigger:* At Step 3, no recipe matches all selected filters (a filter option with no matches is still selectable).
+  - *Steps:*
+    1. The system shows the empty state with a one-tap action that removes the last filter (e.g., "Bỏ lọc “Khó”") and "Xóa tất cả bộ lọc".
+- **AF 2.5: Filter Value No Longer Exists:**
+  - *Trigger:* A cuisine, category or cooking method in the page address was removed by an administrator.
+  - *Steps:*
+    1. The system ignores the unknown value without an error page and applies the remaining filters (FR-024).
+
+#### 7. Postconditions
+- **Success:** Only recipes satisfying every active filter group are shown, starting from page 1; active filters are visible as chips and are part of the page address.
+- **Cancelled (mobile sheet closed without applying):** The previous filters and results are unchanged.
+
+#### 8. Special Requirements
+- **Usability:** At least 90% of test participants find a recipe matching three given criteria (e.g., Vietnamese, under 30 minutes, Easy) in under 30 seconds (SC-003).
+- **Responsiveness:** Filters and quick filters are fully usable from 360 px wide, with touch targets of at least 44 × 44 px (NFR-002).
+- **Accessibility:** Filters and chips are operable by keyboard only and have visible labels (NFR-006).
+- **Diet type is not automatic:** "Vegetarian" or "Keto" is only offered as a normal filter the actor chooses; it is never applied from the dietary profile (FR-022).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`SR02-Results.dc.html`](../analysis-and-design/ui-ux/screens/SR02-Results.dc.html) (active filters as chips).
+- **Alternative Flows:** [`SR01-Home.dc.html`](../analysis-and-design/ui-ux/screens/SR01-Home.dc.html) (AF 2.1), [`SR03-FilterSheet.dc.html`](../analysis-and-design/ui-ux/screens/SR03-FilterSheet.dc.html) (AF 2.2), [`SR04-NoResults.dc.html`](../analysis-and-design/ui-ux/screens/SR04-NoResults.dc.html) (AF 2.4).
+- **UI Asset Gap for SCRUM-58:** No screen shows the note "recipes without a calorie estimate are hidden" (AF 2.3) — *Gap 020-B*.
+
+---
+
+### UC-020-03: Hide Recipes Conflicting with Dietary Profile
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-020-03`
+- **Use Case Name:** Automatically Hide Recipes that Contain the Member's Allergens or Excluded Ingredients
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** with a non-empty dietary profile (Vision §3.2 "User with a food allergy").
+- **Included Use Case:** `UC-011-05` Apply Dietary Hard Rules (single definition of the exclusion rule, shared with the AI planner `UC-031-01`).
+
+#### 3. Description
+Extends `UC-020-01` when the actor is signed in and has a dietary profile. Every search automatically hides recipes that contain an ingredient linked to one of the Member's allergens or an ingredient the Member excluded. The page tells the actor how many recipes were hidden and offers to show them **for the current search only**, each with a warning naming the conflict. The only source for "this ingredient contains this allergen" is the allergen links of the shared ingredient catalogue; AI-estimated allergen tags from `090` are display-only (FR-018).
+
+#### 4. Preconditions
+- The actor is signed in as Member (or a higher role) with a valid session.
+- The actor's dietary profile (`011`) lists at least one allergen or excluded ingredient.
+- `UC-020-01` has been started (a keyword search or browse-all).
+
+#### 5. Basic Flow
+1. **Start Search:** The Member searches `ga` as in `UC-020-01` Steps 1–5.
+2. **Load Profile:** The system reads the Member's current dietary profile: allergen "Đậu phộng" and excluded ingredient "Ngò rí".
+3. **Apply Hard Rules (include `UC-011-05`):** The system marks every matching recipe that contains an ingredient linked to peanut in the ingredient catalogue, or that lists coriander, as conflicting (FR-018).
+4. **Hide Conflicts:** The system removes the conflicting recipes from the results and from the total count.
+5. **Show Notice:** The system shows the notice "Đã ẩn 6 món theo hồ sơ ăn uống" with the action "Hiện cho lần tìm này" (FR-019).
+6. **Continue Browsing:** The actor continues with the remaining results; filters (`UC-020-02`) and sorting/paging (`UC-020-04`) operate on the filtered set.
+
+#### 6. Alternative Flows
+- **AF 3.1: Show Hidden Recipes for This Search:**
+  - *Trigger:* At Step 5, the actor taps "Hiện cho lần tìm này".
+  - *Steps:*
+    1. The system adds the hidden recipes back to the results.
+    2. Each such card carries a visible warning naming the conflict (e.g., "Có đậu phộng", "Có ngò rí"), and a banner reads "Đang hiện 4 món không hợp hồ sơ — Chỉ áp dụng cho lần tìm này. Tìm mới sẽ ẩn lại." (FR-020).
+    3. When the actor changes the keyword or leaves the results page, the system switches the dietary filter back on automatically. Changing filters, sort order or page keeps the override for the same search.
+  - *Outcome:* The actor sees everything but cannot miss the warning; the override never persists.
+- **AF 3.2: Every Match Is Hidden:**
+  - *Trigger:* At Step 4, all matching recipes conflict with the profile.
+  - *Steps:*
+    1. The system shows the empty state "Cả 4 món đều bị ẩn" explaining that all N matches were hidden by the dietary profile (US3 AS6).
+    2. The system offers "Hiện cho lần tìm này" (continues at AF 3.1) and "Sửa hồ sơ ăn uống" (opens `UC-011-01`).
+- **AF 3.3: Empty Dietary Profile or Guest:**
+  - *Trigger:* The actor is a Guest, or a Member whose profile has no allergens and no excluded ingredients.
+  - *Steps:*
+    1. The extension condition is false: nothing is hidden and no notice is shown (US3 AS4).
+- **AF 3.4: Session Expires During the Search:**
+  - *Trigger:* At Step 2, the session token is no longer valid.
+  - *Steps:*
+    1. The system continues the search as for a Guest, so dietary exclusion is switched off.
+    2. The system shows a notice asking the actor to sign in again to apply their profile.
+- **AF 3.5: Profile Changed Since the Last Search:**
+  - *Trigger:* The Member updated the dietary profile in `UC-011-01`.
+  - *Steps:*
+    1. At the next search, Step 2 reads the new profile and the new rules apply immediately (US3 AS5).
+
+#### 7. Postconditions
+- **Success:** No recipe containing the Member's allergens or excluded ingredients is shown unless the actor explicitly chose the per-search override; the number of hidden recipes is displayed whenever it is greater than zero.
+- **Always:** The override is not stored in the profile and ends with the current search.
+
+#### 8. Special Requirements
+- **Safety:** With the override off, 0 recipes containing the user's allergens or excluded ingredients appear in acceptance tests (SC-004).
+- **Single Rule:** The exclusion rule is defined once (`UC-011-05`) and applied identically by search and the AI Weekly Meal Planner `031` (FR-021).
+- **Diet Type:** Diet type from the profile (e.g., vegetarian, keto) is a preference, not a hard rule, and is never applied automatically (FR-022).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`SR02-Results.dc.html`](../analysis-and-design/ui-ux/screens/SR02-Results.dc.html) (notice "Đã ẩn 6 món theo hồ sơ ăn uống").
+- **Alternative Flows:** [`SR06-ShownWithWarning.dc.html`](../analysis-and-design/ui-ux/screens/SR06-ShownWithWarning.dc.html) (AF 3.1), [`SR05-AllHidden.dc.html`](../analysis-and-design/ui-ux/screens/SR05-AllHidden.dc.html) (AF 3.2).
+- **UI Asset Gap for SCRUM-58:** No screen for the "sign in again to apply your profile" notice (AF 3.4) — *Gap 020-C*.
+
+---
+
+### UC-020-04: Sort, Paginate & Share Results
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-020-04`
+- **Use Case Name:** Sort Results, Move Between Pages and Share or Restore a Search by its Address
+
+#### 2. Actor(s)
+- **Primary Actor:** **Guest** (Vision §3.2 "User comparing options with family"; Member inherits this use case).
+
+#### 3. Description
+Extends `UC-020-01` at the results page. The actor changes the sort order (Relevance, Newest, Top rated, Quickest), moves between numbered pages of 20 recipes and shares the page address. The keyword, filters, sort order and page always live in the address, so reloading, sharing and the browser Back/Forward buttons restore exactly the same search.
+
+#### 4. Preconditions
+- The actor is on the results page of `UC-020-01`, or opens a results address shared by someone else.
+
+#### 5. Basic Flow
+1. **View Default Order:** The system shows results sorted by Relevance ("Liên quan") when a keyword is present, or by Newest when there is none (FR-014).
+2. **Change Sort Order:** The actor opens "Sắp xếp" and chooses "Top rated".
+3. **Re-order:** The system ranks recipes with at least 3 reviews by average rating (then by review count), followed by recipes with fewer than 3 reviews ordered by average rating, then by recipes without reviews; ties are broken by newest first, then by a stable unique order (FR-014a, FR-015).
+4. **Return to Page 1:** The system shows page 1 of the re-ordered list and updates the address (FR-017, FR-023).
+5. **Go to Another Page:** The actor selects page 2 in the numbered pagination.
+6. **Show Next Page:** The system shows recipes 21–40, scrolls to the top of the results and updates the address (FR-016, US4 AS3).
+7. **Share:** The actor copies the page address and sends it to a family member.
+8. **Restore from Address:** The family member opens the address (also as a Guest). The system restores the same keyword, filters, sort order and page and shows the same results (US4 AS4).
+9. **Navigate Back:** The actor presses the browser Back button. The system restores the previous search state step by step (page 1, then the previous sort order) (US4 AS5).
+
+#### 6. Alternative Flows
+- **AF 4.1: Sorting Without a Keyword:**
+  - *Trigger:* At Step 2, the search has no keyword.
+  - *Steps:*
+    1. The system does not offer "Relevance"; the options are Newest, Top rated and Quickest (FR-014).
+- **AF 4.2: Invalid Values in the Address:**
+  - *Trigger:* At Step 8, the address contains an unknown sort value, an unknown filter value or a page number beyond the last page.
+  - *Steps:*
+    1. The system ignores unknown values and falls back to the defaults.
+    2. For a page number beyond the last page, the system shows the last valid page.
+  - *Outcome:* No error page is ever shown for a malformed address (FR-024, US4 AS6).
+- **AF 4.3: Only One Page of Results:**
+  - *Trigger:* At Step 5, there are 20 results or fewer.
+  - *Steps:*
+    1. The system hides the pagination control; the total count is still displayed.
+- **AF 4.4: Shared Address Opened by a Member with a Dietary Profile:**
+  - *Trigger:* At Step 8, the recipient is a signed-in Member with a dietary profile.
+  - *Steps:*
+    1. The system restores the shared state and additionally applies the recipient's own dietary exclusion (`UC-020-03`); the per-search override of the sender is not part of the address and is not transferred.
+  - *Outcome:* Results may differ from the sender's only by the recipes hidden for the recipient's safety.
+
+#### 7. Postconditions
+- **Success:** The results are shown in the chosen order and page, and the page address fully describes the search state.
+- **Always:** Search state is kept only in the address and the current session; nothing is stored per user (spec 020 Key Entities — Search State).
+
+#### 8. Special Requirements
+- **Shareability:** 100% of shared search links reproduce the same keyword, filters, sort order, page and results when opened in another browser (SC-005).
+- **Stable Paging:** Tie-breaking guarantees that pages never repeat or skip recipes for an unchanged catalogue (FR-015).
+- **Pagination Style:** Numbered pages of 20 only — no infinite scroll or "load more" (FR-016, Clarification 2026-10-08).
+- **Accessibility:** The sort control and pagination are keyboard-operable (NFR-006).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`SR02-Results.dc.html`](../analysis-and-design/ui-ux/screens/SR02-Results.dc.html) (sort control "Sắp xếp · Liên quan").
+- **UI Asset Gap for SCRUM-58:** No screen shows the open sort menu and the numbered pagination control — *Gap 020-D*.
+
+---
+
+### UC-020-05: Find Recipes by Pantry Ingredients *(Brief — planned increment)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+> [!IMPORTANT]
+> Vision §5.2 promises "find recipes by the ingredients in my fridge", but `specs/020-recipe-search-filter/spec.md` lists it as **out of scope** for this release. Following Use-Case Model §6.2 issue 1, this use case is kept in the model and written at the **Brief** level only. It has no functional requirements and is not implemented in Sprint 3. The fully dressed version will be written when a specification is created for it.
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-020-05`
+- **Use Case Name:** Find Recipes by the Ingredients Available at Home
+
+#### 2. Actor(s)
+- **Primary Actor:** **Guest** (Vision §3.2 "Budget-conscious student"; Member inherits this use case).
+
+#### 3. Description
+The actor enters the ingredients they already have (e.g., "trứng", "cà chua", "hành lá"). The system lists published recipes that can be cooked with those ingredients, ranked by how many of the recipe's required (non-optional) ingredients are covered, and shows for each recipe which ingredients are still missing.
+
+#### 4. Preconditions
+- Same as `UC-020-01`. A specification defining the matching and ranking rules exists *(not yet — planned increment)*.
+
+#### 5. Basic Flow (outline)
+1. The actor opens the "Tìm theo nguyên liệu có sẵn" entry and adds ingredients from the shared ingredient catalogue (diacritic-insensitive suggestions, as in `060` FR-007).
+2. The system finds published recipes that use the selected ingredients.
+3. The system ranks them by the share of required ingredients covered and shows "Thiếu 2 nguyên liệu" on each card.
+4. The actor opens a recipe (`UC-020-06`).
+
+#### 6. Alternative Flows (outline)
+- **AF 5.1:** No recipe uses the selected ingredients → empty state suggesting fewer ingredients.
+- **AF 5.2:** Signed-in Member with a dietary profile → `UC-020-03` applies to these results as well.
+
+#### 7. Postconditions
+- The actor sees recipes they can cook with what they have, with missing ingredients listed.
+
+#### 8. Special Requirements
+- To be defined in the future specification. Expected to reuse NFR-001 (under 1 second) and NFR-004 (safe input) of spec 020.
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **UI Asset Gap for SCRUM-58:** No prototype screens; none are required for PA3 because the use case is a planned increment.
+
+---
+
+### UC-020-06: View Recipe Details
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+> [!NOTE]
+> Spec 020 excludes "the content of the recipe detail page", and no single spec owns the page. Following Use-Case Model §4.11 and §6.2 issue 3, this use case specifies the **page frame** (header, ingredients, equipment, steps, video, serving selector, access rules). The other blocks are separate use cases that **extend** it at the extension points below; each block owner confirms their row in §4.11 of the model.
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-020-06`
+- **Use Case Name:** View the Details of a Published Recipe (Shared Recipe Detail Page)
+
+#### 2. Actor(s)
+- **Primary Actor:** **Guest** (Member and higher roles inherit this use case).
+
+#### 3. Description
+Shows one published recipe as readers see it: header (cover, name, category and cuisine, author, rating, total time, difficulty, servings), the ingredient list in the author's groups and order, equipment, numbered steps with photos and timer durations, and the optional video. It is the hub from which most other features start: nutrition, saving, meal planning, shopping list, cooking mode and reviews are offered as page blocks or buttons that extend this use case.
+
+#### 4. Preconditions
+- The actor followed a link to a recipe: a search result card (`UC-020-01`), a collection, a meal-plan slot, a shopping-list source, a notification or a shared address.
+
+#### 5. Basic Flow
+1. **Request Recipe:** The actor selects the card "Canh chua cá lóc" on the results page.
+2. **Load Recipe:** The system loads the recipe and checks that it is `PUBLISHED`. If the recipe has a revision under review (`UC-060-05`), the system loads the current published version, not the revision.
+3. **Display Header:** The system shows the cover image, name, "Canh · Việt Nam", author name and avatar, average rating with review count (e.g., "4,6 (128)"), total time "35 phút", difficulty "Dễ" and servings "4 người".
+4. **Display Ingredients:** The system lists the ingredients under the author's group headings and in the author's order, each with quantity, unit and note (e.g., "800 g cá lóc", "Me chua vừa đủ"); optional ingredients are marked as optional.
+5. **Display Equipment, Steps and Video:** The system lists the equipment, then the numbered steps with their photos and timer durations, then the embedded YouTube or TikTok video if the author added one.
+6. **Render Extension Blocks:** The system renders the blocks of the extending use cases at their extension points (see below).
+7. **Change Servings:** The actor changes "Khẩu phần" from 4 to 2. The system recalculates the displayed quantities proportionally; ingredients with the unit "vừa đủ" (to taste) are not scaled. The stored recipe is unchanged.
+8. **Continue:** The actor reads the recipe or chooses one of the actions offered at the extension points. The use case ends when the actor leaves the page.
+
+**Extension Points** (contract agreed in Use-Case Model §4.11):
+
+| Extension Point | Page Block / Button | Extending Use Case | Visible to | Owner |
+| :--- | :--- | :--- | :--- | :--- |
+| `EP-1 Nutrition` | Nutrition block "Dinh dưỡng", allergen badges, AI diet labels | `UC-090-01`, `UC-090-04` | Guest and above | Nguyễn Thành Dự |
+| `EP-2 Plan` | "Thêm vào thực đơn" | `UC-030-02` | Member and above | Nguyễn Thành Dự |
+| `EP-3 Shop` | "Thêm vào danh sách đi chợ" | `UC-040-02` | Member and above | Lê Quốc Hưng |
+| `EP-4 Cook` | "Bắt đầu nấu" | `UC-050-01` | Guest and above | Lê Quốc Hưng |
+| `EP-5 Save` | "Lưu công thức" / "Lưu vào bộ sưu tập" | `UC-080-01` | Member and above | Mai Văn Hiển |
+| `EP-6 Reviews` | Reviews and Cooksnaps section, "Viết đánh giá" | `UC-070-04` (read), `UC-070-01` (write) | Read: Guest; write: Member | Trần Nguyễn Công Chung |
+
+#### 6. Alternative Flows
+- **AF 6.1: Guest Presses a Member-Only Button:**
+  - *Trigger:* At Step 8, a Guest taps "Lưu công thức", "Thêm vào thực đơn", "Thêm vào danh sách đi chợ" or "Viết đánh giá".
+  - *Steps:*
+    1. The system shows the sign-in prompt explaining that the action needs an account, with "Đăng nhập" and "Đăng ký".
+    2. The actor signs in (`UC-010-02` or `UC-010-04`) or registers (`UC-010-01`).
+    3. The system returns the actor to the same recipe and the same scroll position, and resumes the requested action.
+    4. *Alternative:* The actor dismisses the prompt; the page stays unchanged.
+- **AF 6.2: Recipe No Longer Available:**
+  - *Trigger:* At Step 2, the recipe exists but is `ARCHIVED` or was unpublished after the actor's results were loaded.
+  - *Steps:*
+    1. The system shows the message "Công thức này không còn khả dụng" with a link back to search, instead of an error page (spec 020 Edge Cases; `060` US6 AS1).
+- **AF 6.3: Recipe Not Found or Not Visible to the Actor:**
+  - *Trigger:* At Step 2, the address points to a recipe that does not exist, or to a `DRAFT`, `PENDING`, `REJECTED` or `REVISION_REQUESTED` recipe of another user.
+  - *Steps:*
+    1. The system shows the "Không tìm thấy trang" page (404) without any hint that the recipe exists (`060` FR-002, NFR-004).
+  - *Note:* The author previews their own unpublished recipe in step 6 of the wizard (`UC-060-01`), not on this page.
+- **AF 6.4: Optional Content Missing:**
+  - *Trigger:* At Steps 3–5, the recipe has no cover image, no reviews or no video, or the video was removed from YouTube/TikTok.
+  - *Steps:*
+    1. The system shows a neutral placeholder instead of the cover and "Chưa có đánh giá" instead of the rating.
+    2. The system hides the video block; the rest of the recipe stays visible (`060` Edge Cases).
+- **AF 6.5: Extension Block Unavailable:**
+  - *Trigger:* At Step 6, an extending feature cannot provide its block (e.g., no nutrition estimate yet).
+  - *Steps:*
+    1. The system shows that block's own unavailable state (defined in the extending use case) and renders the rest of the page normally.
+  - *Outcome:* A failing block never prevents the recipe from being read.
+- **AF 6.6: Network Failure While Loading:**
+  - *Trigger:* At Step 2, the request fails.
+  - *Steps:*
+    1. The system shows an error state with "Thử lại"; if the device is fully offline, the system shows the offline page.
+    2. The actor taps "Thử lại" and the system repeats Step 2.
+
+#### 7. Postconditions
+- **Success:** The actor sees the published version of the recipe with all available blocks; changing servings affects only the display.
+- **Always:** No data of unpublished recipes or revisions under review is revealed to anyone other than the author and moderators (`060` FR-002).
+
+#### 8. Special Requirements
+- **Safe Rendering:** All author-entered text (name, description, notes, steps) is displayed as plain text, never as markup (`060` NFR-003).
+- **Responsiveness:** The page is fully usable from 360 px wide; buttons have touch targets of at least 44 × 44 px (`020` NFR-002).
+- **Accessibility & Language:** Headings, buttons and the serving selector are keyboard-operable with visible labels; texts are in Vietnamese in the shared string store (`020` NFR-003, NFR-006).
+- **Independence of Blocks:** Each extension block loads independently, so the header, ingredients and steps are shown even when a block fails (AF 6.5).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`NU01-Detail.dc.html`](../analysis-and-design/ui-ux/screens/NU01-Detail.dc.html) (header, "Khẩu phần", "Nguyên liệu", "Các bước", "Bắt đầu nấu", "Thêm vào thực đơn").
+- **Alternative Flows:** [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 6.1), [`CM01-NotFound.dc.html`](../analysis-and-design/ui-ux/screens/CM01-NotFound.dc.html) (AF 6.3), [`CM04-OfflinePage.dc.html`](../analysis-and-design/ui-ux/screens/CM04-OfflinePage.dc.html) (AF 6.6).
+- **UI Asset Gap for SCRUM-58:** No screen for "Công thức này không còn khả dụng" (AF 6.2) — *Gap 020-E*; NU01 does not yet show the equipment list, video block and the "Thêm vào danh sách đi chợ" / "Lưu công thức" buttons in one view — *Gap 020-F*.
