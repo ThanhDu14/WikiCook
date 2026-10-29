@@ -1,0 +1,7 @@
+# docker compose up -d db (from src/backend). Defaults match docker-compose.yml when src/backend/.env is absent;
+# if .env changes the password, export DB_PASSWORD to the same value.
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:${POSTGRES_PORT:5432}/${POSTGRES_DB:wikicook}}
+    username: ${DB_USER:${POSTGRES_USER:wikicook}}
+    password: ${DB_PASSWORD:${POSTGRES_PASSWORD:wikicook}}

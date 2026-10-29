@@ -21,9 +21,9 @@
 
 ## Path Conventions
 
-- **Backend Source**: `src/backend/src/main/java/com/wikicook/shoppinglist/`
-- **Backend Tests**: `src/backend/src/test/java/com/wikicook/shoppinglist/`
-- **Flyway Migrations**: `src/backend/src/main/resources/db/migration/`
+- **Backend Source**: `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/`
+- **Backend Tests**: `src/backend/wikicook-app/src/test/java/com/wikicook/shoppinglist/`
+- **Flyway Migrations**: `src/backend/wikicook-db/src/main/resources/db/migration/`
 - **Frontend Source**: `src/frontend/src/features/shopping-list/`
 - **Frontend Styles**: `src/frontend/src/styles/`
 - **Manual Test Documentation**: `docs/test/`
@@ -34,11 +34,11 @@
 
 **Purpose**: Initialize project build descriptors, database migrations, and shared feature folder scaffolding.
 
-- [ ] T001 Verify and configure backend Maven dependencies (Java 21, Spring Boot 3.x, Spring Data JPA, Spring Web, Spring Security, Validation, Flyway, Testcontainers PostgreSQL, springdoc OpenAPI) in `src/backend/pom.xml`
+- [ ] T001 Verify and configure backend Maven dependencies (Java 21, Spring Boot 3.x, Spring Data JPA, Spring Web, Spring Security, Validation, Flyway, Testcontainers PostgreSQL, springdoc OpenAPI) in `src/backend/wikicook-app/pom.xml` (versions in parent `src/backend/pom.xml`)
 - [ ] T002 [P] Verify and configure frontend npm package dependencies (React 18, TypeScript, Vite, Tailwind CSS, `idb` v8.x, Vitest, Testing Library, MSW) in `src/frontend/package.json`
 - [ ] T003 [P] Create frontend directory structure for shopping list feature modules in `src/frontend/src/features/shopping-list/{components,hooks,services}` and `src/frontend/src/styles/`
-- [ ] T004 Create Flyway database migration script defining 4 tables (`shopping_lists`, `shopping_list_items`, `shopping_list_item_sources`, `user_aisle_preferences`) and partial unique index `UNIQUE (user_id) WHERE status = 'ACTIVE'` in `src/backend/src/main/resources/db/migration/V401__shopping_lists.sql`
-- [ ] T005 Verify Flyway migration execution and assert table and index creation against PostgreSQL 16 container (`Run: mvn flyway:migrate -Dflyway.target=401`)
+- [ ] T004 Create Flyway database migration script defining 4 tables (`shopping_lists`, `shopping_list_items`, `shopping_list_item_sources`, `user_aisle_preferences`) and partial unique index `UNIQUE (user_id) WHERE status = 'ACTIVE'` in `src/backend/wikicook-db/src/main/resources/db/migration/V401__shopping_lists.sql`
+- [ ] T005 Verify Flyway migration execution and assert table and index creation against PostgreSQL 16 container (`Run: cd src/backend && docker compose up -d db && docker compose run --rm migrate`, then `mvn -pl wikicook-app -am verify` for the Testcontainers check)
 
 ---
 
@@ -48,20 +48,20 @@
 
 **⚠️ CRITICAL**: No user story implementation can begin until this foundational phase is fully complete.
 
-- [ ] T006 [P] Create `ShoppingListStatus` enum (`ACTIVE`, `ARCHIVED`) in `src/backend/src/main/java/com/wikicook/shoppinglist/domain/ShoppingListStatus.java`
-- [ ] T007 [P] Create `ShoppingList` JPA entity with partial unique index constraint mapping in `src/backend/src/main/java/com/wikicook/shoppinglist/domain/ShoppingList.java` (depends on T006)
-- [ ] T008 [P] Create `ShoppingListItem` JPA entity with `client_uuid` (UK), optimistic lock `version`, normalized `quantity`, and clear state flags in `src/backend/src/main/java/com/wikicook/shoppinglist/domain/ShoppingListItem.java`
-- [ ] T009 [P] Create `ShoppingListItemSource` JPA entity for recipe and meal plan contribution provenance snapshots in `src/backend/src/main/java/com/wikicook/shoppinglist/domain/ShoppingListItemSource.java`
-- [ ] T010 [P] Create `UserAislePreference` JPA entity with composite key `(user_id, ingredient_id)` in `src/backend/src/main/java/com/wikicook/shoppinglist/domain/UserAislePreference.java`
-- [ ] T011 [P] Create `ShoppingListRepository` interface with `findByUserIdAndStatus(UUID userId, ShoppingListStatus status)` query in `src/backend/src/main/java/com/wikicook/shoppinglist/repository/ShoppingListRepository.java` (depends on T007)
-- [ ] T012 [P] Create `ShoppingListItemRepository` interface with active items query by list ID and item query by `client_uuid` in `src/backend/src/main/java/com/wikicook/shoppinglist/repository/ShoppingListItemRepository.java` (depends on T008)
-- [ ] T013 [P] Create `ShoppingListItemSourceRepository` interface with query by item ID in `src/backend/src/main/java/com/wikicook/shoppinglist/repository/ShoppingListItemSourceRepository.java` (depends on T009)
-- [ ] T014 [P] Create `UserAislePreferenceRepository` interface with query by user ID and ingredient ID in `src/backend/src/main/java/com/wikicook/shoppinglist/repository/UserAislePreferenceRepository.java` (depends on T010)
-- [ ] T015 Create Foundational JPA Repository integration test verifying entity mappings, foreign keys, and constraints with Testcontainers PostgreSQL 16 in `src/backend/src/test/java/com/wikicook/shoppinglist/repository/ShoppingListRepositoryIT.java` (depends on T011, T012, T013, T014)
-- [ ] T016 [P] Create `ShoppingListExceptionHandler` translating domain exceptions into RFC 7807 `ProblemDetail` structures without leaking internal stack traces in `src/backend/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListExceptionHandler.java`
-- [ ] T017 [P] Create `RecipeDetailPort` interface for decoupled communication with Recipe Module (060/020) in `src/backend/src/main/java/com/wikicook/shoppinglist/port/RecipeDetailPort.java`
-- [ ] T018 [P] Create `MealPlanHandoffPort` interface for decoupled communication with Meal Planner Module (030/031) in `src/backend/src/main/java/com/wikicook/shoppinglist/port/MealPlanHandoffPort.java`
-- [ ] T019 [P] Create `DietaryProfilePort` interface for decoupled communication with User Profile Module (011) in `src/backend/src/main/java/com/wikicook/shoppinglist/port/DietaryProfilePort.java`
+- [ ] T006 [P] Create `ShoppingListStatus` enum (`ACTIVE`, `ARCHIVED`) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/domain/ShoppingListStatus.java`
+- [ ] T007 [P] Create `ShoppingList` JPA entity with partial unique index constraint mapping in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/domain/ShoppingList.java` (depends on T006)
+- [ ] T008 [P] Create `ShoppingListItem` JPA entity with `client_uuid` (UK), optimistic lock `version`, normalized `quantity`, and clear state flags in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/domain/ShoppingListItem.java`
+- [ ] T009 [P] Create `ShoppingListItemSource` JPA entity for recipe and meal plan contribution provenance snapshots in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/domain/ShoppingListItemSource.java`
+- [ ] T010 [P] Create `UserAislePreference` JPA entity with composite key `(user_id, ingredient_id)` in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/domain/UserAislePreference.java`
+- [ ] T011 [P] Create `ShoppingListRepository` interface with `findByUserIdAndStatus(UUID userId, ShoppingListStatus status)` query in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/repository/ShoppingListRepository.java` (depends on T007)
+- [ ] T012 [P] Create `ShoppingListItemRepository` interface with active items query by list ID and item query by `client_uuid` in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/repository/ShoppingListItemRepository.java` (depends on T008)
+- [ ] T013 [P] Create `ShoppingListItemSourceRepository` interface with query by item ID in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/repository/ShoppingListItemSourceRepository.java` (depends on T009)
+- [ ] T014 [P] Create `UserAislePreferenceRepository` interface with query by user ID and ingredient ID in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/repository/UserAislePreferenceRepository.java` (depends on T010)
+- [ ] T015 Create Foundational JPA Repository integration test verifying entity mappings, foreign keys, and constraints with Testcontainers PostgreSQL 16 in `src/backend/wikicook-app/src/test/java/com/wikicook/shoppinglist/repository/ShoppingListRepositoryIT.java` (depends on T011, T012, T013, T014)
+- [ ] T016 [P] Create `ShoppingListExceptionHandler` translating domain exceptions into RFC 7807 `ProblemDetail` structures without leaking internal stack traces in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListExceptionHandler.java`
+- [ ] T017 [P] Create `RecipeDetailPort` interface for decoupled communication with Recipe Module (060/020) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/port/RecipeDetailPort.java`
+- [ ] T018 [P] Create `MealPlanHandoffPort` interface for decoupled communication with Meal Planner Module (030/031) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/port/MealPlanHandoffPort.java`
+- [ ] T019 [P] Create `DietaryProfilePort` interface for decoupled communication with User Profile Module (011) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/port/DietaryProfilePort.java`
 - [ ] T020 [P] Create base IndexedDB database helper and schema migration using `idb` library in `src/frontend/src/features/shopping-list/services/offlineShoppingDb.ts`
 
 **Checkpoint**: Foundation ready — Domain model, database schema, data access layer, ports, and offline storage primitives are verified.
@@ -76,8 +76,8 @@
 
 ### Tests for User Story 1 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T021 [P] [US1] Create unit tests for `ShoppingListService` covering single active list retrieval/creation, capacity check ($\le 200$), title renaming, archive transaction, and restore reset logic in `src/backend/src/test/java/com/wikicook/shoppinglist/service/ShoppingListServiceTest.java` *(bổ sung ngoài Project Structure)*
-- [ ] T022 [P] [US1] Create integration tests with Testcontainers for US1 endpoints (`GET /active`, `PATCH /active`, `POST /items`, `DELETE /items/{clientUuid}`, `GET /history`, `POST /archive`, `POST /{id}/restore`, ownership 403, and capacity limit 422) in `src/backend/src/test/java/com/wikicook/shoppinglist/controller/ShoppingListControllerIT.java`
+- [ ] T021 [P] [US1] Create unit tests for `ShoppingListService` covering single active list retrieval/creation, capacity check ($\le 200$), title renaming, archive transaction, and restore reset logic in `src/backend/wikicook-app/src/test/java/com/wikicook/shoppinglist/service/ShoppingListServiceTest.java` *(bổ sung ngoài Project Structure)*
+- [ ] T022 [P] [US1] Create integration tests with Testcontainers for US1 endpoints (`GET /active`, `PATCH /active`, `POST /items`, `DELETE /items/{clientUuid}`, `GET /history`, `POST /archive`, `POST /{id}/restore`, ownership 403, and capacity limit 422) in `src/backend/wikicook-app/src/test/java/com/wikicook/shoppinglist/controller/ShoppingListControllerIT.java`
 - [ ] T023 [P] [US1] Create MSW mock handlers and API client tests for US1 list operations in `src/frontend/src/features/shopping-list/services/shoppingListApi.test.ts` *(bổ sung ngoài Project Structure)*
 - [ ] T024 [P] [US1] Create unit tests for `useShoppingList` hook covering active list loading, custom item addition, archive trigger, and restore trigger in `src/frontend/src/features/shopping-list/hooks/useShoppingList.test.ts` *(bổ sung ngoài Project Structure)*
 - [ ] T025 [P] [US1] Create component tests for `AddCustomItemDialog` modal (validation of name, quantity, unit, custom aisle assignment) in `src/frontend/src/features/shopping-list/components/AddCustomItemDialog.test.tsx` *(bổ sung ngoài Project Structure)*
@@ -85,9 +85,9 @@
 
 ### Implementation for User Story 1
 
-- [ ] T027 [P] [US1] Create Java Record DTOs (`ShoppingListResponse`, `ShoppingListItemDto`, `CreateCustomItemRequest`, `UpdateItemRequest`, `ArchiveListResponse`, `PageResponse`) in `src/backend/src/main/java/com/wikicook/shoppinglist/dto/`
-- [ ] T028 [US1] Implement `ShoppingListService` for US1 (get/create active list, add custom item to "General" aisle, rename title, capacity validation $\le 200$, archive list + create fresh blank active in 1 transaction, restore archived list with reset status) in `src/backend/src/main/java/com/wikicook/shoppinglist/service/ShoppingListService.java` (depends on T021, T027)
-- [ ] T029 [US1] Implement `ShoppingListController` endpoints for US1 (`GET /api/v1/shopping-lists/active`, `PATCH /api/v1/shopping-lists/active`, `POST /api/v1/shopping-lists/active/items`, `DELETE /api/v1/shopping-lists/active/items/{clientUuid}`, `GET /api/v1/shopping-lists/history`, `POST /api/v1/shopping-lists/active/archive`, `POST /api/v1/shopping-lists/{id}/restore`) in `src/backend/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListController.java` (depends on T022, T028)
+- [ ] T027 [P] [US1] Create Java Record DTOs (`ShoppingListResponse`, `ShoppingListItemDto`, `CreateCustomItemRequest`, `UpdateItemRequest`, `ArchiveListResponse`, `PageResponse`) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/dto/`
+- [ ] T028 [US1] Implement `ShoppingListService` for US1 (get/create active list, add custom item to "General" aisle, rename title, capacity validation $\le 200$, archive list + create fresh blank active in 1 transaction, restore archived list with reset status) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/service/ShoppingListService.java` (depends on T021, T027)
+- [ ] T029 [US1] Implement `ShoppingListController` endpoints for US1 (`GET /api/v1/shopping-lists/active`, `PATCH /api/v1/shopping-lists/active`, `POST /api/v1/shopping-lists/active/items`, `DELETE /api/v1/shopping-lists/active/items/{clientUuid}`, `GET /api/v1/shopping-lists/history`, `POST /api/v1/shopping-lists/active/archive`, `POST /api/v1/shopping-lists/{id}/restore`) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListController.java` (depends on T022, T028)
 - [ ] T030 [P] [US1] Implement shared API client class for US1 operations adhering to single API layer rule in `src/frontend/src/features/shopping-list/services/shoppingListApi.ts` (depends on T023)
 - [ ] T031 [US1] Implement `useShoppingList` React hook managing active list state, inline title editing, custom item addition, archive, and restore in `src/frontend/src/features/shopping-list/hooks/useShoppingList.ts` (depends on T024, T030)
 - [ ] T032 [P] [US1] Implement `AddCustomItemDialog` modal component with touch-friendly input fields in `src/frontend/src/features/shopping-list/components/AddCustomItemDialog.tsx` (depends on T025)
@@ -107,19 +107,19 @@
 
 ### Tests for User Story 2 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T036 [P] [US2] Create unit tests for `UnitConversionService` (metric conversion $g \leftrightarrow kg$, $ml \leftrightarrow l$, threshold 1000, $<1\text{kg} \to \text{g}$, continuous 2 decimal rounding) in `src/backend/src/test/java/com/wikicook/shoppinglist/service/UnitConversionServiceTest.java`
-- [ ] T037 [P] [US2] Create unit tests for `IngredientAggregationService` (deduplication by `ingredient_id`, serving multiplier positive 0.5 step, discrete ceiling rule 0.5 egg $\to$ 1 egg, qualitative units isolated, provenance breakdown snapshots, unchecking already purchased items upon merge) in `src/backend/src/test/java/com/wikicook/shoppinglist/service/IngredientAggregationServiceTest.java`
-- [ ] T038 [P] [US2] Create integration tests for recipe and meal plan import endpoints (`POST /import/recipe`, `POST /import/meal-plan` with MERGE and ARCHIVE modes, and `GET /items/{clientUuid}/provenance`) in `src/backend/src/test/java/com/wikicook/shoppinglist/controller/ShoppingListControllerIT.java`
+- [ ] T036 [P] [US2] Create unit tests for `UnitConversionService` (metric conversion $g \leftrightarrow kg$, $ml \leftrightarrow l$, threshold 1000, $<1\text{kg} \to \text{g}$, continuous 2 decimal rounding) in `src/backend/wikicook-app/src/test/java/com/wikicook/shoppinglist/service/UnitConversionServiceTest.java`
+- [ ] T037 [P] [US2] Create unit tests for `IngredientAggregationService` (deduplication by `ingredient_id`, serving multiplier positive 0.5 step, discrete ceiling rule 0.5 egg $\to$ 1 egg, qualitative units isolated, provenance breakdown snapshots, unchecking already purchased items upon merge) in `src/backend/wikicook-app/src/test/java/com/wikicook/shoppinglist/service/IngredientAggregationServiceTest.java`
+- [ ] T038 [P] [US2] Create integration tests for recipe and meal plan import endpoints (`POST /import/recipe`, `POST /import/meal-plan` with MERGE and ARCHIVE modes, and `GET /items/{clientUuid}/provenance`) in `src/backend/wikicook-app/src/test/java/com/wikicook/shoppinglist/controller/ShoppingListControllerIT.java`
 - [ ] T039 [P] [US2] Create component tests for `PreImportBottomSheet` (ingredient toggle checkboxes, 1-tap staple exclusion button "Bỏ chọn gia vị cơ bản", empty plan error prompt) in `src/frontend/src/features/shopping-list/components/PreImportBottomSheet.test.tsx` *(bổ sung ngoài Project Structure)*
 - [ ] T040 [P] [US2] Create component tests for `ItemProvenanceModal` (displaying scaled recipe contributions and original dish titles) in `src/frontend/src/features/shopping-list/components/ItemProvenanceModal.test.tsx` *(bổ sung ngoài Project Structure)*
 
 ### Implementation for User Story 2
 
-- [ ] T041 [P] [US2] Create Java Record DTOs (`ImportRecipeRequest`, `ImportMealPlanRequest`, `ItemProvenanceDto`, `RecipeContributionDto`, `ImportResultResponse`) in `src/backend/src/main/java/com/wikicook/shoppinglist/dto/`
-- [ ] T042 [US2] Implement `UnitConversionService` (pure in-memory bidirectional metric conversions and continuous decimal rounding) in `src/backend/src/main/java/com/wikicook/shoppinglist/service/UnitConversionService.java` (depends on T036)
-- [ ] T043 [US2] Implement `IngredientAggregationService` (core aggregation engine, serving scaling, discrete ceiling rule, qualitative sub-row isolation, excluded ingredients filter, provenance snapshot generation, uncheck purchased item on merge) in `src/backend/src/main/java/com/wikicook/shoppinglist/service/IngredientAggregationService.java` (depends on T037, T042)
-- [ ] T044 [US2] Integrate `RecipeDetailPort` and `MealPlanHandoffPort` in `ShoppingListService` to ingest external recipe and meal plan payloads with capacity check ($\le 200$) in `src/backend/src/main/java/com/wikicook/shoppinglist/service/ShoppingListService.java` (depends on T017, T018, T043)
-- [ ] T045 [US2] Implement recipe and meal plan import endpoints (`POST /api/v1/shopping-lists/active/import/recipe`, `POST /api/v1/shopping-lists/active/import/meal-plan`, and `GET /api/v1/shopping-lists/active/items/{clientUuid}/provenance`) in `src/backend/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListController.java` (depends on T038, T044)
+- [ ] T041 [P] [US2] Create Java Record DTOs (`ImportRecipeRequest`, `ImportMealPlanRequest`, `ItemProvenanceDto`, `RecipeContributionDto`, `ImportResultResponse`) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/dto/`
+- [ ] T042 [US2] Implement `UnitConversionService` (pure in-memory bidirectional metric conversions and continuous decimal rounding) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/service/UnitConversionService.java` (depends on T036)
+- [ ] T043 [US2] Implement `IngredientAggregationService` (core aggregation engine, serving scaling, discrete ceiling rule, qualitative sub-row isolation, excluded ingredients filter, provenance snapshot generation, uncheck purchased item on merge) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/service/IngredientAggregationService.java` (depends on T037, T042)
+- [ ] T044 [US2] Integrate `RecipeDetailPort` and `MealPlanHandoffPort` in `ShoppingListService` to ingest external recipe and meal plan payloads with capacity check ($\le 200$) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/service/ShoppingListService.java` (depends on T017, T018, T043)
+- [ ] T045 [US2] Implement recipe and meal plan import endpoints (`POST /api/v1/shopping-lists/active/import/recipe`, `POST /api/v1/shopping-lists/active/import/meal-plan`, and `GET /api/v1/shopping-lists/active/items/{clientUuid}/provenance`) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListController.java` (depends on T038, T044)
 - [ ] T046 [P] [US2] Implement `useIngredientAggregation` hook managing client-side preview aggregation and scaling multipliers in `src/frontend/src/features/shopping-list/hooks/useIngredientAggregation.ts`
 - [ ] T047 [P] [US2] Implement `PreImportBottomSheet` modal component with checklist and 1-tap "Bỏ chọn gia vị cơ bản" button in `src/frontend/src/features/shopping-list/components/PreImportBottomSheet.tsx` (depends on T039)
 - [ ] T048 [US2] Implement serving selector + "Add to shopping list" entry button on the 020 recipe detail view (depends on T047) in `src/frontend/src/features/shopping-list/components/` (exact 020 view file TBD - view owned by recipe module; confirm path before implementation)
@@ -141,14 +141,14 @@
 
 ### Tests for User Story 3 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T052 [P] [US3] Create integration tests for aisle reclassification (`PATCH /items/{clientUuid}`), aisle preference persistence (`rememberAisle`), soft-clear (`POST /clear-purchased`), and undo-clear (`POST /undo-clear`) in `src/backend/src/test/java/com/wikicook/shoppinglist/controller/ShoppingListControllerIT.java`
+- [ ] T052 [P] [US3] Create integration tests for aisle reclassification (`PATCH /items/{clientUuid}`), aisle preference persistence (`rememberAisle`), soft-clear (`POST /clear-purchased`), and undo-clear (`POST /undo-clear`) in `src/backend/wikicook-app/src/test/java/com/wikicook/shoppinglist/controller/ShoppingListControllerIT.java`
 - [ ] T053 [P] [US3] Create component and interaction tests for `ChecklistScreen` (asserting immediate optimistic checkbox toggle, strikethrough styling, dynamic progress meter calculation, and undo snackbar appearance without waiting for network; latency $<50\text{ms}$ is delegated to manual test `TC-MAN-040-02`) in `src/frontend/src/features/shopping-list/components/ChecklistScreen.test.tsx` *(bổ sung ngoài Project Structure)*
 
 ### Implementation for User Story 3
 
-- [ ] T054 [P] [US3] Create Java Record DTOs (`AisleGroupDto`, `ChangeAisleRequest`, `ClearPurchasedResponse`, `UndoClearRequest`) in `src/backend/src/main/java/com/wikicook/shoppinglist/dto/`
-- [ ] T055 [US3] Implement aisle grouping logic, `UserAislePreference` upsert, soft-clear batching (`is_cleared = true`, `cleared_at`), and undo-clear within 5-second window in `src/backend/src/main/java/com/wikicook/shoppinglist/service/ShoppingListService.java` (depends on T052, T054)
-- [ ] T056 [US3] Add aisle change and soft-clear/undo endpoints (`PATCH /api/v1/shopping-lists/active/items/{clientUuid}`, `POST /api/v1/shopping-lists/active/clear-purchased`, `POST /api/v1/shopping-lists/active/undo-clear`) in `src/backend/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListController.java` (depends on T055)
+- [ ] T054 [P] [US3] Create Java Record DTOs (`AisleGroupDto`, `ChangeAisleRequest`, `ClearPurchasedResponse`, `UndoClearRequest`) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/dto/`
+- [ ] T055 [US3] Implement aisle grouping logic, `UserAislePreference` upsert, soft-clear batching (`is_cleared = true`, `cleared_at`), and undo-clear within 5-second window in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/service/ShoppingListService.java` (depends on T052, T054)
+- [ ] T056 [US3] Add aisle change and soft-clear/undo endpoints (`PATCH /api/v1/shopping-lists/active/items/{clientUuid}`, `POST /api/v1/shopping-lists/active/clear-purchased`, `POST /api/v1/shopping-lists/active/undo-clear`) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListController.java` (depends on T055)
 - [ ] T057 [P] [US3] Implement `ShoppingItemRow` component with $\ge 48\times 48\text{px}$ touch target checkbox, line-through styling, quantity badge, manual edit indicator `(đã chỉnh sửa)`, and optimistic state toggle in `src/frontend/src/features/shopping-list/components/ShoppingItemRow.tsx`
 - [ ] T058 [P] [US3] Implement `AisleSection` accordion component displaying aisle header icon, badge count of unpurchased items, and collapsible "Đã mua" subsection in `src/frontend/src/features/shopping-list/components/AisleSection.tsx` (depends on T057)
 - [ ] T059 [US3] Assemble in-store checklist view in `ChecklistScreen.tsx` with sticky progress bar ("Đã mua X/Y món (%)"), soft-clear action, 5-second undo snackbar, and "Xem các món đã dọn dẹp" toggle (`?includeCleared=true`) in `src/frontend/src/features/shopping-list/components/ChecklistScreen.tsx` (depends on T053, T058)
@@ -166,14 +166,14 @@
 
 ### Tests for User Story 4 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T061 [P] [US4] Create unit tests for `ShoppingListSyncService` (verifying batch mutation processing, idempotency by `client_uuid`, LWW conflict resolution with `is_checked = true` priority, and 404 handling for mutations on non-existent items) in `src/backend/src/test/java/com/wikicook/shoppinglist/service/ShoppingListSyncServiceTest.java`
+- [ ] T061 [P] [US4] Create unit tests for `ShoppingListSyncService` (verifying batch mutation processing, idempotency by `client_uuid`, LWW conflict resolution with `is_checked = true` priority, and 404 handling for mutations on non-existent items) in `src/backend/wikicook-app/src/test/java/com/wikicook/shoppinglist/service/ShoppingListSyncServiceTest.java`
 - [ ] T062 [P] [US4] Create unit and mock tests for `useOfflineSync` hook (offline event detection, mutation queueing, automatic sync trigger on network restore, non-blocking offline banner, bypass auth redirect while offline) in `src/frontend/src/features/shopping-list/hooks/useOfflineSync.test.ts` *(bổ sung ngoài Project Structure)*
 
 ### Implementation for User Story 4
 
-- [ ] T063 [P] [US4] Create Java Record DTOs (`SyncBatchRequest`, `ItemMutationDto`, `SyncBatchResponse`, `ItemSyncResultDto`) in `src/backend/src/main/java/com/wikicook/shoppinglist/dto/`
-- [ ] T064 [US4] Implement `ShoppingListSyncService` executing idempotent batch synchronization with optimistic locking and `is_checked` priority rule in `src/backend/src/main/java/com/wikicook/shoppinglist/service/ShoppingListSyncService.java` (depends on T061, T063)
-- [ ] T065 [US4] Implement `ShoppingListSyncController` endpoint (`POST /api/v1/shopping-lists/active/sync`) returning per-item accepted/rejected statuses in `src/backend/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListSyncController.java` (depends on T064)
+- [ ] T063 [P] [US4] Create Java Record DTOs (`SyncBatchRequest`, `ItemMutationDto`, `SyncBatchResponse`, `ItemSyncResultDto`) in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/dto/`
+- [ ] T064 [US4] Implement `ShoppingListSyncService` executing idempotent batch synchronization with optimistic locking and `is_checked` priority rule in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/service/ShoppingListSyncService.java` (depends on T061, T063)
+- [ ] T065 [US4] Implement `ShoppingListSyncController` endpoint (`POST /api/v1/shopping-lists/active/sync`) returning per-item accepted/rejected statuses in `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/controller/ShoppingListSyncController.java` (depends on T064)
 - [ ] T066 [US4] Expand `offlineShoppingDb.ts` to manage offline mutation queue store, pending status flags, and `client_uuid` generation in `src/frontend/src/features/shopping-list/services/offlineShoppingDb.ts` (depends on T020)
 - [ ] T067 [US4] Implement `useOfflineSync` hook with `window.addEventListener('online'/'offline')`, background sync dispatcher, non-blocking offline indicator, and auth bypass guard in `src/frontend/src/features/shopping-list/hooks/useOfflineSync.ts` (depends on T062, T066)
 - [ ] T068 [US4] Integrate offline banner ("Đang ngoại tuyến - Dữ liệu được lưu trên máy"), sync status transitions ("Đang lưu ngoại tuyến" $\to$ "Đã đồng bộ"), and logout unsaved mutation warning into `ChecklistScreen.tsx` in `src/frontend/src/features/shopping-list/components/ChecklistScreen.tsx` (depends on T067)
@@ -282,7 +282,7 @@
 ### Parallel Opportunities in Phase 1 (Setup)
 ```bash
 # Developer A (Backend Setup):
-Task: "T001 Verify and configure backend Maven dependencies in src/backend/pom.xml"
+Task: "T001 Verify and configure backend Maven dependencies in src/backend/wikicook-app/pom.xml"
 
 # Developer B (Frontend Setup):
 Task: "T002 Verify and configure frontend npm package dependencies in src/frontend/package.json"

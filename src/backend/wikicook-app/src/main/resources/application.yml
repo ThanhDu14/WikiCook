@@ -1,0 +1,30 @@
+# Connection settings come from the environment (DB_URL, DB_USER, DB_PASSWORD); no secrets in this file.
+# For local development use the "local" profile, which points at docker-compose (src/backend/docker-compose.yml).
+spring:
+  application:
+    name: wikicook
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Schema is owned by Flyway (wikicook-db); Hibernate only checks entities against it.
+      ddl-auto: validate
+  flyway:
+    locations: classpath:db/migration
+  mvc:
+    problemdetails:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+wikicook:
+  ai:
+    mode: ${WIKICOOK_AI_MODE:mock}
+    api-key: ${WIKICOOK_AI_API_KEY:}

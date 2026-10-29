@@ -21,18 +21,19 @@
         wikicook-db : Flyway migrations only (classpath:db/migration), also mounted by docker-compose.
         wikicook-ai : LLM, embedding, RAG retrieval and the scraped-data importer (com.wikicook.ai).
                       Must not depend on wikicook-app.
-        wikicook-app: the Spring Boot application (com.wikicook.*), depends on wikicook-ai.
-                      Added by the Tech Lead together with the v0.5 skeleton.
+        wikicook-app: the Spring Boot application (com.wikicook.*), depends on wikicook-db and wikicook-ai.
     -->
     <modules>
         <module>wikicook-db</module>
         <module>wikicook-ai</module>
+        <module>wikicook-app</module>
     </modules>
 
     <properties>
         <java.version>21</java.version>
         <pgvector.version>0.1.6</pgvector.version>
         <jacoco.version>0.8.16</jacoco.version>
+        <springdoc.version>2.8.13</springdoc.version>
     </properties>
 
     <dependencyManagement>
@@ -46,6 +47,11 @@
                 <groupId>com.wikicook</groupId>
                 <artifactId>wikicook-ai</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.pgvector</groupId>
