@@ -205,7 +205,8 @@ From **Sprint 3 (PA3)** onwards, this directory (`src/`) will accommodate the ap
 src/
 ├── backend/                       # Backend (Java 21 / Spring Boot 3 / Maven multi-module)
 │   ├── pom.xml                    # Parent build: versions and module list
-│   ├── docker-compose.yml         # PostgreSQL 16 + pgvector, Flyway "migrate" tool
+│   ├── docker-compose.yml         # PostgreSQL 16 + pgvector, app service, Flyway "migrate" tool
+│   ├── Dockerfile                 # Builds wikicook-app into a JRE image
 │   ├── .env.example               # Copy to .env (git-ignored) for local credentials
 │   ├── wikicook-db/               # Flyway SQL migrations only (db/migration: V001.., V401..)
 │   ├── wikicook-ai/               # LLM, embedding and RAG clients (com.wikicook.ai)
@@ -216,12 +217,15 @@ src/
 │           │   │                      # each with controller/service/repository/domain/dto
 │           │   └── resources/         # application.yml (+ application-local.yml)
 │           └── test/                  # JUnit 5, Mockito, Testcontainers PostgreSQL 16 (*IT)
-├── frontend/                      # Frontend Single Page Application (React 18 / TypeScript / Vite)
-│   ├── package.json               # Frontend dependencies & build/test scripts
+├── frontend/                      # Single Page Application (React 18 / TypeScript / Vite / Tailwind 3.4)
+│   ├── package.json               # Scripts: dev, build, lint, test, preview
+│   ├── Dockerfile, nginx.conf     # Static build served by nginx, proxies /api and /actuator to the app
 │   └── src/
-│       ├── app/                   # App shell providers and top-level layout
-│       ├── features/              # Modular feature slices (cooking-mode, shopping-list, etc.)
-│       └── shared/                # Shared UI primitives, design tokens & API client
+│       ├── app/                   # App shell: router (routes.tsx), layout, backend health badge
+│       ├── features/              # One folder per feature (shopping-list/{components,hooks,services})
+│       ├── shared/                # api/client.ts (shared HTTP client, ProblemDetail -> ApiError), ui/
+│       ├── styles/                # tokens.css (Soft Editorial design tokens) + Tailwind entry
+│       └── test/                  # Vitest setup and MSW server shared by all tests
 ├── constitution.md                # Preserved Spec Kit governance (v1.0.0)
 ├── templates/                     # Preserved Spec Kit templates
 └── specs/                         # Preserved Spec Kit specifications
@@ -243,6 +247,35 @@ curl localhost:8080/actuator/health       # {"status":"UP"}
 ```
 
 The app reads `DB_URL`, `DB_USER` and `DB_PASSWORD` from the environment; the `local` profile defaults them to the docker-compose database. Hibernate runs with `ddl-auto=validate`: every schema change goes through a Flyway migration in `wikicook-db`. API docs: `http://localhost:8080/swagger-ui.html`. CI runs the same `mvn -B verify` (`.github/workflows/backend.yml`).
+
+### 4.2. Running the frontend locally
+
+Requires Node.js 22+. Start the backend first (4.1 or 4.3); the Vite dev server proxies `/api` and `/actuator` to `http://localhost:8080` (override with `VITE_API_PROXY_TARGET`).
+
+```bash
+cd src/frontend
+npm ci
+npm run dev                               # http://localhost:5173
+npm run lint && npm test && npm run build # same checks as CI (.github/workflows/frontend.yml)
+```
+
+Every API call goes through `src/shared/api/client.ts` (`api.get('/shopping-lists/...')` → `/api/v1/...`); error responses become `ApiError` carrying the backend's RFC 7807 `ProblemDetail`. Tests use Vitest + Testing Library on `happy-dom`, with MSW (`src/test/server.ts`) mocking HTTP. Style with the Tailwind theme, which maps to the Soft Editorial tokens (`bg-surface`, `text-ink-muted`, `text-primary`, `rounded-pill`, `p-ds-4`, `h-touch-md`, ...).
+
+### 4.3. Running the whole stack with Docker Compose
+
+```bash
+cp src/backend/.env.example src/backend/.env  # once; set POSTGRES_PASSWORD
+docker compose up -d --build                  # from the repo root: db, app, web
+docker compose ps                             # all three should be "healthy"
+```
+
+| Service | URL | Notes |
+|---|---|---|
+| `web` | http://localhost:3000 | nginx serving the SPA; `/api` and `/actuator` are proxied to `app` |
+| `app` | http://localhost:8080 | Spring Boot; applies Flyway migrations on startup |
+| `db`  | localhost:5432 | PostgreSQL 16 + pgvector |
+
+Ports can be changed with `WEB_PORT` and `APP_PORT`. Stop with `docker compose down` (add `-v` to also drop the database volume).
 
 ---
 
