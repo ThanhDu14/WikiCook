@@ -60,9 +60,25 @@ Check JaCoCo coverage ($\ge 70\%$ as required by Constitution II):
 ```
 
 ### 3.2. Frontend Tests & Lint
+Vitest + Testing Library on `happy-dom`; HTTP is mocked with MSW (`src/test/server.ts`):
 ```bash
 cd src/frontend
+npm ci
+npm run lint
 npm test -- src/features/shopping-list/
+```
+
+### 3.3. Run the App
+Whole stack from the repo root (db, backend on `:8080`, frontend on `:3000`):
+```bash
+docker compose up -d --build
+```
+Open http://localhost:3000/shopping-list; the header badge shows whether the backend is reachable.
+
+For frontend work with hot reload, keep `db` and `app` running and start Vite (proxies `/api` to `:8080`):
+```bash
+cd src/frontend
+npm run dev    # http://localhost:5173/shopping-list
 ```
 
 ---

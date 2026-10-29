@@ -1,0 +1,38 @@
+@import '@fontsource-variable/fraunces';
+@import '@fontsource/be-vietnam-pro/vietnamese-400.css';
+@import '@fontsource/be-vietnam-pro/vietnamese-600.css';
+@import '@fontsource/be-vietnam-pro/latin-400.css';
+@import '@fontsource/be-vietnam-pro/latin-600.css';
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* @fontsource-variable registers the family as "Fraunces Variable". */
+  :root {
+    --font-display: 'Fraunces Variable', 'Fraunces', Georgia, serif;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font: var(--text-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1 {
+    font: var(--text-h1);
+    letter-spacing: -0.01em;
+  }
+
+  h2 {
+    font: var(--text-h2);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}

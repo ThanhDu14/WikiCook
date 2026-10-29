@@ -1,0 +1,27 @@
+name: frontend
+
+on:
+  push:
+    branches: [main, "feature/**"]
+    paths: ["src/frontend/**", ".github/workflows/frontend.yml"]
+  pull_request:
+    branches: [main, "feature/**"]
+    paths: ["src/frontend/**", ".github/workflows/frontend.yml"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: src/frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
