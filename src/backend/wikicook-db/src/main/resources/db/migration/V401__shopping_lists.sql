@@ -44,7 +44,7 @@ CREATE TABLE shopping_list_item_sources (
     recipe_title_snapshot VARCHAR(100) NOT NULL,
     contributed_quantity  NUMERIC(10,3),
     unit_id               BIGINT REFERENCES units(id) ON DELETE RESTRICT,
-    scaled_servings       SMALLINT NOT NULL DEFAULT 1,
+    scaled_servings       INTEGER NOT NULL DEFAULT 1,
     created_at            TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
