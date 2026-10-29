@@ -25,6 +25,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 7 | 2026-10-17, 22:36 – 23:01 | Soạn Vision Document Mục 3 (Stakeholder & User Descriptions) và Mục 4 (Product Overview) (`SCRUM-33`) | Vision §3–4 |
 | 8 | 2026-10-17, 22:36 – 23:01 | Viết 10 tính năng cốt lõi dạng đoạn văn What/Why/Who ở Mục 5 (`SCRUM-34`) | Vision §5 |
 | 9 | 2026-10-17, 22:36 – 23:01 | Thiết kế 2 sơ đồ Mermaid luồng người dùng ở Mục 6 (`SCRUM-35`) | Vision §6 |
+| 10 | 2026-10-29, 09:00 – 09:16 | Vẽ Use-Case Model Mermaid bao phủ 10 feature (`SCRUM-49`) | Use-Case Model |
 
 ---
 
@@ -627,3 +628,81 @@ Mermaid trước khi báo xong.
 - Parse cả 3 sơ đồ Mermaid trong file (ngữ cảnh 4.1 và 2 workflow) bằng `mermaid@11.4.1` chạy trên Node + jsdom: **3/3 hợp lệ** (`flowchart-v2`); một sơ đồ cố tình viết sai cú pháp thì parser báo lỗi, chứng tỏ bước kiểm tra có tác dụng.
 - Đối chiếu nhánh lỗi với spec 031: thử lại một lần khi LLM lỗi hoặc sai định dạng; món không hợp lệ không hiển thị và slot được đánh dấu để người dùng chọn tay.
 - Chưa xem render thực tế trên GitHub vì chưa push; cần mở file trên GitHub sau khi push để kiểm tra lần cuối.
+
+---
+
+## Mục 10: Vẽ Use-Case Model Mermaid bao phủ 10 feature
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-10-29, 09:00 – 09:16 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `docs/requirements/use-case-model.md` (Jira `SCRUM-49`, PA3 phần C – 10 điểm) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.312 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), chạy trong extension VS Code trên Windows 11 |
+| Mục đích | Có sơ đồ use case bao phủ đủ 10 feature của Vision §5 (không chỉ US-01 – US-07 cũ), thống nhất mã use case cho 5 người viết UC spec ở `SCRUM-50` – `SCRUM-54` |
+| Nhánh Git | `docs/scrum-49-use-case-model` |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `6f53b90e-664a-4b87-9bce-cb2495350855` (file `6f53b90e-664a-4b87-9bce-cb2495350855.jsonl`) |
+
+### Prompt đã dùng
+
+AI soạn prompt dưới đây từ mô tả task `SCRUM-49` trên Jira và file phân công PA3; mình đọc lại và đồng ý dùng nguyên văn. Trước khi làm, AI đã đọc user story của cả 12 spec, Vision §3.2 và §5, ma trận phân quyền của spec 010 và các use case 040/050 Hưng đã viết.
+
+```
+Vẽ Use-Case Model cho WikiCook bằng Mermaid, task Jira SCRUM-49 (Sprint 3 / PA3, phần C – 10 điểm),
+lưu tại docs/requirements/use-case-model.md.
+Nguồn: Vision Document §5 (10 feature 5.1–5.10) và §5.11 (bảng truy vết), 12 spec trong specs/
+(010, 011, 020, 030, 031, 040, 050, 060, 070, 080, 090, 100), các use case 040/050 Hưng đã viết trong
+docs/requirements/use-case-specification.md, và phân công PA3 (sprint-03-report.md, Decision 3).
+Yêu cầu:
+1. Actor: Guest, Member, Contributor (Verified Contributor), Moderator, Administrator theo spec 010,
+   cùng các actor hệ thống LLM Service, Google OAuth, Email Service. Thể hiện quan hệ generalization
+   giữa các actor người dùng (Member kế thừa Guest, Contributor kế thừa Member…), đúng ma trận phân
+   quyền của spec 010.
+2. Một sơ đồ tổng quan (actor ↔ các gói feature) và 10 sơ đồ chi tiết, mỗi feature của Vision §5 một
+   sơ đồ. Mỗi sơ đồ có actor, use case, quan hệ «include» / «extend» khi phù hợp (ví dụ: AI planner
+   include lọc dị ứng; tìm kiếm extend bộ lọc; gửi duyệt include kiểm tra dữ liệu). Mermaid không có
+   kiểu use case diagram nên dùng flowchart LR: actor là node riêng, use case dùng hình bầu dục,
+   include/extend là mũi tên nét đứt có nhãn, bọc system boundary bằng subgraph.
+3. ID use case dạng UC-<spec>-NN. Giữ nguyên ID UC-040-01…05 và UC-050-xx đã có trong
+   use-case-specification.md. Mỗi use case chỉ lấy từ user story/FR trong spec, không thêm tính năng
+   ngoài spec. Phần đã hoãn (US3–US5 của 040) vẫn có trong model vì UC model mô tả toàn bộ spec.
+4. Bảng traceability: UC ID | Tên | Actor chính | Feature Vision §5 | Spec + User Story | Người viết
+   UC spec (SCRUM-50…54). Mỗi use case trong sơ đồ phải có đúng một người viết spec; thêm danh sách
+   ID để 4 bạn còn lại dùng thống nhất.
+5. Đầu file: bảng Responsibility Matrix + dòng "Performed by: Nguyễn Đức Duy | Reviewed by: Mai Văn
+   Hiển | Edited by: Nguyễn Đức Duy" sau mỗi header, Revision History, giống format
+   sprint-03-report.md và vision-document.md.
+Ràng buộc: viết tiếng Anh, văn phong tài liệu kỹ thuật; mọi sơ đồ phải parse được bằng Mermaid (tự
+kiểm tra bằng trình parse của Mermaid trước khi báo xong), render được trên GitHub; mỗi sơ đồ không quá
+khoảng 12 use case để dễ đọc. Chỉ tạo use-case-model.md, không sửa file của người khác. Commit tách
+nhỏ: khung file + actor, sơ đồ tổng quan, từng nhóm sơ đồ feature, bảng traceability.
+```
+
+### Nội dung do AI tạo
+
+- Tạo `docs/requirements/use-case-model.md` (`v0.1`) gồm 6 mục, 13 sơ đồ Mermaid, chia 5 commit:
+  - Mục 1: mục đích, phạm vi, bảng quy ước ký hiệu (actor, use case, boundary, «include», «extend», generalization biểu diễn bằng `flowchart`), quy tắc đặt mã `UC-<spec>-NN`;
+  - Mục 2: 8 actor (5 người dùng, 3 hệ thống ngoài) và sơ đồ generalization Guest ← Member ← Contributor / Moderator ← Administrator theo ma trận phân quyền spec 010;
+  - Mục 3: sơ đồ tổng quan 10 gói feature;
+  - Mục 4: 10 sơ đồ chi tiết (4.1 – 4.10, mỗi feature của Vision §5 một sơ đồ, tối đa 9 use case trong boundary) và sơ đồ 4.11 cho trang chi tiết công thức kèm bảng chia khối giao diện cho từng chủ module;
+  - Mục 5: catalogue 64 use case (Hiển 13, Duy 13, Dự 16, Hưng 10, Chung 12), mỗi dòng truy vết về Vision §5, spec, user story và task `SCRUM-50` – `54`;
+  - Mục 6: bảng phủ user story của 12 spec, bảng ánh xạ US-01 – US-07 cũ, 5 vấn đề mở cần chốt trước freeze 02/11.
+- Các quyết định mô hình AI đề xuất: `UC-011-05` "Apply Dietary Hard Rules" là use case được include chung bởi tìm kiếm (020) và AI planner (031); trang chi tiết `UC-020-06` là điểm mà 8 use case của module khác extend vào; duyệt công thức `UC-100-01` include ước tính dinh dưỡng `UC-090-02` và cập nhật embedding `UC-031-06`; user story mô tả quy tắc hệ thống hoặc ngoại lệ (030 US6–US7, 031 US4–US5, 080 US5, 090 US6, 010 US3) được đưa vào luồng thay thế hoặc quan hệ, không tách use case riêng.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Giữ nguyên mã `UC-040-xx`, `UC-050-xx` của Hưng | Dùng | Tránh sửa file của người khác; Hưng đã ghi chú chờ model chốt mã |
+| Đưa tìm theo nguyên liệu có sẵn (`UC-020-05`) vào model dù spec 020 loại khỏi phạm vi | Dùng tạm, **cần PO chốt** | Vision §5.2 và US-02 cũ có hứa tính năng này; sẽ ghi rõ "planned increment" ở `SCRUM-51` và Vision `SCRUM-60` |
+| Không tách use case riêng cho phân quyền (010 US3) | Dùng | Phân quyền là quy tắc chung, đã thể hiện bằng generalization actor và `UC-100-03` |
+| Trang chi tiết công thức là `UC-020-06` do mình viết | Dùng | `SCRUM-51` giao mình dựng khung trang; bảng ở mục 4.11 để 4 bạn xác nhận khối của mình |
+| Guest là actor chính của chế độ nấu | Chờ Hưng xác nhận | Lấy theo `UC-050-01` của Hưng; spec 050 cần xác nhận có bắt đăng nhập không |
+
+### Cách sinh viên kiểm chứng
+
+- Parse cả 13 sơ đồ bằng `mermaid@11.17.2` chạy trên Node + jsdom: **13/13 hợp lệ** (`flowchart-v2`); một sơ đồ cố tình viết sai cú pháp thì parser báo lỗi, chứng tỏ bước kiểm tra có tác dụng.
+- Đối chiếu bằng script: 64 mã use case xuất hiện trong sơ đồ khớp đúng 64 dòng catalogue, không trùng mã, không có mã nào chỉ có ở một phía.
+- Đối chiếu bảng phủ ở mục 6.1: đủ 69 user story của 12 spec; 10 feature của Vision §5 đều có sơ đồ và ít nhất 4 use case; 3 feature bị thiếu trong US-01 – US-07 cũ (070, 080, 090) đã có.
+- Đối chiếu nguồn của `UC-060-07` với spec 060 (US1 kịch bản 4, FR-006, FR-007) và ma trận phân quyền spec 010 cho actor của từng use case.
+- Chưa xem render trên GitHub vì chưa push; Hiển review (`SCRUM-49`) sau khi mở PR. Việc tiếp theo: trình bản nháp ở Standup 1 (30/10), chốt 5 vấn đề mở ở mục 6.2, freeze 02/11.
