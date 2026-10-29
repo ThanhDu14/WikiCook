@@ -3,8 +3,10 @@ package com.wikicook.ai.config;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.wikicook.ai.embedding.EmbeddingClient;
+import com.wikicook.ai.embedding.GeminiEmbeddingClient;
 import com.wikicook.ai.embedding.MockEmbeddingClient;
 import com.wikicook.ai.embedding.OfflineEmbeddingClient;
+import com.wikicook.ai.llm.GeminiLlmClient;
 import com.wikicook.ai.llm.LlmClient;
 import com.wikicook.ai.llm.MockLlmClient;
 import com.wikicook.ai.llm.OfflineLlmClient;
@@ -79,12 +81,18 @@ class AiClientConfigTest {
     }
 
     @Test
-    void liveModeWithKeyFailsUntilGeminiClientsExist() {
-        runner.withPropertyValues("wikicook.ai.mode=live", "wikicook.ai.api-key=secret-123").run(context -> {
-            assertThat(context).hasFailed();
-            assertThat(context.getStartupFailure()).rootCause()
-                    .hasMessageContaining("not implemented")
-                    .hasMessageNotContaining("secret-123");
+    void liveModeWithKeyUsesGeminiClients() {
+        runner.withPropertyValues("wikicook.ai.mode=live", "wikicook.ai.api-key=secret-123",
+                "wikicook.ai.llm.model=gemini-test", "wikicook.ai.embedding.dimensions=256").run(context -> {
+            assertThat(context).hasNotFailed();
+            LlmClient llm = context.getBean(LlmClient.class);
+            EmbeddingClient embedding = context.getBean(EmbeddingClient.class);
+            assertThat(llm).isInstanceOf(GeminiLlmClient.class);
+            assertThat(embedding).isInstanceOf(GeminiEmbeddingClient.class);
+            assertThat(embedding.dimensions()).isEqualTo(256);
+            assertThat(embedding.model()).isEqualTo("gemini-embedding-001");
+            assertThat(llm.toString()).contains("gemini-test").doesNotContain("secret-123");
+            assertThat(embedding.toString()).doesNotContain("secret-123");
         });
     }
 
