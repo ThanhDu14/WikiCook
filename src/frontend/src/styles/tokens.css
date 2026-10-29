@@ -1,0 +1,114 @@
+/* Soft Editorial design tokens (light + cook themes), copied from
+   docs/analysis-and-design/ui-ux/css/wikicook-soft-editorial.css. Keep the two in sync. */
+
+:root {
+  --color-bg: #FBF6EC;
+  --color-surface: #FFFFFF;
+  --color-surface-alt: #F3ECDF;
+  --color-border: #E6DCCB;
+  --color-border-strong: #8E8170;
+  --color-ink: #2A2420;
+  --color-ink-muted: #6B5F55;
+  --color-primary: #556B2F;
+  --color-primary-strong: #43551F;
+  --color-primary-tint: #E6EDD6;
+  --color-on-primary: #FFFFFF;
+  --color-warm: #A84B2C;
+  --color-warm-strong: #8F3F24;
+  --color-warm-tint: #F9E8E0;
+  --color-on-warm: #FFFFFF;
+  --color-saffron: #8C6210;
+  --color-saffron-tint: #F7EBCF;
+  --color-success: #2E7559;
+  --color-success-tint: #DCEFE6;
+  --color-on-success: #FFFFFF;
+  --color-danger: #B42335;
+  --color-danger-tint: #F8DDE0;
+  --color-on-danger: #FFFFFF;
+  --status-draft-text: #5A5048;
+  --status-draft-tint: #EEE7DA;
+  --status-pending-text: #7A550D;
+  --status-pending-tint: #F7EBCF;
+  --status-published-text: #465925;
+  --status-published-tint: #E6EDD6;
+  --status-revision-text: #8F3F24;
+  --status-revision-tint: #F6E1D8;
+  --status-rejected-text: #9E1F2F;
+  --status-rejected-tint: #F8DDE0;
+  --status-archived-text: #6B5F55;
+  --status-archived-tint: #F1EDE6;
+  --font-display: "Fraunces",Georgia,serif;
+  --font-body: "Be Vietnam Pro",system-ui,sans-serif;
+  --text-display: 600 36px/44px var(--font-display);
+  --text-h1: 600 30px/38px var(--font-display);
+  --text-h2: 600 24px/32px var(--font-display);
+  --text-h3: 600 20px/28px var(--font-display);
+  --text-body: 400 16px/24px var(--font-body);
+  --text-body-strong: 600 16px/24px var(--font-body);
+  --text-small: 400 14px/20px var(--font-body);
+  --text-caption: 500 12px/16px var(--font-body);
+  --text-cook-step: 600 28px/38px var(--font-body);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+  --shadow-1: 0 1px 2px rgba(42,36,32,.06),0 2px 8px rgba(42,36,32,.06);
+  --shadow-2: 0 8px 24px rgba(42,36,32,.12);
+  --touch-sm: 44px;
+  --touch-md: 48px;
+  --touch-lg: 64px;
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --easing: cubic-bezier(0.2,0,0,1);
+  --content-max: 1200px;
+  --reading-max: 720px;
+  color-scheme: light;
+}
+
+.wk-desktop {
+  --text-display: 600 48px/56px var(--font-display);
+  --text-h1: 600 36px/44px var(--font-display);
+  --text-h2: 600 28px/36px var(--font-display);
+  --text-h3: 600 22px/30px var(--font-display);
+  --text-cook-step: 600 40px/52px var(--font-body);
+}
+
+[data-theme="cook-light"] {
+  --color-bg: #FFFDF8;
+  --color-surface: #F6F0E4;
+  --color-surface-alt: #F6F0E4;
+  --color-border: #8E8170;
+  --color-border-strong: #8E8170;
+  --color-ink: #1A1512;
+  --color-ink-muted: #4A4037;
+  --color-primary: #3F5022;
+  --color-primary-strong: #2F3C19;
+  --color-on-primary: #FFFFFF;
+  --color-danger: #B42335;
+  --color-danger-tint: #F8DDE0;
+}
+
+[data-theme="cook-hc"] {
+  --color-bg: #000000;
+  --color-surface: #141414;
+  --color-surface-alt: #141414;
+  --color-border: #8A8A8A;
+  --color-border-strong: #8A8A8A;
+  --color-ink: #FFFFFF;
+  --color-ink-muted: #D6D6D6;
+  --color-primary: #C9D99A;
+  --color-primary-strong: #DCE8B8;
+  --color-on-primary: #000000;
+  --color-danger: #FF9AA5;
+  --color-danger-tint: #3D1F23;
+  color-scheme: dark;
+}
