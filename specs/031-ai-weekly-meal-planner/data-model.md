@@ -64,7 +64,7 @@ Dọn dòng `MEAL_PLANNER` cũ hơn 90 ngày (job hằng ngày, chung với R10)
 | `GenerationOptions` | `weekStart`, `selectableDays[]`, `emptySlots[]`, `defaults` (`GenerationConstraints`), `profileIncomplete`, `remaining`, `nextAvailableAt`, `aiAvailableToday` | research R12 |
 | `ConfirmRequest` | `requestId`, `items[]` (`day`, `meal`, `recipeId`, `servings|null`, `source` ∈ MANUAL/AI/AUTO) | FR-018 |
 | `ConfirmResult` | `saved`, `skippedOccupied`, `skippedUnavailable` | FR-019 |
-| `SuggestionDto` | `recipeId`, `title`, `coverImageUrl`, `totalTimeMinutes`, `cuisineName`, `reason` | FR-035 |
+| `SuggestionDto` | `recipeId`, `title`, `coverImageUrl`, `totalTimeMinutes`, `cuisineName`, `reason`, `sharedIngredientName` (hoặc null), `sharedWithDay` (hoặc null) | FR-035, research R15 |
 
 **Draft ở client** (`useAiDraft`, research R13): `{ requestId, weekStart, mode, notice, items,
 chooseSlots, constraints }` – chỉ nằm trong state của trang.

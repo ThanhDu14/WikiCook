@@ -91,4 +91,4 @@ trừ, kiểu ăn theo `ingredients.kind`) – research R4. 031 dùng để **lo
 | `<AiGenerateDialog weekStart onDraft>` | Dialog ràng buộc + trạng thái đang tạo + nút hủy |
 | `useAiDraft` | Giữ draft, đổi chỗ/thay/xóa trong draft, chặn rời trang |
 | `<DraftBar>` | Disclaimer, notice AUTO / hết lượt ngày, số ô "Chọn món", nút Xác nhận / Tạo lại / Bỏ |
-| `<SlotSuggestions weekStart day meal exclude>` | Danh sách "Gợi ý cho bạn", ẩn khi lỗi hoặc quá 3 s |
+| `<SlotSuggestions weekStart day meal exclude>` | Danh sách "Gợi ý cho bạn", ẩn khi lỗi, quá 3 s hoặc ô tìm kiếm của picker có từ khóa (FR-037) |

@@ -343,10 +343,22 @@ components:
         coverImageUrl: { type: string, nullable: true }
         totalTimeMinutes: { type: integer, nullable: true }
         cuisineName: { type: string, nullable: true }
-        reason: { type: string, example: 'Món sáng · Việt Nam · 20 phút' }
+        reason: { type: string, example: 'Món sáng · Việt Nam · 20 phút · dùng chung thịt bò với Thứ Hai' }
+        sharedIngredientName:
+          type: string
+          nullable: true
+          description: Một nguyên liệu chính dùng chung với món khác trong tuần (FR-035, research R15)
+          example: thịt bò
+        sharedWithDay:
+          allOf: [{ $ref: '#/components/schemas/Day' }]
+          nullable: true
+          description: Ngày của món dùng chung nguyên liệu, gần ô nhất; null khi sharedIngredientName null
 
     SuggestionList:
       type: object
+      description: |
+        Đã xếp theo ngữ cảnh tuần (research R15): ẩm thực ưa thích trước; món gần giống món đã có
+        trong tuần xếp sau; không có hai món gần trùng nhau.
       required: [items]
       properties:
         items:
