@@ -108,7 +108,7 @@ src/backend/
     │       ├── controller/ AiPlannerController, AiPlannerExceptionHandler
     │       ├── service/    GenerationService (điều phối 5 bước), GenerationOptionsService,
     │       │               CandidateService, PromptBuilder, DraftValidator, BackupPlanner,
-    │       │               ConfirmService, SuggestionService, InFlightGenerations
+    │       │               ConfirmService, SuggestionService, SlotReranker, InFlightGenerations
     │       ├── embedding/  RecipeEmbeddingSync, EmbeddingReconcileJob, EmbeddingTextBuilder
     │       ├── repository/ RecipeEmbeddingRepository, EligibleRecipeQuery, CandidateQuery
     │       ├── domain/     RecipeEmbedding

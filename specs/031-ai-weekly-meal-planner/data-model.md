@@ -58,7 +58,7 @@ Dọn dòng `MEAL_PLANNER` cũ hơn 90 ngày (job hằng ngày, chung với R10)
 | `GenerationConstraints` | `allergenIds[]`, `excludedIngredientIds[]`, `dietType`, `servings` (1–20 hoặc `null` = "Theo công thức"), `maxCookTimeMinutes` (`null` hoặc ≥ 10), `preferredCuisineIds[]` | Lưu nguyên vào `ai_requests.constraints` |
 | `GenerateRequest` | `requestId` (UUID), `days[]` (Day, 1–7 phần tử, không trùng, không ở quá khứ), `meals[]` (Meal, 1–3 phần tử), `constraints` | FR-003, FR-005 |
 | `SlotKey` | `day`, `meal` | Dùng lại từ 030 |
-| `Candidate` | `recipeId`, `title`, `meals`, `totalTimeMinutes`, `cuisineId`, `categoryId`, `mainIngredientIds[]`, `rank` | Chỉ tồn tại trong một lượt tạo |
+| `Candidate` | `recipeId`, `title`, `meals`, `totalTimeMinutes`, `cuisineId`, `categoryId`, `mainIngredientIds[]`, `rank`, `embedding` (`float[]` 768 chiều đã chuẩn hóa, hoặc null khi chưa có) | Chỉ tồn tại trong một lượt tạo hoặc một lần gợi ý; `SlotReranker` (research R15) dùng `embedding` của candidate và của món trong tuần |
 | `DraftItemDto` | `day`, `meal`, `recipeId`, `recipeName`, `coverImageUrl`, `totalTimeMinutes`, `servings` (hoặc null), `source` (`AI`/`AUTO`), `dietType` | Định dạng ô như 030 `PlanItem` (proposal 4.6) |
 | `DraftResponse` | `requestId`, `weekStart`, `mode` (`AI`/`AUTO`), `notice` (`null` / `AUTO_NO_AI` / `AI_DAILY_CAP`), `items[]`, `chooseSlots[]`, `removedPicks`, `remaining`, `nextAvailableAt` | FR-015, FR-016, FR-025 |
 | `GenerationOptions` | `weekStart`, `selectableDays[]`, `emptySlots[]`, `defaults` (`GenerationConstraints`), `profileIncomplete`, `remaining`, `nextAvailableAt`, `aiAvailableToday` | research R12 |

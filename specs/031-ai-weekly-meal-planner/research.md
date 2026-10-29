@@ -1,6 +1,6 @@
 # Research: AI Weekly Meal Planner – 031
 
-**Feature**: [spec.md](spec.md) | **Plan**: [plan.md](plan.md) | **Ngày**: 2026-10-18
+**Feature**: [spec.md](spec.md) | **Plan**: [plan.md](plan.md) | **Ngày**: 2026-10-18 (cập nhật 2026-10-29: R3, R15, R17)
 
 Mỗi mục ghi theo dạng **Decision / Rationale / Alternatives considered**. Bố cục mã nguồn
 (`src/backend` – `com.wikicook`, `src/frontend`) đã chốt ngày 2026-10-18, dùng chung với spec 030.
@@ -51,11 +51,11 @@ Không còn mục NEEDS CLARIFICATION; những điểm phụ thuộc người kh
   `recipe_embeddings.embedding VECTOR(768)`), task type `RETRIEVAL_DOCUMENT` cho công thức và
   `RETRIEVAL_QUERY` cho câu truy vấn. Tên model + số chiều nằm trong cấu hình; đổi model → job
   đối soát (R10) tạo lại vì cột `model` khác.
-- **Rationale**: Đa ngôn ngữ (có tiếng Việt), free tier, cùng provider và cùng API key với LLM;
-  hỗ trợ giảm số chiều nên giữ được schema 768.
-- **Lưu ý**: chỉ vector đủ 3072 chiều của `gemini-embedding-001` được chuẩn hóa sẵn. Khi dùng
+  Chỉ vector đủ 3072 chiều của `gemini-embedding-001` được chuẩn hóa sẵn. Khi dùng
   `outputDimensionality = 768`, client phải chuẩn hóa L2 trước khi lưu và trước khi so, để `<=>`
   (cosine) và tích vô hướng trong `SlotReranker` (R15) cho cùng thứ hạng.
+- **Rationale**: Đa ngôn ngữ (có tiếng Việt), free tier, cùng provider và cùng API key với LLM;
+  hỗ trợ giảm số chiều nên giữ được schema 768.
 - **Alternatives considered**: `text-embedding-004` – 768 chiều nhưng yếu với tiếng Việt;
   OpenAI `text-embedding-3-small` – 1536 chiều, trả phí; mô hình chạy local (multilingual-e5) –
   cần thêm một service Python trong Docker Compose. **Cần nhóm xác nhận** (full-schema câu hỏi 7).
@@ -306,7 +306,9 @@ món chưa ưng ý ngay trong picker.
   - Tham số nằm trong `wikicook.ai.suggestions.*`: `pool-size` 30, `near-duplicate-threshold` 0.85,
     `mmr-lambda` 0.7, `weights.redundancy` 0.3, `weights.same-kind` 0.1, `weights.reuse` 0.05.
     Embedding của công thức cùng lĩnh vực thường có cosine khá cao với nhau, nên `θ` và trọng số
-    phải hiệu chỉnh trên seed thật ở T097 (xem cặp "Phở bò" / "Bún bò Huế").
+    phải hiệu chỉnh trên seed thật ở T097. Tiêu chí đạt: cặp "Phở bò" / "Bún bò Huế" có cosine
+    ≥ `θ`, và với profile thích món Việt, ô bữa sáng vẫn còn ít nhất 5 món sáng Việt khác kiểu có
+    cosine < `θ` với nhau (để `θ` không loại quá nhiều món).
   - Timeout phía server 2,5 s: `EmbeddingClient` lỗi hoặc quá hạn → `503 SUGGESTIONS_UNAVAILABLE`.
     Frontend có timeout 3 s → ẩn danh sách, không báo lỗi (FR-037).
   - Khi người dùng gõ từ khóa trong picker, frontend ẩn danh sách gợi ý và không gọi endpoint; kết
@@ -356,7 +358,11 @@ món chưa ưng ý ngay trong picker.
 - **Decision**:
   - `FakeLlmClient` (bean test) điều khiển theo kịch bản: trả JSON hợp lệ, id không tồn tại, id
     ARCHIVED, id chứa dị ứng, thiếu ô, JSON hỏng, ngủ quá 60 s, ném lỗi, kiểm tra cờ hủy.
-  - `FakeEmbeddingClient`: vector tất định từ hash của văn bản, để test retrieval ổn định.
+  - `FakeEmbeddingClient`: vector tất định từ hash của văn bản, để test retrieval ổn định. Vector
+    hash không mang nghĩa, nên độ giống giữa hai món là ngẫu nhiên. Test nào assert thứ hạng theo
+    độ giống (US7-8, R15) phải dùng **vector cố định**: `FakeEmbeddingClient.withVectors(Map<văn
+    bản, float[]>)` cho câu truy vấn, và seed thẳng `recipe_embeddings` bằng vector viết tay
+    (`RecipeEmbeddingFixtures`, vd. "Phở bò" và "Bún bò Huế" cosine 0.95, các món sáng khác < 0.5).
   - Testcontainers `pgvector/pgvector:pg16` (dùng lại `AbstractPostgresIT` của 030).
   - SC-002a: `wikicook.ai.mode=offline`, đo thời gian generate → assert ≤ 2 s và 0 vi phạm.
   - Frontend: Vitest + RTL + msw (giống 030).

@@ -322,7 +322,8 @@ core feature.
 **Independent Test**: With a profile allergic to shrimp and preferring Vietnamese food, open the
 picker from Tuesday breakfast of a week that already has "Phở bò" on Monday breakfast; confirm
 "Suggested for you" shows up to 5 breakfast recipes within 3 seconds, none containing shrimp, not
-"Phở bò", mostly Vietnamese, and that opening the picker 10 times does not use any generation.
+"Phở bò", Vietnamese dishes listed before any other cuisine, and that opening the picker 10 times
+does not use any generation.
 
 **Acceptance Scenarios**:
 

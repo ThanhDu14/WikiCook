@@ -54,7 +54,7 @@ Kỳ vọng: mọi test xanh; JaCoCo ≥ 70% cho `com.wikicook.aiplanner.service
 | A16 | Tạo thành công 5 lần trong 1 giờ | Lần 6: nút tắt, hiện giờ có lượt mới; API trả 429 | US5-2, SC-007 |
 | A17 | Đặt `daily-cap.total=0` → tạo | Bản nháp tự động với "AI đã hết lượt hôm nay"; lượt không giảm | FR-025a |
 | A18 | Mở picker từ thứ Ba sáng khi thứ Hai sáng đã có "Phở bò" (profile dị ứng tôm) | ≤ 3 s hiện tối đa 5 món sáng, không tôm, không "Phở bò", có lý do ngắn; mở 10 lần không tốn lượt | US7-1/2/3/5, SC-008 |
-| A18a | Như A18, profile thích món Việt, có công thức sáng "Bún bò Huế" | "Bún bò Huế" xếp sau các món sáng Việt khác kiểu; không có hai gợi ý gần trùng nhau; món dùng chung nguyên liệu có lý do "· dùng chung … với Thứ Hai" | US7-3/8, FR-034, FR-035 |
+| A18a | Như A18, profile thích món Việt, có công thức sáng "Bún bò Huế". **Cần embedding có nghĩa**: `WIKICOOK_AI_MODE=live` (làm ở T097), hoặc seed `recipe_embeddings` bằng vector cố định như T085; ở `mock` vector là hash nên không kiểm được | "Bún bò Huế" xếp sau các món sáng Việt khác kiểu; không có hai gợi ý gần trùng nhau; món dùng chung nguyên liệu có lý do "· dùng chung … với Thứ Hai" | US7-3/8, FR-034, FR-035 |
 | A18b | Mở picker có gợi ý → gõ "gà" → xóa từ khóa | Khi có từ khóa: danh sách gợi ý ẩn, kết quả tìm kiếm theo thứ tự của 030; xóa từ khóa: gợi ý hiện lại | US7-9, FR-037 |
 | A19 | Chọn một gợi ý | Món được thêm với nhãn "AI" | US7-4, FR-038 |
 | A20 | Tắt dịch vụ embedding (mock lỗi) → mở picker | Không có "Gợi ý cho bạn", không báo lỗi, kết quả tìm kiếm vẫn dùng được | US7-7, FR-037 |
