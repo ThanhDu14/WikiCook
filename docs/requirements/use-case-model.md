@@ -645,3 +645,126 @@ flowchart LR
 When a Guest presses a Member-only button, the page asks them to sign in (screen `AU08-SignInPrompt`) and returns to the same recipe afterwards; this alternative flow belongs to `UC-020-06`.
 
 ---
+
+## 5. USE-CASE CATALOGUE & TRACEABILITY
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+This table is the official list of use-case IDs. Every row must have a specification in `use-case-specification.md` written by the owner in the last column; every specification there must use an ID from this table.
+
+| UC ID | Use Case Name | Primary Actor | Vision §5 | Spec · User Story | UC Spec Owner (Jira) |
+| :--- | :--- | :--- | :---: | :--- | :--- |
+| `UC-010-01` | Register Account & Verify Email | Guest | 5.1 | `010` US2 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-010-02` | Sign In with Email & Password | Guest | 5.1 | `010` US1 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-010-03` | Reset Forgotten Password | Guest | 5.1 | `010` US4 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-010-04` | Sign In with Google | Guest | 5.1 | `010` US5 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-011-01` | Set Up Dietary Profile | Member | 5.1 | `011` US1 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-011-02` | Edit Public Profile & Avatar | Member | 5.1 | `011` US2 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-011-03` | Change or Set Password | Member | 5.1 | `011` US3 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-011-04` | Delete Account | Member | 5.1 | `011` US4 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-011-05` | Apply Dietary Hard Rules *(included)* | — | 5.1 | `011` US5 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-020-01` | Search Recipes by Keyword | Guest | 5.2 | `020` US1 | Nguyễn Đức Duy (`SCRUM-51`) |
+| `UC-020-02` | Filter Search Results | Guest | 5.2 | `020` US2; `090` US6 | Nguyễn Đức Duy (`SCRUM-51`) |
+| `UC-020-03` | Hide Recipes Conflicting with Dietary Profile | Member | 5.2 | `020` US3 | Nguyễn Đức Duy (`SCRUM-51`) |
+| `UC-020-04` | Sort, Paginate & Share Results | Guest | 5.2 | `020` US4 | Nguyễn Đức Duy (`SCRUM-51`) |
+| `UC-020-05` | Find Recipes by Pantry Ingredients | Guest | 5.2 | Vision §5.2 only *(see 6.2, issue 1)* | Nguyễn Đức Duy (`SCRUM-51`) |
+| `UC-020-06` | View Recipe Details | Guest | 5.2 | Shared page (`SCRUM-51`); `030` US2, `040` T048 | Nguyễn Đức Duy (`SCRUM-51`) |
+| `UC-030-01` | Fill Meal Plan Slots | Member | 5.3 | `030` US1, US6, US7; `090` US6 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-030-02` | Add Recipe to Plan from Detail Page | Member | 5.3 | `030` US2 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-030-03` | Rearrange, Replace & Remove Planned Dishes | Member | 5.3 | `030` US3 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-030-04` | Navigate Weeks & Start an Empty Week | Member | 5.3 | `030` US4 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-030-05` | Send Week to Shopping List | Member | 5.3 | `030` US5 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-031-01` | Generate AI Weekly Meal Plan | Member | 5.3 | `031` US1, US4, US5 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-031-02` | Review, Adjust & Confirm AI Draft | Member | 5.3 | `031` US2 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-031-03` | Validate AI Recipe Picks *(included)* | — | 5.3 | `031` US3 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-031-04` | Generate Backup Draft without AI | Member | 5.3 | `031` US6 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-031-05` | Suggest Recipes for One Slot | Member | 5.3 | `031` US7 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-031-06` | Sync Recipe Embeddings *(included / extending)* | — | 5.3 | `031` US8 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-040-01` | Manage Active Shopping List & Custom Items | Member | 5.4 | `040` US1 | Lê Quốc Hưng (`SCRUM-53`) |
+| `UC-040-02` | Import Ingredients from Recipe or Meal Plan with Scaling & Unit Conversion | Member | 5.4 | `040` US2 | Lê Quốc Hưng (`SCRUM-53`) |
+| `UC-040-03` | In-Store Supermarket Checklist & Aisle Organization | Member | 5.4 | `040` US3 | Lê Quốc Hưng (`SCRUM-53`) |
+| `UC-040-04` | Offline Shopping Mode & Background Synchronization | Member | 5.4 | `040` US4 | Lê Quốc Hưng (`SCRUM-53`) |
+| `UC-040-05` | Export, Plaintext Copy & Print Shopping List | Member | 5.4 | `040` US5 | Lê Quốc Hưng (`SCRUM-53`) |
+| `UC-050-01` | Launch Full-Screen Cooking Mode & Keep Display Awake | Guest | 5.5 | `050` US1 | Lê Quốc Hưng (`SCRUM-53`) |
+| `UC-050-02` | Step-by-Step Cooking Navigation & Ingredient View | Guest | 5.5 | `050` US2 | Lê Quốc Hưng (`SCRUM-53`) |
+| `UC-050-03` | Manage Concurrent Kitchen Timers & Alarms | Guest | 5.5 | `050` US3 | Lê Quốc Hưng (`SCRUM-53`) |
+| `UC-050-04` | Hands-Free Voice-Assisted Cooking Navigation | Guest | 5.5 | `050` US4 | Lê Quốc Hưng (`SCRUM-53`) |
+| `UC-050-05` | Session Recovery & Interruption Protection | Guest | 5.5 | `050` US5 | Lê Quốc Hưng (`SCRUM-53`) |
+| `UC-060-01` | Create Recipe with Wizard & Submit for Review | Member | 5.6 | `060` US1 | Nguyễn Đức Duy (`SCRUM-51`) |
+| `UC-060-02` | Save & Resume Draft | Member | 5.6 | `060` US2 | Nguyễn Đức Duy (`SCRUM-51`) |
+| `UC-060-03` | Revise Recipe after Moderator Decision | Member | 5.6 | `060` US3 | Nguyễn Đức Duy (`SCRUM-51`) |
+| `UC-060-04` | Manage My Recipes | Member | 5.6 | `060` US4 | Nguyễn Đức Duy (`SCRUM-51`) |
+| `UC-060-05` | Edit Published Recipe | Member | 5.6 | `060` US5 | Nguyễn Đức Duy (`SCRUM-51`) |
+| `UC-060-06` | Archive, Restore or Delete Recipe | Member | 5.6 | `060` US6 | Nguyễn Đức Duy (`SCRUM-51`) |
+| `UC-060-07` | Propose New Ingredient | Member | 5.6 | `060` US1 scenario 4, FR-006, FR-007, clarification Q3 | Nguyễn Đức Duy (`SCRUM-51`) |
+| `UC-070-01` | Rate & Review Recipe | Member | 5.7 | `070` US1 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-070-02` | Upload Cooksnap Photos | Member | 5.7 | `070` US2 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-070-03` | Edit or Delete Own Review | Member | 5.7 | `070` US3 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-070-04` | Browse, Sort & Filter Reviews | Guest | 5.7 | `070` US4 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-070-05` | Report Review or Cooksnap | Member | 5.7 | `070` US5 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-070-06` | Respond to Post-Cooking Review Prompt | Member | 5.7 | `070` US6 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-080-01` | Save Recipe with One Tap | Member | 5.8 | `080` US1 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-080-02` | Add Recipe to Collections | Member | 5.8 | `080` US2 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-080-03` | Create, Rename & Delete Collection | Member | 5.8 | `080` US3 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-080-04` | Browse Saved Recipes & Collections | Member | 5.8 | `080` US4, US5 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-090-01` | View Nutrition per Serving | Guest | 5.9 | `090` US1 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-090-02` | Estimate Nutrition on Publication or Change *(included)* | — | 5.9 | `090` US2, US5 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-090-03` | Validate AI Nutrition Estimate *(included)* | — | 5.9 | `090` US3 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-090-04` | View Allergen Warnings & AI Diet Labels | Guest | 5.9 | `090` US4 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-090-05` | Review, Recalculate & Hide Estimates | Administrator | 5.9 | `090` US7 | Nguyễn Thành Dự (`SCRUM-52`) |
+| `UC-100-01` | Moderate Recipe Submission | Moderator | 5.10 | `100` US1 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-100-02` | Process Content Reports | Moderator | 5.10 | `100` US2 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-100-03` | Manage User Accounts & Roles | Administrator | 5.10 | `100` US3; `010` US3 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-100-04` | Manage Categories & Taxonomies | Administrator | 5.10 | `100` US4 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-100-05` | Curate Featured Recipes | Administrator | 5.10 | `100` US5 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-100-06` | View Dashboard & Audit Trail | Administrator | 5.10 | `100` US6 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+
+**Totals:** 64 use cases — Mai Văn Hiển 13, Nguyễn Đức Duy 13, Nguyễn Thành Dự 16, Lê Quốc Hưng 10, Trần Nguyễn Công Chung 12. Use cases marked *(included)* have no primary actor because they only run inside another use case; their specification can be written at the Brief level and linked from the base use case.
+
+---
+
+## 6. COVERAGE CHECK & OPEN ISSUES
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+### 6.1. Coverage
+
+**Vision features.** All ten features of Vision §5 have a diagram in Section 4 (5.1 → 4.1, …, 5.10 → 4.10) and at least four use cases in Section 5.
+
+**Specification user stories.** Every user story of the twelve specifications maps to a use case; user stories that describe a system rule or an exception rather than a separate user goal are covered as an included use case, an alternative flow or the actor generalization:
+
+| Spec | User stories | Covered by |
+| :---: | :---: | :--- |
+| `010` | 5 | `UC-010-01` – `04`; US3 (role-based access) by Section 2.2 and `UC-100-03` |
+| `011` | 5 | `UC-011-01` – `05` |
+| `020` | 4 | `UC-020-01` – `04` |
+| `030` | 7 | `UC-030-01` – `05`; US6 (unavailable recipes) and US7 (phone, lost connection) as alternative flows of `UC-030-01` |
+| `031` | 8 | `UC-031-01` – `06`; US4 (not enough recipes) and US5 (fair-use limit) as alternative flows of `UC-031-01` |
+| `040` | 5 | `UC-040-01` – `05` |
+| `050` | 5 | `UC-050-01` – `05` |
+| `060` | 6 | `UC-060-01` – `07` |
+| `070` | 6 | `UC-070-01` – `06` |
+| `080` | 5 | `UC-080-01` – `04`; US5 (recipes no longer available) as an alternative flow of `UC-080-04` |
+| `090` | 7 | `UC-090-01` – `05`; US6 (calories for search and planner) inside `UC-020-02` and `UC-030-01` |
+| `100` | 6 | `UC-100-01` – `06` |
+
+**Old internal user stories.** The Sprint 3 plan in `project-plan.md` listed only US-01 – US-07. The model keeps all of them and adds the three features they did not cover:
+
+| Old user story | Use cases |
+| :--- | :--- |
+| US-01 Register, sign in, set up dietary profile | `UC-010-01` – `04`, `UC-011-01` |
+| US-02 Find recipes by ingredients at hand | `UC-020-01` – `05` |
+| US-03 AI weekly meal plan | `UC-031-01` – `06` (manual planner `UC-030-01` – `05` as fallback) |
+| US-04 Shopping list with merged ingredients | `UC-040-01` – `05` |
+| US-05 Publish a recipe | `UC-060-01` – `07` |
+| US-06 Hands-free cooking mode | `UC-050-01` – `05` |
+| US-07 Moderate recipes and manage categories | `UC-100-01` – `06` |
+| *(not covered before)* Reviews & Cooksnaps, Collections, Nutrition | `UC-070-01` – `06`, `UC-080-01` – `04`, `UC-090-01` – `05` |
+
+### 6.2. Open Issues (to resolve before the freeze on 02/11/2026)
+
+| # | Issue | Proposal | Owner |
+| :---: | :--- | :--- | :--- |
+| 1 | Vision §5.2 promises pantry matching ("find recipes by the ingredients in my fridge", old US-02), but spec `020` lists it as out of scope, so `UC-020-05` has no functional requirements yet. | Keep `UC-020-05` in the model and write it at the Brief level, marked as a planned increment; state the same in Vision §5.2 during `SCRUM-60`. | Nguyễn Đức Duy (PO) |
+| 2 | Vision §5.11 refers to a specification `101-admin-analytics` that does not exist; analytics and the audit trail are `100` US6. | Map 5.10 to `100` only (`UC-100-06`) and correct §5.11 in `SCRUM-60`. | Nguyễn Đức Duy |
+| 3 | `UC-020-06` View Recipe Details has no user story in `020` (detail content is out of scope there), although `SCRUM-51` assigns the page frame to Duy. | Specify it in `SCRUM-51` from the blocks agreed in Section 4.11; each block owner confirms their row of the table. | Nguyễn Đức Duy, all owners |
+| 4 | `UC-050-01` uses Guest as primary actor (as in `SCRUM-53`); spec `050` should confirm that cooking mode needs no account. | Hưng confirms; if sign-in is required, change the association to Member. | Lê Quốc Hưng |
+| 5 | Included use cases (`UC-011-05`, `UC-031-03`, `UC-031-06`, `UC-090-02`, `UC-090-03`) have no human primary actor. | Write them at the Brief level with "Trigger" instead of "Primary Actor"; the reviewer of each owner checks consistency. | Hiển, Dự |
