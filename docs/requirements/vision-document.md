@@ -384,15 +384,15 @@ flowchart TD
     class D1,D2,D3,D4 decision
 ```
 
-| Step | Actor | Description | Feature |
-| :---: | :--- | :--- | :---: |
-| 1–2 | Member | Confirms or adjusts the constraints pre-filled from the dietary profile; invalid input (no day selected, servings out of range) is rejected before any AI call. | 5.1, 5.3 |
-| 3–4 | AI services | The constraints are embedded and used to retrieve semantically similar published recipes from the `pgvector` index (RAG), so the LLM only ever sees real WikiCook recipes. | 5.3 |
-| 5–6 | System | Allergens, excluded ingredients and over-time recipes are removed as hard rules; if too few candidates remain, the user is asked to relax constraints instead of receiving a repetitive or unsafe plan. | 5.3 |
-| 7 | AI services | The LLM arranges the candidates into a draft for the selected days and meals, aiming for variety and ingredient reuse; on timeout or malformed output the call is retried once, then the manual planner is offered. | 5.3 |
-| 8–9 | System | Every pick is checked against the database; invalid picks are never shown and their slots are flagged for manual selection. | 5.3 |
-| 10 | Member | Swaps, moves or removes dishes with the normal planner tools, regenerates, or confirms the draft. | 5.3 |
-| 11–13 | System | The confirmed plan is saved and its ingredients are scaled, merged and grouped by supermarket aisle into the Smart Shopping List. | 5.4 |
+| Step | Actor | Description | Feature | Use Case(s) |
+| :---: | :--- | :--- | :---: | :--- |
+| 1–2 | Member | Confirms or adjusts the constraints pre-filled from the dietary profile; invalid input (no day selected, servings out of range) is rejected before any AI call. | 5.1, 5.3 | `UC-031-01` |
+| 3–4 | AI services | The constraints are embedded and used to retrieve semantically similar published recipes from the `pgvector` index (RAG), so the LLM only ever sees real WikiCook recipes. | 5.3 | `UC-031-01`, `UC-031-06` |
+| 5–6 | System | Allergens, excluded ingredients and over-time recipes are removed as hard rules; if too few candidates remain, the user is asked to relax constraints instead of receiving a repetitive or unsafe plan. | 5.3 | `UC-011-05` (included by `UC-031-01`) |
+| 7 | AI services | The LLM arranges the candidates into a draft for the selected days and meals, aiming for variety and ingredient reuse; on timeout or malformed output the call is retried once, then the manual planner is offered. | 5.3 | `UC-031-01`; fallback `UC-031-04`, `UC-030-01` |
+| 8–9 | System | Every pick is checked against the database; invalid picks are never shown and their slots are flagged for manual selection. | 5.3 | `UC-031-03` |
+| 10 | Member | Swaps, moves or removes dishes with the normal planner tools, regenerates, or confirms the draft. | 5.3 | `UC-031-02` |
+| 11–13 | System | The confirmed plan is saved and its ingredients are scaled, merged and grouped by supermarket aisle into the Smart Shopping List. | 5.4 | `UC-030-05`, `UC-040-02`, `UC-040-03` |
 
 ### 6.2. Workflow 2 — Pantry Search & Hands-free Cooking
 
@@ -435,14 +435,16 @@ flowchart TD
     class D1,D2,D3,D4 decision
 ```
 
-| Step | Actor | Description | Feature |
-| :---: | :--- | :--- | :---: |
-| 1–3 | Cook | Picks the ingredients at hand; WikiCook ranks published recipes by coverage and, for signed-in users, hides recipes that conflict with the dietary profile. If nothing fits, the cook adds ingredients or loosens filters. | 5.1, 5.2 |
-| 4 | Cook | Reviews the recipe, including any missing ingredients, total time, estimated nutrition and allergen badges. | 5.2, 5.9 |
-| 5–6 | System, Cook | Cooking Mode opens full screen and keeps the display awake; the cook advances with large buttons, the keyboard or a voice command, without precise touch. | 5.5 |
-| 7–8 | System | A step with a duration offers a timer; timers keep running in the background while the cook moves on, and each one raises an audible and visual alarm when it ends. | 5.5 |
-| 9–10 | Cook | The loop repeats until the last step is completed and the session ends. | 5.5 |
-| 11–13 | Cook, System | The cook optionally posts a Cooksnap with a rating and tip (sign-in required); it appears on the recipe, and other users can report it to moderators. | 5.7, 5.10 |
+| Step | Actor | Description | Feature | Use Case(s) |
+| :---: | :--- | :--- | :---: | :--- |
+| 1–3 | Cook | Picks the ingredients at hand; WikiCook ranks published recipes by coverage and, for signed-in users, hides recipes that conflict with the dietary profile. If nothing fits, the cook adds ingredients or loosens filters. | 5.1, 5.2 | `UC-020-05` *(planned increment)*, `UC-020-03`; in the current release `UC-020-01`, `UC-020-02` |
+| 4 | Cook | Reviews the recipe, including any missing ingredients, total time, estimated nutrition and allergen badges. | 5.2, 5.9 | `UC-020-06`, `UC-090-01`, `UC-090-04` |
+| 5–6 | System, Cook | Cooking Mode opens full screen and keeps the display awake; the cook advances with large buttons, the keyboard or a voice command, without precise touch. | 5.5 | `UC-050-01`, `UC-050-02`, `UC-050-04` |
+| 7–8 | System | A step with a duration offers a timer; timers keep running in the background while the cook moves on, and each one raises an audible and visual alarm when it ends. | 5.5 | `UC-050-03` |
+| 9–10 | Cook | The loop repeats until the last step is completed and the session ends. | 5.5 | `UC-050-02`, `UC-050-05` |
+| 11–13 | Cook, System | The cook optionally posts a Cooksnap with a rating and tip (sign-in required); it appears on the recipe, and other users can report it to moderators. | 5.7, 5.10 | `UC-070-06`, `UC-070-01`, `UC-070-02`, `UC-070-05`, `UC-100-02` |
+
+*Note (Second Edition):* steps 1–3 describe pantry matching, which is a planned increment (Section 5.2). Until it is specified, the same journey starts with a keyword search and filters (`UC-020-01`, `UC-020-02`), and the rest of the workflow is unchanged.
 
 ---
 
