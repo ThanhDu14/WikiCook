@@ -4,7 +4,7 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Sprint Cycle:** Sprint 03 (Project Assignment 3 — Detailed Design, Use-Case Specifications & Spec Kit Implementation)  
 **Sprint Duration:** October 28, 2026 – November 05, 2026 *(Early Submission Target: November 05, 2026; Official Moodle Deadline: November 08, 2026, 00:00)*  
-**Document Version:** 1.0 (Sprint 03 Kickoff & Planning Baseline — 22 Jira Tasks Initialized on Active Board, SCRUM-46 Completed)
+**Document Version:** 1.1 (Mid-Sprint Progress Baseline — Oct 29, 2026, Post-Skeleton & Use-Case Model Integration)
 
 ---
 
@@ -25,6 +25,7 @@
 | Date | Version | Description | Author |
 | :---: | :---: | :--- | :--- |
 | **28/10/2026** | `v1.0` | Initialized Sprint 03 Report, established master 22-task Jira Backlog table (`SCRUM-46` to `SCRUM-67`), and documented Meeting 1 (Sprint 03 Planning) minutes ratifying 5 core decisions (`SCRUM-46`). | Lê Quốc Hưng (`LqHung06`) |
+| **29/10/2026** | `v1.1` | Mid-Sprint Progress Update: Recorded completion of `SCRUM-48` (Backend Skeleton), drafts in review for `SCRUM-49` (Mermaid Model), `SCRUM-51` (UC 020/060), `SCRUM-53` (UC 040/050), and verification of Constitution Gate I. | Lê Quốc Hưng (`LqHung06`) |
 
 ---
 
@@ -51,29 +52,29 @@ The 90-point rubric comprises six rigorous evaluation streams:
 ### 1.2. Master Jira Backlog Table (22 Tasks — `SCRUM-46` to `SCRUM-67`)
 During the Sprint 03 Planning ceremony on **October 28, 2026 (22:00)**, the team refined the initial 20-item scope into **22 individually tracked tasks** on Jira Software Cloud (`SCRUM-46` through `SCRUM-67`). Decoupling frontend skeleton (`SCRUM-66`) from backend skeleton (`SCRUM-48`), and draft plan review (`SCRUM-59`) from final sign-off (`SCRUM-67`), guarantees explicit non-blocking progression:
 
-| No. | Jira Key | Task Summary | Assignee | Peer Reviewer | Start Date | Due Date | Status (Oct 28) | Target Deliverable / Path |
+| No. | Jira Key | Task Summary | Assignee | Peer Reviewer | Start Date | Due Date | Current Status (Oct 29) | Target Deliverable / Path |
 | :---: | :---: | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
 | 1 | **`SCRUM-46`** | `[Ceremony]` Organize Sprint 3 Planning & Establish Jira Backlog PA3 | **Lê Quốc Hưng** (`@LqHung06`) | Nguyễn Đức Duy (`@DucDuyNguyen15-IT`) | 28/10/2026 | **28/10/2026** | **DONE** | `docs/management/reports/sprint-03/sprint-03-report.md` (Sec 1 & 2.1) |
-| 2 | **`SCRUM-47`** | `[Requirements]` Collect & Consolidate TA Feedback for PA2 | **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | Lê Quốc Hưng (`@LqHung06`) | 28/10/2026 | **29/10/2026** | **TO DO** | `sprint-03-report.md` (Feedback Sec), `Changes.md` |
-| 3 | **`SCRUM-48`** | `[DevOps]` Skeleton Backend Part E (Spring Boot 3, PostgreSQL, Flyway) | **Nguyễn Thành Dự** (`@ThanhDu14`) | Mai Văn Hiển (`@MaiHien3507`) | 29/10/2026 | **30/10/2026** | **TO DO** | `src/backend/`, `docker-compose.yml` (PostgreSQL 16) |
-| 4 | **`SCRUM-49`** | `[Use-Case]` Design Mermaid Use-Case Model Covering 10 Features | **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | Mai Văn Hiển (`@MaiHien3507`) | 29/10/2026 | **02/11/2026** | **TO DO** | `docs/requirements/use-case-model.md` |
+| 2 | **`SCRUM-47`** | `[Requirements]` Collect & Consolidate TA Feedback for PA2 | **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | Lê Quốc Hưng (`@LqHung06`) | 28/10/2026 | **29/10/2026** | **IN PROGRESS** | `sprint-03-report.md` (Feedback Sec), `Changes.md` |
+| 3 | **`SCRUM-48`** | `[DevOps]` Skeleton Backend Part E (Spring Boot 3, PostgreSQL, Flyway) | **Nguyễn Thành Dự** (`@ThanhDu14`) | Mai Văn Hiển (`@MaiHien3507`) | 29/10/2026 | **30/10/2026** | **DONE** *(PR #48)* | `src/backend/`, `docker-compose.yml` (PostgreSQL 16) |
+| 4 | **`SCRUM-49`** | `[Use-Case]` Design Mermaid Use-Case Model Covering 10 Features | **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | Mai Văn Hiển (`@MaiHien3507`) | 29/10/2026 | **02/11/2026** | **IN REVIEW** *(v0.2)* | `docs/requirements/use-case-model.md` |
 | 5 | **`SCRUM-50`** | `[Use-Case]` Author Use-Case Specifications for 010, 011, 080 | **Mai Văn Hiển** (`@MaiHien3507`) | Nguyễn Đức Duy (`@DucDuyNguyen15-IT`) | 29/10/2026 | **03/11/2026** | **TO DO** | `docs/requirements/use-case-specification.md` |
-| 6 | **`SCRUM-51`** | `[Use-Case]` Author Use-Case Specifications for 020, 060 | **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | Nguyễn Thành Dự (`@ThanhDu14`) | 29/10/2026 | **03/11/2026** | **TO DO** | `docs/requirements/use-case-specification.md` |
+| 6 | **`SCRUM-51`** | `[Use-Case]` Author Use-Case Specifications for 020, 060 | **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | Nguyễn Thành Dự (`@ThanhDu14`) | 29/10/2026 | **03/11/2026** | **IN REVIEW** *(PR #47)* | `docs/requirements/use-case-specification.md` |
 | 7 | **`SCRUM-52`** | `[Use-Case]` Author Use-Case Specifications for 030, 031, 090 | **Nguyễn Thành Dự** (`@ThanhDu14`) | Lê Quốc Hưng (`@LqHung06`) | 29/10/2026 | **03/11/2026** | **TO DO** | `docs/requirements/use-case-specification.md` |
-| 8 | **`SCRUM-53`** | `[Use-Case]` Author Use-Case Specifications for 040, 050 | **Lê Quốc Hưng** (`@LqHung06`) | Trần Nguyễn Công Chung (`@itzchugnn`) | 29/10/2026 | **03/11/2026** | **TO DO** | `docs/requirements/use-case-specification.md` |
+| 8 | **`SCRUM-53`** | `[Use-Case]` Author Use-Case Specifications for 040, 050 | **Lê Quốc Hưng** (`@LqHung06`) | Trần Nguyễn Công Chung (`@itzchugnn`) | 29/10/2026 | **03/11/2026** | **IN REVIEW** *(Draft)* | `docs/requirements/use-case-specification.md` |
 | 9 | **`SCRUM-54`** | `[Use-Case]` Author Use-Case Specifications for 070, 100 | **Trần Nguyễn Công Chung** (`@itzchugnn`) | Mai Văn Hiển (`@MaiHien3507`) | 29/10/2026 | **03/11/2026** | **TO DO** | `docs/requirements/use-case-specification.md` |
-| 10 | **`SCRUM-55`** | `[Implementation]` Backend Part E: 040 Shopping List US1 + US2 (Test-First) | **Lê Quốc Hưng** (`@LqHung06`) | Mai Văn Hiển (`@MaiHien3507`) | 29/10/2026 | **03/11/2026** | **TO DO** | `src/backend/src/main/java/com/wikicook/shoppinglist/` |
-| 11 | **`SCRUM-56`** | `[Implementation]` Frontend Part E: 040 Shopping List US1 + US2 | **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | Lê Quốc Hưng (`@LqHung06`) | 30/10/2026 | **03/11/2026** | **TO DO** | `src/frontend/src/features/shopping-list/` |
+| 10 | **`SCRUM-55`** | `[Implementation]` Backend Part E: 040 Shopping List US1 + US2 (Test-First) | **Lê Quốc Hưng** (`@LqHung06`) | Mai Văn Hiển (`@MaiHien3507`) | 29/10/2026 | **03/11/2026** | **READY TO START** | `src/backend/src/main/java/com/wikicook/shoppinglist/` |
+| 11 | **`SCRUM-56`** | `[Implementation]` Frontend Part E: 040 Shopping List US1 + US2 | **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | Lê Quốc Hưng (`@LqHung06`) | 30/10/2026 | **03/11/2026** | **READY TO START** | `src/frontend/src/features/shopping-list/` |
 | 12 | **`SCRUM-57`** | `[Review]` Technical Peer Review for Backend + Frontend Part E | **Mai Văn Hiển** (`@MaiHien3507`) | Lê Quốc Hưng (`@LqHung06`) | 03/11/2026 | **04/11/2026** | **TO DO** | PR Approvals & Architectural Review Verdicts |
 | 13 | **`SCRUM-58`** | `[Use-Case]` Produce Prototype Screenshots for Every Use Case | **Trần Nguyễn Công Chung** (`@itzchugnn`) | Nguyễn Đức Duy (`@DucDuyNguyen15-IT`) | 29/10/2026 | **03/11/2026** | **TO DO** | `docs/analysis-and-design/ui-ux/screens/`, embedded in UC spec |
 | 14 | **`SCRUM-59`** | `[Project-Plan]` Revise Project Plan Baseline — Draft (Part A, 5 Pts) | **Mai Văn Hiển** (`@MaiHien3507`) | Lê Quốc Hưng (`@LqHung06`) | 29/10/2026 | **02/11/2026** | **TO DO** | `docs/management/project-plan.md` (Draft Revision) |
-| 15 | **`SCRUM-60`** | `[Vision]` Revise Vision Document Baseline (Part B, 5 Pts) | **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | Trần Nguyễn Công Chung (`@itzchugnn`) | 29/10/2026 | **05/11/2026** | **TO DO** | `docs/requirements/vision-document.md` |
+| 15 | **`SCRUM-60`** | `[Vision]` Revise Vision Document Baseline (Part B, 5 Pts) | **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | Trần Nguyễn Công Chung (`@itzchugnn`) | 29/10/2026 | **05/11/2026** | **IN PROGRESS** | `docs/requirements/vision-document.md` |
 | 16 | **`SCRUM-61`** | `[Documentation]` Author Consolidated Changes.md (Part A & B Sections) | **Lê Quốc Hưng** (`@LqHung06`) | Nguyễn Đức Duy (`@DucDuyNguyen15-IT`) | 29/10/2026 | **05/11/2026** | **TO DO** | `WikiCook/Changes.md` |
 | 17 | **`SCRUM-62`** | `[QA]` QA Cross-Audit for Entire PA3 Deliverable Package | **Trần Nguyễn Công Chung** (`@itzchugnn`) | Lê Quốc Hưng (`@LqHung06`) | 03/11/2026 | **05/11/2026** | **TO DO** | Repository-wide QA Audit Report in `sprint-03-report.md` |
-| 18 | **`SCRUM-63`** | `[Compliance]` Synthesize AI Usage Report for PA3 | **Trần Nguyễn Công Chung** (`@itzchugnn`) | Lê Quốc Hưng (`@LqHung06`) | 29/10/2026 | **05/11/2026** | **TO DO** | `docs/ai_log/`, Section 4 in `sprint-03-report.md` |
-| 19 | **`SCRUM-64`** | `[Ceremony]` Author Weekly Report PA3 (Standups 1 & 2, Review + Retro) | **Lê Quốc Hưng** (`@LqHung06`) | Trần Nguyễn Công Chung (`@itzchugnn`) | 30/10/2026 | **05/11/2026** | **TO DO** | `sprint-03-report.md` (Sec 2.2, 2.3, 2.4 & 5) |
+| 18 | **`SCRUM-63`** | `[Compliance]` Synthesize AI Usage Report for PA3 | **Trần Nguyễn Công Chung** (`@itzchugnn`) | Lê Quốc Hưng (`@LqHung06`) | 29/10/2026 | **05/11/2026** | **IN PROGRESS** | `docs/ai_log/`, Section 4 in `sprint-03-report.md` |
+| 19 | **`SCRUM-64`** | `[Ceremony]` Author Weekly Report PA3 (Standups 1 & 2, Review + Retro) | **Lê Quốc Hưng** (`@LqHung06`) | Trần Nguyễn Công Chung (`@itzchugnn`) | 30/10/2026 | **05/11/2026** | **IN PROGRESS** | `sprint-03-report.md` (Sec 2.2, 2.3, 2.4 & 5) |
 | 20 | **`SCRUM-65`** | `[DevOps]` Package PA3-Group05.zip & Execute Moodle Submission | **Nguyễn Thành Dự** (`@ThanhDu14`) | Lê Quốc Hưng (`@LqHung06`) | 04/11/2026 | **05/11/2026** | **TO DO** | `docs/management/git-log.txt`, `PA3-Group05.zip` |
-| 21 | **`SCRUM-66`** | `[DevOps]` Skeleton Frontend Part E + Docker Compose Integration | **Nguyễn Thành Dự** (`@ThanhDu14`) | Mai Văn Hiển (`@MaiHien3507`) | 29/10/2026 | **30/10/2026** | **TO DO** | `src/frontend/`, `docker-compose.yml` (App + DB) |
+| 21 | **`SCRUM-66`** | `[DevOps]` Skeleton Frontend Part E + Docker Compose Integration | **Nguyễn Thành Dự** (`@ThanhDu14`) | Mai Văn Hiển (`@MaiHien3507`) | 29/10/2026 | **30/10/2026** | **DONE** *(PR #51)* | `src/frontend/`, `docker-compose.yml` (App + DB) |
 | 22 | **`SCRUM-67`** | `[Project-Plan]` Finalize Project Plan 2nd Edition (Align Vision/UC/Jira) | **Mai Văn Hiển** (`@MaiHien3507`) | Lê Quốc Hưng (`@LqHung06`) | 02/11/2026 | **05/11/2026** | **TO DO** | `docs/management/project-plan.md` (Final Sign-off) |
 
 ### 1.3. Workload Distribution & Member Responsibility Matrix
@@ -205,6 +206,30 @@ At the conclusion of the Sprint Planning meeting on October 28, 2026:
 - **Completed at Kickoff:** 1 task (`SCRUM-46` — Sprint Planning ceremony and backlog setup reached `DONE`).
 - **In To Do Status:** 21 tasks actively scheduled with assignees, reviewers, and strict deadlines.
 - **Post-facto Prevention:** In strict accordance with course guidelines, all 22 tasks are created and allocated upfront. No tasks may be created or bulk-closed retroactively.
+
+### 3.2. Mid-Sprint Progress Snapshot (October 29, 2026 — Post-Skeleton & Use-Case Model Merges)
+Following rapid execution on October 29, 2026, five foundational Pull Requests were reviewed and merged into `main` (`PR #46`, `PR #47`, `PR #48`, `PR #50`, `PR #51`), completing the entire full-stack platform skeleton and significantly advancing the sprint baseline ahead of Standup 01:
+- **`DONE` Tasks (3 / 22):**
+  1. `SCRUM-46`: Sprint 03 Planning Ceremony & Backlog Setup (Hưng, completed Oct 28).
+  2. `SCRUM-48`: Containerized Backend Multi-Module Skeleton (Dự, merged via `PR #48` on Oct 29 ahead of Oct 30 target — Spring Boot 3, Flyway V001-V303, PostgreSQL 16 `docker-compose.yml`, GitHub Actions CI verify).
+  3. `SCRUM-66`: Containerized Frontend React 18 + Vite Skeleton (Dự, merged via `PR #51` on Oct 29 ahead of Oct 30 target — Tailwind CSS, ShoppingListPage scaffold, unified root `docker-compose.yml` DB + App + Web, GitHub Actions CI lint/test/vite-build).
+- **`IN REVIEW` Tasks (3 / 22):**
+  1. `SCRUM-49`: Use-Case Model Mermaid Diagrams covering 10 features (Duy, draft v0.2 merged via `PR #46` & `PR #50`, pending final freeze Nov 02).
+  2. `SCRUM-51`: Use-Case Specifications for Feature 020 & Feature 060 (Duy, 13 UCs merged via `PR #47`, pending Dự's review).
+  3. `SCRUM-53`: Use-Case Specifications for Feature 040 & Feature 050 (Hưng, 10 UCs with surgical fixes, pending Chung's review).
+- **`READY TO START` Tasks (2 / 22):**
+  1. `SCRUM-55`: Part E Backend Shopping List US1+US2 TDD (Hưng — Constitution Gate I officially passed).
+  2. `SCRUM-56`: Part E Frontend Shopping List US1+US2 (Duy — unblocked by `SCRUM-66`).
+- **`IN PROGRESS` Tasks (4 / 22):**
+  1. `SCRUM-47`: TA Feedback audit across 5 channels (Duy).
+  2. `SCRUM-60`: Vision Document Revision aligned with UC Model (Duy).
+  3. `SCRUM-63`: AI Usage log consolidation (Chung & all members).
+  4. `SCRUM-64`: Weekly Scrum Report documentation (Hưng).
+- **`TO DO` Scheduled Tasks (10 / 22):** `SCRUM-50`, `SCRUM-52`, `SCRUM-54`, `SCRUM-57`, `SCRUM-58`, `SCRUM-59`, `SCRUM-61`, `SCRUM-62`, `SCRUM-65`, `SCRUM-67`.
+
+#### Milestone Analysis & Constitution Gate Verification:
+- **Gate I (Platform Skeleton & Meeting Ratification):** **PASSED / UNLOCKED.** Both Backend (`SCRUM-48`) and Frontend (`SCRUM-66`) skeletons are merged to `main`, and the complete full-stack environment is containerized via root `docker-compose.yml`. Both Backend (`SCRUM-55`) and Frontend (`SCRUM-56`) Part E implementations are fully authorized to proceed.
+- **Specification Progress (Part D):** 23 out of 64 planned Use Cases (35.9%) across Features 020, 040, 050, 060 are authored, fully specified in 8 standard sections, and merged on `main`.
 
 ---
 
