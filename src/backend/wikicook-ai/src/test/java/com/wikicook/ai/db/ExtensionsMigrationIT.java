@@ -2,35 +2,10 @@ package com.wikicook.ai.db;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.flywaydb.core.Flyway;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.postgresql.ds.PGSimpleDataSource;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 /** V001 on the same image as docker-compose: extensions exist and work for Vietnamese text and vectors. */
-@Testcontainers
-class ExtensionsMigrationIT {
-
-    @Container
-    static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>(
-            DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres"));
-
-    static JdbcTemplate jdbc;
-
-    @BeforeAll
-    static void migrate() {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setUrl(POSTGRES.getJdbcUrl());
-        dataSource.setUser(POSTGRES.getUsername());
-        dataSource.setPassword(POSTGRES.getPassword());
-        Flyway.configure().dataSource(dataSource).load().migrate();
-        jdbc = new JdbcTemplate(dataSource);
-    }
+class ExtensionsMigrationIT extends AbstractPostgresIT {
 
     @Test
     void installsExtensions() {
