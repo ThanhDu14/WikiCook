@@ -1,0 +1,6 @@
+**/target
+.env
+**/*.iml
+.idea
+docker-compose.yml
+Dockerfile

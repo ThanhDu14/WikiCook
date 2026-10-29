@@ -1,9 +1,25 @@
-# Whole-stack entry point, run from the repo root:
-#   docker compose up -d db          # PostgreSQL 16 + pgvector (src/backend/docker-compose.yml)
-#   docker compose run --rm migrate  # apply Flyway migrations from wikicook-db
-# Database settings and credentials stay in src/backend (docker-compose.yml, git-ignored .env).
-# App and frontend services are added by SCRUM-66.
+# Whole stack from the repo root:
+#   docker compose up -d --build     # db + app (http://localhost:8080) + web (http://localhost:3000)
+#   docker compose up -d db          # only PostgreSQL 16 + pgvector
+#   docker compose run --rm migrate  # apply Flyway migrations without starting the app
+# Database and app settings live in src/backend (docker-compose.yml, git-ignored .env).
 name: wikicook
 
 include:
   - src/backend/docker-compose.yml
+
+services:
+  web:
+    build: src/frontend
+    image: wikicook-web:local
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-3000}:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
