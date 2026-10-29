@@ -1824,3 +1824,101 @@ When the ingredient the author needs is not in the shared catalogue, the author 
 - **Basic Flow:** [`RE03-Ingredients.dc.html`](../analysis-and-design/ui-ux/screens/RE03-Ingredients.dc.html) (propose option and row "mới · chờ duyệt").
 - **Alternative Flows:** [`AD11-IngredientProposals.dc.html`](../analysis-and-design/ui-ux/screens/AD11-IngredientProposals.dc.html) (moderator side of Steps 5–6, owned by `UC-100-01`).
 - **UI Asset Gap for SCRUM-58:** None for the author side.
+
+---
+
+## 8. TRACEABILITY, SCREEN MAPPING & OPEN QUESTIONS FOR FEATURES 020 & 060
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+### 8.1. Feature 020 (Recipe Discovery & Filters) Traceability
+
+| Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria |
+| :---: | :--- | :---: | :--- | :--- | :---: |
+| **`UC-020-01`** | Search Recipes by Keyword | `US1` (AS 1–7) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-006`, `FR-013`, `FR-016`, `FR-025`, `FR-026` | `NFR-001`, `NFR-003`, `NFR-004`, `NFR-005`, `NFR-006`, `NFR-007` | `SC-001`, `SC-002` |
+| **`UC-020-02`** | Filter Search Results | `US2` (AS 1–8) | `FR-001`, `FR-007`, `FR-008`, `FR-009`, `FR-010`, `FR-011`, `FR-012`, `FR-017`, `FR-022`, `FR-024` | `NFR-002`, `NFR-006` | `SC-003`, `SC-006` |
+| **`UC-020-03`** | Hide Recipes Conflicting with Dietary Profile | `US3` (AS 1–6) | `FR-018`, `FR-019`, `FR-020`, `FR-021`, `FR-022` | — | `SC-004` |
+| **`UC-020-04`** | Sort, Paginate & Share Results | `US4` (AS 1–6) | `FR-014`, `FR-014a`, `FR-015`, `FR-016`, `FR-017`, `FR-023`, `FR-024` | `NFR-006` | `SC-005` |
+| **`UC-020-05`** | Find Recipes by Pantry Ingredients *(Brief)* | — (Vision §5.2 only) | — *(out of scope in spec 020)* | — | — |
+| **`UC-020-06`** | View Recipe Details | — (shared page; Use-Case Model §4.11) | Spec 020 Edge Cases (unavailable recipe, placeholder, no reviews); `060` `FR-002` | `020` `NFR-002`, `NFR-003`, `NFR-006`; `060` `NFR-003`, `NFR-004` | — |
+
+*Verification:* All 27 functional requirements of spec 020 (`FR-001` – `FR-026` plus `FR-014a`), 7/7 NFRs, 4/4 user stories (27 acceptance scenarios) and `SC-001` – `SC-006` are mapped. `SC-007` (every acceptance scenario has an automated test) applies to all four fully dressed use cases.
+
+### 8.2. Feature 060 (Community Recipe Contribution) Traceability
+
+| Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria |
+| :---: | :--- | :---: | :--- | :--- | :---: |
+| **`UC-060-01`** | Create Recipe with Wizard & Submit for Review | `US1` (AS 1–3, 5–10) | `FR-001` – `FR-014`, `FR-022`, `FR-023`, `FR-025`, `FR-029`, `FR-030` | `NFR-002`, `NFR-003`, `NFR-005`, `NFR-006`, `NFR-007` | `SC-001`, `SC-003`, `SC-004`, `SC-005` |
+| **`UC-060-02`** | Save & Resume Draft | `US2` (AS 1–7) | `FR-015`, `FR-016`, `FR-017`, `FR-018`, `FR-019`, `FR-020`, `FR-021`, `FR-022` | `NFR-001`, `NFR-002`, `NFR-004` | `SC-002`, `SC-004` |
+| **`UC-060-03`** | Revise Recipe after Moderator Decision | `US3` (AS 1–6) | `FR-023`, `FR-024`, `FR-025`, `FR-026`, `FR-029`, `FR-030` | — | `SC-006` |
+| **`UC-060-04`** | Manage My Recipes | `US4` (AS 1–5) | `FR-003`, `FR-031`, `FR-032`, `FR-033` | `NFR-004` | `SC-005`, `SC-006` |
+| **`UC-060-05`** | Edit Published Recipe | `US5` (AS 1–4) | `FR-027` | — | — |
+| **`UC-060-06`** | Archive, Restore or Delete Recipe | `US6` (AS 1–4) | `FR-023`, `FR-026`, `FR-028`, `FR-029` | — | `SC-005` |
+| **`UC-060-07`** | Propose New Ingredient | `US1` (AS 4) | `FR-006`, `FR-007` | `NFR-002` | — |
+
+*Verification:* All 33 functional requirements of spec 060 (`FR-001` – `FR-033`), 7/7 NFRs, 6/6 user stories (36 acceptance scenarios) and `SC-001` – `SC-006` are mapped. `SC-007` applies to all seven use cases.
+
+### 8.3. Prototype Screen Mapping & UI Asset Gaps (for SCRUM-58)
+
+| Use Case ID | Flow / Step Reference | Existing Screen ID & Filename | Description of Prototype View | Asset Status & Action for SCRUM-58 |
+| :---: | :--- | :--- | :--- | :---: |
+| `UC-020-01` | Basic Flow (Steps 1–2) | `SR01-Home.dc.html` | Home page with search box and quick filters | **Available** |
+| `UC-020-01` | Basic Flow (Step 7) | `SR02-Results.dc.html` | Results with count, cards, chips and dietary notice | **Available** |
+| `UC-020-01` | Step 4, AF 1.5 | `SR07-LoadingError.dc.html` | Skeleton loading and error with "Thử lại" | **Available** |
+| `UC-020-01` | AF 1.4, `UC-020-02` AF 2.4 | `SR04-NoResults.dc.html` | Empty state with suggestions and "Bỏ lọc" | **Available** |
+| `UC-020-01` | AF 1.2, AF 1.7 | *Gap 020-A* | Shortened-keyword notice; rate-limit message | **GAP** |
+| `UC-020-02` | AF 2.2 | `SR03-FilterSheet.dc.html` | Mobile bottom sheet with "Hiện N kết quả" | **Available** |
+| `UC-020-02` | AF 2.3 | *Gap 020-B* | Note that recipes without calorie estimate are hidden | **GAP** |
+| `UC-020-03` | AF 3.1 | `SR06-ShownWithWarning.dc.html` | Hidden recipes shown with conflict warnings | **Available** |
+| `UC-020-03` | AF 3.2 | `SR05-AllHidden.dc.html` | All matches hidden by dietary profile | **Available** |
+| `UC-020-03` | AF 3.4 | *Gap 020-C* | "Sign in again to apply your profile" notice | **GAP** |
+| `UC-020-04` | Steps 2–6 | *Gap 020-D* | Open sort menu; numbered pagination | **GAP** |
+| `UC-020-06` | Basic Flow | `NU01-Detail.dc.html` | Recipe detail with servings, ingredients, steps, actions | **Available** |
+| `UC-020-06` | AF 6.1 | `AU08-SignInPrompt.dc.html` | Guest asked to sign in for a Member-only action | **Available** |
+| `UC-020-06` | AF 6.3 / AF 6.6 | `CM01-NotFound.dc.html`, `CM04-OfflinePage.dc.html` | Not found (404); offline page | **Available** |
+| `UC-020-06` | AF 6.2 | *Gap 020-E* | "Công thức này không còn khả dụng" | **GAP** |
+| `UC-020-06` | Steps 5–6 | *Gap 020-F* | Equipment, video and all action buttons in one view | **GAP** |
+| `UC-060-01` | Steps 2–9, AF 1.1–1.3 | `RE02` – `RE07` | Six wizard steps, step-1 errors, preview with missing items | **Available** |
+| `UC-060-01` | Steps 10–13, AF 1.4, 1.5, 1.10, 1.11 | *Gap 060-A* | Submit confirmation and success; image errors; limit messages | **GAP** |
+| `UC-060-02` | AF 2.1 / AF 2.4 | `RE03-Ingredients.dc.html`, `RE10-Conflict.dc.html` | Offline indicator; version conflict dialog | **Available** |
+| `UC-060-02` | AF 2.2, AF 2.3 | *Gap 060-B* | In-place sign-in; leave-page warning | **GAP** |
+| `UC-060-03` | Basic Flow / AF 3.1 | `RE08-RevisionNote.dc.html`, `RE09-Rejected.dc.html` | Moderator note in wizard; rejected read-only | **Available** |
+| `UC-060-03` | AF 3.2 | *Gap 060-C* | Withdraw confirmation | **GAP** |
+| `UC-060-04` | Basic Flow | `RE01-MyRecipes.dc.html` | Tabs with counts and actions per status | **Available** |
+| `UC-060-04` | AF 4.1, AF 4.2 | *Gap 060-D* | Empty state; loading error | **GAP** |
+| `UC-060-05` | Step 2 | *Gap 060-E* | Revision banner in the wizard | **GAP** |
+| `UC-060-06` | Step 2, AF 6.2 | *Gap 060-F* | Archive and delete confirmation dialogs | **GAP** |
+| `UC-060-07` | Basic Flow | `RE03-Ingredients.dc.html` | Propose option and "mới · chờ duyệt" row | **Available** |
+
+### 8.4. Open Questions (For Team Alignment)
+
+1. **`[OQ-020-01]` Pantry Matching (`UC-020-05`):**
+   - *Issue:* Vision §5.2 promises search by ingredients at hand; spec 020 lists it as out of scope.
+   - *Current Stance:* Written at the Brief level as a planned increment (Use-Case Model §6.2 issue 1). Vision §5.2 will say so in `SCRUM-60`.
+   - *Owner:* Nguyễn Đức Duy (PO).
+2. **`[OQ-020-02]` Serving Selector on the Recipe Detail Page (`UC-020-06` Step 7):**
+   - *Issue:* Spec 060 says scaling by servings is done by `040` and `050`; the prototype `NU01` shows a "Khẩu phần" control on the detail page.
+   - *Current Stance:* The detail page scales displayed quantities proportionally without unit conversion; "vừa đủ" is not scaled. The rounding and unit-conversion rules of `UC-040-02` should be reused so the page, the shopping list and cooking mode show the same numbers.
+   - *Owner:* Nguyễn Đức Duy with Lê Quốc Hưng (`040`, `050`).
+3. **`[OQ-020-03]` Extension Points of the Recipe Detail Page:**
+   - *Issue:* `UC-020-06` defines six extension points (`EP-1` – `EP-6`) from Use-Case Model §4.11.
+   - *Action:* Each block owner (Dự, Hưng, Hiển, Chung) confirms the extension point, button label and visibility of their row before the freeze on 02/11/2026.
+4. **`[OQ-060-01]` Draft Saving Inside a Revision (`UC-060-05`):**
+   - *Issue:* A revision of a published recipe is edited in the same wizard and saved like a draft, but the Use-Case Model v0.1 draws `«include» UC-060-02` only from `UC-060-01` and `UC-060-03`.
+   - *Proposal:* Add `UC-060-05 «include» UC-060-02` to Use-Case Model §4.6 before the freeze.
+   - *Owner:* Nguyễn Đức Duy (`SCRUM-49`).
+5. **`[OQ-060-02]` Prototype Offers a Proposal for an Existing Ingredient:**
+   - *Issue:* `RE03-Ingredients` shows both the catalogue match "Hành lá" and the option "Đề xuất “hanh la” làm nguyên liệu mới", while spec 060 Edge Cases says a proposal matching an existing name ignoring diacritics is replaced by the existing ingredient.
+   - *Proposal:* Hide the propose option when an exact accent-insensitive match exists (`UC-060-07` AF 7.1); update the prototype.
+   - *Owner:* UI owner of `RE03`, reviewed by Nguyễn Đức Duy.
+6. **`[OQ-060-03]` Archiving a Recipe with an Open Revision:**
+   - *Issue:* Spec 060 does not say what happens to an open revision (`UC-060-05`) when the author archives the published recipe.
+   - *Proposal:* Refuse archiving while a revision is `PENDING`, and discard a revision that is still a draft after confirmation.
+   - *Owner:* Nguyễn Đức Duy with Trần Nguyễn Công Chung (`UC-100-01`).
+7. **`[OQ-060-04]` Archived Recipes in Collections, Meal Plans and Shopping Lists:**
+   - *Issue:* Spec 060 Integration Points leave open how archived recipes appear in `080`, `030` and `040`.
+   - *Proposal:* They stay in the user's collections and plans with the label "Không còn khả dụng" and open the message of `UC-020-06` AF 6.2.
+   - *Owner:* Mai Văn Hiển (`080`), Nguyễn Thành Dự (`030`), Lê Quốc Hưng (`040`).
+8. **`[OQ-060-05]` Supermarket Aisle of a Proposed Ingredient:**
+   - *Issue:* Spec 060 Integration Points ask who sets the aisle of a catalogue ingredient.
+   - *Current Stance in `UC-060-07`:* The Moderator sets allergens and aisle when approving; the author does not choose them.
+   - *Owner:* Lê Quốc Hưng (`040`) and Trần Nguyễn Công Chung (`100`) to confirm.
