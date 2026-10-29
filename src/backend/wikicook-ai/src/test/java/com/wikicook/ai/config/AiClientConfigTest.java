@@ -10,6 +10,8 @@ import com.wikicook.ai.llm.MockLlmClient;
 import com.wikicook.ai.llm.OfflineLlmClient;
 import java.time.Duration;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -30,7 +32,34 @@ class AiClientConfigTest {
             assertThat(properties.llm().timeout()).isEqualTo(Duration.ofSeconds(60));
             assertThat(properties.embedding().model()).isEqualTo("gemini-embedding-001");
             assertThat(properties.embedding().dimensions()).isEqualTo(768);
+            assertThat(properties.baseUrl()).isEqualTo("https://generativelanguage.googleapis.com/v1beta");
+            assertThat(properties.dailyCap().total()).isEqualTo(100);
+            assertThat(properties.dailyCap().mealPlannerShare()).isEqualTo(0.7);
+            assertThat(properties.dailyCap().nutritionShare()).isEqualTo(0.3);
         });
+    }
+
+    @Test
+    void dailyCapSplitsTheTotalBetweenFeatures() {
+        runner.withPropertyValues("wikicook.ai.daily-cap.total=101").run(context -> {
+            AiProperties.DailyCap cap = context.getBean(AiProperties.class).dailyCap();
+            assertThat(cap.mealPlanner()).isEqualTo(70);
+            assertThat(cap.nutrition()).isEqualTo(30);
+        });
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "wikicook.ai.daily-cap.total=-1",
+            "wikicook.ai.daily-cap.meal-planner-share=1.2",
+            "wikicook.ai.daily-cap.nutrition-share=-0.1",
+            "wikicook.ai.daily-cap.meal-planner-share=0.8", // 0.8 + 0.3 > 1
+            "wikicook.ai.llm.timeout=0s",
+            "wikicook.ai.embedding.timeout=-1s",
+            "wikicook.ai.base-url=",
+    })
+    void rejectsInvalidSettings(String setting) {
+        runner.withPropertyValues(setting).run(context -> assertThat(context).hasFailed());
     }
 
     @Test
