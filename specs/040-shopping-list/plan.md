@@ -94,57 +94,61 @@ specs/040-shopping-list/
 
 ```text
 src/
-├── backend/
-│   ├── pom.xml
-│   └── src/
-│       ├── main/
-│       │   ├── java/com/wikicook/shoppinglist/
-│       │   │   ├── controller/
-│       │   │   │   ├── ShoppingListController.java
-│       │   │   │   ├── ShoppingListSyncController.java
-│       │   │   │   └── ShoppingListExceptionHandler.java
-│       │   │   ├── service/
-│       │   │   │   ├── ShoppingListService.java
-│       │   │   │   ├── IngredientAggregationService.java
-│       │   │   │   ├── UnitConversionService.java
-│       │   │   │   └── ShoppingListSyncService.java
-│       │   │   ├── repository/
-│       │   │   │   ├── ShoppingListRepository.java
-│       │   │   │   ├── ShoppingListItemRepository.java
-│       │   │   │   ├── ShoppingListItemSourceRepository.java
-│       │   │   │   └── UserAislePreferenceRepository.java
-│       │   │   ├── domain/
-│       │   │   │   ├── ShoppingList.java
-│       │   │   │   ├── ShoppingListItem.java
-│       │   │   │   ├── ShoppingListItemSource.java
-│       │   │   │   ├── UserAislePreference.java
-│       │   │   │   └── ShoppingListStatus.java
-│       │   │   ├── dto/
-│       │   │   │   ├── ShoppingListResponse.java
-│       │   │   │   ├── AisleGroupDto.java
-│       │   │   │   ├── ShoppingListItemDto.java
-│       │   │   │   ├── ItemProvenanceDto.java
-│       │   │   │   ├── CreateCustomItemRequest.java
-│       │   │   │   ├── UpdateItemRequest.java
-│       │   │   │   ├── ImportRecipeRequest.java
-│       │   │   │   ├── ImportMealPlanRequest.java
-│       │   │   │   ├── SyncBatchRequest.java
-│       │   │   │   └── SyncBatchResponse.java
-│       │   │   └── port/
-│       │   │       ├── RecipeDetailPort.java
-│       │   │       ├── MealPlanHandoffPort.java
-│       │   │       └── DietaryProfilePort.java
-│       │   └── resources/
-│       │       └── db/migration/
-│       │           └── V401__shopping_lists.sql
-│       └── test/java/com/wikicook/shoppinglist/
-│           ├── service/
-│           │   ├── IngredientAggregationServiceTest.java
-│           │   ├── UnitConversionServiceTest.java
-│           │   └── ShoppingListSyncServiceTest.java
-│           └── controller/
-│               ├── ShoppingListControllerIT.java
-│               └── ShoppingListRepositoryIT.java
+├── backend/                     # Maven multi-module (SCRUM-48 skeleton)
+│   ├── pom.xml                  # parent: wikicook-db, wikicook-ai, wikicook-app
+│   ├── docker-compose.yml       # PostgreSQL 16 + pgvector, Flyway "migrate" tool
+│   ├── wikicook-db/src/main/resources/db/migration/
+│   │   └── V401__shopping_lists.sql
+│   └── wikicook-app/
+│       ├── pom.xml
+│       └── src/
+│           ├── main/
+│           │   ├── java/com/wikicook/shoppinglist/
+│           │   │   ├── controller/
+│           │   │   │   ├── ShoppingListController.java
+│           │   │   │   ├── ShoppingListSyncController.java
+│           │   │   │   └── ShoppingListExceptionHandler.java
+│           │   │   ├── service/
+│           │   │   │   ├── ShoppingListService.java
+│           │   │   │   ├── IngredientAggregationService.java
+│           │   │   │   ├── UnitConversionService.java
+│           │   │   │   └── ShoppingListSyncService.java
+│           │   │   ├── repository/
+│           │   │   │   ├── ShoppingListRepository.java
+│           │   │   │   ├── ShoppingListItemRepository.java
+│           │   │   │   ├── ShoppingListItemSourceRepository.java
+│           │   │   │   └── UserAislePreferenceRepository.java
+│           │   │   ├── domain/
+│           │   │   │   ├── ShoppingList.java
+│           │   │   │   ├── ShoppingListItem.java
+│           │   │   │   ├── ShoppingListItemSource.java
+│           │   │   │   ├── UserAislePreference.java
+│           │   │   │   └── ShoppingListStatus.java
+│           │   │   ├── dto/
+│           │   │   │   ├── ShoppingListResponse.java
+│           │   │   │   ├── AisleGroupDto.java
+│           │   │   │   ├── ShoppingListItemDto.java
+│           │   │   │   ├── ItemProvenanceDto.java
+│           │   │   │   ├── CreateCustomItemRequest.java
+│           │   │   │   ├── UpdateItemRequest.java
+│           │   │   │   ├── ImportRecipeRequest.java
+│           │   │   │   ├── ImportMealPlanRequest.java
+│           │   │   │   ├── SyncBatchRequest.java
+│           │   │   │   └── SyncBatchResponse.java
+│           │   │   └── port/
+│           │   │       ├── RecipeDetailPort.java
+│           │   │       ├── MealPlanHandoffPort.java
+│           │   │       └── DietaryProfilePort.java
+│           │   └── resources/
+│           │       └── application.yml
+│           └── test/java/com/wikicook/shoppinglist/
+│               ├── service/
+│               │   ├── IngredientAggregationServiceTest.java
+│               │   ├── UnitConversionServiceTest.java
+│               │   └── ShoppingListSyncServiceTest.java
+│               └── controller/
+│                   ├── ShoppingListControllerIT.java
+│                   └── ShoppingListRepositoryIT.java
 └── frontend/
     └── src/
         ├── features/shopping-list/
