@@ -1,0 +1,9 @@
+# Whole-stack entry point, run from the repo root:
+#   docker compose up -d db          # PostgreSQL 16 + pgvector (src/backend/docker-compose.yml)
+#   docker compose run --rm migrate  # apply Flyway migrations from wikicook-db
+# Database settings and credentials stay in src/backend (docker-compose.yml, git-ignored .env).
+# App and frontend services are added by SCRUM-66.
+name: wikicook
+
+include:
+  - src/backend/docker-compose.yml
