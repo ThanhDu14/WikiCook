@@ -50,9 +50,9 @@ empty slots, generation progress and time limit, draft view with "AI" labels, re
 of invalid AI picks, editing the draft, regenerate, cancel, confirm (save + shopping list),
 leave-page warning, "not enough recipes" handling with suggestions, 5 generations per user per
 hour with visible remaining count, AI failure handling, AI disclaimer, keeping the set of
-recipes the AI can choose from in line with recipe publishing, archiving and editing, and a
-"Suggested for you" list of AI recommendations for a single slot inside the planner's recipe
-picker.
+recipes the AI can choose from in line with recipe publishing, archiving and editing, swapping a
+draft dish in one tap from alternatives ranked at generation, and a "Suggested for you" list of AI
+recommendations for a single slot inside the planner's recipe picker.
 
 **Out of scope** (separate specs): the calendar and manual editing tools (spec 030), merging
 ingredients and building the shopping list (spec 040), nutrition analysis and nutrition targets
@@ -105,10 +105,11 @@ dishes).
   → A: Strict tiers. Every suggestion already suits the slot's meal; dishes of a preferred cuisine
   always come before the others, and within each group dishes are ordered by how well they fit the
   slot and by variety against the week.
-- Q: What does "variety against the week's other dishes" cover? → A: A dish that is very similar to
-  a dish already in the week (same kind of dish or same main ingredients, e.g. "Bún bò Huế" when
-  "Phở bò" is planned) is ranked after dishes of a different kind, even when its category differs;
-  and the suggestions shown together must not be near-duplicates of each other.
+- Q: What does "variety against the week's other dishes" cover? → A: A dish of the same kind as a
+  dish on the same or an adjacent day, or sharing two or more main ingredients with any dish of the
+  week (e.g. "Bún bò Huế" the day after "Phở bò"), is ranked after dishes of a different kind; the
+  suggestions shown together prefer different kinds of dish and never share two or more main
+  ingredients with each other.
 - Q: Should suggestions favour dishes that share main ingredients with the week's other dishes
   (simpler shopping)? → A: Yes, as a secondary criterion only: sharing main ingredients moves a dish
   up only among dishes that are otherwise about equal, and never outweighs variety.
@@ -118,14 +119,16 @@ dishes).
 - Q: Should a suggestion's short reason mention main ingredients it shares with the week's other
   dishes? → A: Yes, when there is one: at most one shared main ingredient and the day of the dish it
   is shared with, e.g. "Món sáng · Việt Nam · 20 phút · dùng chung thịt bò với Thứ Hai".
-- Q: How does the user replace a draft dish they do not like? → A: Every dish and every "Choose a
-  dish" slot of a draft has a "Swap" (↻) button showing 3 alternatives that were ranked when the draft
+- Q: How does the user replace a draft dish they do not like? → A: Every AI or Auto dish and every
+  "Choose a dish" slot of a draft has a "Swap" (↻) button showing 3 alternatives that were ranked when the draft
   was generated, from the suitable recipes the draft did not use. One tap replaces the dish at once,
   with no new generation and no wait; tapping again shows the next ones; "Find another dish" opens
-  the recipe picker.
-- Q: Which rules and servings apply to a dish swapped or picked inside a draft? → A: The constraints
-  of that generation (including changes made in the dialog only for it) and the draft's servings;
-  outside a draft, the saved profile and the rules of spec 030.
+  the recipe picker. Dishes the user placed themselves are replaced with the recipe picker (spec 030).
+- Q: Which rules and servings apply to a dish swapped or picked inside a draft? → A: Alternatives and
+  "Suggested for you" follow the constraints of that generation (including changes made in the
+  dialog only for it); keyword search results in the picker keep the rules of spec 030. Every dish
+  swapped or picked inside a draft takes the draft's servings. Outside a draft, the saved profile
+  and the rules of spec 030 apply.
 - Q: How does "Suggested for you" in the recipe picker know what the user likes? → A: From the
   preferred cuisines of the profile and from dishes the user saved to a collection (spec 080) or
   rated 4 stars or more (spec 070); a user with none of these gets well-rated dishes. Opening the
@@ -361,7 +364,7 @@ does not use any generation.
    toward the 5 generations per hour.
 6. **Given** fewer than 5 suitable recipes exist, **When** the picker opens, **Then** only those are
    shown; if none exist, the list says there is no suggestion and the normal results stay usable.
-7. **Given** the retrieval step is unavailable or takes longer than 3 seconds, **When** the picker
+7. **Given** the recipe data is unavailable or suggestions take longer than 3 seconds, **When** the picker
    opens, **Then** the "Suggested for you" list is hidden and the ordered search results (spec 030
    FR-007a) work as usual; when only the AI language model is down, suggestions still show.
 8. **Given** a week (or open draft) with "Phở bò" on Monday breakfast and a profile preferring
@@ -371,8 +374,8 @@ does not use any generation.
 9. **Given** the picker shows suggestions, **When** the user types a keyword in its search box,
    **Then** the "Suggested for you" list is hidden and the search results keep the order of spec 030;
    **When** the keyword is cleared, **Then** the suggestions show again.
-10. **Given** a draft (AI or backup), **When** the user taps "Swap" on a dish or on a "Choose a dish"
-    slot, **Then** up to 3 alternatives for that slot's meal appear without waiting for the server,
+10. **Given** a draft (AI or backup), **When** the user taps "Swap" on an AI or Auto dish or on a
+    "Choose a dish" slot, **Then** up to 3 alternatives for that slot's meal appear without waiting for the server,
     none already in the draft, and choosing one replaces the dish with the draft's servings and the
     "AI" (or "Auto") label; no generation is counted.
 11. **Given** the alternatives, **When** the user taps "Swap" again, **Then** the next alternatives
@@ -565,9 +568,10 @@ never chosen again.
   dishes of a preferred cuisine MUST come before all other dishes, and within each of these two
   groups dishes MUST be ordered by how close they are to the user's taste (dishes they saved to a
   collection or rated 4 stars or more; overall rating when they have none) and by variety against
-  the week's other dishes. Variety means that a dish very similar to one already in the week (same kind of
-  dish or same main ingredients), even of a different category, MUST rank after dishes of a
-  different kind, and the suggestions shown together MUST NOT be near-duplicates of each other.
+  the week's other dishes. Variety means that a dish of the same kind as a dish on the same or an
+  adjacent day, or sharing two or more main ingredients with any dish of the week, MUST rank after
+  dishes of a different kind; the suggestions shown together SHOULD be of different kinds and MUST
+  NOT share two or more main ingredients with each other.
   Sharing main ingredients with the week's other dishes MAY move a dish up only among dishes that
   are otherwise about equal, and MUST NOT outweigh variety.
 - **FR-035**: Each suggestion MUST show a short reason (meal, cuisine, cooking time) and, when the
@@ -585,10 +589,12 @@ never chosen again.
   to 5 alternatives ranked at generation time from the suitable recipes the draft did not use, with
   the ordering of FR-034 and avoiding dishes of the same kind or with the same main ingredients as
   the dish in that slot. "Swap" MUST show 3 of them at a time, skip dishes already in the draft, and
-  work without a new server request and without counting toward FR-025.
-- **FR-040**: Inside a draft, alternatives, suggestions and the recipe picker MUST apply the
-  constraints of that generation (FR-004), and a swapped or picked dish MUST take the draft's
-  servings; outside a draft the saved profile and the rules of spec 030 apply.
+  work without a new server request and without counting toward FR-025; the swap list MUST show
+  the AI disclaimer in short form. Only AI or Auto dishes and "Choose a dish" slots have "Swap".
+- **FR-040**: Inside a draft, alternatives and suggestions MUST apply the constraints of that
+  generation (FR-004), while keyword search results in the recipe picker keep the rules of spec 030;
+  every dish swapped or picked inside a draft (from alternatives, suggestions or search results)
+  MUST take the draft's servings. Outside a draft the saved profile and the rules of spec 030 apply.
 - **FR-041**: The dish being replaced MUST be treated as not liked: dishes of the same kind or with
   the same main ingredients MUST rank after other dishes, and it MUST NOT be used as the shared dish
   in a reason (FR-035).

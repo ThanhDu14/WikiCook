@@ -289,22 +289,29 @@ bên ngoài** (không LLM, không embedding API), nên luôn nhanh và không ph
     - Khóa sắp xếp: `tier` (0 nếu thuộc ẩm thực ưa thích) → `nearDup` (món gần giống luôn xếp sau)
       → `taste + 0.05·reuse` giảm dần → `recipe_id`. Trọng số `reuse` nhỏ và `nearDup` đứng trước
       nên nguyên liệu dùng chung không bao giờ thắng đa dạng.
-    - Đa dạng giữa các món trả về: duyệt theo thứ tự trên, bỏ món `similar` với một món đã lấy;
-      thiếu thì trả số có được (US7-6). Đây là dạng giản lược của MMR (Carbonell 1998) với điều kiện
-      loại cứng thay cho ngưỡng độ giống vector, nên không phải hiệu chỉnh.
+    - Đa dạng giữa các món trả về, chọn hai lượt theo thứ tự trên:
+      1. lượt 1 lấy món khác danh mục với mọi món đã lấy;
+      2. nếu chưa đủ, lượt 2 cho phép trùng danh mục nhưng không trùng ≥ 2 nguyên liệu chính với
+         món đã lấy (bữa sáng thường chỉ có vài danh mục: món nước, bánh mì, xôi, cháo).
+      Không bao giờ có hai món trùng ≥ 2 nguyên liệu chính (FR-034). Vẫn thiếu thì trả số có được
+      (US7-6). Đây là dạng giản lược của MMR (Carbonell 1998) với điều kiện loại cứng thay cho ngưỡng
+      độ giống vector, nên không phải hiệu chỉnh.
   - **Món thay thế lúc tạo (FR-039)**: sau `DraftValidator` (đường AI) hoặc `BackupPlanner` (đường
     dự phòng), với mỗi ô đã điền hoặc "Chọn món": candidate của bữa đó (đã có từ R4 – R5, nên đúng
     ràng buộc của lần tạo) trừ các món đang có trong draft và món đã lên lịch → `SlotReranker` với
     `avoid` = món đang ở ô (null với ô "Chọn món"), `W` = draft ∪ món đã lên lịch → lấy 5 món.
     Trả trong `DraftResponse.alternatives`. Vector khẩu vị tính một lần cho cả lượt tạo. Không gọi
     thêm LLM hay embedding API; chỉ thêm vài truy vấn DB nên không ảnh hưởng NFR-001 / SC-002a.
-  - **Nút "Đổi" ở client**: hiện 3 món đầu của `alternatives` của ô mà chưa nằm trong draft; bấm lại
+  - **Nút "Đổi" ở client**: chỉ có trên món `AI`/`AUTO` và ô "Chọn món" (món người dùng tự xếp
+    thay bằng picker như 030); popup có disclaimer dạng ngắn (FR-039). Hiện 3 món đầu của `alternatives` của ô mà chưa nằm trong draft; bấm lại
     hiện các món sau; hết thì chỉ còn "Tìm món khác…" (mở picker). Chọn món → thay ngay trong state
     `useAiDraft`, giữ khẩu phần của draft (FR-040), nhãn `AI` (hoặc `AUTO` với bản nháp dự phòng).
     Danh sách tính theo món AI chọn ban đầu, không tính lại sau mỗi lần đổi (giới hạn chấp nhận).
   - **"Gợi ý cho bạn" trong picker**: `GET …/suggestions?day=&meal=&exclude=&requestId=&replacing=`.
     - Ràng buộc: có `requestId` (draft đang mở, của chính người dùng) → đọc
-      `ai_requests.constraints` của lượt đó (FR-040); không có → hồ sơ đã lưu.
+      `ai_requests.constraints` của lượt đó (FR-040); không có → hồ sơ đã lưu. Kết quả tìm kiếm theo
+      từ khóa của picker vẫn do 030 lọc theo hồ sơ; 031 chỉ đặt khẩu phần của bản nháp cho món chọn
+      từ đó.
     - Tập hợp lệ của bữa (R4) trừ món đã lên lịch và `exclude`; `avoid` = `replacing`.
     - Lấy rộng 30 món ngay trong DB: có `t` → `ORDER BY embedding <=> :t LIMIT 30` (vector lấy từ DB,
       không gọi provider); không có `t` → theo điểm đã làm trơn; cộng phần đuôi chưa có embedding.
