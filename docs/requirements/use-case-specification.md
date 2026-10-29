@@ -1318,3 +1318,509 @@ Shows one published recipe as readers see it: header (cover, name, category and 
 - **Basic Flow:** [`NU01-Detail.dc.html`](../analysis-and-design/ui-ux/screens/NU01-Detail.dc.html) (header, "Khẩu phần", "Nguyên liệu", "Các bước", "Bắt đầu nấu", "Thêm vào thực đơn").
 - **Alternative Flows:** [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 6.1), [`CM01-NotFound.dc.html`](../analysis-and-design/ui-ux/screens/CM01-NotFound.dc.html) (AF 6.3), [`CM04-OfflinePage.dc.html`](../analysis-and-design/ui-ux/screens/CM04-OfflinePage.dc.html) (AF 6.6).
 - **UI Asset Gap for SCRUM-58:** No screen for "Công thức này không còn khả dụng" (AF 6.2) — *Gap 020-E*; NU01 does not yet show the equipment list, video block and the "Thêm vào danh sách đi chợ" / "Lưu công thức" buttons in one view — *Gap 020-F*.
+
+---
+
+## 7. USE-CASE SPECIFICATIONS FOR FEATURE 060: COMMUNITY RECIPE CONTRIBUTION
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+> [!NOTE]
+> **Sources:** `specs/060-recipe-editor/spec.md` (US1–US6, FR-001 – FR-033, NFR-001 – NFR-007, Clarifications 2026-10-08), [Vision Document](vision-document.md) §5.6 and Use-Case Model §4.6 (`SCRUM-49`). The primary actor is **Member** (Vision §3.2 "Recipe contributor"); Verified Contributor, Moderator and Administrator inherit these use cases. The **Moderator** is a secondary actor: their decisions are made in `UC-100-01` Moderate Recipe Submission and only change the recipe status seen here.
+>
+> **Recipe lifecycle (author transitions, FR-023):** `DRAFT → PENDING` (submit), `PENDING → DRAFT` (withdraw), `REVISION_REQUESTED → PENDING` (resubmit), `PUBLISHED → ARCHIVED` (archive), `ARCHIVED → PUBLISHED` (restore). Moderator transitions (FR-024): `PENDING → PUBLISHED | REJECTED | REVISION_REQUESTED`.
+
+### UC-060-01: Create Recipe with Wizard & Submit for Review
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-060-01`
+- **Use Case Name:** Create a Recipe with the 6-Step Wizard and Submit it for Moderation
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** (signed in, active account; a verified email is needed only for the final submission).
+- **Secondary Actor:** **Moderator** (receives the submission in `UC-100-01`).
+- **Included Use Case:** `UC-060-02` Save & Resume Draft. **Extending Use Case:** `UC-060-07` Propose New Ingredient.
+
+#### 3. Description
+The Member writes a recipe one step at a time in a six-step wizard — (1) General information, (2) Ingredients, (3) Equipment, (4) Steps, (5) Video, (6) Review — with validation on every "Next". The draft is saved automatically throughout (`UC-060-02`). At the last step the Member sees the recipe as readers will see it and submits it; the recipe moves from `DRAFT` to `PENDING` and enters the moderation queue.
+
+#### 4. Preconditions
+- The actor is signed in with an active (not suspended or banned) account of role Member or higher (FR-001).
+- The actor has fewer than 20 open drafts (FR-030).
+- The device is online for the first save of a new recipe (spec 060 Assumptions).
+
+#### 5. Basic Flow
+1. **Start Wizard:** On "Công thức của tôi" the actor taps "Tạo mới". The system creates a new `DRAFT` and opens step 1 with a progress bar showing the six steps (US1 AS1).
+2. **Step 1 — General Information:** The actor enters name "Canh chua cá lóc" (5–100 characters), a short description (≤ 500), uploads a cover photo (JPEG/PNG/WebP, ≤ 5 MB), selects cuisine "Việt Nam", category "Canh", cooking method "Nấu", up to 10 tags, difficulty "Dễ", preparation time 15 and cooking time 40 minutes (0–1,440 each, total > 0) and servings 4 (1–50) (FR-005, FR-014).
+3. **Validate and Advance:** The actor taps "Tiếp". The system validates step 1, saves the draft (`UC-060-02`) and opens step 2 (FR-013, FR-016).
+4. **Step 2 — Ingredients:** The actor types `ca loc`. Within 500 ms the system suggests catalogue ingredients ignoring diacritics and case ("Cá lóc"). The actor chooses it and fills quantity `800`, unit `g`, note "cắt khúc" (≤ 100 characters) and leaves "optional" unchecked (FR-006, FR-007, NFR-002).
+5. **Group and Order:** The actor adds more rows (1–50 in total), creates the group "Phần nước dùng", moves "Me chua" and "Cà chua" into it and reorders rows with drag-and-drop or the move up / move down buttons (FR-008, NFR-005).
+6. **Step 3 — Equipment:** The actor selects "Nồi" from the equipment list maintained by administrators (zero or more items) (FR-009).
+7. **Step 4 — Steps:** The actor adds steps (1–30), each with text (1–1,000 characters), at most one optional photo and at most one optional timer between 10 seconds and 24 hours (e.g., 15 minutes); steps can be reordered or deleted (FR-010).
+8. **Step 5 — Video:** The actor pastes a YouTube link. The system validates that it is a YouTube or TikTok video page and shows a preview (FR-011).
+9. **Step 6 — Review:** The system shows the recipe as readers will see it ("Người đọc sẽ thấy") and confirms that no required item is missing (FR-012).
+10. **Submit:** The actor taps "Gửi duyệt" and confirms in the dialog.
+11. **Validate on Server:** The system re-validates all required items of steps 1, 2 and 4 on the server, checks the email is verified and the daily submission limit, and treats repeated clicks as one submission (FR-003, FR-022, FR-025, FR-030).
+12. **Change Status:** The system sets the status to `PENDING`, records a status-history entry (time, actor, message), and places the recipe in the moderation queue of `UC-100-01` (FR-029).
+13. **Confirm:** The system shows a confirmation; the recipe becomes read-only for the author and appears under the tab "Chờ duyệt" on "Công thức của tôi" (US1 AS9). It is not visible to other Members (FR-002).
+
+#### 6. Alternative Flows
+- **AF 1.1: Step Validation Fails:**
+  - *Trigger:* At Step 3 (or any "Tiếp"), a required field of the current step is missing or invalid.
+  - *Steps:*
+    1. The system keeps the actor on the step and shows a message next to each invalid field (US1 AS2).
+    2. The draft is still saved with the invalid content (FR-015).
+  - *Note:* Moving backward, or jumping back through the progress bar, never validates (FR-013).
+- **AF 1.2: Email Not Verified:**
+  - *Trigger:* At Step 10, the actor's email is not verified.
+  - *Steps:*
+    1. "Gửi duyệt" is disabled; the system shows "Email chưa xác minh — Bạn vẫn lưu nháp được." with a "Xác minh email" link (US1 AS10).
+    2. The actor can keep saving the draft and submit after verifying (`UC-010-01`).
+- **AF 1.3: Missing Items at Review:**
+  - *Trigger:* At Step 9, required items are missing or invalid.
+  - *Steps:*
+    1. The system lists each item (e.g., "Còn 2 mục cần hoàn thành: Ảnh bìa · Bước 1; Thời gian nấu · Bước 1") with a link to the step that fixes it (US1 AS8).
+    2. "Gửi duyệt" stays disabled until the list is empty; the actor follows a link, fixes the item and returns to step 6.
+- **AF 1.4: Invalid Image:**
+  - *Trigger:* At Step 2 or 7, the actor chooses a file that is not JPEG/PNG/WebP or is larger than 5 MB.
+  - *Steps:*
+    1. The system refuses the file before uploading and states the allowed types and size (FR-014, SC-003).
+  - *Server check:* The server verifies the real file type and size, not only the file name (NFR-003).
+- **AF 1.5: Image Upload Fails Midway:**
+  - *Trigger:* At Step 2 or 7, the upload is interrupted.
+  - *Steps:*
+    1. That image shows "Tải lên thất bại — Thử lại"; all other typed data stays.
+    2. The draft can still be saved without the image; the actor retries later.
+- **AF 1.6: Quantity Formats and "To Taste":**
+  - *Trigger:* At Step 4, the actor types a quantity.
+  - *Steps:*
+    1. The system accepts "1/2", "0,5", "0.5" and "1 1/2"; it refuses zero, negative and non-numeric values.
+    2. If the unit is "vừa đủ" (to taste), no quantity is required.
+- **AF 1.7: Same Catalogue Ingredient Twice in One Group:**
+  - *Trigger:* At Step 4–5, the actor adds an ingredient already present in the same group.
+  - *Steps:*
+    1. The system warns and asks the actor to merge the rows or keep both. The same ingredient in different groups (salt for the marinade and for the broth) is allowed without warning.
+- **AF 1.8: Ingredient Not in the Catalogue:**
+  - *Trigger:* At Step 4, no catalogue ingredient matches.
+  - *Steps:* Extension point `Ingredient not found` → `UC-060-07` Propose New Ingredient; the flow then returns to Step 4.
+- **AF 1.9: Unsupported Video Link:**
+  - *Trigger:* At Step 8, the link is not a YouTube or TikTok video page.
+  - *Steps:*
+    1. The system refuses it with a message naming the two accepted platforms (US1 AS7). The video step is optional and can be left empty.
+- **AF 1.10: Daily Submission Limit Reached:**
+  - *Trigger:* At Step 11, the actor already submitted 10 recipes today.
+  - *Steps:*
+    1. The system refuses the submission and shows the time when submitting becomes possible again; the recipe stays `DRAFT` (FR-030).
+- **AF 1.11: Draft Limit Reached:**
+  - *Trigger:* At Step 1, the actor already has 20 open drafts.
+  - *Steps:*
+    1. The system does not create a new draft and asks the actor to finish or delete an existing one (FR-030).
+- **AF 1.12: Taxonomy Value Removed:**
+  - *Trigger:* A cuisine, category or equipment item used in the draft was removed by an administrator.
+  - *Steps:*
+    1. When the draft is next opened, the system flags the field; it must be changed before submitting.
+- **AF 1.13: Account Suspended While Editing:**
+  - *Trigger:* At any save, the account has been suspended or banned.
+  - *Steps:*
+    1. The system refuses the save and shows the reason; existing drafts are kept.
+
+#### 7. Postconditions
+- **Success:** The recipe is `PENDING`, read-only for its author, visible only to the author, Moderators and Administrators, and recorded in the status history; it appears in the moderation queue.
+- **Failure / Abandoned:** The recipe stays `DRAFT` with all typed data saved (`UC-060-02`); no partial or duplicate submission exists (SC-004).
+
+#### 8. Special Requirements
+- **Server Enforcement:** Every permission, status transition and validation rule is enforced on the server, regardless of the interface; 100% of invalid transitions attempted directly are refused (FR-003, SC-005).
+- **Usability:** At least 90% of test participants create and submit a recipe with 8 ingredients and 6 steps in under 10 minutes on their first try (SC-001).
+- **Input Limits:** Counters are shown for name (100), description (500), step (1,000) and note (100); text over the limit cannot be entered. HTML or script is stored and shown as plain text (NFR-003).
+- **Responsiveness & Accessibility:** Usable from 360 px; reordering also works with move up / move down buttons; every field has a visible label, errors are announced next to their field and the wizard is keyboard-operable (NFR-005, NFR-006).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`RE02-General.dc.html`](../analysis-and-design/ui-ux/screens/RE02-General.dc.html), [`RE03-Ingredients.dc.html`](../analysis-and-design/ui-ux/screens/RE03-Ingredients.dc.html), [`RE04-Equipment.dc.html`](../analysis-and-design/ui-ux/screens/RE04-Equipment.dc.html), [`RE05-Steps.dc.html`](../analysis-and-design/ui-ux/screens/RE05-Steps.dc.html), [`RE06-Video.dc.html`](../analysis-and-design/ui-ux/screens/RE06-Video.dc.html), [`RE07-Review.dc.html`](../analysis-and-design/ui-ux/screens/RE07-Review.dc.html).
+- **Alternative Flows:** [`RE02-General.dc.html`](../analysis-and-design/ui-ux/screens/RE02-General.dc.html) (AF 1.1 — step 1 with errors), [`RE07-Review.dc.html`](../analysis-and-design/ui-ux/screens/RE07-Review.dc.html) (AF 1.2, AF 1.3).
+- **UI Asset Gap for SCRUM-58:** No screens for the submit confirmation dialog and success message (Steps 10–13), image errors (AF 1.4, AF 1.5) and the submission/draft limit messages (AF 1.10, AF 1.11) — *Gap 060-A*.
+
+---
+
+### UC-060-02: Save & Resume Draft
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-060-02`
+- **Use Case Name:** Save a Recipe Draft Manually or Automatically and Resume it Without Data Loss
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** (Vision §3.2 "Home cook writing a long recipe").
+- **Included by:** `UC-060-01` and `UC-060-03`.
+
+#### 3. Description
+Keeps every character the author types. The draft is saved on demand ("Lưu nháp"), automatically when the author changes step, and after 30 seconds of unsaved changes. When the network drops, changes are kept on the device and sent when it returns; when the session expires, the author signs in again in place without retyping. A draft reopens on the step where the author stopped. Concurrent changes from two devices are never overwritten silently.
+
+#### 4. Preconditions
+- The actor is editing a recipe in the wizard (`UC-060-01` or `UC-060-03`), or is on "Công thức của tôi" with at least one draft.
+
+#### 5. Basic Flow
+1. **Save Manually:** On any step the actor taps "Lưu nháp". The system saves the recipe as `DRAFT` even if required fields are missing, stores the current step as the last active step, and updates the indicator to "Đã lưu lúc 14:32" (FR-015, US2 AS1).
+2. **Autosave:** The actor keeps typing. After 30 seconds of unsaved changes, or when the actor moves to another step, the system saves automatically; the indicator shows "Đang lưu…" then "Đã lưu lúc hh:mm" (FR-016, FR-017).
+3. **Leave:** The actor closes the tab after the last save.
+4. **Reopen:** Later, the actor opens "Công thức của tôi", tab "Nháp", and taps "Tiếp tục" on the draft.
+5. **Restore:** The system opens the wizard on the last active step with all data restored (FR-020, US2 AS6).
+
+#### 6. Alternative Flows
+- **AF 2.1: Network Lost While Editing:**
+  - *Trigger:* At Step 2, the device goes offline.
+  - *Steps:*
+    1. The system keeps the changes on the device and shows "Đang ngoại tuyến · đã lưu trên máy" (US2 AS3).
+    2. When the connection returns, the system sends the changes automatically and shows "Đã lưu lúc hh:mm".
+- **AF 2.2: Session Expired:**
+  - *Trigger:* At Step 1 or 2, the server rejects the save because the session expired.
+  - *Steps:*
+    1. The system keeps the unsaved changes and shows a sign-in dialog in place, without leaving the wizard (US2 AS4).
+    2. The actor signs in; the system saves the pending changes without retyping (FR-018).
+- **AF 2.3: Leaving with Unsaved Changes:**
+  - *Trigger:* At Step 3, there are changes not yet saved.
+  - *Steps:*
+    1. The system warns the actor before leaving the page or closing the tab (FR-019).
+    2. The actor chooses to stay (and save) or to leave.
+- **AF 2.4: Draft Changed on Another Device:**
+  - *Trigger:* At Step 1 or 2, the server version is newer than the version this device last saved.
+  - *Steps:*
+    1. The system does not overwrite; it shows "Bản nháp đã được sửa ở thiết bị khác" with "Giữ bản trên máy này" and "Dùng bản mới nhất" (FR-021, US2 AS7).
+    2. The actor chooses one; the system saves that version and discards the other.
+- **AF 2.5: Repeated Save Requests:**
+  - *Trigger:* The actor double-clicks "Lưu nháp", or an autosave and a manual save overlap.
+  - *Steps:*
+    1. The system stores exactly one version for the same change (FR-022).
+- **AF 2.6: New Recipe Started Offline:**
+  - *Trigger:* At Step 1, a brand-new recipe has never been saved and the device is offline.
+  - *Steps:*
+    1. The system keeps the typed data on the device and tells the actor that the first save needs a connection; it saves as soon as the connection returns.
+
+#### 7. Postconditions
+- **Success:** The latest content of the draft and its last active step are stored on the server; the indicator shows the time of the last save.
+- **Offline:** All changes are stored on the device and queued for saving; nothing typed is lost.
+
+#### 8. Special Requirements
+- **Data Safety:** In tests that drop the network, close the tab or expire the session, 0 characters of typed content are lost (NFR-001, SC-002).
+- **Performance:** 95% of draft saves (excluding image uploads) complete in under 2 seconds (NFR-002).
+- **Visibility:** The save state ("Đã lưu", "Đang lưu…", "Ngoại tuyến") is always visible in the wizard (FR-017).
+- **Privacy:** Drafts are reachable only by their author, including by guessing the address (NFR-004).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`RE07-Review.dc.html`](../analysis-and-design/ui-ux/screens/RE07-Review.dc.html) (indicator "Đã lưu lúc 14:32", "Lưu nháp"), [`RE01-MyRecipes.dc.html`](../analysis-and-design/ui-ux/screens/RE01-MyRecipes.dc.html) ("Tiếp tục").
+- **Alternative Flows:** [`RE03-Ingredients.dc.html`](../analysis-and-design/ui-ux/screens/RE03-Ingredients.dc.html) (AF 2.1 — "Đang ngoại tuyến · đã lưu trên máy"), [`RE10-Conflict.dc.html`](../analysis-and-design/ui-ux/screens/RE10-Conflict.dc.html) (AF 2.4).
+- **UI Asset Gap for SCRUM-58:** No screens for the in-place sign-in dialog (AF 2.2) and the leave-page warning (AF 2.3) — *Gap 060-B*.
+
+---
+
+### UC-060-03: Revise Recipe after Moderator Decision
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-060-03`
+- **Use Case Name:** Read the Moderator's Decision, Revise and Resubmit, Withdraw, or Copy a Rejected Recipe
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** (author of the recipe).
+- **Secondary Actor:** **Moderator** (made the decision in `UC-100-01`; sees the resubmission and what changed).
+- **Included Use Case:** `UC-060-02` Save & Resume Draft. Extends `UC-060-04` Manage My Recipes.
+
+#### 3. Description
+Closes the moderation loop from the author's side. A recipe set to `REVISION_REQUESTED` shows the moderator's note at the top of the wizard; the author edits and resubmits it. A `REJECTED` recipe is read-only with its reason and can be copied to a new draft or deleted. A `PENDING` recipe can be withdrawn back to `DRAFT`.
+
+#### 4. Preconditions
+- The actor is the author of the recipe and is signed in.
+- A Moderator set the recipe to `REVISION_REQUESTED` with a note, or to `REJECTED` with a reason (FR-024), or the recipe is `PENDING` (AF 3.2).
+
+#### 5. Basic Flow
+*(Revision requested)*
+1. **Find the Recipe:** On "Công thức của tôi" the actor opens the tab "Cần sửa". The card "Bò kho bánh mì" shows the moderator's note "“Vui lòng thêm ảnh cho bước 3 và ghi rõ đơn vị nguyên liệu.”".
+2. **Open for Revision:** The actor taps "Sửa và gửi lại". The system opens the wizard with the banner "Ghi chú của kiểm duyệt viên · 26/10" and the note at the top (US3 AS1).
+3. **Edit:** The actor goes to step 4 and adds a photo to step 3, then to step 2 and corrects units. Every change is saved (`UC-060-02`).
+4. **Resubmit:** On step 6 the actor taps "Gửi lại để duyệt" and confirms.
+5. **Validate and Change Status:** The system validates as in `UC-060-01` Step 11, sets the status from `REVISION_REQUESTED` to `PENDING`, records the history entry and keeps the previous submission so the Moderator can see what changed (FR-023, FR-029, US3 AS2).
+6. **Confirm:** The recipe moves to the tab "Chờ duyệt" and becomes read-only.
+
+#### 6. Alternative Flows
+- **AF 3.1: Recipe Rejected:**
+  - *Trigger:* At Step 1, the recipe is under "Bị từ chối".
+  - *Steps:*
+    1. The actor taps "Xem". The system shows the recipe read-only with "Lý do: Trùng lặp" (US3 AS3, FR-026).
+    2. The actor taps "Sao chép sang nháp mới". The system creates a new `DRAFT` with the same content (subject to the 20-draft limit) and opens it in the wizard; the rejected recipe is unchanged.
+    3. *Alternative:* The actor taps "Xóa" → `UC-060-06` AF 6.2.
+- **AF 3.2: Withdraw a Pending Recipe:**
+  - *Trigger:* The recipe is under "Chờ duyệt" and the actor taps "Rút lại".
+  - *Steps:*
+    1. The system asks for confirmation; the actor confirms.
+    2. The system sets the status to `DRAFT`, removes it from the moderation queue and records the history entry (US3 AS4). The recipe can now be edited as a draft.
+- **AF 3.3: Attempt to Edit a Pending Recipe:**
+  - *Trigger:* The actor tries to edit a `PENDING` recipe (e.g., from an old address).
+  - *Steps:*
+    1. The system refuses and suggests withdrawing it first (US3 AS5).
+- **AF 3.4: Proposed Ingredient Rejected:**
+  - *Trigger:* The Moderator rejected an ingredient proposed in `UC-060-07`.
+  - *Steps:*
+    1. The recipe returns as "Cần sửa" with a note asking the author to pick a catalogue ingredient; the proposed row is marked; the flow continues at Step 2.
+- **AF 3.5: Recipe Approved:**
+  - *Trigger:* The Moderator approved the submission.
+  - *Steps:*
+    1. The next time the actor opens "Công thức của tôi", the recipe appears under "Đã đăng" with its publication date (US3 AS6). No action is required.
+- **AF 3.6: Resubmission Refused:**
+  - *Trigger:* At Step 5, a required item is missing or the daily limit of 10 submissions is reached.
+  - *Steps:*
+    1. Same handling as `UC-060-01` AF 1.3 and AF 1.10; the recipe stays `REVISION_REQUESTED`.
+
+#### 7. Postconditions
+- **Success (resubmit):** The recipe is `PENDING` again, the Moderator can see what changed since the previous submission, and the history records the transition.
+- **Success (withdraw):** The recipe is `DRAFT` and no longer in the moderation queue.
+- **Success (copy):** A new `DRAFT` exists; the `REJECTED` recipe is unchanged and read-only.
+
+#### 8. Special Requirements
+- **Findability:** Authors can find the reason for any rejection or revision request within 2 clicks from "Công thức của tôi" (SC-006).
+- **Read-only States:** `PENDING`, `REJECTED` and `ARCHIVED` recipes cannot be edited; this is enforced on the server (FR-026, FR-003).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`RE01-MyRecipes.dc.html`](../analysis-and-design/ui-ux/screens/RE01-MyRecipes.dc.html) (tab "Cần sửa", "Sửa và gửi lại"), [`RE08-RevisionNote.dc.html`](../analysis-and-design/ui-ux/screens/RE08-RevisionNote.dc.html).
+- **Alternative Flows:** [`RE09-Rejected.dc.html`](../analysis-and-design/ui-ux/screens/RE09-Rejected.dc.html) (AF 3.1), [`RE01-MyRecipes.dc.html`](../analysis-and-design/ui-ux/screens/RE01-MyRecipes.dc.html) ("Rút lại", AF 3.2).
+- **UI Asset Gap for SCRUM-58:** No screen for the withdraw confirmation (AF 3.2) — *Gap 060-C*.
+
+---
+
+### UC-060-04: Manage My Recipes
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-060-04`
+- **Use Case Name:** View and Act on All of My Recipes Grouped by Status
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** (Vision §3.2 "Contributor with several recipes").
+- **Extending Use Cases:** `UC-060-03`, `UC-060-05`, `UC-060-06`.
+
+#### 3. Description
+One page, "Công thức của tôi", lists all recipes of the author in tabs by status with counts. Each card shows the information the author needs and only the actions valid for that status. The actions are the extension points from which revising, editing a published recipe and archiving/restoring/deleting start.
+
+#### 4. Preconditions
+- The actor is signed in (Member or higher).
+
+#### 5. Basic Flow
+1. **Open Page:** The actor opens "Tôi" → "Công thức của tôi".
+2. **Load List:** The system loads only the actor's own recipes and shows the tabs "Nháp", "Chờ duyệt", "Cần sửa", "Đã đăng", "Bị từ chối", "Lưu trữ", each with a count (e.g., "Nháp 2", "Đã đăng 5") (FR-031, US4 AS1).
+3. **Show Cards:** In the selected tab the system lists recipes most recently updated first, 20 per page. Each card shows cover image, name, status, last updated date and, where relevant, the rejection reason or moderator note (FR-032, US4 AS2).
+4. **Offer Valid Actions:** For each card the system offers only the actions valid for its status (US4 AS3):
+
+   | Status | Actions offered | Leads to |
+   | :--- | :--- | :--- |
+   | `DRAFT` (Nháp) | "Tiếp tục", "Xóa" | `UC-060-02`; `UC-060-06` |
+   | `PENDING` (Chờ duyệt) | "Xem", "Rút lại" | read-only view; `UC-060-03` AF 3.2 |
+   | `REVISION_REQUESTED` (Cần sửa) | "Sửa và gửi lại" | `UC-060-03` |
+   | `PUBLISHED` (Đã đăng) | "Xem", "Sửa", "Lưu trữ" | `UC-020-06`; `UC-060-05`; `UC-060-06` |
+   | `REJECTED` (Bị từ chối) | "Xem", "Sao chép sang nháp mới", "Xóa" | `UC-060-03` AF 3.1; `UC-060-06` |
+   | `ARCHIVED` (Lưu trữ) | "Xem", "Khôi phục" | read-only view; `UC-060-06` |
+
+5. **Choose Action:** The actor chooses an action; the corresponding use case begins. Otherwise the actor taps "Tạo mới" to start `UC-060-01`.
+
+#### 6. Alternative Flows
+- **AF 4.1: No Recipes Yet:**
+  - *Trigger:* At Step 2, the actor has no recipes.
+  - *Steps:*
+    1. The system shows an empty state inviting the actor to create their first recipe, with "Tạo mới" (US4 AS4).
+- **AF 4.2: Loading Fails:**
+  - *Trigger:* At Step 2, the request fails.
+  - *Steps:*
+    1. The system shows an error message with "Thử lại"; the actor retries (US4 AS5, FR-033).
+- **AF 4.3: Action No Longer Valid:**
+  - *Trigger:* At Step 5, the status changed in the meantime (e.g., the Moderator approved the recipe while the actor tried "Rút lại").
+  - *Steps:*
+    1. The server refuses the invalid transition (FR-003, SC-005).
+    2. The system reloads the list and shows the recipe in its new tab with its current actions.
+- **AF 4.4: More Than 20 Recipes in a Tab:**
+  - *Trigger:* At Step 3, the tab has more than 20 recipes.
+  - *Steps:*
+    1. The system shows numbered pages of 20 (FR-031).
+
+#### 7. Postconditions
+- The actor sees the up-to-date status of each of their recipes; no recipe of another user is listed.
+
+#### 8. Special Requirements
+- **Findability:** The reason for any rejection or revision request is reachable within 2 clicks (SC-006).
+- **States:** The page provides loading, empty, error (with "Thử lại") and data states (FR-033).
+- **Privacy:** Only the author's recipes are returned by the server, whatever parameters are sent (NFR-004).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`RE01-MyRecipes.dc.html`](../analysis-and-design/ui-ux/screens/RE01-MyRecipes.dc.html) (tabs, counts, cards and actions for every status).
+- **UI Asset Gap for SCRUM-58:** No screens for the empty state (AF 4.1) and the loading error (AF 4.2) — *Gap 060-D*.
+
+---
+
+### UC-060-05: Edit Published Recipe
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-060-05`
+- **Use Case Name:** Edit a Published Recipe through a Reviewed Revision Without Taking it Offline
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** (author of the recipe).
+- **Secondary Actor:** **Moderator** (approves or rejects the revision in `UC-100-01`).
+- Extends `UC-060-04` Manage My Recipes.
+
+#### 3. Description
+The author corrects or improves a recipe that is already `PUBLISHED`. The change is a separate **revision** that goes through moderation, while readers keep seeing the current published version. When the revision is approved it replaces the published content, and the recipe keeps its identity, reviews, ratings, bookmarks and meal-plan entries (Clarification 2026-10-08, FR-027).
+
+#### 4. Preconditions
+- The actor is the author and is signed in with a verified email.
+- The recipe is `PUBLISHED`.
+
+#### 5. Basic Flow
+1. **Choose Edit:** On the tab "Đã đăng" the actor taps "Sửa" on "Gà nướng mật ong".
+2. **Create Revision:** The system creates a revision that copies the published content and opens it in the wizard with a banner explaining that readers keep seeing the current version until the change is approved (US5 AS1).
+3. **Edit:** The actor changes the cooking time and step 2. The revision is saved like a draft (save behaviour of `UC-060-02`).
+4. **Submit Revision:** On step 6 the actor taps "Gửi duyệt" and confirms. The system validates as in `UC-060-01` Step 11 and sends the revision to the moderation queue; the published version stays unchanged and visible to everyone.
+5. **Moderator Approves:** In `UC-100-01` the Moderator approves the revision.
+6. **Replace Content:** The system replaces the published content with the revision, keeps the recipe ID, reviews, ratings, bookmarks and meal-plan entries, records the history entry and triggers the publish event for nutrition estimation and the planner index (`090`, `031`); a failure there does not block publication (US5 AS2).
+
+#### 6. Alternative Flows
+- **AF 5.1: Revision Already in Progress:**
+  - *Trigger:* At Step 1, the recipe already has an open revision.
+  - *Steps:*
+    1. The system opens the existing revision instead of creating a second one (US5 AS4).
+- **AF 5.2: Revision Rejected or Needs Changes:**
+  - *Trigger:* At Step 5, the Moderator rejects the revision or requests changes.
+  - *Steps:*
+    1. The published version is unaffected (US5 AS3).
+    2. The revision shows the moderator's message; for "needs changes" the author revises and resubmits as in `UC-060-03`.
+- **AF 5.3: Email Not Verified:**
+  - *Trigger:* At Step 4, the actor's email is no longer verified (e.g., after an email change).
+  - *Steps:* Same as `UC-060-01` AF 1.2.
+
+#### 7. Postconditions
+- **During review:** Exactly one open revision exists; readers see the unchanged published version.
+- **After approval:** The published recipe shows the new content with the same identity and all its reviews, ratings, bookmarks and meal-plan references.
+- **After rejection:** The published recipe is unchanged.
+
+#### 8. Special Requirements
+- **Single Revision:** At most one open revision per recipe (spec 060 Key Entities — Recipe Revision).
+- **Non-blocking Integrations:** Failures of nutrition estimation or planner indexing after approval never block publication (spec 060 Integration Points).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`RE01-MyRecipes.dc.html`](../analysis-and-design/ui-ux/screens/RE01-MyRecipes.dc.html) ("Sửa" on a published recipe), wizard screens `RE02` – `RE07`.
+- **UI Asset Gap for SCRUM-58:** No screen shows the revision banner "readers keep seeing the current version" (Step 2) — *Gap 060-E*.
+
+---
+
+### UC-060-06: Archive, Restore or Delete Recipe
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-060-06`
+- **Use Case Name:** Archive a Published Recipe, Restore an Archived Recipe, or Delete a Draft or Rejected Recipe
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** (author of the recipe). Extends `UC-060-04` Manage My Recipes.
+
+#### 3. Description
+Housekeeping of the author's recipes. Archiving takes a published recipe offline without losing it; restoring brings it back unchanged without a new review; deleting permanently removes a draft or rejected recipe with its photos. Published and archived recipes cannot be deleted, so reviews and other users' saved references are never broken.
+
+#### 4. Preconditions
+- The actor is the author and is signed in.
+- The recipe is `PUBLISHED` (archive), `ARCHIVED` (restore), or `DRAFT` / `REJECTED` (delete).
+
+#### 5. Basic Flow
+*(Archive)*
+1. **Choose Archive:** On the tab "Đã đăng" the actor taps "Lưu trữ" on "Chè bắp".
+2. **Confirm:** The system explains that the recipe will disappear from search and its public page; the actor confirms.
+3. **Archive:** The system sets the status to `ARCHIVED` and records the history entry (FR-023).
+4. **Effect:** The recipe disappears from search (`UC-020-01`); its public page shows "Công thức này không còn khả dụng" (`UC-020-06` AF 6.2); it appears under "Lưu trữ" (US6 AS1).
+
+#### 6. Alternative Flows
+- **AF 6.1: Restore an Archived Recipe:**
+  - *Trigger:* On the tab "Lưu trữ" the actor taps "Khôi phục".
+  - *Steps:*
+    1. The system sets the status to `PUBLISHED` with the same content, without a new moderation review, and records the history entry (US6 AS2, Clarification 2026-10-08).
+    2. The recipe is searchable and publicly visible again.
+- **AF 6.2: Delete a Draft or Rejected Recipe:**
+  - *Trigger:* On the tab "Nháp" or "Bị từ chối" the actor taps "Xóa".
+  - *Steps:*
+    1. The system asks for confirmation, stating that deletion is permanent.
+    2. The actor confirms; the system permanently removes the recipe together with its photos (FR-028, US6 AS3).
+- **AF 6.3: Delete Not Allowed:**
+  - *Trigger:* The recipe is `PUBLISHED` or `ARCHIVED`.
+  - *Steps:*
+    1. "Xóa" is not offered (archive instead); a delete request sent directly to the server is refused (US6 AS4, FR-003).
+- **AF 6.4: Cancel:**
+  - *Trigger:* At Step 2 or in AF 6.2, the actor cancels the confirmation.
+  - *Steps:*
+    1. Nothing changes.
+- **AF 6.5: Edit an Archived Recipe:**
+  - *Trigger:* The actor wants to change an archived recipe.
+  - *Steps:*
+    1. The system explains that archived recipes must be restored before editing (FR-026); after AF 6.1 the actor continues with `UC-060-05`.
+
+#### 7. Postconditions
+- **Archive:** The recipe is `ARCHIVED`, hidden from search and public view, and keeps its content, reviews and ratings.
+- **Restore:** The recipe is `PUBLISHED` with unchanged content.
+- **Delete:** The recipe and its photos no longer exist.
+
+#### 8. Special Requirements
+- **Referential Safety:** Only `DRAFT` and `REJECTED` recipes can be deleted, so no review, collection or meal plan points to a deleted recipe (FR-028).
+- **Audit:** Every archive and restore is recorded with time, actor and message (FR-029).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`RE01-MyRecipes.dc.html`](../analysis-and-design/ui-ux/screens/RE01-MyRecipes.dc.html) ("Lưu trữ", "Xóa" and the archived example card).
+- **UI Asset Gap for SCRUM-58:** No screens for the archive and delete confirmation dialogs (Step 2, AF 6.2) — *Gap 060-F*.
+
+---
+
+### UC-060-07: Propose New Ingredient
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Nguyễn Thành Dự (ThanhDu14) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-060-07`
+- **Use Case Name:** Propose an Ingredient that Is Not in the Shared Catalogue
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** (author editing step 2 of the wizard).
+- **Secondary Actor:** **Moderator** (approves or rejects the proposal together with the recipe in `UC-100-01`).
+- Extends `UC-060-01` at the extension point `Ingredient not found` (step 2); the same extension applies when the wizard is reopened in `UC-060-03` and `UC-060-05`.
+
+#### 3. Description
+When the ingredient the author needs is not in the shared catalogue, the author proposes it inside the recipe. The proposal is visible only inside that recipe until a Moderator approves it together with the recipe; on approval it becomes a catalogue ingredient that search, nutrition and the shopping list can use (Clarification 2026-10-08).
+
+#### 4. Preconditions
+- The actor is on step 2 of the wizard and has typed an ingredient name for which no catalogue ingredient matches (ignoring diacritics and case).
+
+#### 5. Basic Flow
+1. **Search Without Match:** The actor types `la lot`. The system finds no catalogue ingredient and shows the option "Đề xuất “la lot” làm nguyên liệu mới".
+2. **Propose:** The actor chooses the option and corrects the name to "Lá lốt".
+3. **Add Row:** The system adds an ingredient row marked "mới · chờ duyệt" and stores the proposal with status "proposed", linked to this recipe only (FR-006).
+4. **Complete Row:** The actor fills quantity, unit and note as for any row; the flow returns to `UC-060-01` Step 4.
+5. **Review with Recipe:** When the recipe is submitted, the proposal is shown to the Moderator together with the recipe (`UC-100-01`).
+6. **Approval:** When the Moderator approves, the ingredient becomes an approved catalogue ingredient; its allergens and supermarket aisle are set at that time (spec 060 Integration Points).
+
+#### 6. Alternative Flows
+- **AF 7.1: Name Matches an Existing Ingredient:**
+  - *Trigger:* At Step 2, the proposed name matches a catalogue ingredient when diacritics and case are ignored (e.g., "hanh la" → "Hành lá").
+  - *Steps:*
+    1. The system suggests the existing ingredient instead of creating a new proposal (FR-007, spec 060 Edge Cases).
+    2. The actor chooses the existing ingredient; the use case ends.
+- **AF 7.2: Proposal Rejected:**
+  - *Trigger:* At Step 6, the Moderator rejects the proposed ingredient.
+  - *Steps:*
+    1. The recipe returns as "Cần sửa" with a note asking the author to pick a catalogue ingredient (`UC-060-03` AF 3.4).
+- **AF 7.3: Row Removed Before Submission:**
+  - *Trigger:* The actor deletes the proposed row before submitting.
+  - *Steps:*
+    1. The system discards the proposal; nothing reaches the moderators.
+
+#### 7. Postconditions
+- **Before approval:** The proposed ingredient exists only inside this recipe and is not offered to other authors or used by search, nutrition or the shopping list.
+- **After approval:** It is an approved catalogue ingredient available to everyone.
+
+#### 8. Special Requirements
+- **Suggestion Speed:** Ingredient suggestions appear within 500 ms after the actor pauses typing (NFR-002).
+- **Duplicate Prevention:** An existing catalogue ingredient is always suggested before a new one can be proposed (FR-007).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`RE03-Ingredients.dc.html`](../analysis-and-design/ui-ux/screens/RE03-Ingredients.dc.html) (propose option and row "mới · chờ duyệt").
+- **Alternative Flows:** [`AD11-IngredientProposals.dc.html`](../analysis-and-design/ui-ux/screens/AD11-IngredientProposals.dc.html) (moderator side of Steps 5–6, owned by `UC-100-01`).
+- **UI Asset Gap for SCRUM-58:** None for the author side.
