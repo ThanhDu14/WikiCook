@@ -267,77 +267,80 @@ Không còn mục NEEDS CLARIFICATION; những điểm phụ thuộc người kh
   AI và không tốn lượt.
 - **Alternatives considered**: Confirm ghi trực tiếp vào repository của 030 – phá ranh giới module.
 
-## R15. Gợi ý cho một ô (FR-033 – FR-038, US7)
+## R15. Đổi món trong bản nháp và gợi ý cho một ô (FR-033 – FR-041, US7)
 
-Clarification 2026-10-29: gợi ý xếp lại (rerank) theo ngữ cảnh của tuần đang mở, để người dùng thay
-món chưa ưng ý ngay trong picker.
+Clarification 2026-10-29: bản nháp kèm sẵn món thay thế đã xếp hạng cho từng ô (nút ↻ "Đổi"), và
+picker có "Gợi ý cho bạn" theo khẩu vị. Cả hai dùng chung một bộ xếp hạng và **không gọi dịch vụ AI
+bên ngoài** (không LLM, không embedding API), nên luôn nhanh và không phụ thuộc provider.
 
 - **Decision**:
-  - Endpoint `GET /api/v1/ai-planner/weeks/{weekStart}/suggestions?day=&meal=&exclude=` trả tối đa
-    5 món. Không bao giờ gọi `LlmClient`, không ghi `ai_requests` (FR-033, FR-036).
-  - **Bước 0 – ngữ cảnh tuần `W`** = món đã lên lịch (`MealPlanWriteFacade.plannedRecipeIds`) ∪
-    `exclude` (món trong draft đang mở). Đọc vector, `category_id`, nguyên liệu chính và ô (ngày,
-    bữa) của từng món trong `W` từ DB, không gọi provider.
-  - **Bước 1 – lọc cứng**: tập hợp lệ của bữa theo R4 (`DietRuleSql`), trừ `W`.
-  - **Bước 2 – truy hồi rộng**: lấy `N = 30` món gần câu truy vấn của bữa nhất
-    (`ORDER BY embedding <=> :q LIMIT 30`), cộng phần đuôi là món hợp lệ chưa có embedding (như R5).
-    Vector câu truy vấn được cache bằng Spring Cache (`plannerQueryEmbeddings`, khóa = hash câu truy
-    vấn), nên lần mở picker sau không gọi provider.
-  - **Bước 3 – đặc trưng của mỗi món `d`** (vector đã chuẩn hóa, nên cosine = tích vô hướng):
-    - `rel(d) = cos(q, d)`: độ hợp với ô;
-    - `red(d) = max cos(d, w)`, `w ∈ W`: độ giống món đã có trong tuần;
-    - `kind(d) = 1` nếu cùng `category` với một món trong `W` ở cùng ngày hoặc ngày liền kề;
-    - `reuse(d) = |nguyên liệu chính của d ∩ nguyên liệu chính của W| / 5`, tối đa 1.
-    Món chưa có embedding: `rel = red = 0`, chỉ xét `kind` và `reuse`.
-  - **Bước 4 – xếp theo tầng** (Clarification 2026-10-29, câu 1 và 2). Khóa sắp xếp, theo thứ tự:
-    1. `tier`: 0 nếu thuộc ẩm thực ưa thích, 1 nếu không;
-    2. `nearDup`: 1 nếu `red(d) ≥ θ` (mặc định `θ = 0.85`), tức món gần giống món trong tuần;
-       những món này luôn đứng sau món khác kiểu trong cùng tầng (scenario US7-8);
-    3. `score(d) = rel − 0.3·red − 0.1·kind + 0.05·reuse`. Trọng số `reuse` nhỏ và `nearDup` là
-       khóa đứng trước, nên nguyên liệu dùng chung không bao giờ thắng tiêu chí đa dạng (câu 3).
-  - **Bước 5 – chọn 5 món bằng MMR** (Maximal Marginal Relevance), duyệt lần lượt từng nhóm
-    `(tier, nearDup)` theo thứ tự trên. Trong mỗi nhóm, lặp lại: chọn
-    `argmax λ·score(d) − (1−λ)·max cos(d, s)`, `s ∈ đã chọn`, với `λ = 0.7`. Bỏ qua món có
-    `max cos(d, s) ≥ θ`, để không có hai gợi ý gần trùng nhau. Nếu không đủ 5 món thì trả số có
-    được (US7-6). Hòa điểm thì xét `recipe_id` để kết quả tất định.
-  - **Bước 6 – lý do** dựng từ dữ liệu, không do AI viết: "Món sáng · Việt Nam · 20 phút". Nếu
-    `reuse(d) > 0`, thêm một nguyên liệu chính dùng chung và ngày của món trong `W` gần ô nhất, ví dụ
-    "· dùng chung thịt bò với Thứ Hai" (câu 5). Trả kèm `sharedIngredientName`, `sharedWithDay`.
-  - Tham số nằm trong `wikicook.ai.suggestions.*`: `pool-size` 30, `near-duplicate-threshold` 0.85,
-    `mmr-lambda` 0.7, `weights.redundancy` 0.3, `weights.same-kind` 0.1, `weights.reuse` 0.05.
-    Embedding của công thức cùng lĩnh vực thường có cosine khá cao với nhau, nên `θ` và trọng số
-    phải hiệu chỉnh trên seed thật ở T097. Tiêu chí đạt: cặp "Phở bò" / "Bún bò Huế" có cosine
-    ≥ `θ`, và với profile thích món Việt, ô bữa sáng vẫn còn ít nhất 5 món sáng Việt khác kiểu có
-    cosine < `θ` với nhau (để `θ` không loại quá nhiều món).
-  - Timeout phía server 2,5 s: `EmbeddingClient` lỗi hoặc quá hạn → `503 SUGGESTIONS_UNAVAILABLE`.
-    Frontend có timeout 3 s → ẩn danh sách, không báo lỗi (FR-037).
-  - Khi người dùng gõ từ khóa trong picker, frontend ẩn danh sách gợi ý và không gọi endpoint; kết
-    quả tìm kiếm giữ thứ tự của 030 FR-007a (câu 4). Backend không đổi.
-  - Bước 3 – 5 nằm trong `SlotReranker` thuần Java (đầu vào: candidate kèm vector, ngữ cảnh `W`,
-    ẩm thực ưa thích, tham số; đầu ra: danh sách đã xếp). Không phụ thuộc DB hay provider, nên unit
-    test bằng vector viết tay. Với N = 30 và |W| ≤ 21, chi phí khoảng 30 × 21 + 5 × 30 tích vô
-    hướng 768 chiều, dưới 1 ms.
-- **Rationale**: Clarification 2026-10-18 – gợi ý chỉ dùng bước truy hồi; Clarification 2026-10-29
-  – thứ tự theo tầng, đa dạng gồm cả món gần giống và giữa các gợi ý, nguyên liệu dùng chung là tiêu
-  chí phụ. Chỉ so `category` thì không bắt được cặp "Bún bò Huế" / "Phở bò"; dùng vector đã lưu cho
-  `red` thì không tốn thêm lượt gọi. MMR là cách rerank đa dạng đơn giản, tất định và kiểm thử được.
+  - **`SlotReranker`** (Java thuần, không DB, không provider) là bộ xếp hạng chung. Đầu vào:
+    candidate (`Candidate` của data-model, có `categoryId`, `mainIngredientIds`, `cuisineId`,
+    `ratingAvg`, `reviewCount`, `embedding` hoặc null), ngữ cảnh tuần `W` (món trong tuần kèm ngày,
+    bữa, danh mục, nguyên liệu chính), món cần tránh `avoid` (hoặc null), ẩm thực ưa thích, vector
+    khẩu vị `t` (hoặc null), tham số. Đầu ra: danh sách đã xếp.
+    - `similar(a, b)` = cùng `categoryId`, hoặc trùng ≥ 2 nguyên liệu chính.
+    - `nearDup(d)` = `similar(d, avoid)`, hoặc trùng ≥ 2 nguyên liệu chính với một món trong `W`,
+      hoặc cùng danh mục với một món của `W` ở cùng ngày hay ngày liền kề (FR-034, FR-041).
+    - `taste(d)` = `cos(t, d.embedding)` khi có cả hai; ngược lại là điểm đánh giá đã làm trơn
+      (Bayesian average) `(reviewCount·ratingAvg + C·m) / (reviewCount + C) / 5`, `m = 3.5`, `C = 5`,
+      để món 5★ chỉ có 1 lượt không vượt món 4.6★ có 200 lượt.
+    - `reuse(d)` = số nguyên liệu chính trùng với `W \ {avoid}` / 5, tối đa 1.
+    - Khóa sắp xếp: `tier` (0 nếu thuộc ẩm thực ưa thích) → `nearDup` (món gần giống luôn xếp sau)
+      → `taste + 0.05·reuse` giảm dần → `recipe_id`. Trọng số `reuse` nhỏ và `nearDup` đứng trước
+      nên nguyên liệu dùng chung không bao giờ thắng đa dạng.
+    - Đa dạng giữa các món trả về: duyệt theo thứ tự trên, bỏ món `similar` với một món đã lấy;
+      thiếu thì trả số có được (US7-6). Đây là dạng giản lược của MMR (Carbonell 1998) với điều kiện
+      loại cứng thay cho ngưỡng độ giống vector, nên không phải hiệu chỉnh.
+  - **Món thay thế lúc tạo (FR-039)**: sau `DraftValidator` (đường AI) hoặc `BackupPlanner` (đường
+    dự phòng), với mỗi ô đã điền hoặc "Chọn món": candidate của bữa đó (đã có từ R4 – R5, nên đúng
+    ràng buộc của lần tạo) trừ các món đang có trong draft và món đã lên lịch → `SlotReranker` với
+    `avoid` = món đang ở ô (null với ô "Chọn món"), `W` = draft ∪ món đã lên lịch → lấy 5 món.
+    Trả trong `DraftResponse.alternatives`. Vector khẩu vị tính một lần cho cả lượt tạo. Không gọi
+    thêm LLM hay embedding API; chỉ thêm vài truy vấn DB nên không ảnh hưởng NFR-001 / SC-002a.
+  - **Nút "Đổi" ở client**: hiện 3 món đầu của `alternatives` của ô mà chưa nằm trong draft; bấm lại
+    hiện các món sau; hết thì chỉ còn "Tìm món khác…" (mở picker). Chọn món → thay ngay trong state
+    `useAiDraft`, giữ khẩu phần của draft (FR-040), nhãn `AI` (hoặc `AUTO` với bản nháp dự phòng).
+    Danh sách tính theo món AI chọn ban đầu, không tính lại sau mỗi lần đổi (giới hạn chấp nhận).
+  - **"Gợi ý cho bạn" trong picker**: `GET …/suggestions?day=&meal=&exclude=&requestId=&replacing=`.
+    - Ràng buộc: có `requestId` (draft đang mở, của chính người dùng) → đọc
+      `ai_requests.constraints` của lượt đó (FR-040); không có → hồ sơ đã lưu.
+    - Tập hợp lệ của bữa (R4) trừ món đã lên lịch và `exclude`; `avoid` = `replacing`.
+    - Lấy rộng 30 món ngay trong DB: có `t` → `ORDER BY embedding <=> :t LIMIT 30` (vector lấy từ DB,
+      không gọi provider); không có `t` → theo điểm đã làm trơn; cộng phần đuôi chưa có embedding.
+    - `SlotReranker` → 5 món; `reason` dựng từ dữ liệu, chỉ nêu nguyên liệu dùng chung với món
+      khác `avoid` (FR-035, FR-041).
+    - Timeout phía server 2,5 s (chỉ còn DB) → `503 SUGGESTIONS_UNAVAILABLE`; frontend ẩn sau 3 s
+      (FR-037). Gõ từ khóa → frontend ẩn danh sách, không gọi endpoint.
+  - **Vector khẩu vị `t`** (`TasteProfileQuery`): trung bình vector của tối đa 50 món gần nhất mà người
+    dùng đã lưu vào bộ sưu tập (`collection_recipes`, spec 080) hoặc chấm ≥ 4★ (`reviews`, spec 070,
+    `status = 'VISIBLE'`), chỉ món còn dòng `recipe_embeddings`; chuẩn hóa L2. Tính khi cần, không
+    lưu (không thêm dữ liệu cá nhân). Hai bảng đó chưa có migration → truy vấn đứng sau interface,
+    trả rỗng cho tới khi 070/080 xong, và `taste` lùi về điểm đánh giá.
+  - Tham số `wikicook.ai.suggestions.*`: `pool-size` 30, `alternatives-per-slot` 5,
+    `taste-history` 50, `weights.reuse` 0.05, `rating-prior-mean` 3.5, `rating-prior-weight` 5.
+- **Rationale**: Người dùng cần sửa bản nháp thật nhanh; lúc tạo đã có sẵn 60 – 90 candidate đúng
+  ràng buộc, nên giữ lại phần dư làm món thay thế là rẻ nhất và đổi món tức thì. Gợi ý theo món người
+  dùng đã lưu hoặc chấm cao sát khẩu vị hơn câu truy vấn chung "món sáng, Việt Nam". Quy tắc `similar`
+  dựa trên danh mục và nguyên liệu chính là tất định, giải thích được, test được ngay, không phải
+  hiệu chỉnh ngưỡng vector.
 - **Alternatives considered**:
-  - Chỉ sắp xếp ẩm thực → độ gần vector → phạt cùng `category` (bản R15 cũ): không xử lý món gần
-    giống khác category, 5 gợi ý dễ là biến thể của nhau.
-  - Một điểm tổng mềm cho mọi tiêu chí: trái câu 1 của Clarification 2026-10-29.
-  - DPP (Determinantal Point Process): đa dạng tốt hơn MMR nhưng phức tạp hơn, không cần với 5 món.
-  - Rerank bằng LLM: trái Clarification 2026-10-18 và tốn lượt.
-  - Cross-encoder / reranker của provider: không có trong free tier.
-  - Vector "hồ sơ người dùng" tính sẵn: phải lưu thêm dữ liệu cá nhân.
+  - Embed câu truy vấn mỗi lần mở picker + ngưỡng độ giống vector θ + MMR (bản R15 sáng
+    2026-10-29): phụ thuộc provider lúc mở picker (503, timeout, cache), θ phải hiệu chỉnh và vector
+    dễ coi mọi món "sáng · Việt Nam" là giống nhau.
+  - Tính món thay thế bằng request mới khi bấm "Đổi": thêm độ trễ và chỗ lỗi, không lợi gì hơn.
+  - Một điểm tổng mềm thay cho tầng: trái Clarification 2026-10-29 câu 1.
+  - DPP, rerank bằng LLM, cross-encoder: phức tạp hoặc trái Clarification 2026-10-18.
+  - Lưu sẵn vector khẩu vị cho từng người dùng: thêm dữ liệu cá nhân phải đồng bộ, không cần với
+    ≤ 50 món.
 - **Tài liệu tham khảo**:
   - Carbonell, J., Goldstein, J. (1998). *The Use of MMR, Diversity-Based Reranking for Reordering
     Documents and Producing Summaries.* SIGIR '98.
   - Ziegler, C.-N., McNee, S. M., Konstan, J. A., Lausen, G. (2005). *Improving Recommendation
     Lists Through Topic Diversification.* WWW '05.
-  - Chen, L., Zhang, G., Zhou, H. (2018). *Fast Greedy MAP Inference for Determinantal Point
-    Process to Improve Recommendation Diversity.* NeurIPS 2018, arXiv:1709.05135.
-  - Kusupati, A. et al. (2022). *Matryoshka Representation Learning.* NeurIPS 2022,
-    arXiv:2205.13147 (vì sao rút xuống 768 chiều vẫn dùng được, xem R3).
+  - Covington, P., Adams, J., Sargin, E. (2016). *Deep Neural Networks for YouTube
+    Recommendations.* RecSys '16 (kiến trúc hai tầng: lấy rộng rồi xếp hạng).
+  - Miller, E. (2009). *How Not To Sort By Average Rating* (làm trơn điểm đánh giá).
 
 ## R16. Mã lỗi
 
@@ -360,9 +363,10 @@ món chưa ưng ý ngay trong picker.
     ARCHIVED, id chứa dị ứng, thiếu ô, JSON hỏng, ngủ quá 60 s, ném lỗi, kiểm tra cờ hủy.
   - `FakeEmbeddingClient`: vector tất định từ hash của văn bản, để test retrieval ổn định. Vector
     hash không mang nghĩa, nên độ giống giữa hai món là ngẫu nhiên. Test nào assert thứ hạng theo
-    độ giống (US7-8, R15) phải dùng **vector cố định**: `FakeEmbeddingClient.withVectors(Map<văn
-    bản, float[]>)` cho câu truy vấn, và seed thẳng `recipe_embeddings` bằng vector viết tay
-    (`RecipeEmbeddingFixtures`, vd. "Phở bò" và "Bún bò Huế" cosine 0.95, các món sáng khác < 0.5).
+    vector (khẩu vị, R15) phải seed thẳng `recipe_embeddings` bằng vector viết tay
+    (`RecipeEmbeddingFixtures`), vd. món người dùng đã lưu gần "Bánh mì trứng" (cosine 0.9) và xa
+    các món sáng khác (< 0.5). `FakeEmbeddingClient.withVectors(Map<văn bản, float[]>)` dùng cho test
+    truy hồi lúc tạo (R5).
   - Testcontainers `pgvector/pgvector:pg16` (dùng lại `AbstractPostgresIT` của 030).
   - SC-002a: `wikicook.ai.mode=offline`, đo thời gian generate → assert ≤ 2 s và 0 vi phạm.
   - Frontend: Vitest + RTL + msw (giống 030).
@@ -390,3 +394,4 @@ món chưa ưng ý ngay trong picker.
 | 3 | B (060/020), C (030) | Lớp dùng chung `DietRuleSql` cho luật dị ứng / loại trừ / kiểu ăn | Đặt ở `com.wikicook.common.diet`; 030 T041 dùng lại |
 | 4 | C (090) | Package `ai` (`LlmClient`, `AiQuotaService`) và tách migration V302/V303 | Như R1, R18 |
 | 5 | D (040) | Route import sau confirm | `/shopping-list/import?weekStart=` (đã nêu ở 030) |
+| 6 | A (080), E (070) | Đọc `collection_recipes` và `reviews` (`rating >= 4`, `VISIBLE`) để tính khẩu vị cho gợi ý (R15) | Chỉ đọc; chưa có migration thì 031 lùi về điểm đánh giá |

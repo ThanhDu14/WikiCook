@@ -108,9 +108,10 @@ src/backend/
     │       ├── controller/ AiPlannerController, AiPlannerExceptionHandler
     │       ├── service/    GenerationService (điều phối 5 bước), GenerationOptionsService,
     │       │               CandidateService, PromptBuilder, DraftValidator, BackupPlanner,
-    │       │               ConfirmService, SuggestionService, SlotReranker, InFlightGenerations
+    │       │               ConfirmService, SuggestionService, SlotReranker, DraftAlternativesBuilder,
+    │       │               InFlightGenerations
     │       ├── embedding/  RecipeEmbeddingSync, EmbeddingReconcileJob, EmbeddingTextBuilder
-    │       ├── repository/ RecipeEmbeddingRepository, EligibleRecipeQuery, CandidateQuery
+    │       ├── repository/ RecipeEmbeddingRepository, EligibleRecipeQuery, CandidateQuery, TasteProfileQuery
     │       ├── domain/     RecipeEmbedding
     │       └── dto/        GenerateRequest, GenerationConstraints, DraftResponse, ConfirmRequest, ...
     ├── main/resources/
@@ -121,7 +122,7 @@ src/backend/
 src/frontend/src/
 ├── api/aiPlannerApi.ts
 └── features/ai-planner/
-    ├── components/  AiGenerateButton, AiGenerateDialog, GenerationProgress, DraftBar, SlotSuggestions,
+    ├── components/  AiGenerateButton, AiGenerateDialog, GenerationProgress, DraftBar, SlotSuggestions, SwapPopover,
     │                NotEnoughRecipesMessage, AiDisclaimer
     ├── hooks/       useAiDraft, useLeaveGuard
     ├── register.ts  đăng ký vào aiPlannerEntry + suggestionsSlot của 030

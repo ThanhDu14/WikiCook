@@ -89,6 +89,7 @@ trừ, kiểu ăn theo `ingredients.kind`) – research R4. 031 dùng để **lo
 | `src/frontend/src/api/aiPlannerApi.ts` | getOptions, generate (có `AbortSignal`), cancel, confirm, getSuggestions (timeout 3 s) |
 | `<AiGenerateButton weekStart>` | Nút "Tạo bằng AI" dựa vào `GET …/options`: tuần đã qua (`selectableDays` rỗng) thì ẩn; không còn ô trống trong các ngày chọn được thì tắt kèm gợi ý; lỗi khi lấy options thì ẩn (NFR-006); bấm thì mở dialog |
 | `<AiGenerateDialog weekStart onDraft>` | Dialog ràng buộc + trạng thái đang tạo + nút hủy |
-| `useAiDraft` | Giữ draft, đổi chỗ/thay/xóa trong draft, chặn rời trang |
+| `useAiDraft` | Giữ draft (kèm `constraints`, `alternatives`), đổi chỗ/thay/xóa/`swap` trong draft, chặn rời trang |
 | `<DraftBar>` | Disclaimer, notice AUTO / hết lượt ngày, số ô "Chọn món", nút Xác nhận / Tạo lại / Bỏ |
-| `<SlotSuggestions weekStart day meal exclude>` | Danh sách "Gợi ý cho bạn", ẩn khi lỗi, quá 3 s hoặc ô tìm kiếm của picker có từ khóa (FR-037) |
+| `<SwapPopover slot alternatives onSwap onFindMore>` | Nút ↻ "Đổi" trên món và ô "Chọn món" của draft; 3 món từ `DraftResponse.alternatives`, không gọi API (FR-039) |
+| `<SlotSuggestions weekStart day meal exclude requestId? replacing?>` | Danh sách "Gợi ý cho bạn", ẩn khi lỗi, quá 3 s hoặc ô tìm kiếm của picker có từ khóa (FR-037); mở từ draft thì gửi `requestId`, `replacing` |

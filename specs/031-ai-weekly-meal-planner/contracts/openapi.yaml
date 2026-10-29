@@ -128,10 +128,11 @@ paths:
   /ai-planner/weeks/{weekStart}/suggestions:
     get:
       tags: [ai-planner]
-      summary: '"Gợi ý cho bạn" cho một ô – chỉ dùng truy hồi, không gọi LLM (FR-033 – FR-038)'
+      summary: '"Gợi ý cho bạn" cho một ô – theo khẩu vị và tuần, không gọi dịch vụ AI nào (FR-033 – FR-041)'
       description: |
-        Không tính vào giới hạn 5 lượt/giờ và không ghi ai_requests. Quá 2,5 s hoặc dịch vụ embedding
-        lỗi → 503; frontend ẩn danh sách sau 3 s mà không báo lỗi.
+        Chỉ đọc DB (research R15): không gọi LLM, không gọi embedding API, không tính vào giới hạn
+        5 lượt/giờ và không ghi ai_requests. Quá 2,5 s hoặc DB lỗi → 503; frontend ẩn danh sách sau
+        3 s mà không báo lỗi.
       operationId: getSlotSuggestions
       parameters:
         - $ref: '#/components/parameters/WeekStart'
@@ -147,6 +148,18 @@ paths:
             type: array
             maxItems: 21
             items: { type: integer, format: int64 }
+        - name: requestId
+          in: query
+          required: false
+          description: |
+            requestId của bản nháp đang mở (của chính người dùng) → lọc theo ràng buộc của lượt tạo đó
+            (FR-040). Không có hoặc không thuộc người dùng → dùng hồ sơ đã lưu.
+          schema: { type: string, format: uuid }
+        - name: replacing
+          in: query
+          required: false
+          description: Id món đang bị thay; món cùng kiểu hoặc cùng nguyên liệu chính xếp sau (FR-041)
+          schema: { type: integer, format: int64 }
       responses:
         '200':
           description: Tối đa 5 gợi ý (có thể rỗng)
@@ -306,6 +319,34 @@ components:
         removedPicks: { type: integer }
         remaining: { type: integer }
         nextAvailableAt: { type: string, format: date-time, nullable: true }
+        alternatives:
+          type: array
+          description: |
+            Món thay thế đã xếp hạng lúc tạo cho từng ô đã điền và ô "Chọn món" (FR-039, research R15).
+            Nút "Đổi" dùng danh sách này ở client, không gọi thêm API.
+          items: { $ref: '#/components/schemas/SlotAlternatives' }
+
+    SlotAlternatives:
+      type: object
+      required: [day, meal, options]
+      properties:
+        day: { $ref: '#/components/schemas/Day' }
+        meal: { $ref: '#/components/schemas/Meal' }
+        options:
+          type: array
+          maxItems: 10
+          items: { $ref: '#/components/schemas/AlternativeOption' }
+
+    AlternativeOption:
+      type: object
+      required: [recipeId, recipeName, dietType]
+      properties:
+        recipeId: { type: integer, format: int64 }
+        recipeName: { type: string }
+        coverImageUrl: { type: string, nullable: true }
+        totalTimeMinutes: { type: integer, nullable: true }
+        cuisineName: { type: string, nullable: true }
+        dietType: { $ref: '#/components/schemas/DietType' }
 
     ConfirmRequest:
       type: object
@@ -357,8 +398,9 @@ components:
     SuggestionList:
       type: object
       description: |
-        Đã xếp theo ngữ cảnh tuần (research R15): ẩm thực ưa thích trước; món gần giống món đã có
-        trong tuần xếp sau; không có hai món gần trùng nhau.
+        Đã xếp theo research R15: ẩm thực ưa thích trước; trong mỗi tầng theo khẩu vị (món đã lưu /
+        chấm ≥ 4★, không có thì điểm đánh giá); món gần giống món trong tuần hoặc món đang bị thay xếp
+        sau; không có hai món cùng kiểu.
       required: [items]
       properties:
         items:

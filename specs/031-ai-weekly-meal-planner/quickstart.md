@@ -54,8 +54,10 @@ Kỳ vọng: mọi test xanh; JaCoCo ≥ 70% cho `com.wikicook.aiplanner.service
 | A16 | Tạo thành công 5 lần trong 1 giờ | Lần 6: nút tắt, hiện giờ có lượt mới; API trả 429 | US5-2, SC-007 |
 | A17 | Đặt `daily-cap.total=0` → tạo | Bản nháp tự động với "AI đã hết lượt hôm nay"; lượt không giảm | FR-025a |
 | A18 | Mở picker từ thứ Ba sáng khi thứ Hai sáng đã có "Phở bò" (profile dị ứng tôm) | ≤ 3 s hiện tối đa 5 món sáng, không tôm, không "Phở bò", có lý do ngắn; mở 10 lần không tốn lượt | US7-1/2/3/5, SC-008 |
-| A18a | Như A18, profile thích món Việt, có công thức sáng "Bún bò Huế". **Cần embedding có nghĩa**: `WIKICOOK_AI_MODE=live` (làm ở T097), hoặc seed `recipe_embeddings` bằng vector cố định như T085; ở `mock` vector là hash nên không kiểm được | "Bún bò Huế" xếp sau các món sáng Việt khác kiểu; không có hai gợi ý gần trùng nhau; món dùng chung nguyên liệu có lý do "· dùng chung … với Thứ Hai" | US7-3/8, FR-034, FR-035 |
+| A18a | Như A18, profile thích món Việt, có công thức sáng "Bún bò Huế" (cùng danh mục món nước với "Phở bò") | "Bún bò Huế" xếp sau các món sáng Việt khác kiểu; không có hai gợi ý cùng kiểu; món dùng chung nguyên liệu có lý do "· dùng chung … với Thứ Hai" | US7-3/8, FR-034, FR-035 |
 | A18b | Mở picker có gợi ý → gõ "gà" → xóa từ khóa | Khi có từ khóa: danh sách gợi ý ẩn, kết quả tìm kiếm theo thứ tự của 030; xóa từ khóa: gợi ý hiện lại | US7-9, FR-037 |
+| A18c | Tạo bản nháp → bấm ↻ "Đổi" ở thứ Hai sáng (DevTools mở tab Network) → bấm lại → chọn một món | 3 món sáng hiện ngay, không có request mới; lần sau hiện 3 món khác; món mới có khẩu phần của draft, nhãn "AI"; "Còn N lượt" không đổi | US7-10/11, FR-039, FR-040, SC-010 |
+| A18d | Tạo với "tối đa 20 phút" chỉ cho lần này → "Đổi" và mở picker từ một ô của draft | Mọi món thay thế và gợi ý ≤ 20 phút; món cùng kiểu với món đang bị thay xếp sau. Có món đã lưu / chấm ≥ 4★ (khi 070/080 có dữ liệu) → món gần khẩu vị lên đầu tầng | US7-12/13/14, FR-040, FR-041 |
 | A19 | Chọn một gợi ý | Món được thêm với nhãn "AI" | US7-4, FR-038 |
 | A20 | Tắt dịch vụ embedding (mock lỗi) → mở picker | Không có "Gợi ý cho bạn", không báo lỗi, kết quả tìm kiếm vẫn dùng được | US7-7, FR-037 |
 | A21 | Publish một công thức mới → chạy job đối soát → tạo với ràng buộc chỉ món đó hợp | Món mới được chọn; archive → không bao giờ xuất hiện nữa | US8-1/3 |
