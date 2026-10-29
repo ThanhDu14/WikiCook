@@ -203,15 +203,19 @@ From **Sprint 3 (PA3)** onwards, this directory (`src/`) will accommodate the ap
 
 ```text
 src/
-├── backend/                       # Backend application source (Java 21 / Spring Boot 3 / Maven)
-│   ├── pom.xml                    # Maven root build configuration
-│   └── src/
-│       ├── main/
-│       │   ├── java/com/wikicook/ # Modular service packages (auth, recipe, shoppinglist, etc.)
-│       │   └── resources/
-│       │       ├── db/migration/  # Flyway SQL migration scripts (V001.., V401..)
-│       │       └── application.yml# Spring Boot configuration profiles
-│       └── test/                  # Test suites (JUnit 5, Mockito, Testcontainers PostgreSQL 16)
+├── backend/                       # Backend (Java 21 / Spring Boot 3 / Maven multi-module)
+│   ├── pom.xml                    # Parent build: versions and module list
+│   ├── docker-compose.yml         # PostgreSQL 16 + pgvector, Flyway "migrate" tool
+│   ├── .env.example               # Copy to .env (git-ignored) for local credentials
+│   ├── wikicook-db/               # Flyway SQL migrations only (db/migration: V001.., V401..)
+│   ├── wikicook-ai/               # LLM, embedding and RAG clients (com.wikicook.ai)
+│   └── wikicook-app/              # Spring Boot application
+│       └── src/
+│           ├── main/
+│           │   ├── java/com/wikicook/ # One package per feature (shoppinglist, mealplan, ...),
+│           │   │                      # each with controller/service/repository/domain/dto
+│           │   └── resources/         # application.yml (+ application-local.yml)
+│           └── test/                  # JUnit 5, Mockito, Testcontainers PostgreSQL 16 (*IT)
 ├── frontend/                      # Frontend Single Page Application (React 18 / TypeScript / Vite)
 │   ├── package.json               # Frontend dependencies & build/test scripts
 │   └── src/
@@ -222,6 +226,23 @@ src/
 ├── templates/                     # Preserved Spec Kit templates
 └── specs/                         # Preserved Spec Kit specifications
 ```
+
+### 4.1. Running the backend locally
+
+Requires Java 21+, Maven 3.9+ and Docker.
+
+```bash
+cd src/backend
+cp .env.example .env                      # set POSTGRES_PASSWORD
+docker compose up -d db                   # or from the repo root: docker compose up -d db
+docker compose run --rm migrate           # apply Flyway migrations (V001..)
+mvn -B install                            # unit tests + Testcontainers *IT tests, installs sibling modules
+export DB_PASSWORD=<POSTGRES_PASSWORD from .env>
+mvn -pl wikicook-app spring-boot:run -Dspring-boot.run.profiles=local
+curl localhost:8080/actuator/health       # {"status":"UP"}
+```
+
+The app reads `DB_URL`, `DB_USER` and `DB_PASSWORD` from the environment; the `local` profile defaults them to the docker-compose database. Hibernate runs with `ddl-auto=validate`: every schema change goes through a Flyway migration in `wikicook-db`. API docs: `http://localhost:8080/swagger-ui.html`. CI runs the same `mvn -B verify` (`.github/workflows/backend.yml`).
 
 ---
 
