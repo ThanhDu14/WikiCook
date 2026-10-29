@@ -5,7 +5,7 @@
 **Team:** Group 05  
 **Document Title:** Use-Case Model (Mermaid) covering the 10 product features of Vision Document §5  
 **Sprint Cycle:** Sprint 03 (Project Assignment 3 — Part C, 10 Points)  
-**Document Version:** 0.1 (Draft for Standup 1 on 30/10/2026 — freeze on 02/11/2026)  
+**Document Version:** 0.2 (Draft for Standup 1 on 30/10/2026 — freeze on 02/11/2026)  
 **Date:** October 29, 2026
 
 ---
@@ -26,6 +26,7 @@
 | Date | Version | Description | Author |
 | :---: | :---: | :--- | :--- |
 | **29/10/2026** | `v0.1` | Initial draft: 8 actors with generalization, system overview, 11 use-case diagrams (one per Vision §5 feature plus the shared Recipe Detail page), catalogue of 64 use cases with traceability to Vision §5, specs and user stories, and coverage check (`SCRUM-49`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
+| **29/10/2026** | `v0.2` | Aligned with the Use-Case Specifications v1.1 (`SCRUM-51`): added `UC-060-05 «include» UC-060-02` (`OQ-060-01`), closed open issue 3, updated the status of the open issues. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 
 ---
 
@@ -63,7 +64,7 @@ Every use case has the ID `UC-<spec>-<NN>`, where `<spec>` is the three-digit sp
 
 - [Vision Document](vision-document.md) v1.1 — §3.2 User Summary, §5 Product Features, §5.11 Feature Traceability.
 - Feature specifications `specs/010` – `specs/100` — user stories, functional requirements and the permission matrix of `specs/010-user-authentication-roles/spec.md`.
-- [Use-Case Specifications](use-case-specification.md) v1.0 — existing use cases of `040` and `050`.
+- [Use-Case Specifications](use-case-specification.md) v1.1 — use cases of `040`, `050` (`SCRUM-53`), `020` and `060` (`SCRUM-51`).
 - [Sprint 03 Report](../management/reports/sprint-03/sprint-03-report.md) — Meeting 1, Decision 3 (the model must cover all ten features).
 
 ---
@@ -419,6 +420,7 @@ flowchart LR
     UC060_05 -. "«extend»" .-> UC060_04
     UC060_06 -. "«extend»" .-> UC060_04
     UC060_03 -. "«include»" .-> UC060_02
+    UC060_05 -. "«include»" .-> UC060_02
 
     classDef actor fill:#e8f1fb,stroke:#2f6db5,color:#0b2545
     classDef external fill:#ffffff,stroke:#888888,stroke-dasharray:5 5,color:#444444
@@ -428,7 +430,7 @@ flowchart LR
 ```
 
 - Submitting requires a verified email (`060` FR-001, `010` FR-006); an unverified Member can only save drafts. This is a precondition of `UC-060-01`, not a separate actor.
-- The wizard always includes draft saving and auto-save (`060` US2); revising a recipe after "Revision Requested" reopens the wizard and also includes it.
+- The wizard always includes draft saving and auto-save (`060` US2); revising a recipe after "Revision Requested" and editing a published recipe (a revision, `060` FR-027) reopen the wizard and also include it.
 - `UC-060-07` extends the ingredient step when the ingredient is not in the shared catalogue; the Moderator approves it together with the recipe in `UC-100-01` (`060` clarification Q3).
 - Revising, editing a published recipe and archiving/restoring/deleting are actions offered on the "My Recipes" page, so they extend `UC-060-04`. The decision that triggers `UC-060-03` comes from `UC-100-01` (shown unconnected because it is a state change, not a use-case relationship).
 
@@ -761,10 +763,10 @@ This table is the official list of use-case IDs. Every row must have a specifica
 
 ### 6.2. Open Issues (to resolve before the freeze on 02/11/2026)
 
-| # | Issue | Proposal | Owner |
-| :---: | :--- | :--- | :--- |
-| 1 | Vision §5.2 promises pantry matching ("find recipes by the ingredients in my fridge", old US-02), but spec `020` lists it as out of scope, so `UC-020-05` has no functional requirements yet. | Keep `UC-020-05` in the model and write it at the Brief level, marked as a planned increment; state the same in Vision §5.2 during `SCRUM-60`. | Nguyễn Đức Duy (PO) |
-| 2 | Vision §5.11 refers to a specification `101-admin-analytics` that does not exist; analytics and the audit trail are `100` US6. | Map 5.10 to `100` only (`UC-100-06`) and correct §5.11 in `SCRUM-60`. | Nguyễn Đức Duy |
-| 3 | `UC-020-06` View Recipe Details has no user story in `020` (detail content is out of scope there), although `SCRUM-51` assigns the page frame to Duy. | Specify it in `SCRUM-51` from the blocks agreed in Section 4.11; each block owner confirms their row of the table. | Nguyễn Đức Duy, all owners |
-| 4 | `UC-050-01` uses Guest as primary actor (as in `SCRUM-53`); spec `050` should confirm that cooking mode needs no account. | Hưng confirms; if sign-in is required, change the association to Member. | Lê Quốc Hưng |
-| 5 | Included use cases (`UC-011-05`, `UC-031-03`, `UC-031-06`, `UC-090-02`, `UC-090-03`) have no human primary actor. | Write them at the Brief level with "Trigger" instead of "Primary Actor"; the reviewer of each owner checks consistency. | Hiển, Dự |
+| # | Issue | Proposal | Owner | Status (29/10) |
+| :---: | :--- | :--- | :--- | :--- |
+| 1 | Vision §5.2 promises pantry matching ("find recipes by the ingredients in my fridge", old US-02), but spec `020` lists it as out of scope, so `UC-020-05` has no functional requirements yet. | Keep `UC-020-05` in the model and write it at the Brief level, marked as a planned increment; state the same in Vision §5.2 during `SCRUM-60`. | Nguyễn Đức Duy (PO) | **Resolved** — `UC-020-05` written at Brief level in UC Spec v1.1; Vision §5.2 marks pantry matching as a planned increment (`SCRUM-60`, v2.0-draft). |
+| 2 | Vision §5.11 refers to a specification `101-admin-analytics` that does not exist; analytics and the audit trail are `100` US6. | Map 5.10 to `100` only (`UC-100-06`) and correct §5.11 in `SCRUM-60`. | Nguyễn Đức Duy | **Resolved** — Vision §5.11 maps 5.10 to `100-admin-moderation` only (`SCRUM-60`, v2.0-draft). |
+| 3 | `UC-020-06` View Recipe Details has no user story in `020` (detail content is out of scope there), although `SCRUM-51` assigns the page frame to Duy. | Specify it in `SCRUM-51` from the blocks agreed in Section 4.11; each block owner confirms their row of the table. | Nguyễn Đức Duy, all owners | **Resolved** — specified as `UC-020-06` with extension points `EP-1` – `EP-6` (UC Spec §6); owners confirm their rows (UC Spec `OQ-020-03`). |
+| 4 | `UC-050-01` uses Guest as primary actor (as in `SCRUM-53`); spec `050` should confirm that cooking mode needs no account. | Hưng confirms; if sign-in is required, change the association to Member. | Lê Quốc Hưng | **Open** |
+| 5 | Included use cases (`UC-011-05`, `UC-031-03`, `UC-031-06`, `UC-090-02`, `UC-090-03`) have no human primary actor. | Write them at the Brief level with "Trigger" instead of "Primary Actor"; the reviewer of each owner checks consistency. | Hiển, Dự | **Open** |
