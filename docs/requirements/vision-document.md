@@ -614,3 +614,53 @@ Each requirement is verified at the build gate of the Sprint in which its featur
 | **Sprint 5 — Build v1.0 RC** | RC tag 18/12/2026; demo 25/12/2026 | Full verification of all rows. Load rows NFR-PERF-01, NFR-PERF-02, NFR-PERF-05 and NFR-PERF-06 are measured at 100 concurrent users for 10 minutes. The remaining PERF rows, NFR-REL-03 and NFR-REL-05 to NFR-REL-11, NFR-USA-01 to NFR-USA-08, NFR-COM-01 to NFR-COM-06, NFR-AI-13, NFR-PRV-06 to NFR-PRV-08 and NFR-PRV-10 are verified with the Playwright suite and the two demo dry runs. NFR-MNT-01 applies to all backend business logic. |
 
 The Plan 4.4.2 gate criteria currently list the performance, coverage, RBAC and stability checks above. The accessibility audit (NFR-USA-01), the browser matrix (NFR-COM-01) and the OWASP ZAP scan (NFR-SEC-11) are proposed additions to the RC gate under `SCRUM-36` and take effect once the team approves them.
+
+---
+
+## 8. TRACEABILITY TO THE USE-CASE MODEL
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
+
+This section links the user needs (Section 3.4) and features (Section 5) of this document to the use cases of the [Use-Case Model](use-case-model.md) (`SCRUM-49`), whose detailed behavior is written in the [Use-Case Specifications](use-case-specification.md). The trace works in both directions: **forward**, every need and every feature is realized by at least one use case; **backward**, every use case in the model serves at least one feature and one need. Use-case IDs follow the format `UC-<spec>-<NN>` of the model's catalogue (Use-Case Model Section 5).
+
+### 8.1. Forward Trace — User Needs to Use Cases
+
+| Need (3.4) | Feature(s) | Realizing Use Cases |
+| :--- | :--- | :--- |
+| **N1.** Decide quickly what to cook | 5.2 | `UC-020-01` Search Recipes by Keyword, `UC-020-02` Filter Search Results, `UC-020-04` Sort, Paginate & Share Results, `UC-020-06` View Recipe Details; `UC-020-05` Find Recipes by Pantry Ingredients *(planned increment)* |
+| **N2.** Plan the week and shop efficiently | 5.3, 5.4 | `UC-030-01` – `UC-030-05` (manual planner), `UC-031-01` – `UC-031-06` (AI planner), `UC-040-01` – `UC-040-05` (shopping list) |
+| **N3.** Follow a recipe with busy, messy hands | 5.5 | `UC-050-01` – `UC-050-05` |
+| **N4.** Stay safe from allergens and within a diet | 5.1, 5.2, 5.3, 5.9 | `UC-011-01` Set Up Dietary Profile, `UC-011-05` Apply Dietary Hard Rules, `UC-020-03` Hide Recipes Conflicting with Dietary Profile, `UC-031-01` Generate AI Weekly Meal Plan, `UC-031-03` Validate AI Recipe Picks, `UC-090-01` – `UC-090-05` (nutrition and allergens) |
+| **N5.** Share own recipes and receive feedback | 5.6, 5.7 | `UC-060-01` – `UC-060-07` (recipe contribution), `UC-070-01` Rate & Review Recipe, `UC-070-02` Upload Cooksnap Photos, `UC-070-04` Browse, Sort & Filter Reviews |
+| **N6.** Trust a recipe before cooking it | 5.7 | `UC-070-01` – `UC-070-06` |
+| **N7.** Find favourite recipes again | 5.8 | `UC-080-01` – `UC-080-04` |
+| **N8.** Keep the catalogue clean and safe *(admin)* | 5.10 | `UC-100-01` – `UC-100-06`; supported by `UC-070-05` Report Review or Cooksnap and `UC-090-05` Review, Recalculate & Hide Estimates |
+
+**Account enablers.** `UC-010-01` – `UC-010-04` (register, sign in, reset password, sign in with Google) and `UC-011-02` – `UC-011-04` (public profile, password, account deletion) do not answer a single need on their own; they give every Member-level use case its actor and protect the personal data behind N2, N4, N5 and N7 (Section 7.10).
+
+### 8.2. Feature Coverage
+
+| Feature | Use Cases | Count | Primary Actors | Specification · UC Spec Owner (Jira) |
+| :--- | :--- | :---: | :--- | :--- |
+| 5.1 User Authentication & Dietary Profile | `UC-010-01` – `04`, `UC-011-01` – `05` | 9 | Guest, Member | `010`, `011` · Mai Văn Hiển (`SCRUM-50`) |
+| 5.2 Smart Recipe Discovery & Filters | `UC-020-01` – `06` | 6 | Guest, Member | `020` · Nguyễn Đức Duy (`SCRUM-51`) |
+| 5.3 AI Weekly Meal Planner | `UC-030-01` – `05`, `UC-031-01` – `06` | 11 | Member | `030`, `031` · Nguyễn Thành Dự (`SCRUM-52`) |
+| 5.4 Smart Shopping List | `UC-040-01` – `05` | 5 | Member | `040` · Lê Quốc Hưng (`SCRUM-53`) |
+| 5.5 Hands-free Cooking Mode & Timers | `UC-050-01` – `05` | 5 | Guest | `050` · Lê Quốc Hưng (`SCRUM-53`) |
+| 5.6 Community Recipe Contribution | `UC-060-01` – `07` | 7 | Member | `060` · Nguyễn Đức Duy (`SCRUM-51`) |
+| 5.7 Social Cooksnaps & Reviews | `UC-070-01` – `06` | 6 | Guest, Member | `070` · Trần Nguyễn Công Chung (`SCRUM-54`) |
+| 5.8 Custom Recipe Collections | `UC-080-01` – `04` | 4 | Member | `080` · Mai Văn Hiển (`SCRUM-50`) |
+| 5.9 Nutrition & Allergen Analyzer | `UC-090-01` – `05` | 5 | Guest, Administrator | `090` · Nguyễn Thành Dự (`SCRUM-52`) |
+| 5.10 Admin Content Moderation | `UC-100-01` – `06` | 6 | Moderator, Administrator | `100` · Trần Nguyễn Công Chung (`SCRUM-54`) |
+| **Total** | | **64** | | |
+
+### 8.3. Backward Trace and Consistency Check
+
+- **Every use case traces back.** All 64 use cases of the Use-Case Model catalogue belong to exactly one feature of Section 5 (table 8.2), and each feature serves at least one need (table 5.11). No use case exists without a feature, and no feature exists without a use case.
+- **Every need is realized.** Needs N1–N8 each have at least one realizing use case (table 8.1).
+- **Planned increments.** One use case, `UC-020-05` (pantry matching), is described in this document but not yet specified; it is written at the Brief level and shown as a planned increment in Sections 1.2, 3.4, 3.5.4, 5.2 and 6.2.
+- **Workflows.** Every step of the two workflows in Section 6 names the use cases it exercises.
+- **Corrections made in the Second Edition.** The non-existent specification `101-admin-analytics` was removed from Section 5.11 because analytics and the audit trail are User Story 6 of `100-admin-moderation` (`UC-100-06`); the short specification names in Section 5.11 were replaced with the folder names under `specs/`.
+
+### 8.4. Change Control
+
+When a use case is added, removed or renamed in the Use-Case Model, the Product Owner updates tables 5.11, 8.1 and 8.2 in the same pull request, and the change is recorded in `Changes.md`. A new capability that has no feature in Section 5 is first discussed with the Product Owner and added here before it is modelled as a use case.
