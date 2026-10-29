@@ -283,7 +283,7 @@ WikiCook lets visitors register with an email and password or sign in with Googl
 
 ### 5.2. Smart Recipe Discovery & Filters
 
-Smart Recipe Discovery combines full-text keyword search, which ignores Vietnamese diacritics and letter case so that "pho bo" finds "Phở bò", with combinable filters for total time, cuisine, difficulty, cooking method, category and calories per serving. One-tap presets such as "Under 30 minutes" or "Vegetarian" sit on the homepage, and every query, filter and page number is kept in the URL so that results can be shared, reloaded or revisited with the Back button. A pantry-matching mode extends the same engine: the user selects the ingredients already in the fridge, and WikiCook ranks recipes by how many of their ingredients are covered and shows what is still missing. The feature answers the daily question "What can I cook today?", which the PA1 proposal estimates costs 15 to 30 minutes, and replaces MyFridgeFood's cluttered checkbox wall with a fast, modern interface. Guests and busy home cooks use it as their entry point to the product, while dietary-restricted members also have conflicting recipes hidden automatically.
+Smart Recipe Discovery combines full-text keyword search, which ignores Vietnamese diacritics and letter case so that "pho bo" finds "Phở bò", with combinable filters for total time, cuisine, difficulty, cooking method, category and calories per serving. One-tap presets such as "Under 30 minutes" or "Vegetarian" sit on the homepage, and every query, filter and page number is kept in the URL so that results can be shared, reloaded or revisited with the Back button. A pantry-matching mode will extend the same engine in a later increment: the user selects the ingredients already in the fridge, and WikiCook ranks recipes by how many of their ingredients are covered and shows what is still missing. It is kept in the Use-Case Model as `UC-020-05` but is not part of the current release of specification `020`. The feature answers the daily question "What can I cook today?", which the PA1 proposal estimates costs 15 to 30 minutes, and replaces MyFridgeFood's cluttered checkbox wall with a fast, modern interface. Guests and busy home cooks use it as their entry point to the product, while dietary-restricted members also have conflicting recipes hidden automatically.
 
 ### 5.3. AI Weekly Meal Planner
 
@@ -319,18 +319,18 @@ Admin Content Moderation provides a back-office dashboard where moderators revie
 
 ### 5.11. Feature Traceability
 
-| # | Feature | User Needs (3.4) | PA1 Module | Specification(s) |
-| :---: | :--- | :--- | :---: | :--- |
-| 5.1 | User Authentication & Dietary Profile | N4 | 3.1 | `010-user-authentication-roles`, `011` (dietary profile) |
-| 5.2 | Smart Recipe Discovery & Filters | N1, N4 | 3.2 | `020-recipe-search-filter` (pantry matching in a later increment) |
-| 5.3 | AI Weekly Meal Planner | N2, N4 | 3.3, Section 4 | `030-meal-planner`, `031-ai-weekly-meal-planner` |
-| 5.4 | Smart Shopping List | N2 | 3.4 | `040-shopping-list` |
-| 5.5 | Hands-free Cooking Mode & Timers | N3 | 3.5 | `050-cooking-mode` |
-| 5.6 | Community Recipe Contribution | N5 | 3.6 | `060-recipe-editor` |
-| 5.7 | Social Cooksnaps & Reviews | N5, N6 | 3.7 | `070` (reviews and Cooksnaps) |
-| 5.8 | Custom Recipe Collections | N7 | 3.8 | `080` (collections) |
-| 5.9 | Nutrition & Allergen Analyzer | N4 | 3.9 | `090` (nutrition analyzer) |
-| 5.10 | Admin Content Moderation | N8 | 3.10 | `100-admin-moderation`, `101-admin-analytics` |
+| # | Feature | User Needs (3.4) | PA1 Module | Specification(s) | Use Cases (Section 8) |
+| :---: | :--- | :--- | :---: | :--- | :--- |
+| 5.1 | User Authentication & Dietary Profile | N4 | 3.1 | `010-user-authentication-roles`, `011-user-profile-dietary` | `UC-010-01` – `04`, `UC-011-01` – `05` |
+| 5.2 | Smart Recipe Discovery & Filters | N1, N4 | 3.2 | `020-recipe-search-filter` (pantry matching in a later increment) | `UC-020-01` – `06` |
+| 5.3 | AI Weekly Meal Planner | N2, N4 | 3.3, Section 4 | `030-meal-planner`, `031-ai-weekly-meal-planner` | `UC-030-01` – `05`, `UC-031-01` – `06` |
+| 5.4 | Smart Shopping List | N2 | 3.4 | `040-shopping-list` | `UC-040-01` – `05` |
+| 5.5 | Hands-free Cooking Mode & Timers | N3 | 3.5 | `050-cooking-mode` | `UC-050-01` – `05` |
+| 5.6 | Community Recipe Contribution | N5 | 3.6 | `060-recipe-editor` | `UC-060-01` – `07` |
+| 5.7 | Social Cooksnaps & Reviews | N5, N6 | 3.7 | `070-review-cooksnap` | `UC-070-01` – `06` |
+| 5.8 | Custom Recipe Collections | N7 | 3.8 | `080-bookmark-collection` | `UC-080-01` – `04` |
+| 5.9 | Nutrition & Allergen Analyzer | N4 | 3.9 | `090-nutrition-analysis` | `UC-090-01` – `05` |
+| 5.10 | Admin Content Moderation | N8 | 3.10 | `100-admin-moderation` (analytics and the audit trail are its User Story 6) | `UC-100-01` – `06` |
 
 ---
 
