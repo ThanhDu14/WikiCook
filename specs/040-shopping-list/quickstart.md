@@ -11,43 +11,34 @@ This document guides developers through running, testing, and verifying the **04
 - **Java Development Kit (JDK)**: OpenJDK 21 (LTS)
 - **Node.js**: v20.x or v22.x LTS, with `npm` v10+
 - **Docker & Docker Compose**: Docker Engine 24+ to run PostgreSQL 16
-- **Maven**: 3.9+ (or use the `./mvnw` bundled with the backend)
+- **Maven**: 3.9+
 
 ---
 
 ## 2. Start the Local Database
 
-Use Docker Compose to start PostgreSQL 16 with Flyway migrations:
+`src/backend/docker-compose.yml` runs PostgreSQL 16 (+ pgvector) and applies the Flyway migrations from `wikicook-db`:
 
-```bash
-# Start the PostgreSQL 16 container
-docker run -d --name wikicook-postgres \
-  -e POSTGRES_DB=wikicook \
-  -e POSTGRES_USER=wikicook_user \
-  -e POSTGRES_PASSWORD=wikicook_secret \
-  -p 5432:5432 \
-  postgres:16-alpine
-```
-
-Check connectivity and run the Flyway migrations:
 ```bash
 cd src/backend
-./mvnw flyway:migrate
+cp .env.example .env               # set POSTGRES_PASSWORD (git-ignored)
+docker compose up -d db
+docker compose run --rm migrate    # V001.. including V401__shopping_lists.sql
 ```
 
 Confirm that the four tables of module 040 have been created successfully:
 ```bash
-docker exec -it wikicook-postgres psql -U wikicook_user -d wikicook -c "\dt shopping*"
+docker compose exec db psql -U wikicook -d wikicook -c "\dt (shopping*|user_aisle*)"
 ```
 Expected output:
 ```text
-               List of relations
- Schema |          Name          | Type  |     Owner      
---------+------------------------+-------+----------------
- public | shopping_lists         | table | wikicook_user
- public | shopping_list_items    | table | wikicook_user
- public | shopping_list_item_sources | table | wikicook_user
- public | user_aisle_preferences| table | wikicook_user
+                  List of relations
+ Schema |            Name            | Type  |  Owner
+--------+----------------------------+-------+----------
+ public | shopping_list_item_sources | table | wikicook
+ public | shopping_list_items        | table | wikicook
+ public | shopping_lists             | table | wikicook
+ public | user_aisle_preferences     | table | wikicook
 ```
 
 ---
@@ -59,13 +50,13 @@ The system automatically starts a real PostgreSQL 16 container through Testconta
 
 ```bash
 cd src/backend
-./mvnw clean test -Dtest="com.wikicook.shoppinglist.**"
+mvn -pl wikicook-app -am verify -Dtest="com.wikicook.shoppinglist.**" -Dsurefire.failIfNoSpecifiedTests=false
 ```
 
 Check JaCoCo coverage ($\ge 70\%$ as required by Constitution II):
 ```bash
-./mvnw jacoco:report
-# Open the report at: target/site/jacoco/com.wikicook.shoppinglist.service/index.html
+# verify writes the report; open:
+# wikicook-app/target/site/jacoco/com.wikicook.shoppinglist.service/index.html
 ```
 
 ### 3.2. Frontend Tests & Lint
