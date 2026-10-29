@@ -706,3 +706,70 @@ nhỏ: khung file + actor, sơ đồ tổng quan, từng nhóm sơ đồ feature
 - Đối chiếu bảng phủ ở mục 6.1: đủ 69 user story của 12 spec; 10 feature của Vision §5 đều có sơ đồ và ít nhất 4 use case; 3 feature bị thiếu trong US-01 – US-07 cũ (070, 080, 090) đã có.
 - Đối chiếu nguồn của `UC-060-07` với spec 060 (US1 kịch bản 4, FR-006, FR-007) và ma trận phân quyền spec 010 cho actor của từng use case.
 - Chưa xem render trên GitHub vì chưa push; Hiển review (`SCRUM-49`) sau khi mở PR. Việc tiếp theo: trình bản nháp ở Standup 1 (30/10), chốt 5 vấn đề mở ở mục 6.2, freeze 02/11.
+
+---
+
+## Mục 11: Viết đặc tả use case cho feature 020 và 060
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-10-29, 11:30 – 12:50 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `docs/requirements/use-case-specification.md`, Section 6–8 (Jira `SCRUM-51`, PA3 phần D) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.312 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), chạy trong extension VS Code trên Windows 11 |
+| Mục đích | Có đặc tả đầy đủ 8 mục cho 13 use case của mình (`UC-020-01` – `06`, `UC-060-01` – `07`), cùng format với phần 040/050 của Hưng, để Dự review và Chung gắn ảnh màn hình ở `SCRUM-58` |
+| Nhánh Git | `docs/scrum-51-uc-spec-020-060` |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `e0464339-7da7-42a3-81aa-754821231243` (file `e0464339-7da7-42a3-81aa-754821231243.jsonl`) |
+
+### Prompt đã dùng
+
+Mình chỉ yêu cầu ngắn "push code rồi làm tiếp"; AI chọn task tiếp theo là `SCRUM-51` theo phân công PA3 và viết lại thành prompt đầy đủ dưới đây, mình đọc lại và đồng ý ghi nguyên văn. Trước khi viết, AI đã đọc toàn bộ spec 020 và 060, mục 4.2, 4.6, 4.11 và 6.2 của Use-Case Model, format của Hưng và nội dung các màn hình prototype SR, RE, NU01.
+
+```
+Bối cảnh: đồ án WikiCook PA3. Task SCRUM-51 yêu cầu tôi viết đặc tả use case cho feature 020 (tìm
+kiếm và lọc công thức) và 060 (tạo công thức bằng wizard), thêm vào
+docs/requirements/use-case-specification.md, đúng format 8 mục Hưng dùng cho 040/050. Reviewer là Dự,
+bản đầu hạn 01/11.
+Yêu cầu:
+(1) Dùng đúng mã và tên UC-020-01…06 và UC-060-01…07 trong Use-Case Model v0.1 (SCRUM-49). Actor theo
+    model: Guest/Member, Moderator là actor phụ.
+(2) Mỗi use case có đủ 8 mục cộng phần "UI Screen References & Asset Gaps (SCRUM-58)". Luồng thay thế
+    lấy từ acceptance scenario và edge case của spec. Nhãn giao diện tiếng Việt lấy từ prototype
+    SR/RE/NU01.
+(3) UC-020-05 viết ở mức Brief vì spec 020 loại khỏi phạm vi. UC-020-06 là khung trang chi tiết, có
+    bảng extension point theo mục 4.11 của model.
+(4) Thêm bảng truy vết, chứng minh phủ 100% FR/NFR/US của hai spec, bảng ánh xạ màn hình kèm khoảng
+    trống cho SCRUM-58, và danh sách câu hỏi mở.
+Ràng buộc: viết tiếng Anh, có dòng Performed/Reviewed/Edited sau mỗi header, không sửa Section 1–5 của
+Hưng, giữ CRLF, tách commit nhỏ.
+Kết quả mong muốn: bản v1.1 đã kiểm tra mã UC khớp model, link màn hình không hỏng, sẵn sàng mở PR cho
+Dự review.
+```
+
+### Nội dung do AI tạo
+
+- Thêm vào `use-case-specification.md` (`v1.1`) 3 section mới, chia 4 commit:
+  - Bảng metadata và Revision History: 3 dòng cho Section 6–8 (người viết Duy, reviewer Dự, `SCRUM-51`);
+  - Section 6: 6 use case của 020 — tìm theo từ khóa (bỏ dấu, xếp hạng liên quan), bộ lọc kết hợp AND/OR và bottom sheet, ẩn món theo hồ sơ ăn uống (include `UC-011-05`, ghi đè chỉ cho lần tìm), sắp xếp/phân trang/chia sẻ URL, `UC-020-05` ở mức Brief, `UC-020-06` khung trang chi tiết với bảng 6 extension point `EP-1` – `EP-6`;
+  - Section 7: 7 use case của 060 — wizard 6 bước và gửi duyệt, lưu nháp/autosave/offline/xung đột thiết bị, sửa sau quyết định kiểm duyệt (gửi lại, rút lại, sao chép bản bị từ chối), trang "Công thức của tôi" với bảng hành động theo trạng thái, sửa công thức đã đăng qua revision, lưu trữ/khôi phục/xóa, đề xuất nguyên liệu mới;
+  - Section 8: bảng truy vết 020 và 060, bảng ánh xạ 27 dòng màn hình với 11 khoảng trống (`Gap 020-A` – `F`, `Gap 060-A` – `F`), 8 câu hỏi mở.
+- Các đề xuất AI đưa vào: bộ chọn khẩu phần ở trang chi tiết chỉ đổi số hiển thị, "vừa đủ" không nhân; chia sẻ URL cho Member khác vẫn áp dụng hồ sơ ăn uống của người nhận; không cho lưu trữ khi revision đang chờ duyệt; Moderator đặt dị ứng và quầy siêu thị khi duyệt nguyên liệu đề xuất.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Thêm Section 6–8 vào cuối file thay vì chèn trước Section 3 của Hưng | Dùng | Không đánh số lại phần của Hưng, tránh conflict với các bạn cũng đang thêm vào file này |
+| `UC-020-05` chỉ viết mức Brief | Dùng | Spec 020 loại tìm theo nguyên liệu có sẵn khỏi phạm vi; khớp open issue 1 của model |
+| Bộ chọn khẩu phần trên trang chi tiết (`OQ-020-02`) | Dùng tạm, **cần Hưng xác nhận** | Spec 060 nói việc nhân khẩu phần do 040/050 làm, nhưng prototype NU01 có ô "Khẩu phần" |
+| Thêm `UC-060-05 «include» UC-060-02` vào model (`OQ-060-01`) | Chờ chốt trước freeze 02/11 | Revision cũng được lưu như bản nháp |
+| Prototype RE03 hiện nút đề xuất "hanh la" dù đã có "Hành lá" (`OQ-060-02`) | Theo spec, đề nghị sửa prototype | Edge Cases của spec 060 yêu cầu gợi ý nguyên liệu có sẵn thay vì tạo đề xuất mới |
+| Lưu trữ khi có revision, công thức bị lưu trữ trong 030/040/080 (`OQ-060-03`, `04`) | Chỉ là đề xuất, chờ chủ module | Spec 060 để ngỏ ở mục Integration Points |
+
+### Cách sinh viên kiểm chứng
+
+- Đối chiếu bằng script với catalogue của Use-Case Model (nhánh `SCRUM-49`): 13 tiêu đề `UC-020-xx` / `UC-060-xx` khớp đúng tên trong catalogue; mọi mã UC nhắc tới trong file đều có trong model.
+- Kiểm tra mọi link màn hình `../analysis-and-design/ui-ux/screens/*.dc.html` trỏ tới file có thật: không có link hỏng.
+- Đối chiếu thủ công bảng truy vết với spec: 020 phủ 27/27 FR (gồm `FR-014a`), 7/7 NFR, 4/4 US (27 acceptance scenario); 060 phủ 33/33 FR, 7/7 NFR, 6/6 US (36 acceptance scenario).
+- `git diff --check` sạch, file vẫn dùng CRLF như bản gốc của Hưng.
+- Chưa xem render trên GitHub; Dự review sau khi mở PR, bản sửa hạn 03/11.
