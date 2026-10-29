@@ -4,8 +4,8 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 05  
 **Template:** Adapted from the RUP Vision template for small projects (`rup_vision_sp.docx`)  
-**Document Version:** 1.1 (Sprint 02 Final Baseline — Sections 1–7, Project Assignment 2)  
-**Date:** October 24, 2026  
+**Document Version:** 2.0-draft (Second Edition — Project Assignment 3, Part B; draft 02/11/2026, final 05/11/2026)  
+**Date:** October 29, 2026  
 
 ---
 
@@ -20,6 +20,8 @@
 | **Section 5** | Product Features (10 Core Features) | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-34` |
 | **Section 6** | User Workflow Diagrams | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-35` |
 | **Section 7** | Non-Functional Requirements | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-36` |
+| **Section 8** | Traceability to the Use-Case Model | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Trần Nguyễn Công Chung (itzchugnn)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-60` |
+| **Second Edition** | Revisions to Sections 1, 3, 5 and 6 (see Revision History `v2.0`) | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Trần Nguyễn Công Chung (itzchugnn)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-60` |
 
 ### Revision History
 
@@ -33,6 +35,7 @@
 | **19/10/2026** | `v0.10` | Authored Section 7: quantifiable non-functional requirements grouped by ISO/IEC 25010, with applicable standards and verification approach (`SCRUM-36`). | Mai Văn Hiển (`MaiHien3507`) |
 | **22/10/2026** | `v1.0` | Sprint 02 Final Baseline: Completed cross-peer review, synchronized traceability across all 10 features & NFRs, and finalized documentation for submission. | Nguyễn Đức Duy & Lê Quốc Hưng |
 | **24/10/2026** | `v1.1` | PA2 submission fixes: corrected group number to Group 05 and updated the document header. | Nguyễn Thành Dự (`ThanhDu14`) |
+| **29/10/2026** | `v2.0-draft` | Second Edition draft (`SCRUM-60`): aligned with the Use-Case Model (`SCRUM-49`) and Use-Case Specifications (`SCRUM-50` – `54`); added Section 8 with bidirectional traceability between user needs, features and the 64 use cases; marked pantry matching as a planned increment (§1.2, §3.4, §3.5.4, §5.2, §6.2); corrected specification names in §5.11 and removed the non-existent `101-admin-analytics`; completed the references and definitions (§1.3, §1.4); added the development and deployment environment (§3.3). TA feedback on PA2 (`SCRUM-47`) is incorporated before the final edition. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 
 ---
 
@@ -51,7 +54,7 @@ The purpose of this Vision Document is to collect, analyze and define the high-l
 
 This document covers **WikiCook**, a responsive web application (Single-Page Application, usable from a 360 px mobile screen up to a desktop monitor) that helps home cooks decide what to cook, plan their week, shop for groceries, cook step by step and share recipes with a community. The product is developed by Group 05 over five Scrum Sprints (PA1–PA5) of the Fall 2026–2027 semester.
 
-- **In scope:** the ten core features described in Section 5 — user authentication and dietary profile, smart recipe discovery, AI weekly meal planner, smart shopping list, hands-free cooking mode, community recipe contribution, Cooksnaps and reviews, custom collections, nutrition and allergen analysis, and admin content moderation.
+- **In scope:** the ten core features described in Section 5 — user authentication and dietary profile, smart recipe discovery, AI weekly meal planner, smart shopping list, hands-free cooking mode, community recipe contribution, Cooksnaps and reviews, custom collections, nutrition and allergen analysis, and admin content moderation. Pantry matching (Section 5.2) is part of the product vision but is scheduled as a later increment; it is not part of the current release of specification `020`.
 - **Out of scope:** native iOS/Android store applications, online grocery ordering and payment, smart-kitchen (IoT) device integration, AI-generated recipes (the AI only plans with recipes that already exist in WikiCook), and medical or clinical dietary advice.
 
 ### 1.3. Definitions, Acronyms and Abbreviations
@@ -68,21 +71,26 @@ This document covers **WikiCook**, a responsive web application (Single-Page App
 | **Guest / Member / Contributor / Moderator / Administrator** | The access roles defined in spec `010-user-authentication-roles`. |
 | **PA1–PA5** | Project Assignments 1–5 of course CS300, each corresponding to one Scrum Sprint. |
 | **RUP** | Rational Unified Process — the source of the Vision template used by this document. |
+| **Use case (UC)** | A goal that an actor achieves with WikiCook, identified as `UC-<spec>-<NN>` (e.g., `UC-020-01`) in the Use-Case Model and specified in the Use-Case Specifications. |
+| **Planned increment** | A capability that belongs to the product vision but is not specified for the current release; it is kept in the Use-Case Model at the Brief level. |
 
 ### 1.4. References
 
 1. **IEEE Std 830-1998**, *IEEE Recommended Practice for Software Requirements Specifications* — guidance on writing complete, consistent and verifiable requirements (superseded by ISO/IEC/IEEE 29148, used here as the course reference).
 2. **RUP Vision Template for Small Projects** (`rup_vision_sp.docx`) — section structure of this document.
-3. **Course guidelines:** *CS300 Project Assignment 1* (`PA1-2026.pdf`) and *Project Assignment 2* (`PA2-2026.pdf`).
+3. **Course guidelines:** *CS300 Project Assignment 1* (`PA1-2026.pdf`), *Project Assignment 2* (`PA2-2026.pdf`) and *Project Assignment 3* (`PA3-2026.pdf`).
 4. **PA1 Project Proposal:** [`docs/requirements/project-proposal.md`](project-proposal.md) — problem statement, personas, 10 functional modules and the AI Weekly Meal Planner design.
 5. **PA1 Existing App Survey:** [`docs/requirements/existing-app-survey.md`](existing-app-survey.md) and [`docs/requirements/comparative-analysis.md`](comparative-analysis.md) — survey of *MyFridgeFood* and *Ăn Gì Ngon*.
 6. **Project Plan:** [`docs/management/project-plan.md`](../management/project-plan.md) — Scrum roadmap, roles, constraints and assumptions.
 7. **Software Architecture Document:** [`docs/analysis-and-design/architecture.md`](../analysis-and-design/architecture.md).
-8. **Feature specifications (Spec Kit):** `specs/010-user-authentication-roles`, `specs/020-recipe-search-filter`, `specs/030-meal-planner`, `specs/031-ai-weekly-meal-planner`, `specs/060-recipe-editor` and the project constitution `src/constitution.md`.
+8. **Feature specifications (Spec Kit):** `specs/010-user-authentication-roles`, `specs/011-user-profile-dietary`, `specs/020-recipe-search-filter`, `specs/030-meal-planner`, `specs/031-ai-weekly-meal-planner`, `specs/040-shopping-list`, `specs/050-cooking-mode`, `specs/060-recipe-editor`, `specs/070-review-cooksnap`, `specs/080-bookmark-collection`, `specs/090-nutrition-analysis`, `specs/100-admin-moderation` and the project constitution `src/constitution.md`.
+9. **Use-Case Model:** [`docs/requirements/use-case-model.md`](use-case-model.md) — actors, use-case diagrams of the ten features and the catalogue of use-case IDs (`SCRUM-49`).
+10. **Use-Case Specifications:** [`docs/requirements/use-case-specification.md`](use-case-specification.md) — fully dressed specifications of the use cases (`SCRUM-50` – `SCRUM-54`).
+11. **Sprint 03 Report:** [`docs/management/reports/sprint-03/sprint-03-report.md`](../management/reports/sprint-03/sprint-03-report.md) — PA3 plan, decisions and task assignment.
 
 ### 1.5. Overview
 
-Section 2 positions WikiCook through its business opportunity, problem statement and product position statement. Section 3 describes the stakeholders, the users, their working environment, their key needs and the alternatives they use today. Section 4 places the product in its technical context and lists the assumptions and dependencies it relies on. Section 5 describes the ten core features, and Section 6 illustrates two end-to-end user workflows. Section 7 defines the quantifiable non-functional requirements.
+Section 2 positions WikiCook through its business opportunity, problem statement and product position statement. Section 3 describes the stakeholders, the users, their working environment, their key needs and the alternatives they use today. Section 4 places the product in its technical context and lists the assumptions and dependencies it relies on. Section 5 describes the ten core features, and Section 6 illustrates two end-to-end user workflows. Section 7 defines the quantifiable non-functional requirements. Section 8 traces the user needs and features of this document to the use cases of the Use-Case Model in both directions.
 
 ---
 
