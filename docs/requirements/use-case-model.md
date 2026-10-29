@@ -391,4 +391,257 @@ flowchart LR
 - Timers (step with a duration) and voice commands are optional behaviour inside step navigation, so they extend `UC-050-02`.
 - When the cook finishes the last step, `UC-070-06` extends the session with the review prompt (`070` US6).
 
+### 4.6. Feature 5.6 — Community Recipe Contribution (`060`)
+
+```mermaid
+flowchart LR
+    MEMBER["«actor»<br/>Member"]
+
+    subgraph SYS["WikiCook — Community Recipe Contribution"]
+        direction TB
+        UC060_01(["UC-060-01<br/>Create Recipe with Wizard<br/>& Submit for Review"])
+        UC060_02(["UC-060-02<br/>Save & Resume Draft"])
+        UC060_07(["UC-060-07<br/>Propose New Ingredient"])
+        UC060_04(["UC-060-04<br/>Manage My Recipes"])
+        UC060_03(["UC-060-03<br/>Revise Recipe after<br/>Moderator Decision"])
+        UC060_05(["UC-060-05<br/>Edit Published Recipe"])
+        UC060_06(["UC-060-06<br/>Archive, Restore or<br/>Delete Recipe"])
+    end
+
+    UC100_01(["UC-100-01<br/>Moderate Recipe Submission"])
+
+    MEMBER --- UC060_01
+    MEMBER --- UC060_04
+
+    UC060_01 -. "«include»" .-> UC060_02
+    UC060_07 -. "«extend»" .-> UC060_01
+    UC060_03 -. "«extend»" .-> UC060_04
+    UC060_05 -. "«extend»" .-> UC060_04
+    UC060_06 -. "«extend»" .-> UC060_04
+    UC060_03 -. "«include»" .-> UC060_02
+
+    classDef actor fill:#e8f1fb,stroke:#2f6db5,color:#0b2545
+    classDef external fill:#ffffff,stroke:#888888,stroke-dasharray:5 5,color:#444444
+    class MEMBER actor
+    class UC100_01 external
+    UC100_01 ~~~ UC060_03
+```
+
+- Submitting requires a verified email (`060` FR-001, `010` FR-006); an unverified Member can only save drafts. This is a precondition of `UC-060-01`, not a separate actor.
+- The wizard always includes draft saving and auto-save (`060` US2); revising a recipe after "Revision Requested" reopens the wizard and also includes it.
+- `UC-060-07` extends the ingredient step when the ingredient is not in the shared catalogue; the Moderator approves it together with the recipe in `UC-100-01` (`060` clarification Q3).
+- Revising, editing a published recipe and archiving/restoring/deleting are actions offered on the "My Recipes" page, so they extend `UC-060-04`. The decision that triggers `UC-060-03` comes from `UC-100-01` (shown unconnected because it is a state change, not a use-case relationship).
+
+### 4.7. Feature 5.7 — Social Cooksnaps & Reviews (`070`)
+
+```mermaid
+flowchart LR
+    GUEST["«actor»<br/>Guest"]
+    MEMBER["«actor»<br/>Member"]
+
+    subgraph SYS["WikiCook — Reviews & Cooksnaps"]
+        direction TB
+        UC070_04(["UC-070-04<br/>Browse, Sort &<br/>Filter Reviews"])
+        UC070_01(["UC-070-01<br/>Rate & Review Recipe"])
+        UC070_02(["UC-070-02<br/>Upload Cooksnap Photos"])
+        UC070_03(["UC-070-03<br/>Edit or Delete Own Review"])
+        UC070_05(["UC-070-05<br/>Report Review or Cooksnap"])
+        UC070_06(["UC-070-06<br/>Respond to Post-Cooking<br/>Review Prompt"])
+    end
+
+    UC050_02(["UC-050-02<br/>Step-by-Step Cooking Navigation"])
+
+    GUEST --- UC070_04
+    MEMBER --- UC070_01
+    MEMBER --- UC070_03
+    MEMBER --- UC070_05
+
+    UC070_02 -. "«extend»" .-> UC070_01
+    UC070_06 -. "«extend»" .-> UC050_02
+    UC070_06 -. "«include»" .-> UC070_01
+
+    classDef actor fill:#e8f1fb,stroke:#2f6db5,color:#0b2545
+    classDef external fill:#ffffff,stroke:#888888,stroke-dasharray:5 5,color:#444444
+    class GUEST,MEMBER actor
+    class UC050_02 external
+```
+
+- Reviewing, posting Cooksnaps and reporting require a signed-in Member with a verified email (`010` permission matrix).
+- A Cooksnap is attached to a review, so `UC-070-02` extends `UC-070-01` (`070` US2).
+- Reports created in `UC-070-05` are handled by the Moderator in `UC-100-02`.
+
+### 4.8. Feature 5.8 — Custom Recipe Collections (`080`)
+
+```mermaid
+flowchart LR
+    MEMBER["«actor»<br/>Member"]
+
+    subgraph SYS["WikiCook — Recipe Collections"]
+        direction TB
+        UC080_01(["UC-080-01<br/>Save Recipe with One Tap"])
+        UC080_02(["UC-080-02<br/>Add Recipe to Collections"])
+        UC080_03(["UC-080-03<br/>Create, Rename &<br/>Delete Collection"])
+        UC080_04(["UC-080-04<br/>Browse Saved Recipes<br/>& Collections"])
+    end
+
+    UC020_06(["UC-020-06<br/>View Recipe Details"])
+
+    MEMBER --- UC080_01
+    MEMBER --- UC080_03
+    MEMBER --- UC080_04
+
+    UC080_01 -. "«extend»" .-> UC020_06
+    UC080_02 -. "«extend»" .-> UC080_01
+    UC080_03 -. "«extend»" .-> UC080_02
+
+    classDef actor fill:#e8f1fb,stroke:#2f6db5,color:#0b2545
+    classDef external fill:#ffffff,stroke:#888888,stroke-dasharray:5 5,color:#444444
+    class MEMBER actor
+    class UC020_06 external
+```
+
+- Saving is a one-tap action on the Recipe Detail page; the "Save to collection" dialog that follows it is `UC-080-02` (`080` US1, US2).
+- A new collection can be created directly from that dialog, so `UC-080-03` also extends `UC-080-02`.
+- Recipes taken down after being saved (`080` US5) are an alternative flow of `UC-080-04`.
+
+### 4.9. Feature 5.9 — Nutrition & Allergen Analyzer (`090`)
+
+```mermaid
+flowchart LR
+    GUEST["«actor»<br/>Guest"]
+    ADMIN["«actor»<br/>Administrator"]
+
+    subgraph SYS["WikiCook — Nutrition & Allergen Analyzer"]
+        direction TB
+        UC090_01(["UC-090-01<br/>View Nutrition per Serving"])
+        UC090_04(["UC-090-04<br/>View Allergen Warnings<br/>& AI Diet Labels"])
+        UC090_02(["UC-090-02<br/>Estimate Nutrition on<br/>Publication or Change"])
+        UC090_03(["UC-090-03<br/>Validate AI Nutrition Estimate"])
+        UC090_05(["UC-090-05<br/>Review, Recalculate &<br/>Hide Estimates"])
+    end
+
+    UC100_01(["UC-100-01<br/>Moderate Recipe Submission"])
+    LLM["«actor»<br/>LLM Service"]
+
+    GUEST --- UC090_01
+    GUEST --- UC090_04
+    ADMIN --- UC090_05
+    UC090_02 --- LLM
+
+    UC100_01 -. "«include»" .-> UC090_02
+    UC090_02 -. "«include»" .-> UC090_03
+    UC090_05 -. "«include»" .-> UC090_02
+
+    classDef actor fill:#e8f1fb,stroke:#2f6db5,color:#0b2545
+    classDef system fill:#eeeeee,stroke:#666666,color:#222222
+    classDef external fill:#ffffff,stroke:#888888,stroke-dasharray:5 5,color:#444444
+    class GUEST,ADMIN actor
+    class LLM system
+    class UC100_01 external
+```
+
+- Estimation runs once when a recipe or an approved revision is published, without blocking publication (`090` US2, US5), so it is included by the moderation use case.
+- Every LLM answer is checked for plausibility before it is stored; implausible output is discarded (`090` US3).
+- Allergen badges come from the curated ingredient–allergen links, not from the LLM (`090` US4, `020` clarification Q1); AI diet labels are shown separately as suggestions.
+- Calories used by the search filter and the planner (`090` US6) are read by `UC-020-02` and `UC-030-01`; they are not a separate user goal.
+
+### 4.10. Feature 5.10 — Admin Content Moderation (`100`)
+
+```mermaid
+flowchart LR
+    MOD["«actor»<br/>Moderator"]
+    ADMIN["«actor»<br/>Administrator"]
+
+    subgraph SYS["WikiCook — Admin Content Moderation"]
+        direction TB
+        UC100_01(["UC-100-01<br/>Moderate Recipe Submission"])
+        UC100_02(["UC-100-02<br/>Process Content Reports"])
+        UC100_03(["UC-100-03<br/>Manage User Accounts & Roles"])
+        UC100_04(["UC-100-04<br/>Manage Categories &<br/>Taxonomies"])
+        UC100_05(["UC-100-05<br/>Curate Featured Recipes"])
+        UC100_06(["UC-100-06<br/>View Dashboard & Audit Trail"])
+    end
+
+    UC090_02(["UC-090-02<br/>Estimate Nutrition on<br/>Publication or Change"])
+    UC031_06(["UC-031-06<br/>Sync Recipe Embeddings"])
+    LLM["«actor»<br/>LLM Service"]
+    EMAIL["«actor»<br/>Email Service"]
+
+    MOD --- UC100_01
+    MOD --- UC100_02
+    ADMIN --- UC100_03
+    ADMIN --- UC100_04
+    ADMIN --- UC100_05
+    ADMIN --- UC100_06
+    UC100_03 --- EMAIL
+    UC031_06 --- LLM
+
+    UC100_01 -. "«include»" .-> UC090_02
+    UC100_01 -. "«include»" .-> UC031_06
+    UC031_06 -. "«extend»" .-> UC100_02
+
+    classDef actor fill:#e8f1fb,stroke:#2f6db5,color:#0b2545
+    classDef system fill:#eeeeee,stroke:#666666,color:#222222
+    classDef external fill:#ffffff,stroke:#888888,stroke-dasharray:5 5,color:#444444
+    class MOD,ADMIN actor
+    class LLM,EMAIL system
+    class UC090_02,UC031_06 external
+```
+
+- Administrator inherits `UC-100-01` and `UC-100-02` from Moderator (Section 2.2).
+- When a recipe is approved, `UC-100-01` includes the nutrition estimate and the embedding update, so the AI planner can suggest the new recipe (`031` US8). When a report leads to taking a recipe down, `UC-031-06` extends `UC-100-02` to remove it from the AI index.
+- Proposed ingredients from `UC-060-07` are approved or rejected inside `UC-100-01`.
+- `UC-100-03` covers role changes, suspension and banning, including the rules of `010` FR-022a and FR-023 (role hierarchy, last active Administrator); account-status emails go through the Email Service.
+
+### 4.11. Cross-Feature Diagram — Recipe Detail Page (`UC-020-06`)
+
+The Recipe Detail page is the shared screen where most features meet. Duy (`SCRUM-51`) owns the page frame; the other owners fill their blocks. This diagram is the contract for which use cases start from the page.
+
+```mermaid
+flowchart LR
+    GUEST["«actor»<br/>Guest"]
+    MEMBER["«actor»<br/>Member"]
+
+    UC020_06(["UC-020-06<br/>View Recipe Details"])
+
+    UC090_01(["UC-090-01<br/>View Nutrition per Serving<br/>(Dự)"])
+    UC090_04(["UC-090-04<br/>View Allergen Warnings<br/>& AI Diet Labels (Dự)"])
+    UC070_04(["UC-070-04<br/>Browse, Sort & Filter<br/>Reviews (Chung)"])
+    UC050_01(["UC-050-01<br/>Launch Cooking Mode<br/>(Hưng)"])
+    UC080_01(["UC-080-01<br/>Save Recipe with One Tap<br/>(Hiển)"])
+    UC030_02(["UC-030-02<br/>Add Recipe to Plan<br/>from Detail Page (Dự)"])
+    UC040_02(["UC-040-02<br/>Import Ingredients into<br/>Shopping List (Hưng)"])
+    UC070_01(["UC-070-01<br/>Rate & Review Recipe<br/>(Chung)"])
+
+    GUEST --- UC020_06
+    MEMBER --- UC030_02
+    MEMBER --- UC040_02
+    MEMBER --- UC070_01
+    MEMBER --- UC080_01
+
+    UC090_01 -. "«extend»" .-> UC020_06
+    UC090_04 -. "«extend»" .-> UC020_06
+    UC070_04 -. "«extend»" .-> UC020_06
+    UC050_01 -. "«extend»" .-> UC020_06
+    UC080_01 -. "«extend»" .-> UC020_06
+    UC030_02 -. "«extend»" .-> UC020_06
+    UC040_02 -. "«extend»" .-> UC020_06
+    UC070_01 -. "«extend»" .-> UC020_06
+
+    classDef actor fill:#e8f1fb,stroke:#2f6db5,color:#0b2545
+    class GUEST,MEMBER actor
+```
+
+| Page block / button | Use case | Visible to | Owner |
+| :--- | :--- | :--- | :--- |
+| Recipe header, ingredients, steps, serving selector | `UC-020-06` | Guest and above | Nguyễn Đức Duy |
+| Nutrition block, allergen badges, AI diet labels | `UC-090-01`, `UC-090-04` | Guest and above | Nguyễn Thành Dự |
+| "Add to meal plan" | `UC-030-02` | Member and above | Nguyễn Thành Dự |
+| "Add to shopping list" | `UC-040-02` | Member and above | Lê Quốc Hưng |
+| "Start cooking" | `UC-050-01` | Guest and above | Lê Quốc Hưng |
+| "Save" / "Save to collection" | `UC-080-01` | Member and above | Mai Văn Hiển |
+| Reviews and Cooksnaps section, "Write a review" | `UC-070-04`, `UC-070-01` | Read: Guest; write: Member | Trần Nguyễn Công Chung |
+
+When a Guest presses a Member-only button, the page asks them to sign in (screen `AU08-SignInPrompt`) and returns to the same recipe afterwards; this alternative flow belongs to `UC-020-06`.
+
 ---
