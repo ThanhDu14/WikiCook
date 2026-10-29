@@ -1,0 +1,27 @@
+category_slug,name,position,for_breakfast,for_lunch,for_dinner,is_snack,skip
+mon-chao,Món cháo,1,true,true,false,false,false
+mon-nuoc,Món nước,2,true,true,false,false,false
+mon-canh,Món canh,3,false,true,true,false,false
+mon-kho,Món kho,4,false,true,true,false,false
+mon-xao,Món xào,5,false,true,true,false,false
+mon-chien,Món chiên,6,false,true,true,false,false
+mon-hap,Món hấp,7,false,true,true,false,false
+mon-nuong,Món nướng,8,false,true,true,false,false
+mon-lau,Món lẩu,9,false,true,true,false,false
+mon-tu-bo,Món từ bò,10,false,true,true,false,false
+mon-tu-ga,Món từ gà,11,false,true,true,false,false
+mon-chay,Món chay,12,false,true,true,false,false
+mon-cuon-tron,Món cuốn - trộn,13,false,true,true,false,false
+mon-goi-salad,Món gỏi - salad,14,false,true,true,false,false
+mon-kho-mam,Món khô - mắm,15,false,true,true,false,false
+mon-banh,Món bánh,16,true,true,false,false,false
+ngay-le-tet,Ngày lễ Tết,17,false,true,true,false,false
+an-vat,Ăn vặt,18,false,false,false,true,false
+mon-che,Món chè,19,false,false,false,true,false
+mon-kem,Món kem,20,false,false,false,true,false
+mon-trang-mieng,Món tráng miệng,21,false,false,false,true,false
+thuc-uong,Thức uống,22,false,false,false,true,false
+tra-sua,Trà sữa,23,false,false,false,true,false
+sinh-to,Sinh tố,24,false,false,false,true,false
+nuoc-ep,Nước ép,25,false,false,false,true,false
+meo-vao-bep,Mẹo vào bếp,99,false,false,false,false,true

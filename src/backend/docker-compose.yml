@@ -1,0 +1,44 @@
+# Local dev infrastructure.
+#   docker compose up -d db          # PostgreSQL 16 + pgvector on localhost:5432
+#   docker compose run --rm migrate  # apply Flyway migrations from wikicook-db
+# Run from src/backend. Credentials can be overridden in src/backend/.env (git-ignored).
+name: wikicook
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-wikicook}
+      POSTGRES_USER: ${POSTGRES_USER:-wikicook}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-wikicook}
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Same Flyway history table the Spring Boot app will use later, so the app sees these as applied.
+  migrate:
+    image: flyway/flyway:11
+    profiles: ["tools"]
+    depends_on:
+      db:
+        condition: service_healthy
+    command: migrate
+    environment:
+      FLYWAY_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-wikicook}
+      FLYWAY_USER: ${POSTGRES_USER:-wikicook}
+      FLYWAY_PASSWORD: ${POSTGRES_PASSWORD:-wikicook}
+      FLYWAY_LOCATIONS: filesystem:/flyway/sql
+      FLYWAY_CONNECT_RETRIES: 10
+    volumes:
+      - ./wikicook-db/src/main/resources/db/migration:/flyway/sql:ro
+
+volumes:
+  pgdata:
