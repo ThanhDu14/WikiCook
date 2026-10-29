@@ -98,6 +98,27 @@ dishes).
   A: "Theo công thức" (per recipe): each dish uses its recipe's own servings, the same as spec 030;
   the user can still enter one number from 1 to 20 to apply to every dish.
 
+### Session 2026-10-29
+
+- Q: When ranking "Suggested for you", should the order of FR-034 be strict (meal suitability →
+  preferred cuisines → variety), or should all criteria be weighed together into one overall fit?
+  → A: Strict tiers. Every suggestion already suits the slot's meal; dishes of a preferred cuisine
+  always come before the others, and within each group dishes are ordered by how well they fit the
+  slot and by variety against the week.
+- Q: What does "variety against the week's other dishes" cover? → A: A dish that is very similar to
+  a dish already in the week (same kind of dish or same main ingredients, e.g. "Bún bò Huế" when
+  "Phở bò" is planned) is ranked after dishes of a different kind, even when its category differs;
+  and the suggestions shown together must not be near-duplicates of each other.
+- Q: Should suggestions favour dishes that share main ingredients with the week's other dishes
+  (simpler shopping)? → A: Yes, as a secondary criterion only: sharing main ingredients moves a dish
+  up only among dishes that are otherwise about equal, and never outweighs variety.
+- Q: What happens to "Suggested for you" when the user types a keyword in the picker's search box?
+  → A: The list is hidden while a keyword is entered; search results keep the order of spec 030
+  (meal, then profile); clearing the keyword shows the suggestions again.
+- Q: Should a suggestion's short reason mention main ingredients it shares with the week's other
+  dishes? → A: Yes, when there is one: at most one shared main ingredient and the day of the dish it
+  is shared with, e.g. "Món sáng · Việt Nam · 20 phút · dùng chung thịt bò với Thứ Hai".
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Generate a week of meals from my profile (Priority: P1)
@@ -289,9 +310,10 @@ rules, no recipe is repeated, and the remaining generation count is unchanged.
 
 ### User Story 7 - Suggestions for one slot (Priority: P2)
 
-As a **home cook filling my week by hand**, I want the recipe picker to recommend dishes that fit
-the meal I am choosing for, and my profile, so that I find a good breakfast quickly instead of
-scrolling past lunch and dinner dishes.
+As a **home cook filling my week by hand or fixing a generated draft**, I want the recipe picker to
+recommend dishes that fit the meal I am choosing for, my profile and the rest of my week, so that
+when a dish is not to my liking I can replace it with a good, different dish right in the picker
+instead of searching or scrolling past lunch and dinner dishes.
 
 **Why this priority**: Most users fill or fix a few slots rather than generating a whole week; this
 brings the AI's value to every slot. The full-week generation (User Story 1) already delivers the
@@ -306,12 +328,15 @@ picker from Tuesday breakfast of a week that already has "Phở bò" on Monday b
 
 1. **Given** the user opens the recipe picker from an empty slot, a "Choose a dish" slot or
    "Replace" (spec 030), **When** the picker opens, **Then** a "Suggested for you" list shows up to
-   5 published recipes suited to that slot's meal, ranked for the user's profile.
+   5 published recipes suited to that slot's meal, ranked for the user's profile and the rest of
+   the week (FR-034).
 2. **Given** the suggestions, **When** they are chosen, **Then** none breaks the user's allergies,
    excluded ingredients, diet type or maximum cooking time, and none is already planned in the same
    week.
 3. **Given** the suggestions, **When** they are shown, **Then** each suggested dish has a short
-   reason (e.g. "Món sáng · Việt Nam · 20 phút") and the AI disclaimer is shown in short form.
+   reason (e.g. "Món sáng · Việt Nam · 20 phút", plus "· dùng chung thịt bò với Thứ Hai" when it
+   shares a main ingredient with another dish of the week) and the AI disclaimer is shown in short
+   form.
 4. **Given** the user picks a suggested dish, **When** it is added, **Then** it is added like any
    picker choice (spec 030) and carries the "AI" label.
 5. **Given** the picker is opened, **When** suggestions are produced, **Then** this does not count
@@ -321,6 +346,13 @@ picker from Tuesday breakfast of a week that already has "Phở bò" on Monday b
 7. **Given** the retrieval step is unavailable or takes longer than 3 seconds, **When** the picker
    opens, **Then** the "Suggested for you" list is hidden and the ordered search results (spec 030
    FR-007a) work as usual; when only the AI language model is down, suggestions still show.
+8. **Given** a week (or open draft) with "Phở bò" on Monday breakfast and a profile preferring
+   Vietnamese food, **When** the user opens the picker for Tuesday breakfast, **Then** a dish very
+   similar to "Phở bò" (e.g. "Bún bò Huế") is ranked after Vietnamese breakfast dishes of a
+   different kind, and no two of the suggestions shown are near-duplicates of each other.
+9. **Given** the picker shows suggestions, **When** the user types a keyword in its search box,
+   **Then** the "Suggested for you" list is hidden and the search results keep the order of spec 030;
+   **When** the keyword is cleared, **Then** the suggestions show again.
 
 ---
 
@@ -492,14 +524,24 @@ never chosen again.
   retrieval step over the prepared recipe data (after the hard-rule filter of FR-008a) and MUST NOT
   call the AI language model.
 - **FR-034**: Suggestions MUST follow the hard rules of FR-009 and MUST NOT include recipes already
-  planned in the same week (including an open draft); they MUST be ranked by meal suitability, then
-  preferred cuisines, then variety against the week's other dishes.
-- **FR-035**: Each suggestion MUST show a short reason (meal, cuisine, cooking time) and the list
-  MUST show the AI disclaimer in short form.
+  planned in the same week (including an open draft). Every suggestion MUST suit the slot's meal;
+  dishes of a preferred cuisine MUST come before all other dishes, and within each of these two
+  groups dishes MUST be ordered by how well they fit the slot and by variety against the week's
+  other dishes. Variety means that a dish very similar to one already in the week (same kind of
+  dish or same main ingredients), even of a different category, MUST rank after dishes of a
+  different kind, and the suggestions shown together MUST NOT be near-duplicates of each other.
+  Sharing main ingredients with the week's other dishes MAY move a dish up only among dishes that
+  are otherwise about equal, and MUST NOT outweigh variety.
+- **FR-035**: Each suggestion MUST show a short reason (meal, cuisine, cooking time) and, when the
+  dish shares a main ingredient with another dish of the week, at most one such ingredient and the
+  day of that dish (e.g. "dùng chung thịt bò với Thứ Hai"); the list MUST show the AI disclaimer in
+  short form.
 - **FR-036**: Slot suggestions MUST NOT count toward the generation limit of FR-025.
 - **FR-037**: If suggestions are not ready within 3 seconds or the retrieval step is unavailable, the
   list MUST be hidden without an error, and the picker MUST keep working with ordered search results.
-  An outage of the AI language model alone MUST NOT hide suggestions.
+  An outage of the AI language model alone MUST NOT hide suggestions. While the user has a keyword in
+  the picker's search box, the list MUST be hidden and search results MUST keep the order of spec 030
+  (FR-007a); clearing the keyword MUST show the suggestions again.
 - **FR-038**: A dish added from the suggestions MUST carry the "AI" label like other AI dishes.
 
 **Records**
