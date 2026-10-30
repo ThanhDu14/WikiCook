@@ -1,6 +1,5 @@
-package com.wikicook.aiplanner.domain;
+package com.wikicook.mealplan.domain;
 
-import com.wikicook.mealplan.domain.Meal;
 import java.time.DayOfWeek;
 import java.util.Comparator;
 import java.util.Objects;

@@ -5,9 +5,9 @@ import static java.time.DayOfWeek.TUESDAY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.wikicook.aiplanner.domain.Candidate;
-import com.wikicook.aiplanner.domain.SlotKey;
 import com.wikicook.aiplanner.service.BackupPlanner.Plan;
 import com.wikicook.mealplan.domain.Meal;
+import com.wikicook.mealplan.domain.SlotKey;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.EnumMap;

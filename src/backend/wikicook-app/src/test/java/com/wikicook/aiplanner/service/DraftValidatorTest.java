@@ -10,7 +10,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.wikicook.aiplanner.domain.Candidate;
-import com.wikicook.aiplanner.domain.SlotKey;
 import com.wikicook.aiplanner.repository.EligibleRecipeQuery;
 import com.wikicook.aiplanner.service.DraftValidator.Retry;
 import com.wikicook.aiplanner.service.DraftValidator.Valid;
@@ -18,6 +17,7 @@ import com.wikicook.aiplanner.service.DraftValidator.ValidationResult;
 import com.wikicook.common.diet.DietRestrictions;
 import com.wikicook.mealplan.domain.DietType;
 import com.wikicook.mealplan.domain.Meal;
+import com.wikicook.mealplan.domain.SlotKey;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;

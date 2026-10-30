@@ -2,8 +2,8 @@ package com.wikicook.aiplanner.service;
 
 import com.wikicook.ai.llm.LlmRequest;
 import com.wikicook.aiplanner.domain.Candidate;
-import com.wikicook.aiplanner.domain.SlotKey;
 import com.wikicook.mealplan.domain.Meal;
+import com.wikicook.mealplan.domain.SlotKey;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;

@@ -1,8 +1,8 @@
 package com.wikicook.aiplanner.service;
 
 import com.wikicook.aiplanner.domain.Candidate;
-import com.wikicook.aiplanner.domain.SlotKey;
 import com.wikicook.mealplan.domain.Meal;
+import com.wikicook.mealplan.domain.SlotKey;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.EnumMap;
