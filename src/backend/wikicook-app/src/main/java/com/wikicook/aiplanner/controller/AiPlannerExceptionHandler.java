@@ -15,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * ProblemDetail + {@code code} for the AI planner controllers (research R16), same shape as 030. Runs before
@@ -26,6 +27,8 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 public class AiPlannerExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(AiPlannerExceptionHandler.class);
+
+    private static final String WEEK_START = "weekStart";
 
     private final Clock clock;
 
@@ -57,10 +60,26 @@ public class AiPlannerExceptionHandler {
         return response.body(problem);
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, HandlerMethodValidationException.class,
-            HttpMessageNotReadableException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
     ProblemDetail handleInvalidInput(Exception ex) {
         return problem(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", "The request is not valid");
+    }
+
+    /** A bad {@code weekStart} has its own code (openapi {@code INVALID_WEEK_START}); anything else is invalid input. */
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    ProblemDetail handleInvalidParameter(HandlerMethodValidationException ex) {
+        boolean weekStart = ex.getParameterValidationResults().stream()
+                .anyMatch(result -> WEEK_START.equals(result.getMethodParameter().getParameterName()));
+        return weekStart ? invalidWeekStart() : handleInvalidInput(ex);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    ProblemDetail handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        return WEEK_START.equals(ex.getName()) ? invalidWeekStart() : handleInvalidInput(ex);
+    }
+
+    private static ProblemDetail invalidWeekStart() {
+        return problem(HttpStatus.BAD_REQUEST, "INVALID_WEEK_START", "weekStart must be a Monday (YYYY-MM-DD)");
     }
 
     private static ProblemDetail problem(HttpStatus status, String code, String detail) {

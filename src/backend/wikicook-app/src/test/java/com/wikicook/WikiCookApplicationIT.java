@@ -42,4 +42,13 @@ class WikiCookApplicationIT extends AbstractPostgresIT {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getHeaders().getContentType()).hasToString("application/problem+json");
     }
+
+    /** Without the dev stubs nobody is signed in yet (spec 010 not built): the AI planner answers 401. */
+    @Test
+    void aiPlannerWithoutSignedInUserIs401() {
+        ResponseEntity<String> response = http.getForEntity("/api/v1/ai-planner/weeks/2026-11-02/options",
+                String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(response.getBody()).contains("\"code\":\"UNAUTHENTICATED\"");
+    }
 }
