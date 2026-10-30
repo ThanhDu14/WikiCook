@@ -2089,7 +2089,7 @@ Lets a registered user authenticate with an email and a password so that the per
 3. **Enter Credentials:** The actor types the email — in any letter case and possibly with surrounding spaces, for example `" An@Mail.com "` — and the password, and optionally ticks "Remember me".
 4. **Submit:** The actor submits the form.
 5. **Normalize and Validate:** The system trims surrounding spaces from the email and ignores letter case (US1 AS7, FR-002). The password is not trimmed (Edge Cases "Password with leading/trailing spaces").
-6. **Check Lock:** The system checks that the account is not locked after repeated failures (FR-012).
+6. **Check Lock:** The system checks that sign-in for the normalized email is not locked after repeated failures (FR-012).
 7. **Verify Credentials:** The system verifies the password against the stored BCrypt hash (FR-007; constitution Principle IV).
 8. **Check Account Status:** Only when the credentials are correct, the system checks that the account is not suspended or banned (FR-013).
 9. **Create Session:** The system creates a session for this device. With "Remember me" the session lasts up to 30 days; without it the session ends after 24 hours of inactivity or when the browser is closed (FR-009). The counter of consecutive failures is reset to zero.
@@ -2101,20 +2101,22 @@ Lets a registered user authenticate with an email and a password so that the per
   - *Trigger:* At Step 7, the password does not match (US1 AS2).
   - *Steps:*
     1. The system refuses the sign-in with the generic message "Email or password is incorrect" and clears the password field (FR-008).
-    2. The system increases the counter of consecutive failures for the account and records a failure audit entry (FR-025).
+    2. The system increases the counter of consecutive failures for the normalized email and records a failure audit entry (FR-025).
 - **AF 2.2: Email Not Registered:**
-  - *Trigger:* At Step 6 or 7, no account uses the normalized email (US1 AS3).
+  - *Trigger:* At Step 7, no account uses the normalized email (US1 AS3).
   - *Steps:*
-    1. The system shows exactly the same message as in AF 2.1, with no hint that the email does not exist, and takes a comparable time to answer (FR-008, NFR-003).
-    2. The system records a failure audit entry.
+    1. The system performs a dummy password-hash comparison so that the response time is comparable to AF 2.1 (NFR-003).
+    2. The system shows exactly the same message as in AF 2.1, with no hint that the email does not exist (FR-008).
+    3. The system counts the failure against the normalized email in a temporary counter that expires after 15 minutes, exactly as for a registered account (see AF 2.3).
+    4. The system records a failure audit entry that references no account and does not store the email in readable form.
 - **AF 2.3: Account Locked After Repeated Failures:**
-  - *Trigger:* At AF 2.1, the failure is the 5th consecutive failed attempt on one account within 15 minutes (FR-012), or, at Step 6, the actor tries to sign in while the 15-minute lock is active.
+  - *Trigger:* At AF 2.1 or AF 2.2, the failure is the 5th consecutive failed attempt for the same normalized email within 15 minutes, whether or not an account uses it (FR-012); or the actor signs in while the 15-minute lock is active.
   - *Steps:*
-    1. The system locks the account for 15 minutes and records a lockout audit entry (FR-025).
-    2. The system asks the Email Service to notify the account owner by email (FR-012).
-    3. The system shows "Không thể đăng nhập" with the time when the actor can retry (for example "Tài khoản tạm khóa đến 14:35"), the note that an email was sent, and a button "Đặt lại mật khẩu" that starts `UC-010-03`.
-    4. While the lock is active, correct credentials are also refused with this message.
-  - *Outcome:* After a lock ends, or after a successful sign-in, the failure counter starts again from zero. Open points are in `[OQ-010-02]`.
+    1. The system locks sign-in for that email for 15 minutes and records a lockout audit entry (FR-025).
+    2. Only when an account exists, the system asks the Email Service to notify the account owner (FR-012). No email is sent otherwise.
+    3. The system shows the same "Không thể đăng nhập" screen for every email, with the retry time, the note that an email was sent, and the button "Đặt lại mật khẩu" (`UC-010-03`).
+    4. While the lock is active, correct credentials are also refused with this screen.
+  - *Outcome:* A visitor cannot tell a locked real account from a locked unknown email (NFR-003). The lock is time-based only; whether a password reset ends it is left to spec 010 (`[OQ-010-02]`).
 - **AF 2.4: Account Suspended:**
   - *Trigger:* At Step 8, the credentials are correct but the account is suspended for a limited time (FR-013).
   - *Steps:*
@@ -2439,7 +2441,7 @@ Lets a visitor continue with a Google account that has a verified email. If no W
    - *Current Stance:* The Guest and permission scenarios of `US3` are written as alternative flows `AF 2.9`, `AF 2.15` and `AF 2.16` of `UC-010-02`.
    - *Proposal:* Either keep this stance, or add a Brief use case `UC-010-05 Enforce Role-Based Access` to the model before the freeze on 02/11/2026.
    - *Owner:* Mai Văn Hiển with Nguyễn Đức Duy (`SCRUM-49`).
-   - *Decision (30/10/2026, Mai Văn Hiển):* Keep. Record in a clarification after PA3.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Option A chosen. Proposed resolution: A, pending clarification of spec 010 (one sentence: failures are counted per normalized email, including unregistered emails, with the same lock screen and the retry time; the `FR-012` email is sent only when an account exists). Option A keeps the behaviour the spec already describes (the Edge Case shows the retry time; `FR-012` sends an email) and only widens what is counted; option B would remove the retry time and contradict the Edge Case. Two points for `/speckit-plan`: the counter for unknown emails must expire after 15 minutes and be limited per IP address so that it cannot fill memory; audit entries must not store an unknown email in readable form. "A successful password reset clears the lock" is not part of the flows, because the spec does not say it; it must be added to the clarification first. `AF 2.2` and `AF 2.3` are written for option A.
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 and ask Duy: the reset is all-or-nothing. The Integration Points already require `011`, `060` and `080` to delete the data; Duy only confirms that `060` has a handler.
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 (small): add "try again in X minutes" to the answer. Counting per address is already correct.
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 (small): `FR-026` refuses with a neutral message that gives no reason.
@@ -3107,7 +3109,7 @@ Defines in one place what the dietary profile means, so that search, the meal pl
    - *Issue:* `FR-030` limits wrong passwords for password change only. A stolen session could use the deletion screen to guess the password without limit.
    - *Current Stance:* `AF 4.1` only refuses; no limit is described.
    - *Owner:* Mai Văn Hiển, to be settled before `/speckit-plan`.
-   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 011, to be done first: apply `FR-030` to the delete-account screen, with the same counter.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Open — proposed, awaiting clarification of spec 011: wrong current passwords on "Change password" and on "Delete account" share one counter per user (5 wrong passwords within 15 minutes, both actions refused for 15 minutes with the time to retry), separate from the sign-in counter so it never locks sign-in; Google-only accounts re-authenticate with Google and have no password to guess (`FR-030`). `AF 4.1` stays unchanged for now. After the clarification is approved, add `AF 4.12: Too Many Wrong Passwords` to `UC-011-04` and update this item.
 6. **`[OQ-011-06]` How a Banned User Reaches Account Deletion:**
    - *Issue:* Same as `[OQ-010-04]`: spec 011 Assumptions leave the route to spec 010.
    - *Current Stance:* `UC-011-04` allows a banned account to delete itself once it reaches the account-closure page.
