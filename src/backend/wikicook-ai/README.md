@@ -24,11 +24,53 @@ Embedding công thức nằm ở `wikicook-app` (`com.wikicook.aiplanner.embeddi
 
 `GeminiLiveIT` gọi Gemini thật để kiểm tra dạng request/response. Test chỉ chạy khi có `WIKICOOK_AI_API_KEY` (`set -a; source ../.env; set +a` trước `mvn verify`), mỗi lần chạy gửi 4 request.
 
-Pipeline trong `wikicook-app` (`com.wikicook.aiplanner`) đã có các bước 1–5 dạng thành phần rời: lọc hard rule bằng SQL (`EligibleRecipeQuery` + `DietRuleSql`), truy hồi pgvector (`CandidateService`, lỗi embedding thì xếp bằng SQL), prompt `meal-plan.v1` (`PromptBuilder`), kiểm tra kết quả (`DraftValidator`) và bản nháp dự phòng không dùng AI (`BackupPlanner`).
+Pipeline trong `wikicook-app` (`com.wikicook.aiplanner`): lọc hard rule bằng SQL (`EligibleRecipeQuery` + `DietRuleSql`), truy hồi pgvector (`CandidateService`, lỗi embedding thì xếp bằng SQL), prompt `meal-plan.v1` (`PromptBuilder`), kiểm tra kết quả (`DraftValidator`) và bản nháp dự phòng không dùng AI (`BackupPlanner`). `GenerationService` nối các bước: kiểm tra tuần/ô → kiểm 5 lượt/giờ → `AiQuotaService.reserve` → lọc → kiểm đủ món theo bữa (`NOT_ENOUGH_RECIPES`) → truy hồi → LLM trong ngân sách 60 s, retry đúng một lần khi còn ≥ 15 s → kiểm tra → `finish`. LLM lỗi, quá giờ, retry vẫn hỏng hoặc hết hạn mức ngày thì trả bản nháp `AUTO`. Mỗi người chỉ có một lượt đang chạy (`409 GENERATION_IN_PROGRESS`). Log chỉ ghi số lượng và thời gian, không ghi prompt hay câu trả lời của LLM.
 
-Chạy thử ngày 2026-10-30 trên DB local (1.559 món PUBLISHED): reconcile với `WIKICOOK_AI_EMBEDDING_RECONCILE_LIMIT=200` embed 200 món trong 104 giây, không lỗi.
+`AiPlannerController` có `GET /api/v1/ai-planner/weeks/{weekStart}/options` và `POST /api/v1/ai-planner/weeks/{weekStart}/generations`.
 
-Chưa có: service điều phối, controller và job async (chờ `MealPlanWriteFacade`/`DietaryProfilePort` của 030), đồng bộ embedding theo event của 060 (`RecipeEmbeddingSync`), frontend.
+Chạy thử ngày 2026-10-30 trên DB local (1.559 món PUBLISHED): reconcile với `WIKICOOK_AI_EMBEDDING_RECONCILE_LIMIT=200` embed 200 món trong 104 giây, không lỗi. Cùng ngày, `POST …/generations` cho cả tuần 2026-11-02 (21 ô, `gemini-3.5-flash`, stub bật) trả `mode = AI`, 21 món, không trùng, 0 ô "Chọn món", 0 pick bị loại, 1 lời gọi LLM, 15,7 giây.
+
+### Bản giả lập cho dev (`com.wikicook.devstub`)
+
+Spec 010 (đăng nhập), 011 (hồ sơ) và 030 (lưu meal plan) chưa có, nên `wikicook.dev-stubs.enabled=true` (`WIKICOOK_DEV_STUBS_ENABLED`, mặc định `false`) bật bản giả lập. Đây không phải code chính; mỗi bean có `@ConditionalOnMissingBean` nên bean thật tự thay khi có.
+
+| Bean | Bản giả lập | Thay bằng |
+|---|---|---|
+| `CurrentUser` | `StubCurrentUser`: id lấy từ header `X-Dev-User-Id`, không có thì dùng `wikicook.dev-stubs.user-id` (mặc định 1); id không phải số dương → 400 `VALIDATION_ERROR` | Spring Security của 010 |
+| `DietaryProfilePort` | `StubDietaryProfile`: cùng một hồ sơ cho mọi người, từ `wikicook.dev-stubs.profile.*` (`household-size`, `diet-type`, `max-cook-time-minutes`, `allergen-ids`, `excluded-ingredient-ids`, `preferred-cuisine-ids`); mặc định rỗng, `NONE` | Module hồ sơ (011) |
+| `MealPlanWriteFacade` | `InMemoryMealPlanFacade`: tuần lưu trong bộ nhớ, mất khi khởi động lại | Cài đặt của 030 trên `meal_plan_items` |
+| (dòng `users`) | `DevUserProvisioner`: thêm user có id cần dùng nếu thiếu (`ai_requests.user_id` có khóa ngoại), rồi đẩy sequence `users.id` qua id đó | Không cần khi có đăng ký thật |
+
+Khi stub tắt và chưa có 010, mọi lời gọi AI planner trả 401 `UNAUTHENTICATED`.
+
+Chưa có: hủy lượt tạo (`DELETE /generations/{requestId}`, danh sách "vừa xong" 10 phút), confirm (US2), gợi ý một ô (US7), đồng bộ embedding theo event của 060 (`RecipeEmbeddingSync`), các IT `DraftSafetyIT`, `NotEnoughRecipesIT`, `RateLimitIT`, `OfflineModeIT`, và frontend. Interface của 030 (`DietaryProfilePort`, `MealPlanWriteFacade`, `WeekCalendar`, `@MondayDate`) đã tạo đúng chữ ký trong contract nhưng cài đặt thật vẫn chờ 030.
+
+### Thử bằng curl
+
+```bash
+cd src/backend
+WIKICOOK_AI_MODE=live WIKICOOK_DEV_STUBS_ENABLED=true docker compose up -d --build app   # key lấy từ .env
+
+# Tùy chọn cho dialog của tuần sau (không gọi provider)
+curl -s localhost:8080/api/v1/ai-planner/weeks/2026-11-02/options -H 'X-Dev-User-Id: 1'
+
+# Tạo bản nháp cả tuần: 1 lời gọi LLM (2 nếu phải retry) và 1 lời gọi embedding cho mỗi bữa
+curl -s -X POST localhost:8080/api/v1/ai-planner/weeks/2026-11-02/generations \
+  -H 'X-Dev-User-Id: 1' -H 'Content-Type: application/json' \
+  -d '{"requestId":"'"$(uuidgen)"'",
+       "days":["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"],
+       "meals":["BREAKFAST","LUNCH","DINNER"],
+       "constraints":{"allergenIds":[],"excludedIngredientIds":[],"dietType":"NONE",
+                      "servings":4,"maxCookTimeMinutes":null,"preferredCuisineIds":[]}}'
+
+# Tuần đã qua → 422 PAST_WEEK (không gọi provider)
+curl -s -X POST localhost:8080/api/v1/ai-planner/weeks/2026-10-19/generations \
+  -H 'X-Dev-User-Id: 1' -H 'Content-Type: application/json' \
+  -d '{"requestId":"'"$(uuidgen)"'","days":["MONDAY"],"meals":["LUNCH"],
+       "constraints":{"allergenIds":[],"excludedIngredientIds":[],"dietType":"NONE","preferredCuisineIds":[]}}'
+```
+
+Đổi tuần trong URL theo ngày chạy (`weekStart` phải là thứ Hai, nếu không → 400 `INVALID_WEEK_START`). Mỗi user được 5 lượt `mode = AI` trong 60 phút; dùng `X-Dev-User-Id` khác để thử tiếp. Không để `WIKICOOK_DEV_STUBS_ENABLED=true` ở môi trường thật.
 
 ## Cấu hình
 
@@ -49,6 +91,10 @@ Chưa có: service điều phối, controller và job async (chờ `MealPlanWrit
 | `wikicook.ai.daily-cap.total` | `WIKICOOK_AI_DAILY_CAP_TOTAL` | `100` dòng/ngày (một dòng có thể gọi provider 2 lần khi retry) |
 | `wikicook.ai.daily-cap.meal-planner-share` | `WIKICOOK_AI_DAILY_CAP_MEAL_PLANNER_SHARE` | `0.7` |
 | `wikicook.ai.daily-cap.nutrition-share` | `WIKICOOK_AI_DAILY_CAP_NUTRITION_SHARE` | `0.3` (tổng hai share ≤ 1) |
+| `wikicook.ai-planner.meal-cutoffs.{breakfast,lunch,dinner}` | – | `10:00` / `14:00` / `20:00` giờ VN; bữa của hôm nay qua giờ này thì không tạo được |
+| `wikicook.dev-stubs.enabled` | `WIKICOOK_DEV_STUBS_ENABLED` | `false`; chỉ cho dev |
+| `wikicook.dev-stubs.user-id` | `WIKICOOK_DEV_STUBS_USER_ID` | `1` |
+| `wikicook.dev-stubs.profile.*` | – | hồ sơ rỗng, `diet-type: NONE` |
 
 ## Build và test
 
