@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -36,14 +38,29 @@ public record AiProperties(
         }
     }
 
+    /**
+     * @param reconcileOnStartup run the reconcile job once when the application starts
+     * @param batchSize          recipes per page of the reconcile job, one provider request per page at most
+     * @param batchPause         wait between provider requests, to stay under the free tier's requests per minute
+     * @param reconcileLimit     most recipes embedded per run, 0 for no limit
+     */
     public record Embedding(
             @NotBlank @DefaultValue("gemini-embedding-001") String model,
             @Positive @DefaultValue("768") int dimensions,
-            @NotNull @DefaultValue("30s") Duration timeout) {
+            @NotNull @DefaultValue("30s") Duration timeout,
+            @DefaultValue("false") boolean reconcileOnStartup,
+            @Min(1) @Max(100) @DefaultValue("50") int batchSize,
+            @NotNull @DefaultValue("30s") Duration batchPause,
+            @PositiveOrZero @DefaultValue("0") int reconcileLimit) {
 
         @AssertTrue(message = "embedding.timeout must be positive")
         public boolean isTimeoutPositive() {
             return timeout == null || timeout.isPositive();
+        }
+
+        @AssertTrue(message = "embedding.batch-pause must not be negative")
+        public boolean isBatchPauseValid() {
+            return batchPause == null || !batchPause.isNegative();
         }
     }
 

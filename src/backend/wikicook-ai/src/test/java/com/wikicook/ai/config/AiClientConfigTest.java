@@ -38,6 +38,10 @@ class AiClientConfigTest {
             assertThat(properties.dailyCap().total()).isEqualTo(100);
             assertThat(properties.dailyCap().mealPlannerShare()).isEqualTo(0.7);
             assertThat(properties.dailyCap().nutritionShare()).isEqualTo(0.3);
+            assertThat(properties.embedding().reconcileOnStartup()).isFalse();
+            assertThat(properties.embedding().batchSize()).isEqualTo(50);
+            assertThat(properties.embedding().batchPause()).isEqualTo(Duration.ofSeconds(30));
+            assertThat(properties.embedding().reconcileLimit()).isZero();
         });
     }
 
@@ -59,6 +63,10 @@ class AiClientConfigTest {
             "wikicook.ai.llm.timeout=0s",
             "wikicook.ai.embedding.timeout=-1s",
             "wikicook.ai.base-url=",
+            "wikicook.ai.embedding.batch-size=0",
+            "wikicook.ai.embedding.batch-size=101",
+            "wikicook.ai.embedding.batch-pause=-1s",
+            "wikicook.ai.embedding.reconcile-limit=-1",
     })
     void rejectsInvalidSettings(String setting) {
         runner.withPropertyValues(setting).run(context -> assertThat(context).hasFailed());

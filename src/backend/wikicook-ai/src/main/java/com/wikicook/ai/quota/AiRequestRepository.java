@@ -90,6 +90,14 @@ public class AiRequestRepository {
                 params, Integer.class);
     }
 
+    /** Retention: meal planner rows are kept 90 days; nutrition rows stay as recipe history (090). */
+    public int deleteOlderThan(AiFeature feature, Instant before) {
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("feature", feature.name())
+                .addValue("before", before.atOffset(ZoneOffset.UTC), Types.TIMESTAMP_WITH_TIMEZONE);
+        return jdbc.update("DELETE FROM ai_requests WHERE feature = :feature AND created_at < :before", params);
+    }
+
     /** Counted meal planner rows of a user after {@code after}, and the oldest of them. */
     public CountedWindow countedAfter(long userId, Instant after) {
         MapSqlParameterSource params = new MapSqlParameterSource()
