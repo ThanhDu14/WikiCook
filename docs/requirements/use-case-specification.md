@@ -2200,9 +2200,9 @@ Lets a registered user authenticate with an email and a password so that the per
 - **Reliability:** Zero accounts can be accessed after 5 wrong passwords within 15 minutes (SC-005) and 100% of protected actions are refused for unauthorized roles (SC-004).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
-- **Basic Flow:** `AU01-Login` (Steps 2–5, 11) — referenced by `canvas.json` and `index.html` of the prototype but **not present** in the `screens/` folder (Gap 010-D).
+- **Basic Flow:** [`W-AU01-Login.dc.html`](../analysis-and-design/ui-ux/screens/W-AU01-Login.dc.html) (Steps 2–5, 11; the web variant — there is no mobile `AU01`). It also shows the generic error of AF 2.1 ("Email hoặc mật khẩu không đúng"), the warning that 5 failures in a row lock the account for 15 minutes, "Ghi nhớ (30 ngày)", "Quên mật khẩu?", the Google button, and the guest-save context of AF 2.9.
 - **Alternative Flows:** [`AU07-Locked.dc.html`](../analysis-and-design/ui-ux/screens/AU07-Locked.dc.html) (AF 2.3, AF 2.4, AF 2.5), [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 2.9), [`AU09-AccessDenied.dc.html`](../analysis-and-design/ui-ux/screens/AU09-AccessDenied.dc.html) (AF 2.16).
-- **UI Asset Gap for SCRUM-58:** Needs the sign-in screen with the generic error (AF 2.1), the unverified-email reminder (AF 2.7), the session-expired prompt (AF 2.12) and the role-change notice (AF 2.15). See Section 9.2 (Gaps 010-D to 010-H).
+- **UI Asset Gap for SCRUM-58:** Needs the unverified-email reminder (AF 2.7), the session-expired prompt (AF 2.12) and the role-change notice (AF 2.15). See Section 9.2 (Gaps 010-F to 010-H).
 
 ---
 
@@ -2412,8 +2412,7 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 | `UC-010-01` | AF 1.1 | *Gap 010-A* | Sign-up with "email already registered" message and links to sign in or reset | **GAP** |
 | `UC-010-01` | Basic Flow (Step 11) | *Gap 010-B* | "Email verified" confirmation with the action to sign in | **GAP** |
 | `UC-010-01` | AF 1.10 | *Gap 010-C* | Resend button after the 3-request limit is reached, with the remaining wait | **GAP** |
-| `UC-010-02` | Basic Flow (Steps 2–5, 11) | *Gap 010-D* (`AU01-Login`, referenced by `canvas.json` and `index.html` but missing from `screens/`) | Sign-in form with email, password, "Remember me", forgot-password link, Google button | **GAP** |
-| `UC-010-02` | AF 2.1, AF 2.2 | *Gap 010-E* | Sign-in with the generic message "Email or password is incorrect" and the cleared password field | **GAP** |
+| `UC-010-02` | Basic Flow (Steps 2–5, 11), AF 2.1, AF 2.2, AF 2.9 | `W-AU01-Login.dc.html` | Web sign-in form with the generic error, the 5-failures lock warning, "Ghi nhớ (30 ngày)", "Quên mật khẩu?", Google button and the guest-save context | **Available** (web variant only; Gap 010-D and Gap 010-E withdrawn) |
 | `UC-010-02` | AF 2.3, AF 2.4, AF 2.5 | `AU07-Locked.dc.html` | Locked account until a time with "Đặt lại mật khẩu"; suspended account with end date and reason; note for banned accounts | **Available** |
 | `UC-010-02` | AF 2.7 | *Gap 010-F* | Reminder banner to verify the email, with the request for a new link | **GAP** |
 | `UC-010-02` | AF 2.9 | `AU08-SignInPrompt.dc.html` | Guest presses Save: "Đăng nhập / Tạo tài khoản / Để sau" | **Available** |
@@ -2425,12 +2424,14 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 | `UC-010-03` | AF 3.4 | *Gap 010-I* | Reset link invalid, used or expired, with the action to request a new one | **GAP** |
 | `UC-010-03` | Basic Flow (Step 12) | *Gap 010-J* | "Password changed" confirmation with the action to sign in | **GAP** |
 | `UC-010-03` | AF 3.5 | *Gap 010-K* | New-password form with the failed rule highlighted | **GAP** |
-| `UC-010-04` | Basic Flow (Step 1) | `AU02-Register.dc.html` | "Đăng ký với Google" button (the sign-in button is part of Gap 010-D) | **Available** |
+| `UC-010-04` | Basic Flow (Step 1) | `AU02-Register.dc.html` | "Đăng ký với Google" button (the sign-in button is in `W-AU01-Login.dc.html`) | **Available** |
 | `UC-010-04` | AF 4.3 | *Gap 010-L* | Back on the sign-in page with a neutral "Google sign-in cancelled" message | **GAP** |
 | `UC-010-04` | AF 4.4 | *Gap 010-M* | Refusal: Google account has no verified email, with the suggestion to register by email | **GAP** |
 | `UC-010-04` | AF 4.7 | *Gap 010-N* | "Google sign-in is not available now", email sign-in still shown | **GAP** |
 
 *Note:* `AF 1.3` – `AF 1.6`, `AF 1.8`, `AF 1.13` – `AF 1.15`, `AF 2.6` – `AF 2.8`, `AF 2.10` – `AF 2.11`, `AF 2.13` – `AF 2.14`, `AF 2.17`, `AF 3.2` – `AF 3.3`, `AF 3.6` – `AF 3.9` and `AF 4.1` – `AF 4.2`, `AF 4.5` – `AF 4.6`, `AF 4.8` – `AF 4.9` are validation messages, redirects or background behaviour that reuse the screens above and need no separate screenshot.
+
+*Desktop variants:* every screen listed in this table also has a web variant named `W-<ID>` in the same folder (for example `W-AU02-Register.dc.html`). The mobile files are listed because the flows are written for the 360 px layout (constitution Principle V). `AU01` exists only as `W-AU01-Login.dc.html`.
 
 ### 9.3. Open Questions (For Team Alignment)
 
@@ -3081,6 +3082,8 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 
 *Note:* `AF 1.2`, `AF 1.5`, `AF 1.7`, `AF 1.8`, `AF 1.10` – `AF 1.12`, `AF 1.15` – `AF 1.18`, `AF 2.5`, `AF 2.7`, `AF 2.9` – `AF 2.16`, `AF 3.4` – `AF 3.5`, `AF 3.7` – `AF 3.12`, `AF 4.5` – `AF 4.11` and `AF 5.1` – `AF 5.9` reuse the screens above, are background behaviour, or are server refusals that show a message in a screen already listed.
 
+*Desktop variants:* every screen listed in this table also has a web variant named `W-<ID>` in the same folder (for example `W-AU02-Register.dc.html`). The mobile files are listed because the flows are written for the 360 px layout (constitution Principle V). `AU01` exists only as `W-AU01-Login.dc.html`.
+
 ### 10.3. Open Questions (For Team Alignment)
 
 *Decisions of 30/10/2026 by Mai Văn Hiển are recorded under each item. Changes to specs `011` need Duy's approval through a PR; the use cases above change only where a decision is stated in the flow.*
@@ -3664,6 +3667,8 @@ Lets a signed-in user see all saved recipes and collections at a glance and open
 | `UC-080-01` / `UC-080-04` | AF 1.1, AF 4.3 | *Gap 080-O* | Recipe-card menu with "Lưu vào bộ sưu tập" and "Bỏ lưu" (closes `[OQ-080-05]`) | **GAP** |
 
 *Note:* `AF 1.1`, `AF 1.5` – `AF 1.6`, `AF 1.12` – `AF 1.16`, `AF 2.1` – `AF 2.2`, `AF 2.4`, `AF 2.8`, `AF 2.10` – `AF 2.17`, `AF 3.2`, `AF 3.4` – `AF 3.13`, `AF 4.3`, `AF 4.11` – `AF 4.13` and `AF 4.15` – `AF 4.22` reuse the screens above, are background behaviour, or are messages in screens already listed.
+
+*Desktop variants:* every screen listed in this table also has a web variant named `W-<ID>` in the same folder (for example `W-AU02-Register.dc.html`). The mobile files are listed because the flows are written for the 360 px layout (constitution Principle V). `AU01` exists only as `W-AU01-Login.dc.html`.
 
 ### 11.3. Open Questions (For Team Alignment)
 
