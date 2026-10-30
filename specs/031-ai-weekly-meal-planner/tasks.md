@@ -281,14 +281,14 @@ Backend là Maven multi-module (`src/backend/pom.xml`, cập nhật 2026-10-28).
 
 ### Tests for User Story 8 ⚠️ (viết trước, phải FAIL)
 
-- [ ] T090 [P] [US8] Unit test `EmbeddingTextBuilderTest` – văn bản gồm tên, danh mục, ẩm thực, bữa, tổng thời gian, tên nguyên liệu; `content_hash` (SHA-256, 64 ký tự hex) ổn định với cùng nội dung, đổi khi nguyên liệu đổi trong src/backend/src/test/java/com/wikicook/aiplanner/embedding/EmbeddingTextBuilderTest.java
+- [x] T090 [P] [US8] Unit test `EmbeddingTextBuilderTest` – văn bản gồm tên, danh mục, ẩm thực, bữa, tổng thời gian, tên nguyên liệu; `content_hash` (SHA-256, 64 ký tự hex) ổn định với cùng nội dung, đổi khi nguyên liệu đổi trong src/backend/src/test/java/com/wikicook/aiplanner/embedding/EmbeddingTextBuilderTest.java
 - [ ] T091 [P] [US8] Integration test `RecipeEmbeddingSyncIT` – sau commit `RecipePublishedEvent` → có dòng embedding (US8-1); cùng hash và model → không gọi `EmbeddingClient`; `RecipeRevisionApprovedEvent` đổi nội dung → cập nhật (US8-2); `RecipeArchivedEvent` → xóa dòng; `EmbeddingClient` lỗi → transaction publish vẫn commit, không có dòng embedding (US8-4, FR-031) trong src/backend/src/test/java/com/wikicook/aiplanner/embedding/RecipeEmbeddingSyncIT.java ⛓ B
 - [ ] T092 [P] [US8] Integration test `EmbeddingReconcileJobIT` – tạo embedding cho công thức PUBLISHED thiếu dòng, lệch `content_hash` hoặc lệch `model`; xóa dòng của công thức không còn PUBLISHED; xử lý theo lô 50; xóa dòng `ai_requests` `MEAL_PLANNER` cũ hơn 90 ngày trong src/backend/src/test/java/com/wikicook/aiplanner/embedding/EmbeddingReconcileJobIT.java
 - [ ] T093 [P] [US8] Integration test `ArchivedRecipeNeverChosenIT` – công thức đã ARCHIVED nhưng còn dòng embedding không bao giờ có trong draft, kể cả khi `FakeLlmClient` chọn nó (US8-3, FR-030); công thức mới PUBLISHED chưa có embedding vẫn được chọn qua phần đuôi candidate (US8-1) trong src/backend/src/test/java/com/wikicook/aiplanner/service/ArchivedRecipeNeverChosenIT.java
 
 ### Implementation for User Story 8
 
-- [ ] T094 [P] [US8] Cài `EmbeddingTextBuilder` trong src/backend/src/main/java/com/wikicook/aiplanner/embedding/EmbeddingTextBuilder.java (làm T090 xanh)
+- [x] T094 [P] [US8] Cài `EmbeddingTextBuilder` trong src/backend/src/main/java/com/wikicook/aiplanner/embedding/EmbeddingTextBuilder.java (làm T090 xanh)
 - [ ] T095 [US8] Cài `RecipeEmbeddingSync` nghe `RecipePublishedEvent`, `RecipeRevisionApprovedEvent`, `RecipeArchivedEvent`, `RecipesImportedEvent` bằng `@TransactionalEventListener(phase = AFTER_COMMIT)` + `@Async("aiTaskExecutor")`, nuốt và log lỗi (không có key/nội dung) trong src/backend/src/main/java/com/wikicook/aiplanner/embedding/RecipeEmbeddingSync.java (làm T091 xanh) ⛓ B (B publish 4 event theo contracts/integration.md mục 2; trước đó test dùng event tự publish)
 - [ ] T096 [US8] Cài `EmbeddingReconcileJob` (`@Scheduled(cron = "0 0 3 * * *", zone = "Asia/Ho_Chi_Minh")`, lô 50, nghỉ giữa lô, cờ `wikicook.ai.embedding.reconcile-on-startup`) và dọn `ai_requests` > 90 ngày trong src/backend/src/main/java/com/wikicook/aiplanner/embedding/EmbeddingReconcileJob.java (làm T092, T093 xanh)
 
