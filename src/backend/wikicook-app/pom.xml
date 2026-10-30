@@ -63,6 +63,13 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- FakeLlmClient, FakeEmbeddingClient -->
+        <dependency>
+            <groupId>com.wikicook</groupId>
+            <artifactId>wikicook-ai</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-testcontainers</artifactId>
