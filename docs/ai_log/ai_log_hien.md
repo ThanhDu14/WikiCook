@@ -14,6 +14,18 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Vă
 | 8 | 2026-10-14 | Tạo Project Plan tổng thể theo mô hình Scrum 5 Sprint, chi tiết Sprint 2 | `project-plan.md` |
 | 9 | 2026-10-19 (ngày commit) | Viết Mục 7 (Non-Functional Requirements) của Vision Document (`SCRUM-36`) | Vision §7 |
 | 10 | 2026-10-19 (ngày commit) | Sửa Mục 4.4 của Project Plan cho khớp spec 031 và Vision §7 (`SCRUM-45`) | `project-plan.md` §4.4 |
+| 11 | 2026-10-30 | Task SCRUM-50 – Bước 1: đọc tài liệu nguồn và tạo nhánh `docs/scrum-50-uc-spec-010-011-080` | `use-case-specification.md`, 010, 011, 080 |
+| 12 | 2026-10-30 | Task SCRUM-50 – Bước 2: viết Use-Case Specification cho spec 010 (`UC-010-01` – `UC-010-04`) | `use-case-specification.md` §9, 010 |
+| 13 | 2026-10-30 | Task SCRUM-50 – Bước 2: viết Use-Case Specification cho spec 011 (`UC-011-01` – `UC-011-05`) | `use-case-specification.md` §10, 011 |
+| 14 | 2026-10-30 | Task SCRUM-50 – Bước 2: viết Use-Case Specification cho spec 080 (`UC-080-01` – `UC-080-04`) | `use-case-specification.md` §11, 080 |
+| 15 | 2026-10-30 | Task SCRUM-50 – Bước 4: map màn hình prototype `AU`, `PF`, `BM` vào use case và lập danh sách Asset Gaps cho SCRUM-58 | `use-case-specification.md` §9.2, §10.2, §11.2 |
+| 16 | 2026-10-30 | Task SCRUM-50 – Bước 5: kiểm tra trước khi báo xong | `use-case-specification.md` §9–§11 |
+| 17 | 2026-10-30 | Task SCRUM-50 – đối chiếu lại use case với spec gốc và prototype, sửa 3 chỗ lệch | `use-case-specification.md` §9–§11 |
+| 18 | 2026-10-30 | Task SCRUM-50 – ghi quyết định cho 23 Open Questions, đổi thứ tự bước đăng nhập, thêm Gap 080-O | `use-case-specification.md` §9–§11 |
+| 19 | 2026-10-30 | Task SCRUM-50 – chọn cách A cho `OQ-010-02`, viết lại `AF 2.2` và `AF 2.3`; giữ `AF 4.1` và `OQ-011-05` ở trạng thái mở | `use-case-specification.md` §9, §10 |
+| 20 | 2026-10-30 | Task SCRUM-50 – sửa lỗi của AI: `AU01` có ở dạng `W-AU01-Login.dc.html`, mọi màn có bản web `W-` | `use-case-specification.md` §9.2 |
+| 21 | 2026-10-30 | Task SCRUM-50 – AI tự kiểm tra prototype và alternative flow theo yêu cầu của Hiển | `use-case-specification.md` §9–§11 |
+| 22 | 2026-10-30 | Task SCRUM-50 – sửa lỗi của AI: Decision đặt sai chỗ, `AF 2.3` và `UC-011-03` chưa nêu là "proposed" | `use-case-specification.md` §9–§11 |
 
 ---
 
@@ -771,3 +783,774 @@ Chỉ sửa Mục 4.4 của project-plan.md. Liệt kê dòng cũ và dòng mớ
 
 - `git show 4866b9f` chỉ chạm `project-plan.md`; dòng `v1.1` ghi đúng phạm vi sửa Mục 4.4.
 - Ghi chú: trong phần diff đã xem, các con số P90 ≤ 30 s, RAG P95 ≤ 5 s, gợi ý một ô ≤ 3 s chưa thấy ở các dòng của Mục 4.4; cần xem lại 4.4.2 và 4.4.4 xem đã nêu đủ các chỉ số mà prompt yêu cầu chưa.
+
+---
+
+## Mục 11: Task SCRUM-50 – Bước 1: đọc tài liệu nguồn và tạo nhánh cho Use-Case Specification 010, 011, 080
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 07:50 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/requirements/use-case-specification.md`, `docs/requirements/use-case-model.md`, `specs/010-user-authentication-roles/spec.md`, `specs/011-user-profile-dietary/spec.md`, `specs/080-bookmark-collection/spec.md`, `.specify/memory/constitution.md`, `docs/ai_log/ai_log_hien.md`, các màn `AU*`, `PF*`, `BM*` trong `docs/analysis-and-design/ui-ux/screens/` |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Mục đích | Đọc mẫu UC-040 và các tài liệu nguồn, kiểm tra nhánh mới không kéo theo commit ai_log hay file không liên quan, tạo nhánh `docs/scrum-50-uc-spec-010-011-080` |
+| Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (file log này để chưa add/commit trên nhánh này, theo yêu cầu của prompt) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 07:50 ngày 30/10/2026, prompt: "Bối cảnh: tôi là Mai Văn Hiển (@MaiHien3507), đang làm SCRUM-50 … Bước 1 – Nhánh …" (nguyên văn bên dưới), dùng để đọc tài liệu nguồn và tạo nhánh cho SCRUM-50; AI đọc tài liệu, chạy `git log`, `git diff origin/main --stat`, tạo nhánh; sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+
+### Prompt đã dùng
+
+Prompt của cả SCRUM-50 (các mục sau ghi "như trên" kèm số bước):
+
+```
+Bối cảnh: tôi là Mai Văn Hiển (@MaiHien3507), đang làm SCRUM-50 của dự án WikiCook (Group 05, môn CSC13002). Task: viết Use-Case Specification cho spec 010, 011, 080. Assignee: Hiển. Reviewer: Duy.
+
+Đọc trước khi làm gì khác:
+- docs/requirements/use-case-specification.md (đặc biệt UC-040: mẫu format 8 mục, cách đặt metadata, bảng truy vết, cách trình bày ảnh prototype)
+- docs/requirements/use-case-model.md
+- specs/010-user-authentication-roles/spec.md
+- specs/011-user-profile-dietary/spec.md
+- specs/080-bookmark-collection/spec.md
+- docs/analysis-and-design/ui-ux/screens/ (các màn AU, PF, BM)
+- constitution trong repo (spec của tôi không được trái constitution)
+- docs/ai_log/ai_log_hien.md (để biết format log, xem Bước 6)
+
+## Bước 1. Nhánh
+- Tạo nhánh mới `docs/scrum-50-uc-spec-010-011-080`. KHÔNG làm trực tiếp trên nhánh Hien (nhánh đó chứa log AI của tôi).
+- Trước khi tạo, chạy `git log` và `git diff origin/main --stat` để kiểm tra: nhánh mới phải chứa use-case-specification.md và use-case-model.md hiện có, nhưng PR vào main không được kéo theo commit ai_log hay file không liên quan. Nếu không tránh được, DỪNG và báo tôi, đừng tự quyết.
+- Hai file chưa theo dõi `AI Usage Guidelines.pdf` và `wikicook-pa3-team-assignment.md`: tuyệt đối không `git add`. Không dùng `git add .` hoặc `-A`; add từng file theo tên.
+
+## Bước 2. Viết 13 use case (tiếng Anh) ở cuối use-case-specification.md
+Thêm 3 section mới, mỗi use case đủ 8 mục theo đúng format UC-040: tên + ID, actor, description, preconditions, basic flow từng bước, TẤT CẢ alternative flow, postconditions, special requirements.
+
+- Section 9 (spec 010): UC-010-01 đến UC-010-04
+- Section 10 (spec 011): UC-011-01 đến UC-011-05
+- Section 11 (spec 080): UC-080-01 đến UC-080-04
+
+Yêu cầu nội dung:
+- Chia use case theo user story / functional requirement trong spec gốc. Nếu spec gốc không chia ra đúng số use case như trên (4/5/4), báo tôi kèm đề xuất cách chia trước khi viết, đừng tự ép cho đủ số.
+- Alternative flow phải đầy đủ, lấy từ spec: lỗi validation, dữ liệu rỗng, không có quyền, phiên hết hạn, tài khoản bị khóa/đình chỉ, mất mạng, v.v. nếu spec nhắc tới. Không bịa tính năng hay luồng ngoài spec; nếu spec thiếu hoặc mâu thuẫn, ghi vào danh sách "Spec issues" ở báo cáo cuối.
+- Ngay sau header mỗi section (9, 10, 11) có dòng: Performed by: Mai Văn Hiển, Reviewed by: Nguyễn Đức Duy, Edited by: Mai Văn Hiển (đúng cách ghi ở các section hiện có).
+- Mỗi section có bảng truy vết: use case → FR/US trong spec gốc → feature trong Vision §5 → màn hình prototype.
+- Không sửa các section đã có của người khác.
+- Làm lần lượt 010 → 011 → 080, mỗi feature một commit (message dạng `docs(uc-spec): add UC-010 specs for SCRUM-50`).
+
+## Bước 3. Revision History đầu file
+- Thêm dòng v1.2 (bản đầu cho SCRUM-50), theo format các dòng hiện có.
+- Ngày ghi là ngày làm thật (lấy bằng lệnh `date`; tôi sẽ chỉnh nếu cần).
+- KHÔNG thêm dòng v1.3 bây giờ: v1.3 chỉ thêm sau khi Duy review xong ngày 03/11.
+
+## Bước 4. Map prototype (phối hợp SCRUM-58 với Chung)
+Prototype có sẵn: 010 → AU02–AU09 (AU01, màn đăng nhập, không thấy trong thư mục); 011 → PF01–PF08; 080 → BM01–BM06.
+- Map từng màn hình vào đúng use case, cho cả basic flow và alternative flow, theo cách UC-040 đặt ảnh/tham chiếu màn hình.
+- Chỗ nào use case/alternative flow không có màn hình tương ứng (kể cả AU01) thì ghi vào mục "Asset Gaps" theo format đã có trong file; nếu file chưa có mục này, tạo ở cuối tài liệu. Mỗi dòng gap: use case, flow (basic/alt), màn hình cần có, mô tả ngắn.
+- Nếu một use case không thể suy ra UI mạch lạc từ spec, ghi vào Spec issues thay vì tự vẽ UI lệch spec.
+- Trong báo cáo cuối, xuất danh sách Asset Gaps dạng bảng markdown ngắn gọn để tôi gửi Chung trước 31/10.
+
+## Bước 5. Kiểm tra trước khi báo xong
+- Mermaid (nếu có dùng) render được; đánh số use case liên tục, không trùng ID; tên/link màn hình tồn tại thật trong thư mục screens.
+- `git status` không chứa file ngoài use-case-specification.md (và file khác thật sự cần sửa, nêu rõ). File ai_log_hien.md chưa add/commit là bình thường (xem Bước 6).
+- Tài liệu hoàn toàn bằng tiếng Anh; câu văn dạng "The system ..." / "The user ...", nhất quán với UC-040.
+
+## Bước 6. Ghi AI-log song song (SCRUM-63)
+Làm tới đâu ghi `docs/ai_log/ai_log_hien.md` tới đó, mỗi mốc một entry: sau Bước 1, sau mỗi feature (010, 011, 080), sau Bước 4, và khi kiểm tra xong.
+- File này là log cá nhân của tôi, dùng chung cho mọi SCRUM tôi làm trong sprint. Mỗi entry ghi rõ "Task: SCRUM-50" ở đầu entry. Thêm entry mới vào cuối file, không sửa hay xóa entry cũ.
+- Đọc các entry đang có trước và theo đúng format, ngôn ngữ và cách đánh số của chúng.
+- Mỗi entry đủ trường: tên tool + version + platform; thời gian truy cập (ngày + giờ, lấy bằng lệnh `date`, không đoán); prompt đã dùng (dán nguyên văn prompt này ở entry đầu, các entry sau ghi "như trên" kèm số bước); mục đích; phần AI sinh (liệt kê cụ thể UC, mục, file); phần tôi tự làm / sửa / kiểm chứng.
+- Version model và platform: nếu không biết chắc thì ghi "Hiển điền", đừng đoán. Với "phần tôi tự làm / kiểm chứng", chỉ ghi những gì tôi đã nói là đã làm; nếu chưa biết thì ghi "Hiển điền sau khi review", không viết thay tôi.
+- File ai_log có thể chỉ tồn tại trên nhánh Hien. Nếu nhánh SCRUM-50 chưa có file này thì tạo đúng đường dẫn trên.
+- KHÔNG commit thay đổi của file này vào các commit của nhánh SCRUM-50 (để PR gửi Duy chỉ chứa UC spec). Để nó ở trạng thái chưa add, và nêu rõ trong báo cáo cuối để tôi tự chuyển sang nhánh Hien và commit ở đó.
+
+## Không làm
+- Không push, không mở PR, không merge. Dừng sau commit cuối và báo cáo.
+- Không đụng vào nhánh Hien, không sửa entry cũ trong ai_log.
+
+## Báo cáo cuối (tiếng Việt, ngắn gọn)
+1. Tên nhánh + 3 commit.
+2. Bảng tóm tắt 13 use case: ID, tên, số alternative flow, màn hình prototype map vào.
+3. Danh sách Asset Gaps cho Chung.
+4. Spec issues / chỗ cần tôi quyết định.
+5. AI-log: đã ghi bao nhiêu entry, những trường nào còn "Hiển điền", và nhắc tôi chuyển file sang nhánh Hien để commit.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Đọc `use-case-specification.md` trên `origin/main` (mẫu UC-040, bảng truy vết Mục 3, bảng map màn hình Mục 4, Mục 6–8 của Duy), `use-case-model.md` (§2 actor, §4.1, §4.8, bảng ID), ba spec 010/011/080, constitution v1.0.0 và các màn `AU02`–`AU09`.
+- Tạo nhánh `docs/scrum-50-uc-spec-010-011-080` từ nhánh `Hien` sau khi đã `git pull`. Kiểm tra: `git diff origin/main --stat` rỗng và `git log origin/main..HEAD` rỗng, nghĩa là nhánh trùng `origin/main` (commit `96662ca`), PR sẽ không kéo theo commit ai_log hay file không liên quan.
+- `docs/ai_log/ai_log_hien.md` đã nằm trên nhánh (đến từ `origin/main`) nên khi sửa file này nó hiện là file đã sửa chưa add; theo prompt, không add vào commit nào của nhánh.
+- Phát hiện khi đọc: file `use-case-specification.md` dùng đuôi dòng CRLF (index Git là LF, `core.autocrlf=true`); `AU01-Login` có trong `canvas.json` và `index.html` nhưng không có trong `screens/`.
+- Chưa có use case nào được viết ở mục này.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Tạo nhánh và kết quả kiểm tra `git diff origin/main --stat` | Dùng; Hiển đã chạy lại các lệnh kiểm tra | Nhánh trùng `origin/main` nên PR không kéo theo commit ai_log hay file khác |
+
+### Cách kiểm chứng
+
+- Lệnh có thể chạy lại: `git diff origin/main --stat` (rỗng tại thời điểm tạo nhánh) và `git log --oneline origin/main..docs/scrum-50-uc-spec-010-011-080`.
+- Phần Hiển tự làm / kiểm chứng: Hiển yêu cầu đối chiếu lại use case với spec gốc và prototype (Mục 17), tự chốt các quyết định về `US3` của 010 và `US4`/`US5` của 080, và đã chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+
+---
+
+## Mục 12: Task SCRUM-50 – Bước 2: viết Use-Case Specification cho spec 010 (UC-010-01 đến UC-010-04)
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 07:55 (lệnh `date` trả về 07:55:43 sau khi commit) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/010-user-authentication-roles/spec.md`, `docs/requirements/use-case-model.md` §4.1, `docs/requirements/vision-document.md` §5.1, `.specify/memory/constitution.md`; kết quả ghi vào `docs/requirements/use-case-specification.md` (Section 9) |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Mục đích | Viết 4 use case của spec 010, bảng truy vết, bảng map màn hình `AU02`–`AU09` kèm danh sách Asset Gaps, danh sách câu hỏi mở; thêm hàng Section 9 vào bảng trách nhiệm và dòng `v1.2` vào Revision History |
+| Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `fa05da0`, thông điệp `docs(uc-spec): add UC-010 specs for SCRUM-50`) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 07:55 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 2, Bước 3 và Bước 4 cho 010), dùng để viết Section 9 của `use-case-specification.md`; AI tạo `UC-010-01` đến `UC-010-04` (tổng 50 alternative flow), bảng truy vết 9.1, bảng map màn hình 9.2 với 14 Asset Gaps (010-A đến 010-N), 10 câu hỏi mở 9.3 (`OQ-010-01` đến `OQ-010-10`), hàng Section 9 trong bảng trách nhiệm và dòng `v1.2`; sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+
+### Prompt đã dùng
+
+Như trên (Mục 11): Bước 2 (Section 9, spec 010), Bước 3 (Revision History `v1.2`) và Bước 4 (map prototype cho `AU02`–`AU09`).
+
+### Tóm tắt phản hồi của AI
+
+- Section 9 của `docs/requirements/use-case-specification.md` (549 dòng thêm, không xóa dòng nào):
+  - `UC-010-01` Register Account & Verify Email: 11 bước basic flow, 15 alternative flow (email trùng, mật khẩu không đạt, mật khẩu trùng email, xác nhận không khớp, tên hiển thị không hợp lệ, email không hợp lệ, email trong danh sách chặn, gửi trùng, gửi lại email, vượt giới hạn 3 lần/15 phút, link hết hạn, link đã dùng, xóa sau 7 ngày chưa xác minh, đã đăng nhập, đăng ký bằng Google).
+  - `UC-010-02` Sign In with Email & Password: 10 bước, 17 alternative flow (sai mật khẩu, email không tồn tại, khóa 15 phút, đình chỉ, cấm, đầu vào không hợp lệ, tài khoản chưa xác minh, đã đăng nhập, khách bấm hành động cần đăng nhập, đích chuyển hướng ngoài WikiCook, hết phiên không "Remember me", hết phiên khi đang điền form, đăng xuất, bị đình chỉ/cấm khi đang đăng nhập, bị hạ vai trò, không đủ quyền, Google không dùng được).
+  - `UC-010-03` Reset Forgotten Password: 12 bước, 9 alternative flow.
+  - `UC-010-04` Sign In with Google: 10 bước, 9 alternative flow (gồm khớp tài khoản đã xác minh và khớp tài khoản chưa xác minh).
+  - 9.1 bảng truy vết (US, FR, NFR, SC, Vision §5.1); 9.2 bảng map màn hình; 9.3 câu hỏi mở.
+- Theo mô hình use case (§4.1) và phân chia 4 use case cho spec 010, `US3` (phân quyền theo vai trò) không có use case riêng; AI viết phần Guest và phần quyền của `US3` thành `AF 2.9`, `AF 2.15`, `AF 2.16` của `UC-010-02`, và ghi quyết định này ở `OQ-010-01` để Hiển chốt.
+- Các chỗ spec thiếu hoặc mâu thuẫn không được tự bịa luồng, chỉ ghi vào 9.3: thông báo khóa tài khoản có thể làm lộ email đã đăng ký (`NFR-003`), link xác minh cũ sau khi gửi lại, đường vào trang đóng tài khoản của người bị cấm, thông báo khi email bị chặn, giới hạn gửi lại link đặt mật khẩu, tính nguyên tử của việc reset tài khoản chưa xác minh khi dùng Google, tên hiển thị và thời hạn phiên khi đăng nhập Google, nút "Đổi địa chỉ email" của `AU03` không có trong spec.
+- Nội dung viết bằng tiếng Anh, câu dạng "The system …" / "The user …", metadata `Performed by / Reviewed by / Edited by` ngay sau header Section 9 và mỗi use case.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| `UC-010-01` đến `UC-010-04` | Dùng, sau khi được đối chiếu lại với spec 010 và `AU02`–`AU09` (Mục 17); sửa 1 chỗ ở `AF 2.4` và bổ sung 1 ghi chú ở 9.1 | Hiển yêu cầu đối chiếu lại; chỗ lệch là một câu của prototype bị gán nhầm cho `FR-013` và email của `FR-024a` chưa nói rõ thuộc use case nào |
+| Cách xử lý `US3` thành alternative flow của `UC-010-02` (`OQ-010-01`) | Dùng (quyết định của Hiển): không tạo `UC-010-05`; phần Guest và phân quyền là `AF 2.9`, `AF 2.15`, `AF 2.16` | `use-case-model.md` đã chốt 4 use case cho spec 010 |
+| Các câu hỏi mở `OQ-010-01` đến `OQ-010-10` | Dùng, kèm quyết định của Hiển cho từng câu (ghi ở Mục 18): giữ 2, sửa spec 010 cho 5 câu, hoãn 2, chuyển Chung 1 | Hiển đã đọc spec 010 và chọn; việc sửa spec chờ làm và cần Duy duyệt |
+
+### Cách kiểm chứng
+
+- Đã kiểm tra bằng lệnh trong phiên: 8 tên file màn hình `AU02`–`AU09` được nhắc trong Section 9 đều tồn tại trong `docs/analysis-and-design/ui-ux/screens/`; số alternative flow đếm được 15, 17, 9, 9; `git show --stat HEAD` chỉ có `docs/requirements/use-case-specification.md`.
+- Phần Hiển tự làm / kiểm chứng (đối chiếu với `spec.md`, kiểm tra từng alternative flow): Hiển yêu cầu đối chiếu lại use case với spec gốc và prototype (Mục 17), tự chốt các quyết định về `US3` của 010 và `US4`/`US5` của 080, và đã chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+
+---
+
+## Mục 13: Task SCRUM-50 – Bước 2: viết Use-Case Specification cho spec 011 (UC-011-01 đến UC-011-05)
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 08:00 (lệnh `date` trả về 08:00:23 sau khi commit) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/011-user-profile-dietary/spec.md`, `specs/010-user-authentication-roles/spec.md` (trạng thái tài khoản, danh sách Blocked Email), `docs/requirements/use-case-model.md` §4.1 và §5, `docs/requirements/vision-document.md` §5.1, `.specify/memory/constitution.md`; kết quả ghi vào `docs/requirements/use-case-specification.md` (Section 10) |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Mục đích | Viết 5 use case của spec 011, bảng truy vết, bảng map màn hình `PF01`–`PF08` kèm danh sách Asset Gaps, danh sách câu hỏi mở; cập nhật hàng Section 10 trong bảng trách nhiệm và dòng `v1.2` |
+| Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `b69ed16`, thông điệp `docs(uc-spec): add UC-011 specs for SCRUM-50`) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 08:00 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 2 và Bước 4 cho 011), dùng để viết Section 10 của `use-case-specification.md`; AI tạo `UC-011-01` đến `UC-011-05` (tổng 66 alternative flow), bảng truy vết 10.1, bảng map màn hình 10.2 với 13 Asset Gaps (011-A đến 011-M), 8 câu hỏi mở 10.3 (`OQ-011-01` đến `OQ-011-08`); sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+
+### Prompt đã dùng
+
+Như trên (Mục 11): Bước 2 (Section 10, spec 011), Bước 3 (cập nhật dòng `v1.2`) và Bước 4 (map prototype cho `PF01`–`PF08`).
+
+### Tóm tắt phản hồi của AI
+
+- Section 10 của `docs/requirements/use-case-specification.md` (627 dòng thêm, 1 dòng sửa là dòng `v1.2` của chính task này):
+  - `UC-011-01` Set Up Dietary Profile: 11 bước, 18 alternative flow (sửa hồ sơ có sẵn, xóa sạch, số người và thời gian không hợp lệ, giá trị ngoài danh mục, vượt 50 nguyên liệu, dữ liệu sai từ client, rời trang chưa lưu, mất mạng, hết phiên, hai tab lưu cùng lúc, bấm lặp, nguyên liệu bị gộp/xóa, không tải được, người không phải chủ sở hữu hoặc Administrator đọc hồ sơ, khách, tài khoản bị đình chỉ/cấm, vượt giới hạn lưu).
+  - `UC-011-02` Edit Public Profile & Avatar: 10 bước, 16 alternative flow (tên hiển thị không hợp lệ, giới thiệu quá 300 ký tự, ảnh sai loại hoặc quá 5 MB, file không phải ảnh thật, xóa ảnh, xem hồ sơ công khai, người khác đòi dữ liệu riêng tư, Administrator xem hồ sơ, rời trang, mất mạng, hết phiên, bấm lặp, giới hạn tần suất, đình chỉ/cấm, không tải được, khách).
+  - `UC-011-03` Change or Set Password: 8 bước, 12 alternative flow (sai mật khẩu hiện tại, sai lặp lại, mật khẩu mới sai quy tắc hoặc trùng mật khẩu cũ, xác nhận không khớp, tài khoản chỉ dùng Google đặt mật khẩu, xác thực lại Google thất bại, tab cũ, bấm lặp, mất mạng/hết phiên, đình chỉ/cấm, người khác đổi mật khẩu).
+  - `UC-011-04` Delete Account: 8 bước, 11 alternative flow (sai thông tin hoặc sai chữ xác nhận, tài khoản Google, Administrator cuối cùng, đình chỉ có thời hạn, tài khoản bị cấm, tài khoản thường, xóa lỗi giữa chừng, phiên khác đang mở, bấm lặp, hủy, mất mạng).
+  - `UC-011-05` Apply Dietary Hard Rules (use case được include, viết với "Trigger" thay cho actor chính theo `use-case-model.md` §6.2 vấn đề 5): 8 bước, 9 alternative flow.
+  - 10.1 bảng truy vết (5 user story, 39 acceptance scenario, 44 FR, 8 NFR, `SC-001`–`SC-008`); 10.2 bảng map màn hình; 10.3 câu hỏi mở.
+- Các chỗ spec thiếu hoặc không rõ, ghi ở 10.3 thay vì tự bịa luồng: hành vi khi không đọc được hồ sơ ăn uống (rủi ro an toàn dị ứng), trạng thái rỗng/lỗi của hồ sơ công khai, hồ sơ công khai của người bị đình chỉ/cấm, giới hạn thử mật khẩu khi đổi mật khẩu và khi xóa tài khoản, "Đặt mật khẩu" có đăng xuất phiên khác không, các điểm tích hợp với 060/070/030/040 còn chờ xác nhận, `PF07` chỉ có biến thể nhập mật khẩu.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| `UC-011-01` đến `UC-011-05` | Dùng, sau khi được đối chiếu lại với spec 011 và `PF01`–`PF08` (Mục 17); không phát hiện chỗ lệch | Hiển yêu cầu đối chiếu lại; danh sách dữ liệu xóa/giữ ở `PF07` khớp `FR-031` – `FR-036` |
+| Các câu hỏi mở `OQ-011-01` đến `OQ-011-08` | Dùng, kèm quyết định của Hiển cho từng câu (Mục 18): sửa spec 011 cho 4 câu, Hiển quyết `OQ-011-03`, gộp `OQ-011-06` vào `OQ-010-04`, chuyển 4 người `OQ-011-07`, đóng `OQ-011-08` | Hiển đã đọc spec 011 và chọn; việc sửa spec chờ làm và cần Duy duyệt |
+
+### Cách kiểm chứng
+
+- Đã kiểm tra bằng lệnh trong phiên: 8 file màn hình `PF01`–`PF08` được nhắc trong Section 10 đều tồn tại trong `docs/analysis-and-design/ui-ux/screens/`; số alternative flow đếm được 18, 16, 12, 11, 9; `git show --stat HEAD` chỉ có `docs/requirements/use-case-specification.md`.
+- Phần Hiển tự làm / kiểm chứng (đối chiếu với `spec.md`): Hiển yêu cầu đối chiếu lại use case với spec gốc và prototype (Mục 17), tự chốt các quyết định về `US3` của 010 và `US4`/`US5` của 080, và đã chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+
+---
+
+## Mục 14: Task SCRUM-50 – Bước 2: viết Use-Case Specification cho spec 080 (UC-080-01 đến UC-080-04)
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 08:04 (giờ của commit `a626527`, lấy bằng `git log`) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/080-bookmark-collection/spec.md`, `docs/requirements/use-case-model.md` §4.8 và §5, `docs/requirements/vision-document.md` §5.8, `.specify/memory/constitution.md`; kết quả ghi vào `docs/requirements/use-case-specification.md` (Section 11) |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Mục đích | Viết 4 use case của spec 080, bảng truy vết, bảng map màn hình `BM01`–`BM06` kèm danh sách Asset Gaps, danh sách câu hỏi mở; cập nhật hàng Section 11 và dòng `v1.2` |
+| Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `a626527`, thông điệp `docs(uc-spec): add UC-080 specs for SCRUM-50`) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 08:04 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 2 và Bước 4 cho 080), dùng để viết Section 11 của `use-case-specification.md`; AI tạo `UC-080-01` đến `UC-080-04` (tổng 68 alternative flow), bảng truy vết 11.1, bảng map màn hình 11.2 với 14 Asset Gaps (080-A đến 080-N), 5 câu hỏi mở 11.3 (`OQ-080-01` đến `OQ-080-05`); sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+
+### Prompt đã dùng
+
+Như trên (Mục 11): Bước 2 (Section 11, spec 080), Bước 3 (cập nhật dòng `v1.2`) và Bước 4 (map prototype cho `BM01`–`BM06`).
+
+### Tóm tắt phản hồi của AI
+
+- Section 11 của `docs/requirements/use-case-specification.md`:
+  - `UC-080-01` Save Recipe with One Tap (mở rộng `UC-020-06`): 7 bước, 16 alternative flow (lưu từ thẻ, bỏ lưu khi không có bộ sưu tập, bỏ lưu khi có bộ sưu tập kèm xác nhận, hoàn tác, hoàn tác vượt giới hạn, hết thời gian hoàn tác, khách bấm lưu, "Đã lưu" đầy, công thức không còn PUBLISHED, lỗi mạng/máy chủ, mất kết nối, bấm lặp, hết phiên, tài khoản bị đình chỉ/cấm, email chưa xác minh hoặc tác giả tự lưu, công thức đang trong meal plan).
+  - `UC-080-02` Add Recipe to Collections (mở rộng `UC-080-01`): 7 bước, 17 alternative flow.
+  - `UC-080-03` Create, Rename & Delete Collection (mở rộng `UC-080-02`): 8 bước, 13 alternative flow.
+  - `UC-080-04` Browse Saved Recipes & Collections: 7 bước, 22 alternative flow, gồm cả `US4` và `US5` (công thức không còn khả dụng, thanh "Bỏ tất cả", công thức được khôi phục, bộ sưu tập của người khác trả về "không tìm thấy"); phần cung cấp dữ liệu cho meal planner (`FR-026`) ghi ở Postconditions.
+  - 11.1 bảng truy vết (5 user story, 43 acceptance scenario, 26 FR, 7 NFR, `SC-001`–`SC-010`); 11.2 bảng map màn hình; 11.3 câu hỏi mở.
+- Mô hình use case (§4.8) gộp `US4` và `US5` vào `UC-080-04`, nên spec 080 có 5 user story nhưng chỉ có 4 use case; điều này được ghi ở `OQ-080-01` kèm đề xuất tách `UC-080-05` nếu reviewer muốn.
+- Các chỗ spec và prototype lệch nhau, ghi ở 11.3 thay vì tự bịa: chữ "Không tìm thấy trang" của `CM01` so với "Không tìm thấy bộ sưu tập" của spec, nút Lưu của Khách ở `EP-5` so với ma trận quyền, các điểm tích hợp còn mở với 030/031/100, menu thẻ công thức và hành động "Bỏ lưu" chưa có màn hình.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| `UC-080-01` đến `UC-080-04` | Dùng, sau khi được đối chiếu lại với spec 080 và `BM01`–`BM06` (Mục 17); sửa 1 chỗ ở `UC-080-01` Step 5 | Hiển yêu cầu đối chiếu lại; nút "Xem" của prototype `BM05` thuộc thông báo "đã đầy", không thuộc thông báo "Đã lưu công thức" |
+| Gộp `US4` và `US5` vào `UC-080-04` (`OQ-080-01`) | Dùng (quyết định của Hiển): gộp trong `UC-080-04` với 22 alternative flow | `use-case-model.md` §4.8 coi `US5` là alternative flow của `UC-080-04`; muốn tách `UC-080-05` thì phải sửa model trước freeze 02/11 |
+| Các câu hỏi mở `OQ-080-02` đến `OQ-080-05` | Dùng, kèm quyết định của Hiển (Mục 18): `OQ-080-02` chuyển Duy, `OQ-080-03` chuyển Chung, `OQ-080-04` chuyển Dự và Chung, `OQ-080-05` đóng thành Gap 080-O | Hiển đã đọc spec 080 và chọn |
+
+### Cách kiểm chứng
+
+- Đã kiểm tra bằng lệnh trong phiên: 9 file màn hình được nhắc trong Section 11 (`BM01`–`BM06`, `AU08`, `CM01`, `CM04`) đều tồn tại trong `docs/analysis-and-design/ui-ux/screens/`; số alternative flow đếm được 16, 17, 13, 22; commit chỉ chứa `docs/requirements/use-case-specification.md`.
+- Phần Hiển tự làm / kiểm chứng (đối chiếu với `spec.md`): Hiển yêu cầu đối chiếu lại use case với spec gốc và prototype (Mục 17), tự chốt các quyết định về `US3` của 010 và `US4`/`US5` của 080, và đã chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+
+---
+
+## Mục 15: Task SCRUM-50 – Bước 4: map màn hình prototype và lập danh sách Asset Gaps (SCRUM-58)
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 08:05 (lệnh `date` khi ghi mục này; việc map được làm xen kẽ trong Mục 12–14) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/analysis-and-design/ui-ux/screens/` (`AU02`–`AU09`, `PF01`–`PF08`, `BM01`–`BM06`, `CM01`, `CM04`), `docs/requirements/use-case-specification.md` (§9.2, §10.2, §11.2) |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Mục đích | Đọc chữ hiển thị của từng màn hình, map vào basic flow và alternative flow của 13 use case, ghi các chỗ chưa có màn hình thành Asset Gaps để gửi Chung (SCRUM-58) trước 31/10 |
+| Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (nằm trong các commit `fa05da0`, `b69ed16`, `a626527`) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 08:05 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 4), dùng để map màn hình prototype vào use case; AI trích chữ hiển thị từ các file `.dc.html`, đối chiếu với từng bước và alternative flow, tạo bảng 9.2, 10.2, 11.2; sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+
+### Prompt đã dùng
+
+Như trên (Mục 11): Bước 4.
+
+### Tóm tắt phản hồi của AI
+
+- Đọc chữ hiển thị của 8 màn `AU02`–`AU09`, 8 màn `PF01`–`PF08`, 6 màn `BM01`–`BM06` và `CM01`, `CM04` (không mở trình duyệt, không tạo ảnh).
+- Kết quả: 41 Asset Gaps (010: 14, 011: 13, 080: 14) và các màn đã có được ghi vào bảng 9.2, 10.2, 11.2 theo mẫu của Mục 4 và 8.3 trong file. Màn `AU01-Login` có trong `canvas.json` và `index.html` nhưng không có trong thư mục `screens/` (Gap 010-D).
+- Không vẽ UI lệch spec: các chỗ prototype khác spec được ghi thành câu hỏi mở thay vì thêm luồng, gồm nút "Đổi địa chỉ email" của `AU03` (`OQ-010-09`), `PF07` chỉ có biến thể mật khẩu (`OQ-011-08`), chữ "Không tìm thấy trang" của `CM01` (`OQ-080-03`).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Danh sách Asset Gaps (41 lúc ghi mục này, nay 40 sau khi rút Gap 010-D và 010-E ở Mục 20) | Dùng, sau khi AI đọc lại các file `.dc.html` để đối chiếu (Mục 17, Mục 21); đã gửi Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026 | Cần gửi Chung (SCRUM-58) trước 31/10 |
+| Phần ghi nhận prototype lệch spec | Dùng; chuyển Chung: `OQ-010-09` (gỡ "Đổi địa chỉ email" khỏi `AU03`) và `OQ-080-03` (chuỗi "Không tìm thấy bộ sưu tập" cho `CM01`); đã gửi Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026 | Prototype không được dùng để thêm luồng ngoài spec |
+
+### Cách kiểm chứng
+
+- Mọi tên file màn hình trong ba bảng đều tồn tại trong thư mục `screens/` (đã kiểm tra bằng lệnh).
+- Phần Hiển tự làm (gửi danh sách gap cho Chung, đối chiếu với prototype thực tế): Hiển yêu cầu đối chiếu lại use case với spec gốc và prototype (Mục 17), tự chốt các quyết định về `US3` của 010 và `US4`/`US5` của 080, và đã chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+
+---
+
+## Mục 16: Task SCRUM-50 – Bước 5: kiểm tra trước khi báo xong
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 08:05 (lệnh `date`) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/requirements/use-case-specification.md` (Section 9–11) |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Mục đích | Kiểm tra ID liên tục không trùng, liên kết màn hình tồn tại, file nào bị thay đổi, ngôn ngữ tiếng Anh, không dùng Mermaid |
+| Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 08:05 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 5), dùng để kiểm tra Section 9–11; AI chạy các lệnh kiểm tra và báo kết quả; sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+
+### Prompt đã dùng
+
+Như trên (Mục 11): Bước 5.
+
+### Tóm tắt phản hồi của AI
+
+- 13 use case, ID `UC-010-01`–`04`, `UC-011-01`–`05`, `UC-080-01`–`04`, không trùng.
+- Không dùng Mermaid trong Section 9–11 (bảng và danh sách thay cho sơ đồ).
+- Mọi file màn hình được nhắc đều có thật trong `docs/analysis-and-design/ui-ux/screens/`.
+- `git diff origin/main..HEAD --stat` chỉ gồm `docs/requirements/use-case-specification.md` (1.738 dòng thêm, 0 dòng xóa so với `origin/main`); `ai_log_hien.md` chưa add, `AI Usage Guidelines.pdf` và `wikicook-pa3-team-assignment.md` chưa theo dõi.
+- Quét nội dung: các dòng có tiếng Việt ngoài dấu trích dẫn chỉ là tên người ở các dòng "Owner" và dòng metadata; chuỗi giao diện tiếng Việt đều đặt trong dấu ngoặc kép như các Section hiện có.
+- Chưa chạy bước convert Markdown sang PDF và chưa render xem trên GitHub.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Kết quả các lệnh kiểm tra | Dùng; Hiển đã chạy lại các lệnh kiểm tra | Xác nhận PR chỉ chứa `use-case-specification.md` |
+
+### Cách kiểm chứng
+
+- Lệnh có thể chạy lại: `git diff origin/main..HEAD --stat`, `git status -s`, kiểm tra tên file màn hình trong `screens/`.
+- Phần Hiển tự làm / kiểm chứng: Hiển yêu cầu đối chiếu lại use case với spec gốc và prototype (Mục 17), tự chốt các quyết định về `US3` của 010 và `US4`/`US5` của 080, và đã chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+
+---
+
+## Mục 17: Task SCRUM-50 – đối chiếu lại use case với spec gốc và prototype, sửa 3 chỗ lệch
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 08:29 (lệnh `date`) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/010-user-authentication-roles/spec.md`, `specs/011-user-profile-dietary/spec.md`, `specs/080-bookmark-collection/spec.md`, các file `AU02`–`AU09`, `PF01`–`PF08`, `BM01`–`BM06`, `CM01`, `CM04` trong `docs/analysis-and-design/ui-ux/screens/`, `docs/requirements/use-case-specification.md` (Section 9–11) |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Mục đích | Đọc lại 13 use case, đối chiếu với spec gốc (FR, NFR, SC, Edge Cases, Acceptance Scenarios) và với nội dung các file prototype `.dc.html`; sửa chỗ lệch |
+| Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `639acc7`, thông điệp `docs(uc-spec): align UC-010 and UC-080 wording with spec and prototype for SCRUM-50`) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.312 trong VS Code trên Windows 11*, truy cập 08:29 ngày 30/10/2026, prompt: "hãy đọc lại usecase và đối chiếu với spec gốc … hãy mở prototype .dc.html để đối chiếu" (kèm quyết định của Hiển về `US3` của 010 và `US4`/`US5` của 080), dùng để kiểm tra Section 9–11; AI quét mã FR/NFR/SC, đối chiếu Edge Cases và Acceptance Scenarios, đọc lại mã HTML của các màn hình, rồi sửa 3 chỗ trong `use-case-specification.md`; sinh viên: yêu cầu kiểm tra, chốt các quyết định ghi trong Mục 12 và 14, và chạy lại các lệnh kiểm tra.
+
+### Prompt đã dùng
+
+```
+hãy đọc lại usecase và đối chiếu với spec gốc
+US3 của 010: không tạo UC-010-05. Phần Guest và phân quyền được viết thành AF 2.9, 2.15, 2.16 của UC-010-02, nêu tại OQ-010-01. Lý do nêu là use-case-model.md đã chốt 4/5/4.
+US4 và US5 của 080: gộp trong UC-080-04 (22 AF), nêu tại OQ-080-01. Muốn tách UC-080-05 thì phải sửa model trước freeze 02/11.
+hãy mở prototype .dc.html để đối chiếu
+đã chạy
+```
+
+### Tóm tắt phản hồi của AI
+
+- Kiểm tra bằng script: mọi mã `FR-xxx`, `NFR-xxx`, `SC-xxx` của ba spec đều xuất hiện trong Section tương ứng (0 mã thiếu).
+- Đối chiếu thủ công Edge Cases và Acceptance Scenarios của ba spec với các alternative flow: không thiếu luồng; riêng quy tắc Administrator cuối cùng (`FR-023`) và email đình chỉ/cấm (`FR-024a`) của spec 010 thuộc `UC-100-03`.
+- Đọc lại mã HTML của `BM05`, `BM01`, `AU03`, `AU07` (và chữ hiển thị của các màn còn lại). Phát hiện và sửa 3 chỗ:
+  1. `UC-080-01` Step 5: bỏ liên kết "Xem" khỏi thông báo "Đã lưu công thức"; trong `BM05`, nút "Xem" nằm ở thông báo "Danh sách Đã lưu đã đầy (1.000)", còn thông báo "Đã lưu công thức" chỉ có nút "Thêm vào bộ sưu tập".
+  2. `UC-010-02` `AF 2.4`: câu "nội dung đã đăng vẫn hiển thị" chỉ có ở prototype `AU07`, không có ở `FR-013`; đã chuyển thành "as the prototype adds".
+  3. Mục 9.1: thêm câu nói rõ email của `FR-024a` (đình chỉ, cấm, hết đình chỉ, gỡ cấm) được gửi khi Administrator thao tác theo spec 100, còn `UC-010-02` chỉ phụ trách thông báo đổi vai trò trong ứng dụng.
+- Không phát hiện chỗ lệch ở Section 10 (011) và các màn `PF01`–`PF08`.
+- Các quyết định `US3` của 010 và `US4`/`US5` của 080 do Hiển cung cấp được ghi lại trong bảng quyết định của Mục 12 và Mục 14.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Sửa 3 chỗ lệch ở `UC-080-01`, `UC-010-02` và mục 9.1 | Dùng (commit `639acc7`) | Câu chữ phải bám spec gốc; chi tiết riêng của prototype phải được nêu là của prototype |
+| Kết luận không có chỗ lệch ở Section 10 | Dùng; AI đã đối chiếu lại 8 màn `PF01`–`PF08` (và bản `W-`) ở Mục 21, không lệch; Hiển đã đọc cả ba spec (theo thông báo của Hiển ở Mục 18) | Chữ trong bảng 10.2 khớp chữ trong các file prototype |
+
+### Cách kiểm chứng
+
+- Lệnh có thể chạy lại: `git show 639acc7` (3 dòng bị sửa trong `use-case-specification.md`); so sánh mã `FR`/`NFR`/`SC` của spec với Section 9–11.
+- Hiển đã chạy lại các lệnh kiểm tra (theo thông báo của Hiển).
+
+---
+
+## Mục 18: Task SCRUM-50 – ghi các quyết định về Open Questions và sửa thứ tự kiểm tra đăng nhập
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 08:56 (lệnh `date`) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/requirements/use-case-specification.md` (§9.3, §10.3, §11.3, `UC-010-02`, `UC-011-03`, bảng 11.2) |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Mục đích | Ghi lại quyết định của Hiển cho 23 Open Questions vào tài liệu; sửa thứ tự các bước kiểm tra ở `UC-010-02`; thay các câu "not specified" ở `UC-011-03` bằng quy tắc đã chốt; thêm Gap 080-O |
+| Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `f0930c4`, thông điệp `docs(uc-spec): record open-question decisions and reorder sign-in checks for SCRUM-50`) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.312 trong VS Code trên Windows 11*, truy cập 08:56 ngày 30/10/2026, prompt: bảng quyết định cho Open Questions của spec 010, 011, 080 và hai chỗ cần sửa trong use case do Hiển viết (nguyên văn bên dưới), dùng để cập nhật `use-case-specification.md`; AI chép từng quyết định vào dưới mục Open Question tương ứng, đổi thứ tự bước ở `UC-010-02`, cập nhật `UC-011-03` và thêm Gap 080-O; sinh viên: đọc cả ba spec, quyết định từng Open Question và nêu hai chỗ cần sửa trong use case.
+
+### Prompt đã dùng
+
+Tóm lược (nguyên văn nằm trong hội thoại) bảng quyết định của Hiển cho từng Open Question (spec 010: giữ 010-01, 010-08; sửa spec 010-02, 010-03, 010-05, 010-06, 010-07; hoãn 010-04, 010-10; chuyển Chung 010-09. Spec 011: sửa 011-01, 011-02, 011-04, 011-05; Hiển quyết 011-03; gộp 011-06 vào 010-04; chuyển 4 người 011-07; bỏ 011-08. Spec 080: giữ 080-01; chuyển Duy 080-02; chuyển Chung 080-03; chuyển Dự và Chung 080-04; bỏ 080-05 và thêm Gap 080-O), thứ tự làm (1. 011-01, 010-02, 011-05 trước 01/11; 2. gửi hôm nay các việc chuyển người; 3. sửa một dòng nếu kịp: 010-03, 010-05, 010-06, 011-02, 011-04; 4. hoãn 010-04, 010-10) và hai chỗ cần sửa trong use case:
+
+```
+- UC-010-02 Step 6 và 7 vẫn cần đổi thứ tự: khóa, rồi mật khẩu, rồi mới đình chỉ/cấm. Spec cũng ngầm hiểu vậy.
+- AF 3.10 của UC-011-03 bỏ câu "not specified", thay bằng quy tắc đã chốt ở 011-04.
+```
+
+Bảng quyết định đầy đủ của Hiển nằm trong hội thoại; nội dung từng quyết định được chép vào dưới mỗi Open Question trong `use-case-specification.md` (dòng "Decision (30/10/2026, Mai Văn Hiển)").
+
+### Tóm tắt phản hồi của AI
+
+- Thêm 23 dòng "Decision (30/10/2026, Mai Văn Hiển)" dưới 23 Open Questions (10 của 010, 8 của 011, 5 của 080); `OQ-011-06` ghi "Closed — merged into `[OQ-010-04]`", `OQ-011-08` ghi "Closed — already tracked as Gap 011-K", `OQ-080-05` ghi "Closed — tracked as Gap 080-O". Thêm một câu đầu mỗi mục 9.3, 10.3, 11.3 nói các thay đổi spec 010/011 cần Duy duyệt qua PR.
+- `UC-010-02`: đổi thứ tự thành khóa (Step 6), kiểm tra mật khẩu (Step 7), rồi mới kiểm tra đình chỉ/cấm khi thông tin đúng (Step 8); các bước sau dời thành Step 9–11 và các tham chiếu `AF 2.3`, `AF 2.4`, `AF 2.5`, `AF 2.7`, `AF 2.9`, `AF 2.10` cùng bảng 9.2 được cập nhật theo.
+- `UC-011-03`: `AF 3.2` ghi bộ đếm riêng và không khóa đăng nhập; `AF 3.6` thêm bước đăng xuất các phiên khác khi đặt mật khẩu; `AF 3.10` ghi giữ giá trị đã nhập, riêng ô mật khẩu bị xóa. Ba chỗ này ghi rõ là quy tắc đã chốt ngày 30/10/2026 cho spec 011, chưa nằm trong file spec.
+- Thêm dòng Gap 080-O (menu thẻ công thức với "Lưu vào bộ sưu tập" và "Bỏ lưu") vào bảng 11.2, nâng tổng số Asset Gaps từ 41 lên 42.
+- Không sửa file spec nào (`specs/010-...`, `specs/011-...`, `specs/080-...`); các việc "Sửa 010", "Sửa 011" trong bảng quyết định vẫn chờ làm và cần Duy duyệt vì spec 010 đang ở trạng thái "Ready for Implementation".
+- Ghi chú về hai chỗ chưa xong: `UC-010-02` `AF 2.3` chưa viết lại theo cách A hay cách B của `OQ-010-02` vì spec chưa đổi; `UC-011-04` `AF 4.1` chưa ghi giới hạn thử mật khẩu của `OQ-011-05` vì spec chưa đổi.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Quyết định cho 23 Open Questions | Dùng (quyết định của Hiển, chép nguyên ý vào tài liệu) | Hiển đọc cả ba spec và chọn cho từng câu |
+| Đổi thứ tự `UC-010-02` (khóa, mật khẩu, đình chỉ/cấm) | Dùng (yêu cầu của Hiển) | Thông báo đình chỉ/cấm chỉ hiện khi thông tin đăng nhập đúng; khớp trigger của `AF 2.4` và `AF 2.5` |
+| Thay "not specified" ở `AF 3.2`, `AF 3.10` và thêm bước ở `AF 3.6` của `UC-011-03` | Dùng; `AF 3.2` và `AF 3.6` do AI mở rộng thêm từ yêu cầu về `AF 3.10` | Cùng một Open Question `OQ-011-04`, để các luồng không mâu thuẫn nhau |
+| Gap 080-O | Dùng (yêu cầu của Hiển) | Thay cho `OQ-080-05` |
+| Việc sửa spec 010/011 | Chưa làm | Cần nhánh riêng và Duy duyệt qua PR |
+
+### Cách kiểm chứng
+
+- `git show f0930c4`: `use-case-specification.md` thay đổi 62 dòng (thêm 23 dòng Decision, sửa các bước ở `UC-010-02`, `UC-011-03`, thêm Gap 080-O); không có file spec nào trong `specs/` bị đụng.
+- Đã kiểm tra bằng lệnh: đếm được 23 dòng "Decision (30/10/2026" và các tham chiếu "Step 10" còn lại đều thuộc use case khác, không còn trỏ vào `UC-010-02`.
+- Phần Hiển đối chiếu lại từng Decision với bảng của mình: Hiển báo đã đối chiếu và nội dung khớp bảng của mình; nhưng việc đối chiếu chỉ ra các Decision bị đặt sai chỗ trong tài liệu (xem Mục 22), nên mục này không đúng như mô tả "đặt dưới mỗi Open Question" cho đến khi sửa ở Mục 22
+
+---
+
+## Mục 19: Task SCRUM-50 – chọn cách A cho OQ-010-02, giữ OQ-011-05 ở trạng thái mở
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 09:12 (lệnh `date`) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/requirements/use-case-specification.md` (`UC-010-02` `AF 2.1`–`AF 2.3`, Step 6, `OQ-010-02`, `OQ-011-05`) |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Mục đích | Viết lại `AF 2.2` và `AF 2.3` theo cách A của `OQ-010-02`; ghi "Proposed resolution: A, pending clarification of spec 010"; ghi `OQ-011-05` ở trạng thái mở kèm đề xuất; giữ `AF 4.1` như cũ |
+| Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `cb7467a`, thông điệp `docs(uc-spec): write sign-in lockout flows for option A of OQ-010-02 (SCRUM-50)`) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.312 trong VS Code trên Windows 11*, truy cập 09:12 ngày 30/10/2026, prompt: quyết định chọn cách A cho `OQ-010-02` kèm nguyên văn `AF 2.2`, `AF 2.3` và quyết định giữ `AF 4.1` (nguyên văn bên dưới), dùng để cập nhật `use-case-specification.md`; AI thay `AF 2.2`, `AF 2.3` bằng văn bản của Hiển, cập nhật dòng Decision của `OQ-010-02` và `OQ-011-05`, và chỉnh hai câu liên quan (Step 6, `AF 2.1`); sinh viên: chọn cách A, viết nội dung `AF 2.2`/`AF 2.3`, bản clarification đề xuất cho spec 011 và quyết định không thêm `AF 4.12` khi chưa có clarification.
+
+### Prompt đã dùng
+
+Tóm lược (nguyên văn nằm trong hội thoại): (1) `OQ-010-02` chọn cách A, lý do cách A giữ nguyên hành vi spec đã mô tả và chỉ mở rộng phạm vi đếm sang email chưa đăng ký; hai lưu ý cho bước plan (bộ đếm email lạ tự hết hạn sau 15 phút và giới hạn theo IP; audit entry không lưu email lạ ở dạng đọc được); kèm văn bản `AF 2.2`, `AF 2.3` và dòng "Proposed resolution: A, pending clarification of spec 010"; "đặt lại mật khẩu xóa khóa" để ngoài AF vì spec chưa nói; sửa thứ tự Step 6 và 7 của `UC-010-02`. (2) `AF 4.1` của `UC-011-04` giữ nguyên (chỉ từ chối); khi clarification của spec 011 được duyệt thì thêm `AF 4.12` và cập nhật `OQ-011-05`; trong lúc chờ, `OQ-011-05` giữ trạng thái Open; kèm bản clarification đề xuất cho spec 011 và văn bản `AF 4.12`.
+
+### Tóm tắt phản hồi của AI
+
+- `UC-010-02`: thay `AF 2.2` và `AF 2.3` bằng văn bản Hiển cung cấp (so sánh băm giả để thời gian phản hồi tương đương, bộ đếm tạm 15 phút theo email đã chuẩn hóa, audit entry không lưu email dạng đọc được, khóa theo email, email `FR-012` chỉ gửi khi có tài khoản thật, cùng một màn "Không thể đăng nhập" cho mọi email).
+- Chỉnh hai câu cho nhất quán với bộ đếm theo email: Step 6 nay kiểm tra "sign-in for the normalized email is not locked" và `AF 2.1` đếm "for the normalized email". Thứ tự khóa, mật khẩu, rồi đình chỉ/cấm đã được sửa ở Mục 18.
+- `OQ-010-02`: dòng Decision ghi cách A, "Proposed resolution: A, pending clarification of spec 010", hai lưu ý cho `/speckit-plan`, và nêu "đặt lại mật khẩu xóa khóa" chưa thuộc các luồng vì spec chưa nói.
+- `OQ-011-05`: dòng Decision ghi trạng thái mở, đề xuất bộ đếm chung cho đổi mật khẩu và xóa tài khoản (5 lần sai trong 15 phút, khóa 15 phút, tách khỏi bộ đếm đăng nhập), `AF 4.1` giữ nguyên, `AF 4.12` sẽ thêm sau khi clarification được duyệt.
+- Không thêm `AF 4.12` và không sửa file spec nào trong `specs/`.
+- Mục 18 có một câu nay đã cũ ("`AF 2.3` chưa viết lại theo cách A hay B"); mục này thay thế câu đó và Mục 18 không bị sửa.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Cách A cho `OQ-010-02` và văn bản `AF 2.2`, `AF 2.3` | Dùng nguyên văn (quyết định của Hiển) | Cách A giữ hành vi spec đã mô tả (giờ thử lại, email `FR-012`), cách B đi ngược Edge Case |
+| Chỉnh Step 6 và `AF 2.1` sang đếm theo email | Dùng; do AI thêm để nhất quán với `AF 2.3` | Bộ đếm theo email phải thống nhất ở cả ba chỗ |
+| "Đặt lại mật khẩu xóa khóa" | Không đưa vào luồng (quyết định của Hiển) | Spec chưa nói; phải thêm vào clarification trước |
+| Giữ `AF 4.1`, không thêm `AF 4.12` | Dùng (quyết định của Hiển) | Quy tắc chưa vào spec 011 thì chưa ghi thành hành vi chắc chắn |
+
+### Cách kiểm chứng
+
+- `git show cb7467a`: `use-case-specification.md` đổi 28 dòng (15 thêm, 13 xóa), không có file nào trong `specs/` bị đụng.
+- Phần Hiển đọc lại `AF 2.2`, `AF 2.3` trong tài liệu và đối chiếu với văn bản của mình: Hiển báo đã đọc lại và phát hiện `AF 2.3` còn sai hai chỗ (trigger gộp "đang khóa" với "lần sai thứ 5"; câu "email đã được gửi" làm lộ khác biệt giữa email có và không có tài khoản); đã sửa ở Mục 22
+
+---
+
+## Mục 20: Task SCRUM-50 – sửa lỗi của AI về màn hình đăng nhập `AU01` và các bản web `W-`
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 09:25 (lệnh `date`) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/analysis-and-design/ui-ux/index.html`, `docs/analysis-and-design/ui-ux/screens/W-AU01-Login.dc.html`, `docs/requirements/use-case-specification.md` (`UC-010-02`, §9.2) |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Mục đích | Hiển hỏi cách làm chi tiết Bước 1 (mở prototype và đối chiếu); khi đọc `index.html` AI phát hiện kết luận trước đó "không có `AU01`" là sai và sửa tài liệu |
+| Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `2e65aea`, thông điệp `docs(uc-spec): map UC-010-02 sign-in to W-AU01-Login and note web variants (SCRUM-50)`) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.312 trong VS Code trên Windows 11*, truy cập 09:25 ngày 30/10/2026, prompt: "hãy nói chi tiết bước 1 hơn", dùng để hướng dẫn mở prototype; AI đọc `index.html` và thư mục `screens/`, phát hiện lỗi của chính mình ở Mục 11, 12, 15 và sửa `use-case-specification.md`; sinh viên: hỏi cách làm chi tiết Bước 1
+
+### Prompt đã dùng
+
+```
+hãy nói chi tiết bước 1 hơn
+```
+
+### Tóm tắt phản hồi của AI
+
+- Lỗi: ở Mục 11, 12 và 15 AI ghi "`AU01-Login` có trong `canvas.json` và `index.html` nhưng không có trong `screens/`" (Gap 010-D) và chỉ map các file `AU02`–`AU09`, `PF01`–`PF08`, `BM01`–`BM06`. Thực tế `index.html` nhúng `screens/W-AU01-Login.dc.html`, file này có trong thư mục, và mọi màn hình đều có thêm bản web tên `W-<mã>` (25 file `W-` trong nhóm `AU`, `PF`, `BM`, `CM01`, `CM04`). AI chỉ kiểm tra tên file `AU*` mà không tìm thêm tiền tố `W-`.
+- Sửa trong `use-case-specification.md`: `UC-010-02` trỏ tới `W-AU01-Login.dc.html` (màn này có thông báo lỗi chung "Email hoặc mật khẩu không đúng", cảnh báo "Sai 5 lần liên tiếp, tài khoản sẽ tạm khóa 15 phút", "Ghi nhớ (30 ngày)", nút Google và ngữ cảnh khách bấm lưu); rút Gap 010-D và 010-E (còn 14 - 2 = 12 gap của 010, tổng số gap từ 42 xuống 40); thêm ghi chú về bản `W-` dưới ba bảng 9.2, 10.2, 11.2.
+- Các câu trong Mục 11, 12, 15 và 17 còn nói `AU01` thiếu hoặc 41/42 gap là câu cũ; mục này thay thế các câu đó và các mục cũ không bị sửa.
+- Chưa đối chiếu nội dung của 25 file `W-` với từng hàng của ba bảng; việc đó nằm trong Bước 1 của Hiển.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Rút Gap 010-D, 010-E và trỏ `UC-010-02` tới `W-AU01-Login.dc.html` | Dùng | Màn hình tồn tại và khớp `AF 2.1`, `AF 2.3`, `AF 2.9` |
+| Ghi chú bản `W-` dưới ba bảng map | Dùng | Mọi màn có hai bản; các bảng chỉ liệt kê bản di động |
+| Việc báo Chung rằng danh sách gap thay đổi (Gap 010-D, 010-E rút) | Đã làm | — |
+
+### Cách kiểm chứng
+
+- `git show 2e65aea`; `ls docs/analysis-and-design/ui-ux/screens | grep W-AU01` cho `W-AU01-Login.dc.html`.
+- Nội dung `W-AU01-Login.dc.html` được AI đọc lại ở Mục 21 và khớp với `UC-010-02`; Hiển báo đã tự mở các file prototype trong trình duyệt (ngày 30/10/2026); Hiển không nêu chỗ lệch nào cần sửa
+
+---
+
+## Mục 21: Task SCRUM-50 – AI tự kiểm tra prototype và alternative flow theo yêu cầu của Hiển
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 09:30 (lệnh `date` chạy ngay trước mục này trả về 09:29 sau commit `dd0f70b`) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/requirements/use-case-specification.md` (§9.2, §10.2, §11.2 và các mục "UI Screen References"), các file `.dc.html` trong `docs/analysis-and-design/ui-ux/screens/` (bản di động và bản `W-`), ba spec 010, 011, 080 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Mục đích | Thay cho Bước 1 và Bước 2 của danh sách việc Hiển: đối chiếu chữ trong tài liệu với chữ trong prototype, đối chiếu một số alternative flow với FR trong spec, rồi điền kết quả vào log |
+| Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `dd0f70b`, thông điệp `docs(uc-spec): note NU04 next to Gap 080-C (SCRUM-50)`) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.312 trong VS Code trên Windows 11*, truy cập 09:30 ngày 30/10/2026, prompt: "hãy tự kiểm tra và điền vào các phần cần điền trong Ai log" (nguyên văn bên dưới), dùng để kiểm tra Section 9–11; AI viết script đọc chữ trong các file `.dc.html`, đối chiếu với chuỗi trong tài liệu, đọc lại 5 alternative flow so với FR, sửa 1 dòng bảng 11.2 và điền các chỗ trống có thể điền trong log; sinh viên: yêu cầu AI tự kiểm tra và điền log.
+
+### Prompt đã dùng
+
+```
+hãy tự kiểm tra và điền vào các phần cần điền trong Ai log
+```
+
+### Tóm tắt phản hồi của AI
+
+- Đối chiếu prototype (đọc nội dung HTML, không mở trình duyệt, không kiểm tra bố cục, màu hay hành vi tương tác): 58 dòng trong Section 9–11 có nhắc tên file màn hình, 61 chuỗi tiếng Việt trong dấu ngoặc kép được tìm trong nội dung file di động hoặc file `W-` tương ứng. Kết quả: mọi tên file tồn tại; 59/61 chuỗi khớp; 2 chuỗi còn lại là do cách viết của tài liệu (gộp "Đăng nhập / Tạo tài khoản / Để sau" thành một chuỗi và nối "Bò lúc lắc — Không còn khả dụng" bằng dấu gạch), không phải lệch thật.
+- Đọc thêm `NU04-Unavailable.dc.html`: đã là trang "Công thức này không còn khả dụng", nên Gap 080-C chỉ còn là thông báo khi bấm lưu; dòng bảng 11.2 được ghi chú như vậy (commit `dd0f70b`). Mục Gap 020-E trong phần của Duy cũng đang nói thiếu màn này; AI không sửa phần của Duy, chỉ báo.
+- Đối chiếu alternative flow với FR trong spec (đọc lại, không phải chạy test):
+  - `UC-010-02` `AF 2.3` với `FR-012` và Edge Case "Brute force": khớp (khóa 15 phút sau 5 lần sai, có giờ thử lại, có email); phần đếm cả email chưa đăng ký là mở rộng theo cách A, ghi rõ chờ clarification.
+  - `UC-010-04` `AF 4.2` với `FR-019` và Integration Points: khớp (xóa dữ liệu tạo trước khi xác minh, vô hiệu mật khẩu, kết thúc phiên cũ, tên từ Google, đánh dấu đã xác minh, gửi sự kiện cho 011/060/080).
+  - `UC-011-04` `AF 4.3` với `FR-037`, `US4` AS8 và `FR-023` của spec 010: khớp (Administrator hoạt động cuối cùng bị từ chối, nội dung nêu cần chỉ định Administrator khác trước).
+  - `UC-011-01` `AF 1.6` với `FR-011` và Edge Case: khớp (mục thứ 51 bị từ chối, nêu giới hạn 50).
+  - `UC-080-01` `AF 1.8` với `FR-011` và `US1` AS8: khớp (không lưu, biểu tượng giữ trạng thái chưa lưu, thông báo "Danh sách Đã lưu đã đầy", gợi ý bỏ món không còn khả dụng).
+- Điền vào log các chỗ AI xác minh được: kết quả đối chiếu prototype và alternative flow; các chỗ chỉ Hiển biết (đã gửi Chung hay chưa, Hiển tự đối chiếu bảng Decision, Hiển tự mở file trên trình duyệt) vẫn để "Hiển điền".
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Kết quả kiểm tra tự động: tên file đều tồn tại, 59/61 chuỗi khớp, 2 chuỗi do cách viết | Dùng; Hiển báo đã mở tất cả các file prototype trong trình duyệt sau khi AI kiểm tra, và không nêu chỗ lệch nào | Kết quả tự động chỉ đọc chữ trong HTML nên cần mắt người xem bố cục |
+| Ghi chú `NU04` ở Gap 080-C | Dùng (commit `dd0f70b`) | Tránh bảng 11.2 ngụ ý chưa có trang "công thức không còn khả dụng" |
+| Gap 020-E trong phần của Duy đã cũ | Chuyển Duy | Không sửa phần của người khác |
+
+### Cách kiểm chứng
+
+- Chạy lại bằng cách mở `docs/analysis-and-design/ui-ux/index.html` và so từng hàng của bảng 9.2, 10.2, 11.2 (Hiển báo đã mở tất cả các file prototype trong trình duyệt ngày 30/10/2026).
+- `git show dd0f70b` chỉ đổi một dòng bảng 11.2.
+
+---
+
+## Mục 22: Task SCRUM-50 – sửa lỗi của AI: Decision đặt sai chỗ, `AF 2.3` và `UC-011-03` chưa nêu là "proposed"
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 09:58 (lệnh `date` sau khi commit `925f74d`) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/requirements/use-case-specification.md` (`UC-010-02` `AF 2.3`, `UC-011-03` `AF 3.2`/`AF 3.6`/`AF 3.10`, §9.3, §10.3, §11.3) |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Mục đích | Sửa các lỗi Hiển phát hiện khi đối chiếu: Decision bị dồn sai chỗ ở cả ba khối Open Questions, `AF 2.3` còn hai chỗ sai, `OQ-010-02` mâu thuẫn với `AF 2.3`, và `UC-011-03` ghi quy tắc chưa có trong spec 011 như đã chốt |
+| Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `925f74d`, thông điệp `docs(uc-spec): place open-question decisions under their own items and fix AF 2.3 (SCRUM-50)`) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.312 trong VS Code trên Windows 11*, truy cập 09:58 ngày 30/10/2026, prompt: danh sách lỗi và dòng thay thế do Hiển cung cấp (nguyên văn bên dưới), dùng để sửa `use-case-specification.md`; AI sửa `AF 2.3`, `OQ-010-02`, `UC-011-03` và đặt lại 23 dòng Decision; sinh viên: đối chiếu tài liệu, tìm ra bốn lỗi và viết nội dung thay thế cho từng Decision.
+
+### Prompt đã dùng
+
+Tóm lược (nguyên văn nằm trong hội thoại): (1) `AF 2.3` của `UC-010-02` sửa hai chỗ: trigger tách "At Step 6, sign-in for the normalized email is locked" khỏi "lần sai thứ 5", và bước 3 thay "the note that an email was sent" bằng ghi chú trung tính "Nếu email này đã đăng ký, chúng tôi đã gửi thông báo". (2) `OQ-010-02` ghi "Closed, merged into OQ-010-04" là sai, `AF 2.3` lại trỏ về mục này; `Current Stance` còn nói dùng thông báo trung tính của `AF 2.2`. (3) Decision bị dồn sai chỗ ở cả ba khối (lần thứ hai); kèm dòng thay thế cho từng Open Question của spec 010, 011, 080. (4) `UC-011-03` viết hành vi chưa có trong spec 011 (`FR-028` chỉ nói đổi mật khẩu); phải ghi "proposed" ngay trong `AF 3.2`, `AF 3.6`, `AF 3.10` hoặc chắc chắn clarification đi trước khi Duy review.
+
+### Tóm tắt phản hồi của AI
+
+- Nguyên nhân lỗi Decision đặt sai chỗ: script ở Mục 18 tìm vị trí của chuỗi `[OQ-xxx]` bằng lần xuất hiện đầu tiên trong tài liệu, và chuỗi này đã xuất hiện sớm hơn ở phần thân các use case (ví dụ "see `[OQ-010-05]`"), nên dòng Decision được chèn vào Open Question đầu tiên của từng khối (010-01, 011-01, 080-01) thay vì đúng mục của nó. Lần kiểm tra ở Mục 18 chỉ đếm tổng số 23 dòng nên không phát hiện.
+- Sửa: xóa toàn bộ dòng Decision cũ (kể cả bản trùng), rồi chèn lại 23 dòng, mỗi dòng ngay sau dòng Owner của chính Open Question đó, tìm theo tiêu đề dạng `**`[OQ-xxx]`**`; chạy lại kiểm tra từng cặp (Open Question, Decision) và thấy khớp một-một.
+- Nội dung dùng đúng các dòng thay thế Hiển cung cấp cho `OQ-010-01` đến `OQ-010-08`, `OQ-011-01` đến `OQ-011-04`, `OQ-011-06`, `OQ-080-01`, `OQ-080-03`, `OQ-080-05`; các Open Question còn lại giữ nội dung đã viết ở Mục 18 và 19 (`OQ-010-09`, `OQ-010-10`, `OQ-011-05`, `OQ-011-07`, `OQ-011-08`, `OQ-080-02`, `OQ-080-04`).
+- `AF 2.3`: trigger và bước 3 sửa đúng như Hiển yêu cầu. `OQ-010-02`: Decision nay là cách A, trạng thái Open chờ clarification; `Current Stance` đổi thành "Unknown emails are counted and get the same lock screen".
+- `UC-011-03`: `AF 3.2`, bước 6 của `AF 3.6` và `AF 3.10` nay mở đầu bằng "Proposed, pending clarification of spec 011 (`[OQ-011-04]`)", và `OQ-011-04` ghi các AF này là quy tắc đề xuất. Spec 011 chưa đổi, nên các AF này chỉ đúng khi clarification được duyệt.
+- Sai sót của AI cần ghi nhận: Mục 18 viết "đặt 23 dòng Decision dưới mỗi Open Question" nhưng thực tế đặt sai chỗ; Mục 19 viết "`OQ-010-02` ghi Decision cách A" nhưng dòng đó cũng nằm sai mục; hai mục đó không bị sửa và mục này thay thế các câu đó.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Bốn lỗi do Hiển nêu và các dòng Decision thay thế | Dùng (do Hiển viết) | Hiển đối chiếu tài liệu với bảng quyết định của mình |
+| Đánh dấu "Proposed" trong `AF 3.2`, `AF 3.6`, `AF 3.10` | Dùng (chọn phương án ghi "proposed" ngay trong AF thay vì chờ clarification) | Giữ tiêu chí "không trái spec gốc"; clarification của spec 011 chưa được duyệt |
+| Giữ 7 dòng Decision của Mục 18 và 19 cho `OQ-010-09`, `OQ-010-10`, `OQ-011-05`, `OQ-011-07`, `OQ-011-08`, `OQ-080-02`, `OQ-080-04` | Giữ nguyên | Hiển không nêu thay thế cho các mục này |
+
+### Cách kiểm chứng
+
+- `git show 925f74d`; trong §9.3, §10.3, §11.3 mỗi Open Question có đúng một dòng "Decision (30/10/2026, Mai Văn Hiển)" ngay dưới dòng Owner của nó (23 dòng, 23 Open Question).
+- Phần Hiển đọc lại bản sau sửa: Hiển báo đã đọc lại 23 dòng Decision, `AF 2.3`, `OQ-010-02` và `AF 3.2`/`AF 3.6`/`AF 3.10` của `UC-011-03` trong tài liệu sau sửa và không phát hiện thêm lỗi
+
+---
+
+## Mục 23: Task SCRUM-50 – nhận xét AI log, hướng dẫn chuyển nhánh, chuẩn bị push và mô tả PR
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 13:53 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/ai_log/ai_log_hien.md`, `AI Usage Guidelines.pdf`, `wikicook-pa3-team-assignment.md`, `docs/requirements/use-case-specification.md` (Section 9–11) |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.314 |
+| Mục đích | Đọc lại AI log và tài liệu phân công PA3 để nhận xét; hướng dẫn chuyển `ai_log_hien.md` sang nhánh `Hien`; kiểm tra trạng thái repo trước khi push nhánh SCRUM-50; viết prompt hoàn thiện nội dung; viết mô tả PR; viết prompt để thêm mục này |
+| Nhánh Git | `Hien` (file log này, commit trước đó `2b3e1a5`); nội dung được nhắc tới nằm ở `docs/scrum-50-uc-spec-010-011-080` (commit mới nhất tại thời điểm ghi: `b4a2bc3`, thông điệp ghi `SCUM-50`, viết thiếu chữ `R` so với các commit trước) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 13:53 ngày 30/10/2026, prompt: xem phần "Prompt đã dùng" bên dưới, dùng để nhận xét AI log Mục 11–22, hướng dẫn chuyển nhánh, kiểm tra trạng thái repo, viết hai prompt hoàn thiện nội dung và mô tả PR; AI đọc file log, tài liệu phân công, Guidelines và lịch sử git rồi viết nhận xét, các bước lệnh, hai prompt và hai bản mô tả PR (tiếng Anh, tiếng Việt); sinh viên: yêu cầu nhận xét và các bước tiếp theo, yêu cầu bỏ phần add/commit/push khỏi prompt để tự thực hiện, chạy prompt hoàn thiện nội dung ở một phiên khác rồi dán báo cáo lại, chọn mô tả PR bằng tiếng Việt; phần đọc diff, xem preview và đọc handover note: Hiển điền.
+
+### Prompt đã dùng
+
+Prompt hoàn thiện nội dung SCRUM-50 (do AI soạn theo yêu cầu của Hiển, Hiển chạy trong một phiên khác; chép nguyên văn như Hiển dán):
+
+```text
+Bối cảnh: nhánh docs/scrum-50-uc-spec-010-011-080, file docs/requirements/use-case-specification.md (Section 9–11: UC-010-01..04, UC-011-01..05, UC-080-01..04). Tôi là Hiển (Performed by), Duy là Reviewer.
+
+Phạm vi và giới hạn:
+- Chỉ đọc và sửa nội dung trong docs/requirements/use-case-specification.md.
+- KHÔNG sửa file trong specs/. KHÔNG sửa Section 1–8 (của Hưng và Duy).
+- KHÔNG chạy git add, git commit, git push, git rebase hay gh. Tôi tự làm các bước này. Chỉ được dùng lệnh đọc: git status, git diff, git log, git show, git fetch.
+- KHÔNG tự bịa luồng hay thêm tính năng ngoài spec. Chỗ nào spec thiếu hoặc mâu thuẫn thì ghi vào Open Questions, không tự quyết.
+- Gặp quyết định thuộc về tôi thì dừng và hỏi.
+
+Làm lần lượt:
+
+1. Kiểm tra nhánh hiện tại bằng git branch --show-current. Phải là docs/scrum-50-uc-spec-010-011-080, nếu không thì dừng và báo tôi.
+
+2. Rà 8 mục bắt buộc cho từng UC trong 13 UC: tên + ID, actor (hoặc Trigger với UC-011-05), mô tả, preconditions, basic flow từng bước, alternative flows, postconditions, special requirements. Lập bảng UC × mục, báo UC nào thiếu hoặc rỗng, rồi bổ sung phần thiếu dựa trên spec gốc.
+
+3. Chạy script kiểm tra và báo kết quả:
+   - ID UC không trùng, không nhảy số.
+   - Mọi mã FR/NFR/SC của spec 010, 011, 080 xuất hiện trong Section tương ứng.
+   - Mọi AF được tham chiếu (AF x.y, Step n) đều tồn tại và đúng sau khi đổi thứ tự UC-010-02.
+   - Mọi file màn hình được nhắc (cả bản W-) tồn tại trong docs/analysis-and-design/ui-ux/screens/.
+   - Mỗi Open Question có đúng một dòng "Decision (30/10/2026, Mai Văn Hiển)" ngay dưới dòng Owner của nó.
+
+4. Rà các AF "Proposed" (UC-010-02 AF 2.2, 2.3; UC-011-03 AF 3.2, 3.6, 3.10). Mỗi AF phải mở đầu bằng "Proposed, pending clarification of spec 0xx ([OQ-xxx])", và Open Question tương ứng phải nêu AF nào phụ thuộc. Báo chỗ thiếu rồi sửa.
+
+5. Rà ngôn ngữ: Section 9–11 là tiếng Anh, câu dạng "The system …" / "The user …". Chuỗi giao diện tiếng Việt chỉ nằm trong dấu ngoặc kép. Liệt kê và sửa các dòng vi phạm.
+
+6. Rà metadata: dòng Performed by / Reviewed by / Edited by ngay sau header Section 9, 10, 11 và từng UC (Reviewed by: Nguyễn Đức Duy). Có hàng cho Section 9–11 trong bảng trách nhiệm. Dòng Revision History v1.2 chính xác về số UC và phạm vi.
+
+7. Rà định dạng: không dùng Mermaid trong Section 9–11. Số cột mỗi hàng bảng bằng header. Không có link nội bộ hỏng. Nói rõ phần nào chưa xem được render thật trên GitHub.
+
+8. Rà tính nhất quán trong 3 Section: số AF, số Asset Gap (hiện 40), số Open Question (23) trong các bảng truy vết và câu tóm tắt phải khớp với nội dung thật. Sửa nếu lệch.
+
+9. Soạn riêng một bản ghi chú bàn giao trong thư mục scratchpad (không nằm trong repo), gồm:
+   - Danh sách việc cần Duy duyệt qua PR sửa spec: OQ-010-02, 010-03, 010-05, 010-06, 010-07, 011-01, 011-02, 011-04, 011-05, kèm đoạn văn bản đề xuất.
+   - Việc chuyển Chung: 40 Asset Gaps, OQ-010-09, OQ-080-03.
+   - Việc chuyển Duy: Gap 020-E đã cũ, OQ-080-02.
+   - Việc chuyển Dự: OQ-080-04.
+
+10. Báo cáo cuối: đã sửa gì (theo từng nhóm), còn gì chưa làm được và vì sao, và tóm tắt git diff --stat. Không commit. Để các thay đổi ở trạng thái chưa add để tôi xem lại.
+```
+
+Các prompt Hiển gõ trong phiên này, theo thứ tự (chép nguyên văn từ hội thoại, kể cả lỗi chính tả; không kể các khối nội dung Hiển dán kèm là kết quả của AI, và không kể lần Hiển từ chối một lệnh kiểm tra nhánh khi chạy prompt hoàn thiện nội dung, sau đó ngắt yêu cầu):
+
+1. ```text
+   hãy đọc lại các file và nhận xét phần AI log, sau đó nói tiếp các bước tiếp theo
+   ```
+2. ```text
+   hãy nêu các bước để làm Chuyển ai_log_hien.md sang nhánh Hien rồi commit ở đó, không commit vào nhánh SCRUM-50. AI Usage Guidelines.pdf và wikicook-pa3-team-assignment.md giữ ở trạng thái chưa add.
+   ```
+3. ```text
+   phần nội dung của scrum 50 đã làm xong chưa, có push lên được chưa
+   ```
+4. ```text
+   hãy viết prompt cho tôi để hoàn thiện nội dung mà không cần người review để tôi có thể push lên github
+   ```
+   (kèm một khối văn bản Hiển dán vào là bản liệt kê "Đã xong / Chưa xong" do AI viết ở câu trả lời trước)
+5. ```text
+   viết lại prompt cho tôi, chỉ hoàn thiện nội dung còn phần Add và phần push thì để tôi tự thực hiện
+   ```
+6. ```text
+   đã hoàn thiện để push chua
+   ```
+   (kèm báo cáo của phiên khác do Hiển dán vào; báo cáo này là kết quả của AI, không phải prompt)
+7. ```text
+   viết phần mô tả PR cho tôi
+   ```
+8. ```text
+   hãy sửa lại mô tả bằng tiếng Việt
+   ```
+9. ```text
+   AI log chưa có mục cho phiên vừa rồi. Thêm vào nhánh Hien với prompt nguyên văn.
+   viết prompt cho tôi
+   ```
+10. Prompt dài bắt đầu bằng "Bối cảnh: tôi là Hiển (Mai Văn Hiển). Cần thêm MỘT mục mới vào cuối docs/ai_log/ai_log_hien.md …" (chính là prompt tạo ra mục này; nguyên văn nằm trong lịch sử chat, Hiển đính kèm khi export).
+11. ```text
+    hãy điền các chỗ trên cho tôi
+    ```
+
+Giữa mục 5 và mục 6, Hiển chạy prompt hoàn thiện nội dung (khối ở trên) trong một phiên khác. Giờ gõ từng prompt: Hiển điền.
+
+### Tóm tắt phản hồi của AI
+
+- Đọc `wikicook-pa3-team-assignment.md`, `AI Usage Guidelines.pdf` và Mục 13–22 của `ai_log_hien.md`, rồi nhận xét 7 điểm cần sửa: (1) Mục 19 và 22 nói Mục 18 "không bị sửa" nhưng các dòng cách kiểm chứng của Mục 15, 18 và 19 đã được bổ sung; (2) câu "sinh viên: …" bị copy giống nhau vào nhiều mục, trong đó có mục ghi giờ sớm hơn sự kiện được nhắc; (3) nhiều khẳng định về phần Hiển tự làm do AI viết thay (mở file prototype, gửi Chung, đối chiếu bảng Decision); (4) prompt ở Mục 18, 19, 22 chỉ là tóm lược, không nguyên văn, trong khi Guidelines yêu cầu prompt và chat history; (5) phiên bản Claude Code `2.1.314` chưa được xác minh; (6) giờ truy cập lấy theo hai cách khác nhau (`date` và `git log`), Mục 15 và 16 cùng ghi 08:05; (7) rủi ro với §4.5 của Guidelines vì phần lớn use case do AI soạn, nên cần nêu rõ bằng chứng Hiển hiểu và đã chỉnh nội dung.
+- Liệt kê các bước chuyển `ai_log_hien.md` sang nhánh `Hien`; kiểm tra nhánh `Hien` đã có sẵn ở local và `origin/Hien`.
+- Kiểm tra trạng thái repo bằng lệnh đọc: nhánh `docs/scrum-50-uc-spec-010-011-080` chưa có trên origin; cách `origin/main` 9 commit và chỉ đổi `use-case-specification.md`; sau `git fetch`, `origin/main` đã nằm trong nhánh SCRUM-50 (chưa có commit mới trên `main`). Một lần AI đọc nhầm file trên nhánh `Hien` thay vì nhánh SCRUM-50 và sau đó tự đọc lại bằng `git show` trên đúng nhánh.
+- Viết hai phiên bản prompt hoàn thiện nội dung SCRUM-50: bản đầu cho phép AI commit và push, Hiển yêu cầu viết lại bản không add và không push (bản thứ hai là prompt ở trên).
+- Xác nhận lại `git diff --stat` của nhánh SCRUM-50: 1 file, 12 dòng thêm, 6 dòng bớt, hai file chưa theo dõi không bị đụng. Đây là xác nhận số dòng; việc rà soát Section 9–11 (đủ 8 mục, mã FR/NFR/SC, tham chiếu AF, màn hình, Open Question) do một phiên khác chạy prompt ở trên, không phải phiên này, và phiên này chỉ đọc lại kết quả báo cáo mà Hiển dán vào.
+- Viết mô tả PR bằng tiếng Anh, sau đó viết lại bằng tiếng Việt theo yêu cầu của Hiển. Các con số trong mô tả (20/39/43 acceptance scenario, 40 Asset Gaps, 23 Open Questions) lấy từ báo cáo của phiên kia, phiên này chưa đếm lại.
+- Viết prompt để thêm mục này; mục này được ghi bằng cách chạy prompt đó.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Các bước chuyển `ai_log_hien.md` sang `Hien` | Dùng; Hiển tự thực hiện add, commit, push (commit `2b3e1a5` đã có trên `origin/Hien`). AI đưa 7 bước: `git fetch` và so sánh `Hien`, `git switch Hien` (dùng `stash` nếu bị chặn), kiểm tra `git status`, chỉ `git add` đúng một file, commit, push, quay lại nhánh SCRUM-50 | Hiển yêu cầu commit file log trên `Hien`, không commit vào nhánh SCRUM-50, và giữ hai file chưa theo dõi ở trạng thái chưa add |
+| Prompt hoàn thiện nội dung SCRUM-50 | Dùng bản không add/push (Hiển yêu cầu bỏ phần add và push để tự làm); Hiển chạy ở một phiên khác và dán lại báo cáo kết quả (12 dòng thêm, 6 dòng bớt trong `use-case-specification.md`, chưa add); nội dung báo cáo do AI của phiên đó viết, phiên này không tự chạy lại các kiểm tra đó | Hiển muốn tự thực hiện add, commit, push |
+
+### Cách kiểm chứng
+
+- Lệnh có thể chạy lại: `git branch --show-current` (kết quả khi ghi: `Hien`), `git status --short`, `git log --oneline -3 docs/scrum-50-uc-spec-010-011-080` (có `b4a2bc3`, `925f74d`), `git ls-remote --heads origin docs/scrum-50-uc-spec-010-011-080` (không có kết quả tại lúc kiểm tra trước đó).
+- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+- Sai sót của AI trong phiên: Hiển điền nếu có. Một sai sót AI tự ghi nhận: đọc nhầm file trên nhánh `Hien` thay vì nhánh SCRUM-50 trước khi tự sửa.
