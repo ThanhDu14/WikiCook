@@ -13,14 +13,18 @@ Module này **không phụ thuộc** `wikicook-app`; `wikicook-app` phụ thuộ
 | `ai.embedding` | `EmbeddingClient`, `EmbeddingTask`; `GeminiEmbeddingClient` (lô ≤ 100, chuẩn hóa độ dài 1), `MockEmbeddingClient` (vector cố định theo hash), `OfflineEmbeddingClient` |
 | `ai.gemini` | `GeminiHttp`: POST tới Gemini REST, key ở header `x-goog-api-key`, timeout và hủy theo từng lời gọi (virtual thread); lỗi chỉ báo mã HTTP, không chép nội dung lỗi của provider |
 | `ai.quota` | `AiQuotaService` (`reserve` / `finish` / `userAllowance`), `AiRequestRepository` (JDBC trên `ai_requests`), enum `AiFeature` / `AiTrigger` / `AiOutcome` |
-| `ai.config` | `AiProperties` (`wikicook.ai.*`), `AiClientConfig` chọn client theo `wikicook.ai.mode` |
+| `ai.config` | `AiProperties` (`wikicook.ai.*`), `AiClientConfig` chọn client theo `wikicook.ai.mode`, `AiAsyncConfig` (bật async/scheduling/caching, executor `aiTaskExecutor` chạy virtual thread) |
 | (test) `wikicook-db` | Migration Flyway dùng chung (`V001__extensions.sql` … `V303`); test `*IT` kế thừa `ai.db.AbstractPostgresIT` (một container cho cả module) |
 
 `wikicook.ai.mode=live` cần `WIKICOOK_AI_API_KEY`; thiếu key thì ứng dụng dừng khi khởi động, thông báo không chứa giá trị key.
 
 Hạn mức (research R11): mỗi ngày, tính từ 00:00 giờ Việt Nam, mỗi feature được `daily-cap.total × share` dòng `called_llm`. `reserve` kiểm tra hạn mức rồi ghi dòng trong cùng transaction, có `pg_advisory_xact_lock`. Mỗi người dùng được 5 lượt meal planner `counted` trong 60 phút trượt.
 
-Chưa có: truy hồi RAG (`CandidateQuery`), đồng bộ embedding (`RecipeEmbeddingSync`, job đối soát) và importer dữ liệu cào.
+Embedding công thức nằm ở `wikicook-app` (`com.wikicook.aiplanner.embedding`). `EmbeddingReconcileJob` chạy lúc 03:00 giờ Việt Nam: tạo lại embedding cho công thức PUBLISHED bị thiếu, lệch `content_hash` hoặc lệch model; xóa dòng của công thức không còn PUBLISHED; dọn `ai_requests` MEAL_PLANNER cũ hơn 90 ngày. Dữ liệu cào cũng được embed qua job này.
+
+`GeminiLiveIT` gọi Gemini thật để kiểm tra dạng request/response. Test chỉ chạy khi có `WIKICOOK_AI_API_KEY` (`set -a; source ../.env; set +a` trước `mvn verify`), mỗi lần chạy gửi 4 request.
+
+Chưa có: truy hồi RAG (`CandidateQuery`), đồng bộ embedding theo event của 060 (`RecipeEmbeddingSync`).
 
 ## Cấu hình
 
@@ -33,6 +37,10 @@ Chưa có: truy hồi RAG (`CandidateQuery`), đồng bộ embedding (`RecipeEmb
 | `wikicook.ai.embedding.model` | `WIKICOOK_AI_EMBEDDING_MODEL` | `gemini-embedding-001` |
 | `wikicook.ai.embedding.dimensions` | `WIKICOOK_AI_EMBEDDING_DIMENSIONS` | `768` (khớp `VECTOR(768)`) |
 | `wikicook.ai.embedding.timeout` | `WIKICOOK_AI_EMBEDDING_TIMEOUT` | `30s` |
+| `wikicook.ai.embedding.reconcile-on-startup` | `WIKICOOK_AI_EMBEDDING_RECONCILE_ON_STARTUP` | `false` |
+| `wikicook.ai.embedding.reconcile-limit` | `WIKICOOK_AI_EMBEDDING_RECONCILE_LIMIT` | `0` (không giới hạn số món mỗi lần chạy) |
+| `wikicook.ai.embedding.batch-size` | `WIKICOOK_AI_EMBEDDING_BATCH_SIZE` | `50` công thức/lô, tối đa 100 |
+| `wikicook.ai.embedding.batch-pause` | `WIKICOOK_AI_EMBEDDING_BATCH_PAUSE` | `30s` giữa hai request tới provider |
 | `wikicook.ai.base-url` | `WIKICOOK_AI_BASE_URL` | `https://generativelanguage.googleapis.com/v1beta` |
 | `wikicook.ai.daily-cap.total` | `WIKICOOK_AI_DAILY_CAP_TOTAL` | `100` dòng/ngày (một dòng có thể gọi provider 2 lần khi retry) |
 | `wikicook.ai.daily-cap.meal-planner-share` | `WIKICOOK_AI_DAILY_CAP_MEAL_PLANNER_SHARE` | `0.7` |
