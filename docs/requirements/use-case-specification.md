@@ -31,7 +31,7 @@
 | :---: | :---: | :--- | :--- |
 | **28/10/2026** | `v1.0` | Initialized detailed Use-Case Specifications for all 10 use cases across Feature 040 and Feature 050, defining 8 mandatory sections per use case, exhaustive alternative flows, and UI prototype mapping (`SCRUM-53`). | Lê Quốc Hưng (`LqHung06`) |
 | **29/10/2026** | `v1.1` | Added Sections 6–8: use-case specifications for Feature 020 (`UC-020-01` – `UC-020-06`, including the shared Recipe Detail page) and Feature 060 (`UC-060-01` – `UC-060-07`), with traceability, prototype screen mapping and open questions (`SCRUM-51`). Use-case IDs follow the Use-Case Model v0.1 (`SCRUM-49`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
-| **30/10/2026** | `v1.2` | Added Sections 9–11: use-case specifications for Feature 010 (`UC-010-01` – `UC-010-04`), Feature 011 (`UC-011-01` – `UC-011-05`) and Feature 080 (`UC-080-01` – `UC-080-04`), with traceability, prototype screen mapping and open questions (`SCRUM-50`, first draft). Use-case IDs follow the Use-Case Model v0.1 (`SCRUM-49`). | Mai Văn Hiển (`MaiHien3507`) |
+| **30/10/2026** | `v1.2` | Added Sections 9–11: 13 use-case specifications for Feature 010 (`UC-010-01` – `UC-010-04`), Feature 011 (`UC-011-01` – `UC-011-05`) and Feature 080 (`UC-080-01` – `UC-080-04`), with traceability, prototype screen mapping and open questions (`SCRUM-50`, first draft). Use-case IDs follow the Use-Case Model v0.1 (`SCRUM-49`). | Mai Văn Hiển (`MaiHien3507`) |
 
 > [!NOTE]
 > **Use-Case Model Alignment Notice:** The formal Use-Case Model (`docs/requirements/use-case-model.md`) is currently being drafted by Nguyễn Đức Duy under `SCRUM-49` (freeze date: November 02, 2026). The Use Case IDs (`UC-040-01` through `UC-040-05` and `UC-050-01` through `UC-050-05`) and titles documented herein represent the official engineering proposal derived directly from ratified specifications `specs/040-shopping-list/spec.md` and `specs/050-cooking-mode/spec.md`. Once `SCRUM-49` completes model freeze on November 02, any identifier discrepancies will be reconciled during the review phase (`SCRUM-53` final edition, due November 03).
@@ -2103,6 +2103,7 @@ Lets a registered user authenticate with an email and a password so that the per
     1. The system refuses the sign-in with the generic message "Email or password is incorrect" and clears the password field (FR-008).
     2. The system increases the counter of consecutive failures for the normalized email and records a failure audit entry (FR-025).
 - **AF 2.2: Email Not Registered:**
+  - *Status:* Proposed, pending clarification of spec 010 (`[OQ-010-02]`): spec 010 does not say whether unregistered emails are counted toward the lockout; the steps below follow option A of the decision.
   - *Trigger:* At Step 7, no account uses the normalized email (US1 AS3).
   - *Steps:*
     1. The system performs a dummy password-hash comparison so that the response time is comparable to AF 2.1 (NFR-003).
@@ -2110,6 +2111,7 @@ Lets a registered user authenticate with an email and a password so that the per
     3. The system counts the failure against the normalized email in a temporary counter that expires after 15 minutes, exactly as for a registered account (see AF 2.3).
     4. The system records a failure audit entry that references no account and does not store the email in readable form.
 - **AF 2.3: Account Locked After Repeated Failures:**
+  - *Status:* Proposed, pending clarification of spec 010 (`[OQ-010-02]`): the lock for an unregistered email and its neutral lock screen are not in spec 010; the lock for a registered account follows `FR-012`.
   - *Trigger:* At Step 6, sign-in for the normalized email is locked; or at AF 2.1 or AF 2.2, the failure is the 5th consecutive failed attempt for the same normalized email within 15 minutes, whether or not an account uses it (FR-012).
   - *Steps:*
     1. The system locks sign-in for that email for 15 minutes and records a lockout audit entry (FR-025).
@@ -2429,7 +2431,7 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 | `UC-010-04` | AF 4.4 | *Gap 010-M* | Refusal: Google account has no verified email, with the suggestion to register by email | **GAP** |
 | `UC-010-04` | AF 4.7 | *Gap 010-N* | "Google sign-in is not available now", email sign-in still shown | **GAP** |
 
-*Note:* `AF 1.3` – `AF 1.6`, `AF 1.8`, `AF 1.13` – `AF 1.15`, `AF 2.6` – `AF 2.8`, `AF 2.10` – `AF 2.11`, `AF 2.13` – `AF 2.14`, `AF 2.17`, `AF 3.2` – `AF 3.3`, `AF 3.6` – `AF 3.9` and `AF 4.1` – `AF 4.2`, `AF 4.5` – `AF 4.6`, `AF 4.8` – `AF 4.9` are validation messages, redirects or background behaviour that reuse the screens above and need no separate screenshot.
+*Note:* `AF 1.3` – `AF 1.8`, `AF 1.12` – `AF 1.15`, `AF 2.6`, `AF 2.8`, `AF 2.10` – `AF 2.11`, `AF 2.13` – `AF 2.14`, `AF 2.17`, `AF 3.2` – `AF 3.3`, `AF 3.6` – `AF 3.9` and `AF 4.1` – `AF 4.2`, `AF 4.5` – `AF 4.6`, `AF 4.8` – `AF 4.9` are validation messages, redirects or background behaviour that reuse the screens above and need no separate screenshot.
 
 *Desktop variants:* every screen listed in this table also has a web variant named `W-<ID>` in the same folder (for example `W-AU02-Register.dc.html`). The mobile files are listed because the flows are written for the 360 px layout (constitution Principle V). `AU01` exists only as `W-AU01-Login.dc.html`.
 
@@ -2446,6 +2448,7 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 2. **`[OQ-010-02]` Lockout Details:**
    - *Issue:* The spec does not say whether a successful password reset ends an active lock, nor what the lock screen shows for an unregistered email (a lock message appears only for real accounts, which can reveal that the account exists and conflicts with `NFR-003`).
    - *Current Stance:* Unknown emails are counted and get the same lock screen (`AF 2.2`, `AF 2.3`).
+   - *Depends on this question:* `UC-010-02` `AF 2.2` and `AF 2.3` (both marked "Proposed"). `UC-010-03` `AF 3.8` states the open point about the lock and a reset but proposes nothing.
    - *Owner:* Mai Văn Hiển (spec 010 owner) to decide.
    - *Decision (30/10/2026, Mai Văn Hiển):* Option A: count failures per normalized email including unregistered ones; same lock screen with the retry time and a neutral note; the `FR-012` email only when an account exists. Open, pending clarification of spec 010 (Duy approves by PR). "A successful reset clears the lock" is not in the flows. For `/speckit-plan`: the unknown-email counter expires after 15 minutes and is limited per IP address; audit entries never store an unknown email in readable form.
 3. **`[OQ-010-03]` Older Verification Links After a Resend:**
@@ -2783,9 +2786,10 @@ Lets a signed-in user who has a password change it by giving the current passwor
     1. The system refuses the change with a generic message ("Mật khẩu hiện tại không đúng") that reveals nothing beyond "incorrect" (FR-030).
     2. The password is not changed.
 - **AF 3.2: Repeated Wrong Current Passwords:**
+  - *Status:* Proposed, pending clarification of spec 011 (`[OQ-011-04]`): the counter is separate from the sign-in counter and does not lock signing in; `FR-030` only says the limit works "as sign-in failures are".
   - *Trigger:* At AF 3.1, wrong current passwords are repeated (FR-030).
   - *Steps:*
-    1. The system limits further attempts in the same way as sign-in failures (spec 010 `FR-012`) and tells the actor when to try again. Proposed, pending clarification of spec 011 (`[OQ-011-04]`): the counter is separate from the sign-in counter and does not lock signing in; `FR-030` only says the limit works "as sign-in failures are".
+    1. The system limits further attempts in the same way as sign-in failures (spec 010 `FR-012`) and tells the actor when to try again.
 - **AF 3.3: New Password Breaks the Rules:**
   - *Trigger:* At Step 6, the new password is shorter than 8 or longer than 128 characters, has no letter or no digit, or equals the email (US3 AS3).
   - *Steps:*
@@ -2799,6 +2803,7 @@ Lets a signed-in user who has a password change it by giving the current passwor
   - *Steps:*
     1. The system shows a field-level message and does not change the password.
 - **AF 3.6: Google-Only Account Sets a Password:**
+  - *Status:* Proposed, pending clarification of spec 011 (`[OQ-011-04]`) for Step 6 only: setting a password also signs out the other sessions; `FR-028` mentions only a change. Steps 1–5 follow `FR-029`.
   - *Trigger:* At Step 1, the account signs in only with Google and has no password (US3 AS5, FR-029).
   - *Steps:*
     1. The system shows "Đặt mật khẩu" instead of "Đổi mật khẩu", without a current-password field, with the text that the actor must first confirm with Google.
@@ -2806,7 +2811,7 @@ Lets a signed-in user who has a password change it by giving the current passwor
     3. After a recent successful Google re-authentication, the system shows the form for the new password and its confirmation.
     4. The system validates the new password as in Step 6 and stores its hash.
     5. From then on the account can sign in with email and password, and the screen shows "Đổi mật khẩu" (US3 AS5).
-    6. Proposed, pending clarification of spec 011 (`[OQ-011-04]`): the system signs the user out of every other session, as after a password change; `FR-028` mentions only a change, not setting a password.
+    6. The system signs the user out of every other session, as after a password change.
 - **AF 3.7: Google Re-Authentication Cancelled, Failed or Not Recent:**
   - *Trigger:* At AF 3.6, the actor cancels the Google screen, Google fails, or the last sign-in is not recent.
   - *Steps:*
@@ -2820,9 +2825,10 @@ Lets a signed-in user who has a password change it by giving the current passwor
   - *Steps:*
     1. Only one request is processed.
 - **AF 3.10: Network Failure or Session Expired:**
+  - *Status:* Proposed, pending clarification of spec 011 (`[OQ-011-04]`) for the cleared password fields only: the Edge Cases keep typed values, so this is a deliberate exception.
   - *Trigger:* At Step 4, the request fails or the session has expired (FR-039).
   - *Steps:*
-    1. The system shows a clear message, the password is not changed, and for an expired session the actor signs in again (`UC-010-02`). Typed values stay in the form as in the Edge Cases. Proposed, pending clarification of spec 011 (`[OQ-011-04]`): the password fields are cleared.
+    1. The system shows a clear message, the password is not changed, and for an expired session the actor signs in again (`UC-010-02`). Typed values stay in the form as in the Edge Cases, except the password fields, which are cleared.
 - **AF 3.11: Suspended or Banned Account:**
   - *Trigger:* At Step 4, an old session belongs to an account that was suspended or banned (Edge Cases).
   - *Steps:*
@@ -3666,7 +3672,7 @@ Lets a signed-in user see all saved recipes and collections at a glance and open
 | `UC-080-04` | AF 4.7 (item selected) | *Gap 080-N* | Message when an unavailable item is selected, with the remove action; and the detail page of "Đã lưu" | **GAP** |
 | `UC-080-01` / `UC-080-04` | AF 1.1, AF 4.3 | *Gap 080-O* | Recipe-card menu with "Lưu vào bộ sưu tập" and "Bỏ lưu" (closes `[OQ-080-05]`) | **GAP** |
 
-*Note:* `AF 1.1`, `AF 1.5` – `AF 1.6`, `AF 1.12` – `AF 1.16`, `AF 2.1` – `AF 2.2`, `AF 2.4`, `AF 2.8`, `AF 2.10` – `AF 2.17`, `AF 3.2`, `AF 3.4` – `AF 3.13`, `AF 4.3`, `AF 4.11` – `AF 4.13` and `AF 4.15` – `AF 4.22` reuse the screens above, are background behaviour, or are messages in screens already listed.
+*Note:* `AF 1.1`, `AF 1.5` – `AF 1.6`, `AF 1.12` – `AF 1.16`, `AF 2.1` – `AF 2.2`, `AF 2.4`, `AF 2.6`, `AF 2.8`, `AF 2.10` – `AF 2.17`, `AF 3.2`, `AF 3.4` – `AF 3.13`, `AF 4.3`, `AF 4.11` – `AF 4.13` and `AF 4.15` – `AF 4.22` reuse the screens above, are background behaviour, or are messages in screens already listed.
 
 *Desktop variants:* every screen listed in this table also has a web variant named `W-<ID>` in the same folder (for example `W-AU02-Register.dc.html`). The mobile files are listed because the flows are written for the 360 px layout (constitution Principle V). `AU01` exists only as `W-AU01-Login.dc.html`.
 
