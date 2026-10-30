@@ -21,6 +21,7 @@
 | **Section 6** | Use-Case Specifications for Feature 020: Recipe Discovery & Recipe Detail (`UC-020-01` – `UC-020-06`) | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-51` |
 | **Section 7** | Use-Case Specifications for Feature 060: Community Recipe Contribution (`UC-060-01` – `UC-060-07`) | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-51` |
 | **Section 8** | Traceability, Screen Mapping & Open Questions for Features 020 & 060 | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-51` |
+| **Section 9** | Use-Case Specifications for Feature 010: User Authentication & Roles (`UC-010-01` – `UC-010-04`) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-50` |
 
 ### Revision History
 
@@ -28,6 +29,7 @@
 | :---: | :---: | :--- | :--- |
 | **28/10/2026** | `v1.0` | Initialized detailed Use-Case Specifications for all 10 use cases across Feature 040 and Feature 050, defining 8 mandatory sections per use case, exhaustive alternative flows, and UI prototype mapping (`SCRUM-53`). | Lê Quốc Hưng (`LqHung06`) |
 | **29/10/2026** | `v1.1` | Added Sections 6–8: use-case specifications for Feature 020 (`UC-020-01` – `UC-020-06`, including the shared Recipe Detail page) and Feature 060 (`UC-060-01` – `UC-060-07`), with traceability, prototype screen mapping and open questions (`SCRUM-51`). Use-case IDs follow the Use-Case Model v0.1 (`SCRUM-49`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
+| **30/10/2026** | `v1.2` | Added Section 9: use-case specifications for Feature 010 (`UC-010-01` – `UC-010-04`), with traceability, prototype screen mapping and open questions (`SCRUM-50`, first draft). Use-case IDs follow the Use-Case Model v0.1 (`SCRUM-49`). | Mai Văn Hiển (`MaiHien3507`) |
 
 > [!NOTE]
 > **Use-Case Model Alignment Notice:** The formal Use-Case Model (`docs/requirements/use-case-model.md`) is currently being drafted by Nguyễn Đức Duy under `SCRUM-49` (freeze date: November 02, 2026). The Use Case IDs (`UC-040-01` through `UC-040-05` and `UC-050-01` through `UC-050-05`) and titles documented herein represent the official engineering proposal derived directly from ratified specifications `specs/040-shopping-list/spec.md` and `specs/050-cooking-mode/spec.md`. Once `SCRUM-49` completes model freeze on November 02, any identifier discrepancies will be reconciled during the review phase (`SCRUM-53` final edition, due November 03).
@@ -1922,3 +1924,550 @@ When the ingredient the author needs is not in the shared catalogue, the author 
    - *Issue:* Spec 060 Integration Points ask who sets the aisle of a catalogue ingredient.
    - *Current Stance in `UC-060-07`:* The Moderator sets allergens and aisle when approving; the author does not choose them.
    - *Owner:* Lê Quốc Hưng (`040`) and Trần Nguyễn Công Chung (`100`) to confirm.
+
+---
+
+## 9. USE-CASE SPECIFICATIONS FOR FEATURE 010: USER AUTHENTICATION & ROLES
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+
+> [!NOTE]
+> **Sources:** `specs/010-user-authentication-roles/spec.md` (US1–US5, FR-001 – FR-026 including `FR-022a` and `FR-024a`, NFR-001 – NFR-009, SC-001 – SC-007), [Vision Document](vision-document.md) §5.1, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.1 (`SCRUM-49`) and the project constitution (`.specify/memory/constitution.md`, Principles IV and V). Actors follow the model: **Guest** is a visitor without a session; **Email Service** and **Google OAuth** are secondary systems. `UC-010-04` extends `UC-010-01`. Role-based access (`010` US3) has no use case of its own in the model: it is carried by the actor generalization (model §2.2), by `UC-100-03` (role changes) and by the alternative flows `AF 2.9`, `AF 2.15` and `AF 2.16` below (see `[OQ-010-01]` in Section 9.3).
+
+### UC-010-01: Register Account & Verify Email
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-010-01`
+- **Use Case Name:** Register Account with Email and Password and Verify the Email Address
+
+#### 2. Actor(s)
+- **Primary Actor:** **Guest** — a visitor without an account (Vision §3.2 "Busy Home Cook").
+- **Secondary Actor:** **Email Service** — delivers the verification email.
+
+#### 3. Description
+Lets a visitor create a WikiCook account with a display name, an email address, a password and its confirmation. The system creates the account with the **Member** role in an *unverified* state and sends a single-use verification link that is valid for 24 hours. An unverified account can sign in but cannot publish content (recipes, reviews, Cooksnaps, comments) until the link is opened. An account that stays unverified for 7 days after registration is deleted automatically with all its data. `UC-010-04` (Sign In with Google) extends this use case: a first Google sign-in creates the account instead of this form.
+
+#### 4. Preconditions
+- The actor can reach the WikiCook web application over an encrypted connection (NFR-002).
+- The actor is not signed in. A signed-in user who opens the sign-up page is redirected to the home page (see `AF 1.14`).
+- The email service is available to send the verification email (spec 010 Assumptions).
+
+#### 5. Basic Flow
+1. **Open Sign-Up Page:** The actor opens the sign-up page, either directly or from the "Tạo tài khoản" link of the sign-in page.
+2. **Display Form:** The system shows the sign-up form with the fields display name (with a counter such as "9/50"), email, password (with the live rule checklist "Ít nhất 8 ký tự", "Có chữ cái", "Có chữ số") and password confirmation, the button "Tạo tài khoản", the link "Đã có tài khoản? Đăng nhập" and the button "Đăng ký với Google" (FR-001, FR-004).
+3. **Enter Details:** The actor types a display name, an email address, a password and the same password again.
+4. **Submit:** The actor presses "Tạo tài khoản". The system disables the button until a response arrives so that a double-click cannot create two accounts or send two emails.
+5. **Normalize and Validate:** The system trims surrounding spaces from the email and treats it as case-insensitive (FR-002). It validates on the server (constitution Principle IV): display name 1–50 characters, email of at most 254 characters, password of 8–128 characters with at least one letter and one digit, password different from the email, and password confirmation equal to the password (FR-001, FR-004). The password is kept exactly as typed.
+6. **Check Uniqueness and Block List:** The system checks that no account uses the normalized email (FR-002) and that its one-way hash is not on the Blocked Email list (FR-026).
+7. **Create Account:** The system creates the account with the **Member** role (FR-003), marks it as *unverified*, stores only a BCrypt hash of the password (NFR-001; constitution Principle IV) and records the registration time that starts the 7-day clock (FR-005).
+8. **Issue Verification Link:** The system creates a single-use verification token that expires after 24 hours and asks the Email Service to send the link to the actor (FR-005).
+9. **Show "Check Your Email":** The system shows the confirmation page with the email address, the 24-hour validity of the link, the note that publishing recipes, reviews and Cooksnaps needs a verified email while saving recipes and planning meals still works, the button "Mở ứng dụng email" and the button "Gửi lại email" with a countdown (FR-006, FR-017).
+10. **Open Verification Link:** The actor opens the link from the email within 24 hours.
+11. **Verify:** The system finds an unused, unexpired token, marks the account as verified, marks the token as used and shows a confirmation that the email is verified, inviting the actor to sign in (`UC-010-02`) (US2 AS4).
+
+#### 6. Alternative Flows
+- **AF 1.1: Email Already Registered:**
+  - *Trigger:* At Step 6, an account already uses the normalized email (US2 AS2).
+  - *Steps:*
+    1. The system refuses the registration and creates no account.
+    2. The system shows a message suggesting that the actor sign in or reset the password, with links to `UC-010-02` and `UC-010-03`.
+    3. The values the actor typed, except the passwords, stay in the form.
+  - *Outcome:* One email can belong to only one account (FR-002).
+- **AF 1.2: Password Does Not Meet the Rules:**
+  - *Trigger:* At Step 5, the password is shorter than 8 or longer than 128 characters, or has no letter, or has no digit (US2 AS3, FR-004).
+  - *Steps:*
+    1. The system shows next to the password field which rule failed ("Mật khẩu chưa đạt yêu cầu" with the failed items of the checklist highlighted).
+    2. No account is created.
+- **AF 1.3: Password Equals the Email Address:**
+  - *Trigger:* At Step 5, the password is identical to the email the actor typed (FR-004).
+  - *Steps:*
+    1. The system rejects the password with a field-level message and creates no account.
+- **AF 1.4: Password Confirmation Does Not Match:**
+  - *Trigger:* At Step 5, the confirmation differs from the password (FR-001).
+  - *Steps:*
+    1. The system shows a field-level message at the confirmation field and creates no account.
+- **AF 1.5: Invalid Display Name:**
+  - *Trigger:* At Step 5, the display name is empty, only spaces, or longer than 50 characters (Edge Cases "Very long input"; `011` FR-002).
+  - *Steps:*
+    1. The system shows a field-level message stating the 1–50 character rule and creates no account.
+    2. A display name with leading or trailing spaces is trimmed before it is checked and stored as plain text.
+- **AF 1.6: Invalid or Too-Long Email:**
+  - *Trigger:* At Step 5, the email is empty, is not a valid address, or is longer than 254 characters (Edge Cases "Very long input").
+  - *Steps:*
+    1. The system shows a field-level message at the email field and creates no account.
+- **AF 1.7: Email on the Blocked Email List:**
+  - *Trigger:* At Step 6, the hash of the email matches an entry created when a banned account deleted itself (FR-026).
+  - *Steps:*
+    1. The system refuses the registration and creates no account. The plain email is never stored on the list.
+  - *Outcome:* A banned user cannot return with the same email (see `[OQ-010-05]` for the message text).
+- **AF 1.8: Repeated Submission:**
+  - *Trigger:* At Step 4, the actor double-clicks "Tạo tài khoản" or sends the same request twice.
+  - *Steps:*
+    1. The system processes exactly one request, creates at most one account and sends at most one email (Edge Cases "Double-click on submit").
+- **AF 1.9: Verification Email Not Delivered or Not Received:**
+  - *Trigger:* After Step 9, the email does not arrive or delivery fails (Edge Cases "Email delivery failure").
+  - *Steps:*
+    1. The actor presses "Gửi lại email" once the countdown (for example "Gửi lại được sau 00:45") reaches zero.
+    2. The system issues a new verification link and sends it. Earlier unused links are handled as described in `[OQ-010-03]`.
+    3. The registration time and the 7-day deadline do not change (FR-005).
+- **AF 1.10: Verification Email Request Limit Exceeded:**
+  - *Trigger:* At AF 1.9, the actor has already requested 3 verification emails for the same address within 15 minutes (FR-017).
+  - *Steps:*
+    1. The system sends no further email and tells the actor to wait before trying again, showing the remaining wait.
+- **AF 1.11: Verification Link Expired:**
+  - *Trigger:* At Step 10, the actor opens a link older than 24 hours (US2 AS6).
+  - *Steps:*
+    1. The system tells the actor that the link has expired: "Link xác minh chỉ dùng được trong 24 giờ", and offers "Gửi link mới".
+    2. The system also reminds the actor that an account unverified after 7 days is deleted with all its data.
+    3. The actor requests a new link (AF 1.9 and AF 1.10 apply).
+- **AF 1.12: Verification Link Already Used or Invalid:**
+  - *Trigger:* At Step 10, the token was already used, was never issued, or its account no longer exists (FR-005: single-use).
+  - *Steps:*
+    1. The system tells the actor that the link is not valid and, when the account still exists and is unverified, offers to send a new one.
+    2. When the account is already verified, the system invites the actor to sign in instead.
+- **AF 1.13: Account Left Unverified for 7 Days:**
+  - *Trigger:* 7 days pass after registration without a successful verification (FR-005, Edge Cases "Unverified account reaches 7 days").
+  - *Steps:*
+    1. The system deletes the account and all its data completely and emits the data-deletion event to specs `011`, `060` and `080` (Integration Points).
+    2. If the user is signed in at that moment, the next request ends the session.
+    3. The email address becomes free to register again immediately and is **not** added to the Blocked Email list.
+  - *Outcome:* Registration can be repeated with the same email at once.
+- **AF 1.14: Already Signed-In User:**
+  - *Trigger:* At Step 1, a signed-in user opens the sign-up page (Edge Cases "Already signed in").
+  - *Steps:*
+    1. The system redirects the user to the home page.
+- **AF 1.15: Register with Google Instead:**
+  - *Trigger:* At Step 2, the actor chooses "Đăng ký với Google".
+  - *Steps:*
+    1. The use case continues as `UC-010-04` (extension). The email registration form is not used.
+
+#### 7. Postconditions
+- **Success (Step 9):** A new **Member** account exists in the *unverified* state with a hashed password and a pending single-use verification token; one verification email has been requested.
+- **Success (Step 11):** The account is *verified*; the token is consumed and cannot be reused; the actor may sign in and publish content.
+- **Failure:** No account and no token exist. Typed values except passwords remain in the form.
+- **Time-out (AF 1.13):** The account and all its data no longer exist and the email is free.
+
+#### 8. Special Requirements
+- **Security:** Passwords are hashed with BCrypt and are never stored, logged or shown in readable form (NFR-001; constitution Principle IV). All validation is repeated on the server with Bean Validation, not only in the browser. Errors never expose stack traces or internal details. All pages and requests use an encrypted connection (NFR-002).
+- **Privacy:** The message of AF 1.1 intentionally tells the visitor to sign in or reset the password (US2 AS2); the sign-in and reset flows do not reveal registered emails (NFR-003).
+- **Usability:** The form is fully usable from 360 px wide with Vietnamese as the default language (NFR-006; constitution Principle V). Strings are kept in the shared string store.
+- **Accessibility:** Keyboard-only operation, a visible label on every field, and errors announced next to the related field (NFR-007).
+- **Performance / Success:** A new visitor reaches the verified, signed-in state in under 3 minutes, excluding email delivery delay (SC-001).
+- **Testing:** Every acceptance scenario of US2 has at least one automated test written first (SC-007; constitution Principle II).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`AU02-Register.dc.html`](../analysis-and-design/ui-ux/screens/AU02-Register.dc.html) (Steps 2–5), [`AU03-CheckEmail.dc.html`](../analysis-and-design/ui-ux/screens/AU03-CheckEmail.dc.html) (Step 9).
+- **Alternative Flows:** [`AU02-Register.dc.html`](../analysis-and-design/ui-ux/screens/AU02-Register.dc.html) (AF 1.2, password rules failed), [`AU03-CheckEmail.dc.html`](../analysis-and-design/ui-ux/screens/AU03-CheckEmail.dc.html) (AF 1.9, countdown and 3-per-15-minutes note), [`AU04-LinkExpired.dc.html`](../analysis-and-design/ui-ux/screens/AU04-LinkExpired.dc.html) (AF 1.11).
+- **UI Asset Gap for SCRUM-58:** Needs screens for the "email already registered" error (AF 1.1), the "email verified" confirmation (Step 11), and the "request limit reached" state of the resend button (AF 1.10). See Section 9.2 (Gaps 010-A, 010-B, 010-C).
+
+---
+
+### UC-010-02: Sign In with Email & Password
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-010-02`
+- **Use Case Name:** Sign In with Email and Password, Stay Signed In and Sign Out
+
+#### 2. Actor(s)
+- **Primary Actor:** **Guest** — a registered visitor who is not signed in; after success the actor acts as **Member** (or the role stored on the account: Contributor, Moderator, Administrator).
+- **Secondary Actor:** **Email Service** — sends the lockout notification (AF 2.3).
+
+#### 3. Description
+Lets a registered user authenticate with an email and a password so that the personalized features (dietary profile, meal planner, shopping list, collections, reviews and recipe submission) become available. The system applies one generic error for a wrong email or password, locks the account for 15 minutes after 5 consecutive failures, refuses suspended and banned accounts, offers "Remember me", returns the user to the page they asked for, and ends the session on sign-out. The use case also covers the sign-in prompt shown to a Guest who presses a Member-only action.
+
+#### 4. Preconditions
+- The actor can reach the WikiCook web application over an encrypted connection (NFR-002).
+- The actor has a registered account (`UC-010-01` or `UC-010-04`). The account may be unverified (AF 2.7).
+- The actor is not currently signed in (AF 2.8).
+
+#### 5. Basic Flow
+1. **Open Sign-In Page:** The actor opens the sign-in page directly or is sent to it by a protected page (AF 2.9).
+2. **Display Form:** The system shows the sign-in form with email, password, a "Remember me" checkbox, the links "Quên mật khẩu" (to `UC-010-03`) and "Tạo tài khoản" (to `UC-010-01`), and the button "Continue with Google" (to `UC-010-04`).
+3. **Enter Credentials:** The actor types the email — in any letter case and possibly with surrounding spaces, for example `" An@Mail.com "` — and the password, and optionally ticks "Remember me".
+4. **Submit:** The actor submits the form.
+5. **Normalize and Validate:** The system trims surrounding spaces from the email and ignores letter case (US1 AS7, FR-002). The password is not trimmed (Edge Cases "Password with leading/trailing spaces").
+6. **Check Lock and Status:** The system checks that the account is not locked (FR-012) and not suspended or banned (FR-013).
+7. **Verify Credentials:** The system verifies the password against the stored BCrypt hash (FR-007; constitution Principle IV).
+8. **Create Session:** The system creates a session for this device. With "Remember me" the session lasts up to 30 days; without it the session ends after 24 hours of inactivity or when the browser is closed (FR-009). The counter of consecutive failures is reset to zero.
+9. **Record Audit Entry:** The system records an audit entry for the successful sign-in: who, what, when and target account (FR-025).
+10. **Redirect:** The system redirects the actor to the internal page that was originally requested, or to the home page when there was none (US1 AS1, FR-011), where the actor's display name is shown.
+
+#### 6. Alternative Flows
+- **AF 2.1: Wrong Password:**
+  - *Trigger:* At Step 7, the password does not match (US1 AS2).
+  - *Steps:*
+    1. The system refuses the sign-in with the generic message "Email or password is incorrect" and clears the password field (FR-008).
+    2. The system increases the counter of consecutive failures for the account and records a failure audit entry (FR-025).
+- **AF 2.2: Email Not Registered:**
+  - *Trigger:* At Step 6 or 7, no account uses the normalized email (US1 AS3).
+  - *Steps:*
+    1. The system shows exactly the same message as in AF 2.1, with no hint that the email does not exist, and takes a comparable time to answer (FR-008, NFR-003).
+    2. The system records a failure audit entry.
+- **AF 2.3: Account Locked After Repeated Failures:**
+  - *Trigger:* At AF 2.1, the failure is the 5th consecutive failed attempt on one account within 15 minutes (FR-012), or the actor tries to sign in while the 15-minute lock is active.
+  - *Steps:*
+    1. The system locks the account for 15 minutes and records a lockout audit entry (FR-025).
+    2. The system asks the Email Service to notify the account owner by email (FR-012).
+    3. The system shows "Không thể đăng nhập" with the time when the actor can retry (for example "Tài khoản tạm khóa đến 14:35"), the note that an email was sent, and a button "Đặt lại mật khẩu" that starts `UC-010-03`.
+    4. While the lock is active, correct credentials are also refused with this message.
+  - *Outcome:* After a lock ends, or after a successful sign-in, the failure counter starts again from zero. Open points are in `[OQ-010-02]`.
+- **AF 2.4: Account Suspended:**
+  - *Trigger:* At Step 6, the credentials are correct but the account is suspended for a limited time (FR-013).
+  - *Steps:*
+    1. The system does not create a session.
+    2. The system shows that the account is suspended with the reason category and the end date (for example "Tài khoản bị đình chỉ đến 04/11/2026", "Lý do: Đăng nội dung quảng cáo lặp lại"), and that published content stays visible (FR-013).
+    3. The system records a failure audit entry.
+- **AF 2.5: Account Banned:**
+  - *Trigger:* At Step 6, the credentials are correct but the account is banned (FR-013).
+  - *Steps:*
+    1. The system does not create a session and shows that the account is banned with the reason category and no end date.
+    2. The system records a failure audit entry.
+  - *Outcome:* How a banned user reaches the account-closure page described in spec `011` Assumptions is not specified yet (see `[OQ-010-04]`).
+- **AF 2.6: Invalid Input:**
+  - *Trigger:* At Step 5, the email or password is empty, the email is longer than 254 characters, or the password is longer than 128 characters (Edge Cases "Very long input").
+  - *Steps:*
+    1. The system shows a field-level validation message and does not count the attempt as a failed sign-in.
+- **AF 2.7: Unverified Account Signs In:**
+  - *Trigger:* At Step 8, the account has not verified its email (US2 AS5).
+  - *Steps:*
+    1. The system signs the actor in normally and shows a reminder to verify the email, with a way to request a new link (`UC-010-01` AF 1.9).
+    2. Actions that publish content — submitting recipes, reviews, Cooksnaps and comments — are blocked until the email is verified (FR-006).
+- **AF 2.8: Already Signed-In User:**
+  - *Trigger:* At Step 1, a signed-in user opens the sign-in page (Edge Cases "Already signed in").
+  - *Steps:*
+    1. The system redirects the user to the home page.
+- **AF 2.9: Sign-In Required by a Protected Action:**
+  - *Trigger:* A Guest presses a Member-only action, for example Save, add to the meal plan or write a review, or opens a Member-only page (US3 AS1).
+  - *Steps:*
+    1. The system keeps the Guest on the page and shows the prompt "Lưu “Canh chua cá lóc”?" with the text that signing in is needed to save recipes, add them to the meal plan and write reviews, and the buttons "Đăng nhập", "Tạo tài khoản" and "Để sau".
+    2. The actor chooses "Đăng nhập" and the use case continues at Step 2 with the current page remembered.
+    3. After a successful sign-in the system returns the actor to the same place (Step 10). For a single save tap, the save is completed automatically (`UC-080-01`).
+    4. Choosing "Để sau" closes the prompt and changes nothing.
+- **AF 2.10: Redirect Target Outside WikiCook:**
+  - *Trigger:* At Step 10, the remembered target points to an external site (Edge Cases "Redirect after sign-in").
+  - *Steps:*
+    1. The system ignores the target and redirects the actor to the home page.
+- **AF 2.11: Session Without "Remember Me" Ends:**
+  - *Trigger:* The actor did not tick "Remember me" and is inactive for 24 hours or closes the browser (US1 AS6, FR-009).
+  - *Steps:*
+    1. The system ends the session. The next request must sign in again (restart at Step 1).
+  - *Outcome:* With "Remember me", the actor is still signed in when reopening the browser within 30 days (US1 AS5).
+- **AF 2.12: Session Expires While Filling a Form:**
+  - *Trigger:* The session expires while the actor writes a recipe or fills another form (Edge Cases).
+  - *Steps:*
+    1. The system asks the actor to sign in again and warns the actor before leaving the page, so that unsaved form content is not silently lost.
+- **AF 2.13: Sign Out:**
+  - *Trigger:* A signed-in user chooses "Sign out" (US1 AS4, FR-010).
+  - *Steps:*
+    1. The system ends the session immediately.
+    2. Pressing the browser Back button does not show member-only content, and member-only pages are no longer reachable.
+    3. Sessions on other devices stay active (Edge Cases "Simultaneous sessions").
+- **AF 2.14: Account Suspended or Banned While Signed In:**
+  - *Trigger:* An Administrator suspends or bans the account while the user has an active session (Edge Cases "Suspended / banned account", FR-024).
+  - *Steps:*
+    1. At the user's next request the system ends the session and shows the account-status message of AF 2.4 or AF 2.5.
+- **AF 2.15: Role Lowered While Signed In:**
+  - *Trigger:* An Administrator lowers the role of a signed-in user (US3 AS5, FR-024).
+  - *Steps:*
+    1. No later than the user's next request, the system applies the new role. A privileged action the user is no longer allowed to do is refused (FR-021).
+    2. The user sees an in-app notice naming the new role and the permissions that changed, once, at the next request or sign-in (FR-024a). No email is sent for a role change.
+- **AF 2.16: Signed-In User Without Permission:**
+  - *Trigger:* A signed-in user opens a page or calls an action that the role does not allow, for example a Member opens a moderation or administration page (US3 AS2, FR-021).
+  - *Steps:*
+    1. The system refuses on the server, shows the page "Bạn không có quyền xem trang này" and reveals nothing about the content of the page.
+    2. A Moderator who tries to change another user's role is refused in the same way (US3 AS3, FR-022).
+- **AF 2.17: Google Provider Unavailable:**
+  - *Trigger:* The Google sign-in provider cannot be reached (NFR-005).
+  - *Steps:*
+    1. The email-and-password form of this use case keeps working normally.
+
+#### 7. Postconditions
+- **Success:** A session exists for this device with the correct lifetime; the failure counter is zero; an audit entry of the success is stored; the actor sees the requested page or the home page with the display name.
+- **Failure (AF 2.1 – AF 2.6):** No session exists; a failure is counted and audited; the account may be locked.
+- **Sign-out (AF 2.13):** The session is ended on this device only.
+
+#### 8. Special Requirements
+- **Security:** Passwords are never stored, logged or shown (NFR-001); error messages and response time do not reveal whether an email is registered (NFR-003); transport is encrypted (NFR-002); Spring Security and BCrypt are used (constitution Principle IV); permissions are enforced by the server on every request, not by hiding buttons (FR-021; constitution Principle IV).
+- **Auditability:** Sign-in successes and failures, lockouts and role changes are audited and retained for at least 90 days (FR-025, NFR-008).
+- **Performance:** 95% of sign-in attempts complete in under 2 seconds with up to 100 concurrent users (NFR-004); a returning user can sign in in under 15 seconds (SC-002).
+- **Usability and accessibility:** Usable from 360 px wide, Vietnamese by default, keyboard-only operation, visible labels and field-level announcements (NFR-006, NFR-007).
+- **Reliability:** Zero accounts can be accessed after 5 wrong passwords within 15 minutes (SC-005) and 100% of protected actions are refused for unauthorized roles (SC-004).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** `AU01-Login` (Steps 2–5) — referenced by `canvas.json` and `index.html` of the prototype but **not present** in the `screens/` folder (Gap 010-D).
+- **Alternative Flows:** [`AU07-Locked.dc.html`](../analysis-and-design/ui-ux/screens/AU07-Locked.dc.html) (AF 2.3, AF 2.4, AF 2.5), [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 2.9), [`AU09-AccessDenied.dc.html`](../analysis-and-design/ui-ux/screens/AU09-AccessDenied.dc.html) (AF 2.16).
+- **UI Asset Gap for SCRUM-58:** Needs the sign-in screen with the generic error (AF 2.1), the unverified-email reminder (AF 2.7), the session-expired prompt (AF 2.12) and the role-change notice (AF 2.15). See Section 9.2 (Gaps 010-D to 010-H).
+
+---
+
+### UC-010-03: Reset Forgotten Password
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-010-03`
+- **Use Case Name:** Reset a Forgotten Password Through an Emailed Link
+
+#### 2. Actor(s)
+- **Primary Actor:** **Guest** — a registered user who cannot sign in because the password is forgotten.
+- **Secondary Actor:** **Email Service** — delivers the reset link.
+
+#### 3. Description
+Lets a registered user regain access without contacting support. The user requests a reset for an email address; the system always answers with the same neutral message, and sends a single-use link that is valid for 30 minutes only when the address belongs to an account. Opening the link allows the user to set a new password that meets the password rules; the link is then consumed and every other session of the user is signed out.
+
+#### 4. Preconditions
+- The actor can reach the WikiCook web application over an encrypted connection (NFR-002).
+- The actor can read email at the registered address.
+- The email service is available (spec 010 Assumptions).
+
+#### 5. Basic Flow
+1. **Open Request Page:** On the sign-in page (or from the locked-account screen) the actor chooses "Quên mật khẩu".
+2. **Display Request Form:** The system shows the page "Quên mật khẩu" with the text "Nhập email đã đăng ký, chúng tôi sẽ gửi link đặt lại mật khẩu", the email field and the button to send.
+3. **Enter Email:** The actor types the email and submits.
+4. **Normalize:** The system trims surrounding spaces and ignores letter case (FR-002).
+5. **Answer Neutrally:** The system always shows "Nếu email này đã đăng ký, link đặt lại mật khẩu đã được gửi. Link có hiệu lực 30 phút." with the actions "Gửi lại link" and "Quay lại đăng nhập", whether or not the email is registered (US4 AS1, FR-014). Content and response time are the same in both cases (NFR-003).
+6. **Issue Link:** When the email belongs to an account and the request limit is not exceeded, the system invalidates every earlier reset link of that account, creates a new single-use token that expires after 30 minutes, and asks the Email Service to send the link (FR-015, FR-017).
+7. **Open Link:** The actor opens the link within 30 minutes.
+8. **Validate Token:** The system checks that the token is the latest one, is unused and is not expired, and shows the page "Đặt mật khẩu mới" for the account with the fields new password and confirmation, the rule checklist and the note that other devices will be signed out.
+9. **Enter New Password:** The actor types a new password and its confirmation and presses "Lưu mật khẩu".
+10. **Validate and Save:** The system validates the password on the server (8–128 characters, at least one letter and one digit, different from the user's email — FR-004), stores its BCrypt hash and marks the token as used (FR-015).
+11. **End Other Sessions:** The system signs the user out of all other sessions (FR-016) and records an audit entry for the password reset (FR-025).
+12. **Confirm:** The system confirms the change and invites the actor to sign in (`UC-010-02`). The new password works and the old password no longer does (US4 independent test).
+
+#### 6. Alternative Flows
+- **AF 3.1: Email Not Registered:**
+  - *Trigger:* At Step 6, no account uses the email (US4 AS1).
+  - *Steps:*
+    1. The system sends no email and shows the same neutral message as in Step 5, with no hint that the address is unknown (NFR-003).
+- **AF 3.2: Request Limit Exceeded:**
+  - *Trigger:* At Step 3, the actor has already requested 3 emails for the same address within 15 minutes (FR-017).
+  - *Steps:*
+    1. The system sends no further email. The limit is counted per email address, whether or not it is registered, so the answer does not reveal registration (see `[OQ-010-06]`).
+- **AF 3.3: Several Requests in a Row:**
+  - *Trigger:* At Step 6, the actor requests more than one link (US4 AS4, FR-015).
+  - *Steps:*
+    1. The system invalidates every earlier link each time a newer one is issued.
+    2. Only the most recent link works.
+- **AF 3.4: Link Expired, Already Used or Invalid:**
+  - *Trigger:* At Step 7, the link is older than 30 minutes, was already used, or was replaced by a newer link (US4 AS3).
+  - *Steps:*
+    1. The system tells the actor that the link is invalid and offers to request a new one (back to Step 2).
+- **AF 3.5: New Password Breaks the Rules:**
+  - *Trigger:* At Step 10, the new password is shorter than 8 or longer than 128 characters, has no letter or no digit, or equals the user's email (FR-004).
+  - *Steps:*
+    1. The system shows which rule failed next to the field and does not change the password.
+    2. The link stays usable until it expires or until a password is saved.
+- **AF 3.6: Confirmation Does Not Match:**
+  - *Trigger:* At Step 10, the confirmation differs from the new password.
+  - *Steps:*
+    1. The system shows a field-level message and does not change the password.
+- **AF 3.7: Email Delivery Failure:**
+  - *Trigger:* After Step 6, the email does not arrive or delivery fails (Edge Cases "Email delivery failure").
+  - *Steps:*
+    1. The actor presses "Gửi lại link" and the flow repeats from Step 3, limited to 3 requests per 15 minutes (FR-017).
+- **AF 3.8: Account Locked After Failed Sign-Ins:**
+  - *Trigger:* At Step 1, the actor comes from the locked-account screen (`UC-010-02` AF 2.3).
+  - *Steps:*
+    1. The flow is the same as the basic flow. Whether a successful reset also ends the lock is not specified (see `[OQ-010-02]`).
+- **AF 3.9: Invalid Email Input:**
+  - *Trigger:* At Step 3, the email is empty or longer than 254 characters (Edge Cases "Very long input").
+  - *Steps:*
+    1. The system shows a field-level message and sends nothing.
+
+#### 7. Postconditions
+- **Success:** The account has the new password hash; the token is consumed; every earlier reset token is invalid; all other sessions of the user are ended; an audit entry of the reset exists.
+- **Failure or neutral answer:** The password is unchanged. For an unknown email nothing is stored or sent.
+
+#### 8. Special Requirements
+- **Security:** Reset links are single-use and expire after 30 minutes (FR-015); passwords are never stored or logged (NFR-001); the same answer and the same response time are given for known and unknown emails (NFR-003); requests are limited to 3 per 15 minutes per address (FR-017).
+- **Usability and accessibility:** Usable from 360 px wide, Vietnamese by default, keyboard-only, labelled fields (NFR-006, NFR-007).
+- **Success criterion:** 95% of users who request a reset can sign in again within 5 minutes (SC-006).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`AU05-ForgotPassword.dc.html`](../analysis-and-design/ui-ux/screens/AU05-ForgotPassword.dc.html) (Steps 2–5), [`AU06-ResetPassword.dc.html`](../analysis-and-design/ui-ux/screens/AU06-ResetPassword.dc.html) (Steps 8–10).
+- **Alternative Flows:** [`AU07-Locked.dc.html`](../analysis-and-design/ui-ux/screens/AU07-Locked.dc.html) (AF 3.8, entry from the locked-account screen), [`AU05-ForgotPassword.dc.html`](../analysis-and-design/ui-ux/screens/AU05-ForgotPassword.dc.html) (AF 3.1 and AF 3.7 look the same as the neutral message).
+- **UI Asset Gap for SCRUM-58:** Needs the "reset link invalid or expired" screen (AF 3.4), the "password changed" confirmation (Step 12) and the failed-rule state of the new-password form (AF 3.5). See Section 9.2 (Gaps 010-I, 010-J, 010-K).
+
+---
+
+### UC-010-04: Sign In with Google
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-010-04`
+- **Use Case Name:** Sign In or Register with a Google Account
+
+#### 2. Actor(s)
+- **Primary Actor:** **Guest** — a visitor who prefers not to remember another password (Vision §3.2 "Busy Home Cook").
+- **Secondary Actor:** **Google OAuth** — the identity provider that authenticates the user and returns the verified email.
+
+#### 3. Description
+Lets a visitor continue with a Google account that has a verified email. If no WikiCook account uses that email, a verified **Member** account is created (this is the extension of `UC-010-01`). If a **verified** account already uses the email, the user is signed in to that existing account without creating a duplicate. If an **unverified** email-and-password account uses the email, that account is reset as a brand-new one so that the real email owner never inherits data or a password set by someone else.
+
+#### 4. Preconditions
+- The actor can reach the WikiCook web application and the Google sign-in provider over an encrypted connection (NFR-002).
+- The actor owns a Google account whose email is verified by Google (FR-018).
+- The actor is not signed in (AF 4.9).
+
+#### 5. Basic Flow
+1. **Choose Google:** On the sign-in or sign-up page the actor chooses "Continue with Google" ("Đăng ký với Google" on the sign-up page).
+2. **Redirect to Google:** The system redirects the actor to the Google consent screen (secondary actor).
+3. **Consent:** The actor selects a Google account and grants consent.
+4. **Receive Identity:** Google returns to WikiCook with the identity: provider user identifier, email, whether the email is verified, and name.
+5. **Check Email:** The system checks that the email is present and verified by Google (FR-018) and that its one-way hash is not on the Blocked Email list (FR-026).
+6. **Find Account:** The system searches for an account that uses the email and for a linked Google identity. None is found.
+7. **Create Account:** The system creates a **verified Member** account (US5 AS1, FR-003), takes the display name from the Google account, and stores a Linked External Identity (provider, provider user identifier, email).
+8. **Create Session:** The system creates a session for this device and records an audit entry for the sign-in (FR-025).
+9. **Redirect:** The system redirects the actor to the originally requested internal page or to the home page (FR-011).
+10. **Repeat Sign-In (verification):** On a later visit the actor repeats Steps 1–5 and the system finds the same account and signs the actor in without creating another one (US5 independent test).
+
+#### 6. Alternative Flows
+- **AF 4.1: Email Matches a Verified Account:**
+  - *Trigger:* At Step 6, a **verified** account already uses the email (US5 AS2, FR-019).
+  - *Steps:*
+    1. The system links the Google identity to that existing account and does not create a duplicate.
+    2. The system signs the actor in to the existing account with the same data and the same role, then continues at Step 8.
+- **AF 4.2: Email Matches an Unverified Account (Reset as New Account):**
+  - *Trigger:* At Step 6, an **unverified** email-and-password account uses the email (US5 AS2, FR-019).
+  - *Steps:*
+    1. The system deletes all data created before verification: display name, dietary profile (`011`), recipe drafts and other recipes (`060`), collections and bookmarks (`080`) and any other data.
+    2. The system disables the old password and ends every earlier session of that account.
+    3. The system takes the display name from the Google account and marks the account as verified.
+    4. The system emits the "account reset" event to specs `011`, `060` and `080` (Integration Points). Data created after verification is never affected.
+    5. The system links the Google identity and continues at Step 8.
+  - *Outcome:* The email owner starts with a clean account (see `[OQ-010-07]` for failure handling).
+- **AF 4.3: Consent Cancelled or Denied:**
+  - *Trigger:* At Step 3, the actor cancels or denies consent (US5 AS3).
+  - *Steps:*
+    1. The system returns the actor to the sign-in page with a neutral message and creates no account.
+- **AF 4.4: Google Account Without a Usable Email:**
+  - *Trigger:* At Step 5, the Google account has no email address or the email is not verified (Edge Cases "Google account without an email address").
+  - *Steps:*
+    1. The system refuses the sign-in with a message suggesting registration with email and password (`UC-010-01`) and creates no account.
+- **AF 4.5: Email on the Blocked Email List:**
+  - *Trigger:* At Step 5, the hash of the Google email matches the Blocked Email list (FR-026).
+  - *Steps:*
+    1. The system refuses to create the account and shows a refusal message.
+- **AF 4.6: Matched Account Suspended or Banned:**
+  - *Trigger:* At AF 4.1, the existing account is suspended or banned (FR-013).
+  - *Steps:*
+    1. The system does not create a session and shows the same status message as `UC-010-02` AF 2.4 or AF 2.5.
+    2. The system records a failure audit entry (FR-025).
+- **AF 4.7: Google Provider Unreachable:**
+  - *Trigger:* At Step 2 or Step 4, the provider cannot be reached or returns an error (NFR-005).
+  - *Steps:*
+    1. The system tells the actor that Google sign-in is not available now and returns to the sign-in page.
+    2. Email-and-password sign-in (`UC-010-02`) stays fully available.
+- **AF 4.8: Display Name From Google Is Not Valid:**
+  - *Trigger:* At Step 7, the name returned by Google is empty or longer than 50 characters (FR-001 limit; see `[OQ-010-08]`).
+  - *Steps:*
+    1. The system applies the same 1–50 character rule as registration before storing the display name.
+- **AF 4.9: Already Signed-In User:**
+  - *Trigger:* At Step 1, a signed-in user opens the page (Edge Cases "Already signed in").
+  - *Steps:*
+    1. The system redirects the user to the home page.
+
+#### 7. Postconditions
+- **Success (new account):** A verified Member account and one Linked External Identity exist; a session is active; an audit entry is stored.
+- **Success (existing verified account):** The Google identity is linked to the existing account; no new account exists.
+- **Success (reset of an unverified account):** The account holds no data from before verification, has no usable password, is verified, and has the Google display name; events were sent to `011`, `060` and `080`.
+- **Failure:** No session is created and no account or identity is created.
+
+#### 8. Special Requirements
+- **Security:** The OAuth client secret is kept in environment variables and is never committed (constitution Principle IV); transport is encrypted (NFR-002); the data of an unverified account is deleted so that no third party can pre-load an email owner's account with an allergy profile or a password (FR-019).
+- **Availability:** Email-and-password sign-in remains available when Google is unreachable (NFR-005).
+- **Scope:** Apple sign-in and two-factor authentication are out of scope (spec 010 Out of scope).
+- **Testing:** Every acceptance scenario of US5 has at least one automated test (SC-007; constitution Principle II).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`AU02-Register.dc.html`](../analysis-and-design/ui-ux/screens/AU02-Register.dc.html) (Step 1, the "Đăng ký với Google" button); the Google consent screen (Steps 2–3) belongs to Google and needs no prototype.
+- **Alternative Flows:** No prototype screen exists for AF 4.3, AF 4.4, AF 4.5 or AF 4.7.
+- **UI Asset Gap for SCRUM-58:** Needs the neutral "Google sign-in cancelled" message (AF 4.3), the "Google account has no verified email" refusal (AF 4.4) and the "Google unavailable" message (AF 4.7). See Section 9.2 (Gaps 010-L, 010-M, 010-N).
+
+---
+
+### 9.1. Feature 010 (User Authentication & Roles) Traceability
+
+| Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria | Vision Feature |
+| :---: | :--- | :---: | :--- | :--- | :---: | :---: |
+| **`UC-010-01`** | Register Account & Verify Email | `US2` (AS 1–6) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-006`, `FR-017`, `FR-026` | `NFR-001`, `NFR-002`, `NFR-006`, `NFR-007` | `SC-001`, `SC-003`, `SC-007` | §5.1 |
+| **`UC-010-02`** | Sign In with Email & Password | `US1` (AS 1–7); `US3` (AS 1–5, through `AF 2.9`, `AF 2.15`, `AF 2.16`); `US2` (AS 5) | `FR-007`, `FR-008`, `FR-009`, `FR-010`, `FR-011`, `FR-012`, `FR-013`, `FR-020`, `FR-021`, `FR-022`, `FR-022a`, `FR-024`, `FR-024a`, `FR-025` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-004`, `NFR-005`, `NFR-006`, `NFR-007`, `NFR-008` | `SC-002`, `SC-004`, `SC-005`, `SC-007` | §5.1 |
+| **`UC-010-03`** | Reset Forgotten Password | `US4` (AS 1–4) | `FR-014`, `FR-015`, `FR-016`, `FR-017`, `FR-004`, `FR-025` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-006`, `NFR-007` | `SC-006`, `SC-007` | §5.1 |
+| **`UC-010-04`** | Sign In with Google | `US5` (AS 1–3) | `FR-018`, `FR-019`, `FR-003`, `FR-011`, `FR-026` | `NFR-002`, `NFR-005` | `SC-007` | §5.1 |
+
+*Verification:* User stories `US1`, `US2`, `US4` and `US5` and their 20 acceptance scenarios map to one use case each. `US3` (role-based access) has no dedicated use case in the Use-Case Model: its Guest scenario is `AF 2.9`, its permission scenarios are `AF 2.15` and `AF 2.16`, and role changes by an Administrator belong to `UC-100-03`. `FR-021`, `FR-022`, `FR-022a`, `FR-023` and the permission matrix are enforced by every Member-only use case in the model as a special requirement. `FR-023` (last active Administrator) and the Administrator-side part of `FR-022`, `FR-022a`, `FR-024a` and `FR-025` are performed through `UC-100-03`. See `[OQ-010-01]`.
+
+### 9.2. Prototype Screen Mapping & UI Asset Gaps (for SCRUM-58)
+
+| Use Case ID | Flow / Step Reference | Existing Screen ID & Filename | Description of Prototype View | Asset Status & Action for SCRUM-58 |
+| :---: | :--- | :--- | :--- | :---: |
+| `UC-010-01` | Basic Flow (Steps 2–5), AF 1.2 | `AU02-Register.dc.html` | Sign-up form with display name counter, password rule checklist, Google button | **Available** |
+| `UC-010-01` | Basic Flow (Step 9), AF 1.9 | `AU03-CheckEmail.dc.html` | "Kiểm tra hộp thư", resend countdown, 3-per-15-minutes note | **Available** |
+| `UC-010-01` | AF 1.11 | `AU04-LinkExpired.dc.html` | Expired verification link with "Gửi link mới" and the 7-day warning | **Available** |
+| `UC-010-01` | AF 1.1 | *Gap 010-A* | Sign-up with "email already registered" message and links to sign in or reset | **GAP** |
+| `UC-010-01` | Basic Flow (Step 11) | *Gap 010-B* | "Email verified" confirmation with the action to sign in | **GAP** |
+| `UC-010-01` | AF 1.10 | *Gap 010-C* | Resend button after the 3-request limit is reached, with the remaining wait | **GAP** |
+| `UC-010-02` | Basic Flow (Steps 2–5, 10) | *Gap 010-D* (`AU01-Login`, referenced by `canvas.json` and `index.html` but missing from `screens/`) | Sign-in form with email, password, "Remember me", forgot-password link, Google button | **GAP** |
+| `UC-010-02` | AF 2.1, AF 2.2 | *Gap 010-E* | Sign-in with the generic message "Email or password is incorrect" and the cleared password field | **GAP** |
+| `UC-010-02` | AF 2.3, AF 2.4, AF 2.5 | `AU07-Locked.dc.html` | Locked account until a time with "Đặt lại mật khẩu"; suspended account with end date and reason; note for banned accounts | **Available** |
+| `UC-010-02` | AF 2.7 | *Gap 010-F* | Reminder banner to verify the email, with the request for a new link | **GAP** |
+| `UC-010-02` | AF 2.9 | `AU08-SignInPrompt.dc.html` | Guest presses Save: "Đăng nhập / Tạo tài khoản / Để sau" | **Available** |
+| `UC-010-02` | AF 2.12 | *Gap 010-G* | Session expired: sign in again, with the leave-page warning | **GAP** |
+| `UC-010-02` | AF 2.15 | *Gap 010-H* | One-time in-app notice of the new role and the permissions that changed | **GAP** |
+| `UC-010-02` | AF 2.16 | `AU09-AccessDenied.dc.html` | "Bạn không có quyền xem trang này" | **Available** |
+| `UC-010-03` | Basic Flow (Steps 2–5), AF 3.1 | `AU05-ForgotPassword.dc.html` | Request form and the neutral "Đã gửi yêu cầu" message with "Gửi lại link" | **Available** |
+| `UC-010-03` | Basic Flow (Steps 8–10) | `AU06-ResetPassword.dc.html` | New-password form with rule checklist and the note about other devices | **Available** |
+| `UC-010-03` | AF 3.4 | *Gap 010-I* | Reset link invalid, used or expired, with the action to request a new one | **GAP** |
+| `UC-010-03` | Basic Flow (Step 12) | *Gap 010-J* | "Password changed" confirmation with the action to sign in | **GAP** |
+| `UC-010-03` | AF 3.5 | *Gap 010-K* | New-password form with the failed rule highlighted | **GAP** |
+| `UC-010-04` | Basic Flow (Step 1) | `AU02-Register.dc.html` | "Đăng ký với Google" button (the sign-in button is part of Gap 010-D) | **Available** |
+| `UC-010-04` | AF 4.3 | *Gap 010-L* | Back on the sign-in page with a neutral "Google sign-in cancelled" message | **GAP** |
+| `UC-010-04` | AF 4.4 | *Gap 010-M* | Refusal: Google account has no verified email, with the suggestion to register by email | **GAP** |
+| `UC-010-04` | AF 4.7 | *Gap 010-N* | "Google sign-in is not available now", email sign-in still shown | **GAP** |
+
+*Note:* `AF 1.3` – `AF 1.6`, `AF 1.8`, `AF 1.13` – `AF 1.15`, `AF 2.6` – `AF 2.8`, `AF 2.10` – `AF 2.11`, `AF 2.13` – `AF 2.14`, `AF 2.17`, `AF 3.2` – `AF 3.3`, `AF 3.6` – `AF 3.9` and `AF 4.1` – `AF 4.2`, `AF 4.5` – `AF 4.6`, `AF 4.8` – `AF 4.9` are validation messages, redirects or background behaviour that reuse the screens above and need no separate screenshot.
+
+### 9.3. Open Questions (For Team Alignment)
+
+1. **`[OQ-010-01]` Role-Based Access Has No Use Case (`US3`):**
+   - *Issue:* Spec 010 has five user stories but the Use-Case Model has four use cases for feature 010; `US3` is modelled only by the actor generalization and by `UC-100-03`. The prototype nevertheless contains `AU08` and `AU09` for it.
+   - *Current Stance:* The Guest and permission scenarios of `US3` are written as alternative flows `AF 2.9`, `AF 2.15` and `AF 2.16` of `UC-010-02`.
+   - *Proposal:* Either keep this stance, or add a Brief use case `UC-010-05 Enforce Role-Based Access` to the model before the freeze on 02/11/2026.
+   - *Owner:* Mai Văn Hiển with Nguyễn Đức Duy (`SCRUM-49`).
+2. **`[OQ-010-02]` Lockout Details:**
+   - *Issue:* The spec does not say whether a successful password reset ends an active lock, nor what the lock screen shows for an unregistered email (a lock message appears only for real accounts, which can reveal that the account exists and conflicts with `NFR-003`).
+   - *Current Stance:* The lock is time-based only (15 minutes); the neutral message of `AF 2.2` is used for unknown emails.
+   - *Owner:* Mai Văn Hiển (spec 010 owner) to decide.
+3. **`[OQ-010-03]` Older Verification Links After a Resend:**
+   - *Issue:* `FR-015` invalidates earlier links only for password reset. For verification, the spec says only "single-use and expires after 24 hours".
+   - *Current Stance:* `AF 1.9` does not state whether older unused verification links stay valid.
+   - *Owner:* Mai Văn Hiển.
+4. **`[OQ-010-04]` How a Banned User Reaches Account Closure:**
+   - *Issue:* A banned user may delete the account (`010` FR-026, `011` FR-037b), but sign-in is refused for banned accounts (`FR-013`). Spec `011` Assumptions leave the route to the restricted account-closure page to spec 010 and the plan.
+   - *Current Stance:* `AF 2.5` shows only the ban message.
+   - *Owner:* Mai Văn Hiển, to be settled before `/speckit-plan`.
+5. **`[OQ-010-05]` Message for a Blocked Email:**
+   - *Issue:* `FR-026` says registration and Google account creation are refused for blocked emails but gives no message text; a message that names the block would reveal that the email belonged to a banned account.
+   - *Current Stance:* `AF 1.7` and `AF 4.5` refuse without stating a reason.
+   - *Owner:* Mai Văn Hiển.
+6. **`[OQ-010-06]` Answer When the Reset Request Limit Is Exceeded:**
+   - *Issue:* `FR-017` limits requests but does not say what the user sees, and `NFR-003` forbids revealing registered emails.
+   - *Current Stance:* `AF 3.2` counts requests per address and gives no registration-dependent answer.
+   - *Owner:* Mai Văn Hiển.
+7. **`[OQ-010-07]` Atomicity of the Unverified-Account Reset:**
+   - *Issue:* `FR-019` lists the data deleted when Google takes over an unverified account but does not say what happens if one of the receiving specs (`011`, `060`, `080`) fails to delete its data.
+   - *Current Stance:* `AF 4.2` assumes the whole reset succeeds or the sign-in is not completed.
+   - *Owner:* Mai Văn Hiển with the owners of `011`, `060`, `080`.
+8. **`[OQ-010-08]` Display Name and Session Lifetime for Google Accounts:**
+   - *Issue:* `FR-019` takes the display name from Google only for the reset case, and the spec does not say whether a Google sign-in uses "Remember me".
+   - *Current Stance:* `AF 4.8` applies the 1–50 character rule to the Google name; the session follows the default lifetime of `FR-009` without "Remember me".
+   - *Owner:* Mai Văn Hiển.
+9. **`[OQ-010-09]` Prototype `AU03` Offers "Đổi địa chỉ email":**
+   - *Issue:* The check-email screen shows "Đổi địa chỉ email", but spec 010 has no such function and spec `011` states that the email cannot be changed in this release.
+   - *Current Stance:* No flow is written for it; it is not a requirement.
+   - *Proposal:* Remove the link from `AU03` (Chung, `SCRUM-58`) or add the function to the spec first.
+   - *Owner:* Mai Văn Hiển with Trần Nguyễn Công Chung.
+10. **`[OQ-010-10]` Other Unspecified Cases:**
+    - *Issue:* The spec does not state whether registration signs the user in automatically (the prototype `AU03` suggests it does), whether verification signs the user in, whether a suspended, banned, unverified or Google-only account may request a password reset, or what a lock does to a Google sign-in.
+    - *Current Stance:* The flows above do not describe these cases; they are not invented.
+    - *Owner:* Mai Văn Hiển.
