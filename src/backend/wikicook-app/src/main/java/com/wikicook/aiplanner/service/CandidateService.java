@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -75,6 +76,11 @@ public class CandidateService {
             ranked.add(candidates.get(i).withRank(i));
         }
         return List.copyOf(ranked);
+    }
+
+    /** Names of the preferred cuisines, shown in the prompt as a preference. */
+    public List<String> cuisineNames(Set<Long> cuisineIds) {
+        return query.cuisineNames(cuisineIds);
     }
 
     /** {@code k = max(3 × slots, 20)} per meal, trimmed from the largest so the total stays within 90. */
