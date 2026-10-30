@@ -31,6 +31,7 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 16 | 2026-10-28, 00:22 – 00:35 | Module 3.5 Analyze & Fix | Đối chiếu chéo chất lượng artifact bằng `speckit-analyze` và giải quyết các điểm High/Medium cho feature 050 | `175e8a3` | `specs/050-cooking-mode/`, `src/README.md` |
 | 17 | 2026-10-28, 22:00 – 22:45 | `SCRUM-46` (Sprint 03 Kickoff) | Khởi tạo báo cáo Sprint 03 (`sprint-03-report.md` v1.0), thiết lập Master Backlog 22 task và ghi biên bản họp Planning | `efd8011` | `docs/management/reports/sprint-03/` |
 | 18 | 2026-10-28, 23:08 – 23:25 | `SCRUM-53` (Use-Case Spec 040 & 050) | Soạn thảo chi tiết Use-Case Specification cho 10 use cases thuộc Feature 040 và 050 kèm ma trận truy vết và phân tích gap UI | `7227d72` | `docs/requirements/use-case-specification.md` |
+| 19 | 2026-10-29, 14:30 – 15:15 | `SCRUM-55` (Backend 040 US1 + US2) | Hiện thực Backend Slice 040 US1 + US2 theo quy trình Test-First TDD, đạt 36/36 tests PASS và 83% JaCoCo service coverage | Working Tree | `src/backend/` (wikicook-app, wikicook-db) |
 
 ---
 
@@ -801,3 +802,61 @@ SCREENSHOTS: Liệt kê ID màn hình tương ứng (SL01-SL08, CK01-CK09), lu�
 - Kiểm tra và đảm bảo không cắt xén phạm vi của UC spec theo slice code của phần E (mô tả toàn bộ US1–US5 cho cả hai feature).
 - Xác nhận phân chia ranh giới rõ ràng: không tự sinh ảnh screenshot lệch spec mà lập bảng phân tích khoảng trống UI chi tiết để bàn giao cho Chung (`SCRUM-58`).
 - Kiểm tra trạng thái Git (`git status`), xác nhận tệp tài liệu mới nằm đúng thư mục `docs/requirements/` trên nhánh `PA3-docs` và không tự động push lên remote.
+
+---
+
+## Mục 19: Hiện thực Backend Module 040 (US1 + US2) theo quy trình Test-First TDD (SCRUM-55)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Google Antigravity (Gemini), Agentic Coding CLI & Apache Maven 3.9.9 / Java 21 |
+| **Thời gian truy cập cụ thể** | 2026-10-29, 14:30 – 15:15 (45 phút) |
+| **Người thực hiện** | Lê Quốc Hưng (`LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-55`: Backend phần E, 040 Shopping List US1 + US2 (PA3-2026, 20 điểm) |
+| **Tài liệu & Mã nguồn liên quan** | `specs/040-shopping-list/`, `src/backend/wikicook-app/`, `src/backend/wikicook-db/` |
+| **Mục đích sử dụng** | Hiện thực tầng Backend cho slice US1 và US2 của feature 040 theo triết lý Test-Driven Development (TDD / Constitution Principle II), thiết lập migration Flyway V401, cấu trúc Ports & Adapters, Service gộp nguyên liệu thông minh và Controller REST chuẩn RFC 7807 ProblemDetail; đo lường độ bao phủ JaCoCo đạt $\ge 70\%$. |
+| **Nhánh Git** | `feature/SCRUM-55-backend-shopping-list-us1-us2` (phân nhánh từ `origin/main` commit `f3c4825` sau khi PR #51 merge) |
+| **Minh chứng (Evidence)** | 36 test cases pass 100% (`UnitConversionServiceTest`, `IngredientAggregationServiceTest`, `ShoppingListServiceTest`, `ShoppingListControllerTest`), JaCoCo service coverage đạt 83%, Flyway migration `V401__shopping_lists.sql`. |
+
+### Prompt đã sử dụng:
+```text
+PROMPT — SCRUM-55: Backend phần E, 040 Shopping List US1 + US2 (PA3, 20 điểm)
+Bạn là agent nhận việc WikiCook PA3 từ Lê Quốc Hưng (MSSV 24120184, @LqHung06).
+Assignee SCRUM-55: Lê Quốc Hưng. Reviewer: Mai Văn Hiển. Due: 03/11/2026.
+Nhiệm vụ: implement BACKEND cho slice 040 US1 + US2, test-first, xuất sắc và có bằng chứng test đầy đủ.
+Đọc kỹ toàn bộ prompt này trước khi chạm vào code. Không suy đoán, không tự mở rộng phạm vi.
+
+0. Mục tiêu và Definition of Done (tóm tắt):
+- Chỉ US1 + US2 của 040. US3, US4, US5 HOÃN sang PA4.
+- Test viết trước, chạy FAIL trước khi viết code, PASS sau khi viết code (Constitution Principle II).
+- Service coverage >= 70% (JaCoCo) cho tầng service của slice này, đo riêng.
+- API US1/US2 chạy được với dữ liệu seed qua port trừu tượng, không chờ code thật 060/030.
+- Không commit secret, không push remote.
+```
+
+### Nội dung do AI sinh ra:
+1. **Flyway Migration & Schema**: Tạo `src/backend/wikicook-db/src/main/resources/db/migration/V401__shopping_lists.sql` khởi tạo 4 bảng (`shopping_lists`, `shopping_list_items`, `shopping_list_item_sources`, `user_aisle_preferences`) kèm partial unique index `uq_shopping_lists_active_user`.
+2. **Ports & Service Facades**:
+   - Khởi tạo các interface port độc lập theo Constitution III: `RecipeDetailPort`, `MealPlanHandoffPort`, `DietaryProfilePort`.
+   - Cung cấp `SeedRecipeDetailAdapter` chứa dữ liệu seed công thức thực tế (Bò kho, Bò xào cần tây, Nước chanh tươi, Sốt chanh dây, Bánh flan) phục vụ chạy kiểm thử độc lập mà không phụ thuộc module 060/030.
+3. **Core Domain & DTOs**:
+   - Entities: `ShoppingList`, `ShoppingListItem`, `ShoppingListItemSource`, `UserAislePreference`.
+   - Records DTO: `ShoppingListResponse`, `AisleGroupDto`, `ShoppingListItemDto`, `ItemProvenanceDto`, `CreateCustomItemRequest`, `UpdateTitleRequest`, `ImportRecipeRequest`.
+4. **Test-First Implementation (TDD)**:
+   - **US1 Service & Controller**:
+     - Viết `ShoppingListServiceTest` (8 tests) -> xác nhận FAIL -> hiện thực `ShoppingListService` -> PASS 100%.
+     - Viết `ShoppingListControllerTest` (10 tests) -> xác nhận FAIL -> hiện thực `ShoppingListController` & `ShoppingListExceptionHandler` (RFC 7807 `ProblemDetail`, mã 422 cho trần 200 món) -> PASS 100%.
+   - **US2 Unit Conversion & Aggregation Engine**:
+     - Viết `UnitConversionServiceTest` (7 tests) -> xác nhận FAIL -> hiện thực `UnitConversionService` (quy đổi 2 chiều $g \leftrightarrow kg$, $ml \leftrightarrow l$ ngưỡng 1000, làm tròn tối đa 2 chữ số thập phân, quy tắc trần discrete ceiling $\lceil x \rceil$ cho quả/lon/gói/củ/bắp) -> PASS 100%.
+     - Viết `IngredientAggregationServiceTest` (6 tests) -> xác nhận FAIL -> hiện thực `IngredientAggregationService` (tính hệ số tỷ lệ $S_{target}/S_{base}$, gộp trùng theo `ingredientId`, tách sub-row cho đơn vị không tương thích, lọc bỏ gia vị cơ bản, uncheck món đã mua khi có lượng mới nhập thêm theo FR-016, chụp snapshot nguồn gốc món) -> PASS 100%.
+     - Tích hợp `importRecipeIngredients` và `getItemProvenance` vào service và controller -> bổ sung 3 test service và 2 test controller -> tổng cộng 36 tests pass 100%.
+5. **Coverage & Quality Gate**:
+   - Bổ sung cấu hình `jacoco:check` trong `wikicook-app/pom.xml` với ngưỡng bắt buộc $\ge 70\%$ cho package `com.wikicook.shoppinglist.service`.
+   - Kiểm tra báo cáo JaCoCo: Tầng Service đạt **83%** instruction coverage (`IngredientAggregationService`: 92%, `ShoppingListService`: 82%, `UnitConversionService`: 78%). Tầng Controller đạt **100%**.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Thiết lập môi trường thực thi cục bộ: cài đặt Maven 3.9.9 vào thư mục người dùng `~/.local/share/` và trỏ `JAVA_HOME=/opt/android-studio/jbr` (JDK 25 hỗ trợ Java 21) để biên dịch và chạy test nhanh chóng mà không cần quyền sudo.
+- Kiểm soát ranh giới phạm vi tuyệt đối: từ chối viết trước US3 (phân quầy/soft-clear), US4 (offline sync), US5 (export/print), ghi rõ hoãn sang PA4 theo đúng biên bản Sprint Planning 28/10.
+- Giữ nguyên trạng thái tài liệu: giữ nguyên header `specs/040-shopping-list/spec.md` ở trạng thái `Draft (Ready for Review)`, không tự ý đổi thành `Approved`.
+- Thực hiện kiểm chứng độc lập hai pha Red-Green của Constitution II, chụp lại toàn bộ log build thành công (39 tests tổng thể toàn backend đều pass, không có lỗi tiềm ẩn).
+- Tuân thủ quy định Git Safety: KHÔNG thực hiện `git push` lên GitHub remote và KHÔNG tạo Pull Request tự động; chuẩn bị sẵn báo cáo chi tiết và nội dung draft PR để bàn giao cho Hưng kiểm tra.
