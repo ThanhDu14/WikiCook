@@ -2118,7 +2118,7 @@ Lets a registered user authenticate with an email and a password so that the per
   - *Trigger:* At Step 6, the credentials are correct but the account is suspended for a limited time (FR-013).
   - *Steps:*
     1. The system does not create a session.
-    2. The system shows that the account is suspended with the reason category and the end date (for example "Tài khoản bị đình chỉ đến 04/11/2026", "Lý do: Đăng nội dung quảng cáo lặp lại"), and that published content stays visible (FR-013).
+    2. The system shows that the account is suspended with the reason category and the end date (for example "Tài khoản bị đình chỉ đến 04/11/2026", "Lý do: Đăng nội dung quảng cáo lặp lại"), and, as the prototype adds, that published content stays visible.
     3. The system records a failure audit entry.
 - **AF 2.5: Account Banned:**
   - *Trigger:* At Step 6, the credentials are correct but the account is banned (FR-013).
@@ -2397,7 +2397,7 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 | **`UC-010-03`** | Reset Forgotten Password | `US4` (AS 1–4) | `FR-014`, `FR-015`, `FR-016`, `FR-017`, `FR-004`, `FR-025` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-006`, `NFR-007` | `SC-006`, `SC-007` | §5.1 |
 | **`UC-010-04`** | Sign In with Google | `US5` (AS 1–3) | `FR-018`, `FR-019`, `FR-003`, `FR-011`, `FR-026` | `NFR-002`, `NFR-005` | `SC-007` | §5.1 |
 
-*Verification:* User stories `US1`, `US2`, `US4` and `US5` and their 20 acceptance scenarios map to one use case each. `US3` (role-based access) has no dedicated use case in the Use-Case Model: its Guest scenario is `AF 2.9`, its permission scenarios are `AF 2.15` and `AF 2.16`, and role changes by an Administrator belong to `UC-100-03`. `FR-021`, `FR-022`, `FR-022a`, `FR-023` and the permission matrix are enforced by every Member-only use case in the model as a special requirement. `FR-023` (last active Administrator) and the Administrator-side part of `FR-022`, `FR-022a`, `FR-024a` and `FR-025` are performed through `UC-100-03`. See `[OQ-010-01]`.
+*Verification:* User stories `US1`, `US2`, `US4` and `US5` and their 20 acceptance scenarios map to one use case each. `US3` (role-based access) has no dedicated use case in the Use-Case Model: its Guest scenario is `AF 2.9`, its permission scenarios are `AF 2.15` and `AF 2.16`, and role changes by an Administrator belong to `UC-100-03`. `FR-021`, `FR-022`, `FR-022a`, `FR-023` and the permission matrix are enforced by every Member-only use case in the model as a special requirement. `FR-023` (last active Administrator) and the Administrator-side part of `FR-022`, `FR-022a`, `FR-024a` and `FR-025` are performed through `UC-100-03`. The emails of `FR-024a` (account suspended or banned, suspension ended, ban lifted) are sent when an Administrator acts or when the status changes (spec `100`); `UC-010-02` covers only the in-app role-change notice of `FR-024a` (`AF 2.15`). See `[OQ-010-01]`.
 
 ### 9.2. Prototype Screen Mapping & UI Asset Gaps (for SCRUM-58)
 
@@ -3132,7 +3132,7 @@ Lets a signed-in user save a published recipe to the built-in list "Đã lưu" w
 2. **Tap Save:** The actor taps the save icon. The system disables repeated taps for this action (FR-023).
 3. **Show Saved State:** The icon switches to the saved state within 100 ms, before the server answers (FR-007, NFR-001).
 4. **Store:** The system checks on the server that the actor may use collections and that the recipe is `PUBLISHED`, checks that "Đã lưu" holds fewer than 1,000 recipes, and adds the recipe to "Đã lưu" with the recipe name as saved and the time added (FR-001, FR-009, FR-011). "Đã lưu" was created with the account; for an older account it is created the first time (Assumptions).
-5. **Confirm:** The system shows the short confirmation "Đã lưu công thức" with the action "Thêm vào bộ sưu tập" (starts `UC-080-02`) and a link "Xem" to "Đã lưu" (US1 AS1).
+5. **Confirm:** The system shows the short confirmation "Đã lưu công thức" with the action "Thêm vào bộ sưu tập" (starts `UC-080-02`) (US1 AS1).
 6. **Show Status Everywhere:** On the detail page a line reads "Đã lưu" and, when the recipe is in collections, "· trong N bộ sưu tập"; the recipe's cards in every list show the saved state (US1 AS7).
 7. **Persist:** The saved state is still there after a reload and on another device (SC-004).
 
