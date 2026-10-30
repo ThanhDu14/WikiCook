@@ -23,6 +23,7 @@
 | **Section 8** | Traceability, Screen Mapping & Open Questions for Features 020 & 060 | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-51` |
 | **Section 9** | Use-Case Specifications for Feature 010: User Authentication & Roles (`UC-010-01` – `UC-010-04`) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-50` |
 | **Section 10** | Use-Case Specifications for Feature 011: User Profile & Dietary Profile (`UC-011-01` – `UC-011-05`) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-50` |
+| **Section 11** | Use-Case Specifications for Feature 080: Recipe Bookmarks & Custom Collections (`UC-080-01` – `UC-080-04`) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-50` |
 
 ### Revision History
 
@@ -30,7 +31,7 @@
 | :---: | :---: | :--- | :--- |
 | **28/10/2026** | `v1.0` | Initialized detailed Use-Case Specifications for all 10 use cases across Feature 040 and Feature 050, defining 8 mandatory sections per use case, exhaustive alternative flows, and UI prototype mapping (`SCRUM-53`). | Lê Quốc Hưng (`LqHung06`) |
 | **29/10/2026** | `v1.1` | Added Sections 6–8: use-case specifications for Feature 020 (`UC-020-01` – `UC-020-06`, including the shared Recipe Detail page) and Feature 060 (`UC-060-01` – `UC-060-07`), with traceability, prototype screen mapping and open questions (`SCRUM-51`). Use-case IDs follow the Use-Case Model v0.1 (`SCRUM-49`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
-| **30/10/2026** | `v1.2` | Added Sections 9–10: use-case specifications for Feature 010 (`UC-010-01` – `UC-010-04`) and Feature 011 (`UC-011-01` – `UC-011-05`), with traceability, prototype screen mapping and open questions (`SCRUM-50`, first draft). Use-case IDs follow the Use-Case Model v0.1 (`SCRUM-49`). | Mai Văn Hiển (`MaiHien3507`) |
+| **30/10/2026** | `v1.2` | Added Sections 9–11: use-case specifications for Feature 010 (`UC-010-01` – `UC-010-04`), Feature 011 (`UC-011-01` – `UC-011-05`) and Feature 080 (`UC-080-01` – `UC-080-04`), with traceability, prototype screen mapping and open questions (`SCRUM-50`, first draft). Use-case IDs follow the Use-Case Model v0.1 (`SCRUM-49`). | Mai Văn Hiển (`MaiHien3507`) |
 
 > [!NOTE]
 > **Use-Case Model Alignment Notice:** The formal Use-Case Model (`docs/requirements/use-case-model.md`) is currently being drafted by Nguyễn Đức Duy under `SCRUM-49` (freeze date: November 02, 2026). The Use Case IDs (`UC-040-01` through `UC-040-05` and `UC-050-01` through `UC-050-05`) and titles documented herein represent the official engineering proposal derived directly from ratified specifications `specs/040-shopping-list/spec.md` and `specs/050-cooking-mode/spec.md`. Once `SCRUM-49` completes model freeze on November 02, any identifier discrepancies will be reconciled during the review phase (`SCRUM-53` final edition, due November 03).
@@ -3096,4 +3097,566 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 8. **`[OQ-011-08]` Prototype `PF07` Shows Only the Password Variant:**
    - *Issue:* The delete screen shows the password field but spec `FR-031` also requires a Google re-authentication variant.
    - *Current Stance:* The variant is described in `AF 4.2` and listed as Gap 011-K; no UI is invented.
+   - *Owner:* Trần Nguyễn Công Chung (`SCRUM-58`).
+
+---
+
+## 11. USE-CASE SPECIFICATIONS FOR FEATURE 080: RECIPE BOOKMARKS & CUSTOM COLLECTIONS
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+
+> [!NOTE]
+> **Sources:** `specs/080-bookmark-collection/spec.md` (US1–US5, FR-001 – FR-026, NFR-001 – NFR-007, SC-001 – SC-010), `specs/010-user-authentication-roles/spec.md` (permission matrix "Bookmark"), [Vision Document](vision-document.md) §5.8 and the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.8 and §5 (`SCRUM-49`) and the project constitution (Principles IV and V). The actor is **Member** (a signed-in user with an active account; Contributor, Moderator and Administrator inherit it). In the model `UC-080-01` extends `UC-020-06` (the Save button is extension point `EP-5` of the Recipe Detail page), `UC-080-02` extends `UC-080-01`, and `UC-080-03` extends `UC-080-02`. Spec 080 has five user stories but the model has four use cases: `US4` (browse) and `US5` (recipes that are no longer available) are both written in `UC-080-04`, as the model states (see `[OQ-080-01]`). Terms: **"Đã lưu"** is the built-in list that holds every saved recipe; a **collection** is a themed subset of it.
+
+### UC-080-01: Save Recipe with One Tap
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-080-01`
+- **Use Case Name:** Save or Unsave a Published Recipe with One Tap, with Immediate Feedback and Undo
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — a busy home cook browsing recipes (Vision §3.2).
+- **Extended Use Case:** `UC-020-06` View Recipe Details (extension point `EP-5 Save`).
+- **Extending Use Case:** `UC-080-02` Add Recipe to Collections (offered after a save).
+
+#### 3. Description
+Lets a signed-in user save a published recipe to the built-in list "Đã lưu" with one tap on the save icon, on the recipe detail page or on any recipe card, and remove it again. The icon changes state immediately, a short confirmation offers to add the recipe to a collection, and every removal can be undone for 5 seconds. A Guest who taps the icon is sent to sign-in and brought back, and the recipe is saved without a second tap. Saved recipes need an internet connection; nothing is queued or kept on the device.
+
+#### 4. Preconditions
+- The actor is signed in with the Member role or above and the account is active (`UC-010-02`; FR-001).
+- The recipe is in `PUBLISHED` status (FR-009).
+- The device has an internet connection (FR-024).
+
+#### 5. Basic Flow
+1. **View Recipe:** The actor opens the detail page of a published recipe the actor has not saved. The save icon is in the unsaved state, announced to screen readers as "Lưu công thức" (FR-006, NFR-006).
+2. **Tap Save:** The actor taps the save icon. The system disables repeated taps for this action (FR-023).
+3. **Show Saved State:** The icon switches to the saved state within 100 ms, before the server answers (FR-007, NFR-001).
+4. **Store:** The system checks on the server that the actor may use collections and that the recipe is `PUBLISHED`, checks that "Đã lưu" holds fewer than 1,000 recipes, and adds the recipe to "Đã lưu" with the recipe name as saved and the time added (FR-001, FR-009, FR-011). "Đã lưu" was created with the account; for an older account it is created the first time (Assumptions).
+5. **Confirm:** The system shows the short confirmation "Đã lưu công thức" with the action "Thêm vào bộ sưu tập" (starts `UC-080-02`) and a link "Xem" to "Đã lưu" (US1 AS1).
+6. **Show Status Everywhere:** On the detail page a line reads "Đã lưu" and, when the recipe is in collections, "· trong N bộ sưu tập"; the recipe's cards in every list show the saved state (US1 AS7).
+7. **Persist:** The saved state is still there after a reload and on another device (SC-004).
+
+#### 6. Alternative Flows
+- **AF 1.1: Save from a Recipe Card:**
+  - *Trigger:* At Step 2, the actor taps the save icon on a recipe card in search results, the home page, "Đã lưu" or a collection (US1 AS2).
+  - *Steps:*
+    1. The system does the same as on the detail page; the card does not open.
+- **AF 1.2: Unsave a Recipe That Is in No Collection:**
+  - *Trigger:* At Step 2, the actor taps the filled icon of a saved recipe that is in no collection (US1 AS3).
+  - *Steps:*
+    1. The system removes the recipe from "Đã lưu" and switches the icon to the unsaved state.
+    2. The system shows a confirmation with "Undo" for 5 seconds (FR-008).
+- **AF 1.3: Unsave a Recipe That Is in Collections:**
+  - *Trigger:* At Step 2, the recipe is also in one or more collections (US1 AS4, FR-006).
+  - *Steps:*
+    1. The system asks for confirmation, for example "Bỏ lưu “Gà kho gừng”?" with the number and names of the collections the recipe will also leave, and the note "Bạn có 5 giây để hoàn tác", and the buttons "Hủy" and "Bỏ lưu".
+    2. On "Bỏ lưu" the system removes the recipe from "Đã lưu" and from all those collections and shows "Undo" for 5 seconds.
+    3. On "Hủy" nothing changes.
+- **AF 1.4: Undo:**
+  - *Trigger:* After AF 1.2 or AF 1.3, the actor chooses "Undo" within 5 seconds (US1 AS5, FR-008).
+  - *Steps:*
+    1. The system restores the exact previous state: the recipe is back in "Đã lưu" and in every former collection at its original position.
+    2. When the recipe was archived or removed in the meantime, it comes back as a "Không còn khả dụng" item instead of being refused. This is the one exception to FR-009.
+- **AF 1.5: Undo Would Exceed a Limit:**
+  - *Trigger:* At AF 1.4, another device filled "Đã lưu" or a collection in the meantime (Edge Cases).
+  - *Steps:*
+    1. The system refuses the undo with the limit message and stores nothing, so nothing is half-restored.
+- **AF 1.6: Undo Offer Ends:**
+  - *Trigger:* The 5 seconds pass or the actor leaves the page (Edge Cases "Undo after the page was left").
+  - *Steps:*
+    1. The undo offer disappears; the removal stays.
+- **AF 1.7: Guest Taps Save:**
+  - *Trigger:* At Step 2, the actor is not signed in (US1 AS6, FR-004).
+  - *Steps:*
+    1. The system shows the sign-in prompt of `UC-010-02` AF 2.9 ("Lưu “Canh chua cá lóc”?" with "Đăng nhập", "Tạo tài khoản", "Để sau"); the Save extension point behaves as in `UC-020-06` AF 6.1.
+    2. After sign-in or registration the system returns the actor to the same page and saves the recipe to "Đã lưu" without a second tap.
+    3. When the actor chooses "Để sau", nothing is saved.
+- **AF 1.8: "Đã lưu" Is Full:**
+  - *Trigger:* At Step 4, "Đã lưu" already holds 1,000 recipes (US1 AS8, FR-011).
+  - *Steps:*
+    1. The system does not save the recipe and the icon stays in the unsaved state.
+    2. The system shows "Danh sách Đã lưu đã đầy" with a link to "Đã lưu" and, when it contains items that are no longer available, the suggestion to remove them.
+- **AF 1.9: Recipe Is Not Published:**
+  - *Trigger:* At Step 4, the recipe is a draft, pending, rejected or archived, for example because the page is stale (Edge Cases, FR-009).
+  - *Steps:*
+    1. The system refuses with "Công thức này không còn khả dụng" and the icon stays in the unsaved state.
+- **AF 1.10: Network or Server Failure:**
+  - *Trigger:* At Step 4, the change cannot be stored (US1 AS9, FR-007, FR-024).
+  - *Steps:*
+    1. When the failure is known, the icon returns to its previous state and a message explains that the recipe was not saved.
+- **AF 1.11: No Connection:**
+  - *Trigger:* At Step 2, the device is offline (US1 AS10, FR-024).
+  - *Steps:*
+    1. The icon returns to its previous state at once, without waiting for a server response, and the offline message says the change needs an internet connection.
+    2. Nothing is queued: when the connection returns, nothing is sent.
+- **AF 1.12: Repeated Taps or Already Saved:**
+  - *Trigger:* At Step 2, the actor double-taps, or the recipe is already saved on another tab or device (FR-010, FR-023).
+  - *Steps:*
+    1. The system changes nothing and shows no error; a recipe is never listed twice in "Đã lưu".
+- **AF 1.13: Session Expires While Saving:**
+  - *Trigger:* At Step 4, the session has expired (Edge Cases).
+  - *Steps:*
+    1. The change is not stored. The system asks the actor to sign in again and returns to the same page, where the save is repeated automatically for a single save tap.
+- **AF 1.14: Account Without Permission, Suspended or Banned:**
+  - *Trigger:* At Step 4, an old session belongs to an account that was suspended or banned (FR-001, Edge Cases).
+  - *Steps:*
+    1. The server refuses the change. A suspended or banned user cannot sign in, so the collections are unreachable and stay unchanged.
+- **AF 1.15: Unverified Email or Own Recipe:**
+  - *Trigger:* At Step 2, the account has an unverified email, or the actor is the author of the recipe (Edge Cases).
+  - *Steps:*
+    1. Saving works normally: collections are private and publish nothing (spec 010 `FR-006` blocks only publishing), and an author can save the own published recipe like any other.
+- **AF 1.16: Recipe Is in a Meal Plan:**
+  - *Trigger:* At AF 1.2 or AF 1.3, the unsaved recipe is planned in the meal planner (spec `030`).
+  - *Steps:*
+    1. Dishes already planned are not changed or removed; the recipe only stops appearing in the planner's "From my collections" view (Edge Cases).
+
+#### 7. Postconditions
+- **Success (save):** The recipe is in "Đã lưu" exactly once; the icon is in the saved state on the detail page and every card.
+- **Success (unsave):** The recipe is in neither "Đã lưu" nor any collection; the undo is offered for 5 seconds; no recipe was deleted.
+- **Failure or refusal:** The lists and the icon are as before; a message states why.
+
+#### 8. Special Requirements
+- **Performance:** The icon reacts within 100 ms of a tap; 95% of saves are stored within 1 second under normal load (up to 100 concurrent users) and with lists at their limits (NFR-001, SC-001).
+- **Integrity:** A failed action never leaves a recipe half-added or half-removed across "Đã lưu" and collections, never leaves a recipe in a collection without being in "Đã lưu", and never deletes a recipe (NFR-007, SC-008).
+- **Privacy and security:** Only the owner can see or change the lists; the server checks every request (FR-002; constitution Principle IV).
+- **Usability and accessibility:** Save icons have a touch target of at least 44 × 44 px and announce "Đã lưu" or "Lưu công thức" to screen readers; every action is operable by keyboard; Vietnamese strings are kept in the shared string store (NFR-004, NFR-005, NFR-006; constitution Principle V).
+- **Offline rule:** The save icon fails at once when offline and is never queued (FR-024, SC-009).
+- **Testing:** Every acceptance scenario of US1 has at least one automated test (SC-010; constitution Principle II).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`BM05-SavedToast.dc.html`](../analysis-and-design/ui-ux/screens/BM05-SavedToast.dc.html) (Steps 5–6, detail page with "Đã lưu · trong 2 bộ sưu tập" and the confirmation with "Thêm vào bộ sưu tập").
+- **Alternative Flows:** [`BM06-UnsaveConfirm.dc.html`](../analysis-and-design/ui-ux/screens/BM06-UnsaveConfirm.dc.html) (AF 1.3), [`BM05-SavedToast.dc.html`](../analysis-and-design/ui-ux/screens/BM05-SavedToast.dc.html) (AF 1.8, "Danh sách Đã lưu đã đầy (1.000)" with "Xem"), [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 1.7), [`BM03-CollectionDetail.dc.html`](../analysis-and-design/ui-ux/screens/BM03-CollectionDetail.dc.html) (undo toast "Hoàn tác" pattern).
+- **UI Asset Gap for SCRUM-58:** Needs the unsave-with-undo confirmation on the detail page (AF 1.2), and the failure and offline messages of the save icon (AF 1.10, AF 1.11), and the "recipe no longer available" refusal (AF 1.9). See Section 11.2 (Gaps 080-A to 080-C).
+
+---
+
+### UC-080-02: Add Recipe to Collections
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-080-02`
+- **Use Case Name:** Put a Recipe into One or More Collections with the "Save to Collection" Dialog
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — a home cook who plans by theme, for example "Canh chua cá" in both "Weeknight dinners" and "Vietnamese classics".
+- **Extended Use Case:** `UC-080-01` Save Recipe with One Tap.
+- **Extending Use Case:** `UC-080-03` Create, Rename & Delete Collection (inline creation).
+
+#### 3. Description
+Lets a signed-in user add a published recipe to one or more collections, or remove it from some, in a single dialog. The dialog lists the user's collections with a checkbox each, ticked for those that already contain the recipe. Confirming applies every addition and removal together, all or none, and adds the recipe to "Đã lưu" first when it was not saved. A new collection can be created inside the dialog.
+
+#### 4. Preconditions
+- The actor is signed in with the Member role or above and the account is active (`UC-010-02`; FR-001).
+- The recipe is in `PUBLISHED` status (FR-009) and the device has an internet connection (FR-024).
+
+#### 5. Basic Flow
+1. **Open the Dialog:** The actor chooses "Lưu vào bộ sưu tập" on the detail page or the card menu, or "Thêm vào bộ sưu tập" in the confirmation of `UC-080-01` (US2 AS1).
+2. **List Collections:** The system opens the dialog (as a bottom sheet on narrow screens, NFR-004) and lists all the actor's collections by most recently updated, with a checkbox each, ticked for the collections that contain the recipe. "Đã lưu" is not listed because it always contains every recipe of a collection (FR-012).
+3. **Mark Full Collections:** A collection that already holds 500 recipes is labelled "Đã đầy" and cannot be ticked (US2 AS7).
+4. **Choose:** The actor ticks and unticks collections.
+5. **Confirm:** The actor presses "Xong". The system accepts one request only (FR-023).
+6. **Store Together:** The system adds the recipe to "Đã lưu" first when it was not saved, then adds it to every newly ticked collection and removes it from every unticked one, in one all-or-nothing step (FR-013, NFR-007). Each collection's last-updated time changes.
+7. **Confirm Result:** The system closes the dialog and shows a confirmation that names the result, for example "Đã thêm vào 2 bộ sưu tập" (US2 AS2). The recipe is now in the chosen collections and in "Đã lưu".
+
+#### 6. Alternative Flows
+- **AF 2.1: Recipe Was Not Saved Yet:**
+  - *Trigger:* At Step 6, the recipe is not in "Đã lưu" and the actor ticked at least one collection (US2 AS3).
+  - *Steps:*
+    1. The system also adds the recipe to "Đã lưu".
+- **AF 2.2: Untick Every Collection:**
+  - *Trigger:* At Step 5, the actor unticked every collection and confirms (US2 AS4, FR-013).
+  - *Steps:*
+    1. The system removes the recipe from all collections and leaves it in "Đã lưu". Unsaving is done only with the save icon or from "Đã lưu".
+- **AF 2.3: Create a New Collection Inside the Dialog:**
+  - *Trigger:* At Step 4, the actor chooses "Tạo bộ sưu tập mới" and enters a valid name (US2 AS5, FR-014).
+  - *Steps:*
+    1. The use case `UC-080-03` runs (extension): the collection is created, appears ticked in the list, and the recipe is added to it when the actor confirms.
+    2. When the name is a duplicate, too long or empty, or the limit of 50 collections is reached, the messages of `UC-080-03` AF 3.1 – AF 3.3 are shown (for example "Bạn đã có bộ sưu tập tên này") and the dialog stays open.
+- **AF 2.4: Close Without Confirming:**
+  - *Trigger:* At Step 4, the actor closes the dialog (US2 AS6).
+  - *Steps:*
+    1. Nothing changes.
+- **AF 2.5: Collection Is Full:**
+  - *Trigger:* At Step 3, a collection holds 500 recipes (US2 AS7, FR-012).
+  - *Steps:*
+    1. The collection is labelled "Đã đầy" and cannot be ticked; other collections and "Đã lưu" are unaffected.
+- **AF 2.6: "Đã lưu" Is Full:**
+  - *Trigger:* At Step 6, the recipe is not saved and "Đã lưu" holds 1,000 recipes (US2 AS8).
+  - *Steps:*
+    1. Nothing is added and the message "Danh sách Đã lưu đã đầy" is shown as in `UC-080-01` AF 1.8.
+    2. A recipe that is already saved can still be added to collections that are not full (Edge Cases).
+- **AF 2.7: Change Cannot Be Stored:**
+  - *Trigger:* At Step 6, a network or server failure prevents storing (US2 AS9, FR-024).
+  - *Steps:*
+    1. The dialog stays open with the actor's choices kept, and a message offers "Try again". No part of the change is stored.
+- **AF 2.8: No Connection:**
+  - *Trigger:* At Step 1 or Step 5, the device is offline (Edge Cases "No connection").
+  - *Steps:*
+    1. The action fails at once with the offline message and the dialog keeps its previous state. Nothing is queued.
+- **AF 2.9: Actor Has No Collection Yet:**
+  - *Trigger:* At Step 2, the actor has no collection (FR-022).
+  - *Steps:*
+    1. The dialog shows its empty state with a way forward: "Tạo bộ sưu tập mới".
+- **AF 2.10: Dialog Loading or Load Error:**
+  - *Trigger:* At Step 2, the list is loading or cannot be loaded (FR-022).
+  - *Steps:*
+    1. The dialog shows a loading state, or an error state with "Thử lại" for a server failure.
+- **AF 2.11: Recipe No Longer Published:**
+  - *Trigger:* At Step 6, the recipe was archived or removed after the page was loaded (FR-009).
+  - *Steps:*
+    1. The system refuses with "Công thức này không còn khả dụng" and stores nothing.
+- **AF 2.12: Already in the Collection or Not There:**
+  - *Trigger:* At Step 6, the recipe is already in a ticked collection or is already absent from an unticked one (FR-010).
+  - *Steps:*
+    1. The system changes nothing for that collection and shows no error; a recipe appears at most once per collection.
+- **AF 2.13: Collection Deleted on Another Device:**
+  - *Trigger:* At Step 6, a ticked collection no longer exists (Edge Cases).
+  - *Steps:*
+    1. The action fails with a message that the collection no longer exists, and the actor is taken back to the collections list.
+- **AF 2.14: Repeated Confirmation:**
+  - *Trigger:* At Step 5, the actor presses "Xong" several times (FR-023).
+  - *Steps:*
+    1. Exactly one result is produced.
+- **AF 2.15: Session Expired:**
+  - *Trigger:* At Step 6, the session has expired.
+  - *Steps:*
+    1. The change is not stored; the actor signs in again and returns to the same page (`UC-010-02`).
+- **AF 2.16: Guest Chooses "Lưu vào bộ sưu tập":**
+  - *Trigger:* At Step 1, the actor is not signed in (FR-004).
+  - *Steps:*
+    1. The system sends the Guest to sign-in and returns the Guest to the same page afterwards (`UC-010-02` AF 2.9).
+- **AF 2.17: Two Devices at the Same Time:**
+  - *Trigger:* At Step 6, another device changed the same collections (Edge Cases).
+  - *Steps:*
+    1. The last change wins per collection and recipe; the other device shows the current state on its next load.
+
+#### 7. Postconditions
+- **Success:** The recipe is in exactly the ticked collections and in "Đã lưu"; every recipe in any collection is also in "Đã lưu".
+- **Failure or refusal:** No list changed; the dialog or a message tells the actor why.
+
+#### 8. Special Requirements
+- **Integrity:** Either all additions and removals are stored or none (FR-013, NFR-007); a recipe is never in a collection without being in "Đã lưu" (SC-008).
+- **Privacy:** Only the actor's own collections are listed (FR-002, NFR-002).
+- **Performance:** 95% of dialog confirmations are stored within 1 second (NFR-001); a user can put a recipe into 3 collections, including a new one, in under 20 seconds (SC-002).
+- **Usability and accessibility:** The dialog is a bottom sheet on narrow screens, usable from 360 px, keyboard-only, with touch targets of at least 44 × 44 px (NFR-004, NFR-006).
+- **Testing:** Every acceptance scenario of US2 has at least one automated test (SC-010).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`BM04-SaveDialog.dc.html`](../analysis-and-design/ui-ux/screens/BM04-SaveDialog.dc.html) (Steps 2–5, with "Đã đầy", "Tạo bộ sưu tập mới" and "Xong"), [`BM05-SavedToast.dc.html`](../analysis-and-design/ui-ux/screens/BM05-SavedToast.dc.html) (Step 1, the "Thêm vào bộ sưu tập" action).
+- **Alternative Flows:** [`BM04-SaveDialog.dc.html`](../analysis-and-design/ui-ux/screens/BM04-SaveDialog.dc.html) (AF 2.3 with the message "Bạn đã có bộ sưu tập tên này", AF 2.5).
+- **UI Asset Gap for SCRUM-58:** Needs the dialog empty state (AF 2.9), the save-failed state with "Try again" (AF 2.7) and the result confirmation "Đã thêm vào 2 bộ sưu tập" (Step 7). See Section 11.2 (Gaps 080-D to 080-F).
+
+---
+
+### UC-080-03: Create, Rename & Delete Collection
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-080-03`
+- **Use Case Name:** Create, Rename and Delete a Collection Without Deleting Any Recipe
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — a home cook with many saved recipes who wants a tidy cookbook.
+- **Extended Use Case:** `UC-080-02` Add Recipe to Collections (a collection can also be created from the dialog).
+
+#### 3. Description
+Lets a signed-in user create collections such as "Món chay" with a name of 1–50 characters that is unique among the user's collections (ignoring letter case and surrounding spaces, and different from "Đã lưu"), rename them, and delete them. Deleting a collection never deletes, unsaves or changes a recipe. The user may have at most 50 collections, not counting the built-in "Đã lưu", which can neither be renamed nor deleted.
+
+#### 4. Preconditions
+- The actor is signed in with the Member role or above and the account is active (`UC-010-02`; FR-001).
+- The device has an internet connection (FR-025).
+
+#### 5. Basic Flow
+1. **Open Collections List:** The actor opens "Bộ sưu tập của tôi".
+2. **Start Creation:** The actor chooses "Tạo bộ sưu tập" ("Tạo").
+3. **Enter Name:** The actor enters a name, for example "Món chay", of 1–50 characters (US3 AS1).
+4. **Validate:** The system trims spaces, checks the length, checks that the name is not used by another collection of the actor and is not "Đã lưu" (ignoring letter case), and checks that the actor has fewer than 50 collections (FR-011, FR-015). The name is validated on the server and always shown as plain text (NFR-003).
+5. **Create:** The system creates an empty collection and opens it; the collections list shows it with 0 recipes.
+6. **Rename:** The actor chooses the collection menu and "Đổi tên", enters "Món chay cuối tuần" and confirms. The system validates it as in Step 4 and shows the new name everywhere the collection appears (US3 AS3).
+7. **Request Deletion:** The actor chooses "Xóa bộ sưu tập". The system shows a confirmation that names the collection and the number of recipes it holds and states that the recipes stay in "Đã lưu" and are not deleted (US3 AS4, FR-016).
+8. **Confirm Deletion:** The actor confirms. The system deletes the collection and its items only: no recipe is deleted, unsaved or changed, recipes that are also in other collections stay there, and other collections are not affected (US3 AS5, FR-016).
+
+#### 6. Alternative Flows
+- **AF 3.1: Duplicate Name or "Đã lưu":**
+  - *Trigger:* At Step 4 or Step 6, the name equals another collection of the actor or "Đã lưu", ignoring letter case and surrounding spaces (US3 AS2, FR-015).
+  - *Steps:*
+    1. The system refuses with "Bạn đã có bộ sưu tập tên này" and keeps what the actor typed.
+- **AF 3.2: Empty, Too Long or Special-Character Name:**
+  - *Trigger:* At Step 3 or Step 6, the name is empty, only spaces, or longer than 50 characters; or it contains `<`, `>`, emoji or quotes (Edge Cases).
+  - *Steps:*
+    1. An empty, spaces-only or too-long name is refused with a message.
+    2. Other characters are accepted and always displayed as plain text.
+- **AF 3.3: Limit of 50 Collections Reached:**
+  - *Trigger:* At Step 4, the actor already has 50 collections (US3 AS7, FR-011), whether creating from the list page or from the dialog of `UC-080-02`.
+  - *Steps:*
+    1. The system refuses with "Bạn đã có tối đa 50 bộ sưu tập" and suggests deleting one. "Đã lưu" does not count toward the 50.
+- **AF 3.4: Built-In "Đã lưu":**
+  - *Trigger:* At Step 6 or Step 7, the actor opens the menu of "Đã lưu" (US3 AS6, FR-005).
+  - *Steps:*
+    1. Rename and delete are not offered.
+- **AF 3.5: Rename to the Same Name on Two Devices:**
+  - *Trigger:* At Step 6, two devices rename collections to the same name (Edge Cases).
+  - *Steps:*
+    1. The second request is refused as a duplicate.
+- **AF 3.6: Deletion Cancelled:**
+  - *Trigger:* At Step 7, the actor cancels the confirmation.
+  - *Steps:*
+    1. Nothing changes.
+- **AF 3.7: Collection Deleted on Another Device:**
+  - *Trigger:* At Step 6 to Step 8, the collection was already deleted on another device (Edge Cases).
+  - *Steps:*
+    1. The action fails with a message that the collection no longer exists, and the actor is taken back to the collections list.
+- **AF 3.8: Network or Server Failure:**
+  - *Trigger:* At Step 5, Step 6 or Step 8, the change cannot be stored (FR-024).
+  - *Steps:*
+    1. The screen returns to its previous state and says that the change was not saved.
+- **AF 3.9: No Connection:**
+  - *Trigger:* At any step, the device is offline (FR-025).
+  - *Steps:*
+    1. The page shows the offline message shared with the meal planner with "Thử lại"; all actions are locked and nothing is queued.
+- **AF 3.10: Repeated Submission:**
+  - *Trigger:* At Step 3, Step 6 or Step 8, the actor submits the same action several times (FR-023).
+  - *Steps:*
+    1. Exactly one result is produced.
+- **AF 3.11: Session Expired:**
+  - *Trigger:* At any step, the session has expired.
+  - *Steps:*
+    1. The change is not stored; the actor signs in again and returns to the same page (`UC-010-02`).
+- **AF 3.12: Guest Opens the Collections Page:**
+  - *Trigger:* At Step 1, the actor is not signed in (FR-004).
+  - *Steps:*
+    1. The system sends the Guest to sign-in and returns the Guest afterwards (`UC-010-02` AF 2.9).
+- **AF 3.13: Recipes of the Deleted Collection Are Planned:**
+  - *Trigger:* At Step 8, recipes of the deleted collection are in a meal plan (spec `030`).
+  - *Steps:*
+    1. Dishes already planned are unchanged; the recipes only stop appearing in the planner's "From my collections" view (Edge Cases).
+
+#### 7. Postconditions
+- **Success (create):** A new empty collection exists with a unique name; the number of the actor's collections increased by one.
+- **Success (rename):** The new name is shown everywhere; the items are unchanged.
+- **Success (delete):** The collection and its items are gone; every recipe is still published, still in "Đã lưu" and still in the other collections that held it.
+- **Failure or refusal:** Nothing changes; a message states why.
+
+#### 8. Special Requirements
+- **Limits:** At most 50 collections per user not counting "Đã lưu"; names of 1–50 characters (FR-011, FR-015); in limit tests the 51st collection is refused in 100% of cases with the matching message and no partial change (SC-007).
+- **Integrity:** Deleting a collection deletes or unsaves 0 recipes in 100% of tests (SC-006, NFR-007).
+- **Security and privacy:** Names are validated on the server and displayed as plain text (NFR-003; constitution Principle IV); only the owner can see, rename or delete a collection and its name (FR-002, NFR-002).
+- **Usability and accessibility:** Usable from 360 px, keyboard-only, Vietnamese by default (NFR-004, NFR-005, NFR-006).
+- **Testing:** Every acceptance scenario of US3 has at least one automated test (SC-010).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`BM01-Collections.dc.html`](../analysis-and-design/ui-ux/screens/BM01-Collections.dc.html) (Steps 1–2, the button "Tạo" and the list with "Đã lưu" marked "Mặc định"), [`BM04-SaveDialog.dc.html`](../analysis-and-design/ui-ux/screens/BM04-SaveDialog.dc.html) (Steps 3–4, creation inside the dialog with the duplicate-name message).
+- **Alternative Flows:** [`BM04-SaveDialog.dc.html`](../analysis-and-design/ui-ux/screens/BM04-SaveDialog.dc.html) (AF 3.1, "Bạn đã có bộ sưu tập tên này").
+- **UI Asset Gap for SCRUM-58:** Needs the create-collection dialog on the list page, the rename dialog, the delete confirmation (Step 7), and the 50-collection limit message (AF 3.3). See Section 11.2 (Gaps 080-G to 080-J).
+
+---
+
+### UC-080-04: Browse Saved Recipes & Collections
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-080-04`
+- **Use Case Name:** Browse "Đã lưu" and Collections, Including Recipes That Are No Longer Available
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — a home cook deciding what to cook, who picks from dishes already trusted (proposal 3.8 "quick recall").
+- **Supporting Use Case Consumer:** The meal planner (spec `030`) reads the actor's own collections for its "From my collections" view (FR-026).
+
+#### 3. Description
+Lets a signed-in user see all saved recipes and collections at a glance and open one to browse its recipes as recipe cards, sorted by most recently added or by name, in pages of 20. The user can remove a recipe from a collection (it stays in "Đã lưu") or unsave it. A recipe that was archived by its author or removed by a moderator after being saved stays in place as a "Không còn khả dụng" item that shows only its name; the user can remove it, or remove all such items at once, and it is never removed automatically. This use case covers user stories US4 and US5 of spec 080.
+
+#### 4. Preconditions
+- The actor is signed in with the Member role or above and the account is active (`UC-010-02`; FR-001).
+- The device has an internet connection (FR-025).
+
+#### 5. Basic Flow
+1. **Open the List Page:** The actor opens "Bộ sưu tập của tôi". The system shows a loading state (skeleton) while the data loads (FR-022).
+2. **Show Lists:** The system shows "Đã lưu" first with its count out of the limit (for example "86 / 1.000 công thức") and the label "Mặc định", then the collections by most recently updated, each with its name, number of recipes and a preview of up to 4 photos of available recipes (US4 AS1, FR-017).
+3. **Open a List:** The actor opens "Đã lưu" or a collection, for example "Cơm tối trong tuần".
+4. **Show Recipes:** The system shows the recipes as the shared recipe card (as in search, spec `020`), most recently added first, in numbered pages of 20, with the total count (for example "12 công thức") and the sort options "Mới thêm" and "Tên A–Z" (US4 AS3, FR-018).
+5. **Change Sort:** The actor chooses "Tên A–Z". The system re-orders the recipes and returns to page 1 (US4 AS7).
+6. **Remove from the Collection:** The actor chooses "Bỏ khỏi bộ sưu tập" on a card. The system removes the recipe from this collection only; it stays in "Đã lưu" and in other collections. The system shows a confirmation such as "Đã bỏ “Canh bí” khỏi bộ sưu tập" with "Hoàn tác" for 5 seconds (US4 AS5, FR-019, FR-008).
+7. **Open a Recipe:** The actor selects an available recipe card. The use case ends and `UC-020-06` View Recipe Details begins.
+
+#### 6. Alternative Flows
+- **AF 4.1: Nothing Saved and No Collection:**
+  - *Trigger:* At Step 1, the actor has saved no recipe and created no collection (US4 AS2).
+  - *Steps:*
+    1. The system shows an empty state that explains how to save recipes ("Bạn chưa lưu công thức nào"), shows "Đã lưu" as empty, and offers "Khám phá công thức" and "Tạo bộ sưu tập".
+- **AF 4.2: Empty Collection:**
+  - *Trigger:* At Step 3, the actor opens a collection without recipes (US4 AS4).
+  - *Steps:*
+    1. The system says the collection has no recipes yet and offers "Khám phá công thức".
+- **AF 4.3: Unsave from "Đã lưu":**
+  - *Trigger:* At Step 6, the actor chooses "Bỏ lưu" on a card in "Đã lưu" (US4 AS6).
+  - *Steps:*
+    1. The system removes the recipe as in `UC-080-01` AF 1.2 and AF 1.3: from "Đã lưu" and from every collection, with a confirmation when it is in collections, and with Undo.
+- **AF 4.4: Guest Opens a Collections Page:**
+  - *Trigger:* At Step 1, a Guest opens "Bộ sưu tập của tôi" or a collection address (US4 AS8, FR-004).
+  - *Steps:*
+    1. The system sends the Guest to sign-in and brings the Guest back afterwards (`UC-010-02` AF 2.9).
+- **AF 4.5: No Connection:**
+  - *Trigger:* At Step 1 or Step 3, the device has no connection, or the connection drops while a page is open (US4 AS9, FR-025).
+  - *Steps:*
+    1. The system shows no list. The offline message shared with the meal planner ("Cần kết nối mạng", spec `030` `FR-027`, `FR-028`) says an internet connection is needed and offers "Thử lại".
+    2. All actions are locked, nothing is kept on the device for offline viewing, and the page reloads by itself when the connection returns or when the actor retries while online.
+- **AF 4.6: Server Failure:**
+  - *Trigger:* At Step 1 or Step 3, the server cannot return the lists (FR-022).
+  - *Steps:*
+    1. The system shows the error state with "Thử lại".
+- **AF 4.7: Unavailable Item:**
+  - *Trigger:* At Step 4, a saved recipe was archived by its author or removed by a moderator (US5 AS1, AS2; FR-020).
+  - *Steps:*
+    1. The item stays in its normal position in the sort order and shows only the recipe name as it was saved and the label "Không còn khả dụng", with no photo.
+    2. When the actor selects it, the recipe detail page does not open; a message says the recipe is no longer available and offers "Bỏ khỏi bộ sưu tập" (in a collection) or "Bỏ lưu" (in "Đã lưu").
+- **AF 4.8: Bar for Unavailable Items:**
+  - *Trigger:* At Step 4, the list contains at least one unavailable item (US5 AS3, FR-021).
+  - *Steps:*
+    1. The system shows a bar at the top with the number of such items (for example "1 món không còn khả dụng") and the action "Bỏ tất cả món không còn khả dụng".
+    2. When the list contains none, neither the bar nor the action is shown.
+- **AF 4.9: Remove All Unavailable Items in a Collection:**
+  - *Trigger:* At AF 4.8, the actor chooses the action in a collection (US5 AS4, FR-021).
+  - *Steps:*
+    1. The system asks for confirmation.
+    2. On confirmation it removes those items from that collection only; they stay in "Đã lưu".
+- **AF 4.10: Remove All Unavailable Items in "Đã lưu":**
+  - *Trigger:* At AF 4.8, the actor chooses the action in "Đã lưu" (US5 AS5, FR-021).
+  - *Steps:*
+    1. The system asks for confirmation that states how many collections are affected.
+    2. On confirmation it removes those recipes from "Đã lưu" and from every collection.
+- **AF 4.11: Recipe Restored:**
+  - *Trigger:* At Step 4, an archived or removed recipe was restored to `PUBLISHED` (US5 AS6).
+  - *Steps:*
+    1. The item appears as a normal recipe card again in the same position, without any action by the actor.
+- **AF 4.12: Time Passes:**
+  - *Trigger:* Any amount of time passes while an item is unavailable (US5 AS7).
+  - *Steps:*
+    1. The item is never removed automatically; only the actor removes it. Unavailable items keep counting toward the limits.
+- **AF 4.13: Counts and Previews:**
+  - *Trigger:* At Step 2, a list contains unavailable items (US5 AS8).
+  - *Steps:*
+    1. Counts include unavailable items, and previews use only available recipes.
+- **AF 4.14: Collection of Another User or Not Existing:**
+  - *Trigger:* At Step 3, the actor, or any user or role including an Administrator, opens a collection address that does not exist or belongs to another user (FR-003, Edge Cases).
+  - *Steps:*
+    1. The system shows "Không tìm thấy bộ sưu tập", exactly as for a collection that does not exist, and reveals nothing about it, not even through counts, links or error messages (NFR-002).
+- **AF 4.15: Collection Deleted on Another Device:**
+  - *Trigger:* At Step 3 to Step 6, the open collection no longer exists (Edge Cases).
+  - *Steps:*
+    1. Actions on it fail with a message that the collection no longer exists, and the actor is taken back to the collections list.
+- **AF 4.16: Remove Action Fails:**
+  - *Trigger:* At Step 6, the removal cannot be stored (FR-024).
+  - *Steps:*
+    1. The screen returns to its previous state and says that the change was not saved.
+- **AF 4.17: Undo Offer Ends:**
+  - *Trigger:* At Step 6, the 5 seconds pass or the actor leaves the page (Edge Cases).
+  - *Steps:*
+    1. The undo offer disappears; the removal stays.
+- **AF 4.18: Photo Missing or Not Loading:**
+  - *Trigger:* At Step 4, the photo of an available recipe is missing or fails to load (Edge Cases).
+  - *Steps:*
+    1. The card shows a placeholder and the name still shows. Unavailable items never show a photo.
+- **AF 4.19: Very Long Names:**
+  - *Trigger:* At Step 2 or Step 4, a recipe or collection name is very long (Edge Cases).
+  - *Steps:*
+    1. The name is shortened on cards and in the dialog; the full name is shown on hover or focus and on the detail page.
+- **AF 4.20: Two Devices:**
+  - *Trigger:* Another device changed the same lists (Edge Cases).
+  - *Steps:*
+    1. The last change wins per collection and recipe; this device shows the current state on its next load.
+- **AF 4.21: Session Expired:**
+  - *Trigger:* At any step, the session has expired.
+  - *Steps:*
+    1. The system asks the actor to sign in again and returns the actor to the same page (`UC-010-02`).
+- **AF 4.22: Suspended or Banned Account:**
+  - *Trigger:* The account is suspended or banned (Edge Cases).
+  - *Steps:*
+    1. The collections are not reachable because the user cannot sign in; they are kept unchanged. If the account is deleted (`UC-011-04`), "Đã lưu", all collections and their items are deleted with it and recipes are not affected.
+
+#### 7. Postconditions
+- **Success:** The actor has seen the lists and recipes. Any removal leaves the recipe in "Đã lưu" (when removed from a collection) and deletes no recipe.
+- **Failure or offline:** No list data is shown or kept on the device; the previous state is unchanged.
+- **For the meal planner (FR-026):** The system provides, for the signed-in user only, the list of the user's collections with "Đã lưu" first and the available (`PUBLISHED`) recipes of a chosen one, paged and searchable by recipe name; unavailable items are not offered there.
+
+#### 8. Special Requirements
+- **Privacy:** Nobody but the owner can see a collection, its name or its contents, including Moderators and Administrators; collections cannot be shared or made public; in privacy tests 0 requests by another user reveal a collection (FR-002, NFR-002, SC-005).
+- **Performance:** 95% of collection pages are fully shown within 2 seconds under normal load (up to 100 concurrent users) and with lists at their limits (NFR-001); a user finds a saved recipe within 15 seconds in 90% of tests (SC-003).
+- **Offline:** Pages come back within 5 seconds of the connection returning (SC-009); no saved-recipe data is kept on the device (FR-025).
+- **Integrity:** 0 archived recipes disappear from "Đã lưu" or collections without the user removing them (SC-006).
+- **Usability and accessibility:** Usable from 360 px, keyboard-only; Vietnamese strings in the shared string store; recipe cards are the shared component (NFR-004, NFR-005, NFR-006; constitution Principle V).
+- **Testing:** Every acceptance scenario of US4 and US5 has at least one automated test (SC-010).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`BM01-Collections.dc.html`](../analysis-and-design/ui-ux/screens/BM01-Collections.dc.html) (Steps 1–2), [`BM03-CollectionDetail.dc.html`](../analysis-and-design/ui-ux/screens/BM03-CollectionDetail.dc.html) (Steps 3–6, with sort chips "Mới thêm" and "Tên A–Z" and the "Hoàn tác" toast).
+- **Alternative Flows:** [`BM02-Empty.dc.html`](../analysis-and-design/ui-ux/screens/BM02-Empty.dc.html) (AF 4.1), [`BM03-CollectionDetail.dc.html`](../analysis-and-design/ui-ux/screens/BM03-CollectionDetail.dc.html) (AF 4.7, AF 4.8: "1 món không còn khả dụng", "Bỏ tất cả món không còn khả dụng", the "Bò lúc lắc — Không còn khả dụng" item with "Bỏ khỏi bộ sưu tập"), [`CM04-OfflinePage.dc.html`](../analysis-and-design/ui-ux/screens/CM04-OfflinePage.dc.html) (AF 4.5), [`CM01-NotFound.dc.html`](../analysis-and-design/ui-ux/screens/CM01-NotFound.dc.html) (AF 4.14), [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 4.4).
+- **UI Asset Gap for SCRUM-58:** Needs the empty-collection state (AF 4.2), the server-failure state (AF 4.6), the confirmations of "Bỏ tất cả" (AF 4.9, AF 4.10), the message shown when an unavailable item is selected (AF 4.7) and the detail page of "Đã lưu". See Section 11.2 (Gaps 080-K to 080-N).
+
+---
+
+### 11.1. Feature 080 (Recipe Bookmarks & Custom Collections) Traceability
+
+| Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria | Vision Feature |
+| :---: | :--- | :---: | :--- | :--- | :---: | :---: |
+| **`UC-080-01`** | Save Recipe with One Tap | `US1` (AS 1–10) | `FR-001`, `FR-002`, `FR-004`, `FR-005`, `FR-006`, `FR-007`, `FR-008`, `FR-009`, `FR-010`, `FR-011`, `FR-023`, `FR-024` | `NFR-001`, `NFR-004`, `NFR-005`, `NFR-006`, `NFR-007` | `SC-001`, `SC-004`, `SC-009`, `SC-010` | §5.8 |
+| **`UC-080-02`** | Add Recipe to Collections | `US2` (AS 1–9) | `FR-004`, `FR-009`, `FR-010`, `FR-011`, `FR-012`, `FR-013`, `FR-014`, `FR-022`, `FR-023`, `FR-024` | `NFR-001`, `NFR-002`, `NFR-004`, `NFR-006`, `NFR-007` | `SC-002`, `SC-008`, `SC-010` | §5.8 |
+| **`UC-080-03`** | Create, Rename & Delete Collection | `US3` (AS 1–7) | `FR-005`, `FR-011`, `FR-015`, `FR-016`, `FR-023`, `FR-024`, `FR-025` | `NFR-002`, `NFR-003`, `NFR-004`, `NFR-005`, `NFR-006`, `NFR-007` | `SC-006`, `SC-007`, `SC-010` | §5.8 |
+| **`UC-080-04`** | Browse Saved Recipes & Collections | `US4` (AS 1–9); `US5` (AS 1–8) | `FR-002`, `FR-003`, `FR-004`, `FR-008`, `FR-017`, `FR-018`, `FR-019`, `FR-020`, `FR-021`, `FR-022`, `FR-024`, `FR-025`, `FR-026` | `NFR-001`, `NFR-002`, `NFR-004`, `NFR-005`, `NFR-006` | `SC-003`, `SC-005`, `SC-006`, `SC-009`, `SC-010` | §5.8 |
+
+*Verification:* All 5 user stories of spec 080 (43 acceptance scenarios), all 26 functional requirements (`FR-001` – `FR-026`), the 7 NFRs and `SC-001` – `SC-010` are mapped. `US4` and `US5` are both written in `UC-080-04`, following Use-Case Model §4.8. `FR-026` (data for the meal planner) is provided by `UC-080-04`; the planner's use cases (`UC-030-01`) consume it. `FR-001` and `FR-002` (access and ownership) apply to all four use cases as preconditions and special requirements.
+
+### 11.2. Prototype Screen Mapping & UI Asset Gaps (for SCRUM-58)
+
+| Use Case ID | Flow / Step Reference | Existing Screen ID & Filename | Description of Prototype View | Asset Status & Action for SCRUM-58 |
+| :---: | :--- | :--- | :--- | :---: |
+| `UC-080-01` | Basic Flow (Steps 5–6) | `BM05-SavedToast.dc.html` | Detail page "Đã lưu · trong 2 bộ sưu tập", confirmation "Đã lưu công thức" with "Thêm vào bộ sưu tập" | **Available** |
+| `UC-080-01` | AF 1.3 | `BM06-UnsaveConfirm.dc.html` | "Bỏ lưu “Gà kho gừng”?" naming the 2 collections, 5-second undo note | **Available** |
+| `UC-080-01` | AF 1.7 | `AU08-SignInPrompt.dc.html` | Guest taps Save: sign-in prompt | **Available** |
+| `UC-080-01` | AF 1.8 | `BM05-SavedToast.dc.html` | "Danh sách Đã lưu đã đầy (1.000)" with "Xem" | **Available** |
+| `UC-080-01` | AF 1.2, AF 1.4 | *Gap 080-A* | Confirmation with "Undo" after unsaving a recipe that is in no collection | **GAP** |
+| `UC-080-01` | AF 1.10, AF 1.11 | *Gap 080-B* | Save icon returns to unsaved with "not saved" and offline messages | **GAP** |
+| `UC-080-01` | AF 1.9 | *Gap 080-C* | "Công thức này không còn khả dụng" refusal on save | **GAP** |
+| `UC-080-02` | Basic Flow (Steps 2–5), AF 2.3, AF 2.5 | `BM04-SaveDialog.dc.html` | Dialog with ticks, "Đã đầy", "Tạo bộ sưu tập mới", duplicate-name message, "Xong" | **Available** |
+| `UC-080-02` | AF 2.9 | *Gap 080-D* | Dialog empty state when the user has no collection | **GAP** |
+| `UC-080-02` | AF 2.7 | *Gap 080-E* | Dialog stays open with choices kept and "Try again" | **GAP** |
+| `UC-080-02` | Basic Flow (Step 7) | *Gap 080-F* | Result confirmation "Đã thêm vào 2 bộ sưu tập" | **GAP** |
+| `UC-080-03` | Basic Flow (Steps 1–2) | `BM01-Collections.dc.html` | Collections list with "Tạo" and the default list "Đã lưu" | **Available** |
+| `UC-080-03` | AF 3.1 | `BM04-SaveDialog.dc.html` | "Bạn đã có bộ sưu tập tên này" | **Available** |
+| `UC-080-03` | Basic Flow (Steps 3–4) | *Gap 080-G* | Create-collection dialog on the list page | **GAP** |
+| `UC-080-03` | Basic Flow (Step 6) | *Gap 080-H* | Rename dialog / collection menu | **GAP** |
+| `UC-080-03` | Basic Flow (Step 7) | *Gap 080-I* | Delete confirmation with the name, the recipe count and "recipes stay in Đã lưu" | **GAP** |
+| `UC-080-03` | AF 3.3 | *Gap 080-J* | "Bạn đã có tối đa 50 bộ sưu tập" with the suggestion to delete one | **GAP** |
+| `UC-080-04` | Basic Flow (Steps 1–2) | `BM01-Collections.dc.html` | "Đã lưu 86 / 1.000 công thức", collections with counts | **Available** |
+| `UC-080-04` | Basic Flow (Steps 3–6), AF 4.7, AF 4.8 | `BM03-CollectionDetail.dc.html` | Sort chips, recipe cards, unavailable item, bar "Bỏ tất cả món không còn khả dụng", undo toast | **Available** |
+| `UC-080-04` | AF 4.1 | `BM02-Empty.dc.html` | "Bạn chưa lưu công thức nào" with "Khám phá công thức" and "Tạo bộ sưu tập" | **Available** |
+| `UC-080-04` | AF 4.5 | `CM04-OfflinePage.dc.html` | "Cần kết nối mạng" with "Thử lại" | **Available** |
+| `UC-080-04` | AF 4.14 | `CM01-NotFound.dc.html` | Not found; the text mentions other users' collections | **Available** (see `[OQ-080-03]`) |
+| `UC-080-04` | AF 4.4 | `AU08-SignInPrompt.dc.html` | Guest sent to sign-in | **Available** |
+| `UC-080-04` | AF 4.2 | *Gap 080-K* | Empty collection detail with "Khám phá công thức" | **GAP** |
+| `UC-080-04` | AF 4.6 | *Gap 080-L* | Server-failure state with "Thử lại" | **GAP** |
+| `UC-080-04` | AF 4.9, AF 4.10 | *Gap 080-M* | Confirmations of "Bỏ tất cả món không còn khả dụng" (collection and "Đã lưu" with the number of affected collections) | **GAP** |
+| `UC-080-04` | AF 4.7 (item selected) | *Gap 080-N* | Message when an unavailable item is selected, with the remove action; and the detail page of "Đã lưu" | **GAP** |
+
+*Note:* `AF 1.1`, `AF 1.5` – `AF 1.6`, `AF 1.12` – `AF 1.16`, `AF 2.1` – `AF 2.2`, `AF 2.4`, `AF 2.8`, `AF 2.10` – `AF 2.17`, `AF 3.2`, `AF 3.4` – `AF 3.13`, `AF 4.3`, `AF 4.11` – `AF 4.13` and `AF 4.15` – `AF 4.22` reuse the screens above, are background behaviour, or are messages in screens already listed.
+
+### 11.3. Open Questions (For Team Alignment)
+
+1. **`[OQ-080-01]` Five User Stories, Four Use Cases:**
+   - *Issue:* Spec 080 has five user stories; the Use-Case Model defines four use cases and says recipes taken down after saving (`US5`) are an alternative flow of `UC-080-04`.
+   - *Current Stance:* `US4` and `US5` are written together in `UC-080-04` (22 alternative flows). If the reviewer prefers, `US5` can be split into a separate use case (for example `UC-080-05`), which would need a change to the model before the freeze on 02/11/2026.
+   - *Owner:* Mai Văn Hiển with Nguyễn Đức Duy (`SCRUM-49`).
+2. **`[OQ-080-02]` Save Button and Recipe Detail Extension Point `EP-5`:**
+   - *Issue:* `UC-020-06` defines `EP-5 Save` as the buttons "Lưu công thức" / "Lưu vào bộ sưu tập" visible to Member and above, and lets a Guest see the button and be asked to sign in. Spec 080 FR-001 and the permission matrix allow only Members to save.
+   - *Current Stance:* `AF 1.7` shows the button to Guests and sends them to sign-in (US1 AS6, FR-004).
+   - *Owner:* Mai Văn Hiển with Nguyễn Đức Duy.
+3. **`[OQ-080-03]` Wording of the "Not Found" Message:**
+   - *Issue:* Spec 080 Edge Cases specify "Không tìm thấy bộ sưu tập", but the shared prototype `CM01-NotFound` shows "Không tìm thấy trang" with a note about other users' collections.
+   - *Current Stance:* `AF 4.14` follows the spec; the prototype text needs to be reconciled.
+   - *Owner:* Trần Nguyễn Công Chung (`SCRUM-58`) with Mai Văn Hiển.
+4. **`[OQ-080-04]` Open Integration Points of Spec 080:**
+   - *Issue:* Spec 080 Integration Points leave to other owners: the planner slot showing no photo for unavailable recipes (`030`), whether moderator removal ever hard-deletes a published recipe (`100`), and the use of bookmarks as an AI preference signal (`031`, not used yet).
+   - *Current Stance:* `UC-080-04` follows spec 080 `FR-020`; nothing is invented for these points.
+   - *Owner:* Nguyễn Thành Dự (`030`, `031`) and Trần Nguyễn Công Chung (`100`).
+5. **`[OQ-080-05]` Prototype Shows the Dialog Opened from Spec-Unspecified Entry Points:**
+   - *Issue:* Spec 080 lists "the card menu" as an entry to the dialog, but no prototype screen shows a card menu, and `BM03` does not show the "Bỏ lưu" action of `AS6` of `US4`.
+   - *Current Stance:* Described in `AF 1.1` and `AF 4.3`; listed as a gap, not drawn.
    - *Owner:* Trần Nguyễn Công Chung (`SCRUM-58`).
