@@ -24,7 +24,11 @@ Embedding công thức nằm ở `wikicook-app` (`com.wikicook.aiplanner.embeddi
 
 `GeminiLiveIT` gọi Gemini thật để kiểm tra dạng request/response. Test chỉ chạy khi có `WIKICOOK_AI_API_KEY` (`set -a; source ../.env; set +a` trước `mvn verify`), mỗi lần chạy gửi 4 request.
 
-Chưa có: truy hồi RAG (`CandidateQuery`), đồng bộ embedding theo event của 060 (`RecipeEmbeddingSync`).
+Pipeline trong `wikicook-app` (`com.wikicook.aiplanner`) đã có các bước 1–5 dạng thành phần rời: lọc hard rule bằng SQL (`EligibleRecipeQuery` + `DietRuleSql`), truy hồi pgvector (`CandidateService`, lỗi embedding thì xếp bằng SQL), prompt `meal-plan.v1` (`PromptBuilder`), kiểm tra kết quả (`DraftValidator`) và bản nháp dự phòng không dùng AI (`BackupPlanner`).
+
+Chạy thử ngày 2026-10-30 trên DB local (1.559 món PUBLISHED): reconcile với `WIKICOOK_AI_EMBEDDING_RECONCILE_LIMIT=200` embed 200 món trong 104 giây, không lỗi.
+
+Chưa có: service điều phối, controller và job async (chờ `MealPlanWriteFacade`/`DietaryProfilePort` của 030), đồng bộ embedding theo event của 060 (`RecipeEmbeddingSync`), frontend.
 
 ## Cấu hình
 
