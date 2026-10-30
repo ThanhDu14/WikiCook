@@ -58,6 +58,11 @@ public class AiQuotaService {
         repository.finish(requestRowId, outcome, calledLlm, removedPicks, trimmed);
     }
 
+    /** Whether {@code feature} still has room in today's cap; reads only, the place is taken by {@link #reserve}. */
+    public boolean dailyCapAvailable(AiFeature feature) {
+        return repository.countCalledLlmSince(feature, startOfDay(clock.instant())) < cap(feature);
+    }
+
     public UserAllowance userAllowance(long userId) {
         AiRequestRepository.CountedWindow window = repository.countedAfter(userId, clock.instant().minus(WINDOW));
         int remaining = Math.max(0, HOURLY_LIMIT - window.count());

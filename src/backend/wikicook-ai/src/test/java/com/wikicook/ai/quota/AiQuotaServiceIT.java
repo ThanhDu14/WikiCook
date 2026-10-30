@@ -105,6 +105,22 @@ class AiQuotaServiceIT extends AbstractPostgresIT {
         assertThat(repository.findById(id).orElseThrow().counted()).isFalse();
     }
 
+    /** 031 R12: the options dialog says in advance when today's cap is used up (aiAvailableToday). */
+    @Test
+    void dailyCapAvailableReadsWithoutReserving() {
+        AiQuotaService service = service(2); // 1 row for the meal planner, 0 for nutrition
+
+        assertThat(service.dailyCapAvailable(AiFeature.MEAL_PLANNER)).isTrue();
+        assertThat(service.dailyCapAvailable(AiFeature.NUTRITION)).isFalse();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM ai_requests", Integer.class)).isZero();
+
+        reservePlanner(service);
+        assertThat(service.dailyCapAvailable(AiFeature.MEAL_PLANNER)).isFalse();
+
+        clock.set(OffsetDateTime.of(2026, 11, 3, 0, 0, 0, 0, VN).toInstant());
+        assertThat(service.dailyCapAvailable(AiFeature.MEAL_PLANNER)).isTrue();
+    }
+
     @Test
     void dailyCapUsesFeatureShareAndStartsAtMidnightVietnamTime() {
         AiQuotaService service = service(10);
