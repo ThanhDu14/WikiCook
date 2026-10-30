@@ -3,7 +3,9 @@ package com.wikicook.aiplanner.repository;
 import com.wikicook.common.diet.DietRestrictions;
 import com.wikicook.common.diet.DietRuleSql;
 import com.wikicook.mealplan.domain.Meal;
+import java.util.Collection;
 import java.util.EnumMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +46,23 @@ public class EligibleRecipeQuery {
                     """.formatted(mealColumn(meal), rules.sql()), params, Long.class));
         }
         return result;
+    }
+
+    /**
+     * Second check after the LLM answers (research R7): of {@code recipeIds}, those still published, not snacks and
+     * within the hard rules now. A recipe archived or edited during generation drops out here.
+     */
+    public Set<Long> stillEligible(Collection<Long> recipeIds, DietRestrictions restrictions) {
+        if (recipeIds.isEmpty()) {
+            return Set.of();
+        }
+        DietRuleSql.SqlClause rules = DietRuleSql.notViolating("r.id", restrictions);
+        MapSqlParameterSource params = new MapSqlParameterSource(rules.params()).addValue("ids", recipeIds);
+        return new LinkedHashSet<>(jdbc.queryForList("""
+                SELECT r.id FROM recipes r
+                 WHERE r.id IN (:ids) AND r.status = 'PUBLISHED' AND NOT r.is_snack AND %s
+                 ORDER BY r.id
+                """.formatted(rules.sql()), params, Long.class));
     }
 
     static String mealColumn(Meal meal) {

@@ -124,4 +124,22 @@ class EligibleRecipeQueryIT extends AbstractPostgresIT {
         assertThat(result.get(Meal.BREAKFAST)).containsExactly(breakfastOnly, allDay);
         assertThat(result.get(Meal.DINNER)).containsExactly(lunchDinner, allDay);
     }
+
+    @Test
+    void recheckKeepsOnlyIdsStillPublishedAndSafe() { // US3-1, US3-2: second check after the LLM answers
+        long peanutAllergen = f.allergen("PEANUT");
+        long peanut = f.ingredient("Đậu phộng", "PLANT");
+        f.tagAllergen(peanut, peanutAllergen);
+        long safe = f.newRecipe("Cơm đậu hũ").ingredients(rice, tofu).create();
+        long archived = f.newRecipe("Bún chả").ingredients(rice).create();
+        f.archive(archived);
+        long unsafe = f.newRecipe("Xôi đậu phộng").ingredients(rice, peanut).create();
+        long snack = f.newRecipe("Bánh tráng trộn").snack().create();
+
+        Set<Long> kept = query.stillEligible(List.of(safe, archived, unsafe, snack, 999_999L),
+                new DietRestrictions(Set.of(peanutAllergen), Set.of(), DietType.NONE));
+
+        assertThat(kept).containsExactly(safe);
+        assertThat(query.stillEligible(List.of(), DietRestrictions.none())).isEmpty();
+    }
 }

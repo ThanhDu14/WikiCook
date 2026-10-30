@@ -167,14 +167,14 @@ Backend là Maven multi-module (`src/backend/pom.xml`, cập nhật 2026-10-28).
 
 ### Tests for User Story 3 ⚠️ (viết trước, phải FAIL)
 
-- [ ] T056 [P] [US3] Unit test `DraftValidatorTest` – loại id không thuộc candidate, id không tồn tại (US3-1), id không còn PUBLISHED (US3-1), id vi phạm dị ứng/loại trừ/kiểu ăn khi kiểm tra lại (US3-2); trùng công thức giữ lần đầu theo ngày → bữa (FR-011); thiếu ô, thừa ô, ô không được yêu cầu, JSON hỏng → `RETRY`; đếm `removedPicks` đúng trong src/backend/src/test/java/com/wikicook/aiplanner/service/DraftValidatorTest.java
+- [x] T056 [P] [US3] Unit test `DraftValidatorTest` – loại id không thuộc candidate, id không tồn tại (US3-1), id không còn PUBLISHED (US3-1), id vi phạm dị ứng/loại trừ/kiểu ăn khi kiểm tra lại (US3-2); trùng công thức giữ lần đầu theo ngày → bữa (FR-011); thiếu ô, thừa ô, ô không được yêu cầu, JSON hỏng → `RETRY`; đếm `removedPicks` đúng trong src/backend/src/test/java/com/wikicook/aiplanner/service/DraftValidatorTest.java
 - [ ] T057 [P] [US3] Unit test `GenerationServiceRetryTest` – lần 1 `RETRY` → gọi LLM lần 2 kèm tin nhắn sửa lỗi; lần 2 hợp lệ → `AI_DRAFT`; chỉ retry khi còn ≥ 15 s; `chooseSlots` và `removedPicks` có trong response (US3-1, US3-2, US3-4) trong src/backend/src/test/java/com/wikicook/aiplanner/service/GenerationServiceRetryTest.java
 - [ ] T058 [P] [US3] Integration test `DraftSafetyIT` (Testcontainers + `FakeLlmClient`) – chèn 3 pick xấu → 3 ô trong `chooseSlots`, không công thức nào trong 3 công thức đó có trong `items` (SC-003, NFR-004); `ai_requests.removed_picks = 3` (FR-032) trong src/backend/src/test/java/com/wikicook/aiplanner/service/DraftSafetyIT.java
 - [ ] T059 [P] [US3] Test `ChooseSlot.test.tsx` – ô "Chọn món" hiện nhãn; bấm mở `RecipePicker` của 030 cho đúng ô (US3-3); `DraftBar` báo "{n} ô cần bạn tự chọn" (US3-4) trong src/frontend/src/features/ai-planner/__tests__/ChooseSlot.test.tsx
 
 ### Implementation for User Story 3
 
-- [ ] T060 [US3] Cài `DraftValidator` (parse JSON, so tập ô, kiểm tra candidate, đọc lại trạng thái + `DietRuleSql`, khử trùng) trong src/backend/src/main/java/com/wikicook/aiplanner/service/DraftValidator.java (làm T056 xanh)
+- [x] T060 [US3] Cài `DraftValidator` (parse JSON, so tập ô, kiểm tra candidate, đọc lại trạng thái + `DietRuleSql`, khử trùng) trong src/backend/src/main/java/com/wikicook/aiplanner/service/DraftValidator.java (làm T056 xanh)
 - [ ] T061 [US3] Gắn `DraftValidator` và retry một lần (ngân sách thời gian) vào `GenerationService` trong src/backend/src/main/java/com/wikicook/aiplanner/service/GenerationService.java (làm T057, T058 xanh)
 - [ ] T062 [US3] Hiển thị ô "Chọn món" qua `draftItems` của 030 và thông báo số ô trong `DraftBar`; chọn món cho ô đó cập nhật draft trong src/frontend/src/features/ai-planner/components/DraftBar.tsx và hooks/useAiDraft.ts (làm T059 xanh) ⛓ 030 (T047, T102)
 
