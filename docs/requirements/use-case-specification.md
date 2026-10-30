@@ -2110,11 +2110,11 @@ Lets a registered user authenticate with an email and a password so that the per
     3. The system counts the failure against the normalized email in a temporary counter that expires after 15 minutes, exactly as for a registered account (see AF 2.3).
     4. The system records a failure audit entry that references no account and does not store the email in readable form.
 - **AF 2.3: Account Locked After Repeated Failures:**
-  - *Trigger:* At AF 2.1 or AF 2.2, the failure is the 5th consecutive failed attempt for the same normalized email within 15 minutes, whether or not an account uses it (FR-012); or the actor signs in while the 15-minute lock is active.
+  - *Trigger:* At Step 6, sign-in for the normalized email is locked; or at AF 2.1 or AF 2.2, the failure is the 5th consecutive failed attempt for the same normalized email within 15 minutes, whether or not an account uses it (FR-012).
   - *Steps:*
     1. The system locks sign-in for that email for 15 minutes and records a lockout audit entry (FR-025).
     2. Only when an account exists, the system asks the Email Service to notify the account owner (FR-012). No email is sent otherwise.
-    3. The system shows the same "Không thể đăng nhập" screen for every email, with the retry time, the note that an email was sent, and the button "Đặt lại mật khẩu" (`UC-010-03`).
+    3. The system shows the same "Không thể đăng nhập" screen for every email, with the retry time, the neutral note "Nếu email này đã đăng ký, chúng tôi đã gửi thông báo", and the button "Đặt lại mật khẩu" (`UC-010-03`).
     4. While the lock is active, correct credentials are also refused with this screen.
   - *Outcome:* A visitor cannot tell a locked real account from a locked unknown email (NFR-003). The lock is time-based only; whether a password reset ends it is left to spec 010 (`[OQ-010-02]`).
 - **AF 2.4: Account Suspended:**
@@ -2442,43 +2442,42 @@ Lets a visitor continue with a Google account that has a verified email. If no W
    - *Current Stance:* The Guest and permission scenarios of `US3` are written as alternative flows `AF 2.9`, `AF 2.15` and `AF 2.16` of `UC-010-02`.
    - *Proposal:* Either keep this stance, or add a Brief use case `UC-010-05 Enforce Role-Based Access` to the model before the freeze on 02/11/2026.
    - *Owner:* Mai Văn Hiển with Nguyễn Đức Duy (`SCRUM-49`).
-   - *Decision (30/10/2026, Mai Văn Hiển):* Option A chosen. Proposed resolution: A, pending clarification of spec 010 (one sentence: failures are counted per normalized email, including unregistered emails, with the same lock screen and the retry time; the `FR-012` email is sent only when an account exists). Option A keeps the behaviour the spec already describes (the Edge Case shows the retry time; `FR-012` sends an email) and only widens what is counted; option B would remove the retry time and contradict the Edge Case. Two points for `/speckit-plan`: the counter for unknown emails must expire after 15 minutes and be limited per IP address so that it cannot fill memory; audit entries must not store an unknown email in readable form. "A successful password reset clears the lock" is not part of the flows, because the spec does not say it; it must be added to the clarification first. `AF 2.2` and `AF 2.3` are written for option A.
-   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 and ask Duy: the reset is all-or-nothing. The Integration Points already require `011`, `060` and `080` to delete the data; Duy only confirms that `060` has a handler.
-   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 (small): add "try again in X minutes" to the answer. Counting per address is already correct.
-   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 (small): `FR-026` refuses with a neutral message that gives no reason.
-   - *Decision (30/10/2026, Mai Văn Hiển):* Defer to `/speckit-plan` (spec 011 already hands this to spec 010 and the plan). To close it earlier, add to `FR-013`: a banned user who enters correct credentials gets only a restricted session for the account-closure page. Includes `[OQ-011-06]`.
-   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 with one sentence in `FR-005`: a new verification link invalidates earlier ones, as `FR-015` does for reset links. Then update `AF 1.9`.
-   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010, to be done first. Option A (proposed): count failures per normalized email, including unregistered emails, and show the same lock message; send the `FR-012` email only when the account exists. Option B: one generic message for both a wrong password and an active lock, which also changes the Edge Case. Proposed addition: a successful password reset clears the lock (not in the spec yet). Needs Duy's approval through a PR, because spec 010 is "Ready for Implementation".
    - *Decision (30/10/2026, Mai Văn Hiển):* Keep. `AF 2.9`, `AF 2.15` and `AF 2.16` stay; Duy confirms during review.
 2. **`[OQ-010-02]` Lockout Details:**
    - *Issue:* The spec does not say whether a successful password reset ends an active lock, nor what the lock screen shows for an unregistered email (a lock message appears only for real accounts, which can reveal that the account exists and conflicts with `NFR-003`).
-   - *Current Stance:* The lock is time-based only (15 minutes); the neutral message of `AF 2.2` is used for unknown emails.
+   - *Current Stance:* Unknown emails are counted and get the same lock screen (`AF 2.2`, `AF 2.3`).
    - *Owner:* Mai Văn Hiển (spec 010 owner) to decide.
-   - *Decision (30/10/2026, Mai Văn Hiển):* Closed — merged into `[OQ-010-04]`.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Option A: count failures per normalized email including unregistered ones; same lock screen with the retry time and a neutral note; the `FR-012` email only when an account exists. Open, pending clarification of spec 010 (Duy approves by PR). "A successful reset clears the lock" is not in the flows. For `/speckit-plan`: the unknown-email counter expires after 15 minutes and is limited per IP address; audit entries never store an unknown email in readable form.
 3. **`[OQ-010-03]` Older Verification Links After a Resend:**
    - *Issue:* `FR-015` invalidates earlier links only for password reset. For verification, the spec says only "single-use and expires after 24 hours".
    - *Current Stance:* `AF 1.9` does not state whether older unused verification links stay valid.
    - *Owner:* Mai Văn Hiển.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010: one sentence in `FR-005` — a new verification link invalidates earlier ones, as `FR-015` does for reset links. Then update `AF 1.9`.
 4. **`[OQ-010-04]` How a Banned User Reaches Account Closure:**
    - *Issue:* A banned user may delete the account (`010` FR-026, `011` FR-037b), but sign-in is refused for banned accounts (`FR-013`). Spec `011` Assumptions leave the route to the restricted account-closure page to spec 010 and the plan.
    - *Current Stance:* `AF 2.5` shows only the ban message.
    - *Owner:* Mai Văn Hiển, to be settled before `/speckit-plan`.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Defer to `/speckit-plan`. To close it earlier, add to `FR-013` a restricted session for the account-closure page. Includes `[OQ-011-06]`.
 5. **`[OQ-010-05]` Message for a Blocked Email:**
    - *Issue:* `FR-026` says registration and Google account creation are refused for blocked emails but gives no message text; a message that names the block would reveal that the email belonged to a banned account.
    - *Current Stance:* `AF 1.7` and `AF 4.5` refuse without stating a reason.
    - *Owner:* Mai Văn Hiển.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 (small): `FR-026` refuses with a neutral message, no reason.
 6. **`[OQ-010-06]` Answer When the Reset Request Limit Is Exceeded:**
    - *Issue:* `FR-017` limits requests but does not say what the user sees, and `NFR-003` forbids revealing registered emails.
    - *Current Stance:* `AF 3.2` counts requests per address and gives no registration-dependent answer.
    - *Owner:* Mai Văn Hiển.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 (small): add "try again in X minutes". Counting per address is already right.
 7. **`[OQ-010-07]` Atomicity of the Unverified-Account Reset:**
    - *Issue:* `FR-019` lists the data deleted when Google takes over an unverified account but does not say what happens if one of the receiving specs (`011`, `060`, `080`) fails to delete its data.
    - *Current Stance:* `AF 4.2` assumes the whole reset succeeds or the sign-in is not completed.
    - *Owner:* Mai Văn Hiển with the owners of `011`, `060`, `080`.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 and ask Duy: the reset is all-or-nothing; Duy confirms that `060` has a deletion handler.
 8. **`[OQ-010-08]` Display Name and Session Lifetime for Google Accounts:**
    - *Issue:* `FR-019` takes the display name from Google only for the reset case, and the spec does not say whether a Google sign-in uses "Remember me".
    - *Current Stance:* `AF 4.8` applies the 1–50 character rule to the Google name; the session follows the default lifetime of `FR-009` without "Remember me".
    - *Owner:* Mai Văn Hiển.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Keep; record in a clarification after 03/11.
 9. **`[OQ-010-09]` Prototype `AU03` Offers "Đổi địa chỉ email":**
    - *Issue:* The check-email screen shows "Đổi địa chỉ email", but spec 010 has no such function and spec `011` states that the email cannot be changed in this release.
    - *Current Stance:* No flow is written for it; it is not a requirement.
@@ -2786,7 +2785,7 @@ Lets a signed-in user who has a password change it by giving the current passwor
 - **AF 3.2: Repeated Wrong Current Passwords:**
   - *Trigger:* At AF 3.1, wrong current passwords are repeated (FR-030).
   - *Steps:*
-    1. The system limits further attempts in the same way as sign-in failures (spec 010 `FR-012`) and tells the actor when to try again. The counter is separate from the sign-in counter and does not lock signing in (decision of 30/10/2026 for spec 011, see `[OQ-011-04]`).
+    1. The system limits further attempts in the same way as sign-in failures (spec 010 `FR-012`) and tells the actor when to try again. Proposed, pending clarification of spec 011 (`[OQ-011-04]`): the counter is separate from the sign-in counter and does not lock signing in; `FR-030` only says the limit works "as sign-in failures are".
 - **AF 3.3: New Password Breaks the Rules:**
   - *Trigger:* At Step 6, the new password is shorter than 8 or longer than 128 characters, has no letter or no digit, or equals the email (US3 AS3).
   - *Steps:*
@@ -2807,7 +2806,7 @@ Lets a signed-in user who has a password change it by giving the current passwor
     3. After a recent successful Google re-authentication, the system shows the form for the new password and its confirmation.
     4. The system validates the new password as in Step 6 and stores its hash.
     5. From then on the account can sign in with email and password, and the screen shows "Đổi mật khẩu" (US3 AS5).
-    6. The system signs the user out of every other session, as after a password change (decision of 30/10/2026 for spec 011, see `[OQ-011-04]`).
+    6. Proposed, pending clarification of spec 011 (`[OQ-011-04]`): the system signs the user out of every other session, as after a password change; `FR-028` mentions only a change, not setting a password.
 - **AF 3.7: Google Re-Authentication Cancelled, Failed or Not Recent:**
   - *Trigger:* At AF 3.6, the actor cancels the Google screen, Google fails, or the last sign-in is not recent.
   - *Steps:*
@@ -2823,7 +2822,7 @@ Lets a signed-in user who has a password change it by giving the current passwor
 - **AF 3.10: Network Failure or Session Expired:**
   - *Trigger:* At Step 4, the request fails or the session has expired (FR-039).
   - *Steps:*
-    1. The system shows a clear message, the password is not changed, and for an expired session the actor signs in again (`UC-010-02`). Typed values stay in the form as in the Edge Cases, except the password fields, which are cleared (decision of 30/10/2026 for spec 011, see `[OQ-011-04]`).
+    1. The system shows a clear message, the password is not changed, and for an expired session the actor signs in again (`UC-010-02`). Typed values stay in the form as in the Edge Cases. Proposed, pending clarification of spec 011 (`[OQ-011-04]`): the password fields are cleared.
 - **AF 3.11: Suspended or Banned Account:**
   - *Trigger:* At Step 4, an old session belongs to an account that was suspended or banned (Edge Cases).
   - *Steps:*
@@ -3092,22 +3091,22 @@ Defines in one place what the dietary profile means, so that search, the meal pl
    - *Issue:* The spec does not say whether a module that cannot read the dietary profile must hide recipes, refuse to generate a plan, or continue as if there were no profile. Continuing silently could show an unsafe recipe to a user with an allergy.
    - *Current Stance:* No flow is invented. The safe choice (refuse to choose recipes automatically and say why) is proposed for the specs of `020`, `030` and `031`.
    - *Owner:* Mai Văn Hiển with Nguyễn Đức Duy (`020`) and Nguyễn Thành Dự (`030`, `031`).
-   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 011: a separate counter for password change that does not lock sign-in; "Set password" also signs out other sessions; typed values stay in the form as in the Edge Cases, except the password fields, which are cleared. This is a deliberate exception; Hiển decides whether to keep it. `AF 3.2`, `AF 3.6` and `AF 3.10` already state these rules.
-   - *Decision (30/10/2026, Mai Văn Hiển):* Hiển decides after asking Chung. Proposed default: a suspended user's public profile stays viewable; a banned user's profile is treated as 404. Record the rule in spec 010.
-   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 011 (small): in `FR-039`, a profile without recipes shows an empty state; a profile that does not exist or was deleted shows the generic 404.
-   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 011, highest priority: add a new FR after `FR-026` — when the server cannot read the dietary profile, the module does not choose recipes automatically and shows the reason. Add one Integration Points row for `020`, `030` and `031`; Duy and Dự edit their own specs. It does not apply to an expired session (treated as a Guest). Trade-off: a Member's search can show a "Thử lại" error while the system fails.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 011, highest priority: a new FR after `FR-026` — a module that cannot read the profile does not choose recipes automatically and shows the reason. Add one Integration Points row for `020`, `030` and `031`. Not for an expired session (treated as a Guest).
 2. **`[OQ-011-02]` Empty and Error States of the Public Profile (`UC-011-02`):**
    - *Issue:* `FR-039` defines four states for "the profile page" but does not say what a visitor sees on a public profile with no published recipes or on a profile that does not exist or belongs to a deleted user.
    - *Current Stance:* Only the data state is written; a deleted user appears as "Người dùng đã xóa" without a profile link (`FR-033`).
    - *Owner:* Mai Văn Hiển.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 011 (small): `FR-039` — no recipes shows an empty state; a missing or deleted profile shows the generic 404.
 3. **`[OQ-011-03]` Public Profile of a Suspended or Banned User:**
    - *Issue:* Edge Cases say it "follows the rules of spec 010", but spec 010 defines no such rule.
    - *Current Stance:* `AF 2.14` only states that the account cannot edit.
    - *Owner:* Mai Văn Hiển (specs `010` and `011`).
+   - *Decision (30/10/2026, Mai Văn Hiển):* Proposed, not yet decided: a suspended user's profile stays viewable, a banned user's is 404; Hiển decides after asking Chung; record in spec 010.
 4. **`[OQ-011-04]` Details of Password-Change Failures (`UC-011-03`):**
    - *Issue:* `FR-030` limits wrong current passwords "as sign-in failures are", but it is not stated whether this lock also blocks signing in; it is also not stated whether "Set password" signs out other sessions (`FR-028` mentions only a change), or whether typed passwords are kept after a network failure.
-   - *Current Stance:* `AF 3.2`, `AF 3.6` and `AF 3.10` state the rules decided on 30/10/2026.
+   - *Current Stance:* `AF 3.2`, `AF 3.6` and `AF 3.10` mark the proposed rules as "Proposed" until the clarification of spec 011 is approved.
    - *Owner:* Mai Văn Hiển.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Proposed: a separate counter that does not lock sign-in; "Set password" also signs out other sessions; password fields cleared on failure (a deliberate exception to the Edge Cases). Pending clarification of spec 011; `AF 3.2`, `AF 3.6` and `AF 3.10` are marked "Proposed".
 5. **`[OQ-011-05]` Re-Authentication Rate Limit on Account Deletion:**
    - *Issue:* `FR-030` limits wrong passwords for password change only. A stolen session could use the deletion screen to guess the password without limit.
    - *Current Stance:* `AF 4.1` only refuses; no limit is described.
@@ -3117,6 +3116,7 @@ Defines in one place what the dietary profile means, so that search, the meal pl
    - *Issue:* Same as `[OQ-010-04]`: spec 011 Assumptions leave the route to spec 010.
    - *Current Stance:* `UC-011-04` allows a banned account to delete itself once it reaches the account-closure page.
    - *Owner:* Mai Văn Hiển.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Merged into `[OQ-010-04]`, deferred.
 7. **`[OQ-011-07]` Items Still Owned by Other Specs:**
    - *Issue:* Spec 011 Integration Points mark as "to be confirmed" the anonymous reviews (`070`), the deletion of Cooksnaps (`070`), the deletion of meal plans, shopping lists and collections (`030`, `040`, `080`) and the "deleted user" author of published recipes (`060`).
    - *Current Stance:* `UC-011-04` Step 7 follows spec 011 `FR-033` – `FR-036`; the owners must confirm.
@@ -3678,8 +3678,6 @@ Lets a signed-in user see all saved recipes and collections at a glance and open
    - *Issue:* Spec 080 has five user stories; the Use-Case Model defines four use cases and says recipes taken down after saving (`US5`) are an alternative flow of `UC-080-04`.
    - *Current Stance:* `US4` and `US5` are written together in `UC-080-04` (22 alternative flows). If the reviewer prefers, `US5` can be split into a separate use case (for example `UC-080-05`), which would need a change to the model before the freeze on 02/11/2026.
    - *Owner:* Mai Văn Hiển with Nguyễn Đức Duy (`SCRUM-49`).
-   - *Decision (30/10/2026, Mai Văn Hiển):* Closed — tracked as Gap 080-O (recipe-card menu and "Bỏ lưu").
-   - *Decision (30/10/2026, Mai Văn Hiển):* Pass to Chung, no spec change: add the string variant "Không tìm thấy bộ sưu tập" to `CM01`.
    - *Decision (30/10/2026, Mai Văn Hiển):* Keep. If Duy wants `UC-080-05`, change the model before 02/11.
 2. **`[OQ-080-02]` Save Button and Recipe Detail Extension Point `EP-5`:**
    - *Issue:* `UC-020-06` defines `EP-5 Save` as the buttons "Lưu công thức" / "Lưu vào bộ sưu tập" visible to Member and above, and lets a Guest see the button and be asked to sign in. Spec 080 FR-001 and the permission matrix allow only Members to save.
@@ -3690,6 +3688,7 @@ Lets a signed-in user see all saved recipes and collections at a glance and open
    - *Issue:* Spec 080 Edge Cases specify "Không tìm thấy bộ sưu tập", but the shared prototype `CM01-NotFound` shows "Không tìm thấy trang" with a note about other users' collections.
    - *Current Stance:* `AF 4.14` follows the spec; the prototype text needs to be reconciled.
    - *Owner:* Trần Nguyễn Công Chung (`SCRUM-58`) with Mai Văn Hiển.
+   - *Decision (30/10/2026, Mai Văn Hiển):* Pass to Chung, no spec change: add the variant "Không tìm thấy bộ sưu tập" to `CM01`.
 4. **`[OQ-080-04]` Open Integration Points of Spec 080:**
    - *Issue:* Spec 080 Integration Points leave to other owners: the planner slot showing no photo for unavailable recipes (`030`), whether moderator removal ever hard-deletes a published recipe (`100`), and the use of bookmarks as an AI preference signal (`031`, not used yet).
    - *Current Stance:* `UC-080-04` follows spec 080 `FR-020`; nothing is invented for these points.
@@ -3699,3 +3698,4 @@ Lets a signed-in user see all saved recipes and collections at a glance and open
    - *Issue:* Spec 080 lists "the card menu" as an entry to the dialog, but no prototype screen shows a card menu, and `BM03` does not show the "Bỏ lưu" action of `AS6` of `US4`.
    - *Current Stance:* Described in `AF 1.1` and `AF 4.3`; listed as a gap, not drawn.
    - *Owner:* Trần Nguyễn Công Chung (`SCRUM-58`).
+   - *Decision (30/10/2026, Mai Văn Hiển):* Closed, tracked as Gap 080-O.
