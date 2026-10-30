@@ -3643,7 +3643,7 @@ Lets a signed-in user see all saved recipes and collections at a glance and open
 | `UC-080-01` | AF 1.8 | `BM05-SavedToast.dc.html` | "Danh sách Đã lưu đã đầy (1.000)" with "Xem" | **Available** |
 | `UC-080-01` | AF 1.2, AF 1.4 | *Gap 080-A* | Confirmation with "Undo" after unsaving a recipe that is in no collection | **GAP** |
 | `UC-080-01` | AF 1.10, AF 1.11 | *Gap 080-B* | Save icon returns to unsaved with "not saved" and offline messages | **GAP** |
-| `UC-080-01` | AF 1.9 | *Gap 080-C* | "Công thức này không còn khả dụng" refusal on save | **GAP** |
+| `UC-080-01` | AF 1.9 | *Gap 080-C* | "Công thức này không còn khả dụng" refusal message when saving (the full page `NU04-Unavailable.dc.html` already exists; only the save-time message is missing) | **GAP** |
 | `UC-080-02` | Basic Flow (Steps 2–5), AF 2.3, AF 2.5 | `BM04-SaveDialog.dc.html` | Dialog with ticks, "Đã đầy", "Tạo bộ sưu tập mới", duplicate-name message, "Xong" | **Available** |
 | `UC-080-02` | AF 2.9 | *Gap 080-D* | Dialog empty state when the user has no collection | **GAP** |
 | `UC-080-02` | AF 2.7 | *Gap 080-E* | Dialog stays open with choices kept and "Try again" | **GAP** |
