@@ -3,6 +3,10 @@
 spring:
   application:
     name: wikicook
+  # Generation waits up to 60 s on the provider (031 research R9).
+  threads:
+    virtual:
+      enabled: true
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}
@@ -25,6 +29,21 @@ management:
         include: health,info
 
 wikicook:
+  # Defaults live in AiProperties (wikicook-ai); every key can be overridden by its WIKICOOK_AI_* variable.
   ai:
     mode: ${WIKICOOK_AI_MODE:mock}
     api-key: ${WIKICOOK_AI_API_KEY:}
+    llm:
+      model: ${WIKICOOK_AI_LLM_MODEL:gemini-2.5-flash}
+      timeout: 60s
+    embedding:
+      model: ${WIKICOOK_AI_EMBEDDING_MODEL:gemini-embedding-001}
+      dimensions: 768
+      reconcile-on-startup: ${WIKICOOK_AI_EMBEDDING_RECONCILE_ON_STARTUP:false}
+      reconcile-limit: ${WIKICOOK_AI_EMBEDDING_RECONCILE_LIMIT:0}
+      batch-size: 50
+      batch-pause: ${WIKICOOK_AI_EMBEDDING_BATCH_PAUSE:30s}
+    daily-cap:
+      total: ${WIKICOOK_AI_DAILY_CAP_TOTAL:100}
+      meal-planner-share: 0.7
+      nutrition-share: 0.3
