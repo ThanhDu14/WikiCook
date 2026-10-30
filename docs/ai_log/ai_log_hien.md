@@ -1426,3 +1426,131 @@ Tóm lược (nguyên văn nằm trong hội thoại): (1) `AF 2.3` của `UC-01
 
 - `git show 925f74d`; trong §9.3, §10.3, §11.3 mỗi Open Question có đúng một dòng "Decision (30/10/2026, Mai Văn Hiển)" ngay dưới dòng Owner của nó (23 dòng, 23 Open Question).
 - Phần Hiển đọc lại bản sau sửa: Hiển báo đã đọc lại 23 dòng Decision, `AF 2.3`, `OQ-010-02` và `AF 3.2`/`AF 3.6`/`AF 3.10` của `UC-011-03` trong tài liệu sau sửa và không phát hiện thêm lỗi
+
+---
+
+## Mục 23: Task SCRUM-50 – nhận xét AI log, hướng dẫn chuyển nhánh, chuẩn bị push và mô tả PR
+
+**Task: SCRUM-50**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Giờ truy cập | 13:53 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/ai_log/ai_log_hien.md`, `AI Usage Guidelines.pdf`, `wikicook-pa3-team-assignment.md`, `docs/requirements/use-case-specification.md` (Section 9–11) |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.314 |
+| Mục đích | Đọc lại AI log và tài liệu phân công PA3 để nhận xét; hướng dẫn chuyển `ai_log_hien.md` sang nhánh `Hien`; kiểm tra trạng thái repo trước khi push nhánh SCRUM-50; viết prompt hoàn thiện nội dung; viết mô tả PR; viết prompt để thêm mục này |
+| Nhánh Git | `Hien` (file log này, commit trước đó `2b3e1a5`); nội dung được nhắc tới nằm ở `docs/scrum-50-uc-spec-010-011-080` (commit mới nhất tại thời điểm ghi: `b4a2bc3`, thông điệp ghi `SCUM-50`, viết thiếu chữ `R` so với các commit trước) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 13:53 ngày 30/10/2026, prompt: xem phần "Prompt đã dùng" bên dưới, dùng để nhận xét AI log Mục 11–22, hướng dẫn chuyển nhánh, kiểm tra trạng thái repo, viết hai prompt hoàn thiện nội dung và mô tả PR; AI đọc file log, tài liệu phân công, Guidelines và lịch sử git rồi viết nhận xét, các bước lệnh, hai prompt và hai bản mô tả PR (tiếng Anh, tiếng Việt); sinh viên: yêu cầu nhận xét và các bước tiếp theo, yêu cầu bỏ phần add/commit/push khỏi prompt để tự thực hiện, chạy prompt hoàn thiện nội dung ở một phiên khác rồi dán báo cáo lại, chọn mô tả PR bằng tiếng Việt; phần đọc diff, xem preview và đọc handover note: Hiển điền.
+
+### Prompt đã dùng
+
+Prompt hoàn thiện nội dung SCRUM-50 (do AI soạn theo yêu cầu của Hiển, Hiển chạy trong một phiên khác; chép nguyên văn như Hiển dán):
+
+```text
+Bối cảnh: nhánh docs/scrum-50-uc-spec-010-011-080, file docs/requirements/use-case-specification.md (Section 9–11: UC-010-01..04, UC-011-01..05, UC-080-01..04). Tôi là Hiển (Performed by), Duy là Reviewer.
+
+Phạm vi và giới hạn:
+- Chỉ đọc và sửa nội dung trong docs/requirements/use-case-specification.md.
+- KHÔNG sửa file trong specs/. KHÔNG sửa Section 1–8 (của Hưng và Duy).
+- KHÔNG chạy git add, git commit, git push, git rebase hay gh. Tôi tự làm các bước này. Chỉ được dùng lệnh đọc: git status, git diff, git log, git show, git fetch.
+- KHÔNG tự bịa luồng hay thêm tính năng ngoài spec. Chỗ nào spec thiếu hoặc mâu thuẫn thì ghi vào Open Questions, không tự quyết.
+- Gặp quyết định thuộc về tôi thì dừng và hỏi.
+
+Làm lần lượt:
+
+1. Kiểm tra nhánh hiện tại bằng git branch --show-current. Phải là docs/scrum-50-uc-spec-010-011-080, nếu không thì dừng và báo tôi.
+
+2. Rà 8 mục bắt buộc cho từng UC trong 13 UC: tên + ID, actor (hoặc Trigger với UC-011-05), mô tả, preconditions, basic flow từng bước, alternative flows, postconditions, special requirements. Lập bảng UC × mục, báo UC nào thiếu hoặc rỗng, rồi bổ sung phần thiếu dựa trên spec gốc.
+
+3. Chạy script kiểm tra và báo kết quả:
+   - ID UC không trùng, không nhảy số.
+   - Mọi mã FR/NFR/SC của spec 010, 011, 080 xuất hiện trong Section tương ứng.
+   - Mọi AF được tham chiếu (AF x.y, Step n) đều tồn tại và đúng sau khi đổi thứ tự UC-010-02.
+   - Mọi file màn hình được nhắc (cả bản W-) tồn tại trong docs/analysis-and-design/ui-ux/screens/.
+   - Mỗi Open Question có đúng một dòng "Decision (30/10/2026, Mai Văn Hiển)" ngay dưới dòng Owner của nó.
+
+4. Rà các AF "Proposed" (UC-010-02 AF 2.2, 2.3; UC-011-03 AF 3.2, 3.6, 3.10). Mỗi AF phải mở đầu bằng "Proposed, pending clarification of spec 0xx ([OQ-xxx])", và Open Question tương ứng phải nêu AF nào phụ thuộc. Báo chỗ thiếu rồi sửa.
+
+5. Rà ngôn ngữ: Section 9–11 là tiếng Anh, câu dạng "The system …" / "The user …". Chuỗi giao diện tiếng Việt chỉ nằm trong dấu ngoặc kép. Liệt kê và sửa các dòng vi phạm.
+
+6. Rà metadata: dòng Performed by / Reviewed by / Edited by ngay sau header Section 9, 10, 11 và từng UC (Reviewed by: Nguyễn Đức Duy). Có hàng cho Section 9–11 trong bảng trách nhiệm. Dòng Revision History v1.2 chính xác về số UC và phạm vi.
+
+7. Rà định dạng: không dùng Mermaid trong Section 9–11. Số cột mỗi hàng bảng bằng header. Không có link nội bộ hỏng. Nói rõ phần nào chưa xem được render thật trên GitHub.
+
+8. Rà tính nhất quán trong 3 Section: số AF, số Asset Gap (hiện 40), số Open Question (23) trong các bảng truy vết và câu tóm tắt phải khớp với nội dung thật. Sửa nếu lệch.
+
+9. Soạn riêng một bản ghi chú bàn giao trong thư mục scratchpad (không nằm trong repo), gồm:
+   - Danh sách việc cần Duy duyệt qua PR sửa spec: OQ-010-02, 010-03, 010-05, 010-06, 010-07, 011-01, 011-02, 011-04, 011-05, kèm đoạn văn bản đề xuất.
+   - Việc chuyển Chung: 40 Asset Gaps, OQ-010-09, OQ-080-03.
+   - Việc chuyển Duy: Gap 020-E đã cũ, OQ-080-02.
+   - Việc chuyển Dự: OQ-080-04.
+
+10. Báo cáo cuối: đã sửa gì (theo từng nhóm), còn gì chưa làm được và vì sao, và tóm tắt git diff --stat. Không commit. Để các thay đổi ở trạng thái chưa add để tôi xem lại.
+```
+
+Các prompt Hiển gõ trong phiên này, theo thứ tự (chép nguyên văn từ hội thoại, kể cả lỗi chính tả; không kể các khối nội dung Hiển dán kèm là kết quả của AI, và không kể lần Hiển từ chối một lệnh kiểm tra nhánh khi chạy prompt hoàn thiện nội dung, sau đó ngắt yêu cầu):
+
+1. ```text
+   hãy đọc lại các file và nhận xét phần AI log, sau đó nói tiếp các bước tiếp theo
+   ```
+2. ```text
+   hãy nêu các bước để làm Chuyển ai_log_hien.md sang nhánh Hien rồi commit ở đó, không commit vào nhánh SCRUM-50. AI Usage Guidelines.pdf và wikicook-pa3-team-assignment.md giữ ở trạng thái chưa add.
+   ```
+3. ```text
+   phần nội dung của scrum 50 đã làm xong chưa, có push lên được chưa
+   ```
+4. ```text
+   hãy viết prompt cho tôi để hoàn thiện nội dung mà không cần người review để tôi có thể push lên github
+   ```
+   (kèm một khối văn bản Hiển dán vào là bản liệt kê "Đã xong / Chưa xong" do AI viết ở câu trả lời trước)
+5. ```text
+   viết lại prompt cho tôi, chỉ hoàn thiện nội dung còn phần Add và phần push thì để tôi tự thực hiện
+   ```
+6. ```text
+   đã hoàn thiện để push chua
+   ```
+   (kèm báo cáo của phiên khác do Hiển dán vào; báo cáo này là kết quả của AI, không phải prompt)
+7. ```text
+   viết phần mô tả PR cho tôi
+   ```
+8. ```text
+   hãy sửa lại mô tả bằng tiếng Việt
+   ```
+9. ```text
+   AI log chưa có mục cho phiên vừa rồi. Thêm vào nhánh Hien với prompt nguyên văn.
+   viết prompt cho tôi
+   ```
+10. Prompt dài bắt đầu bằng "Bối cảnh: tôi là Hiển (Mai Văn Hiển). Cần thêm MỘT mục mới vào cuối docs/ai_log/ai_log_hien.md …" (chính là prompt tạo ra mục này; nguyên văn nằm trong lịch sử chat, Hiển đính kèm khi export).
+11. ```text
+    hãy điền các chỗ trên cho tôi
+    ```
+
+Giữa mục 5 và mục 6, Hiển chạy prompt hoàn thiện nội dung (khối ở trên) trong một phiên khác. Giờ gõ từng prompt: Hiển điền.
+
+### Tóm tắt phản hồi của AI
+
+- Đọc `wikicook-pa3-team-assignment.md`, `AI Usage Guidelines.pdf` và Mục 13–22 của `ai_log_hien.md`, rồi nhận xét 7 điểm cần sửa: (1) Mục 19 và 22 nói Mục 18 "không bị sửa" nhưng các dòng cách kiểm chứng của Mục 15, 18 và 19 đã được bổ sung; (2) câu "sinh viên: …" bị copy giống nhau vào nhiều mục, trong đó có mục ghi giờ sớm hơn sự kiện được nhắc; (3) nhiều khẳng định về phần Hiển tự làm do AI viết thay (mở file prototype, gửi Chung, đối chiếu bảng Decision); (4) prompt ở Mục 18, 19, 22 chỉ là tóm lược, không nguyên văn, trong khi Guidelines yêu cầu prompt và chat history; (5) phiên bản Claude Code `2.1.314` chưa được xác minh; (6) giờ truy cập lấy theo hai cách khác nhau (`date` và `git log`), Mục 15 và 16 cùng ghi 08:05; (7) rủi ro với §4.5 của Guidelines vì phần lớn use case do AI soạn, nên cần nêu rõ bằng chứng Hiển hiểu và đã chỉnh nội dung.
+- Liệt kê các bước chuyển `ai_log_hien.md` sang nhánh `Hien`; kiểm tra nhánh `Hien` đã có sẵn ở local và `origin/Hien`.
+- Kiểm tra trạng thái repo bằng lệnh đọc: nhánh `docs/scrum-50-uc-spec-010-011-080` chưa có trên origin; cách `origin/main` 9 commit và chỉ đổi `use-case-specification.md`; sau `git fetch`, `origin/main` đã nằm trong nhánh SCRUM-50 (chưa có commit mới trên `main`). Một lần AI đọc nhầm file trên nhánh `Hien` thay vì nhánh SCRUM-50 và sau đó tự đọc lại bằng `git show` trên đúng nhánh.
+- Viết hai phiên bản prompt hoàn thiện nội dung SCRUM-50: bản đầu cho phép AI commit và push, Hiển yêu cầu viết lại bản không add và không push (bản thứ hai là prompt ở trên).
+- Xác nhận lại `git diff --stat` của nhánh SCRUM-50: 1 file, 12 dòng thêm, 6 dòng bớt, hai file chưa theo dõi không bị đụng. Đây là xác nhận số dòng; việc rà soát Section 9–11 (đủ 8 mục, mã FR/NFR/SC, tham chiếu AF, màn hình, Open Question) do một phiên khác chạy prompt ở trên, không phải phiên này, và phiên này chỉ đọc lại kết quả báo cáo mà Hiển dán vào.
+- Viết mô tả PR bằng tiếng Anh, sau đó viết lại bằng tiếng Việt theo yêu cầu của Hiển. Các con số trong mô tả (20/39/43 acceptance scenario, 40 Asset Gaps, 23 Open Questions) lấy từ báo cáo của phiên kia, phiên này chưa đếm lại.
+- Viết prompt để thêm mục này; mục này được ghi bằng cách chạy prompt đó.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Các bước chuyển `ai_log_hien.md` sang `Hien` | Dùng; Hiển tự thực hiện add, commit, push (commit `2b3e1a5` đã có trên `origin/Hien`). AI đưa 7 bước: `git fetch` và so sánh `Hien`, `git switch Hien` (dùng `stash` nếu bị chặn), kiểm tra `git status`, chỉ `git add` đúng một file, commit, push, quay lại nhánh SCRUM-50 | Hiển yêu cầu commit file log trên `Hien`, không commit vào nhánh SCRUM-50, và giữ hai file chưa theo dõi ở trạng thái chưa add |
+| Prompt hoàn thiện nội dung SCRUM-50 | Dùng bản không add/push (Hiển yêu cầu bỏ phần add và push để tự làm); Hiển chạy ở một phiên khác và dán lại báo cáo kết quả (12 dòng thêm, 6 dòng bớt trong `use-case-specification.md`, chưa add); nội dung báo cáo do AI của phiên đó viết, phiên này không tự chạy lại các kiểm tra đó | Hiển muốn tự thực hiện add, commit, push |
+
+### Cách kiểm chứng
+
+- Lệnh có thể chạy lại: `git branch --show-current` (kết quả khi ghi: `Hien`), `git status --short`, `git log --oneline -3 docs/scrum-50-uc-spec-010-011-080` (có `b4a2bc3`, `925f74d`), `git ls-remote --heads origin docs/scrum-50-uc-spec-010-011-080` (không có kết quả tại lúc kiểm tra trước đó).
+- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+- Sai sót của AI trong phiên: Hiển điền nếu có. Một sai sót AI tự ghi nhận: đọc nhầm file trên nhánh `Hien` thay vì nhánh SCRUM-50 trước khi tự sửa.
