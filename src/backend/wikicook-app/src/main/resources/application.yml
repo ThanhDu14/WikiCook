@@ -34,7 +34,7 @@ wikicook:
     mode: ${WIKICOOK_AI_MODE:mock}
     api-key: ${WIKICOOK_AI_API_KEY:}
     llm:
-      model: ${WIKICOOK_AI_LLM_MODEL:gemini-2.5-flash}
+      model: ${WIKICOOK_AI_LLM_MODEL:gemini-3.5-flash}
       timeout: 60s
     embedding:
       model: ${WIKICOOK_AI_EMBEDDING_MODEL:gemini-embedding-001}

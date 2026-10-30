@@ -29,7 +29,7 @@ public record AiProperties(
         @Valid @NotNull @DefaultValue DailyCap dailyCap) {
 
     public record Llm(
-            @NotBlank @DefaultValue("gemini-2.5-flash") String model,
+            @NotBlank @DefaultValue("gemini-3.5-flash") String model,
             @NotNull @DefaultValue("60s") Duration timeout) {
 
         @AssertTrue(message = "llm.timeout must be positive")

@@ -39,7 +39,7 @@ class GeminiLiveIT {
     @BeforeAll
     static void connect() {
         String key = System.getenv("WIKICOOK_AI_API_KEY");
-        llm = new GeminiLlmClient(BASE_URL, key, env("WIKICOOK_AI_LLM_MODEL", "gemini-2.5-flash"));
+        llm = new GeminiLlmClient(BASE_URL, key, env("WIKICOOK_AI_LLM_MODEL", "gemini-3.5-flash"));
         embedding = new GeminiEmbeddingClient(BASE_URL, key, env("WIKICOOK_AI_EMBEDDING_MODEL", "gemini-embedding-001"),
                 768, Duration.ofSeconds(30));
     }
@@ -62,7 +62,13 @@ class GeminiLiveIT {
         LlmRequest request = new LlmRequest("Bạn là đầu bếp Việt Nam. Trả lời ngắn.",
                 "Gợi ý một món ăn sáng Việt Nam và số phút nấu.", SCHEMA, 0.4);
 
+        long start = System.nanoTime();
         LlmResult result = llm.complete(request, Duration.ofSeconds(60), CancellationToken.none());
+        Duration took = Duration.ofNanos(System.nanoTime() - start);
+
+        // NFR-001: a whole generation has 30 s, so one short call must take far less. gemini-3.8-flash took
+        // ~41 s here on 2026-10-30 (server side, no thinking tokens); 3.5-flash took ~4 s.
+        assertThat(took).isLessThan(Duration.ofSeconds(20));
 
         JsonNode reply = new ObjectMapper().readTree(result.text());
         assertThat(reply.path("dish").isTextual()).isTrue();

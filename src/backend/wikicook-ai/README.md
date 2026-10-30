@@ -32,7 +32,7 @@ Chưa có: truy hồi RAG (`CandidateQuery`), đồng bộ embedding theo event 
 |---|---|---|
 | `wikicook.ai.mode` | `WIKICOOK_AI_MODE` | `mock` (`live` / `mock` / `offline`) |
 | `wikicook.ai.api-key` | `WIKICOOK_AI_API_KEY` | trống; không bao giờ ghi ra log |
-| `wikicook.ai.llm.model` | `WIKICOOK_AI_LLM_MODEL` | `gemini-2.5-flash` |
+| `wikicook.ai.llm.model` | `WIKICOOK_AI_LLM_MODEL` | `gemini-3.5-flash` (`gemini-2.5-flash` đã đóng với key mới; `gemini-3.8-flash` chạy được nhưng mất ~40 s mỗi lời gọi) |
 | `wikicook.ai.llm.timeout` | `WIKICOOK_AI_LLM_TIMEOUT` | `60s` |
 | `wikicook.ai.embedding.model` | `WIKICOOK_AI_EMBEDDING_MODEL` | `gemini-embedding-001` |
 | `wikicook.ai.embedding.dimensions` | `WIKICOOK_AI_EMBEDDING_DIMENSIONS` | `768` (khớp `VECTOR(768)`) |
