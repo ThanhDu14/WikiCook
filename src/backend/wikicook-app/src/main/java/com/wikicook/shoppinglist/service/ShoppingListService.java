@@ -41,20 +41,31 @@ public class ShoppingListService {
     private final UserAislePreferenceRepository userAislePreferenceRepository;
     private final RecipeDetailPort recipeDetailPort;
     private final IngredientAggregationService ingredientAggregationService;
+    private final com.wikicook.shoppinglist.repository.UnitRepository unitRepository;
+
+    @Autowired
+    public ShoppingListService(ShoppingListRepository shoppingListRepository,
+                               ShoppingListItemRepository shoppingListItemRepository,
+                               UserAislePreferenceRepository userAislePreferenceRepository,
+                               RecipeDetailPort recipeDetailPort,
+                               IngredientAggregationService ingredientAggregationService,
+                               com.wikicook.shoppinglist.repository.UnitRepository unitRepository) {
+        this.shoppingListRepository = shoppingListRepository;
+        this.shoppingListItemRepository = shoppingListItemRepository;
+        this.userAislePreferenceRepository = userAislePreferenceRepository;
+        this.recipeDetailPort = recipeDetailPort;
+        this.ingredientAggregationService = ingredientAggregationService;
+        this.unitRepository = unitRepository;
+    }
 
     public ShoppingListService(ShoppingListRepository shoppingListRepository,
                                ShoppingListItemRepository shoppingListItemRepository,
                                UserAislePreferenceRepository userAislePreferenceRepository,
                                RecipeDetailPort recipeDetailPort,
                                IngredientAggregationService ingredientAggregationService) {
-        this.shoppingListRepository = shoppingListRepository;
-        this.shoppingListItemRepository = shoppingListItemRepository;
-        this.userAislePreferenceRepository = userAislePreferenceRepository;
-        this.recipeDetailPort = recipeDetailPort;
-        this.ingredientAggregationService = ingredientAggregationService;
+        this(shoppingListRepository, shoppingListItemRepository, userAislePreferenceRepository, recipeDetailPort, ingredientAggregationService, null);
     }
 
-    @Transactional(readOnly = true)
     public ShoppingListResponse getActiveShoppingList(Long userId) {
         ShoppingList activeList = shoppingListRepository.findByUserIdAndStatus(userId, ShoppingListStatus.ACTIVE)
                 .orElseGet(() -> createDefaultActiveList(userId));
@@ -84,13 +95,21 @@ public class ShoppingListService {
         }
 
         Long aisleId = request.aisleCategoryId() != null ? request.aisleCategoryId() : 6L;
+        Long unitId = null;
+        if (request.unitName() != null && !request.unitName().isBlank() && unitRepository != null) {
+            String clean = request.unitName().trim();
+            unitId = unitRepository.findByCode(clean)
+                    .or(() -> unitRepository.findByNameVi(clean))
+                    .map(com.wikicook.shoppinglist.domain.Unit::getId)
+                    .orElse(null);
+        }
         ShoppingListItem item = new ShoppingListItem(
                 activeList,
                 request.clientUuid() != null ? request.clientUuid() : UUID.randomUUID(),
                 null,
                 request.customName().trim(),
                 request.quantity(),
-                null,
+                unitId,
                 request.unitName(),
                 aisleId
         );
@@ -119,7 +138,7 @@ public class ShoppingListService {
             ShoppingList activeList = activeOpt.get();
             activeList.setStatus(ShoppingListStatus.ARCHIVED);
             activeList.setArchivedAt(Instant.now());
-            shoppingListRepository.save(activeList);
+            shoppingListRepository.saveAndFlush(activeList);
         }
 
         ShoppingList newActive = createDefaultActiveList(userId);
@@ -151,7 +170,7 @@ public class ShoppingListService {
             if (!currentActive.getId().equals(listId)) {
                 currentActive.setStatus(ShoppingListStatus.ARCHIVED);
                 currentActive.setArchivedAt(Instant.now());
-                shoppingListRepository.save(currentActive);
+                shoppingListRepository.saveAndFlush(currentActive);
             }
         }
 
@@ -215,7 +234,7 @@ public class ShoppingListService {
                         s.getMealPlanItemId(),
                         s.getRecipeTitleSnapshot(),
                         s.getContributedQuantity(),
-                        s.getUnitName()
+                        resolveUnitName(s.getUnitId(), s.getUnitName())
                 ))
                 .collect(Collectors.toList());
     }
@@ -265,8 +284,22 @@ public class ShoppingListService {
         );
     }
 
+    private String resolveUnitName(Long unitId, String transientName) {
+        if (transientName != null && !transientName.isBlank()) {
+            return transientName;
+        }
+        if (unitId != null && unitRepository != null) {
+            return unitRepository.findById(unitId)
+                    .map(u -> u.getNameVi() != null ? u.getNameVi() : u.getCode())
+                    .orElse(null);
+        }
+        return null;
+    }
+
     private ShoppingListItemDto toItemDto(ShoppingListItem item) {
         String displayName = item.getCustomName() != null ? item.getCustomName() : "Nguyên liệu #" + item.getIngredientId();
+        String resolvedUnit = resolveUnitName(item.getUnitId(), item.getUnitName());
+
         List<ItemProvenanceDto> provenanceDtos = Collections.emptyList();
         if (item.getSources() != null && !item.getSources().isEmpty()) {
             provenanceDtos = item.getSources().stream()
@@ -276,7 +309,7 @@ public class ShoppingListService {
                             s.getMealPlanItemId(),
                             s.getRecipeTitleSnapshot(),
                             s.getContributedQuantity(),
-                            s.getUnitName()
+                            resolveUnitName(s.getUnitId(), s.getUnitName())
                     ))
                     .collect(Collectors.toList());
         }
@@ -286,9 +319,9 @@ public class ShoppingListService {
                 item.getIngredientId(),
                 displayName,
                 item.getQuantity(),
-                item.getUnitName(),
+                resolvedUnit,
                 item.getQuantity(),
-                item.getUnitName(),
+                resolvedUnit,
                 item.getAisleCategoryId(),
                 item.isChecked(),
                 item.isCleared(),

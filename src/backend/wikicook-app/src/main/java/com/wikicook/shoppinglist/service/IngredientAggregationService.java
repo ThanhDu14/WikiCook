@@ -9,17 +9,15 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
- * Core engine for ingredient aggregation, scaling, deduplication, and provenance tracking (T043, US2).
+ * Domain service implementing recipe ingredient scaling, unit conversion, and deduplication (US2 FR-006 to FR-009).
  */
 @Service
 public class IngredientAggregationService {
 
-    public static final int MAX_LIST_CAPACITY = 200;
+    private static final int MAX_LIST_CAPACITY = 200;
 
     private final UnitConversionService unitConversionService;
 
@@ -27,26 +25,25 @@ public class IngredientAggregationService {
         this.unitConversionService = unitConversionService;
     }
 
-    public void aggregateRecipe(ShoppingList activeList, RecipeImportDto recipe, BigDecimal targetServings, Set<Long> excludedIngredientIds) {
-        if (targetServings == null || targetServings.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Target servings must be positive");
-        }
-
-        BigDecimal baseServings = recipe.baseServings();
-        if (baseServings == null || baseServings.compareTo(BigDecimal.ZERO) <= 0) {
-            baseServings = BigDecimal.ONE;
-        }
-
-        BigDecimal multiplier = targetServings.divide(baseServings, 4, RoundingMode.HALF_UP);
-
-        Set<Long> excluded = excludedIngredientIds != null ? excludedIngredientIds : Set.of();
-
-        if (recipe.ingredients() == null) {
+    public void aggregateRecipe(
+            ShoppingList activeList,
+            RecipeImportDto recipe,
+            BigDecimal targetServings,
+            Set<Long> excludedIngredientIds
+    ) {
+        if (activeList == null || recipe == null) {
             return;
         }
 
+        BigDecimal baseServings = recipe.baseServings() != null && recipe.baseServings().compareTo(BigDecimal.ZERO) > 0 ?
+                recipe.baseServings() : BigDecimal.ONE;
+        BigDecimal servings = targetServings != null && targetServings.compareTo(BigDecimal.ZERO) > 0 ?
+                targetServings : baseServings;
+
+        BigDecimal multiplier = servings.divide(baseServings, 4, RoundingMode.HALF_UP);
+
         for (RecipeIngredientImportDto ingredient : recipe.ingredients()) {
-            if (ingredient.ingredientId() != null && excluded.contains(ingredient.ingredientId())) {
+            if (ingredient.ingredientId() != null && excludedIngredientIds.contains(ingredient.ingredientId())) {
                 continue;
             }
 
@@ -57,17 +54,15 @@ public class IngredientAggregationService {
             Optional<ShoppingListItem> matchedItemOpt = activeList.getItems().stream()
                     .filter(item -> item.getIngredientId() != null
                             && item.getIngredientId().equals(ingredient.ingredientId())
-                            && unitConversionService.areUnitsCompatible(item.getUnitName(), ingredient.unitName()))
+                            && isUnitCompatible(item, ingredient))
                     .findFirst();
 
             if (matchedItemOpt.isPresent()) {
                 ShoppingListItem existingItem = matchedItemOpt.get();
-                var sum = unitConversionService.sumAndNormalize(
-                        existingItem.getQuantity(), existingItem.getUnitName(),
-                        scaledQty, ingredient.unitName()
-                );
-                existingItem.setQuantity(sum.quantity());
-                existingItem.setUnitName(sum.unitName());
+                UnitQuantityResult sumResult = sumQuantities(existingItem, ingredient, scaledQty);
+                existingItem.setQuantity(sumResult.quantity());
+                existingItem.setUnitId(sumResult.unitId());
+                existingItem.setUnitName(sumResult.unitName());
 
                 // FR-016: uncheck purchased item if additional quantity is merged
                 existingItem.setChecked(false);
@@ -85,7 +80,7 @@ public class IngredientAggregationService {
                         scaledQty,
                         ingredient.unitId(),
                         ingredient.unitName(),
-                        targetServings.intValue()
+                        targetServings != null ? targetServings.intValue() : 1
                 );
                 existingItem.addSource(source);
             } else {
@@ -94,7 +89,7 @@ public class IngredientAggregationService {
                     throw new CapacityExceededException("Shopping list capacity limit of " + MAX_LIST_CAPACITY + " items reached");
                 }
 
-                var normalized = unitConversionService.normalizeQuantityAndUnit(scaledQty, ingredient.unitName());
+                UnitQuantityResult normalized = normalizeQuantityAndUnit(scaledQty, ingredient.unitId(), ingredient.unitName());
                 Long aisleId = ingredient.defaultAisleCategoryId() != null ? ingredient.defaultAisleCategoryId() : 6L;
 
                 ShoppingListItem newItem = new ShoppingListItem(
@@ -103,7 +98,7 @@ public class IngredientAggregationService {
                         ingredient.ingredientId(),
                         ingredient.ingredientName(),
                         normalized.quantity(),
-                        ingredient.unitId(),
+                        normalized.unitId(),
                         normalized.unitName(),
                         aisleId
                 );
@@ -116,12 +111,75 @@ public class IngredientAggregationService {
                         scaledQty,
                         ingredient.unitId(),
                         ingredient.unitName(),
-                        targetServings.intValue()
+                        targetServings != null ? targetServings.intValue() : 1
                 );
                 newItem.addSource(source);
 
                 activeList.addItem(newItem);
             }
         }
+    }
+
+    private boolean isUnitCompatible(ShoppingListItem item, RecipeIngredientImportDto ingredient) {
+        Long u1 = item.getUnitId();
+        Long u2 = ingredient.unitId();
+        if (u1 != null && u2 != null && u1.equals(u2)) {
+            return true;
+        }
+        String n1 = item.getUnitName() != null ? item.getUnitName() : getUnitNameForId(u1);
+        String n2 = ingredient.unitName() != null ? ingredient.unitName() : getUnitNameForId(u2);
+        return unitConversionService.areUnitsCompatible(n1, n2);
+    }
+
+    private record UnitQuantityResult(BigDecimal quantity, Long unitId, String unitName) {}
+
+    private UnitQuantityResult sumQuantities(
+            ShoppingListItem item,
+            RecipeIngredientImportDto ingredient,
+            BigDecimal scaledQty
+    ) {
+        String u1Name = item.getUnitName() != null ? item.getUnitName() : getUnitNameForId(item.getUnitId());
+        String u2Name = ingredient.unitName() != null ? ingredient.unitName() : getUnitNameForId(ingredient.unitId());
+
+        UnitConversionService.ConvertedQuantity converted = unitConversionService.sumAndNormalize(
+                item.getQuantity(), u1Name, scaledQty, u2Name
+        );
+
+        Long fallbackId = ingredient.unitId() != null ? ingredient.unitId() : item.getUnitId();
+        Long resolvedUnitId = getUnitIdForName(converted.unitName(), fallbackId);
+
+        return new UnitQuantityResult(converted.quantity(), resolvedUnitId, converted.unitName());
+    }
+
+    private UnitQuantityResult normalizeQuantityAndUnit(BigDecimal qty, Long unitId, String rawUnit) {
+        String unitName = rawUnit != null ? rawUnit : getUnitNameForId(unitId);
+        UnitConversionService.ConvertedQuantity converted = unitConversionService.normalizeQuantityAndUnit(qty, unitName);
+        Long resolvedUnitId = getUnitIdForName(converted.unitName(), unitId);
+        return new UnitQuantityResult(converted.quantity(), resolvedUnitId, converted.unitName());
+    }
+
+    private String getUnitNameForId(Long id) {
+        if (id == null) return null;
+        if (id == 1L) return "g";
+        if (id == 2L) return "kg";
+        if (id == 3L) return "ml";
+        if (id == 4L) return "l";
+        if (id == 5L) return "quả";
+        if (id == 6L) return "củ";
+        if (id == 7L) return "cây";
+        return null;
+    }
+
+    private Long getUnitIdForName(String name, Long fallbackId) {
+        if (name == null) return fallbackId;
+        String lower = name.trim().toLowerCase(Locale.ROOT);
+        if ("g".equals(lower) || "gram".equals(lower) || "gr".equals(lower)) return 1L;
+        if ("kg".equals(lower) || "kilogram".equals(lower)) return 2L;
+        if ("ml".equals(lower) || "mililit".equals(lower) || "milliliter".equals(lower)) return 3L;
+        if ("l".equals(lower) || "lit".equals(lower) || "lít".equals(lower) || "liter".equals(lower)) return 4L;
+        if ("quả".equals(lower) || "qua".equals(lower) || "trứng".equals(lower) || "trái".equals(lower)) return 5L;
+        if ("củ".equals(lower) || "cu".equals(lower)) return 6L;
+        if ("cây".equals(lower) || "cay".equals(lower)) return 7L;
+        return fallbackId;
     }
 }

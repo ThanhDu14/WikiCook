@@ -13,19 +13,21 @@ import java.util.Optional;
  * Seed data adapter for RecipeDetailPort providing decoupled standalone recipe data for US1/US2 testing and manual verification.
  */
 @Component
+@ConditionalOnMissingBean(value = RecipeDetailPort.class, ignored = SeedRecipeDetailAdapter.class)
 public class SeedRecipeDetailAdapter implements RecipeDetailPort {
 
     private final Map<Long, RecipeImportDto> seedRecipes = new HashMap<>();
 
     public SeedRecipeDetailAdapter() {
+        // Standard Unit IDs: 1=g, 2=kg, 3=ml, 4=l, 5=quả, 6=củ, 7=cây
         seedRecipes.put(1L, new RecipeImportDto(
                 1L,
                 "Bò kho",
                 new BigDecimal("2"),
                 List.of(
                         new RecipeIngredientImportDto(1L, "Thịt bò", new BigDecimal("300"), 1L, "g", 2L, "MEAT_SEAFOOD"),
-                        new RecipeIngredientImportDto(2L, "Cà rốt", new BigDecimal("2"), 2L, "củ", 1L, "PRODUCE"),
-                        new RecipeIngredientImportDto(3L, "Sả", new BigDecimal("3"), 3L, "cây", 1L, "PRODUCE")
+                        new RecipeIngredientImportDto(2L, "Cà rốt", new BigDecimal("2"), 6L, "củ", 1L, "PRODUCE"),
+                        new RecipeIngredientImportDto(3L, "Sả", new BigDecimal("3"), 7L, "cây", 1L, "PRODUCE")
                 )
         ));
 
@@ -36,7 +38,7 @@ public class SeedRecipeDetailAdapter implements RecipeDetailPort {
                 List.of(
                         new RecipeIngredientImportDto(1L, "Thịt bò", new BigDecimal("400"), 1L, "g", 2L, "MEAT_SEAFOOD"),
                         new RecipeIngredientImportDto(4L, "Cần tây", new BigDecimal("200"), 1L, "g", 1L, "PRODUCE"),
-                        new RecipeIngredientImportDto(5L, "Tỏi", new BigDecimal("1"), 4L, "củ", 1L, "PRODUCE")
+                        new RecipeIngredientImportDto(5L, "Tỏi", new BigDecimal("1"), 6L, "củ", 1L, "PRODUCE")
                 )
         ));
 
@@ -55,7 +57,7 @@ public class SeedRecipeDetailAdapter implements RecipeDetailPort {
                 "Sốt chanh dây",
                 new BigDecimal("2"),
                 List.of(
-                        new RecipeIngredientImportDto(6L, "Chanh", new BigDecimal("50"), 6L, "ml", 1L, "PRODUCE"),
+                        new RecipeIngredientImportDto(6L, "Chanh", new BigDecimal("50"), 3L, "ml", 1L, "PRODUCE"),
                         new RecipeIngredientImportDto(7L, "Đường", new BigDecimal("30"), 1L, "g", 4L, "PANTRY_SPICES")
                 )
         ));
@@ -65,8 +67,8 @@ public class SeedRecipeDetailAdapter implements RecipeDetailPort {
                 "Bánh flan",
                 new BigDecimal("4"),
                 List.of(
-                        new RecipeIngredientImportDto(8L, "Trứng gà", new BigDecimal("2"), 7L, "quả", 3L, "DAIRY_EGGS"),
-                        new RecipeIngredientImportDto(9L, "Sữa tươi", new BigDecimal("500"), 6L, "ml", 3L, "DAIRY_EGGS")
+                        new RecipeIngredientImportDto(8L, "Trứng gà", new BigDecimal("2"), 5L, "quả", 3L, "DAIRY_EGGS"),
+                        new RecipeIngredientImportDto(9L, "Sữa tươi", new BigDecimal("500"), 3L, "ml", 3L, "DAIRY_EGGS")
                 )
         ));
     }
