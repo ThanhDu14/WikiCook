@@ -24,7 +24,8 @@ describe('AddCustomItemDialog (SL-04)', () => {
     await user.type(screen.getByLabelText('Tên món'), 'Nước mắm');
     await user.type(screen.getByLabelText('Số lượng'), '1,5');
     await user.selectOptions(screen.getByLabelText('Đơn vị'), 'chai');
-    await user.selectOptions(screen.getByLabelText('Quầy'), 'Gia vị & Đồ khô');
+    // user-event matches option innerHTML, where "&" is "&amp;", so pick the option element itself
+    await user.selectOptions(screen.getByLabelText('Quầy'), screen.getByRole('option', { name: 'Gia vị & Đồ khô' }));
     await user.click(screen.getByRole('button', { name: 'Thêm vào danh sách' }));
 
     expect(onSubmit).toHaveBeenCalledWith({ name: 'Nước mắm', quantity: 1.5, unit: 'chai', aisleId: 4 });
