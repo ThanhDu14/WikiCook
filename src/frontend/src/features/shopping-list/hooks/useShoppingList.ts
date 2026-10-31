@@ -36,8 +36,24 @@ export function useShoppingList() {
   }, []);
 
   useEffect(() => {
-    void reload();
-  }, [reload]);
+    let active = true;
+    shoppingListApi
+      .getActive()
+      .then(
+        (next) => {
+          if (active) setList(next);
+        },
+        (e: unknown) => {
+          if (active) setError(describe(e));
+        },
+      )
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   /** Runs a mutation that answers with the new list; failures set `error` and re-throw so dialogs can stay open. */
   const mutate = useCallback(async (call: () => Promise<ShoppingList>) => {
