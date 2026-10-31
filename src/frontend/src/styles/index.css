@@ -4,6 +4,7 @@
 @import '@fontsource/be-vietnam-pro/latin-400.css';
 @import '@fontsource/be-vietnam-pro/latin-600.css';
 @import './tokens.css';
+@import './soft-editorial.css';
 
 @tailwind base;
 @tailwind components;
