@@ -1,4 +1,5 @@
 import { Navigate, type RouteObject } from 'react-router-dom';
+import { ShoppingHistoryPage } from '@/features/shopping-list/ShoppingHistoryPage';
 import { ShoppingListPage } from '@/features/shopping-list/ShoppingListPage';
 import { AppLayout } from './AppLayout';
 import { NotFoundPage } from './NotFoundPage';
@@ -19,6 +20,7 @@ export const routes: RouteObject[] = [
     children: [
       { index: true, element: <Navigate to="/shopping-list" replace /> },
       { path: 'shopping-list', element: <ShoppingListPage /> },
+      { path: 'shopping-list/history', element: <ShoppingHistoryPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
