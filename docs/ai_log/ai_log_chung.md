@@ -12,6 +12,7 @@ File này ghi lại toàn bộ lịch sử sử dụng công cụ AI của **Tr�
 | 6 | 2026-10-19 | Làm rõ yêu cầu kỹ thuật và hành vi biên cho spec 100 (Interactive Clarification) bằng `/speckit-clarify` | `specs/100-admin-moderation/` |
 | 7 | 2026-10-21 | Tổng hợp & Kiểm toán lịch sử sử dụng AI toàn nhóm trong Sprint 2 (`SCRUM-41`) | `docs/management/reports/sprint-02/sprint-02-report.md` (Mục 4) |
 | 8 | 2026-10-21 | Tiến hành kiểm thử chất lượng (QA Audit) hệ thống tài liệu Markdown (`SCRUM-42`) | Toàn bộ `docs/` (`SCRUM-42`) |
+| 9 | 2026-10-31 | Soạn thảo Use-Case Specifications chi tiết cho Feature 070 & 100 (`SCRUM-54`, chuẩn bị `SCRUM-58`) | `docs/requirements/use-case-specification.md` |
 
 ---
 
@@ -342,3 +343,109 @@ Rà soát toàn bộ thư mục WikiCook/docs/ và báo cáo kết quả đạt 
 ### Tổng kết Sprint 2 của thành viên Chung:
 - **Nhiệm vụ cá nhân hoàn thành:** `SCRUM-37` (Spec Kit `/src` sync), `SCRUM-38` (Training Log), `SCRUM-41` (AI Usage Appendix), `SCRUM-42` (QA Audit Documentation).
 - **Trạng thái:** 4/4 tasks đạt `DONE`. Toàn bộ deliverables của Sprint 2 đã qua kiểm định QA độc lập, đạt 100% Acceptance Criteria và Definition of Done (DoD).
+
+---
+
+# PHẦN II: SPRINT 3 (PROJECT ASSIGNMENT 3 - PA3)
+
+## Mục 9: Soạn thảo Use-Case Specifications cho Feature 070 và Feature 100 (`SCRUM-54`)
+
+### 9.1. Thông tin phiên làm việc (Session Metadata)
+
+| Trường | Nội dung |
+|---|---|
+| **Mục** | **Mục 9** \| **Ngày thực hiện:** 31/10/2026 |
+| **Người thực hiện** | Trần Nguyễn Công Chung (`itzchugnn` - MSSV: 24120272) — QA Lead, Compliance Auditor & Market Researcher 1 |
+| **Tài liệu liên quan** | `docs/requirements/use-case-specification.md` (Section 12: Feature 070 & Section 13: Feature 100), `specs/070-review-cooksnap/spec.md`, `specs/100-admin-moderation/spec.md`, `docs/analysis-and-design/ui-ux/screens/` |
+| **Công cụ AI & Model** | Google Antigravity (Gemini 3.8 Flash High) |
+| **Mục đích làm việc** | Soạn thảo đặc tả Use-Case chi tiết (8 mục chuẩn RUP) cho 2 phân hệ phụ trách: **Feature 070 (Community Reviews, Cooksnaps & Interactive Ratings)** và **Feature 100 (Admin Dashboard & Content Moderation)** nhằm phục vụ Deliverable Phần D (Use-Case Specification - 45 điểm) trong Sprint 3 (PA3) theo task Jira `SCRUM-54`. Đồng thời rà soát nguyên mẫu UI có sẵn để chuẩn bị cho task `SCRUM-58`. |
+| **Nhánh Git** | `Chung` (chuẩn bị pull request cho task `SCRUM-54`) |
+
+---
+
+### 9.2. Chuỗi câu lệnh / Prompt đã sử dụng (Prompt History & Progressive Extensibility)
+
+> [!NOTE]
+> Mục này ghi lại các prompt kỹ thuật đã thực hiện theo tiến trình công việc trong Sprint 3. Các prompt tiếp theo thuộc chu kỳ làm việc (như rà soát UI Prototype Gap, ánh xạ Screenshot cho 10 Feature trong `SCRUM-58`) sẽ tiếp tục được ghi nối tiếp vào bên dưới.
+
+#### Prompt 9.1 (Feature 070 - Community Reviews & Cooksnaps):
+```text
+Đóng vai trò QA Lead của dự án WikiCook (Group 05). Dựa trên đặc tả ratified specs/070-review-cooksnap/spec.md, 
+hãy soạn thảo chi tiết toàn bộ các Use Case cho Feature 070 (từ UC-070-01 đến UC-070-06) bằng tiếng Anh kỹ thuật chuyên nghiệp.
+Yêu cầu bắt buộc:
+1. Dòng metadata tác giả ở đầu mỗi Use Case: 
+   *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+2. Đầy đủ 8 mục: Name and Identifier, Actor(s), Description, Preconditions, Basic Flow (đánh số tuần tự), 
+   Alternative Flows (đánh số AF x.1, AF x.2...), Postconditions (CSDL & UI), Special Requirements (NFR, bảo mật, concurrency).
+3. Ràng buộc kỹ thuật: Giới hạn 1 review/người/công thức, tính toán rating_avg và review_count nguyên tử (atomic aggregation), 
+   tối đa 3 ảnh Cooksnap <= 5MB, lọc bỏ EXIF metadata, xử lý soft-delete cascade, deduplication báo cáo vi phạm.
+4. Ánh xạ trực tiếp file prototype có sẵn (RV01-RV06, CK09) và phân tích các UI Asset Gaps cho task SCRUM-58.
+```
+
+#### Prompt 9.2 (Feature 100 - Admin Dashboard & Content Moderation):
+```text
+Tiếp tục soạn thảo chi tiết toàn bộ các Use Case cho Feature 100: Administration & Content Moderation 
+(từ UC-100-01 đến UC-100-06) dựa trên specs/100-admin-moderation/spec.md theo đúng mẫu 8 mục chuẩn:
+1. Danh sách Use Case: UC-100-01 (Recipe Moderation Queue), UC-100-02 (Process Content Reports), 
+   UC-100-03 (User Account Governance), UC-100-04 (Taxonomy Management), UC-100-05 (Curate Featured Recipes), 
+   UC-100-06 (Audit Log & Platform Metrics).
+2. Ràng buộc bảo mật & nghiệp vụ khắt khe:
+   - Self-Moderation Prevention: Cấm Moderator/Admin tự duyệt công thức của mình (HTTP 403 Forbidden).
+   - Concurrent Moderation Conflict: Xử lý xung đột khi 2 người cùng duyệt 1 bài (HTTP 409 Conflict).
+   - Taxonomy Deactivation Guard: Cấm hard-delete danh mục/nguyên liệu đang có công thức sử dụng (chỉ is_active = FALSE).
+   - Append-Only Audit Log: Bảng audit_logs bất biến, cấm tuyệt đối UPDATE/DELETE.
+   - Phân quyền RBAC rõ rệt: Moderator chỉ đình chỉ tối đa 30 ngày; Admin mới có quyền Cấm vĩnh viễn, đổi Role và ghim Featured.
+3. Ánh xạ bộ prototype AD01 đến AD11 và lập bảng Traceability Matrix bao phủ 18 FR của Spec 100.
+```
+
+<!-- CÁC PROMPT TIẾP THEO CỦA SPRINT 3 (SCRUM-54 / SCRUM-58) SẼ ĐƯỢC NỐI TIẾP TẠI ĐÂY -->
+
+---
+
+### 9.3. Quá trình phân tích & Sự can thiệp chuyên môn của sinh viên (Human-in-the-Loop)
+
+#### a. Kết quả ban đầu do AI tạo ra:
+- AI đã thiết lập được khung sườn cơ bản cho 12 Use Case (`UC-070-01` – `UC-070-06` và `UC-100-01` – `UC-100-06`) với ngôn ngữ tiếng Anh kỹ thuật đạt chuẩn, tuân thủ đúng 8 mục của Rational Unified Process (RUP).
+- Tích hợp các tham chiếu đến các file màn hình `.dc.html` tương ứng trong kho prototype (`RV01` – `RV06`, `AD01` – `AD11`).
+
+#### b. Các thiếu sót và lỗ hổng kỹ thuật do sinh viên phát hiện:
+Qua quá trình rà soát độc lập trên vai trò **QA Lead & Compliance Auditor**, tôi đã phát hiện một số thiếu sót nghiêm trọng về tính toàn vẹn dữ liệu, an ninh ứng dụng và tính khả dụng của luồng nghiệp vụ:
+1. *Lỗ hổng tự buff điểm số:* Chưa có cơ chế chặn tác giả công thức tự gửi đánh giá và chấm 5 sao cho bài viết của chính mình.
+2. *Nguy cơ spam phá hoại:* Thiếu cơ chế điều tiết lưu lượng (Rate Limiting) ở tầng API đối với hành vi gửi đánh giá dồn dập từ bot/tài khoản ảo.
+3. *Đứt gãy tính nhất quán điểm số khi kiểm duyệt:* Khi Admin/Moderator ẩn hoặc xóa một đánh giá vi phạm từ trang quản trị (Feature 100), điểm trung bình `rating_avg` của công thức không được đồng bộ tính toán lại tức thì.
+4. *Nội dung vi phạm nghiêm trọng chưa được cách ly kịp thời:* Khi một nội dung nhận hàng loạt tố cáo từ cộng đồng, nội dung đó vẫn hiển thị bình thường cho đến khi Moderator vào duyệt thủ công.
+5. *Trải nghiệm phân loại đánh giá thụ động:* Danh sách đánh giá chỉ hỗ trợ lọc theo thời gian hoặc số sao, thiếu cơ chế xã hội hóa để người đọc bình chọn và tìm kiếm các đánh giá hữu ích nhất.
+6. *Xung đột kiểm duyệt đồng thời chưa tối ưu:* Xử lý xung đột mới chỉ dừng ở việc ném mã lỗi HTTP 409 Conflict thụ động khi bấm nút, chưa có tín hiệu cảnh báo trước để kiểm duyệt viên không dẫm chân lên nhau.
+
+#### c. Can thiệp kỹ thuật & Bổ sung nghiệp vụ của sinh viên (Chứng minh tính làm chủ bài làm):
+Tôi đã trực tiếp can thiệp, yêu cầu bổ sung logic chuyên sâu và tự tay hiệu chỉnh các Use Case trong `docs/requirements/use-case-specification.md`:
+
+1. **Chặn tác giả tự chấm điểm (`UC-070-01`):** 
+   - Nhận thấy kẽ hở tác giả tự "buff" điểm ảo, sinh viên đã yêu cầu bổ sung logic UI: Ẩn hoàn toàn nút `"Viết đánh giá"` đối với tác giả công thức (`recipe.author_id == current_user_id`).
+   - Tại tầng backend (Controller/Service), bổ sung tiền điều kiện chặn mã lỗi HTTP 403 Forbidden (`CANNOT_REVIEW_OWN_RECIPE`) nếu có cố tình gọi API trực tiếp.
+2. **Chống spam đánh giá liên tục (`UC-070-01`):**
+   - Thêm cơ chế Rate Limiting (Token Bucket): Giới hạn mỗi tài khoản chỉ được gửi tối đa 5 đánh giá trong vòng 10 phút trên toàn hệ thống để chặn tài khoản bot/clone chấm điểm phá hoại. Khi vượt ngưỡng, hệ thống trả về mã lỗi HTTP 429 Too Many Requests.
+3. **Đồng bộ tính toán lại điểm số (`UC-070-03`, `UC-100-02`):**
+   - Đảm bảo tính nhất quán dữ liệu liên phân hệ; bất cứ khi nào Admin/Moderator ẩn (`is_hidden = TRUE`) hoặc xóa một đánh giá vi phạm ở Feature 100, dịch vụ `RecipeAggregateService.recalculate(recipeId)` đều phải được kích hoạt trong một database transaction cô lập để cập nhật lại ngay tức thì `rating_avg` và `review_count` trên bảng `recipes`.
+4. **Tự động cách ly nội dung nhận nhiều báo cáo (`UC-070-05`, `UC-100-02`):**
+   - Thiết lập ngưỡng bảo vệ cộng đồng tự động: Khi một bài review hoặc ảnh Cooksnap nhận $\ge 10$ lượt báo cáo vi phạm (`reports`) từ các người dùng khác nhau, hệ thống tự động ẩn nội dung (Auto-quarantine) khỏi giao diện công chúng và gắn cờ ưu tiên khẩn cấp (`URGENT`) gửi sang hàng đợi kiểm duyệt để xử lý tức thời.
+5. **Hệ thống bầu chọn "Hữu ích" (`UC-070-04`):**
+   - Bổ sung thực thể CSDL `review_votes` (`user_id`, `review_id`, `is_helpful`, `created_at`) với ràng buộc `UNIQUE(user_id, review_id)`.
+   - Cung cấp bộ lọc sắp xếp `sort=helpful` trên giao diện `RV01-Reviews` nhằm đưa các đánh giá hữu ích, chất lượng cao lên đầu trang.
+6. **Cảnh báo kiểm duyệt đồng thời thời gian thực (`UC-100-01`):**
+   - Đề xuất bổ sung cơ chế WebSocket Presence: Khi Moderator A đang mở màn hình xem chi tiết của công thức X (`AD03-ReviewDetail`), Moderator B mở cùng công thức sẽ nhìn thấy biểu tượng và thông báo *"Moderator [Tên] đang xem xét công thức này"* để tránh đưa ra quyết định xung đột.
+
+---
+
+### 9.4. Vị trí minh chứng hình ảnh (Evidence Placeholders)
+
+- `[CẦN CHỤP ẢNH: Toàn màn hình Antigravity IDE hiển thị phiên chat chỉ đạo AI thiết lập Use-Case Specification và danh sách file git đang chỉnh sửa]`
+- `[CẦN CHỤP ẢNH: Trình duyệt mở file docs/requirements/use-case-specification.md tại Section 12 (UC-070-01 đến UC-070-06) làm nổi bật metadata tác giả Trần Nguyễn Công Chung]`
+- `[CẦN CHỤP ẢNH: Trình duyệt mở file docs/requirements/use-case-specification.md tại Section 13 (UC-100-01 đến UC-100-06) làm nổi bật các Alternative Flows về Self-Moderation và Concurrent Conflict]`
+
+---
+
+### 9.5. Đánh giá chất lượng & Nhật ký cập nhật tiến độ (Progress Log & Next Steps)
+
+- **Trạng thái hiện tại:** Hoàn thành toàn diện 12 Use Case cho Feature 070 và Feature 100 theo yêu cầu `SCRUM-54`, bao phủ 100% Functional Requirements và Edge Cases.
+- **Tính khả thi mở rộng:** Cấu trúc mục 9 được thiết kế dạng khối module mở (`<!-- PROMPTS_APPEND_ZONE -->`). Khi triển khai các bước tiếp theo của Sprint 3 (như lập Bảng ma trận đối chiếu Prototype Mapping Matrix và hướng dẫn chỉnh sửa DOM/chụp ảnh cho `SCRUM-58`), các prompt và can thiệp mới sẽ được bổ sung trực tiếp vào chuỗi mà không phá vỡ cấu trúc nhật ký đã có.
