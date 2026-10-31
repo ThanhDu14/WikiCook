@@ -95,7 +95,8 @@ describe('ChecklistScreen (SL-01 / SL-02)', () => {
     );
     const user = setup();
 
-    await user.click(await screen.findByRole('button', { name: /Đổi tên danh sách/ }));
+    // SL-01 has no rename icon: the title itself is the button
+    await user.click(within(await screen.findByRole('heading', { level: 1 })).getByRole('button'));
     const input = screen.getByRole('textbox', { name: 'Tên danh sách' });
     expect(input).toHaveAttribute('maxLength', '60');
     await user.clear(input);
@@ -115,7 +116,8 @@ describe('ChecklistScreen (SL-01 / SL-02)', () => {
     );
     const user = setup();
 
-    await user.click(await screen.findByRole('button', { name: /Đổi tên danh sách/ }));
+    // SL-01 has no rename icon: the title itself is the button
+    await user.click(within(await screen.findByRole('heading', { level: 1 })).getByRole('button'));
     await user.clear(screen.getByRole('textbox', { name: 'Tên danh sách' }));
     await user.tab();
 
