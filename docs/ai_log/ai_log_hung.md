@@ -34,6 +34,7 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 19 | 2026-10-29, 14:30 – 15:15 | `SCRUM-55` (Backend 040 US1 + US2) | Hiện thực Backend Slice 040 US1 + US2 theo quy trình Test-First TDD, đạt 36/36 tests PASS và 83% JaCoCo service coverage | `16f61b4` (PR #52) | `src/backend/` (wikicook-app, wikicook-db) |
 | 20 | 2026-10-31, 19:30 – 20:10 | `SCRUM-57` Review Fix-up R1 | Sửa các blocker F1-F5 và F9 sau review của Hiển cho PR #52, bổ sung Testcontainers IT và migration V402 | `679f86a` | `src/backend/`, `specs/040-shopping-list/tasks.md` |
 | 21 | 2026-11-01, 13:30 – 13:52 | `SCRUM-57` Review Fix-up R2 | Sửa 4 điểm code (V403 sequence identity, dynamic UnitRepository, F8 aisle code precedence, dead 5-arg constructor) và kiểm toán tasks.md theo phản hồi v2 của Hiển | `8ff370a` .. `b6a5d33` | `src/backend/`, `specs/040-shopping-list/tasks.md` |
+| 22 | 2026-11-01, 14:02 – 14:10 | `SCRUM-57` F9 Wiring Follow-up | Viết test ApplicationContextRunner kiểm chứng `@ConditionalOnMissingBean` cho SeedRecipeDetailAdapter và thêm log WARN khi seed active | `9d25cb3` | `src/backend/wikicook-app/` |
 
 ---
 
@@ -964,3 +965,46 @@ Quy tắc: test-first; mỗi fix 1 commit riêng, message 1 dòng dạng fix(scr
 - Đánh giá kiến trúc phân tầng: Lựa chọn hiện thực reverse lookup theo code trong `IngredientAggregationService` kèm comment quy ước rõ ràng thay vì vội vã tạo mới `AisleCategoryRepository` nhằm tránh vượt phạm vi của slice 040 (vốn thuộc quyền sở hữu của module danh mục 060).
 - Thực thi toàn bộ lệnh `mvn -B verify` trên máy trạm: Kết quả 69 tests pass 100% (18 test AI, 43 test unit app, 8 test IT app), JaCoCo coverage gate đạt yêu cầu $\ge 70\%$.
 - Tuân thủ quy định Git Safety: KHÔNG push lên GitHub remote, KHÔNG mở PR mới và KHÔNG merge; chuẩn bị đầy đủ báo cáo đối chiếu file phản hồi v2 cho Hưng rà soát.
+
+---
+
+## Mục 22: Chứng minh cơ chế wiring bean F9 và bổ sung cảnh báo khi Seed Adapter kích hoạt (SCRUM-57 Follow-up)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Google Antigravity (Gemini), Agentic Coding CLI & Apache Maven 3.9.9 / Java 21 |
+| **Thời gian truy cập cụ thể** | 2026-11-01, 14:02 – 14:10 (8 phút) |
+| **Người thực hiện** | Lê Quốc Hưng (`LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-57`: Xử lý rủi ro wiring F9 cho PR #59 (`fix/SCRUM-55-shopping-list-blockers`) |
+| **Tài liệu & Mã nguồn liên quan** | `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/port/SeedRecipeDetailAdapter.java` |
+| **Mục đích sử dụng** | Bổ sung kiểm thử đơn vị với `ApplicationContextRunner` nhằm chứng minh cơ chế `@ConditionalOnMissingBean` trên `SeedRecipeDetailAdapter` hoạt động chính xác (tự động nhường chỗ khi có bean thật từ module 060), đồng thời bổ sung `@PostConstruct` log mức `WARN` khi adapter hạt giống kích hoạt để tránh rủi ro âm thầm phục vụ dữ liệu giả lập. |
+| **Nhánh Git** | `fix/SCRUM-55-shopping-list-blockers` |
+| **Minh chứng (Evidence)** | `SeedRecipeDetailAdapterWiringTest.java` (2 tests pass 100%), log `WARN` hiển thị đúng 1 lần khi khởi động, commit mới trên nhánh fix-up. |
+
+### Prompt đã sử dụng:
+```text
+# Prompt cho agent — WikiCook fix-up round 2 follow-up: F9 wiring risk (01/11)
+Việc cần làm (1 commit duy nhất, message 1 dòng: test(scrum-55): prove seed adapter wiring and warn when active):
+1. Test chứng minh condition hoạt động (dùng ApplicationContextRunner, không cần DB/Testcontainers):
+   - (a) Chỉ đăng ký SeedRecipeDetailAdapter -> context có đúng 1 bean RecipeDetailPort và đó là seed adapter.
+   - (b) Đăng ký thêm 1 bean RecipeDetailPort khác -> seed adapter KHÔNG được tạo (context không chứa SeedRecipeDetailAdapter).
+2. Log warning khi seed active: thêm @PostConstruct trong SeedRecipeDetailAdapter ghi WARN rõ ràng rằng seed đang phục vụ dữ liệu giả và adapter thật của 060 chưa được đăng ký. Log phải xuất hiện đúng 1 lần mỗi lần context khởi động.
+3. AI log: thêm Entry 22 mới vào docs/ai_log/ai_log_hung.md.
+Verify toàn bộ unit test module app.
+```
+
+### Nội dung do AI sinh ra:
+1. **Kiểm thử Wiring với `ApplicationContextRunner`**:
+   - Tạo mới `src/backend/wikicook-app/src/test/java/com/wikicook/shoppinglist/port/SeedRecipeDetailAdapterWiringTest.java`:
+     - Test case (a): `whenOnlySeedAdapterPresent_registersSeedBean` -> Xác nhận context có đúng 1 bean `RecipeDetailPort` và bean đó là `SeedRecipeDetailAdapter`.
+     - Test case (b): `whenRealAdapterPresent_backsOffSeedAdapter` -> Cung cấp cấu hình `@Configuration` chứa bean `RecipeDetailPort` thật (`realRecipeDetailPort`) -> Xác nhận context chỉ có 1 bean `RecipeDetailPort`, và `SeedRecipeDetailAdapter` hoàn toàn bị loại bỏ khỏi context (`doesNotHaveBean`).
+2. **Cảnh báo khi Seed Adapter kích hoạt**:
+   - Thêm `@PostConstruct public void warnIfActive()` trong `SeedRecipeDetailAdapter.java`, ghi log cảnh báo:
+     `"SeedRecipeDetailAdapter is active: serving mock recipe data. Real RecipeDetailPort adapter from module 060 has not been registered."`
+   - Log này chỉ xuất hiện khi seed bean được khởi tạo (khi không có bean thật nào khác).
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Thực hiện kiểm chứng phản biện: Kết quả test `ApplicationContextRunner` chứng minh annotation `@ConditionalOnMissingBean(value = RecipeDetailPort.class, ignored = SeedRecipeDetailAdapter.class)` trên `SeedRecipeDetailAdapter` là an toàn tuyệt đối; seed adapter không bao giờ lấn át bean thật của module 060 khi bean thật được đăng ký vào Spring context.
+- Xác nhận kiểm tra log runtime: Khi chạy `SeedRecipeDetailAdapterWiringTest`, test (a) ghi nhận log `WARN` đúng 1 lần, trong khi test (b) không ghi bất kỳ log `WARN` nào do bean không được khởi tạo.
+- Chạy toàn bộ 45 unit tests của module `wikicook-app`: 100% tests PASS trong 1.543s.
+- Tuân thủ quy định Git Safety: KHÔNG push lên GitHub remote, KHÔNG mở PR mới và KHÔNG merge.

@@ -1,5 +1,8 @@
 package com.wikicook.shoppinglist.port;
 
+import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +18,8 @@ import java.util.Optional;
 @Component
 @ConditionalOnMissingBean(value = RecipeDetailPort.class, ignored = SeedRecipeDetailAdapter.class)
 public class SeedRecipeDetailAdapter implements RecipeDetailPort {
+
+    private static final Logger log = LoggerFactory.getLogger(SeedRecipeDetailAdapter.class);
 
     private final Map<Long, RecipeImportDto> seedRecipes = new HashMap<>();
 
@@ -76,5 +81,10 @@ public class SeedRecipeDetailAdapter implements RecipeDetailPort {
     @Override
     public Optional<RecipeImportDto> getRecipeForImport(Long recipeId) {
         return Optional.ofNullable(seedRecipes.get(recipeId));
+    }
+
+    @PostConstruct
+    public void warnIfActive() {
+        log.warn("SeedRecipeDetailAdapter is active: serving mock recipe data. Real RecipeDetailPort adapter from module 060 has not been registered.");
     }
 }
