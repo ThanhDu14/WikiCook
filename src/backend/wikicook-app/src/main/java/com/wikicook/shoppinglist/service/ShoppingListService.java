@@ -58,14 +58,6 @@ public class ShoppingListService {
         this.unitRepository = unitRepository;
     }
 
-    public ShoppingListService(ShoppingListRepository shoppingListRepository,
-                               ShoppingListItemRepository shoppingListItemRepository,
-                               UserAislePreferenceRepository userAislePreferenceRepository,
-                               RecipeDetailPort recipeDetailPort,
-                               IngredientAggregationService ingredientAggregationService) {
-        this(shoppingListRepository, shoppingListItemRepository, userAislePreferenceRepository, recipeDetailPort, ingredientAggregationService, null);
-    }
-
     public ShoppingListResponse getActiveShoppingList(Long userId) {
         ShoppingList activeList = shoppingListRepository.findByUserIdAndStatus(userId, ShoppingListStatus.ACTIVE)
                 .orElseGet(() -> createDefaultActiveList(userId));
@@ -96,7 +88,7 @@ public class ShoppingListService {
 
         Long aisleId = request.aisleCategoryId() != null ? request.aisleCategoryId() : 6L;
         Long unitId = null;
-        if (request.unitName() != null && !request.unitName().isBlank() && unitRepository != null) {
+        if (request.unitName() != null && !request.unitName().isBlank()) {
             String clean = request.unitName().trim();
             unitId = unitRepository.findByCode(clean)
                     .or(() -> unitRepository.findByNameVi(clean))
@@ -288,7 +280,7 @@ public class ShoppingListService {
         if (transientName != null && !transientName.isBlank()) {
             return transientName;
         }
-        if (unitId != null && unitRepository != null) {
+        if (unitId != null) {
             return unitRepository.findById(unitId)
                     .map(u -> u.getNameVi() != null ? u.getNameVi() : u.getCode())
                     .orElse(null);
