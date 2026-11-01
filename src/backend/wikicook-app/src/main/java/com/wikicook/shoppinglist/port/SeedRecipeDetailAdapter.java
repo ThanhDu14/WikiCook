@@ -3,8 +3,6 @@ package com.wikicook.shoppinglist.port;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -15,8 +13,6 @@ import java.util.Optional;
 /**
  * Seed data adapter for RecipeDetailPort providing decoupled standalone recipe data for US1/US2 testing and manual verification.
  */
-@Component
-@ConditionalOnMissingBean(value = RecipeDetailPort.class, ignored = SeedRecipeDetailAdapter.class)
 public class SeedRecipeDetailAdapter implements RecipeDetailPort {
 
     private static final Logger log = LoggerFactory.getLogger(SeedRecipeDetailAdapter.class);

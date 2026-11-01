@@ -23,10 +23,10 @@ class SeedRecipeDetailAdapterWiringTest {
     }
 
     @Test
-    @DisplayName("Wiring (a): when only SeedRecipeDetailAdapter is registered, it becomes the single RecipeDetailPort bean")
+    @DisplayName("Wiring (a): when only SeedRecipeDetailConfiguration is registered, seed adapter becomes the single RecipeDetailPort bean")
     void whenOnlySeedAdapterPresent_registersSeedBean() {
         contextRunner
-                .withUserConfiguration(SeedRecipeDetailAdapter.class)
+                .withUserConfiguration(SeedRecipeDetailConfiguration.class)
                 .run(context -> {
                     assertThat(context).hasSingleBean(RecipeDetailPort.class);
                     assertThat(context).hasSingleBean(SeedRecipeDetailAdapter.class);
@@ -38,7 +38,7 @@ class SeedRecipeDetailAdapterWiringTest {
     @DisplayName("Wiring (b): when a custom RecipeDetailPort is present, SeedRecipeDetailAdapter is backed off")
     void whenRealAdapterPresent_backsOffSeedAdapter() {
         contextRunner
-                .withUserConfiguration(RealAdapterConfiguration.class, SeedRecipeDetailAdapter.class)
+                .withUserConfiguration(RealAdapterConfiguration.class, SeedRecipeDetailConfiguration.class)
                 .run(context -> {
                     assertThat(context).hasSingleBean(RecipeDetailPort.class);
                     assertThat(context).doesNotHaveBean(SeedRecipeDetailAdapter.class);
