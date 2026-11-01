@@ -317,4 +317,49 @@ class IngredientAggregationServiceTest {
         ShoppingListItem item = activeList.getItems().get(0);
         assertThat(item.getAisleCategoryId()).as("Aisle code PANTRY_SPICES must win over conflicting ID 1L").isEqualTo(4L);
     }
+
+    @Test
+    @DisplayName("Guards: targetServings null or non-positive throws IllegalArgumentException")
+    void aggregateRecipe_invalidTargetServings_throwsIllegalArgumentException() {
+        ShoppingList activeList = new ShoppingList(100L, "Danh sách mua sắm");
+        RecipeImportDto recipe = new RecipeImportDto(1L, "Test", BigDecimal.ONE, List.of());
+
+        assertThatThrownBy(() -> ingredientAggregationService.aggregateRecipe(activeList, recipe, null, Collections.emptySet()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Target servings must be positive");
+
+        assertThatThrownBy(() -> ingredientAggregationService.aggregateRecipe(activeList, recipe, BigDecimal.ZERO, Collections.emptySet()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Target servings must be positive");
+
+        assertThatThrownBy(() -> ingredientAggregationService.aggregateRecipe(activeList, recipe, new BigDecimal("-1"), Collections.emptySet()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Target servings must be positive");
+    }
+
+    @Test
+    @DisplayName("Guards: null excludedIngredientIds defaults gracefully without NPE")
+    void aggregateRecipe_nullExcludedIngredients_defaultsGracefully() {
+        ShoppingList activeList = new ShoppingList(100L, "Danh sách mua sắm");
+        RecipeImportDto recipe = new RecipeImportDto(
+                1L, "Test", BigDecimal.ONE,
+                List.of(new RecipeIngredientImportDto(1L, "Thịt bò", new BigDecimal("100"), 1L, "g", 2L, "MEAT_SEAFOOD"))
+        );
+
+        ingredientAggregationService.aggregateRecipe(activeList, recipe, BigDecimal.ONE, null);
+
+        assertThat(activeList.getItems()).hasSize(1);
+        assertThat(activeList.getItems().get(0).getSources().get(0).getScaledServings()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Guards: null recipe ingredients returns early without NPE")
+    void aggregateRecipe_nullIngredients_returnsEarlyWithoutNPE() {
+        ShoppingList activeList = new ShoppingList(100L, "Danh sách mua sắm");
+        RecipeImportDto recipe = new RecipeImportDto(1L, "Test", BigDecimal.ONE, null);
+
+        ingredientAggregationService.aggregateRecipe(activeList, recipe, BigDecimal.ONE, Collections.emptySet());
+
+        assertThat(activeList.getItems()).isEmpty();
+    }
 }

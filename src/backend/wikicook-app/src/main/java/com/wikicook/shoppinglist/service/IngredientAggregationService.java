@@ -11,7 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Domain service implementing recipe ingredient scaling, unit conversion, and deduplication (US2 FR-006 to FR-009).
@@ -35,19 +39,27 @@ public class IngredientAggregationService {
             BigDecimal targetServings,
             Set<Long> excludedIngredientIds
     ) {
+        if (targetServings == null || targetServings.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Target servings must be positive");
+        }
+
         if (activeList == null || recipe == null) {
+            return;
+        }
+
+        if (recipe.ingredients() == null) {
             return;
         }
 
         BigDecimal baseServings = recipe.baseServings() != null && recipe.baseServings().compareTo(BigDecimal.ZERO) > 0 ?
                 recipe.baseServings() : BigDecimal.ONE;
-        BigDecimal servings = targetServings != null && targetServings.compareTo(BigDecimal.ZERO) > 0 ?
-                targetServings : baseServings;
+        BigDecimal servings = targetServings;
 
         BigDecimal multiplier = servings.divide(baseServings, 4, RoundingMode.HALF_UP);
+        Set<Long> excluded = excludedIngredientIds != null ? excludedIngredientIds : Set.of();
 
         for (RecipeIngredientImportDto ingredient : recipe.ingredients()) {
-            if (ingredient.ingredientId() != null && excludedIngredientIds.contains(ingredient.ingredientId())) {
+            if (ingredient.ingredientId() != null && excluded.contains(ingredient.ingredientId())) {
                 continue;
             }
 
@@ -84,7 +96,7 @@ public class IngredientAggregationService {
                         scaledQty,
                         ingredient.unitId(),
                         ingredient.unitName(),
-                        targetServings != null ? targetServings.intValue() : 1
+                        servings.intValue()
                 );
                 existingItem.addSource(source);
             } else {
@@ -115,7 +127,7 @@ public class IngredientAggregationService {
                         scaledQty,
                         ingredient.unitId(),
                         ingredient.unitName(),
-                        targetServings != null ? targetServings.intValue() : 1
+                        servings.intValue()
                 );
                 newItem.addSource(source);
 
