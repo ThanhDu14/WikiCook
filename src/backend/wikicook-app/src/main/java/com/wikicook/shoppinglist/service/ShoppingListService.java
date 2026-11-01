@@ -4,10 +4,12 @@ import com.wikicook.shoppinglist.domain.ShoppingList;
 import com.wikicook.shoppinglist.domain.ShoppingListItem;
 import com.wikicook.shoppinglist.domain.ShoppingListItemSource;
 import com.wikicook.shoppinglist.domain.ShoppingListStatus;
+import com.wikicook.shoppinglist.domain.Unit;
 import com.wikicook.shoppinglist.dto.*;
 import com.wikicook.shoppinglist.port.RecipeDetailPort;
 import com.wikicook.shoppinglist.repository.ShoppingListItemRepository;
 import com.wikicook.shoppinglist.repository.ShoppingListRepository;
+import com.wikicook.shoppinglist.repository.UnitRepository;
 import com.wikicook.shoppinglist.repository.UserAislePreferenceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +51,7 @@ public class ShoppingListService {
     private final UserAislePreferenceRepository userAislePreferenceRepository;
     private final RecipeDetailPort recipeDetailPort;
     private final IngredientAggregationService ingredientAggregationService;
-    private final com.wikicook.shoppinglist.repository.UnitRepository unitRepository;
+    private final UnitRepository unitRepository;
 
     @Autowired
     public ShoppingListService(ShoppingListRepository shoppingListRepository,
@@ -49,7 +59,7 @@ public class ShoppingListService {
                                UserAislePreferenceRepository userAislePreferenceRepository,
                                RecipeDetailPort recipeDetailPort,
                                IngredientAggregationService ingredientAggregationService,
-                               com.wikicook.shoppinglist.repository.UnitRepository unitRepository) {
+                               UnitRepository unitRepository) {
         this.shoppingListRepository = shoppingListRepository;
         this.shoppingListItemRepository = shoppingListItemRepository;
         this.userAislePreferenceRepository = userAislePreferenceRepository;
@@ -92,7 +102,7 @@ public class ShoppingListService {
             String clean = request.unitName().trim();
             unitId = unitRepository.findByCode(clean)
                     .or(() -> unitRepository.findByNameVi(clean))
-                    .map(com.wikicook.shoppinglist.domain.Unit::getId)
+                    .map(Unit::getId)
                     .orElse(null);
         }
         ShoppingListItem item = new ShoppingListItem(
