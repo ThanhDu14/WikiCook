@@ -34,7 +34,8 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 19 | 2026-10-29, 14:30 – 15:15 | `SCRUM-55` (Backend 040 US1 + US2) | Hiện thực Backend Slice 040 US1 + US2 theo quy trình Test-First TDD, đạt 36/36 tests PASS và 83% JaCoCo service coverage | `16f61b4` (PR #52) | `src/backend/` (wikicook-app, wikicook-db) |
 | 20 | 2026-10-31, 19:30 – 20:10 | `SCRUM-57` Review Fix-up R1 | Sửa các blocker F1-F5 và F9 sau review của Hiển cho PR #52, bổ sung Testcontainers IT và migration V402 | `679f86a` | `src/backend/`, `specs/040-shopping-list/tasks.md` |
 | 21 | 2026-11-01, 13:30 – 13:52 | `SCRUM-57` Review Fix-up R2 | Sửa 4 điểm code (V403 sequence identity, dynamic UnitRepository, F8 aisle code precedence, dead 5-arg constructor) và kiểm toán tasks.md theo phản hồi v2 của Hiển | `8ff370a` .. `b6a5d33` | `src/backend/`, `specs/040-shopping-list/tasks.md` |
-| 22 | 2026-11-01, 14:02 – 14:10 | `SCRUM-57` F9 Wiring Follow-up | Viết test ApplicationContextRunner kiểm chứng `@ConditionalOnMissingBean` cho SeedRecipeDetailAdapter và thêm log WARN khi seed active | `9d25cb3` | `src/backend/wikicook-app/` |
+| 22 | 2026-11-01, 14:02 – 14:10 | `SCRUM-57` F9 Wiring Follow-up | Viết test ApplicationContextRunner kiểm chứng `@ConditionalOnMissingBean` cho SeedRecipeDetailAdapter và thêm log WARN khi seed active | `df055df` | `src/backend/wikicook-app/` |
+| 23 | 2026-11-01, 23:40 – 23:55 | `SCRUM-57` Review Fix-up R3 | Sửa guard IngredientAggregationService, chuyển seed adapter sang @Configuration, siết IT F4 và dọn style import ShoppingListService theo review COMMENTED của Hiển | `e439aa5` .. `5184fc0` | `src/backend/wikicook-app/` |
 
 ---
 
@@ -1008,3 +1009,59 @@ Verify toàn bộ unit test module app.
 - Xác nhận kiểm tra log runtime: Khi chạy `SeedRecipeDetailAdapterWiringTest`, test (a) ghi nhận log `WARN` đúng 1 lần, trong khi test (b) không ghi bất kỳ log `WARN` nào do bean không được khởi tạo.
 - Chạy toàn bộ 45 unit tests của module `wikicook-app`: 100% tests PASS trong 1.543s.
 - Tuân thủ quy định Git Safety: KHÔNG push lên GitHub remote, KHÔNG mở PR mới và KHÔNG merge.
+
+---
+
+## Mục 23: Xử lý các điểm review round 3 (COMMENTED) cho PR #59
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Google Antigravity (Gemini), Agentic Coding CLI & Apache Maven 3.9.9 / Java 21 |
+| **Thời gian truy cập cụ thể** | 2026-11-01, 23:40 – 23:55 (15 phút — sau phản hồi review COMMENTED của Hiển lúc 16:33) |
+| **Người thực hiện** | Lê Quốc Hưng (`LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-57`: Hoàn thiện xử lý review cho PR #59 (`fix/SCRUM-55-shopping-list-blockers`) |
+| **Tài liệu & Mã nguồn liên quan** | `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/service/IngredientAggregationService.java`, `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/port/SeedRecipeDetailConfiguration.java`, `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/port/SeedRecipeDetailAdapter.java`, `src/backend/wikicook-app/src/test/java/com/wikicook/shoppinglist/F4_ArchiveRestoreIT.java`, `src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/service/ShoppingListService.java` |
+| **Mục đích sử dụng** | Tiếp thu và chỉnh sửa triệt để 5 điểm kỹ thuật theo review của Hiển trên commit `df055df`: khôi phục toàn bộ các guard trong `IngredientAggregationService.aggregateRecipe`, chuyển bean seed adapter sang class `@Configuration` độc lập (`SeedRecipeDetailConfiguration`), siết chặt assertion trạng thái DB bằng `JdbcTemplate` trong `F4_ArchiveRestoreIT`, dọn dẹp import tường minh và bỏ tên inline trong `ShoppingListService`. |
+| **Nhánh Git** | `fix/SCRUM-55-shopping-list-blockers` |
+| **Minh chứng (Evidence)** | Các commit `e439aa5`, `32e0207`, `852280b`, `5184fc0`, `mvn -B verify` đạt BUILD SUCCESS với 74/74 tests PASS (18 test AI, 48 test unit app, 8 test IT app), JaCoCo coverage gate thỏa mãn. |
+
+### Prompt đã sử dụng:
+```text
+Nhiệm vụ: sửa PR #59 theo review COMMENTED của Hiển (MaiHien3507, 01/11 16:33) trên commit df055df. Nhánh: fix/SCRUM-55-shopping-list-blockers, base df055df.
+1. IngredientAggregationService.aggregateRecipe — khôi phục guard đã mất (targetServings <= 0 throw IllegalArgumentException, excludedIngredientIds null dùng Set.of(), recipe.ingredients() null return sớm, scaledServings dùng biến servings chung, thay import java.util.* bằng import tường minh).
+2. F9 — chuyển seed adapter sang @Configuration (SeedRecipeDetailConfiguration với @Bean @ConditionalOnMissingBean(RecipeDetailPort.class), bỏ @Component khỏi adapter, giữ nguyên @PostConstruct WARN log, cập nhật test).
+3. F4_ArchiveRestoreIT — siết assertion bằng JdbcTemplate: đúng một list ACTIVE (id 9401) và list vừa archive có status ARCHIVED.
+4. ShoppingListService — dọn style: thay tên đầy đủ inline UnitRepository và Unit::getId bằng import tường minh, thay import java.util.* bằng import tường minh.
+5. AI log docs/ai_log/ai_log_hung.md: sửa hash Entry 22 thành df055df, thêm Entry 23 ghi lại round 3.
+```
+
+### Nội dung do AI sinh ra:
+1. **Khôi phục guards trong `IngredientAggregationService`**:
+   - Thêm kiểm tra `targetServings == null || targetServings.compareTo(BigDecimal.ZERO) <= 0` quăng `IllegalArgumentException("Target servings must be positive")`.
+   - Sử dụng `Set<Long> excluded = excludedIngredientIds != null ? excludedIngredientIds : Set.of()` phòng tránh `NullPointerException`.
+   - Thêm `if (recipe.ingredients() == null) return;` bảo vệ vòng lặp duyệt nguyên liệu.
+   - Gán `scaledServings` trong `ShoppingListItemSource` thông qua `servings.intValue()` thống nhất.
+   - Chuyển `import java.util.*` thành các import tường minh (`Locale`, `Map`, `Optional`, `Set`, `UUID`).
+   - Bổ sung 3 test cases đơn vị kiểm chứng các guard này đạt 12/12 tests PASS.
+2. **Tách biệt Bean Configuration cho F9 Seed Adapter**:
+   - Tạo class mới `SeedRecipeDetailConfiguration` chứa `@Bean @ConditionalOnMissingBean(RecipeDetailPort.class) public SeedRecipeDetailAdapter seedRecipeDetailAdapter()`.
+   - Gỡ bỏ `@Component` và `@ConditionalOnMissingBean` khỏi `SeedRecipeDetailAdapter`, giữ nguyên log `@PostConstruct` cảnh báo runtime.
+   - Cập nhật `SeedRecipeDetailAdapterWiringTest` đăng ký `SeedRecipeDetailConfiguration.class`: cả 2 trường hợp (standalone seed và override bean thật) đều pass.
+3. **Siết chặt assertion trong `F4_ArchiveRestoreIT`**:
+   - Truy vấn ID danh sách active trung gian tạo ra sau bước archive.
+   - Dùng `JdbcTemplate` kiểm chứng sau khi restore: danh sách 9401 là danh sách duy nhất có status `ACTIVE`, và danh sách trung gian chuyển thành công sang status `ARCHIVED`.
+4. **Dọn dẹp mã nguồn trong `ShoppingListService`**:
+   - Khai báo import tường minh cho `UnitRepository` và `Unit`.
+   - Thay thế tham chiếu inline `com.wikicook.shoppinglist.repository.UnitRepository` và `com.wikicook.shoppinglist.domain.Unit::getId`.
+   - Thay `import java.util.*` bằng danh sách import cụ thể.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Kiểm tra tính tương thích ngữ nghĩa: Khôi phục guard `targetServings` mà không phá vỡ logic chia tỉ lệ làm tròn (F6) vốn đã được thống nhất hoãn sang PA4.
+- Đảm bảo cơ chế tự động cấu hình chuẩn Spring Boot: Đặt `@ConditionalOnMissingBean` trên phương thức `@Bean` trong `@Configuration` giúp Spring Container nhận diện điều kiện thiếu bean chính xác hơn so với đặt trên `@Component`.
+- Chạy toàn bộ quy trình kiểm thử `mvn -B verify` cục bộ:
+  - `wikicook-db`: Hoàn thành kiểm tra schema migration V401, V402, V403.
+  - `wikicook-ai`: 18/18 tests unit PASS.
+  - `wikicook-app`: 48/48 tests unit surefire PASS, 8/8 tests IT failsafe PASS (bao gồm F1, F2, F3, F4, và ApplicationIT chạy trên Testcontainers PostgreSQL 16).
+  - JaCoCo: Vượt qua toàn bộ quy tắc ngưỡng kiểm tra độ bao phủ mã nguồn.
+  - Tổng thời gian: BUILD SUCCESS trong 01 phút 21 giây.
+- Tuân thủ quy tắc Git Safety: Chỉ commit cục bộ trên nhánh `fix/SCRUM-55-shopping-list-blockers`, KHÔNG push lên remote và KHÔNG merge vào main.
