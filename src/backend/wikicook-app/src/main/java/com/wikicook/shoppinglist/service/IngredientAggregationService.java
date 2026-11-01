@@ -3,8 +3,10 @@ package com.wikicook.shoppinglist.service;
 import com.wikicook.shoppinglist.domain.ShoppingList;
 import com.wikicook.shoppinglist.domain.ShoppingListItem;
 import com.wikicook.shoppinglist.domain.ShoppingListItemSource;
+import com.wikicook.shoppinglist.domain.Unit;
 import com.wikicook.shoppinglist.port.RecipeDetailPort.RecipeImportDto;
 import com.wikicook.shoppinglist.port.RecipeDetailPort.RecipeIngredientImportDto;
+import com.wikicook.shoppinglist.repository.UnitRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,9 +22,11 @@ public class IngredientAggregationService {
     private static final int MAX_LIST_CAPACITY = 200;
 
     private final UnitConversionService unitConversionService;
+    private final UnitRepository unitRepository;
 
-    public IngredientAggregationService(UnitConversionService unitConversionService) {
+    public IngredientAggregationService(UnitConversionService unitConversionService, UnitRepository unitRepository) {
         this.unitConversionService = unitConversionService;
+        this.unitRepository = unitRepository;
     }
 
     public void aggregateRecipe(
@@ -160,26 +164,17 @@ public class IngredientAggregationService {
 
     private String getUnitNameForId(Long id) {
         if (id == null) return null;
-        if (id == 1L) return "g";
-        if (id == 2L) return "kg";
-        if (id == 3L) return "ml";
-        if (id == 4L) return "l";
-        if (id == 5L) return "quả";
-        if (id == 6L) return "củ";
-        if (id == 7L) return "cây";
-        return null;
+        return unitRepository.findById(id)
+                .map(u -> u.getNameVi() != null ? u.getNameVi() : u.getCode())
+                .orElse(null);
     }
 
     private Long getUnitIdForName(String name, Long fallbackId) {
-        if (name == null) return fallbackId;
-        String lower = name.trim().toLowerCase(Locale.ROOT);
-        if ("g".equals(lower) || "gram".equals(lower) || "gr".equals(lower)) return 1L;
-        if ("kg".equals(lower) || "kilogram".equals(lower)) return 2L;
-        if ("ml".equals(lower) || "mililit".equals(lower) || "milliliter".equals(lower)) return 3L;
-        if ("l".equals(lower) || "lit".equals(lower) || "lít".equals(lower) || "liter".equals(lower)) return 4L;
-        if ("quả".equals(lower) || "qua".equals(lower) || "trứng".equals(lower) || "trái".equals(lower)) return 5L;
-        if ("củ".equals(lower) || "cu".equals(lower)) return 6L;
-        if ("cây".equals(lower) || "cay".equals(lower)) return 7L;
-        return fallbackId;
+        if (name == null || name.isBlank()) return fallbackId;
+        String clean = name.trim();
+        return unitRepository.findByCode(clean)
+                .or(() -> unitRepository.findByNameVi(clean))
+                .map(Unit::getId)
+                .orElse(fallbackId);
     }
 }
