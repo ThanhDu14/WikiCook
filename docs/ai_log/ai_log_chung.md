@@ -422,15 +422,15 @@ Tôi đã trực tiếp can thiệp, yêu cầu bổ sung logic chuyên sâu và
 
 1. **Chặn tác giả tự chấm điểm (`UC-070-01`):** 
    - Nhận thấy kẽ hở tác giả tự "buff" điểm ảo, sinh viên đã yêu cầu bổ sung logic UI: Ẩn hoàn toàn nút `"Viết đánh giá"` đối với tác giả công thức (`recipe.author_id == current_user_id`).
-   - Tại tầng backend (Controller/Service), bổ sung tiền điều kiện chặn mã lỗi HTTP 403 Forbidden (`CANNOT_REVIEW_OWN_RECIPE`) nếu có cố tình gọi API trực tiếp.
+   - Tại tầng backend (Controller/Service), bổ sung tiền điều kiện chặn mã lỗi HTTP 403 Forbidden (`SELF_REVIEW_FORBIDDEN`) nếu có cố tình gọi API trực tiếp.
 2. **Chống spam đánh giá liên tục (`UC-070-01`):**
-   - Thêm cơ chế Rate Limiting (Token Bucket): Giới hạn mỗi tài khoản chỉ được gửi tối đa 5 đánh giá trong vòng 10 phút trên toàn hệ thống để chặn tài khoản bot/clone chấm điểm phá hoại. Khi vượt ngưỡng, hệ thống trả về mã lỗi HTTP 429 Too Many Requests.
+   - Thêm cơ chế Rate Limiting (sliding window): Giới hạn mỗi tài khoản chỉ được gửi tối đa 5 đánh giá trong vòng 10 phút trên toàn hệ thống để chặn tài khoản bot/clone chấm điểm phá hoại. Khi vượt ngưỡng, hệ thống trả về mã lỗi HTTP 429 Too Many Requests.
 3. **Đồng bộ tính toán lại điểm số (`UC-070-03`, `UC-100-02`):**
-   - Đảm bảo tính nhất quán dữ liệu liên phân hệ; bất cứ khi nào Admin/Moderator ẩn (`is_hidden = TRUE`) hoặc xóa một đánh giá vi phạm ở Feature 100, dịch vụ `RecipeAggregateService.recalculate(recipeId)` đều phải được kích hoạt trong một database transaction cô lập để cập nhật lại ngay tức thì `rating_avg` và `review_count` trên bảng `recipes`.
+   - Đảm bảo tính nhất quán dữ liệu liên phân hệ; bất cứ khi nào Admin/Moderator ẩn (`visibility = 'HIDDEN'`) hoặc xóa một đánh giá vi phạm ở Feature 100, dịch vụ `RecipeAggregateService.recalculate(recipeId)` đều phải được kích hoạt trong một database transaction cô lập để cập nhật lại ngay tức thì `rating_avg` và `review_count` trên bảng `recipes`.
 4. **Tự động cách ly nội dung nhận nhiều báo cáo (`UC-070-05`, `UC-100-02`):**
-   - Thiết lập ngưỡng bảo vệ cộng đồng tự động: Khi một bài review hoặc ảnh Cooksnap nhận $\ge 10$ lượt báo cáo vi phạm (`reports`) từ các người dùng khác nhau, hệ thống tự động ẩn nội dung (Auto-quarantine) khỏi giao diện công chúng và gắn cờ ưu tiên khẩn cấp (`URGENT`) gửi sang hàng đợi kiểm duyệt để xử lý tức thời.
+   - Thiết lập ngưỡng bảo vệ cộng đồng tự động: Khi một bài review hoặc ảnh Cooksnap nhận $\ge 10$ lượt báo cáo vi phạm (`reports`) từ các người dùng khác nhau, hệ thống tự động ẩn nội dung (Auto-quarantine, `visibility = 'HIDDEN'`, `hidden_reason = 'MASS_REPORT'`) khỏi giao diện công chúng và gắn cờ ưu tiên cao (badge `"Khẩn cấp"`) gửi sang hàng đợi kiểm duyệt để xử lý tức thời.
 5. **Hệ thống bầu chọn "Hữu ích" (`UC-070-04`):**
-   - Bổ sung thực thể CSDL `review_votes` (`user_id`, `review_id`, `is_helpful`, `created_at`) với ràng buộc `UNIQUE(user_id, review_id)`.
+   - Bổ sung thực thể CSDL `review_votes` (`user_id`, `review_id`, `created_at`) với ràng buộc `UNIQUE(review_id, user_id)`.
    - Cung cấp bộ lọc sắp xếp `sort=helpful` trên giao diện `RV01-Reviews` nhằm đưa các đánh giá hữu ích, chất lượng cao lên đầu trang.
 6. **Cảnh báo kiểm duyệt đồng thời thời gian thực (`UC-100-01`):**
    - Đề xuất bổ sung cơ chế WebSocket Presence: Khi Moderator A đang mở màn hình xem chi tiết của công thức X (`AD03-ReviewDetail`), Moderator B mở cùng công thức sẽ nhìn thấy biểu tượng và thông báo *"Moderator [Tên] đang xem xét công thức này"* để tránh đưa ra quyết định xung đột.

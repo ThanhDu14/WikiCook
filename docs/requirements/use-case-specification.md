@@ -34,7 +34,7 @@
 | **28/10/2026** | `v1.0` | Initialized detailed Use-Case Specifications for all 10 use cases across Feature 040 and Feature 050, defining 8 mandatory sections per use case, exhaustive alternative flows, and UI prototype mapping (`SCRUM-53`). | Lê Quốc Hưng (`LqHung06`) |
 | **29/10/2026** | `v1.1` | Added Sections 6–8: use-case specifications for Feature 020 (`UC-020-01` – `UC-020-06`, including the shared Recipe Detail page) and Feature 060 (`UC-060-01` – `UC-060-07`), with traceability, prototype screen mapping and open questions (`SCRUM-51`). Use-case IDs follow the Use-Case Model v0.1 (`SCRUM-49`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **30/10/2026** | `v1.2` | Added Sections 9–11: 13 use-case specifications for Feature 010 (`UC-010-01` – `UC-010-04`), Feature 011 (`UC-011-01` – `UC-011-05`) and Feature 080 (`UC-080-01` – `UC-080-04`), with traceability, prototype screen mapping and open questions (`SCRUM-50`, first draft). Use-case IDs follow the Use-Case Model v0.1 (`SCRUM-49`). | Mai Văn Hiển (`MaiHien3507`) |
-| **31/10/2026** | `v1.3` | Added Sections 12–13: 12 detailed use-case specifications for Feature 070 (`UC-070-01` – `UC-070-06`) and Feature 100 (`UC-100-01` – `UC-100-06`), complete with author self-review guard, cascading rating recalculation, mass-report auto-quarantine, concurrency inspection presence, traceability matrices, prototype screen mapping and open questions (`SCRUM-54`, first draft). | Trần Nguyễn Công Chung (`itzchugnn`) |
+| **31/10/2026** | `v1.3` | Added Sections 12–13: 12 detailed use-case specifications for Feature 070 (`UC-070-01` – `UC-070-06`) and Feature 100 (`UC-100-01` – `UC-100-06`), complete with author self-review guard, cascading rating recalculation, mass-report auto-quarantine, concurrency inspection presence, traceability matrices, prototype screen mapping and open questions (`SCRUM-54`, first draft). Use-case IDs and titles strictly follow the Use-Case Model v0.1 (`SCRUM-49`). | Trần Nguyễn Công Chung (`itzchugnn`) |
 
 > [!NOTE]
 > **Use-Case Model Alignment Notice:** The formal Use-Case Model (`docs/requirements/use-case-model.md`) is currently being drafted by Nguyễn Đức Duy under `SCRUM-49` (freeze date: November 02, 2026). The Use Case IDs (`UC-040-01` through `UC-040-05` and `UC-050-01` through `UC-050-05`) and titles documented herein represent the official engineering proposal derived directly from ratified specifications `specs/040-shopping-list/spec.md` and `specs/050-cooking-mode/spec.md`. Once `SCRUM-49` completes model freeze on November 02, any identifier discrepancies will be reconciled during the review phase (`SCRUM-53` final edition, due November 03).
@@ -3715,12 +3715,12 @@ Lets a signed-in user see all saved recipes and collections at a glance and open
 ## 12. USE-CASE SPECIFICATIONS FOR FEATURE 070: COMMUNITY REVIEWS & COOKSNAPS
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
-### UC-070-01: Submit Recipe Rating and Text Review
+### UC-070-01: Rate & Review Recipe
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-01`
-- **Use Case Name:** Submit Recipe Star Rating and Text Review
+- **Use Case Name:** Rate & Review Recipe
 
 #### 2. Actor(s)
 - **Primary Actor:** **Home Cook** (Authenticated Member per Spec 010).
@@ -3732,7 +3732,7 @@ Enables an authenticated user to leave feedback on a published recipe by selecti
 #### 4. Preconditions
 - The user is logged in with a valid JWT token (`Member` role or higher).
 - The recipe exists and is in `PUBLISHED` status.
-- The user has not previously reviewed this recipe (`SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND recipe_id = :recipeId AND deleted_at IS NULL = 0`).
+- The user has not previously reviewed this recipe (`SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND recipe_id = :recipeId AND deleted_at IS NULL` evaluates to 0).
 - **The user is not the author of the recipe** (`recipes.author_id != auth.user_id`). Recipe owners may post reply comments or upload Cooksnaps through other flows, but are explicitly excluded from submitting star ratings to prevent self-inflation of the aggregate score.
 
 #### 5. Basic Flow
@@ -3745,27 +3745,28 @@ Enables an authenticated user to leave feedback on a published recipe by selecti
    - Comment box with a live character counter (`0/2000`).
    - Optional input field for cooking tips (`0/500`).
    - Image attachment zone for Cooksnaps.
-4. **Enter Feedback:**
+5. **Enter Feedback:**
    - The user selects a rating from 1 to 5 stars (e.g., 4 stars).
    - The user enters a written review of at least 10 characters (e.g., *"Nước dùng chua thanh rất vừa miệng, cá lóc nấu chín tới không bị tanh."*).
    - The user optionally enters a tip (e.g., *"Có thể dùng me tươi thay thế sốt me đóng chai."*).
-5. **Submit:** The user clicks `"Gửi đánh giá"`.
-6. **Client Validation:** The frontend checks:
+6. **Submit:** The user clicks `"Gửi đánh giá"`.
+7. **Client Validation:** The frontend checks:
    - Rating is selected ($1 \le \text{rating} \le 5$).
    - Comment is between 10 and 2000 characters after trimming whitespace.
    - Tip does not exceed 500 characters.
-7. **Send API Call:** The browser sends a `POST /api/v1/recipes/:id/reviews` request with the JSON payload `{ rating, comment, tip }`.
-8. **Process on Server:**
+8. **Send API Call:** The browser sends a `POST /api/v1/recipes/:id/reviews` request with the JSON payload `{ rating, comment, tip }`.
+9. **Process on Server:**
    - The server authenticates the request, strips potential XSS tags from text inputs, and verifies the recipe is still `PUBLISHED`.
    - **Author self-review guard:** Server verifies `recipes.author_id != auth.user_id`. If the submitter is the author, returns HTTP 403 Forbidden with error code `SELF_REVIEW_FORBIDDEN`.
-   - **Review velocity check (anti-spam):** Server verifies the user has not submitted more than 5 reviews within the past 10 minutes (`SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND created_at > NOW() - INTERVAL '10 minutes'`). If exceeded, returns HTTP 429 Too Many Requests with message *"Bạn đang đánh giá quá nhanh. Vui lòng đợi vài phút trước khi tiếp tục."*.
+   - **Review velocity check (anti-spam):** Server verifies the user has already submitted 5 or more reviews within the past 10 minutes (`SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND created_at > NOW() - INTERVAL '10 minutes'`). If count $\ge 5$, returns HTTP 429 Too Many Requests with message *"Bạn đang đánh giá quá nhanh. Vui lòng đợi vài phút trước khi tiếp tục."*.
    - Opens a database transaction:
-     - Inserts a new row into `reviews` (`user_id`, `recipe_id`, `rating`, `comment`, `tip`, `created_at = NOW()`).
+     - Inserts a new row into `reviews` (`user_id`, `recipe_id`, `rating`, `comment`, `tip`, `created_at = NOW()`, `visibility = 'VISIBLE'`).
      - Atomically recalculates the recipe's aggregate values:
-       $$\text{rating\_avg} = \text{ROUND}(\text{AVG}(\text{rating}), 1), \quad \text{review\_count} = \text{COUNT}(*)$$
-       across all non-deleted reviews for this `recipe_id`.
+       $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE deleted\_at IS NULL AND visibility = 'VISIBLE'}$$
+       $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE deleted\_at IS NULL AND visibility = 'VISIBLE'}$$
+       across all visible, non-deleted reviews for this `recipe_id`.
      - Commits the transaction.
-9. **Update UI:** The server returns HTTP 201 Created. The modal closes, a success toast displays *"Đánh giá của bạn đã được đăng thành công"*, the aggregate score and star chart update, and the new review appears at the top with a `"Mới"` (New) badge.
+10. **Update UI:** The server returns HTTP 201 Created. The modal closes, a success toast displays *"Đánh giá của bạn đã được đăng thành công"*, the aggregate score and star chart update, and the new review appears at the top with a `"Mới"` (New) badge.
 
 #### 6. Alternative Flows
 - **AF 1.1: Guest User Attempts to Review:**
@@ -3805,12 +3806,12 @@ Enables an authenticated user to leave feedback on a published recipe by selecti
     3. No review is created. Audit log records the attempted self-review for monitoring.
   - *Design Rationale:* Recipe authors have an inherent conflict of interest when rating their own content. Allowing self-ratings would undermine the aggregate score's credibility and mislead future cooks relying on community feedback to select recipes.
 - **AF 1.7: Suspected Clone Account Spam (Velocity Anomaly):**
-  - *Trigger:* A single user account submits more than 5 reviews within a rolling 10-minute window, suggesting automated or coordinated rating manipulation.
+  - *Trigger:* A user account attempts to submit a 6th review within a rolling 10-minute window, suggesting automated or coordinated rating manipulation.
   - *Steps:*
     1. Server counts recent review submissions: `SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND created_at > NOW() - INTERVAL '10 minutes'`.
     2. If count ≥ 5, returns HTTP 429 Too Many Requests.
     3. Frontend displays: *"Bạn đang đánh giá quá nhanh. Vui lòng đợi vài phút trước khi tiếp tục."*.
-    4. If the velocity threshold is breached 3 times within 24 hours, the system automatically flags the account for moderator review and inserts a record into `reports` with `target_type = 'USER'`, `reason = 'SPAM'`, and `description = 'Auto-flagged: review velocity anomaly'`.
+    4. If the velocity threshold is breached 3 times within 24 hours, the system writes an entry to `audit_logs` (`action = 'REVIEW_VELOCITY_FLAGGED'`, `target_type = 'USER'`) and surfaces an operational alert flag on `AD01-Dashboard`.
 
 #### 7. Postconditions
 - **Database:** A row is inserted in `reviews`; `recipes.rating_avg` and `recipes.review_count` are recalculated.
@@ -3820,20 +3821,21 @@ Enables an authenticated user to leave feedback on a published recipe by selecti
 #### 8. Special Requirements
 - **Performance:** Review submission and aggregate calculation must finish within 200ms using atomic SQL updates.
 - **Accessibility:** Star controls must support keyboard input (`Tab`, Arrow keys, `Space`/`Enter` to select) and explicit ARIA labels.
-- **Anti-Spam:** Review velocity check enforced at 5 reviews per 10-minute window per user. Repeated breaches auto-flag the account for moderation review.
+- **Anti-Spam:** Review velocity check enforced at $\le 5$ reviews per 10-minute window per user. Repeated breaches write to audit log and alert on dashboard.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/RV01-Reviews.dc.html), [`RV02-WriteReview.dc.html`](../analysis-and-design/ui-ux/screens/RV02-WriteReview.dc.html).
-- **Gaps:** *Gap 070-A* — Success toast notification after review submission.
+- **Gaps:** *Gap 070-A* — Success toast notification after review submission (Basic Flow Step 10). *Gap 070-I* — Contextual author guard banner replacing "Viết đánh giá" button (Basic Flow Step 2). *Gap 070-J* — Anti-spam HTTP 429 warning toast ("Đang đánh giá quá nhanh", AF 1.7).
+
 
 ---
 
-### UC-070-02: Upload and Manage Cooksnap Photos
+### UC-070-02: Upload Cooksnap Photos
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-02`
-- **Use Case Name:** Upload and Display Cooksnap Photos
+- **Use Case Name:** Upload Cooksnap Photos
 
 #### 2. Actor(s)
 - **Primary Actor:** **Home Cook** (Authenticated Member).
@@ -3853,7 +3855,7 @@ Allows users to attach up to 3 photos of their finished dish (Cooksnaps) to thei
    - Format is valid (JPEG, PNG, or WebP).
    - Each file is $\le 5$ MB.
    - Total count does not exceed 3 photos.
-4. **Render Previews:** The app creates local preview thumbnails in the form with a small `"Xóa"` ($\times$) button on each.
+4. **Render Previews:** The app creates local preview thumbnails in the form with a small `"Xóa"` ($\times$) button on each and displays an upload progress bar with per-file status indicator (*Gap 070-K*).
 5. **Submit Review:** User completes comment/stars and clicks `"Gửi đánh giá"`.
 6. **Upload Files:** The app sends a `multipart/form-data` request containing review fields and binary image parts.
 7. **Server Processing:**
@@ -3863,7 +3865,7 @@ Allows users to attach up to 3 photos of their finished dish (Cooksnaps) to thei
    - Stores master images and thumbnails in object storage (`/uploads/cooksnaps/:recipeId/:reviewId/`).
    - Inserts records into the `cooksnaps` table referencing `review_id`.
 8. **Display on Page:** When the recipe reloads, the review displays the Cooksnap photo grid (`RV01-Reviews`).
-9. **Open Lightbox:** Clicking any photo opens the full-screen lightbox (`RV03-Lightbox`) with swipe navigation, author name, and zoom controls.
+9. **Open Lightbox:** Clicking any photo opens the full-screen lightbox (`RV03-Lightbox`) with skeleton loading state (*Gap 070-B*), swipe navigation, author name, and zoom controls.
 
 #### 6. Alternative Flows
 - **AF 2.1: Image File Exceeds 5 MB:**
@@ -3875,7 +3877,7 @@ Allows users to attach up to 3 photos of their finished dish (Cooksnaps) to thei
 - **AF 2.2: Unsupported File Format:**
   - *Trigger:* User picks an unapproved file format (e.g., GIF, BMP, HEIC, PDF).
   - *Steps:*
-    1. The client displays: *"Định dạng không hỗ trợ. Vui lòng chọn JPEG, PNG hoặc WebP."*.
+    1. The client displays error banner on `RV02`: *"Định dạng không hỗ trợ. Vui lòng chọn JPEG, PNG hoặc WebP."*.
     2. The invalid file is excluded from staging.
 - **AF 2.3: More Than 3 Photos Selected:**
   - *Trigger:* User tries to add a 4th image.
@@ -3903,16 +3905,16 @@ Allows users to attach up to 3 photos of their finished dish (Cooksnaps) to thei
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV02-WriteReview.dc.html`](../analysis-and-design/ui-ux/screens/RV02-WriteReview.dc.html), [`RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/RV01-Reviews.dc.html), [`RV03-Lightbox.dc.html`](../analysis-and-design/ui-ux/screens/RV03-Lightbox.dc.html).
-- **Gaps:** *Gap 070-B* — Lightbox skeleton loading state.
+- **Gaps:** *Gap 070-K* — Image upload progress bar with per-file status indicator (Basic Flow Step 4). *Gap 070-B* — Lightbox skeleton loading state (Basic Flow Step 9).
 
 ---
 
-### UC-070-03: Edit and Delete Own Review
+### UC-070-03: Edit or Delete Own Review
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-03`
-- **Use Case Name:** Edit and Delete Own Review and Cooksnaps
+- **Use Case Name:** Edit or Delete Own Review
 
 #### 2. Actor(s)
 - **Primary Actor:** **Review Author** (Authenticated Member).
@@ -3938,7 +3940,7 @@ Allows users to update their previously submitted reviews (changing rating, text
    - Updates `reviews` table (`rating`, `comment`, `tip`, `updated_at = NOW()`).
    - Marks removed Cooksnaps as `deleted_at = NOW()` and inserts new photos.
    - Recalculates the recipe's `rating_avg` if stars changed.
-9. **UI Confirmation:** The modal closes with a toast *"Đã cập nhật đánh giá thành công"*, showing the updated review with an `"(đã chỉnh sửa)"` label.
+9. **UI Confirmation:** The modal closes with a toast *"Đã cập nhật đánh giá thành công"*, showing the updated review with an `"(đã chỉnh sửa)"` label (*Gap 070-C*).
 
 #### 5b. Alternative Flow (Branch B: Delete Review)
 1. **Choose Delete:** At Step 3 above, user selects `"Xóa"` (Delete).
@@ -3949,12 +3951,12 @@ Allows users to update their previously submitted reviews (changing rating, text
 3. **Confirm:** User clicks `"Xóa"`.
 4. **Send Delete Call:** Browser sends `DELETE /api/v1/recipes/:id/reviews/:reviewId`.
 5. **Server Soft Deletion:**
-   - Verifies ownership or Moderator role.
+   - Verifies ownership.
    - Sets `reviews.deleted_at = NOW()`.
    - Sets `cooksnaps.deleted_at = NOW()` for linked photos.
-   - **Cascading aggregate recalculation** — updates recipe counts using the same atomic formula applied on creation:
-     $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE deleted\_at IS NULL}$$
-     $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE deleted\_at IS NULL}$$
+   - **Cascading aggregate recalculation** — updates recipe counts using the atomic formula excluding deleted and hidden reviews:
+     $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE deleted\_at IS NULL AND visibility = 'VISIBLE'}$$
+     $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE deleted\_at IS NULL AND visibility = 'VISIBLE'}$$
    - **Consistency guarantee:** This recalculation is triggered by *any* event that changes a review's visibility status — whether initiated by the author (self-delete), by a Moderator (hide/delete via `UC-100-02`), or by system automation (spam account suspension). The service-layer method `RecipeAggregateService.recalculate(recipeId)` is the single source of truth for both `rating_avg` and `review_count`, ensuring no code path can alter review visibility without updating the parent recipe's scores.
 6. **UI Refresh:** The review card is removed from the list, the review summary updates, and the button reverts back to `"Viết đánh giá"`. If no reviews remain, the empty state (`RV06-Empty`) is shown.
 
@@ -3986,23 +3988,23 @@ Allows users to update their previously submitted reviews (changing rating, text
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV04-OwnReview.dc.html`](../analysis-and-design/ui-ux/screens/RV04-OwnReview.dc.html), [`W-RV04b-DeleteConfirm.dc.html`](../analysis-and-design/ui-ux/screens/W-RV04b-DeleteConfirm.dc.html).
-- **Gaps:** *Gap 070-C* — Inline `(đã chỉnh sửa)` label on modified reviews.
+- **Gaps:** *Gap 070-C* — Inline `(đã chỉnh sửa)` label on modified reviews (Branch A Step 9).
 
 ---
 
-### UC-070-04: Browse, Filter, and Sort Community Reviews
+### UC-070-04: Browse, Sort & Filter Reviews
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-04`
-- **Use Case Name:** Browse, Sort, and Filter Community Reviews
+- **Use Case Name:** Browse, Sort & Filter Reviews
 
 #### 2. Actor(s)
 - **Primary Actor:** **Home Cook / Visitor** (Guest or Member).
 - **Secondary Actor / Systems:** **Search Indexer**.
 
 #### 3. Description
-Enables any visitor to view community reviews and Cooksnaps on a recipe page. Users can inspect the average score and rating breakdown, sort reviews by newest, highest/lowest rating, or **most helpful** (based on community upvotes), filter for reviews with photos only, and load additional reviews via pagination.
+Enables any visitor to view community reviews and Cooksnaps on a recipe page. Users can inspect the average score and rating breakdown, sort reviews by newest, oldest, highest/lowest rating, or **most helpful** (based on community upvotes), filter for reviews with photos only, and load additional reviews via pagination.
 
 #### 4. Preconditions
 - The target recipe is published and accessible.
@@ -4016,11 +4018,12 @@ Enables any visitor to view community reviews and Cooksnaps on a recipe page. Us
 3. **Load Reviews:** System displays the first 10 reviews sorted by newest first (`sort=created_at,desc`).
 4. **Change Sort:** User clicks the sort dropdown (`#rs`) and selects from available options:
    - `"Mới nhất"` (Newest) — default, `sort=created_at,desc`
+   - `"Cũ nhất"` (Oldest) — `sort=created_at,asc` (per `FR-012`)
    - `"Điểm cao nhất"` (Highest Rated) — `sort=rating,desc`
    - `"Điểm thấp nhất"` (Lowest Rated) — `sort=rating,asc`
    - `"Hữu ích nhất"` (Most Helpful) — `sort=helpful_count,desc` — prioritizes reviews that received the most upvotes from the community, surfacing insightful reviews with cooking tips and Cooksnaps.
 5. **Update List:** App calls `GET /api/v1/recipes/:id/reviews?sort=<field>,<direction>&page=0&size=10`. The list reorders smoothly.
-6. **Upvote a Review ("Hữu ích"):** Authenticated users can click the `"👍 Hữu ích"` button on any review card (not their own). Each user can upvote a given review only once. Clicking again removes the upvote (toggle behavior). The upvote count (`helpful_count`) is displayed next to the button (e.g., *"42 người thấy hữu ích"*).
+6. **Upvote a Review ("Hữu ích"):** Authenticated users can click the `"👍 Hữu ích"` button on any review card (not their own) (*Gap 070-G*). Each user can upvote a given review only once. Clicking again removes the upvote (toggle behavior). The upvote count (`helpful_count`) is displayed next to the button (e.g., *"42 người thấy hữu ích"*).
 7. **Filter by Photos:** User taps the chip filter `"Chỉ có Cooksnap"`.
 8. **Show Photo Reviews:** App queries `has_cooksnaps=true` and displays only reviews that contain photos.
 9. **Load Next Page:** User scrolls to the bottom and clicks `"Xem thêm đánh giá"`.
@@ -4036,7 +4039,7 @@ Enables any visitor to view community reviews and Cooksnaps on a recipe page. Us
 - **AF 4.2: Photo Filter Returns No Results:**
   - *Trigger:* User selects `"Chỉ có Cooksnap"` but no reviews contain photos.
   - *Steps:*
-    1. Displays message: *"Không tìm thấy đánh giá nào có ảnh Cooksnap."*.
+    1. Displays filter empty state (*Gap 070-D*): *"Không tìm thấy đánh giá nào có ảnh Cooksnap."*.
     2. Shows button `"Xóa bộ lọc"` (Reset filter).
 - **AF 4.3: Review by a Deleted Account:**
   - *Trigger:* Author of a review deleted their account.
@@ -4058,16 +4061,16 @@ Enables any visitor to view community reviews and Cooksnaps on a recipe page. Us
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/RV01-Reviews.dc.html), [`W-RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/W-RV01-Reviews.dc.html), [`RV06-Empty.dc.html`](../analysis-and-design/ui-ux/screens/RV06-Empty.dc.html).
-- **Gaps:** *Gap 070-D* — Filter empty state ("Không tìm thấy đánh giá nào có ảnh Cooksnap"). *Gap 070-G* — "Hữu ích" upvote button and count display on review cards.
+- **Gaps:** *Gap 070-D* — Filter empty state ("Không tìm thấy đánh giá nào có ảnh Cooksnap", AF 4.2). *Gap 070-G* — Active upvote state button and count display on review cards (Basic Flow Step 6).
 
 ---
 
-### UC-070-05: Report Violating Review or Cooksnap
+### UC-070-05: Report Review or Cooksnap
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-05`
-- **Use Case Name:** Report Inappropriate Review or Cooksnap
+- **Use Case Name:** Report Review or Cooksnap
 
 #### 2. Actor(s)
 - **Primary Actor:** **Community Member** (Authenticated Member).
@@ -4109,7 +4112,7 @@ Allows community members to report reviews or Cooksnap photos that violate commu
   - *Trigger:* User tries to report the same review again.
   - *Steps:*
     1. Server catches unique constraint violation and returns HTTP 409 Conflict.
-    2. Frontend displays: *"Bạn đã báo cáo nội dung này rồi. Chúng tôi đang xem xét."*.
+    2. Frontend displays duplicate report warning banner (*Gap 070-E*): *"Bạn đã báo cáo nội dung này rồi. Chúng tôi đang xem xét."*.
 - **AF 5.3: Reporting Own Content:**
   - *Trigger:* User attempts to report their own review.
   - *Steps:*
@@ -4124,24 +4127,24 @@ Allows community members to report reviews or Cooksnap photos that violate commu
 - **Rate Limit:** Maximum 10 reports per user per hour (HTTP 429 Too Many Requests) to prevent report-spamming.
 - **Confidentiality:** The author of the reported review is never informed of who filed the report.
 - **Mass-Report Auto-Escalation:** When a single review or Cooksnap accumulates **≥ 10 distinct reports** (from 10 different users), the system automatically:
-  1. Sets the reported content's visibility to `HIDDEN` (soft-hide, removing it from public view while preserving it for admin inspection).
-  2. Escalates the report bundle to **high priority** in the moderation queue (`AD05-Reports`), displaying a red `"Khẩn cấp"` badge.
-  3. Triggers `RecipeAggregateService.recalculate(recipeId)` to immediately exclude the hidden review from the recipe's `rating_avg` and `review_count`, preventing a potentially fraudulent or abusive review from distorting the score while awaiting moderator resolution.
+  1. Sets the reported content's visibility to `HIDDEN` (`hidden_reason = 'MASS_REPORT'`) (soft-hide, removing it from public view while preserving it for admin inspection).
+  2. Escalates the report bundle to **high priority** in the moderation queue (`AD05-Reports`), displaying a red `"Khẩn cấp"` badge (*Gap 070-H*).
+  3. Triggers `RecipeAggregateService.recalculate(recipeId)` to immediately exclude the hidden review (`WHERE deleted_at IS NULL AND visibility = 'VISIBLE'`) from the recipe's `rating_avg` and `review_count`, preventing a potentially fraudulent or abusive review from distorting the score while awaiting moderator resolution.
   4. Inserts a system-generated audit log entry: `action = 'AUTO_HIDE_MASS_REPORTED'`, `target_type = 'REVIEW'`, `target_id`, `new_value = {"report_count": 10, "auto_action": "HIDDEN"}`.
-- **Anti-Coordinated-Abuse Safeguard:** To prevent weaponized mass-reporting (e.g., a group of users coordinating to take down a legitimate review), the auto-hide is **reversible** — a moderator can reinstate the hidden content by selecting `"Khôi phục nội dung"` (Restore Content) during report resolution, which sets visibility back to public and triggers aggregate recalculation.
+- **Anti-Coordinated-Abuse Safeguard:** To prevent weaponized mass-reporting (e.g., a group of users coordinating to take down a legitimate review), the auto-hide is **reversible** — a moderator can reinstate the hidden content by selecting `"Khôi phục nội dung"` (Restore Content) during report resolution, which sets visibility back to public (`visibility = 'VISIBLE'`, `hidden_reason = NULL`) and triggers aggregate recalculation.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV05-Report.dc.html`](../analysis-and-design/ui-ux/screens/RV05-Report.dc.html), [`W-RV05-Report.dc.html`](../analysis-and-design/ui-ux/screens/W-RV05-Report.dc.html).
-- **Gaps:** *Gap 070-E* — Duplicate report notice banner. *Gap 070-H* — Auto-hidden content restoration button in moderation panel.
+- **Gaps:** *Gap 070-E* — Duplicate report warning banner (AF 5.2). *Gap 070-H* — Auto-hidden content notification badge & restoration action in moderation panel (Special Requirements).
 
 ---
 
-### UC-070-06: Post-Cooking Review Prompt
+### UC-070-06: Respond to Post-Cooking Review Prompt
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-06`
-- **Use Case Name:** Post-Cooking Review and Cooksnap Prompt
+- **Use Case Name:** Respond to Post-Cooking Review Prompt
 
 #### 2. Actor(s)
 - **Primary Actor:** **Home Cook** (Member who completed cooking).
@@ -4165,7 +4168,7 @@ Provides an immediate call to action when a user finishes a Cooking Mode session
    - Secondary button: `"Để sau"` (Later).
 3. **Accept Prompt:** User clicks `"Viết đánh giá và chụp Cooksnap"`.
 4. **Open Review Form:** Exits Cooking Mode and opens the review composer (`RV02-WriteReview`) pre-linked to this recipe.
-5. **Take Photo Shortcut:** On mobile devices, clicking the photo button launches the camera viewfinder directly to snap the hot dish.
+5. **Take Photo Shortcut:** On mobile devices, clicking the photo button launches the camera viewfinder directly to snap the hot dish (*Gap 070-F*).
 6. **Submit:** User completes text/rating and submits per `UC-070-01`.
 
 #### 6. Alternative Flows
@@ -4195,21 +4198,21 @@ Provides an immediate call to action when a user finishes a Cooking Mode session
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`CK09-Finished.dc.html`](../analysis-and-design/ui-ux/screens/CK09-Finished.dc.html), [`RV02-WriteReview.dc.html`](../analysis-and-design/ui-ux/screens/RV02-WriteReview.dc.html).
-- **Gaps:** *Gap 070-F* — Camera viewfinder overlay on mobile.
+- **Gaps:** *Gap 070-F* — Camera viewfinder shortcut overlay on mobile (Basic Flow Step 5).
 
 ---
 
 ### 12.1. Feature 070 (Community Reviews & Cooksnaps) Traceability
 | Use Case ID | Use Case Name | User Stories | Functional Requirements (FR) | Success Criteria | Enhancements (v2) |
 | :---: | :--- | :---: | :--- | :---: | :--- |
-| **`UC-070-01`** | Submit Recipe Rating and Review | `US1` (AC 1–6) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-009` | `SC-001`, `SC-003` | Author self-review prevention, review velocity anti-spam |
-| **`UC-070-02`** | Upload and Manage Cooksnaps | `US2` (AC 1–7) | `FR-006`, `FR-007`, `FR-008` | `SC-002` | — |
-| **`UC-070-03`** | Edit and Delete Own Review | `US3` (AC 1–5) | `FR-009`, `FR-010`, `FR-011` | `SC-001`, `SC-003` | Cascading aggregate recalculation on admin hide/delete |
-| **`UC-070-04`** | Browse, Sort, and Filter Reviews | `US4` (AC 1–5) | `FR-012`, `FR-013`, `FR-014`, `FR-017`, `FR-019` | `SC-001` | "Hữu ích nhất" sort, `review_votes` entity, upvote toggle |
-| **`UC-070-05`** | Report Inappropriate Content | `US5` (AC 1–5) | `FR-015`, `FR-016` | `SC-004`, `SC-005` | Mass-report auto-escalation (≥10 reports → auto-hide) |
-| **`UC-070-06`** | Post-Cooking Review Prompt | `US6` (AC 1–4) | `FR-018` | `SC-001` | — |
+| **`UC-070-01`** | Rate & Review Recipe | `US1` (AC 1–6) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-009` | `SC-001`, `SC-003` | Author self-review prevention, review velocity anti-spam |
+| **`UC-070-02`** | Upload Cooksnap Photos | `US2` (AC 1–7) | `FR-006`, `FR-007`, `FR-008` | `SC-002` | — |
+| **`UC-070-03`** | Edit or Delete Own Review | `US3` (AC 1–5) | `FR-009`, `FR-010`, `FR-011` | `SC-001`, `SC-003` | Cascading aggregate recalculation on admin hide/delete |
+| **`UC-070-04`** | Browse, Sort & Filter Reviews | `US4` (AC 1–5) | `FR-012`, `FR-013`, `FR-014`, `FR-017`, `FR-019` | `SC-001` | "Hữu ích nhất" sort, `review_votes` entity, upvote toggle |
+| **`UC-070-05`** | Report Review or Cooksnap | `US5` (AC 1–5) | `FR-015`, `FR-016` | `SC-004`, `SC-005` | Mass-report auto-escalation (≥10 reports → auto-hide) |
+| **`UC-070-06`** | Respond to Post-Cooking Review Prompt | `US6` (AC 1–4) | `FR-018` | `SC-001` | — |
 
-*Coverage:* **100% (19/19 FRs, 6/6 USs, 6/6 Success Criteria). Enhanced with 5 architectural improvements (v2).**
+*Coverage:* **100% (19/19 FRs, 6/6 USs, 5/5 Success Criteria). Enhanced with 5 architectural improvements (v2).**
 
 ### 12.2. Prototype Screen Mapping & UI Asset Gaps (for SCRUM-58)
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
@@ -4219,23 +4222,27 @@ To support task **`SCRUM-58`** (embedding prototype screenshots directly alongsi
 | Use Case ID | Flow / Step Reference | Existing Screen ID & Filename | Description of Prototype View | Asset Status & Action for SCRUM-58 |
 | :---: | :--- | :--- | :--- | :---: |
 | `UC-070-01` | Basic Flow (Step 1–2) | `RV01-Reviews.dc.html` | Reviews section summary, score display, rating breakdown | **Available** |
-| `UC-070-01` | Basic Flow (Step 2) | *Gap 070-A* | Contextual author guard banner replacing "Viết đánh giá" button | **GAP: Chung to generate screenshot** |
+| `UC-070-01` | Basic Flow (Step 2) | *Gap 070-I* | Contextual author guard banner replacing "Viết đánh giá" button | **GAP: Chung to generate screenshot** |
 | `UC-070-01` | Basic Flow (Step 4) | `RV02-WriteReview.dc.html` | Star rating selector, comment field, tip input modal | **Available** |
-| `UC-070-01` | AF 1.7 | *Gap 070-G* | Anti-spam HTTP 429 warning toast ("Đang đánh giá quá nhanh") | **GAP: Chung to generate screenshot** |
+| `UC-070-01` | Basic Flow (Step 10) | *Gap 070-A* | Success toast notification after review submission | **GAP: Chung to generate screenshot** |
+| `UC-070-01` | AF 1.7 | *Gap 070-J* | Anti-spam HTTP 429 warning toast ("Đang đánh giá quá nhanh") | **GAP: Chung to generate screenshot** |
 | `UC-070-02` | Basic Flow (Step 2–4) | `RV02-WriteReview.dc.html` | Multi-image dropzone with thumbnail previews and caption inputs | **Available** |
-| `UC-070-02` | Basic Flow (Step 4) | *Gap 070-B* | Image upload progress bar with per-file status indicator | **GAP: Chung to generate screenshot** |
-| `UC-070-02` | AF 2.1 | *Gap 070-C* | Client-side format conversion notice (HEIC/PNG to JPEG) | **GAP: Chung to generate screenshot** |
-| `UC-070-02` | AF 2.4 | `RV03-Lightbox.dc.html` | Full-screen Cooksnap image lightbox with pan and zoom | **Available** |
+| `UC-070-02` | Basic Flow (Step 4) | *Gap 070-K* | Image upload progress bar with per-file status indicator | **GAP: Chung to generate screenshot** |
+| `UC-070-02` | Basic Flow (Step 9) | *Gap 070-B* | Full-screen Cooksnap lightbox skeleton loading state | **GAP: Chung to generate screenshot** |
+| `UC-070-02` | Basic Flow (Step 9) | `RV03-Lightbox.dc.html` | Full-screen Cooksnap image lightbox with pan and zoom | **Available** |
+| `UC-070-02` | AF 2.2 | `RV02-WriteReview.dc.html` | Banner lỗi định dạng không hỗ trợ (JPEG, PNG, WebP) | **Available** |
 | `UC-070-03` | Basic Flow (Step 1–4) | `RV04-OwnReview.dc.html` | Author's own review edit mode with pre-filled inputs and update button | **Available** |
-| `UC-070-03` | AF 3.2 | *Gap 070-D* | Destructive review deletion confirmation modal dialog | **GAP: Chung to generate screenshot** |
+| `UC-070-03` | Branch A (Step 9) | *Gap 070-C* | Inline `(đã chỉnh sửa)` label on modified reviews | **GAP: Chung to generate screenshot** |
+| `UC-070-03` | Branch B (Step 2) | `W-RV04b-DeleteConfirm.dc.html` | Destructive review deletion confirmation modal dialog | **Available** |
 | `UC-070-04` | Basic Flow (Step 1–4) | `RV01-Reviews.dc.html` | Filter chips ("Tất cả", "Có ảnh Cooksnap", "5 sao") and sort options | **Available** |
-| `UC-070-04` | Basic Flow (Step 6) | *Gap 070-F* | Active upvote state button on review card ("Hữu ích (X)") | **GAP: Chung to generate screenshot** |
-| `UC-070-04` | AF 4.2 | `RV06-Empty.dc.html` | Empty reviews state with prompt "Chưa có nhận xét nào" | **Available** |
+| `UC-070-04` | Basic Flow (Step 6) | *Gap 070-G* | Active upvote state button on review card ("Hữu ích (X)") | **GAP: Chung to generate screenshot** |
+| `UC-070-04` | AF 4.1 | `RV06-Empty.dc.html` | Empty reviews state with prompt "Chưa có nhận xét nào" | **Available** |
+| `UC-070-04` | AF 4.2 | *Gap 070-D* | Filter empty state ("Không tìm thấy đánh giá nào có ảnh Cooksnap") | **GAP: Chung to generate screenshot** |
 | `UC-070-05` | Basic Flow (Step 2–5) | `RV05-Report.dc.html` | Content report bottom sheet with violation reason checkboxes | **Available** |
-| `UC-070-05` | AF 5.1 | *Gap 070-E* | Duplicate report warning banner ("Bạn đã báo cáo nội dung này") | **GAP: Chung to generate screenshot** |
-| `UC-070-05` | AF 5.4 | *Gap 070-H* | Auto-hidden content notification badge in moderation panel | **GAP: Chung to generate screenshot** |
+| `UC-070-05` | AF 5.2 | *Gap 070-E* | Duplicate report warning banner ("Bạn đã báo cáo nội dung này") | **GAP: Chung to generate screenshot** |
+| `UC-070-05` | Special Requirements | *Gap 070-H* | Auto-hidden content notification badge in moderation panel (Mass-Report) | **GAP: Chung to generate screenshot** |
 | `UC-070-06` | Basic Flow (Step 1–3) | `CK09-Finished.dc.html` | Cooking completion celebration view with review prompt callout | **Available** |
-| `UC-070-06` | Basic Flow (Step 5) | *Gap 070-I* | Mobile camera viewfinder shortcut overlay | **GAP: Chung to generate screenshot** |
+| `UC-070-06` | Basic Flow (Step 5) | *Gap 070-F* | Mobile camera viewfinder shortcut overlay | **GAP: Chung to generate screenshot** |
 
 *Desktop variants:* `RV01`, `RV05` have matching desktop web variants (`W-RV01-Reviews.dc.html`, `W-RV05-Report.dc.html`) adhering to constitution Principle V (responsive across 360px mobile and 1280px desktop).
 
@@ -4251,11 +4258,17 @@ To support task **`SCRUM-58`** (embedding prototype screenshots directly alongsi
    - *Issue:* To prevent rating self-inflation, recipe authors are barred from star ratings. Can they post clarifying comments or cooking notes in response to community reviews?
    - *Current Stance in UC-070-01:* Author comments are rendered with a distinct `[Tác giả]` badge. Author responses do not carry star ratings and are excluded from `rating_avg` recalculation, maintaining data integrity.
    - *Status:* Aligned with Product Owner and Spec 070.
+3. **`[OQ-070-03]` Spec 070 Scope Amendments & Architectural Enhancements:**
+   - *Issue:* Specifications for Feature 070 in the ratified Spec 070 did not formally define author self-review guard, rate limiting, review upvoting (`review_votes`), or mass-report auto-hide.
+   - *Current Stance in UC-070-01–05:* These 5 architectural enhancements (v2) are specified to satisfy cross-cutting security, anti-spam, community engagement, and moderation resilience needs. They are documented as proposed amendments to Spec 070 for formal team ratification.
+   - *Status:* Documented for Product Owner and Tech Lead alignment.
 
 #### 12.3.2. Domain Assumptions Reaffirmed
 - **Aggregate Score Precision:** Recipe average rating `rating_avg` is stored and computed as a numeric floating value rounded to exactly 1 decimal place ($1.0$ to $5.0$).
 - **Anti-Spam Velocity Threshold:** Review submission enforces a limit of $\le 5$ reviews per 10-minute sliding window per user account.
-- **Cascading Aggregate Consistency:** Any event modifying review visibility (`SOFT_DELETE`, `HIDE`, `RESTORE`, `SUBMIT`) MUST synchronously trigger `RecipeAggregateService.recalculate(recipeId)`.
+- **Cascading Aggregate Consistency:** Any event modifying review visibility (`SOFT_DELETE`, `HIDE`, `RESTORE`, `SUBMIT`) MUST synchronously trigger `RecipeAggregateService.recalculate(recipeId)` using the single source of truth formula:
+  $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE deleted\_at IS NULL AND visibility = 'VISIBLE'}$$
+  $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE deleted\_at IS NULL AND visibility = 'VISIBLE'}$$
 
 
 ---
@@ -4263,12 +4276,12 @@ To support task **`SCRUM-58`** (embedding prototype screenshots directly alongsi
 ## 13. USE-CASE SPECIFICATIONS FOR FEATURE 100: ADMINISTRATION & CONTENT MODERATION
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
-### UC-100-01: Recipe Moderation Queue
+### UC-100-01: Moderate Recipe Submission
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-100-01`
-- **Use Case Name:** Recipe Moderation Queue and Approval Lifecycle
+- **Use Case Name:** Moderate Recipe Submission
 
 #### 2. Actor(s)
 - **Primary Actor:** **Content Moderator** or **System Administrator** (`Moderator` / `Administrator` role per Spec 010).
@@ -4327,13 +4340,13 @@ Provides an administrative interface to inspect user-submitted recipes in `PENDI
     1. Server executes conditional update: `UPDATE recipes SET status = ... WHERE id = :id AND status = 'PENDING'`.
     2. Zero rows match because status is already `PUBLISHED`.
     3. API returns HTTP 409 Conflict (`MODERATION_CONFLICT`).
-    4. Frontend shows banner: *"Công thức này đã được xử lý bởi người kiểm duyệt khác. Hàng đợi đang được làm mới."* and reloads the queue.
-- **AF 1.4b: Concurrent Inspection Presence Notification (Pre-Action Awareness):**
+    4. Frontend shows banner (*Gap 100-A*): *"Công thức này đã được xử lý bởi người kiểm duyệt khác. Hàng đợi đang được làm mới."* and reloads the queue.
+- **AF 1.4b: Concurrent Inspection Real-time Presence (Optional enhancement - SHOULD, post-MVP):**
   - *Trigger:* Mod A opens a recipe detail pane (`AD03-ReviewDetail`) while Mod B is already viewing the same recipe.
   - *Steps:*
     1. When a moderator opens a recipe for inspection, the frontend sends a lightweight WebSocket/SSE heartbeat to the presence channel: `INSPECT_START { recipe_id, moderator_id, moderator_name, timestamp }`.
     2. The server maintains an in-memory presence registry (e.g., Redis hash `moderation:presence:<recipe_id>` → `{ moderator_id, display_name, last_heartbeat }`) with a 60-second TTL auto-eviction.
-    3. Upon opening the same recipe, Mod A's UI receives the presence list and displays a non-blocking banner at the top of the inspection pane: *"⚠️ Đức Duy đang xem xét công thức này"* (with the other moderator's avatar and name).
+    3. Upon opening the same recipe, Mod A's UI receives the presence list and displays a non-blocking banner at the top of the inspection pane (*Gap 100-G*): *"⚠️ Đức Duy đang xem xét công thức này"* (with the other moderator's avatar and name).
     4. The banner serves as an **advisory notice only** — it does not lock the recipe or prevent either moderator from acting. The actual conflict resolution remains handled by the HTTP 409 mechanism in AF 1.4.
     5. When a moderator navigates away or closes the inspection pane, the frontend sends `INSPECT_END { recipe_id, moderator_id }`, removing them from the presence registry.
     6. If a moderator's heartbeat is not renewed within 60 seconds (e.g., browser crash, network loss), the TTL auto-evicts their presence entry.
@@ -4355,16 +4368,16 @@ Provides an administrative interface to inspect user-submitted recipes in `PENDI
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`AD02-Queue.dc.html`](../analysis-and-design/ui-ux/screens/AD02-Queue.dc.html), [`AD03-ReviewDetail.dc.html`](../analysis-and-design/ui-ux/screens/AD03-ReviewDetail.dc.html), [`AD04-RejectDialog.dc.html`](../analysis-and-design/ui-ux/screens/AD04-RejectDialog.dc.html).
-- **Gaps:** *Gap 100-A* — HTTP 409 Concurrent Moderation conflict banner dialog. *Gap 100-G* — Real-time "another moderator is viewing" presence banner on `AD03-ReviewDetail`.
+- **Gaps:** *Gap 100-A* — HTTP 409 Concurrent Moderation conflict banner dialog (AF 1.4). *Gap 100-G* — Real-time "another moderator is viewing" presence banner on `AD03-ReviewDetail` (AF 1.4b).
 
 ---
 
-### UC-100-02: Process Community Reports
+### UC-100-02: Process Content Reports
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-100-02`
-- **Use Case Name:** Process Community Content Reports
+- **Use Case Name:** Process Content Reports
 
 #### 2. Actor(s)
 - **Primary Actor:** **Content Moderator** or **System Administrator**.
@@ -4386,14 +4399,13 @@ Provides a triage interface for user reports on recipes, reviews, Cooksnaps, or 
    - Reporter details: Reporter name (*Ngọc Hiền*), reason category (*Spam / Quảng cáo*), notes.
    - User history: Summary of past penalties (*"2 cảnh cáo · 0 lần đình chỉ · 3 báo cáo đang chờ"*).
    - Action controls: Radios for Hide, Delete, Warn, Suspend (with duration chips: `1 ngày`, `7 ngày`, `30 ngày`), and Dismiss.
-5. **Choose Penalty:** Moderator selects `"Đình chỉ tài khoản"` and duration `"7 ngày"`.
-6. **Confirm:** Moderator clicks `"Xác nhận xử lý"`.
+5. **Choose Action:** Moderator selects `"Xóa nội dung"` (Delete Content) (`DELETE_CONTENT`).
+6. **Confirm:** Moderator clicks `"Xác nhận xử lý"` (*Gap 100-B*).
 7. **Server Processing:**
-   - Soft-deletes offending review (`reviews.deleted_at = NOW()`).
-   - **Triggers cascading aggregate recalculation:** Invokes `RecipeAggregateService.recalculate(recipeId)` to recompute `rating_avg` and `review_count` on the parent recipe, excluding the now-deleted review. This ensures the recipe's public score immediately reflects the removal, maintaining data consistency between the moderation action and the public-facing recipe metrics.
-   - Inserts row into `user_suspensions` (`user_id`, `suspended_by = auth.user_id`, `suspended_until = NOW() + INTERVAL '7 days'`).
+   - Soft-deletes offending review (`reviews.deleted_at = NOW()`, `reviews.visibility = 'HIDDEN'`).
+   - **Triggers cascading aggregate recalculation:** Invokes `RecipeAggregateService.recalculate(recipeId)` to recompute `rating_avg` and `review_count` on the parent recipe, excluding the now-deleted review (`WHERE deleted_at IS NULL AND visibility = 'VISIBLE'`). This ensures the recipe's public score immediately reflects the removal, maintaining data consistency between the moderation action and the public-facing recipe metrics.
    - Sets `reports.status = 'RESOLVED'`, `resolved_by = auth.user_id`, `resolved_at = NOW()`.
-   - Writes immutable entry to `audit_logs`.
+   - Writes immutable entry to `audit_logs` (`action = 'CONTENT_DELETED'`).
    - Sends notification to reporter: *"Cảm ơn bạn đã báo cáo. Chúng tôi đã xử lý vi phạm."*.
 8. **UI Refresh:** Toast confirms action, Report #311 is removed from queue, and pending counter decrements.
 
@@ -4414,27 +4426,45 @@ Provides a triage interface for user reports on recipes, reviews, Cooksnaps, or 
   - *Trigger:* Content requires investigation without immediate suspension.
   - *Steps:*
     1. Moderator selects `"Ẩn nội dung"`.
-    2. Item visibility is toggled off on public pages but remains inspectable by admin.
-    3. **Aggregate recalculation triggered:** `RecipeAggregateService.recalculate(recipeId)` is invoked to exclude the hidden review from `rating_avg` and `review_count`. If the moderator later restores the content (via `"Khôi phục nội dung"`), the aggregate is recalculated again to re-include the restored review.
+    2. Server sets `reviews.visibility = 'HIDDEN'`, `reviews.hidden_reason = 'MODERATOR'`. Item visibility is toggled off on public pages but remains inspectable by admin.
+    3. **Aggregate recalculation triggered:** `RecipeAggregateService.recalculate(recipeId)` is invoked to exclude the hidden review from `rating_avg` and `review_count` (`WHERE deleted_at IS NULL AND visibility = 'VISIBLE'`). If the moderator later restores the content (via `"Khôi phục nội dung"`), the aggregate is recalculated again to re-include the restored review.
+- **AF 2.4: Resolve Auto-Hidden (Mass-Reported) Content:**
+  - *Trigger:* Moderator opens a reported bundle bearing the red `"Khẩn cấp"` badge (*Gap 100-H*) that was automatically hidden due to $\ge 10$ community reports.
+  - *Steps:*
+    1. Moderator reviews content context and reporter claims.
+    2. If content does NOT violate guidelines (e.g., coordinated troll reporting against a legitimate recipe review), moderator clicks `"Khôi phục nội dung"` (Restore Content).
+    3. Server sets `reviews.visibility = 'VISIBLE'`, `reviews.hidden_reason = NULL`.
+    4. Synchronously triggers `RecipeAggregateService.recalculate(recipeId)` to restore the review into `rating_avg` and `review_count` (`WHERE deleted_at IS NULL AND visibility = 'VISIBLE'`).
+    5. Sets all linked pending reports to `reports.status = 'DISMISSED'`.
+    6. Inserts `audit_logs` record: `action = 'CONTENT_RESTORED'`, `target_type = 'REVIEW'`, `target_id`.
+    7. UI displays toast *"Nội dung đã được khôi phục thành công"*.
+- **AF 2.5: Suspend Reported User:**
+  - *Trigger:* Target entity is an abusive user or moderator decides disciplinary account sanctions are warranted alongside content moderation.
+  - *Steps:*
+    1. In `AD06-ReportDetail`, moderator selects action `"Đình chỉ tài khoản"` with duration chip (`1 ngày`, `7 ngày`, `30 ngày`).
+    2. Enters violation note and confirms.
+    3. Server inserts row into `user_suspensions` (`user_id`, `suspended_by = auth.user_id`, `suspended_until = NOW() + INTERVAL`).
+    4. Sets `reports.status = 'RESOLVED'`.
+    5. Writes to `audit_logs` (`action = 'USER_SUSPENDED'`).
 
 #### 7. Postconditions
-- **Database:** `reports.status` set to `RESOLVED` or `DISMISSED`. Target content soft-deleted; suspension recorded; logged in `audit_logs`.
+- **Database:** `reports.status` set to `RESOLVED` or `DISMISSED`. Target content soft-deleted (`visibility = 'HIDDEN'`) or restored (`visibility = 'VISIBLE'`); suspension recorded if AF 2.5 selected; logged in `audit_logs`.
 
 #### 8. Special Requirements
 - **Privacy:** Reported user is never shown the identity of the person who reported them.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`AD05-Reports.dc.html`](../analysis-and-design/ui-ux/screens/AD05-Reports.dc.html), [`AD06-ReportDetail.dc.html`](../analysis-and-design/ui-ux/screens/AD06-ReportDetail.dc.html).
-- **Gaps:** *Gap 100-B* — Resolution confirmation dialog with preview.
+- **Gaps:** *Gap 100-B* — Resolution confirmation dialog with preview (Basic Flow Step 6). *Gap 100-H* — Automated mass-report escalation badge and urgent triage filter (AF 2.4).
 
 ---
 
-### UC-100-03: User Account Governance
+### UC-100-03: Manage User Accounts & Roles
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-100-03`
-- **Use Case Name:** User Account Governance and Disciplinary Sanctions
+- **Use Case Name:** Manage User Accounts & Roles
 
 #### 2. Actor(s)
 - **Primary Actor:** **System Administrator** (Full access) or **Content Moderator** (Suspension access only).
@@ -4451,7 +4481,7 @@ Provides account administration tools. Staff can search users (with 300ms input 
 2. **Search Account:** Staff enters query in search box (e.g., `"ng"`). Client debounces 300ms before calling `GET /api/v1/admin/users?query=ng`.
 3. **Display Results:** User table displays matching records: Display Name, Masked Email (`n***@gmail.com`), Role badge, Account Status, and recipe count.
 4. **Inspect User:** Staff selects a user row (e.g., *"Khách lạ"*). The right panel shows avatar, join date, publication statistics, and infraction history.
-5. **Issue Suspension:** Staff clicks `"Đình chỉ"`, selects duration (`14 ngày`), types reason (*"Tiếp tục đăng bình luận quấy rối sau 2 lần cảnh cáo"*), and submits.
+5. **Issue Suspension:** Staff clicks `"Đình chỉ"`, selects duration from predefined chips (`1 / 7 / 14 / 30 ngày`, e.g., `14 ngày`), types reason (*"Tiếp tục đăng bình luận quấy rối sau 2 lần cảnh cáo"*), and submits.
 6. **Persist:** Server inserts row in `user_suspensions` (`suspended_until = NOW() + 14 DAYS`), sets status to `SUSPENDED`, and writes to `audit_logs`.
 7. **UI Feedback:** Status badge updates to amber: `"Đình chỉ đến [Date]"`.
 
@@ -4460,7 +4490,7 @@ Provides account administration tools. Staff can search users (with 300ms input 
   - *Trigger:* Severe violation requiring permanent account termination.
   - *Steps:*
     1. Administrator clicks `"Cấm vĩnh viễn"`.
-    2. Modal displays double-confirmation warning: *"Hành động này không thể hoàn tác. Toàn bộ phiên đăng nhập sẽ bị hủy và công thức của người dùng sẽ bị lưu trữ."*.
+    2. Modal displays double-confirmation warning (*Gap 100-C*): *"Hành động này không thể hoàn tác. Toàn bộ phiên đăng nhập sẽ bị hủy và công thức của người dùng sẽ bị lưu trữ."*.
     3. Administrator enters reason and confirms.
     4. Database transaction:
        - Inserts `user_suspensions` with `suspended_until = NULL`.
@@ -4486,6 +4516,11 @@ Provides account administration tools. Staff can search users (with 300ms input 
   - *Steps:*
     1. Staff clicks `"Gỡ đình chỉ"`.
     2. Server sets `user_suspensions.status = 'LIFTED'`, logs to `audit_logs`, and account reverts to active.
+- **AF 3.5: Moderator Exceeds Suspension Cap:**
+  - *Trigger:* A Moderator submits a suspension longer than 30 days or with `suspended_until = NULL` via direct API call.
+  - *Steps:*
+    1. Server returns HTTP 403 Forbidden (`ADMIN_PRIVILEGE_REQUIRED`).
+    2. No row is written to `user_suspensions`.
 
 #### 7. Postconditions
 - **Database:** `user_suspensions` created/updated; `users.role` updated if modified; recorded in `audit_logs`.
@@ -4496,16 +4531,16 @@ Provides account administration tools. Staff can search users (with 300ms input 
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`AD07-Users.dc.html`](../analysis-and-design/ui-ux/screens/AD07-Users.dc.html).
-- **Gaps:** *Gap 100-C* — Double-confirmation dialog for Permanent Ban.
+- **Gaps:** *Gap 100-C* — Double-confirmation modal dialog for Permanent Ban (AF 3.1 Step 2).
 
 ---
 
-### UC-100-04: Category & Taxonomy Management
+### UC-100-04: Manage Categories & Taxonomies
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-100-04`
-- **Use Case Name:** Category, Cuisine, Tag, and Ingredient Taxonomy Management
+- **Use Case Name:** Manage Categories & Taxonomies
 
 #### 2. Actor(s)
 - **Primary Actor:** **System Administrator** (`Administrator` role).
@@ -4522,7 +4557,7 @@ Enables Administrators to manage system classification data across Categories, C
 2. **Switch Domain:** Administrator clicks the `"Nguyên liệu"` (Master Ingredients) tab.
 3. **View Ingredients List:** Table displays ingredient name, allergen tags (e.g., `"Đậu phộng"`), shopping aisle (`"Gia vị và đồ khô"`), recipe count (`"212 công thức"`), and status badge (`"Hoạt động"`).
 4. **Create Item:** Administrator clicks `"+ Tạo mới"`.
-5. **Fill Form:** In the modal, enters Name: `"Sốt tiêu đen"`, Aisle: `"Gia vị và đồ khô"`, Allergens: `"Không có"`.
+5. **Fill Form:** In the taxonomy creation modal dialog (*Gap 100-D*), enters Name: `"Sốt tiêu đen"`, Aisle: `"Gia vị và đồ khô"`, Allergens: `"Không có"`.
 6. **Submit:** Administrator clicks `"Lưu"`.
 7. **Server Processing:**
    - Case-insensitive uniqueness check (`LOWER(name)`).
@@ -4557,16 +4592,16 @@ Enables Administrators to manage system classification data across Categories, C
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`AD08-Taxonomy.dc.html`](../analysis-and-design/ui-ux/screens/AD08-Taxonomy.dc.html), [`AD11-IngredientProposals.dc.html`](../analysis-and-design/ui-ux/screens/AD11-IngredientProposals.dc.html).
-- **Gaps:** *Gap 100-D* — Taxonomy item creation modal dialog.
+- **Gaps:** *Gap 100-D* — Taxonomy creation modal dialog (Basic Flow Step 4–5).
 
 ---
 
-### UC-100-05: Curate Featured Homepage Recipes
+### UC-100-05: Curate Featured Recipes
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-100-05`
-- **Use Case Name:** Curate and Schedule Featured Recipes
+- **Use Case Name:** Curate Featured Recipes
 
 #### 2. Actor(s)
 - **Primary Actor:** **System Administrator** (`Administrator` role).
@@ -4584,7 +4619,7 @@ Enables Administrators to pin selected published recipes to prominent showcase s
 2. **View Active Pins:** Table shows active pins with slot counter (`"8 / 10 vị trí trên trang chủ"`), ordered by priority: Display Order (1, 2, 3), Title, Author, Pinned Date, Expiry Date, and `"Gỡ ghim"` button.
 3. **Search Recipe:** Administrator types title in search input (`"Tìm công thức đã đăng để ghim"`).
 4. **Display Matches:** System shows published recipes not currently pinned.
-5. **Configure Pin:** Administrator selects *"Bún bò Huế"*, sets Display Priority: `1`, Expiration Date: `01/11/2026`.
+5. **Configure Pin:** Administrator selects *"Bún bò Huế"*, sets Display Priority: `1`, Expiration Date: `15/11/2026`.
 6. **Confirm:** Administrator clicks `"Ghim lên trang chủ"`.
 7. **Server Processing:**
    - Validates active pin count $< 10$.
@@ -4617,16 +4652,16 @@ Enables Administrators to pin selected published recipes to prominent showcase s
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`AD09-Featured.dc.html`](../analysis-and-design/ui-ux/screens/AD09-Featured.dc.html).
-- **Gaps:** *Gap 100-E* — Featured pin config dialog with datepicker.
+- **Gaps:** *Gap 100-E* — Featured pin config dialog with datepicker (Basic Flow Step 4–5).
 
 ---
 
-### UC-100-06: Audit Log Inspection & Platform Metrics
+### UC-100-06: View Dashboard & Audit Trail
 *Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-100-06`
-- **Use Case Name:** Audit Log Inspection and Platform Health Metrics
+- **Use Case Name:** View Dashboard & Audit Trail
 
 #### 2. Actor(s)
 - **Primary Actor:** **System Administrator** (Full access) or **Content Moderator** (Dashboard metrics only).
@@ -4648,7 +4683,7 @@ Provides system observability and governance accountability. The dashboard displ
    - Date range: selects from `21/10/2026`.
 4. **Fetch Log:** App calls `GET /api/v1/admin/audit?...`.
 5. **Render Table:** System shows matching records with timestamp, actor, action code, target ID, and description (*"Đình chỉ 7 ngày, báo cáo #315"*).
-6. **Inspect Payload:** Administrator clicks a row to expand the JSON diff view, showing exact `old_value` vs `new_value` and source IP address.
+6. **Inspect Payload:** Administrator clicks a row to expand the JSON diff view, showing exact `old_value` vs `new_value` and source IP address (*Gap 100-F*).
 
 #### 5b. Operational Flow (Platform Health Dashboard)
 1. **Open Dashboard:** Staff opens `/admin/dashboard` (`AD01-Dashboard`).
@@ -4684,19 +4719,19 @@ Provides system observability and governance accountability. The dashboard displ
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`AD10-AuditLog.dc.html`](../analysis-and-design/ui-ux/screens/AD10-AuditLog.dc.html), [`AD01-Dashboard.dc.html`](../analysis-and-design/ui-ux/screens/AD01-Dashboard.dc.html).
-- **Gaps:** *Gap 100-F* — Expanded JSON diff modal for audit entries.
+- **Gaps:** *Gap 100-F* — Expanded JSON diff modal for audit entries (Basic Flow Step 6).
 
 ---
 
 ### 13.1. Feature 100 (Administration & Content Moderation) Traceability
-| Use Case ID | Use Case Name | User Stories | Functional Requirements (FR) | Success Criteria |
-| :---: | :--- | :---: | :--- | :---: |
-| **`UC-100-01`** | Recipe Moderation Queue | `US1` (AC 1–7) | `FR-001`–`FR-007`, `FR-017`, `FR-018` | `SC-001`–`SC-003` | Real-time concurrent inspection presence notification |
-| **`UC-100-02`** | Process Community Reports | `US2` (AC 1–5) | `FR-008`, `FR-009` | `SC-004` | Cascading rating recalculation on hide/delete, mass-report auto-hide |
-| **`UC-100-03`** | User Account Governance | `US3` (AC 1–7) | `FR-010`, `FR-011` | `SC-003`, `SC-005` | — |
-| **`UC-100-04`** | Category & Taxonomy Management | `US4` (AC 1–6) | `FR-012` | `SC-003` | — |
+| Use Case ID | Use Case Name | User Stories | Functional Requirements (FR) | Success Criteria | Enhancements (v2) |
+| :---: | :--- | :---: | :--- | :---: | :--- |
+| **`UC-100-01`** | Moderate Recipe Submission | `US1` (AC 1–7) | `FR-001`–`FR-007`, `FR-017`, `FR-018` | `SC-001`–`SC-003` | Real-time concurrent inspection presence notification |
+| **`UC-100-02`** | Process Content Reports | `US2` (AC 1–5) | `FR-008`, `FR-009` | `SC-004` | Cascading rating recalculation on hide/delete, mass-report auto-hide |
+| **`UC-100-03`** | Manage User Accounts & Roles | `US3` (AC 1–7) | `FR-010`, `FR-011` | `SC-003`, `SC-005` | — |
+| **`UC-100-04`** | Manage Categories & Taxonomies | `US4` (AC 1–6) | `FR-012` | `SC-003` | — |
 | **`UC-100-05`** | Curate Featured Recipes | `US5` (AC 1–6) | `FR-013` | `SC-003`, `SC-005` | — |
-| **`UC-100-06`** | Audit Log & Platform Metrics | `US6` (AC 1–6) | `FR-014`, `FR-015`, `FR-016` | `SC-003`, `SC-005` | — |
+| **`UC-100-06`** | View Dashboard & Audit Trail | `US6` (AC 1–6) | `FR-014`, `FR-015`, `FR-016` | `SC-003`, `SC-005` | — |
 
 *Coverage:* **100% (18/18 FRs, 6/6 USs, 5/5 Success Criteria, 10/10 Edge Cases). Enhanced with concurrent moderation awareness and cascading aggregate consistency (v2).**
 
@@ -4710,16 +4745,19 @@ To support task **`SCRUM-58`**, the table below cross-references all administrat
 | `UC-100-01` | Basic Flow (Step 1–3) | `AD02-Queue.dc.html` | Moderation queue with status tabs (PENDING, REVISED), bulk filters | **Available** |
 | `UC-100-01` | Basic Flow (Step 4–6) | `AD03-ReviewDetail.dc.html` | Recipe verification split view with safety checklist and approval button | **Available** |
 | `UC-100-01` | AF 1.2, AF 1.3 | `AD04-RejectDialog.dc.html` | Rejection & revision dialog with reason tags and mandatory feedback text | **Available** |
-| `UC-100-01` | AF 1.4b | *Gap 100-A* | Concurrent moderator inspection presence badge ("Đức Duy đang xem") | **GAP: Chung to generate screenshot** |
+| `UC-100-01` | AF 1.4 | *Gap 100-A* | HTTP 409 Concurrent Moderation conflict banner dialog | **GAP: Chung to generate screenshot** |
+| `UC-100-01` | AF 1.4b | *Gap 100-G* | Concurrent moderator inspection presence badge ("Đức Duy đang xem") | **GAP: Chung to generate screenshot** |
 | `UC-100-02` | Basic Flow (Step 1–4) | `AD05-Reports.dc.html` | Content reports queue sorted by urgency with violation chips | **Available** |
 | `UC-100-02` | Basic Flow (Step 5–7) | `AD06-ReportDetail.dc.html` | Report detail investigation view with reported snippet and action buttons | **Available** |
-| `UC-100-02` | AF 2.4 | *Gap 100-B* | Automated mass-report escalation badge and urgent triage filter | **GAP: Chung to generate screenshot** |
+| `UC-100-02` | Basic Flow (Step 6) | *Gap 100-B* | Resolution confirmation dialog with action preview | **GAP: Chung to generate screenshot** |
+| `UC-100-02` | AF 2.4 | *Gap 100-H* | Automated mass-report escalation badge and urgent triage filter | **GAP: Chung to generate screenshot** |
 | `UC-100-03` | Basic Flow (Step 1–3) | `AD07-Users.dc.html` | User governance table with role chips, account status, search bar | **Available** |
-| `UC-100-03` | Basic Flow (Step 4–6) | *Gap 100-C* | Disciplinary action modal (suspension duration selector, reason input) | **GAP: Chung to generate screenshot** |
-| `UC-100-04` | Basic Flow (Step 1–4) | `AD08-Taxonomy.dc.html` | Category and tag taxonomy manager with drag-and-drop hierarchy | **Available** |
-| `UC-100-04` | AF 4.2 | *Gap 100-D* | Orphaned recipes reassignment dialog upon category deletion | **GAP: Chung to generate screenshot** |
+| `UC-100-03` | Basic Flow (Step 5) | `AD07-Users.dc.html` | Disciplinary suspension modal (duration chips 1/7/14/30 days, reason) | **Available** |
+| `UC-100-03` | AF 3.1 (Step 2) | *Gap 100-C* | Double-confirmation modal dialog for Permanent Ban | **GAP: Chung to generate screenshot** |
+| `UC-100-04` | Basic Flow (Step 1–4) | `AD08-Taxonomy.dc.html` | Bảng phân loại 4 tab (Categories, Cuisines, Tags, Ingredients) kèm usage count và trạng thái Active/Inactive | **Available** |
+| `UC-100-04` | Basic Flow (Step 4–5) | *Gap 100-D* | Taxonomy item creation modal dialog | **GAP: Chung to generate screenshot** |
 | `UC-100-05` | Basic Flow (Step 1–3) | `AD09-Featured.dc.html` | Homepage featured recipe curation grid with active and scheduled slots | **Available** |
-| `UC-100-05` | Basic Flow (Step 4) | *Gap 100-E* | Featured recipe scheduling modal with calendar datepicker | **GAP: Chung to generate screenshot** |
+| `UC-100-05` | Basic Flow (Step 4–5) | *Gap 100-E* | Featured recipe scheduling modal with calendar datepicker | **GAP: Chung to generate screenshot** |
 | `UC-100-06` | Basic Flow (Step 1–6) | `AD10-AuditLog.dc.html` | Append-only forensic audit log table with actor, action, and target filters | **Available** |
 | `UC-100-06` | Basic Flow (Step 6) | *Gap 100-F* | Expanded JSON diff modal showing old_value vs new_value audit payload | **GAP: Chung to generate screenshot** |
 | `UC-100-06` | Flow 5b (Step 1–3) | `AD01-Dashboard.dc.html` | Platform health metrics dashboard with operational cards and top content | **Available** |
@@ -4731,16 +4769,20 @@ To support task **`SCRUM-58`**, the table below cross-references all administrat
 
 #### 13.3.1. Open Questions (For Team Alignment)
 1. **`[OQ-100-01]` Moderator vs Administrator Privilege Boundary on Disciplinary Penalties:**
-   - *Issue:* Can a Content Moderator (`ROLE_MODERATOR`) suspend user accounts or is account suspension reserved exclusively for Administrators (`ROLE_ADMINISTRATOR`)?
-   - *Current Stance in UC-100-03:* Content Moderators possess triage authority over recipes and community reports (`UC-100-01`, `UC-100-02`), but disciplinary account penalties (suspension, ban, role reassignment) are restricted strictly to `ROLE_ADMINISTRATOR` (`UC-100-03`) to maintain strict governance accountability and avoid abuse.
-   - *Status:* Aligned with Spec 100 §3.2 and Constitution Principle IV.
+   - *Issue:* Which disciplinary actions may a Content Moderator perform?
+   - *Current Stance in UC-100-03:* Per Spec 100 FR-011, Moderators may suspend accounts for 1–30 days; permanent ban and role change are reserved for Administrators (`ADMIN_PRIVILEGE_REQUIRED`).
+   - *Status:* Aligned with Spec 100 FR-011 and the permission matrix.
 2. **`[OQ-100-02]` Forensic Retention vs GDPR Right-to-be-Forgotten on Audit Logs:**
    - *Issue:* When a user requests account deletion (`UC-011-04`), how does the system reconcile personal data erasure with the immutable audit log (`UC-100-06`)?
    - *Current Stance in UC-100-06:* In compliance with legal compliance auditing, `audit_logs` records retain historical actor IDs and forensic action timestamps, but personally identifiable information (display name, email) is anonymized (`[DELETED_USER_xxxxx]`), preserving forensic integrity without violating privacy rights.
    - *Status:* Proposal documented for team review with Mai Văn Hiển (`SCRUM-50`).
+3. **`[OQ-100-03]` Architectural Approval for Redis / WebSocket Presence Infrastructure:**
+   - *Issue:* Real-time concurrent inspection presence (`AF 1.4b`) proposes Redis hash keys and WebSocket/SSE channels. Are these technologies formally approved in the project core stack?
+   - *Current Stance in UC-100-01:* Real-time presence is marked as an optional enhancement (`SHOULD`, post-MVP). The system's baseline conflict prevention relies strictly on optimistic concurrency with HTTP 409 Conflict (`AF 1.4`), which functions entirely within standard PostgreSQL and HTTP APIs without external messaging infrastructure dependencies.
+   - *Status:* Pending architecture review and core stack approval.
 
 #### 13.3.2. Domain Assumptions Reaffirmed
 - **Forensic Immutability:** Audit records in `audit_logs` are strictly append-only. Application database credentials explicitly revoke `UPDATE` and `DELETE` grants on this table.
 - **Concurrent Moderation Awareness:** The moderation queue employs WebSocket / Server-Sent Events (SSE) presence tracking to notify staff when another moderator opens the same submission, avoiding duplicate review decisions.
-- **Automated Quarantine Threshold:** When an active review accumulates $\ge 10$ unique community reports, the system automatically transitions its visibility to `QUARANTINED` pending moderator review.
+- **Automated Quarantine Threshold:** When an active review accumulates $\ge 10$ unique community reports, the system automatically transitions its visibility to `HIDDEN` (`hidden_reason = 'MASS_REPORT'`) pending moderator review, synchronously triggering aggregate score recalculation.
 
