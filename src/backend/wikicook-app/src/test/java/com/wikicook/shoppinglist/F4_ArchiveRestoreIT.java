@@ -2,6 +2,8 @@ package com.wikicook.shoppinglist;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,6 +63,13 @@ class F4_ArchiveRestoreIT {
         );
         assertThat(archiveResponse.getStatusCode()).as("POST /active/archive should succeed with 201 CREATED").isEqualTo(HttpStatus.CREATED);
 
+        Long intermediateActiveId = jdbcTemplate.queryForObject(
+                "SELECT id FROM shopping_lists WHERE user_id = ? AND status = 'ACTIVE'",
+                Long.class,
+                testUserId
+        );
+        assertThat(intermediateActiveId).isNotNull().isNotEqualTo(initialListId);
+
         // 2. Restore previous list (must archive the current active list and make 9401 active)
         ResponseEntity<String> restoreResponse = http.exchange(
                 "/api/v1/shopping-lists/" + initialListId + "/restore",
@@ -69,5 +78,20 @@ class F4_ArchiveRestoreIT {
                 String.class
         );
         assertThat(restoreResponse.getStatusCode()).as("POST /{id}/restore should succeed with 200 OK").isEqualTo(HttpStatus.OK);
+
+        // 3. Assert with JdbcTemplate: exactly one list with status ACTIVE (id 9401) and intermediate list has status ARCHIVED
+        List<Long> activeListIds = jdbcTemplate.queryForList(
+                "SELECT id FROM shopping_lists WHERE user_id = ? AND status = 'ACTIVE'",
+                Long.class,
+                testUserId
+        );
+        assertThat(activeListIds).as("There must be exactly one ACTIVE shopping list with id 9401").containsExactly(initialListId);
+
+        String intermediateListStatus = jdbcTemplate.queryForObject(
+                "SELECT status FROM shopping_lists WHERE id = ?",
+                String.class,
+                intermediateActiveId
+        );
+        assertThat(intermediateListStatus).as("The list archived by restore must have status ARCHIVED").isEqualTo("ARCHIVED");
     }
 }
