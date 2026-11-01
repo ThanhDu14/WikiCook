@@ -94,7 +94,7 @@ public class IngredientAggregationService {
                 }
 
                 UnitQuantityResult normalized = normalizeQuantityAndUnit(scaledQty, ingredient.unitId(), ingredient.unitName());
-                Long aisleId = ingredient.defaultAisleCategoryId() != null ? ingredient.defaultAisleCategoryId() : 6L;
+                Long aisleId = resolveAisleCategoryId(ingredient.defaultAisleCode(), ingredient.defaultAisleCategoryId());
 
                 ShoppingListItem newItem = new ShoppingListItem(
                         activeList,
@@ -176,5 +176,30 @@ public class IngredientAggregationService {
                 .or(() -> unitRepository.findByNameVi(clean))
                 .map(Unit::getId)
                 .orElse(fallbackId);
+    }
+
+    // Precedence: defaultAisleCode -> defaultAisleCategoryId -> 6L (GENERAL fallback).
+    // Note: AISLE_CODE_TO_ID provides reverse lookup mapped to V402 seed lookups until
+    // a full AisleCategoryRepository is introduced by catalog module 060.
+    private static final Map<String, Long> AISLE_CODE_TO_ID = Map.of(
+            "PRODUCE", 1L,
+            "MEAT_SEAFOOD", 2L,
+            "DAIRY_EGGS", 3L,
+            "PANTRY_SPICES", 4L,
+            "FROZEN", 5L,
+            "GENERAL", 6L
+    );
+
+    public Long resolveAisleCategoryId(String aisleCode, Long fallbackId) {
+        if (aisleCode != null && !aisleCode.isBlank()) {
+            Long mapped = AISLE_CODE_TO_ID.get(aisleCode.trim().toUpperCase(Locale.ROOT));
+            if (mapped != null) {
+                return mapped;
+            }
+        }
+        if (fallbackId != null) {
+            return fallbackId;
+        }
+        return 6L;
     }
 }

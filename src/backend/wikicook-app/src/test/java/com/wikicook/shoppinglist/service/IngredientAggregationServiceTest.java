@@ -268,4 +268,53 @@ class IngredientAggregationServiceTest {
         assertThat(item.getUnitName()).isEqualTo("hộp");
         verify(unitRepository, atLeastOnce()).findById(88L);
     }
+
+    @Test
+    @DisplayName("F8: resolves aisle category ID from aisle code when defaultAisleCategoryId is null")
+    void aggregateRecipeIngredients_withAisleCodeAndNullId_resolvesAisleFromCode() {
+        ShoppingList activeList = new ShoppingList(100L, "Danh sách mua sắm");
+
+        RecipeImportDto recipe = new RecipeImportDto(
+                60L,
+                "Gia vị nấu canh",
+                BigDecimal.ONE,
+                List.of(
+                        new RecipeIngredientImportDto(
+                                70L, "Tiêu đen xay", new BigDecimal("10"), 1L, "g", null, "PANTRY_SPICES"
+                        )
+                )
+        );
+
+        ingredientAggregationService.aggregateRecipe(activeList, recipe, BigDecimal.ONE, Collections.emptySet());
+
+        assertThat(activeList.getItems()).hasSize(1);
+        ShoppingListItem item = activeList.getItems().get(0);
+        // Code PANTRY_SPICES resolves to aisle 4L
+        assertThat(item.getAisleCategoryId()).isEqualTo(4L);
+    }
+
+    @Test
+    @DisplayName("F8 precedence: aisle code takes precedence over conflicting defaultAisleCategoryId (code wins)")
+    void aggregateRecipeIngredients_conflictingAisleCodeAndId_codeTakesPrecedence() {
+        ShoppingList activeList = new ShoppingList(100L, "Danh sách mua sắm");
+
+        // defaultAisleCategoryId is 1L (PRODUCE), but defaultAisleCode is PANTRY_SPICES
+        // Rule: code wins over ID
+        RecipeImportDto recipe = new RecipeImportDto(
+                61L,
+                "Gia vị tổng hợp",
+                BigDecimal.ONE,
+                List.of(
+                        new RecipeIngredientImportDto(
+                                71L, "Hạt nêm", new BigDecimal("20"), 1L, "g", 1L, "PANTRY_SPICES"
+                        )
+                )
+        );
+
+        ingredientAggregationService.aggregateRecipe(activeList, recipe, BigDecimal.ONE, Collections.emptySet());
+
+        assertThat(activeList.getItems()).hasSize(1);
+        ShoppingListItem item = activeList.getItems().get(0);
+        assertThat(item.getAisleCategoryId()).as("Aisle code PANTRY_SPICES must win over conflicting ID 1L").isEqualTo(4L);
+    }
 }

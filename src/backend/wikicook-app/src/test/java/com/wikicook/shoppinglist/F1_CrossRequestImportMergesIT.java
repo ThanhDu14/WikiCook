@@ -55,8 +55,8 @@ class F1_CrossRequestImportMergesIT {
         jdbcTemplate.update("""
             INSERT INTO aisle_categories (id, code, name_vi, position) OVERRIDING SYSTEM VALUE
             VALUES
-                (1, 'PRODUCE', 'Rau củ quả', 1),
-                (2, 'MEAT_SEAFOOD', 'Thịt & Hải sản', 2),
+                (1, 'PRODUCE', 'Rau củ & Trái cây', 1),
+                (2, 'MEAT_SEAFOOD', 'Thịt & Thủy hải sản', 2),
                 (3, 'DAIRY_EGGS', 'Trứng & Sữa', 3),
                 (4, 'PANTRY_SPICES', 'Gia vị & Đồ khô', 4),
                 (5, 'FROZEN', 'Đồ đông lạnh', 5),
