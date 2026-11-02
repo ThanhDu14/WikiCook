@@ -6,9 +6,6 @@ import { Icon } from './Icon';
 export function EmptySlot({ day, meal, onAdd }: { day: Day; meal: Meal; onAdd: () => void }) {
   return (
     <div role="group" aria-label={vi.slotLabel(vi.dayLong[day], vi.mealLong[meal])} className="wk-slot wk-slot--empty">
-      <div className="wk-slot__meal">
-        <span>{vi.meal[meal]}</span>
-      </div>
       <button
         type="button"
         className="wk-btn wk-btn--ghost wk-btn--sm"

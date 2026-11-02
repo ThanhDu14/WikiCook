@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { MoveToMenu } from '../components/MoveToMenu';
 import { RecipePicker } from '../components/RecipePicker';
 import { SlotMenu } from '../components/SlotMenu';
 import { Snackbar } from '../components/Snackbar';
@@ -11,6 +12,7 @@ import { vi } from '../strings.vi';
 import { DAYS, type Day, type Meal } from '../types';
 
 type Target = { day: Day; meal: Meal };
+type Picking = Target & { replace: boolean };
 
 /** The meal planner (T048, T056): `?week=` picks the week; the current week as a 7 × 3 grid (MP-01), picker (MP-04) and dish menu (MP-02). */
 export function MealPlannerPage() {
@@ -25,8 +27,9 @@ export function MealPlannerPage() {
     [location.pathname, location.search, navigate],
   );
   const plan = useWeekPlan(weekStart, { onUnauthenticated: signIn });
-  const [picking, setPicking] = useState<Target | null>(null);
+  const [picking, setPicking] = useState<Picking | null>(null);
   const [menu, setMenu] = useState<Target | null>(null);
+  const [moving, setMoving] = useState<Target | null>(null);
   const menuItem = menu ? itemAt(plan.week, menu.day, menu.meal) : null;
 
   return (
@@ -56,8 +59,11 @@ export function MealPlannerPage() {
       {plan.week && plan.status === 'ready' && (
         <WeekGrid
           week={plan.week}
-          onAdd={(day, meal) => setPicking({ day, meal })}
+          enableDrag
+          onAdd={(day, meal) => setPicking({ day, meal, replace: false })}
           onOpenItem={(day, meal) => setMenu({ day, meal })}
+          onMove={(from, to) => void plan.moveItem(from, to)}
+          onClearDay={(day) => void plan.clearDay(day)}
         />
       )}
 
@@ -67,7 +73,10 @@ export function MealPlannerPage() {
           meal={picking.meal}
           onClose={() => setPicking(null)}
           onPick={async (recipe) => {
-            const code = await plan.addDish(picking.day, picking.meal, recipe);
+            // replacing keeps the servings of the dish that was there (US3-4)
+            const code = picking.replace
+              ? await plan.placeDish(picking.day, picking.meal, recipe)
+              : await plan.addDish(picking.day, picking.meal, recipe);
             if (code !== 'RECIPE_NOT_AVAILABLE') setPicking(null);
             return code;
           }}
@@ -80,7 +89,30 @@ export function MealPlannerPage() {
           date={dateOf(weekStart, DAYS.indexOf(menu.day))}
           item={menuItem}
           onServings={(servings) => void plan.changeServings(menu.day, menu.meal, servings)}
+          onReplace={() => {
+            setMenu(null);
+            setPicking({ ...menu, replace: true });
+          }}
+          onMove={() => {
+            setMenu(null);
+            setMoving(menu);
+          }}
+          onRemove={() => {
+            setMenu(null);
+            void plan.removeDish(menu.day, menu.meal);
+          }}
           onClose={() => setMenu(null)}
+        />
+      )}
+      {moving && plan.week && (
+        <MoveToMenu
+          week={plan.week}
+          from={moving}
+          onClose={() => setMoving(null)}
+          onMove={(from, to) => {
+            setMoving(null);
+            void plan.moveItem(from, to);
+          }}
         />
       )}
       <Snackbar message={plan.notice} onDismiss={plan.dismissNotice} />

@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from 'react';
 
 interface Props {
   title: string;
@@ -10,13 +10,15 @@ interface Props {
    */
   variant: 'sheet' | 'page' | 'dialog' | 'modal';
   role?: 'dialog' | 'alertdialog';
+  /** Extra style of the panel, e.g. the width of a `wx-modal`. */
+  panelStyle?: CSSProperties;
 }
 
 /**
  * Modal layer on the `wk-scrim` of the screens (fixed to the viewport instead of the artboard). Esc and a click
  * on the scrim close it; focus moves inside on open and returns on close.
  */
-export function Overlay({ title, onClose, children, variant, role = 'dialog' }: Props) {
+export function Overlay({ title, onClose, children, variant, role = 'dialog', panelStyle }: Props) {
   const titleId = useId();
   const panel = useRef<HTMLDivElement>(null);
   const close = useRef(onClose);
@@ -58,7 +60,7 @@ export function Overlay({ title, onClose, children, variant, role = 'dialog' }: 
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div ref={panel} role={role} aria-modal="true" aria-label={title} className={panelClass} style={variant === 'sheet' ? { justifySelf: 'center' } : undefined}>
+      <div ref={panel} role={role} aria-modal="true" aria-label={title} className={panelClass} style={variant === 'sheet' ? { justifySelf: 'center', ...panelStyle } : panelStyle}>
         {children(titleId)}
       </div>
     </div>

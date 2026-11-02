@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { vi } from '../strings.vi';
 import type { Day, Meal, PlanItem } from '../types';
@@ -9,6 +10,8 @@ interface Props {
   meal: Meal;
   item: PlanItem;
   onOpen: () => void;
+  /** Drag handle of the week grid, when dragging is on. */
+  dragHandle?: ReactNode;
 }
 
 function meta(item: PlanItem) {
@@ -18,13 +21,17 @@ function meta(item: PlanItem) {
   return parts.join(' · ');
 }
 
-/** A slot with a dish (MP-01 `wk-slot`): picture, name linking to the recipe, time and servings (T045, NFR-003). */
-export function SlotCard({ day, meal, item, onOpen }: Props) {
+/**
+ * A slot with a dish (W-MP01 `wk-slot`): picture, name linking to the recipe, time and servings (T045, NFR-003).
+ * The meal is the row header of the grid, so the top line only holds the drag handle, the AI badge and the menu.
+ */
+export function SlotCard({ day, meal, item, onOpen, dragHandle }: Props) {
   const label = vi.slotLabel(vi.dayLong[day], vi.mealLong[meal], item.recipeName);
   return (
     <div role="group" aria-label={label} className={item.available ? 'wk-slot' : 'wk-slot wk-slot--needs'}>
       <div className="wk-slot__meal">
-        <span>{vi.meal[meal]}</span>
+        {dragHandle}
+        <span className="sx-grow" />
         {item.source !== 'MANUAL' && <span className="wk-badge wk-badge--ai">{item.source === 'AI' ? vi.sourceAi : vi.sourceAuto}</span>}
         <button type="button" className="wk-icon-btn wk-icon-btn--plain" aria-label={`Tùy chọn: ${item.recipeName}`} onClick={onOpen}>
           <Icon name="more" size={16} />

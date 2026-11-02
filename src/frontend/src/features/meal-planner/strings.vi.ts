@@ -57,12 +57,18 @@ export const vi = {
 
   // move (MP-03)
   moveTitle: (dish: string) => `Chuyển “${dish}”`,
-  moveHint: (day: string) => `Chọn bữa của ${day}. Bữa đã có món sẽ được đổi chỗ.`,
+  moveHint: 'Chọn ô đích. Bữa đã có món sẽ được đổi chỗ.',
+  moveTarget: 'Ô đích',
+  movePending: 'Chuyển đến…',
+  dragHandle: (dish: string) => `Kéo để chuyển: ${dish}`,
+  clearDayOf: (day: string) => `Xóa cả ngày: ${day}`,
   willSwap: 'Sẽ đổi chỗ với món đang chuyển',
   swapWith: (dish: string) => `Đổi chỗ với ${dish}`,
   moveHere: (meal: string, day: string) => `Chuyển đến ${meal} ${day}`,
+  slotOf: (day: string, meal: string) => `${day}, ${meal}`,
   dragPicked: (dish: string) => `Đã nhấc “${dish}”. Dùng phím mũi tên để chọn ô, Space để thả, Esc để hủy.`,
   dragOver: (slot: string) => `Đang ở ${slot}.`,
+  dragInstructions: 'Nhấn Space để nhấc món, dùng phím mũi tên để chọn ô, Space để thả, Esc để hủy.',
   dragDropped: (dish: string, slot: string) => `Đã thả “${dish}” vào ${slot}.`,
   dragCancelled: (dish: string) => `Đã hủy chuyển “${dish}”.`,
 

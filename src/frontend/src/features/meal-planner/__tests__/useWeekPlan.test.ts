@@ -123,4 +123,120 @@ describe('useWeekPlan (T034)', () => {
 
     expect(Object.keys(result.current)).not.toContain('save');
   });
+
+  describe('rearranging (T063, US3-7)', () => {
+    const pho2 = item({ id: 5, version: 1, recipeId: 7, recipeName: 'Phở bò', servings: 2 });
+    const ca = item({ id: 6, version: 3, recipeId: 8, recipeName: 'Cá kho', servings: 5 });
+    const fail = () => HttpResponse.json({ status: 500, title: 'Internal Server Error' }, { status: 500 });
+
+    async function ready() {
+      const hook = renderHook(() => useWeekPlan(WEEK));
+      await waitFor(() => expect(hook.result.current.status).toBe('ready'));
+      return hook.result;
+    }
+
+    const at = (result: { current: ReturnType<typeof useWeekPlan> }, day: number, meal: number) =>
+      result.current.week?.days[day].slots[meal].item ?? null;
+
+    it('moves to an empty slot and swaps with a full one', async () => {
+      const bodies: unknown[] = [];
+      server.use(
+        http.get(`/api/v1/meal-plans/${WEEK}`, () => HttpResponse.json(week({ 'MONDAY/LUNCH': pho2, 'MONDAY/DINNER': ca }))),
+        http.post(`/api/v1/meal-plans/${WEEK}/moves`, async ({ request }) => {
+          const body = (await request.json()) as { to: { day: string; meal: string } };
+          bodies.push(body);
+          return bodies.length === 1
+            ? HttpResponse.json({ kind: 'MOVED', items: [{ day: 'FRIDAY', meal: 'BREAKFAST', item: { ...pho2, version: 2 } }] })
+            : HttpResponse.json({
+                kind: 'SWAPPED',
+                items: [
+                  { day: 'FRIDAY', meal: 'BREAKFAST', item: { ...ca, id: 5, version: 3 } },
+                  { day: 'MONDAY', meal: 'DINNER', item: { ...pho2, id: 6, version: 4 } },
+                ],
+              });
+        }),
+      );
+      const result = await ready();
+
+      await act(async () => {
+        await result.current.moveItem({ day: 'MONDAY', meal: 'LUNCH' }, { day: 'FRIDAY', meal: 'BREAKFAST' });
+      });
+      expect(at(result, 0, 1)).toBeNull();
+      expect(at(result, 4, 0)).toMatchObject({ id: 5, version: 2, recipeName: 'Phở bò' });
+
+      await act(async () => {
+        await result.current.moveItem({ day: 'FRIDAY', meal: 'BREAKFAST' }, { day: 'MONDAY', meal: 'DINNER' });
+      });
+      expect(at(result, 4, 0)).toMatchObject({ id: 5, recipeName: 'Cá kho' });
+      expect(at(result, 0, 2)).toMatchObject({ id: 6, recipeName: 'Phở bò' });
+      expect(bodies).toEqual([
+        { from: { day: 'MONDAY', meal: 'LUNCH', itemId: 5, version: 1 }, to: { day: 'FRIDAY', meal: 'BREAKFAST', expected: null } },
+        { from: { day: 'FRIDAY', meal: 'BREAKFAST', itemId: 5, version: 2 }, to: { day: 'MONDAY', meal: 'DINNER', expected: { itemId: 6, version: 3 } } },
+      ]);
+    });
+
+    it.each([
+      ['move', (r: ReturnType<typeof useWeekPlan>) => r.moveItem({ day: 'MONDAY', meal: 'LUNCH' }, { day: 'MONDAY', meal: 'DINNER' })],
+      ['remove', (r: ReturnType<typeof useWeekPlan>) => r.removeDish('MONDAY', 'LUNCH')],
+      ['clear day', (r: ReturnType<typeof useWeekPlan>) => r.clearDay('MONDAY')],
+    ])('puts the week back when %s fails (FR-019)', async (_name, change) => {
+      const plan = week({ 'MONDAY/LUNCH': pho2, 'MONDAY/DINNER': ca });
+      server.use(
+        http.get(`/api/v1/meal-plans/${WEEK}`, () => HttpResponse.json(plan)),
+        http.post(`/api/v1/meal-plans/${WEEK}/moves`, fail),
+        http.delete(`/api/v1/meal-plans/${WEEK}/slots/MONDAY/LUNCH`, fail),
+        http.delete(`/api/v1/meal-plans/${WEEK}/days/MONDAY`, fail),
+      );
+      const result = await ready();
+
+      await act(async () => {
+        await change(result.current);
+      });
+
+      expect(result.current.week).toEqual(plan);
+      expect(result.current.notice).toBe(strings.notSaved);
+    });
+
+    it('removes a dish and clears a day', async () => {
+      let removed = '';
+      server.use(
+        http.get(`/api/v1/meal-plans/${WEEK}`, () =>
+          HttpResponse.json(week({ 'MONDAY/LUNCH': pho2, 'TUESDAY/DINNER': ca, 'TUESDAY/LUNCH': item({ id: 9 }) })),
+        ),
+        http.delete(`/api/v1/meal-plans/${WEEK}/slots/MONDAY/LUNCH`, ({ request }) => {
+          removed = new URL(request.url).search;
+          return new HttpResponse(null, { status: 204 });
+        }),
+        http.delete(`/api/v1/meal-plans/${WEEK}/days/TUESDAY`, () => new HttpResponse(null, { status: 204 })),
+      );
+      const result = await ready();
+
+      await act(async () => {
+        await result.current.removeDish('MONDAY', 'LUNCH');
+        await result.current.clearDay('TUESDAY');
+      });
+
+      expect(removed).toBe('?itemId=5&version=1');
+      expect(result.current.week?.empty).toBe(true);
+    });
+
+    it('reloads the week when a move hits a change made elsewhere (409)', async () => {
+      let loads = 0;
+      server.use(
+        http.get(`/api/v1/meal-plans/${WEEK}`, () => {
+          loads += 1;
+          return HttpResponse.json(week({ 'MONDAY/LUNCH': loads === 1 ? pho2 : ca }));
+        }),
+        http.post(`/api/v1/meal-plans/${WEEK}/moves`, () => HttpResponse.json({ status: 409, code: 'SLOT_CHANGED' }, { status: 409 })),
+      );
+      const result = await ready();
+
+      await act(async () => {
+        await result.current.moveItem({ day: 'MONDAY', meal: 'LUNCH' }, { day: 'SUNDAY', meal: 'LUNCH' });
+      });
+
+      await waitFor(() => expect(at(result, 0, 1)?.recipeName).toBe('Cá kho'));
+      expect(result.current.notice).toBe(strings.planChanged);
+    });
+  });
 });

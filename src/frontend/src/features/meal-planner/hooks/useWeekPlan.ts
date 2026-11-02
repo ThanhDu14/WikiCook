@@ -3,6 +3,12 @@ import { mealPlanApi, MealPlanApiError } from '../api/mealPlanApi';
 import { vi } from '../strings.vi';
 import { DAYS, MEALS, type Day, type ErrorCode, type ItemSource, type Meal, type PlanItem, type WeekPlan } from '../types';
 
+/** A slot of the week. */
+export interface SlotRef {
+  day: Day;
+  meal: Meal;
+}
+
 /** What the picker hands over when a recipe is chosen. */
 export interface ChosenRecipe {
   recipeId: number;
@@ -185,6 +191,63 @@ export function useWeekPlan(weekStart: string, options: { onUnauthenticated?: ()
     [apply, weekStart],
   );
 
+  /**
+   * Moves the dish of `from` to `to`; when `to` has a dish the two swap (US3-1, US3-2). The server swaps the
+   * contents of the two rows, so the ids stay with the slots; the optimistic week does the same.
+   */
+  const moveItem = useCallback(
+    (from: SlotRef, to: SlotRef) => {
+      const source = itemAt(latest.current, from.day, from.meal);
+      if (!source) return Promise.resolve('SLOT_CHANGED' as ErrorCode);
+      if (from.day === to.day && from.meal === to.meal) return Promise.resolve(null);
+      const target = itemAt(latest.current, to.day, to.meal);
+      return apply(
+        (week) => {
+          if (!target) return withSlot(withSlot(week, from.day, from.meal, null), to.day, to.meal, source);
+          const swapped = withSlot(week, from.day, from.meal, { ...target, id: source.id, version: source.version });
+          return withSlot(swapped, to.day, to.meal, { ...source, id: target.id, version: target.version });
+        },
+        async () => {
+          const result = await mealPlanApi.moveItem(weekStart, {
+            from: { day: from.day, meal: from.meal, itemId: source.id, version: source.version },
+            to: { day: to.day, meal: to.meal, expected: target ? { itemId: target.id, version: target.version } : null },
+          });
+          return (week) => result.items.reduce((w, placed) => withSlot(w, placed.day, placed.meal, placed.item), week);
+        },
+      );
+    },
+    [apply, weekStart],
+  );
+
+  /** Empties a slot (US3-5). */
+  const removeDish = useCallback(
+    (day: Day, meal: Meal) => {
+      const current = itemAt(latest.current, day, meal);
+      if (!current) return Promise.resolve(null);
+      return apply(
+        (week) => withSlot(week, day, meal, null),
+        async () => {
+          await mealPlanApi.deleteSlot(weekStart, day, meal, { itemId: current.id, version: current.version });
+          return (week) => week;
+        },
+      );
+    },
+    [apply, weekStart],
+  );
+
+  /** Empties the three meals of a day (US3-6); the caller has asked for confirmation. */
+  const clearDay = useCallback(
+    (day: Day) =>
+      apply(
+        (week) => MEALS.reduce((w, meal) => withSlot(w, day, meal, null), week),
+        async () => {
+          await mealPlanApi.clearDay(weekStart, day);
+          return (week) => week;
+        },
+      ),
+    [apply, weekStart],
+  );
+
   const dismissNotice = useCallback(() => dispatch({ type: 'notice', notice: null }), []);
 
   return {
@@ -196,6 +259,9 @@ export function useWeekPlan(weekStart: string, options: { onUnauthenticated?: ()
     addDish,
     placeDish,
     changeServings,
+    moveItem,
+    removeDish,
+    clearDay,
     dismissNotice,
   };
 }
