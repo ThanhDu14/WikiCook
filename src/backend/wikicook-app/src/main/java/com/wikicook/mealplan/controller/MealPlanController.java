@@ -1,5 +1,7 @@
 package com.wikicook.mealplan.controller;
 
+import com.wikicook.mealplan.api.MealPlanShoppingFacade;
+import com.wikicook.mealplan.api.ShoppingHandoff;
 import com.wikicook.mealplan.domain.Meal;
 import com.wikicook.mealplan.dto.AddItemRequest;
 import com.wikicook.mealplan.dto.MoveItemRequest;
@@ -38,11 +40,14 @@ public class MealPlanController {
     private final CurrentUserId currentUser;
     private final MealPlanService service;
     private final ItemMoveService moves;
+    private final MealPlanShoppingFacade shopping;
 
-    public MealPlanController(CurrentUserId currentUser, MealPlanService service, ItemMoveService moves) {
+    public MealPlanController(CurrentUserId currentUser, MealPlanService service, ItemMoveService moves,
+                              MealPlanShoppingFacade shopping) {
         this.currentUser = currentUser;
         this.service = service;
         this.moves = moves;
+        this.shopping = shopping;
     }
 
     @Operation(operationId = "getWeekPlan", summary = "Lấy kế hoạch của một tuần (tuần chưa có kế hoạch trả về 7 ngày rỗng)")
@@ -101,5 +106,13 @@ public class MealPlanController {
             @PathVariable @MondayDate @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekStart,
             @PathVariable DayOfWeek day) {
         service.clearDay(currentUser.get(), weekStart, day);
+    }
+
+    @Operation(operationId = "getShoppingHandoff",
+            summary = "Danh sách món khả dụng của tuần để bàn giao cho Shopping List (FR-024, FR-025)")
+    @GetMapping("/shopping-handoff")
+    public ShoppingHandoff getShoppingHandoff(
+            @PathVariable @MondayDate @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekStart) {
+        return shopping.getHandoff(currentUser.get(), weekStart);
     }
 }
