@@ -33,6 +33,7 @@ export const vi = {
   minutes: (n: number) => `${n} phút`,
   portions: (n: number) => `${n} phần`,
   unavailable: 'Không còn khả dụng',
+  recipeRemoved: 'Công thức này đã bị gỡ khỏi WikiCook. Hãy thay bằng món khác hoặc xóa.',
   slotLabel: (day: string, meal: string, dishes?: string) => (dishes ? `${day}, ${meal}, ${dishes}` : `${day}, ${meal}, trống`),
   sourceAi: 'AI',
   sourceAuto: 'Auto',

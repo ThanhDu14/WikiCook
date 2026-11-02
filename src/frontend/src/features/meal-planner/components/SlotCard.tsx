@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { vi } from '../strings.vi';
 import type { Day, Meal, PlanItem } from '../types';
@@ -12,6 +13,9 @@ interface Props {
   onOpen: () => void;
   /** Smaller picture and name when the meal has several dishes. */
   dense?: boolean;
+  /** "Thay món" and "Xóa" right on a dish that is no longer available (US6-1, W-MP01 `wk-slot--needs`). */
+  onReplace?: () => void;
+  onRemove?: () => void;
 }
 
 function meta(item: PlanItem) {
@@ -25,8 +29,11 @@ function meta(item: PlanItem) {
  * One dish of a meal, as in W-MP01: a compact card (picture, name linking to the recipe, time and servings).
  * Clicking it opens its menu. The "⋮" menu button, its only control, stays out of sight until the dish is hovered
  * or focused, so the grid looks like the screen and still works with the keyboard (T045, NFR-003).
+ * A dish whose recipe was archived or deleted keeps its name, does not link to the recipe and offers
+ * "Thay món" and "Xóa" (T086, FR-020); its name explains the recipe was removed (US6-2).
  */
-export function SlotCard({ day, meal, item, onOpen, dense = false }: Props) {
+export function SlotCard({ day, meal, item, onOpen, dense = false, onReplace, onRemove }: Props) {
+  const [explained, setExplained] = useState(false);
   const label = vi.slotLabel(vi.dayLong[day], vi.mealLong[meal], item.recipeName);
   const photo = dense ? 32 : 44;
   const titleClass = `wk-card__title ${dense ? 'line-clamp-2' : 'line-clamp-3'}`;
@@ -56,9 +63,16 @@ export function SlotCard({ day, meal, item, onOpen, dense = false }: Props) {
               {dishName(item.recipeName)}
             </Link>
           ) : (
-            <span className={titleClass} style={titleStyle} title={item.recipeName}>
+            <button
+              type="button"
+              className={titleClass}
+              style={{ ...titleStyle, padding: 0, border: 0, background: 'transparent', textAlign: 'left', cursor: 'pointer', font: 'inherit', fontWeight: 600 }}
+              title={item.recipeName}
+              aria-label={item.recipeName}
+              onClick={() => setExplained(true)}
+            >
               {dishName(item.recipeName)}
-            </span>
+            </button>
           )}
           {item.available ? (
             <span className="wk-caption">{meta(item)}</span>
@@ -74,6 +88,25 @@ export function SlotCard({ day, meal, item, onOpen, dense = false }: Props) {
           )}
         </div>
       </div>
+      {!item.available && explained && (
+        <p role="status" className="wk-caption" style={{ marginTop: 4 }}>
+          {vi.recipeRemoved}
+        </p>
+      )}
+      {!item.available && (onReplace || onRemove) && (
+        <div className="sx-row" style={{ marginTop: 4, flexWrap: 'wrap' }}>
+          {onReplace && (
+            <button type="button" className="wk-btn wk-btn--secondary wk-btn--sm" aria-label={`${vi.replaceShort}: ${item.recipeName}`} onClick={onReplace}>
+              {vi.replaceShort}
+            </button>
+          )}
+          {onRemove && (
+            <button type="button" className="wk-btn wk-btn--ghost wk-btn--sm" aria-label={`${vi.removeShort}: ${item.recipeName}`} onClick={onRemove}>
+              {vi.removeShort}
+            </button>
+          )}
+        </div>
+      )}
       <div className="absolute right-0 top-0 flex opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
         <button
           type="button"

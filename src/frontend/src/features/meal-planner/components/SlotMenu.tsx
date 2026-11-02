@@ -27,7 +27,7 @@ interface Props {
 /**
  * Menu of a dish (W-MP02 / MP-02): view the recipe, replace it, move it to another meal or up and down inside its
  * own, change its servings, remove it — in the order of the screen (T067, T120). Shown as a narrow `wx-modal`
- * instead of a popover anchored to the dish.
+ * instead of a popover anchored to the dish. A dish no longer available keeps only "Đổi món" and remove (T086, FR-020).
  */
 export function SlotMenu({ day, meal, date, item, onServings, onReplace, onMove, onMoveUp, onMoveDown, onRemove, onClose }: Props) {
   return (
@@ -59,27 +59,31 @@ export function SlotMenu({ day, meal, date, item, onServings, onReplace, onMove,
               <Icon name="refresh" />
               <span className="sx-grow">{vi.replaceDish}</span>
             </button>
-            <button type="button" onClick={onMove}>
-              <Icon name="move" />
-              <span className="sx-grow">{vi.moveTo}</span>
-            </button>
-            {onMoveUp && (
+            {item.available && (
+              <button type="button" onClick={onMove}>
+                <Icon name="move" />
+                <span className="sx-grow">{vi.moveTo}</span>
+              </button>
+            )}
+            {item.available && onMoveUp && (
               <button type="button" onClick={onMoveUp}>
                 <Icon name="arrowUp" />
                 <span className="sx-grow">{vi.moveUp}</span>
               </button>
             )}
-            {onMoveDown && (
+            {item.available && onMoveDown && (
               <button type="button" onClick={onMoveDown}>
                 <Icon name="arrowDown" />
                 <span className="sx-grow">{vi.moveDown}</span>
               </button>
             )}
-            <div>
-              <Icon name="users" />
-              <span className="sx-grow">{vi.servings}</span>
-              <ServingsInput value={item.servings} onChange={onServings} />
-            </div>
+            {item.available && (
+              <div>
+                <Icon name="users" />
+                <span className="sx-grow">{vi.servings}</span>
+                <ServingsInput value={item.servings} onChange={onServings} />
+              </div>
+            )}
             <button type="button" onClick={onRemove} style={{ color: 'var(--color-danger)' }}>
               <Icon name="trash" />
               <span className="sx-grow">{vi.remove}</span>

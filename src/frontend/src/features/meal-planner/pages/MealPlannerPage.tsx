@@ -72,6 +72,8 @@ export function MealPlannerPage() {
           week={plan.week}
           onAdd={(day, meal) => setPicking({ day, meal })}
           onOpenItem={(_day, _meal, item) => setMenu(item.id)}
+          onReplaceItem={(day, meal, item) => setPicking({ day, meal, replaceItemId: item.id })}
+          onRemoveItem={(item) => void plan.removeDish(item.id)}
           onClearDay={(day) => void plan.clearDay(day)}
         />
       )}

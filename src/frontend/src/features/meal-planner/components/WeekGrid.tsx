@@ -12,6 +12,9 @@ interface Props {
   week: WeekPlan;
   onAdd: (day: Day, meal: Meal) => void;
   onOpenItem: (day: Day, meal: Meal, item: PlanItem) => void;
+  /** "Thay món" and "Xóa" of a dish no longer available (T086, US6-1). */
+  onReplaceItem?: (day: Day, meal: Meal, item: PlanItem) => void;
+  onRemoveItem?: (item: PlanItem) => void;
   /** Shows "Xóa cả ngày" in the header of each day with dishes; asked for confirmation first (T069). */
   onClearDay?: (day: Day) => void;
 }
@@ -21,7 +24,7 @@ interface Props {
  * `wk-slot` holding the 0–4 dishes of that meal in order, with "Thêm món" until it is full (T046, FR-004). Dishes
  * are moved through their menu ("Chuyển sang…", "Lên trên", "Xuống dưới"); there is no drag and drop (2026-11-02).
  */
-export function WeekGrid({ week, onAdd, onOpenItem, onClearDay }: Props) {
+export function WeekGrid({ week, onAdd, onOpenItem, onReplaceItem, onRemoveItem, onClearDay }: Props) {
   const [confirmDay, setConfirmDay] = useState<Day | null>(null);
   const grid = (
     <div className="overflow-x-auto pb-ds-2">
@@ -69,6 +72,8 @@ export function WeekGrid({ week, onAdd, onOpenItem, onClearDay }: Props) {
                     items={d.slots[mealIndex].items}
                     onAdd={() => onAdd(d.day, meal)}
                     onOpenItem={(item) => onOpenItem(d.day, meal, item)}
+                    onReplaceItem={onReplaceItem && ((item) => onReplaceItem(d.day, meal, item))}
+                    onRemoveItem={onRemoveItem}
                   />
                 </div>
               );
@@ -118,17 +123,27 @@ interface MealCellProps {
   items: PlanItem[];
   onAdd: () => void;
   onOpenItem: (item: PlanItem) => void;
+  onReplaceItem?: (item: PlanItem) => void;
+  onRemoveItem?: (item: PlanItem) => void;
 }
 
 /** One meal of a day: its dishes in order and "Thêm món" until there are 4 (US1-11, FR-004). */
-function MealCell({ slot, items, onAdd, onOpenItem }: MealCellProps) {
+function MealCell({ slot, items, onAdd, onOpenItem, onReplaceItem, onRemoveItem }: MealCellProps) {
   if (items.length === 0) return <EmptySlot day={slot.day} meal={slot.meal} onAdd={onAdd} />;
   const dense = items.length > 1;
   return (
     <div className={items.some((i) => !i.available) ? 'wk-slot wk-slot--needs' : 'wk-slot'} style={{ gap: 0, padding: 8 }}>
       {items.map((item, index) => (
         <div key={item.id} style={index > 0 ? { borderTop: '1px dashed var(--color-border)', marginTop: 10, paddingTop: 10 } : undefined}>
-          <SlotCard day={slot.day} meal={slot.meal} item={item} dense={dense} onOpen={() => onOpenItem(item)} />
+          <SlotCard
+            day={slot.day}
+            meal={slot.meal}
+            item={item}
+            dense={dense}
+            onOpen={() => onOpenItem(item)}
+            onReplace={onReplaceItem && (() => onReplaceItem(item))}
+            onRemove={onRemoveItem && (() => onRemoveItem(item))}
+          />
         </div>
       ))}
       {items.length < MAX_DISHES && (
