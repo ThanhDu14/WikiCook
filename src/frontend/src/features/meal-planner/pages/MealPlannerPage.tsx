@@ -5,6 +5,7 @@ import { RecipePicker } from '../components/RecipePicker';
 import { SlotMenu } from '../components/SlotMenu';
 import { Snackbar } from '../components/Snackbar';
 import { WeekGrid } from '../components/WeekGrid';
+import { CreateShoppingListButton } from '../components/CreateShoppingListButton';
 import { EmptyWeekState } from '../components/EmptyWeekState';
 import { Icon } from '../components/Icon';
 import { WeekHeader } from '../components/WeekHeader';
@@ -39,6 +40,13 @@ export function MealPlannerPage() {
   );
   const plan = useWeekPlan(weekStart, { onUnauthenticated: signIn });
   const goTo = (week: string) => setParams(week === currentWeekStart() ? {} : { week });
+  /** Notices of the page itself, next to those of the week (`plan.notice`). */
+  const [pageNotice, setPageNotice] = useState<string | null>(null);
+  const { dismissNotice: dismissPlanNotice } = plan;
+  const dismissNotice = useCallback(() => {
+    dismissPlanNotice();
+    setPageNotice(null);
+  }, [dismissPlanNotice]);
   const [picking, setPicking] = useState<Picking | null>(null);
   /** Id of the dish whose menu or move dialog is open. */
   const [menu, setMenu] = useState<number | null>(null);
@@ -50,7 +58,21 @@ export function MealPlannerPage() {
 
   return (
     <section className="grid gap-ds-5">
-      <WeekHeader weekStart={weekStart} currentWeek={currentWeekStart()} onChange={goTo} aiAction={ready && !plan.week?.empty ? aiAction : undefined} />
+      <WeekHeader
+        weekStart={weekStart}
+        currentWeek={currentWeekStart()}
+        onChange={goTo}
+        aiAction={ready && !plan.week?.empty ? aiAction : undefined}
+        actions={
+          ready && (
+            <CreateShoppingListButton
+              weekStart={weekStart}
+              availableItemCount={plan.week?.availableItemCount ?? 0}
+              onError={(code) => setPageNotice(code === 'NETWORK' ? vi.errors.NETWORK : vi.shoppingFailed)}
+            />
+          )
+        }
+      />
 
       {plan.status === 'loading' && <p className="wk-muted">{vi.loading}</p>}
       {plan.status === 'error' && (
@@ -143,7 +165,7 @@ export function MealPlannerPage() {
           }}
         />
       )}
-      <Snackbar message={plan.notice} onDismiss={plan.dismissNotice} />
+      <Snackbar message={plan.notice ?? pageNotice} onDismiss={dismissNotice} />
     </section>
   );
 }

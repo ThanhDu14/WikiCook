@@ -103,6 +103,14 @@ export const vi = {
   openPlan: 'Xem thực đơn',
   signInToAdd: 'Đăng nhập để thêm vào thực đơn',
 
+  // shopping list hand-off (US5)
+  shopping: 'Đi chợ',
+  shoppingNeedsDish: 'Cần ít nhất một món trong tuần để tạo danh sách đi chợ.',
+  shoppingSkipped: (n: number) => `${n} món không còn khả dụng sẽ không được đưa vào danh sách đi chợ.`,
+  shoppingSkippedHint: 'Các món còn lại của tuần vẫn được chuyển sang danh sách đi chợ.',
+  shoppingFailed: 'Không tạo được danh sách đi chợ. Vui lòng thử lại.',
+  continue: 'Tiếp tục',
+
   // errors (FR-019, edge cases)
   notSaved: 'Thay đổi chưa được lưu. Vui lòng thử lại.',
   planChanged: 'Kế hoạch đã thay đổi ở nơi khác. Đã tải lại tuần.',
