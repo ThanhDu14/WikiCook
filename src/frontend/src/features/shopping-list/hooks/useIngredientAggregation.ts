@@ -17,6 +17,9 @@ export interface RecipeForImport {
 }
 
 // Same unit rules as the backend UnitConversionService, so the preview matches what lands on the list.
+// Keep in sync: a unit added or changed in
+// src/backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/service/UnitConversionService.java
+// must be changed here too, together with useIngredientAggregation.test.ts.
 const DISCRETE = new Set(['quả', 'trứng', 'củ', 'lon', 'gói', 'bó', 'hộp', 'miếng', 'trái', 'cây', 'lát', 'bắp', 'tép', 'nhánh']);
 const GRAMS = new Set(['g', 'gram', 'gr']);
 const KILOS = new Set(['kg', 'kilogram']);
