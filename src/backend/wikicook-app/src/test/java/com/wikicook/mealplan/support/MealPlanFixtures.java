@@ -37,11 +37,17 @@ public final class MealPlanFixtures {
 
     public long item(long planId, DayOfWeek day, String meal, Long recipeId, String recipeName, int servings,
                      String source) {
+        return item(planId, day, meal, 0, recipeId, recipeName, servings, source);
+    }
+
+    /** An item at {@code position} (0–3) of its meal. */
+    public long item(long planId, DayOfWeek day, String meal, int position, Long recipeId, String recipeName,
+                     int servings, String source) {
         return jdbc.queryForObject("""
-                INSERT INTO meal_plan_items (meal_plan_id, day_of_week, meal, recipe_id, recipe_name_snapshot,
-                                             servings, source)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO meal_plan_items (meal_plan_id, day_of_week, meal, position, recipe_id,
+                                             recipe_name_snapshot, servings, source)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 RETURNING id
-                """, Long.class, planId, day.getValue(), meal, recipeId, recipeName, servings, source);
+                """, Long.class, planId, day.getValue(), meal, position, recipeId, recipeName, servings, source);
     }
 }

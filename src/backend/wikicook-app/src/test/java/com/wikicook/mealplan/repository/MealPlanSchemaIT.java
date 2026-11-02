@@ -48,12 +48,6 @@ class MealPlanSchemaIT extends AbstractPostgresIT {
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
-    @Test
-    void oneDishPerSlot() {
-        plans.item(plan, DayOfWeek.MONDAY, "LUNCH", null, "Phở bò", 2);
-        assertThatThrownBy(() -> plans.item(plan, DayOfWeek.MONDAY, "LUNCH", null, "Bún chả", 2))
-                .isInstanceOf(DataIntegrityViolationException.class);
-    }
 
     @Test
     void servingsMealAndSourceAreChecked() {
