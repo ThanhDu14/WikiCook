@@ -1396,3 +1396,82 @@ Chỗ lệch so với tasks/thiết kế, AI ghi lại để mình duyệt:
   - US3: `mvn verify` BUILD SUCCESS (`wikicook-app` 196 unit + 96 IT, JaCoCo đạt, `mealplan` 97,6% line / 89,9% branch); `npm test` 79/79, `npm run lint` và `npm run build` sạch.
 - Mình review code và các chỗ lệch thiết kế ở trên trước khi cho làm US4–US7 và Phase 10 *(chưa làm)*.
 - Mình chạy thử giao diện trên trình duyệt với dev stub *(chưa làm)*.
+
+---
+
+## Mục 15: Đổi spec 030 sang nhiều món mỗi bữa
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-02, từ 11:50 (giờ Việt Nam, UTC+7) – **đang thực hiện**, cập nhật giờ kết thúc khi xong |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 030 – Meal Planner; 031 – AI Meal Planner (phần điền mâm); báo cho người làm 040 vì đổi `full-schema.md` |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, Spec Kit |
+| Mục đích | Bữa cơm Việt thường có nhiều món (cơm, canh, mặn, rau), spec cũ chỉ cho một món mỗi ô (FR-004, `UNIQUE (meal_plan_id, day_of_week, meal)`) |
+| Nhánh Git | `feature/030-meal-planner` |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `ada2421f-5418-470f-afdf-363a5f6c869a` |
+
+### Prompt đã dùng
+
+Khi chạy thử giao diện, mình hỏi:
+
+```
+Lỡ người ta ăn trưa 2 món 3 món , ăn tối nhiều món thì sao mà thêm
+```
+
+AI xác nhận spec đang giới hạn một món mỗi ô và nêu các phần bị ảnh hưởng. Mình chọn "Nhiều món mỗi bữa" và "AI 031 điền cả mâm theo bữa". Prompt implement (AI soạn, mình duyệt trước khi chạy):
+
+```
+Đổi spec 030 từ "một món mỗi ô" sang "nhiều món mỗi bữa" trên nhánh feature/030-meal-planner,
+rồi sửa lại phần đã làm (Setup, Foundational, US1–US3). Chưa làm US4–US7 và Phase 10.
+
+Bước 1 – tài liệu (chưa code):
+- specs/030-meal-planner: sửa spec.md (FR-004 thành "mỗi bữa có 0..6 món, có thứ tự"; acceptance
+  của US1–US3; edge case bữa đã đủ 6 món), data-model.md, research.md (R4 kiểm tra version theo món,
+  R5 chuyển món), contracts/openapi.yaml, contracts/integration.md, quickstart.md, tasks.md (thêm task
+  mới, ghi rõ task cũ nào bị thay). Cập nhật bảng meal_plan_items trong
+  docs/analysis-and-design/database/full-schema.md.
+- specs/031: ghi yêu cầu "AI điền cả mâm": bữa sáng 1 món; trưa và tối gồm canh + món mặn + rau
+  (cơm mặc định, không lưu thành món). Đổi MealPlanWriteFacade: thay emptySlots bằng các bữa còn
+  trống, saveDraft thêm món vào bữa trống. Chỉ sửa tài liệu và interface; phần AI làm ở Phase 10.
+- Chạy /speckit-analyze cho 030, báo mâu thuẫn trước khi sang bước 2.
+
+Bước 2 – code, giữ ràng buộc của lần implement trước:
+- Migration mới wikicook-db V304__meal_plan_items_multi.sql (không sửa V301 vì đã chạy trên DB dev):
+  bỏ UNIQUE (meal_plan_id, day_of_week, meal); thêm cột position smallint NOT NULL,
+  UNIQUE (meal_plan_id, day_of_week, meal, position) DEFERRABLE; dữ liệu cũ nhận position 0.
+- API theo món, mọi lệnh ghi kiểm tra version của món:
+  GET /meal-plans/{weekStart} → mỗi bữa trả items[] theo position;
+  POST /meal-plans/{weekStart}/meals/{day}/{meal}/items (thêm vào cuối, 409 MEAL_FULL khi đã đủ 6);
+  PUT /meal-plans/{weekStart}/items/{itemId} (thay món, giữ servings);
+  PATCH …/items/{itemId}/servings; DELETE …/items/{itemId}?version=;
+  POST …/items/{itemId}/move {day, meal, position?, version} (chuyển sang bữa khác hoặc đổi thứ tự
+  trong bữa, một transaction, khóa theo thứ tự id); DELETE …/days/{day} giữ nguyên.
+  Bỏ SLOT_OCCUPIED và "đổi chỗ" (swap); giữ SLOT_CHANGED cho món đã bị sửa ở nơi khác.
+- UI theo W-MP01: mỗi ô bữa xếp các card món (ảnh 44 px, tên, thời gian · phần), cuối ô luôn có
+  "+ Thêm món" (ẩn khi đủ 6). Kéo-thả và "Chuyển sang…" làm theo từng món (thả vào bữa khác thì thêm
+  vào cuối). Dialog W-MP05 bỏ cảnh báo "đã có món", thay bằng dòng "Bữa này đã có: …". Picker ở
+  chế độ "Đổi món" vẫn thay đúng món đã chọn.
+- TDD: sửa hoặc viết test trước, chạy cho FAIL, rồi mới code. Mỗi bước một commit Conventional Commits
+  có "(030 T0xx)", không có dòng Co-Authored-By của Claude, chưa push.
+- Sau mỗi bước chạy `mvn verify` ở src/backend và `npm test`, `npm run lint` ở src/frontend, báo kết quả
+  thật, giữ JaCoCo 70%.
+- Gặp chỗ mâu thuẫn hoặc phải chọn hướng thì dừng lại hỏi mình. Xong thì dừng để mình review và
+  chạy thử trên trình duyệt.
+```
+
+### Nội dung do AI tạo
+
+- *(cập nhật khi xong)*
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Nhiều món mỗi bữa | Mình chọn | Đúng cách người Việt ăn; đổi bây giờ rẻ hơn sau khi tích hợp 031, 040 |
+| AI 031 điền cả mâm | Mình chọn | Kế hoạch AI tạo ra phải dùng được ngay |
+| Tối đa 6 món mỗi bữa, cơm không lưu thành món | AI đề xuất, chờ mình duyệt | Giữ ô gọn trên lưới tuần |
+
+### Cách sinh viên kiểm chứng
+
+- *(cập nhật khi xong)*
