@@ -17,7 +17,7 @@ interface Props {
 
 /**
  * "Chuyển sang…" (W-MP03, T067, T120): the week in small, one button per meal of the same week, so a dish can be
- * moved with the keyboard or a tap where dragging is not possible (US3-3, FR-015). The dish joins the end of the
+ * moved with the keyboard, the pointer or a tap (US3-3, FR-015). The dish joins the end of the
  * chosen meal; its own meal and full meals are not offered (FR-004).
  */
 export function MoveToMenu({ week, itemId, onMove, onClose }: Props) {

@@ -23,6 +23,16 @@ function renderPage() {
 const dishNames = (label: RegExp) => screen.getAllByRole('group', { name: label }).map((g) => g.getAttribute('aria-label'));
 
 describe('MealPlannerPage rearranging (T062, T069, T115)', () => {
+  it('has no drag and drop: each dish only has its "⋮" menu (2026-11-02)', async () => {
+    server.use(http.get(`/api/v1/meal-plans/${WEEK}`, () => HttpResponse.json(week({ 'MONDAY/LUNCH': [pho, rau] }))));
+    renderPage();
+
+    const dish = await screen.findByRole('group', { name: 'Thứ Hai, bữa trưa, Phở bò' });
+    expect(within(dish).getAllByRole('button').map((b) => b.getAttribute('aria-label'))).toEqual(['Tùy chọn: Phở bò']);
+    expect(screen.queryByRole('button', { name: /^Kéo để chuyển/ })).not.toBeInTheDocument();
+    expect(screen.getByText('Mỗi bữa có tối đa 4 món. Bấm vào món để đổi, chuyển sang bữa khác hoặc xóa.')).toBeInTheDocument();
+  });
+
   it('replaces one dish from its menu and keeps the servings (US3-5)', async () => {
     let sent: unknown;
     server.use(

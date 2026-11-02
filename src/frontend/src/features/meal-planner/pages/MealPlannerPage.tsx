@@ -75,10 +75,8 @@ export function MealPlannerPage() {
       {plan.week && plan.status === 'ready' && (
         <WeekGrid
           week={plan.week}
-          enableDrag
           onAdd={(day, meal) => setPicking({ day, meal })}
           onOpenItem={(_day, _meal, item) => setMenu(item.id)}
-          onMove={(itemId, to) => void plan.moveItem(itemId, to)}
           onClearDay={(day) => void plan.clearDay(day)}
         />
       )}

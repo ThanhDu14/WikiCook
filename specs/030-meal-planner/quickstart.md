@@ -41,8 +41,8 @@ Kỳ vọng: mọi test xanh; báo cáo JaCoCo của package `com.wikicook.mealp
 | Q5 | Tải lại trang; đăng nhập ở trình duyệt khác | Các món vẫn đúng bữa, đúng thứ tự | US1-9, SC-004 |
 | Q6 | Mở một công thức → "Thêm vào meal plan" → Thứ Tư trưa | Có xác nhận + link; bữa đã có món thì dialog liệt kê các món, món mới thêm vào cuối; bữa đủ 4 món thì không cho xác nhận | US2-1/2/3 |
 | Q7 | Đăng xuất, mở công thức, bấm "Thêm vào meal plan" | Sang trang đăng nhập; đăng nhập xong quay lại công thức, dialog mở lại | US2-4, FR-009 |
-| Q8 | Desktop: kéo món sang bữa trống, sang bữa đã có 1 món, sang bữa đủ 4 món; kéo đổi thứ tự trong một bữa | Lần 1, 2 chuyển và món nằm cuối bữa đích; lần 3 bị từ chối, báo bữa đầy; thứ tự mới được lưu; Esc khi kéo → không đổi | US3-1/2/3, Edge Cases |
-| Q9 | Dùng bàn phím: Tab tới món → menu → "Chuyển sang…" | Chuyển như kéo-thả; "Lên trên"/"Xuống dưới" đổi thứ tự trong bữa; screen reader đọc ngày, bữa, món | US3-3, NFR-003 |
+| Q8 | Menu món → "Chuyển sang…" sang bữa trống, sang bữa đã có 1 món; mở lại thấy bữa đủ 4 món bị khóa; "Lên trên"/"Xuống dưới" trong một bữa; hover món chỉ thấy nút "⋮" | Lần 1, 2 chuyển và món nằm cuối bữa đích; bữa đủ 4 món không chọn được; thứ tự mới được lưu; Hủy/Esc → không đổi | US3-1/2/3/4, Edge Cases |
+| Q9 | Dùng bàn phím: Tab tới món → menu → "Chuyển sang…" | Chuyển như Q8; "Lên trên"/"Xuống dưới" đổi thứ tự trong bữa; screen reader đọc ngày, bữa, món | US3-3, NFR-003 |
 | Q10 | "Đổi món", "Xóa" một món trong bữa có 3 món, "Xóa cả ngày" (Hủy rồi Xác nhận) | Chỉ món được chọn đổi/xóa, các món khác giữ thứ tự; Hủy không đổi gì | US3-5/6/7 |
 | Q11 | Dừng backend rồi thực hiện một thao tác | Lịch trở lại trạng thái cũ, có thông báo lỗi | US3-8, FR-019 |
 | Q12 | Hai tab: tab A xóa món, tab B (chưa tải lại) đổi servings món đó | Tab B bị từ chối (409), báo kế hoạch đã đổi, tự tải lại tuần | Edge Cases |
@@ -50,7 +50,7 @@ Kỳ vọng: mọi test xanh; báo cáo JaCoCo của package `com.wikicook.mealp
 | Q14 | Tuần trước | Món hiển thị, sửa được | US4-5 |
 | Q15 | Archive một công thức đang có trong lịch (tài khoản admin) | Món giữ tên, nhãn "Không còn khả dụng", có Thay/Xóa, bấm tên không mở trang | US6-1/2, FR-020 |
 | Q16 | "Tạo shopping list" | Mở flow import của 040 với món khả dụng; báo số món bị bỏ qua; tuần không có món khả dụng → nút bị tắt | US5, FR-024/025 |
-| Q17 | DevTools 360 px | Xem từng ngày, hôm nay trước, không cuộn ngang; không có kéo-thả | US7-1, FR-026 |
+| Q17 | DevTools 360 px | Xem từng ngày, hôm nay trước, không cuộn ngang; chuyển món bằng "Chuyển sang…" | US7-1, FR-026 |
 | Q18 | DevTools → Offline | Lịch thay bằng thông báo offline + "Thử lại"; bật mạng lại → lịch quay lại ≤ 5 s | US7-2/3/5, SC-006 |
 | Q19 | Ngày có món đã có ước tính dinh dưỡng (sau khi có 090) | Hiện tổng kcal/người + disclaimer + số món chưa có số liệu | FR-032 |
 

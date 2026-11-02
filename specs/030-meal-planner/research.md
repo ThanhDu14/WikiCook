@@ -173,7 +173,11 @@ NEEDS CLARIFICATION nào trong Technical Context sau phần này; những điể
 
 ## R13. Kéo-thả
 
-- **Decision**: `@dnd-kit/core` (+ `@dnd-kit/utilities`), chỉ bật ở layout desktop (≥ 1024 px,
+> **Sửa 2026-11-02 (Nguyễn Thành Dự)**: bỏ kéo-thả. Menu của món đã có "Chuyển sang…", "Lên trên",
+> "Xuống dưới", dễ dùng hơn và giống nhau trên mọi thiết bị; khi hover món chỉ hiện nút "⋮". Đã gỡ
+> `@dnd-kit`. Phần dưới giữ lại làm lịch sử.
+
+- **Decision (cũ)**: `@dnd-kit/core` (+ `@dnd-kit/utilities`), chỉ bật ở layout desktop (≥ 1024 px,
   breakpoint `lg` của Tailwind). Bàn phím và màn hình cảm ứng dùng menu "Chuyển sang…" (FR-015);
   dnd-kit có `KeyboardSensor` và thông báo `aria-live` cho NFR-003.
 - **Rationale**: HTML5 Drag and Drop gốc không hỗ trợ bàn phím, khó test với RTL và lỗi trên

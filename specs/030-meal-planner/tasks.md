@@ -62,7 +62,7 @@ Backend là Maven multi-module (`src/backend/pom.xml`, cập nhật 2026-10-28).
 
 - [x] T001 *(xong: skeleton v0.5 có đủ; package `controller`, `service`, `repository`, `domain`, `dto`, `port`, `api`, `config` được tạo cùng file đầu tiên – git không giữ thư mục rỗng)* Kiểm tra skeleton Build v0.5 tồn tại (src/backend/pom.xml, src/frontend/package.json, docker-compose.yml) và tạo các package rỗng `controller`, `service`, `repository`, `domain`, `dto`, `port`, `api`, `config` trong src/backend/src/main/java/com/wikicook/mealplan/ cùng `service`, `repository`, `controller` trong src/backend/src/test/java/com/wikicook/mealplan/
 - [x] T002 *(xong: skeleton + 031 đã có springdoc và Testcontainers trong `wikicook-app/pom.xml`)* [P] Thêm (nếu chưa có) `springdoc-openapi-starter-webmvc-ui`, `org.testcontainers:postgresql`, `org.testcontainers:junit-jupiter`, `spring-boot-testcontainers` vào src/backend/pom.xml
-- [x] T003 [P] *(xong: `msw` skeleton đã có)* Thêm `@dnd-kit/core`, `@dnd-kit/utilities` (dependencies) và `msw` (devDependencies) vào src/frontend/package.json – lý do ở plan.md Complexity Tracking
+- [x] T003 [P] *(xong: `msw` skeleton đã có; `@dnd-kit` gỡ 2026-11-02, T122)* Thêm `@dnd-kit/core`, `@dnd-kit/utilities` (dependencies) và `msw` (devDependencies) vào src/frontend/package.json – lý do ở plan.md Complexity Tracking
 - [x] T004 [P] *(xong, làm cùng 031: `src/backend/wikicook-app/src/test/java/com/wikicook/support/AbstractPostgresIT.java`; một container dùng chung cho mọi test class, lớp con tự thêm `@SpringBootTest` hoặc slice)* Tạo base class `AbstractPostgresIT` dùng `PostgreSQLContainer` với image `pgvector/pgvector:pg16` (`asCompatibleSubstituteFor("postgres")`) + `@ServiceConnection`, chạy Flyway thật, trong src/backend/src/test/java/com/wikicook/support/AbstractPostgresIT.java
 - [x] T005 [P] *(xong: skeleton đã có `src/test/server.ts`, `src/test/setup.ts` và `setupFiles` trong `vite.config.ts`)* Cấu hình msw cho Vitest: src/frontend/src/test/msw/server.ts, src/frontend/src/test/setup.ts (`beforeAll(server.listen)`…) và khai báo `setupFiles` trong src/frontend/vitest.config.ts
 - [x] T006 [P] *(xong: route ở `src/app/routes.tsx`, thêm link "Thực đơn" ở `AppLayout`, test trong `src/app/App.test.tsx`; thêm thư mục `api/`; nạp CSS `wk-` qua `src/styles/soft-editorial.css`)* Tạo thư mục src/frontend/src/features/meal-planner/{pages,components,hooks,lib,__tests__} và đăng ký route `/meal-planner` (placeholder) trong router của skeleton src/frontend/src/router.tsx
@@ -171,16 +171,16 @@ Backend là Maven multi-module (`src/backend/pom.xml`, cập nhật 2026-10-28).
 
 ## Phase 5: User Story 3 - Rearrange, replace and remove dishes (Priority: P1)
 
-**Goal**: Kéo-thả (desktop) và "Chuyển sang…" (mọi nơi) để chuyển/đổi chỗ, thay, xóa, xóa cả ngày; mọi lỗi lưu đều rollback.
+**Goal**: "Chuyển sang…", "Lên trên", "Xuống dưới" (mọi nơi, không kéo-thả từ 2026-11-02) để chuyển và đổi thứ tự, thay, xóa, xóa cả ngày; mọi lỗi lưu đều rollback.
 
-**Independent Test**: Tuần có ≥ 2 món: kéo một món sang ô trống, sang ô có món, "Thay" ô thứ ba, xóa một món, xóa một ngày; tải lại → lịch khớp mọi thay đổi (quickstart Q8–Q12).
+**Independent Test**: Tuần có ≥ 2 món: "Chuyển sang…" một món sang bữa trống, sang bữa có món, "Thay" ô thứ ba, xóa một món, xóa một ngày; tải lại → lịch khớp mọi thay đổi (quickstart Q8–Q12).
 
 ### Tests for User Story 3 ⚠️ (viết trước, phải FAIL)
 
 - [x] T057 [P] [US3] Unit test `SlotMoveServiceTest` – move sang ô trống đổi `day/meal` của item, ô nguồn trống (US3-1); move sang ô có món đổi **nội dung** (recipe_id, recipe_name_snapshot, servings, source) giữa hai dòng, id giữ nguyên (US3-2, research R5); `source` được giữ khi move/swap; `expected` nguồn hoặc đích không khớp → `SlotChangedException`, không gọi save; move vào chính ô đó → không đổi gì trong src/backend/src/test/java/com/wikicook/mealplan/service/SlotMoveServiceTest.java
 - [x] T058 [P] [US3] Integration test `SlotMoveAtomicityIT` (`@SpringBootTest` + `AbstractPostgresIT`) – lỗi giả lập sau lần update thứ nhất của swap (spy repository ném exception) → cả hai dòng giữ nguyên (NFR-005, SC-005); hai request swap đồng thời trên cùng hai item → một thành công, một 409, tổng số item và tập recipe không đổi (không mất/không nhân đôi món) trong src/backend/src/test/java/com/wikicook/mealplan/service/SlotMoveAtomicityIT.java *(spy bằng `@MockitoSpyBean`, lỗi ở `saveAndFlush` thứ hai của swap)*
 - [x] T059 [P] [US3] Integration test `MealPlanControllerUS3IT` – `POST …/moves` trả `kind = MOVED` (1 item) và `SWAPPED` (2 item); `PUT` thay món giữ servings cũ (US3-4); `DELETE …/slots/{day}/{meal}?itemId&version` 204 (US3-5); `DELETE …/days/{day}` xóa cả 3 ô, 204 cả khi ngày đã trống (US3-6); tab A xóa món, tab B đổi servings món đó với version cũ → 409 `SLOT_CHANGED` (edge case hai tab) trong src/backend/src/test/java/com/wikicook/mealplan/controller/MealPlanControllerUS3IT.java
-- [x] T060 [P] [US3] Test `WeekGrid.dnd.test.tsx` – kéo bằng `KeyboardSensor` (Space → mũi tên → Space) sang ô trống thì move, sang ô có món thì swap (US3-1, US3-2); Esc khi đang kéo hoặc thả ngoài ô → không gọi API (edge case); thông báo `aria-live` khi nhấc/thả (NFR-003) trong src/frontend/src/features/meal-planner/__tests__/WeekGrid.dnd.test.tsx *(KeyboardSensor có `coordinateGetter` đi theo ô; trong test chờ một tick sau mỗi phím vì sensor gắn listener ở task kế)*
+- [x] ~~T060~~ *(bỏ 2026-11-02, xem T122)* [P] [US3] Test `WeekGrid.dnd.test.tsx` – kéo bằng `KeyboardSensor` (Space → mũi tên → Space) sang ô trống thì move, sang ô có món thì swap (US3-1, US3-2); Esc khi đang kéo hoặc thả ngoài ô → không gọi API (edge case); thông báo `aria-live` khi nhấc/thả (NFR-003) trong src/frontend/src/features/meal-planner/__tests__/WeekGrid.dnd.test.tsx *(KeyboardSensor có `coordinateGetter` đi theo ô; trong test chờ một tick sau mỗi phím vì sensor gắn listener ở task kế)*
 - [x] T061 [P] [US3] Test `MoveToMenu.test.tsx` – chỉ dùng bàn phím: mở menu món → "Chuyển sang…" → chọn ngày + bữa → gọi `moveItem` đúng tham số; ô đích có món thì hiện "Đổi chỗ với {tên}" (US3-3, FR-015) trong src/frontend/src/features/meal-planner/__tests__/MoveToMenu.test.tsx *(theo W-MP03: lưới tuần thu nhỏ trong `wx-modal`, nút "Chuyển đến {Bữa} {T#}")*
 - [x] T062 [P] [US3] Test `SlotMenu.test.tsx` – "Thay" mở picker và giữ servings (US3-4); "Xóa" làm ô trống (US3-5); "Xóa cả ngày" hỏi xác nhận, Hủy không đổi gì, Xác nhận làm trống ngày (US3-6) trong src/frontend/src/features/meal-planner/__tests__/SlotMenu.test.tsx *("Xóa cả ngày" nằm ở tiêu đề ngày của lưới nên phần xác nhận được test trong `MealPlannerPage.us3.test.tsx`)*
 - [x] T063 [P] [US3] Bổ sung `useWeekPlan.test.ts` – move/swap/remove/clearDay lỗi 500 → lịch về trạng thái trước + thông báo "Thay đổi chưa được lưu" (US3-7, FR-019); 409 `SLOT_CHANGED` → thông báo "Kế hoạch đã thay đổi" và tải lại tuần (edge case) trong src/frontend/src/features/meal-planner/__tests__/useWeekPlan.test.ts
@@ -191,7 +191,7 @@ Backend là Maven multi-module (`src/backend/pom.xml`, cập nhật 2026-10-28).
 - [x] T065 [US3] Thêm `MealPlanService.removeSlot(userId, weekStart, day, meal, itemId, version)` và `clearDay(userId, weekStart, day)` trong src/backend/src/main/java/com/wikicook/mealplan/service/MealPlanService.java *(`removeSlot` nhận `ExpectedSlotState`)*
 - [x] T066 [US3] Thêm endpoint `POST /api/v1/meal-plans/{weekStart}/moves`, `DELETE …/slots/{day}/{meal}`, `DELETE …/days/{day}` cùng DTO `MoveRequest`, `MoveResult`, `PlacedItem` trong src/backend/src/main/java/com/wikicook/mealplan/controller/MealPlanController.java và dto/ (làm T059 xanh)
 - [x] T067 [P] [US3] Cài `SlotMenu` (Thay, Xóa, Chuyển sang…) và `MoveToMenu` (chọn ngày + bữa của cùng tuần, thao tác được bằng bàn phím) trong src/frontend/src/features/meal-planner/components/SlotMenu.tsx và MoveToMenu.tsx (làm T061, T062 xanh) *(SlotMenu theo W-MP02 nhưng là `wx-modal` hẹp ở giữa, chưa neo vào ô)*
-- [x] T068 [US3] Tích hợp `@dnd-kit/core` vào `WeekGrid` (`DndContext`, `useDraggable` trên `SlotCard`, `useDroppable` trên mỗi ô, `KeyboardSensor` + `PointerSensor`, `announcements` tiếng Việt, chỉ bật khi được truyền `enableDrag`) trong src/frontend/src/features/meal-planner/components/WeekGrid.tsx (làm T060 xanh) *(lưới chuyển sang layout `wx-week` của W-MP01; kéo bằng nút tay cầm "Kéo để chuyển: {tên}")*
+- [x] ~~T068~~ *(bỏ 2026-11-02, xem T122)* [US3] Tích hợp `@dnd-kit/core` vào `WeekGrid` (`DndContext`, `useDraggable` trên `SlotCard`, `useDroppable` trên mỗi ô, `KeyboardSensor` + `PointerSensor`, `announcements` tiếng Việt, chỉ bật khi được truyền `enableDrag`) trong src/frontend/src/features/meal-planner/components/WeekGrid.tsx (làm T060 xanh) *(lưới chuyển sang layout `wx-week` của W-MP01; kéo bằng nút tay cầm "Kéo để chuyển: {tên}")*
 - [x] T069 [US3] Thêm `moveItem`, `replaceDish`, `removeDish`, `clearDay` vào `useWeekPlan` (optimistic + rollback; 409 → tải lại) và nút "Xóa cả ngày" kèm hộp xác nhận ở tiêu đề mỗi ngày trong src/frontend/src/features/meal-planner/hooks/useWeekPlan.ts và components/WeekGrid.tsx (làm T063 xanh) *(màn thiết kế không có "Xóa cả ngày": đặt nút thùng rác nhỏ ở tiêu đề ngày có món, hộp xác nhận `wk-dialog`)*
 
 **Checkpoint**: MVP (US1 + US2 + US3) hoàn chỉnh; quickstart Q1–Q12 đạt; spec 031 có thể dựa vào các thao tác sửa.
@@ -225,7 +225,8 @@ test cũ được viết lại theo hành vi mới.
 - [x] T117 [US1] `MealPlanItem.position`, `MealFullException` (`MEAL_FULL` 409), khóa `meal_plans` `FOR UPDATE` trong repository; `MealPlanService` add/replace/servings/remove/clearDay theo món (làm T111 xanh)
 - [x] T118 [US3] `ItemMoveService` thay `SlotMoveService` (làm T112, T113 xanh)
 - [x] T119 [US1] [US2] [US3] Controller và DTO theo contracts/openapi.yaml 0.2.0; bỏ `PutSlotRequest`, `ExpectedSlotState`, `SlotOccupiedException` (làm T114 xanh)
-- [x] T120 [US1] [US2] [US3] Frontend: types, `mealPlanApi`, `useWeekPlan`, `WeekGrid` (ô nhiều card, dnd theo món, đổi thứ tự), `MoveToMenu`, `SlotMenu` (thêm "Lên trên"/"Xuống dưới"), `AddToPlanDialog`, `MealPlannerPage` (làm T115 xanh)
+- [x] T120 [US1] [US2] [US3] Frontend: types, `mealPlanApi`, `useWeekPlan`, `WeekGrid` (ô nhiều card, đổi thứ tự), `MoveToMenu`, `SlotMenu` (thêm "Lên trên"/"Xuống dưới"), `AddToPlanDialog`, `MealPlannerPage` (làm T115 xanh)
+- [x] T122 [US3] Bỏ kéo-thả (quyết định 2026-11-02, spec FR-014/FR-015, research R13): xóa `WeekGrid.dnd.test.tsx`, `DndContext`/`DraggableCard`/`DroppableCell`, chuỗi kéo-thả, gỡ `@dnd-kit`; khi hover món chỉ còn nút "⋮"; test ở `MealPlannerPage.us3.test.tsx` và `WeekGrid.test.tsx`
 - [ ] T121 [US1] `MealPlanWriteFacade` theo integration.md 2.2 bản 2026-11-02 khi làm T100 (Phase 10)
 
 **Checkpoint**: US1–US3 chạy lại đầy đủ với nhiều món mỗi bữa; quickstart Q1–Q12 (bản 2026-11-02) đạt.
@@ -299,13 +300,13 @@ test cũ được viết lại theo hành vi mới.
 
 ## Phase 9: User Story 7 - Use the planner on a phone and handle a lost connection (Priority: P3)
 
-**Goal**: Xem từng ngày trên màn hình hẹp, "Chuyển sang…" thay kéo-thả; mất mạng thì thay lịch bằng thông báo offline và tự tải lại khi có mạng.
+**Goal**: Xem từng ngày trên màn hình hẹp, chuyển món bằng "Chuyển sang…"; mất mạng thì thay lịch bằng thông báo offline và tự tải lại khi có mạng.
 
 **Independent Test**: Màn hình 360 px → xem từng ngày; tắt mạng → thông báo offline + "Thử lại"; bật mạng → lịch tự tải lại (quickstart Q17, Q18).
 
 ### Tests for User Story 7 ⚠️ (viết trước, phải FAIL)
 
-- [ ] T087 [P] [US7] Test `DayView.test.tsx` – hiện một ngày, bắt đầu từ hôm nay, nút ngày trước/sau (US7-1, FR-026); không có kéo-thả, menu "Chuyển sang…" có mặt (US7-1) trong src/frontend/src/features/meal-planner/__tests__/DayView.test.tsx
+- [ ] T087 [P] [US7] Test `DayView.test.tsx` – hiện một ngày, bắt đầu từ hôm nay, nút ngày trước/sau (US7-1, FR-026); menu "Chuyển sang…" có mặt (US7-1) trong src/frontend/src/features/meal-planner/__tests__/DayView.test.tsx
 - [ ] T088 [P] [US7] Test `useOnlineStatus.test.ts` – theo `navigator.onLine`; sự kiện `offline`/`online`; `reportNetworkError()` chuyển sang offline trong src/frontend/src/features/meal-planner/__tests__/useOnlineStatus.test.ts
 - [ ] T089 [P] [US7] Test `MealPlannerPage.offline.test.tsx` – mở trang khi offline → không có lịch, có `OfflineNotice` + "Thử lại" (US7-2); mất mạng khi đang mở → lịch bị thay, không sửa được (US7-3); lưu thất bại do mất mạng → báo chưa lưu rồi hiện offline (US7-4); sự kiện `online` hoặc "Thử lại" khi đã có mạng → gọi lại `getWeek` và hiện lịch (US7-5); không ghi gì vào `localStorage`/`sessionStorage` (FR-027) trong src/frontend/src/features/meal-planner/__tests__/MealPlannerPage.offline.test.tsx
 - [ ] T090 [P] [US7] Test `useIsDesktop.test.ts` – `matchMedia('(min-width: 1024px)')` đổi giá trị khi resize trong src/frontend/src/features/meal-planner/__tests__/useIsDesktop.test.ts
@@ -315,7 +316,7 @@ test cũ được viết lại theo hành vi mới.
 - [ ] T091 [P] [US7] Cài `useIsDesktop` trong src/frontend/src/features/meal-planner/hooks/useIsDesktop.ts (làm T090 xanh)
 - [ ] T092 [P] [US7] Cài `useOnlineStatus` trong src/frontend/src/features/meal-planner/hooks/useOnlineStatus.ts (làm T088 xanh)
 - [ ] T093 [US7] Cài `DayView` (một ngày, hôm nay trước, điều hướng ngày, dùng `SlotCard` + `SlotMenu`, vùng chạm ≥ 44 px) trong src/frontend/src/features/meal-planner/components/DayView.tsx (làm T087 xanh)
-- [ ] T094 [US7] Cài `OfflineNotice` và nối vào `MealPlannerPage`: chọn `WeekGrid` (desktop, `enableDrag`) hoặc `DayView` theo `useIsDesktop`; offline → thay lịch bằng `OfflineNotice`; `useWeekPlan` báo lỗi mạng qua `reportNetworkError`; khi online → tải lại tuần trong src/frontend/src/features/meal-planner/components/OfflineNotice.tsx và pages/MealPlannerPage.tsx (làm T089 xanh)
+- [ ] T094 [US7] Cài `OfflineNotice` và nối vào `MealPlannerPage`: chọn `WeekGrid` (desktop) hoặc `DayView` theo `useIsDesktop`; offline → thay lịch bằng `OfflineNotice`; `useWeekPlan` báo lỗi mạng qua `reportNetworkError`; khi online → tải lại tuần trong src/frontend/src/features/meal-planner/components/OfflineNotice.tsx và pages/MealPlannerPage.tsx (làm T089 xanh)
 
 **Checkpoint**: Mọi user story chạy độc lập; quickstart Q17, Q18 đạt.
 

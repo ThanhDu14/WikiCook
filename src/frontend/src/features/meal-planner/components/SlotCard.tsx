@@ -1,4 +1,3 @@
-import type { HTMLAttributes, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { vi } from '../strings.vi';
 import type { Day, Meal, PlanItem } from '../types';
@@ -13,10 +12,6 @@ interface Props {
   onOpen: () => void;
   /** Smaller picture and name when the meal has several dishes. */
   dense?: boolean;
-  /** Drag handle of the week grid, when dragging is on. */
-  dragHandle?: ReactNode;
-  /** Pointer listeners that let the whole dish be dragged (W-MP01: "Kéo thả món"). */
-  dragProps?: HTMLAttributes<HTMLDivElement>;
 }
 
 function meta(item: PlanItem) {
@@ -28,10 +23,10 @@ function meta(item: PlanItem) {
 
 /**
  * One dish of a meal, as in W-MP01: a compact card (picture, name linking to the recipe, time and servings).
- * Clicking it opens its menu. The menu button and the keyboard drag handle stay out of sight until the dish is
- * hovered or focused, so the grid looks like the screen and still works with the keyboard (T045, NFR-003).
+ * Clicking it opens its menu. The "⋮" menu button, its only control, stays out of sight until the dish is hovered
+ * or focused, so the grid looks like the screen and still works with the keyboard (T045, NFR-003).
  */
-export function SlotCard({ day, meal, item, onOpen, dense = false, dragHandle, dragProps }: Props) {
+export function SlotCard({ day, meal, item, onOpen, dense = false }: Props) {
   const label = vi.slotLabel(vi.dayLong[day], vi.mealLong[meal], item.recipeName);
   const photo = dense ? 32 : 44;
   const titleClass = `wk-card__title ${dense ? 'line-clamp-2' : 'line-clamp-3'}`;
@@ -46,7 +41,6 @@ export function SlotCard({ day, meal, item, onOpen, dense = false, dragHandle, d
       onClick={(event) => {
         if (!(event.target as HTMLElement).closest('a, button')) onOpen();
       }}
-      {...dragProps}
     >
       <div className="wk-card wk-card--compact" style={{ alignItems: 'flex-start', gap: dense ? 8 : undefined }}>
         {item.available ? (
@@ -81,7 +75,6 @@ export function SlotCard({ day, meal, item, onOpen, dense = false, dragHandle, d
         </div>
       </div>
       <div className="absolute right-0 top-0 flex opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
-        {dragHandle}
         <button
           type="button"
           className="wk-icon-btn wk-icon-btn--plain"

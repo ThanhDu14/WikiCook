@@ -82,6 +82,14 @@ describe('WeekGrid (T035, T115)', () => {
     expect(screen.queryByRole('button', { name: 'Thêm món: Thứ Ba, bữa tối' })).not.toBeInTheDocument();
   });
 
+  it('has no drag and drop: a dish only offers its "⋮" menu (FR-014, 2026-11-02)', () => {
+    renderGrid(week({ 'MONDAY/LUNCH': [item({ id: 5, recipeName: 'Phở bò' }), item({ id: 6, recipeName: 'Cá kho' })] }));
+
+    const dish = screen.getByRole('group', { name: 'Thứ Hai, bữa trưa, Phở bò' });
+    expect(within(dish).getAllByRole('button').map((b) => b.getAttribute('aria-label'))).toEqual(['Tùy chọn: Phở bò']);
+    expect(screen.queryByRole('button', { name: /^Kéo để chuyển/ })).not.toBeInTheDocument();
+  });
+
   it('shows dishes that are no longer available (FR-020)', () => {
     renderGrid(week({ 'FRIDAY/DINNER': item({ available: false, recipeName: 'Bò lúc lắc', coverImageUrl: null }) }));
 

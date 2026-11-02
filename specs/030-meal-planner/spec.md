@@ -11,8 +11,8 @@ Planner. Lịch hiển thị 7 ngày (thứ Hai → Chủ nhật) × 3 bữa (s�
 thức đã PUBLISHED, hiện ảnh, tên và thời gian nấu, bấm vào thì mở trang chi tiết công thức. Thêm món
 vào ô bằng hai cách: bấm ô trống để mở hộp chọn công thức (tìm theo tên, lọc nhanh từ bộ sưu tập đã
 lưu), hoặc bấm "Thêm vào meal plan" trên trang chi tiết công thức rồi chọn ngày và bữa. Mỗi món có
-khẩu phần riêng, mặc định lấy số người trong gia đình ở hồ sơ. Đổi chỗ món bằng kéo-thả giữa các ô
-trên desktop; trên mobile lịch hiện theo từng ngày, dùng menu "Chuyển sang..." thay cho kéo-thả.
+khẩu phần riêng, mặc định lấy số người trong gia đình ở hồ sơ. Đổi chỗ món bằng menu "Chuyển sang..."
+của món (không có kéo-thả, quyết định 2026-11-02); trên mobile lịch hiện theo từng ngày.
 Đổi món, xóa món, xóa cả ngày. Chuyển sang tuần trước/tuần sau; tuần chưa có kế hoạch hiện trạng
 thái rỗng kèm nút "Tạo bằng AI" (mở spec 031). Nút "Tạo shopping list" gửi các món của tuần đang
 xem sang spec 040. Công thức trong lịch bị gỡ hoặc ARCHIVED thì ô vẫn giữ tên món, đánh dấu "Không
@@ -43,7 +43,7 @@ planner MUST keep working on its own when the AI feature is unavailable.
 
 **In scope**: weekly calendar view (desktop grid, mobile day-by-day view), up to 4 dishes per meal,
 adding a recipe to a meal or from the recipe detail page, servings per dish, moving and reordering dishes
-(drag-and-drop on desktop, "Move to…", "Move up", "Move down" everywhere), replacing and removing dishes, clearing a whole day, moving
+("Move to…", "Move up", "Move down" from the dish menu; no drag-and-drop), replacing and removing dishes, clearing a whole day, moving
 between weeks, empty-week state with an entry point to AI generation, sending the week to the
 Shopping List, handling recipes that are no longer available, an offline message when there is
 no connection (the planner is not viewable offline), guest redirect to sign-in.
@@ -73,6 +73,9 @@ collections management (spec 080).
   meal; dishes no longer swap places. Spec 031 fills whole meals (breakfast 1 dish; lunch and
   dinner a soup, a main dish and a vegetable dish). This replaces the "one recipe per slot" rule
   of the 2026-10-08 version (decided by Nguyễn Thành Dự, owner of 030 and 031).
+- Q: Should dishes also be moved by drag-and-drop on desktop? → A: No. The dish menu already has
+  "Move to…", "Move up" and "Move down", which are easier to use and work the same everywhere. A dish
+  shows only its "⋮" menu button on hover; FR-014, FR-015 and US3 changed accordingly.
 
 - Session 2026-10-19: Concurrent-user load condition changed from 200 to 100 to match the RC acceptance gate in docs/management/project-plan.md §4.4.2 and Vision Document §7 (SCRUM-36) (edited by Mai Văn Hiển with the owner's agreement).
 
@@ -160,22 +163,23 @@ replace a dish with another one and remove dishes I no longer want so that the p
 **Why this priority**: Plans change often (a late meeting, leftovers). Proposal section 4.2 step 9
 also relies on this editing to adjust AI-generated plans, so spec 031 depends on it.
 
-**Independent Test**: With a week holding at least three dishes, drag one dish into an empty meal,
-drag another into a meal that already has a dish, reorder two dishes of one meal, use "Replace" on
+**Independent Test**: With a week holding at least three dishes, use "Move to…" to move one dish into
+an empty meal and another into a meal that already has a dish, reorder two dishes of one meal with
+"Move up"/"Move down", use "Replace" on
 a dish, remove one dish and clear one day; reload and confirm the calendar matches every change.
 
 **Acceptance Scenarios**:
 
-1. **Given** the desktop layout, **When** the user drags a dish into another meal of the same week
-   that has fewer than 4 dishes, **Then** the dish is added at the end of that meal and leaves its
+1. **Given** a planned dish, **When** the user opens its menu, chooses "Move to…" and then another
+   meal of the same week that has fewer than 4 dishes, **Then** the dish is added at the end of that meal and leaves its
    original meal; the other dishes of both meals keep their order.
-2. **Given** the desktop layout, **When** the user drags a dish into a meal that already holds 4
-   dishes, **Then** nothing changes and the user is told the meal is full.
-3. **Given** a meal with two or more dishes, **When** the user drags a dish before or after another
-   dish of the same meal, **Then** the dishes are shown and saved in the new order.
-4. **Given** any layout, **When** the user opens a dish's menu and chooses "Move to…" and then a
-   day and meal of the same week, **Then** the dish moves exactly as with drag-and-drop; in a meal
-   with two or more dishes, "Move up" and "Move down" change its order as in scenario 3.
+2. **Given** "Move to…" is open, **When** a meal of the week already holds 4 dishes, **Then** that
+   meal cannot be chosen; if it filled up elsewhere meanwhile, nothing changes and the user is told the
+   meal is full.
+3. **Given** a meal with two or more dishes, **When** the user chooses "Move up" or "Move down" in a
+   dish's menu, **Then** the dishes are shown and saved in the new order.
+4. **Given** any layout, **When** the user hovers or focuses a dish, **Then** the only control shown on
+   it is the "⋮" menu button; clicking the dish opens the same menu. There is no drag-and-drop.
 5. **Given** a planned dish, **When** the user chooses "Replace", **Then** the recipe picker opens
    and the chosen recipe takes the place of that dish only, keeping its servings and position.
 6. **Given** a planned dish, **When** the user chooses "Remove", **Then** only that dish leaves the
@@ -277,8 +281,8 @@ button; turn the network back on and confirm the planner reloads the week by its
 **Acceptance Scenarios**:
 
 1. **Given** a screen narrower than the desktop layout, **When** the planner is shown, **Then** it
-   shows one day at a time (today first) with controls to move to the previous or next day, and
-   "Move to…" replaces drag-and-drop.
+   shows one day at a time (today first) with controls to move to the previous or next day; dishes
+   are moved with "Move to…" as on desktop.
 2. **Given** there is no connection, **When** the user opens the Meal Planner, **Then** no
    calendar is shown; an offline message says the planner needs an internet connection and offers
    "Try again".
@@ -300,7 +304,7 @@ button; turn the network back on and confirm the planner reloads the week by its
   once both succeed while the meal has room; the add that would make a fifth dish is refused.
 - **Dish changed elsewhere before an edit is saved** (e.g. a dish was removed on another device):
   the edit is refused, the user is told the plan changed, and the planner reloads the week.
-- **Dragging a dish outside any meal** or pressing Escape during a drag: nothing changes.
+- **Closing "Move to…"** without confirming (Cancel, Escape, click outside): nothing changes.
 - **Meal already full (4 dishes)**: adding, moving in or "Add to meal plan" to it is refused with
   a message; the dishes already there are not changed.
 - **Servings outside 1–20 or not a whole number**: the value is refused with a message and the old
@@ -373,12 +377,13 @@ button; turn the network back on and confirm the planner reloads the week by its
 
 **Editing**
 
-- **FR-014**: On the desktop layout users MUST be able to drag a dish into another meal of the same
-  week, where it is added at the end, and to change the order of the dishes inside a meal. A meal
-  that already holds 4 dishes MUST refuse a dish moved in from another meal.
-- **FR-015**: Every dish MUST offer a "Move to…" action that does the same move by choosing a day
-  and meal, and, in a meal with two or more dishes, "Move up" and "Move down" to change its order,
-  so the planner can be used without drag-and-drop (mobile, keyboard).
+- **FR-014**: Users MUST be able to move a dish into another meal of the same week, where it is added
+  at the end, and to change the order of the dishes inside a meal. A meal that already holds 4 dishes
+  MUST refuse a dish moved in from another meal. Moving is done from the dish menu only; there is no
+  drag-and-drop (Clarifications 2026-11-02).
+- **FR-015**: Every dish MUST offer a "Move to…" action that moves it by choosing a day and meal, and,
+  in a meal with two or more dishes, "Move up" and "Move down" to change its order. The same menu
+  works with pointer, touch and keyboard on every layout.
 - **FR-016**: Every dish MUST offer "Replace" (pick another recipe, keep servings and position) and
   "Remove".
 - **FR-017**: Every day MUST offer "Clear day", which removes all dishes of that day after the user
@@ -494,8 +499,8 @@ button; turn the network back on and confirm the planner reloads the week by its
   proposal.
 - Servings range 1–20 follows the "serving size" input of proposal section 4.3.
 - Users can move between weeks without a limit; plans are kept as long as the account exists.
-- Drag-and-drop is offered on the desktop layout only; touch screens use "Move to…". Moving a dish
-  to another week is not supported (remove and add again).
+- There is no drag-and-drop: "Move to…" already covers moving and is easier to reach on every device.
+  Moving a dish to another week is not supported (remove and add again).
 - The planner needs an internet connection: it is not viewable offline and edits are not queued
   for later (see Clarifications). This differs from cooking mode (spec 050), which keeps working
   offline per proposal section 2.2.

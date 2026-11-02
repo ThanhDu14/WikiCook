@@ -20,7 +20,7 @@ export const vi = {
 
   thisWeek: 'Tuần này',
   weekEyebrow: 'Thực đơn tuần',
-  gridHint: 'Mỗi bữa có tối đa 4 món. Kéo thả món sang bữa khác để chuyển. Bấm vào món để xem menu.',
+  gridHint: 'Mỗi bữa có tối đa 4 món. Bấm vào món để đổi, chuyển sang bữa khác hoặc xóa.',
   previousWeek: 'Tuần trước',
   nextWeek: 'Tuần sau',
   today: 'Hôm nay',
@@ -66,16 +66,9 @@ export const vi = {
   moveHint: 'Chọn bữa đích. Món được thêm vào cuối bữa; bữa đã đủ 4 món không nhận thêm.',
   moveTarget: 'Bữa đích',
   movePending: 'Chuyển đến…',
-  dragHandle: (dish: string) => `Kéo để chuyển: ${dish}`,
   clearDayOf: (day: string) => `Xóa cả ngày: ${day}`,
   addAfter: (dish: string) => `Thêm vào sau ${dish}`,
   moveHere: (meal: string, day: string) => `Chuyển đến ${meal} ${day}`,
-  slotOf: (day: string, meal: string) => `${day}, ${meal}`,
-  dragPicked: (dish: string) => `Đã nhấc “${dish}”. Dùng phím mũi tên để chọn ô, Space để thả, Esc để hủy.`,
-  dragOver: (slot: string) => `Đang ở ${slot}.`,
-  dragInstructions: 'Nhấn Space để nhấc món, dùng phím mũi tên để chọn ô, Space để thả, Esc để hủy.',
-  dragDropped: (dish: string, slot: string) => `Đã thả “${dish}” vào ${slot}.`,
-  dragCancelled: (dish: string) => `Đã hủy chuyển “${dish}”.`,
 
   // picker (MP-04)
   pickerTitle: (meal: string, day: string) => `Chọn món · ${meal} ${day}`,
