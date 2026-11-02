@@ -94,6 +94,7 @@
 - [x] T033 [P] [US1] Implement `ArchivedHistoryDrawer` drawer component displaying archived trips and restore actions in `src/frontend/src/features/shopping-list/components/ArchivedHistoryDrawer.tsx` (depends on T026)
 - [x] T034 [US1] Implement main `/shopping-list` view skeleton with default title "Danh sách mua sắm [Ngày/Tháng]", empty state placeholders, and quick import triggers in `src/frontend/src/features/shopping-list/components/ChecklistScreen.tsx` (depends on T031, T032, T033)
 - [ ] T035 [US1] Verify User Story 1 acceptance scenarios and run independent test (`Run: mvn test -Dtest=ShoppingListServiceTest,ShoppingListControllerIT && npm test -- run shoppingListApi useShoppingList AddCustomItemDialog ArchivedHistoryDrawer`)
+  - Trạng thái 02/11 (SCRUM-56): phần frontend đạt (`npm test` 87/87; `ShoppingListServiceTest`, `ShoppingListControllerTest` qua). Chưa đánh dấu xong vì: `ShoppingListControllerIT` chưa có (T022); chạy thật `GET /active` lỗi 500 khi user chưa có danh sách (tạo list trong `@Transactional(readOnly = true)`); `aisle_categories` không có migration seed nên thêm món lỗi khóa ngoại.
 
 **Checkpoint**: User Story 1 is fully functional and independently verified.
 
@@ -123,11 +124,13 @@
 - [x] T046 [P] [US2] Implement `useIngredientAggregation` hook managing client-side preview aggregation and scaling multipliers in `src/frontend/src/features/shopping-list/hooks/useIngredientAggregation.ts`
 - [x] T047 [P] [US2] Implement `PreImportBottomSheet` modal component with checklist and 1-tap "Bỏ chọn gia vị cơ bản" button in `src/frontend/src/features/shopping-list/components/PreImportBottomSheet.tsx` (depends on T039)
 - [ ] T048 [US2] Implement serving selector + "Add to shopping list" entry button on the 020 recipe detail view (depends on T047) in `src/frontend/src/features/shopping-list/components/` (exact 020 view file TBD - view owned by recipe module; confirm path before implementation)
+  - Trạng thái 02/11 (SCRUM-56): đã có `RecipeIngredientsPanel.tsx` (+ test) theo panel "Nguyên liệu" của W-NU01: bộ chọn khẩu phần đổi mọi số lượng, nút "Thêm vào danh sách đi chợ" mở `PreImportBottomSheet` với khẩu phần đang chọn và gọi import kèm `Idempotency-Key`. Còn lại: gắn panel vào trang chi tiết công thức của 020 (chưa có trên frontend) và kiểm tra tay trên 020.
   - Acceptance: selector rescales every displayed quantity; button opens PreImportBottomSheet with serving count + scaled quantities; manual-edit flag/PATCH behaviour unchanged; no duplicate entry point.
   - Tests (test-first): Vitest selector rescale test; Vitest button tap calls RecipeDetailPort with scaled quantities and opens PreImportBottomSheet; manual 020 check.
 - [x] T049 [P] [US2] Implement `ItemProvenanceModal` drawer component displaying contribution breakdown in `src/frontend/src/features/shopping-list/components/ItemProvenanceModal.tsx` (depends on T040)
 - [x] T050 [US2] Update `shoppingListApi.ts` to include import and provenance fetching functions in `src/frontend/src/features/shopping-list/services/shoppingListApi.ts` (depends on T045)
 - [ ] T051 [US2] Verify User Story 2 acceptance scenarios and run independent test (`Run: mvn test -Dtest=UnitConversionServiceTest,IngredientAggregationServiceTest && npm test -- run PreImportBottomSheet ItemProvenanceModal`)
+  - Trạng thái 02/11 (SCRUM-56): `UnitConversionServiceTest`, `IngredientAggregationServiceTest`, `PreImportBottomSheet`, `ItemProvenanceModal` đều qua. Independent Test chạy thật chưa đạt: Bò kho x4 + Bò xào x4 cho 2 dòng Thịt bò 600 và 400 thay vì 1 dòng "1 kg", và `displayUnit` luôn null (backend, SCRUM-55).
 
 **Checkpoint**: User Story 2 is fully functional and independently verified.
 
