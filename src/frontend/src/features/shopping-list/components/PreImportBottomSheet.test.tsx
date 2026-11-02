@@ -80,6 +80,13 @@ describe('PreImportBottomSheet (SL-03)', () => {
     expect(screen.queryByRole('button', { name: /^Thêm \d+ món$/ })).not.toBeInTheDocument();
   });
 
+  it('shows an import error inside the sheet', () => {
+    render(<PreImportBottomSheet recipe={recipe} error="Không thêm được." onConfirm={vi.fn()} onClose={vi.fn()} />);
+
+    const dialog = screen.getByRole('dialog', { name: 'Thêm vào danh sách đi chợ' });
+    expect(within(dialog).getByRole('alert')).toHaveTextContent('Không thêm được.');
+  });
+
   it('cancels without importing', async () => {
     const { onConfirm, onClose, user } = setup();
 
