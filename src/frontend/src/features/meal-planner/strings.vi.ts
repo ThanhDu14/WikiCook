@@ -42,6 +42,8 @@ export const vi = {
   slotLabel: (day: string, meal: string, dishes?: string) => (dishes ? `${day}, ${meal}, ${dishes}` : `${day}, ${meal}, trống`),
   sourceAi: 'AI',
   sourceAuto: 'Auto',
+  chooseDish: 'Chọn món',
+  draftDish: 'Món nháp',
   mealFull: 'Bữa này đã đủ 4 món.',
   fullShort: 'Đủ 4 món',
 
@@ -107,6 +109,13 @@ export const vi = {
   added: (meal: string, day: string) => `Đã thêm vào ${meal} ${day}.`,
   openPlan: 'Xem thực đơn',
   signInToAdd: 'Đăng nhập để thêm vào thực đơn',
+
+  // nutrition of a day (FR-032, spec 090 FR-022)
+  kcalPerPerson: (kcal: string) => `~${kcal} kcal/người`,
+  kcalShort: (kcal: string) => `~${kcal} kcal`,
+  missingNutrition: (n: number) => `${n} món chưa có số liệu`,
+  noNutrition: 'Chưa có số liệu dinh dưỡng',
+  nutritionDisclaimer: 'Số liệu dinh dưỡng do AI ước tính, chỉ mang tính tham khảo',
 
   // shopping list hand-off (US5)
   shopping: 'Đi chợ',

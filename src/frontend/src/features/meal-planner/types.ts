@@ -27,6 +27,8 @@ export interface PlanItem {
   /** false when the recipe was archived or deleted (FR-020) */
   available: boolean;
   dietType?: DietType;
+  /** Client only: set on a dish of an unsaved AI draft shown on the calendar (T102). */
+  draftKey?: string;
 }
 
 /** A meal of a day: its dishes by position; empty list = empty meal. */
@@ -150,3 +152,26 @@ export type ErrorCode =
   | 'UNAUTHENTICATED'
   | 'NETWORK'
   | 'UNKNOWN';
+
+/**
+ * A dish of an unsaved AI draft of spec 031, shown on the calendar (031 FR-016, research R13). `recipeId = null` is a
+ * meal the planner could not fill: it shows "Chọn món". `key` is the draft's own id.
+ */
+export interface DraftItem {
+  key: string;
+  day: Day;
+  meal: Meal;
+  recipeId: number | null;
+  recipeName?: string | null;
+  coverImageUrl?: string | null;
+  totalTimeMinutes?: number | null;
+  servings?: number | null;
+  source: ItemSource;
+}
+
+/** What the user asked of a draft dish; only the draft changes, nothing is saved (031 FR-017). */
+export type DraftChange =
+  | { type: 'choose'; key: string }
+  | { type: 'replace'; key: string }
+  | { type: 'remove'; key: string }
+  | { type: 'move'; key: string; to: { day: Day; meal: Meal } };

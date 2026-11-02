@@ -23,7 +23,8 @@ interface Props {
 function meta(item: PlanItem) {
   const parts = [];
   if (item.totalTimeMinutes) parts.push(vi.minutes(item.totalTimeMinutes));
-  parts.push(vi.portions(item.servings));
+  // a draft dish without servings takes the household size when it is saved
+  if (item.servings > 0) parts.push(vi.portions(item.servings));
   return parts.join(' · ');
 }
 

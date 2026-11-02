@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { formatDate } from '../lib/week';
 import { vi } from '../strings.vi';
-import { MAX_DISHES, MEALS, type Day, type DayPlan, type Meal, type PlanItem, type WeekPlan } from '../types';
+import { MAX_DISHES, MEALS, type Day, type DayPlan, type DraftChange, type DraftItem, type Meal, type PlanItem, type WeekPlan } from '../types';
 import { ClearDayDialog } from './ClearDayDialog';
+import { DayNutritionBadge } from './DayNutritionBadge';
+import { useDraftLayer } from '../hooks/useDraftLayer';
+import { ChooseDishButton } from './ChooseDishButton';
 import { Icon } from './Icon';
 import { SlotCard } from './SlotCard';
 
@@ -13,6 +16,9 @@ interface Props {
   onReplaceItem?: (day: Day, meal: Meal, item: PlanItem) => void;
   onRemoveItem?: (item: PlanItem) => void;
   onClearDay?: (day: Day) => void;
+  /** Unsaved AI draft of spec 031, as on `WeekGrid` (T102). */
+  draftItems?: DraftItem[];
+  onDraftChange?: (change: DraftChange) => void;
 }
 
 const touch = { minHeight: 44, minWidth: 44 };
@@ -23,7 +29,8 @@ const touch = { minHeight: 44, minWidth: 44 };
  * Dishes open the same menu as on desktop, so they move with "Chuyển sang…". Every control is at least 44 px.
  * Remount it (key) for another week.
  */
-export function DayView({ week, onAdd, onOpenItem, onReplaceItem, onRemoveItem, onClearDay }: Props) {
+export function DayView({ week, onAdd, onOpenItem, onReplaceItem, onRemoveItem, onClearDay, draftItems, onDraftChange }: Props) {
+  const draft = useDraftLayer(week, draftItems, onDraftChange);
   const [index, setIndex] = useState(() => Math.max(0, week.days.findIndex((d) => d.date === week.today)));
   const [confirmDay, setConfirmDay] = useState<Day | null>(null);
   const day = week.days[index];
@@ -63,38 +70,43 @@ export function DayView({ week, onAdd, onOpenItem, onReplaceItem, onRemoveItem, 
         })}
       </div>
 
-      <div className="sx-between">
-        <div className="sx-row" style={{ gap: 4 }}>
-          <button type="button" className="wk-icon-btn wk-icon-btn--plain" aria-label={vi.previousDay} disabled={index === 0} onClick={() => setIndex(index - 1)} style={touch}>
-            <Icon name="chevronLeft" />
-          </button>
-          <h2 className="wk-h3" style={{ color: 'var(--color-warm)' }}>
-            {vi.dayTitle(vi.dayLong[day.day], formatDate(day.date))}
-          </h2>
-          <button type="button" className="wk-icon-btn wk-icon-btn--plain" aria-label={vi.nextDay} disabled={index === 6} onClick={() => setIndex(index + 1)} style={touch}>
-            <Icon name="chevronRight" />
-          </button>
+      <header className="sx-stack" style={{ gap: 4 }}>
+        <div className="sx-between">
+          <div className="sx-row" style={{ gap: 4 }}>
+            <button type="button" className="wk-icon-btn wk-icon-btn--plain" aria-label={vi.previousDay} disabled={index === 0} onClick={() => setIndex(index - 1)} style={touch}>
+              <Icon name="chevronLeft" />
+            </button>
+            <h2 className="wk-h3" style={{ color: 'var(--color-warm)' }}>
+              {vi.dayTitle(vi.dayLong[day.day], formatDate(day.date))}
+            </h2>
+            <button type="button" className="wk-icon-btn wk-icon-btn--plain" aria-label={vi.nextDay} disabled={index === 6} onClick={() => setIndex(index + 1)} style={touch}>
+              <Icon name="chevronRight" />
+            </button>
+          </div>
+          {onClearDay && hasDishes && (
+            <button type="button" className="wk-icon-btn wk-icon-btn--plain" aria-label={vi.clearDayOf(vi.dayLong[day.day])} onClick={() => setConfirmDay(day.day)} style={touch}>
+              <Icon name="trash" />
+            </button>
+          )}
         </div>
-        {onClearDay && hasDishes && (
-          <button type="button" className="wk-icon-btn wk-icon-btn--plain" aria-label={vi.clearDayOf(vi.dayLong[day.day])} onClick={() => setConfirmDay(day.day)} style={touch}>
-            <Icon name="trash" />
-          </button>
-        )}
-      </div>
+        <DayNutritionBadge nutrition={day.nutrition} hasDishes={hasDishes} />
+      </header>
 
       {MEALS.map((meal, mealIndex) => (
         <MealSection
           key={meal}
           day={day}
           meal={meal}
-          items={day.slots[mealIndex].items}
+          items={draft.week.days[index].slots[mealIndex].items}
           onAdd={() => onAdd(day.day, meal)}
-          onOpenItem={(item) => onOpenItem(day.day, meal, item)}
+          onOpenItem={(item) => draft.open(item) || onOpenItem(day.day, meal, item)}
+          onChoose={draft.choose}
           onReplaceItem={onReplaceItem && ((item) => onReplaceItem(day.day, meal, item))}
           onRemoveItem={onRemoveItem}
         />
       ))}
 
+      {draft.overlay}
       {confirmDay && <ClearDayDialog day={confirmDay} onConfirm={() => onClearDay?.(confirmDay)} onClose={() => setConfirmDay(null)} />}
     </div>
   );
@@ -108,10 +120,11 @@ interface MealSectionProps {
   onOpenItem: (item: PlanItem) => void;
   onReplaceItem?: (item: PlanItem) => void;
   onRemoveItem?: (item: PlanItem) => void;
+  onChoose: (item: PlanItem) => void;
 }
 
 /** One meal of the day (MP-01 `wk-slot` with its `wk-slot__meal` label); empty, it is one big "Thêm món" (MP-06). */
-function MealSection({ day, meal, items, onAdd, onOpenItem, onReplaceItem, onRemoveItem }: MealSectionProps) {
+function MealSection({ day, meal, items, onAdd, onOpenItem, onReplaceItem, onRemoveItem, onChoose }: MealSectionProps) {
   const add = `${vi.addDish}: ${vi.dayLong[day.day]}, ${vi.mealLong[meal]}`;
   if (items.length === 0) {
     return (
@@ -135,15 +148,19 @@ function MealSection({ day, meal, items, onAdd, onOpenItem, onReplaceItem, onRem
       </div>
       {items.map((item, index) => (
         <div key={item.id} style={index > 0 ? { borderTop: '1px dashed var(--color-border)', paddingTop: 10 } : undefined}>
-          <SlotCard
-            day={day.day}
-            meal={meal}
-            item={item}
-            touch
-            onOpen={() => onOpenItem(item)}
-            onReplace={onReplaceItem && (() => onReplaceItem(item))}
-            onRemove={onRemoveItem && (() => onRemoveItem(item))}
-          />
+          {item.draftKey && item.recipeId === null ? (
+            <ChooseDishButton item={item} day={day.day} meal={meal} onChoose={() => onChoose(item)} touch />
+          ) : (
+            <SlotCard
+              day={day.day}
+              meal={meal}
+              item={item}
+              touch
+              onOpen={() => onOpenItem(item)}
+              onReplace={onReplaceItem && (() => onReplaceItem(item))}
+              onRemove={onRemoveItem && (() => onRemoveItem(item))}
+            />
+          )}
         </div>
       ))}
       {items.length < MAX_DISHES && (
