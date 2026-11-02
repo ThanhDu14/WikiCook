@@ -1509,7 +1509,7 @@ Bước 2 – code, giữ ràng buộc của lần implement trước:
 
 | Trường | Nội dung |
 |---|---|
-| Thời gian truy cập | 2026-11-02, từ 16:15 (giờ Việt Nam, UTC+7) |
+| Thời gian truy cập | 2026-11-02, 16:15 – 16:50 (giờ Việt Nam, UTC+7); dừng sau backend để sinh viên duyệt API trước khi làm frontend |
 | Người thực hiện | Nguyễn Thành Dự |
 | Spec liên quan | 030 – Meal Planner; 031 – AI Meal Planner (cài `MealPlanWriteFacade` thật); 040 – Shopping List (handoff); 090 – Nutrition (`DayNutritionPort`) |
 | Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, lệnh Spec Kit `/speckit-implement` |
@@ -1580,7 +1580,22 @@ Ràng buộc (giữ như các lần trước):
 
 ### Nội dung do AI tạo
 
-- *(cập nhật khi xong)*
+- Bước 0 (commit `6b3c8f6`):
+  - rà tasks.md với code, ghi T085 đã có sẵn, T082/T083 làm một phần;
+  - so `MealPlanHandoffPort` của 040 với contract 2.1 rồi hỏi mình trước khi làm US5.
+- US4 (`6b74022`): `MealPlanControllerUS4IT` với `Clock` cố định 2026-10-18. Xanh ngay lần đầu vì service không chặn tuần nào; AI không sửa code để ép test đỏ.
+- US5 (`fbbc3a1`):
+  - `MealPlanShoppingFacade`, `ShoppingHandoff`, `HandoffItem` trong `api/`;
+  - `ShoppingHandoffService` dùng lại `MealPlanService.toDtos` để chung quy tắc "khả dụng" với lưới tuần;
+  - `GET …/shopping-handoff`: test đỏ trước (`UnsupportedOperationException`, 404) rồi mới cài.
+- US6 (`b36fdcb`): thêm test cho `recipe_id = NULL` và `UnavailableRecipeIT` (archive, xóa hẳn, PUT/POST → 422). Xanh ngay vì T085 đã có.
+- Phase 10:
+  - `660fd06`: `getWeek` gọi `DayNutritionPort.totals` một lần cho cả tuần, chỉ với món khả dụng, món trùng đếm mỗi lần; tuần không có món khả dụng thì không gọi.
+  - `b6bf799`: `MealPlanWriteService` cài `MealPlanWriteFacade` thật (bữa trống, `plannedRecipeIds`, `saveDraft` theo cả nhóm món của bữa, tối đa 4, khóa `FOR UPDATE`). Xóa dev stub `InMemoryMealPlanFacade`; test 031 `AiPlannerControllerUS1IT` phải tạo user trước `saveDraft` vì bảng thật có khóa ngoại. Đánh dấu 031 T108 không cần nữa.
+- Phase 11 (`f0c1738`):
+  - script k6 `src/backend/perf/meal-planner.k6.js`;
+  - so `/v3/api-docs` với `openapi.yaml`;
+  - rule JaCoCo 70% cho `com.wikicook.mealplan.service`.
 
 ### Phần sinh viên tự quyết định và chỉnh sửa
 
@@ -1588,7 +1603,25 @@ Ràng buộc (giữ như các lần trước):
 |---|---|---|
 | Tách prompt làm hai lần, backend trước | Mình yêu cầu | Phần còn lại dài; frontend cần API handoff và nutrition chốt trước |
 | Hỏi trước khi làm US5 | AI đề xuất, mình duyệt | 040 đã có `MealPlanHandoffPort` theo `mealPlanId`, lệch với contract 2.1 của 030 |
+| Giữ contract 030 theo `weekStart`, không đụng code 040 | Mình chọn (AI đề xuất) | Port của 040 chưa có cài đặt hay chỗ gọi; người làm 040 đổi port sang `weekStart` và tự ghép nguyên liệu bằng `RecipeDetailPort` |
+| Xóa hẳn dev stub facade | AI làm theo prompt | Bean thật luôn có, stub không còn được dùng |
+| Không thêm `@ApiResponse` cho mã lỗi (T105) | AI đề xuất, chờ mình duyệt | Hành vi khớp contract và đã có IT; chỉ springdoc không tự suy ra mã lỗi |
 
 ### Cách sinh viên kiểm chứng
 
-- *(cập nhật khi xong)*
+- AI chạy `mvn verify` ở `src/backend` sau mỗi user story, đều BUILD SUCCESS:
+  - US4: 199 unit + 102 IT;
+  - US5: 201 + 107;
+  - US6: 202 + 110;
+  - Phase 10: 198 + 118 (số unit giảm vì xóa test của stub);
+  - Phase 11: 198 + 118, "All coverage checks have been met".
+- JaCoCo cuối cùng:
+  - wikicook-app 92,2% dòng / 81,3% nhánh;
+  - gói `mealplan` 98,4% / 92,2%;
+  - `mealplan.service` 100% / 98,1%.
+- Test 031 (`AiPlannerControllerUS1IT` và các IT khác) vẫn xanh khi chạy với facade thật.
+- Sinh viên cần làm:
+  - review code;
+  - chạy k6 khi có máy cài k6 *(chưa làm)*;
+  - báo người làm 040 về hướng handoff theo `weekStart`;
+  - duyệt API cho phần frontend.
