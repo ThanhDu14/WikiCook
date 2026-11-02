@@ -128,11 +128,11 @@ describe('RecipePicker (T036)', () => {
     expect(await screen.findByText('Gà nướng')).toBeInTheDocument();
   });
 
-  it('closes with the back button', async () => {
+  it('closes with the close button', async () => {
     pickerApi(() => []);
     const { onClose } = renderPicker();
 
-    await userEvent.click(screen.getByRole('button', { name: 'Quay lại' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Đóng' }));
 
     expect(onClose).toHaveBeenCalled();
   });

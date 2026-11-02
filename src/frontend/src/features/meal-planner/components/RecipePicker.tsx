@@ -84,16 +84,24 @@ export function RecipePicker({ day, meal, onPick, onClose, suggestionsSlot }: Pr
   };
 
   return (
-    <Overlay title={title} onClose={onClose} variant="page">
-      {() => (
+    // A compact `wx-modal`: title, search and scope stay put, only the list scrolls.
+    <Overlay
+      title={title}
+      onClose={onClose}
+      variant="modal"
+      panelStyle={{ width: 'min(520px, 100%)', height: 'min(640px, 100%)', padding: 20, gap: 12, overflow: 'hidden' }}
+    >
+      {(titleId) => (
         <>
-          <header className="sx-top">
-            <button type="button" className="wk-icon-btn wk-icon-btn--plain" aria-label={vi.back} onClick={onClose}>
-              <Icon name="chevronLeft" />
+          <div className="wx-modal__head">
+            <h2 id={titleId} className="wk-h3">
+              {title}
+            </h2>
+            <button type="button" className="wk-icon-btn wk-icon-btn--plain" aria-label={vi.close} onClick={onClose}>
+              <Icon name="close" />
             </button>
-            <h1>{title}</h1>
-          </header>
-          <div className="sx-body overflow-y-auto" style={{ overflowY: 'auto' }}>
+          </div>
+          <div className="grid gap-ds-3">
             <div className="wk-search">
               <Icon name="search" />
               <input
@@ -115,6 +123,8 @@ export function RecipePicker({ day, meal, onPick, onClose, suggestionsSlot }: Pr
                 {vi.scopeCollections}
               </button>
             </div>
+          </div>
+          <div className="grid min-h-0 flex-1 content-start gap-ds-3 overflow-y-auto" style={{ overscrollBehavior: 'contain' }}>
             {message && (
               <div className="wk-banner wk-banner--danger" role="alert">
                 <Icon name="warning" />
@@ -133,7 +143,7 @@ export function RecipePicker({ day, meal, onPick, onClose, suggestionsSlot }: Pr
               <ul className="grid gap-ds-2" aria-busy={loading}>
                 {results.map((result) => (
                   <li key={result.recipeId} className="wk-card wk-card--compact">
-                    <DishPhoto url={result.coverImageUrl} name={result.title} />
+                    <DishPhoto url={result.coverImageUrl} name={result.title} size={48} />
                     <div className="wk-card__body">
                       <span className="wk-card__title">{result.title}</span>
                       <span className="wk-small wk-muted">{meta(result)}</span>
