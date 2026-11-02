@@ -29,6 +29,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 11 | 2026-10-18, 21:52 – 22:23 | Lập plan, tasks và analyze cho spec 031 | 031, 030 |
 | 12 | 2026-10-18, 22:25 – 23:36 | Lập plan, tasks và analyze cho spec 090, commit và đồng bộ `src/specs` | 090 |
 | 13 | 2026-10-21, 13:02 – 13:06 | Kiểm tra ma trận quản lý rủi ro (Mục 3.2 project plan) theo acceptance criteria của `SCRUM-30` | Project plan §3.2 |
+| 14 | 2026-11-02, từ 10:39 | Implement spec 030 (Meal Planner) bằng `/speckit-implement`: Setup, Foundational, US1–US3 (đang làm) | 030, 031 |
 
 ---
 
@@ -1295,3 +1296,81 @@ Cái ma trận quản lý rủi ro chưa ta
 
 - Mở `docs/management/project-plan.md` Mục 3.2, đối chiếu từng dòng RSK-01, RSK-02, RSK-03, RSK-05 với 4 rủi ro trong mô tả task.
 - Kiểm tra dòng `SCRUM-30` trong bảng Sprint 2 backlog của project plan.
+
+---
+
+## Mục 14: Implement spec 030 (Meal Planner) – Setup, Foundational, US1–US3
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-02, từ 10:39 (giờ Việt Nam, UTC+7) – **đang thực hiện**, cập nhật giờ kết thúc khi xong |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 030 – Meal Planner (`specs/030-meal-planner`); 031 dùng lại contract của 030 |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), chạy trong terminal trên Ubuntu Linux, lệnh Spec Kit `/speckit-implement` |
+| Mục đích | Làm backend + frontend của 030 tới hết US3 để thay dev stub của 031 bằng code thật, sau đó tích hợp lại 031 |
+| Nhánh Git | `feature/030-meal-planner`, tạo từ `feature/031-ai-foundation` sau khi merge `main` (commit merge `cf0d412`) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `ada2421f-5418-470f-afdf-363a5f6c869a` (file `ada2421f-5418-470f-afdf-363a5f6c869a.jsonl`) |
+
+### Prompt đã dùng
+
+Trước khi implement, mình nhờ AI tóm lại tiến độ 031, xem task Jira của mình, rồi chốt hướng làm 030 trước:
+
+```
+hmmmmm, vì phần ai của tôi liên quan tới 030 nên là tôi nghĩ phần api trả ra là khá ổn rồi, giờ mình qua 030 để mà tạo giao diện và các api nhỉ. sau đó tích hợp lại phần 031
+```
+
+```
+oke nhé. kế hoạch là thế. nhưng trước khi implement bạn phải gửi prompt cho mình phần implement và update nó vào ai_log nhé
+```
+
+Prompt implement (AI soạn theo kế hoạch đã chốt, mình duyệt trước khi chạy):
+
+```
+/speckit-implement Implement spec 030 (specs/030-meal-planner) trên nhánh feature/030-meal-planner
+(tạo từ feature/031-ai-foundation sau khi đã merge main), để sau đó tích hợp lại 031.
+
+Phạm vi lần này, làm theo thứ tự:
+1. Dọn tasks.md: đổi Path Conventions sang backend multi-module (wikicook-app cho code
+   com.wikicook.mealplan, wikicook-db cho migration) giống cách đã làm ở tasks.md của 031; đánh dấu
+   [x] hoặc ghi "một phần, làm cùng 031" cho task đã có sẵn: V301__meal_plans.sql (T014),
+   WeekCalendar + test (T007, T019), @MondayDate + test (T011, T022), Meal/ItemSource/DietType (T015),
+   DietaryProfilePort/PlannerProfile (một phần T020). Không viết lại code đã có.
+2. Phase 1 + Phase 2 (Setup, Foundational).
+3. US1 (Phase 3) đầy đủ backend + frontend, rồi US2 (Phase 4) và US3 (Phase 5).
+   Dừng sau US3 để mình review trước khi làm US4–US7 và Phase 10 (tích hợp 090, 031).
+
+Ràng buộc:
+- TDD đúng tasks.md: viết test trước, chạy cho FAIL, rồi mới code cho xanh.
+- Backend: Spring Boot, JPA, Flyway, test bằng AbstractPostgresIT (Testcontainers). Giữ contract
+  contracts/openapi.yaml và contracts/integration.md; ProblemDetail + code giống 031.
+- Chưa có Spring Security của spec 010: dùng CurrentUser dev stub sẵn có, không tự viết auth.
+- Dùng chung với 031, không viết lại: Clock bean ở com.wikicook.common.ClockConfig,
+  DietRuleSql/DietRestrictions cho cột conflict của picker, SlotKey, MealPlanWriteFacade.
+- Frontend: React + TypeScript trong src/frontend/src/features/meal-planner, API client dùng
+  src/frontend/src/shared/api/client.ts (không phải src/api/client.ts như tasks ghi), test bằng
+  Vitest + msw. Giao diện theo màn Meal Planner của Soft Editorial (tokens, class wk-), chữ tiếng Việt
+  đặt trong strings.vi.ts.
+- Mỗi task (hoặc nhóm task nhỏ liền nhau) một commit theo Conventional Commits, có mã task
+  "(030 T0xx)" ở cuối; không thêm dòng Co-Authored-By của Claude. Chưa push khi mình chưa bảo.
+- Sau mỗi phase chạy `mvn verify` ở src/backend và `npm test` ở src/frontend, báo kết quả thật
+  (pass/fail kèm output), giữ JaCoCo 70%.
+- Gặp chỗ spec/tasks mâu thuẫn với code đã có thì dừng lại hỏi mình, không tự đoán.
+```
+
+### Nội dung do AI tạo
+
+- *(cập nhật khi xong)*
+- Chuẩn bị nhánh: merge `main` vào `feature/031-ai-foundation`, gộp luật JaCoCo 70% của hai bên (module, `aiplanner.service`, `shoppinglist.service`) vào execution `check`. Sửa `AiPlannerExceptionHandler` nhận `Clock` qua `ObjectProvider`, vì `@WebMvcTest` của shopping list nạp mọi controller advice mà không có bean `Clock`, làm hỏng 13 test. `mvn verify` pass sau khi sửa.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Làm 030 trước, tích hợp 031 sau | Mình chốt | API của 031 đã ổn; 031 đang chạy trên dev stub của 030 |
+| Tạo nhánh 030 từ nhánh 031 (đã merge `main`) | Dùng | Contract 030 (`MealPlanWriteFacade`, `WeekCalendar`…) đang nằm ở nhánh 031, PR #62 chưa merge |
+| Dừng sau US3 để review | Mình yêu cầu | Đủ để cài `MealPlanWriteFacade` thật cho 031 |
+| Commit không có dòng attribution của Claude | Mình yêu cầu | Quy tắc của mình cho mọi commit |
+
+### Cách sinh viên kiểm chứng
+
+- *(cập nhật khi xong)*
