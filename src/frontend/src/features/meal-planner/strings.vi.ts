@@ -19,6 +19,8 @@ export const vi = {
   mealLong: { BREAKFAST: 'bữa sáng', LUNCH: 'bữa trưa', DINNER: 'bữa tối' } satisfies Record<Meal, string>,
 
   thisWeek: 'Tuần này',
+  weekEyebrow: 'Thực đơn tuần',
+  gridHint: 'Kéo thả món giữa các ô để đổi chỗ. Bấm vào món để xem menu.',
   previousWeek: 'Tuần trước',
   nextWeek: 'Tuần sau',
   today: 'Hôm nay',

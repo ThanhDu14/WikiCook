@@ -7,7 +7,7 @@ import { Snackbar } from '../components/Snackbar';
 import { WeekGrid } from '../components/WeekGrid';
 import { Icon } from '../components/Icon';
 import { itemAt, useWeekPlan } from '../hooks/useWeekPlan';
-import { currentWeekStart, dateOf, formatWeekRange, isMonday } from '../lib/week';
+import { addWeeks, currentWeekStart, dateOf, formatWeekTitle, isMonday } from '../lib/week';
 import { vi } from '../strings.vi';
 import { DAYS, type Day, type Meal } from '../types';
 
@@ -16,7 +16,7 @@ type Picking = Target & { replace: boolean };
 
 /** The meal planner (T048, T056): `?week=` picks the week; the current week as a 7 × 3 grid (MP-01), picker (MP-04) and dish menu (MP-02). */
 export function MealPlannerPage() {
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const asked = params.get('week');
   const weekStart = asked && isMonday(asked) ? asked : currentWeekStart();
   const location = useLocation();
@@ -27,22 +27,33 @@ export function MealPlannerPage() {
     [location.pathname, location.search, navigate],
   );
   const plan = useWeekPlan(weekStart, { onUnauthenticated: signIn });
+  const goTo = (week: string) => setParams(week === currentWeekStart() ? {} : { week });
   const [picking, setPicking] = useState<Picking | null>(null);
   const [menu, setMenu] = useState<Target | null>(null);
   const [moving, setMoving] = useState<Target | null>(null);
   const menuItem = menu ? itemAt(plan.week, menu.day, menu.meal) : null;
 
   return (
-    <section className="grid gap-ds-4">
-      <header className="sx-between">
-        <h1>{vi.pageTitle}</h1>
-      </header>
-      <div className="sx-between">
-        <div className="sx-row">
-          <Icon name="calendar" />
-          <strong>{formatWeekRange(weekStart)}</strong>
+    <section className="grid gap-ds-5">
+      <header className="wx-head">
+        <div>
+          <p className="wk-eyebrow">{vi.weekEyebrow}</p>
+          <div className="sx-row" style={{ gap: 8 }}>
+            <button type="button" className="wk-icon-btn" aria-label={vi.previousWeek} onClick={() => goTo(addWeeks(weekStart, -1))}>
+              <Icon name="chevronLeft" />
+            </button>
+            <h1>{formatWeekTitle(weekStart)}</h1>
+            <button type="button" className="wk-icon-btn" aria-label={vi.nextWeek} onClick={() => goTo(addWeeks(weekStart, 1))}>
+              <Icon name="chevronRight" />
+            </button>
+            {weekStart !== currentWeekStart() && (
+              <button type="button" className="wk-link wk-small" style={{ marginLeft: 8 }} onClick={() => goTo(currentWeekStart())}>
+                {vi.thisWeek}
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      </header>
 
       {plan.status === 'loading' && <p className="wk-muted">{vi.loading}</p>}
       {plan.status === 'error' && (
@@ -65,6 +76,12 @@ export function MealPlannerPage() {
           onMove={(from, to) => void plan.moveItem(from, to)}
           onClearDay={(day) => void plan.clearDay(day)}
         />
+      )}
+      {plan.week && plan.status === 'ready' && (
+        <div className="wk-banner wk-banner--info">
+          <Icon name="info" />
+          <div>{vi.gridHint}</div>
+        </div>
       )}
 
       {picking && (

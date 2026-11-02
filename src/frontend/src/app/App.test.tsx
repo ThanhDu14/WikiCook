@@ -30,7 +30,8 @@ describe('app shell', () => {
     server.use(http.get('/api/v1/meal-plans/:week', () => HttpResponse.json({ status: 500 }, { status: 500 })));
     renderAt('/meal-planner');
 
-    expect(await screen.findByRole('heading', { name: 'Thực đơn', level: 1 })).toBeInTheDocument();
+    expect(await screen.findByText('Thực đơn tuần')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Thực đơn' })).toHaveClass('text-primary');
   });
 

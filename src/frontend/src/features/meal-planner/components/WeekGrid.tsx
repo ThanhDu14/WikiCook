@@ -13,7 +13,7 @@ import {
   type DragStartEvent,
   type KeyboardCoordinateGetter,
 } from '@dnd-kit/core';
-import { useMemo, useRef, useState, type ReactNode } from 'react';
+import { useMemo, useRef, useState, type KeyboardEventHandler, type PointerEventHandler, type ReactNode } from 'react';
 import type { SlotRef } from '../hooks/useWeekPlan';
 import { dayOfMonth } from '../lib/week';
 import { vi } from '../strings.vi';
@@ -107,7 +107,7 @@ export function WeekGrid({ week, onAdd, onOpenItem, enableDrag = false, onMove, 
 
   const grid = (
     <div className="overflow-x-auto pb-ds-2">
-      <div role="table" aria-label={vi.pageTitle} className="wx-week" style={{ minWidth: 980 }}>
+      <div role="table" aria-label={vi.pageTitle} className="wx-week" style={{ minWidth: 960, gridAutoRows: 'minmax(116px, auto)', gridTemplateRows: 'auto' }}>
         <div role="row" style={{ display: 'contents' }}>
           <span />
           {week.days.map((d) => {
@@ -118,7 +118,7 @@ export function WeekGrid({ week, onAdd, onOpenItem, enableDrag = false, onMove, 
                 key={d.day}
                 role="columnheader"
                 aria-current={isToday ? 'date' : undefined}
-                className={isToday ? 'wx-week__day is-today' : 'wx-week__day'}
+                className={`group ${isToday ? 'wx-week__day is-today' : 'wx-week__day'}`}
                 style={{ position: 'relative' }}
               >
                 <span className="wk-caption">{vi.dayShort[d.day]}</span>
@@ -126,7 +126,7 @@ export function WeekGrid({ week, onAdd, onOpenItem, enableDrag = false, onMove, 
                 {onClearDay && hasDishes && (
                   <button
                     type="button"
-                    className="wk-icon-btn wk-icon-btn--plain"
+                    className="wk-icon-btn wk-icon-btn--plain opacity-0 transition-opacity focus-visible:opacity-100 group-hover:opacity-100"
                     aria-label={vi.clearDayOf(vi.dayLong[d.day])}
                     onClick={() => setConfirmDay(d.day)}
                     style={{ position: 'absolute', top: 0, right: 0, width: 32, height: 32, minHeight: 32 }}
@@ -160,7 +160,7 @@ export function WeekGrid({ week, onAdd, onOpenItem, enableDrag = false, onMove, 
                   {content}
                 </DroppableCell>
               ) : (
-                <div key={d.day} role="cell" className="min-w-0">
+                <div key={d.day} role="cell" className="grid min-w-0">
                   {content}
                 </div>
               );
@@ -224,7 +224,7 @@ function DroppableCell({ slot, children }: { slot: SlotRef; children: ReactNode 
     <div
       ref={setNodeRef}
       role="cell"
-      className="min-w-0"
+      className="grid min-w-0"
       style={isOver ? { outline: '2.5px solid var(--color-primary)', outlineOffset: 2, borderRadius: 14 } : undefined}
     >
       {children}
@@ -236,21 +236,23 @@ function DraggableCard({ slot, item, onOpen }: { slot: SlotRef; item: PlanItem; 
   const data: DragData = { ...slot, name: item.recipeName };
   const { setActivatorNodeRef, setNodeRef, listeners, attributes, isDragging } = useDraggable({ id: `item-${item.id}`, data });
   return (
-    <div ref={setNodeRef} style={isDragging ? { opacity: 0.5 } : undefined}>
+    <div ref={setNodeRef} className="h-full" style={isDragging ? { opacity: 0.5 } : undefined}>
       <SlotCard
         day={slot.day}
         meal={slot.meal}
         item={item}
         onOpen={onOpen}
+        // the pointer drags the whole slot; the keyboard lifts it with the handle
+        dragProps={{ onPointerDown: listeners?.onPointerDown as PointerEventHandler<HTMLDivElement> | undefined }}
         dragHandle={
           <button
             ref={setActivatorNodeRef}
             type="button"
             className="wk-icon-btn wk-icon-btn--plain"
             {...attributes}
-            {...listeners}
+            onKeyDown={listeners?.onKeyDown as KeyboardEventHandler<HTMLButtonElement> | undefined}
             aria-label={vi.dragHandle(item.recipeName)}
-            style={{ cursor: 'grab', touchAction: 'none' }}
+            style={{ width: 32, height: 32, minHeight: 32, background: 'var(--color-surface)', cursor: 'grab' }}
           >
             <Icon name="move" size={16} />
           </button>

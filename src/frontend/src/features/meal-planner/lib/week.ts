@@ -75,3 +75,10 @@ export function formatWeekRange(weekStart: string): string {
 export function dayOfMonth(date: string): string {
   return pad(Number(date.slice(8, 10)));
 }
+
+/** Title of a week as in W-MP01, "27/10 – 02/11"; the years show when the week crosses one. */
+export function formatWeekTitle(weekStart: string): string {
+  const end = addDays(weekStart, 6);
+  const sameYear = weekStart.slice(0, 4) === end.slice(0, 4);
+  return `${formatDate(weekStart, !sameYear)} – ${formatDate(end, !sameYear)}`;
+}

@@ -38,8 +38,8 @@ describe('MealPlannerPage (T048)', () => {
     );
     renderPage();
 
-    expect(await screen.findByRole('heading', { name: 'Thực đơn', level: 1 })).toBeInTheDocument();
-    expect(screen.getByText('19/10 – 25/10/2026')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: '19/10 – 25/10', level: 1 })).toBeInTheDocument();
+    expect(screen.getByText('Thực đơn tuần')).toBeInTheDocument();
     await userEvent.click(await screen.findByRole('button', { name: 'Thêm món: Thứ Tư, bữa trưa' }));
     const picker = screen.getByRole('dialog', { name: 'Chọn món · Trưa T4' });
     await userEvent.click(await within(picker).findByRole('button', { name: 'Chọn' }));

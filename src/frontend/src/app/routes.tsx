@@ -19,7 +19,7 @@ export const routes: RouteObject[] = [
     element: <AppLayout />,
     children: [
       { index: true, element: <Navigate to="/shopping-list" replace /> },
-      { path: 'meal-planner', element: <MealPlannerPage /> },
+      { path: 'meal-planner', element: <MealPlannerPage />, handle: { wide: true } },
       { path: 'shopping-list', element: <ShoppingListPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
