@@ -9,14 +9,15 @@ import { PreImportBottomSheet } from './PreImportBottomSheet';
 
 interface RecipeIngredientsPanelProps {
   recipe: RecipeForImport;
-  /** Defaults to the 040 import endpoint with a fresh Idempotency-Key per confirm (contracts/integration.md 3.1). */
-  importRecipe?: (request: ImportRecipeRequest) => Promise<unknown>;
+  /** Defaults to the 040 import endpoint; the key comes from the sheet, one per opening (contracts/integration.md 3.1). */
+  importRecipe?: (request: ImportRecipeRequest, idempotencyKey: string) => Promise<unknown>;
 }
 
 const SERVINGS = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 });
 const IMPORT_ERROR = 'Không thêm được vào danh sách đi chợ. Vui lòng thử lại.';
 
-const defaultImport = (request: ImportRecipeRequest) => shoppingListApi.importRecipe(request, crypto.randomUUID());
+const defaultImport = (request: ImportRecipeRequest, idempotencyKey: string) =>
+  shoppingListApi.importRecipe(request, idempotencyKey);
 
 /** "800 g Cá lóc", or "Muối vừa đủ" for qualitative amounts, as on W-NU01. */
 function ingredientLine(name: string, quantity: number | null, unit: string | null) {
@@ -34,10 +35,10 @@ export function RecipeIngredientsPanel({ recipe, importRecipe = defaultImport }:
   const [error, setError] = useState<string | null>(null);
   const [addedCount, setAddedCount] = useState<number | null>(null);
 
-  async function confirmImport(request: ImportRecipeRequest) {
+  async function confirmImport(request: ImportRecipeRequest, idempotencyKey: string) {
     setError(null);
     try {
-      await importRecipe(request);
+      await importRecipe(request, idempotencyKey);
     } catch (cause) {
       setError(IMPORT_ERROR);
       throw cause; // the sheet stays open so the user can retry

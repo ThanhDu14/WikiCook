@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useIngredientAggregation, type RecipeForImport } from '../hooks/useIngredientAggregation';
 import { formatQuantity } from '../services/format';
 import type { ImportRecipeRequest } from '../services/types';
@@ -11,7 +11,11 @@ interface PreImportBottomSheetProps {
   initialServings?: number;
   /** Import failure to show inside the sheet, which covers the page while it is open. */
   error?: string | null;
-  onConfirm: (request: ImportRecipeRequest) => Promise<unknown>;
+  /**
+   * `idempotencyKey` is created once per opening of the sheet and reused when the user retries,
+   * so a double click or a retry after a lost response cannot import the recipe twice.
+   */
+  onConfirm: (request: ImportRecipeRequest, idempotencyKey: string) => Promise<unknown>;
   onClose: () => void;
 }
 
@@ -24,20 +28,29 @@ export function PreImportBottomSheet({ recipe, initialServings, error, onConfirm
     initialServings,
     ingredients: recipe.ingredients,
   });
+  const [idempotencyKey] = useState(() => crypto.randomUUID());
   const [saving, setSaving] = useState(false);
+  // A ref, not `saving`, guards re-entry: two clicks in a row both run before React re-renders.
+  const inFlight = useRef(false);
 
   async function confirm() {
+    if (inFlight.current) return;
+    inFlight.current = true;
     setSaving(true);
     try {
-      await onConfirm({
-        recipeId: recipe.recipeId,
-        targetServings: preview.servings,
-        excludedIngredientIds: preview.excludedIngredientIds,
-      });
+      await onConfirm(
+        {
+          recipeId: recipe.recipeId,
+          targetServings: preview.servings,
+          excludedIngredientIds: preview.excludedIngredientIds,
+        },
+        idempotencyKey,
+      );
       onClose();
     } catch {
-      // the list page shows the error; keep the sheet so the user can retry
+      // the caller shows the error; keep the sheet so the user can retry with the same key
     } finally {
+      inFlight.current = false;
       setSaving(false);
     }
   }

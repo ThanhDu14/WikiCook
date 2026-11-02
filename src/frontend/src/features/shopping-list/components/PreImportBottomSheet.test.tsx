@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { RecipeForImport } from '../hooks/useIngredientAggregation';
 import { PreImportBottomSheet } from './PreImportBottomSheet';
@@ -61,8 +61,35 @@ describe('PreImportBottomSheet (SL-03)', () => {
     await user.click(screen.getByRole('checkbox', { name: 'Cà rốt' }));
     await user.click(screen.getByRole('button', { name: 'Thêm 3 món' }));
 
-    expect(onConfirm).toHaveBeenCalledWith({ recipeId: 1, targetServings: 2, excludedIngredientIds: [2] });
+    expect(onConfirm).toHaveBeenCalledWith(
+      { recipeId: 1, targetServings: 2, excludedIngredientIds: [2] },
+      expect.stringMatching(/^[0-9a-f-]{36}$/),
+    );
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('ignores a second click while the import is still running', async () => {
+    let finish: () => void = () => {};
+    const onConfirm = vi.fn(() => new Promise<void>((resolve) => (finish = resolve)));
+    const { user } = setup({}, onConfirm);
+
+    const button = screen.getByRole('button', { name: 'Thêm 4 món' });
+    await user.dblClick(button);
+    await act(async () => finish());
+
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries with the same Idempotency-Key after a failure', async () => {
+    const onConfirm = vi.fn().mockRejectedValueOnce(new Error('timeout')).mockResolvedValueOnce(undefined);
+    const { onClose, user } = setup({}, onConfirm);
+
+    await user.click(screen.getByRole('button', { name: 'Thêm 4 món' }));
+    await user.click(screen.getByRole('button', { name: 'Thêm 4 món' }));
+
+    expect(onConfirm).toHaveBeenCalledTimes(2);
+    expect(onConfirm.mock.calls[1][1]).toBe(onConfirm.mock.calls[0][1]);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it('disables confirm when nothing is selected', async () => {

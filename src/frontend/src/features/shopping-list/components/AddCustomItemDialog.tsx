@@ -20,11 +20,14 @@ export function AddCustomItemDialog({ onSubmit, onClose }: AddCustomItemDialogPr
   const [aisleId, setAisleId] = useState(GENERAL_AISLE_ID);
   const [errors, setErrors] = useState<{ name?: string; quantity?: string }>({});
   const [saving, setSaving] = useState(false);
+  // `is-loading` only blocks the mouse; this ref also stops a second Enter before React re-renders.
+  const inFlight = useRef(false);
 
   useEffect(() => nameRef.current?.focus(), []);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
+    if (inFlight.current) return;
     const trimmed = name.trim();
     const parsed = quantity.trim() === '' ? undefined : Number(quantity.trim().replace(',', '.'));
     const next = {
@@ -34,6 +37,7 @@ export function AddCustomItemDialog({ onSubmit, onClose }: AddCustomItemDialogPr
     setErrors(next);
     if (next.name || next.quantity) return;
 
+    inFlight.current = true;
     setSaving(true);
     try {
       await onSubmit({ name: trimmed, quantity: parsed, unit: unit || undefined, aisleId });
@@ -41,6 +45,7 @@ export function AddCustomItemDialog({ onSubmit, onClose }: AddCustomItemDialogPr
     } catch {
       // the page shows the error banner; keep the form so the user can retry
     } finally {
+      inFlight.current = false;
       setSaving(false);
     }
   }

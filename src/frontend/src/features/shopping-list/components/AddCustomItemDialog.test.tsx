@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AddCustomItemDialog } from './AddCustomItemDialog';
 
@@ -66,6 +66,18 @@ describe('AddCustomItemDialog (SL-04)', () => {
     setup();
 
     expect(screen.getByLabelText('Tên món')).toHaveAttribute('maxLength', '100');
+  });
+
+  it('sends one item when Enter is pressed twice while saving', async () => {
+    let finish: () => void = () => {};
+    const onSubmit = vi.fn(() => new Promise<void>((resolve) => (finish = resolve)));
+    const { user } = setup(onSubmit);
+
+    await user.type(screen.getByLabelText('Tên món'), 'Nước mắm');
+    await user.keyboard('{Enter}{Enter}');
+    await act(async () => finish());
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
   });
 
   it('stays open when saving fails', async () => {

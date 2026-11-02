@@ -76,17 +76,19 @@ describe('RecipeIngredientsPanel (W-NU01 ingredients panel, T048)', () => {
     await user.click(screen.getByRole('button', { name: 'Thêm vào danh sách đi chợ' }));
     await user.click(screen.getByRole('button', { name: 'Thêm 3 món' }));
 
-    expect(importRecipe).toHaveBeenCalledWith({ recipeId: 7, targetServings: 4, excludedIngredientIds: [] });
+    expect(importRecipe).toHaveBeenCalledWith({ recipeId: 7, targetServings: 4, excludedIngredientIds: [] }, expect.stringMatching(/^[0-9a-f-]{36}$/));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     // the serving <output> is a status too, so find the banner by its text
     expect(screen.getByText(/Đã thêm 3 món vào danh sách đi chợ\./).closest('[role="status"]')).toHaveClass('wk-banner');
     expect(screen.getByRole('link', { name: 'Xem danh sách' })).toHaveAttribute('href', '/shopping-list');
   });
 
-  it('sends each import through the API with a fresh Idempotency-Key by default', async () => {
+  it('sends the import through the API with one Idempotency-Key per opening of the sheet', async () => {
     const spy = vi.spyOn(shoppingListApi, 'importRecipe').mockResolvedValue(makeList());
     const { user } = setup();
 
+    await user.click(screen.getByRole('button', { name: 'Thêm vào danh sách đi chợ' }));
+    await user.click(screen.getByRole('button', { name: 'Thêm 3 món' }));
     await user.click(screen.getByRole('button', { name: 'Thêm vào danh sách đi chợ' }));
     await user.click(screen.getByRole('button', { name: 'Thêm 3 món' }));
 
@@ -94,6 +96,8 @@ describe('RecipeIngredientsPanel (W-NU01 ingredients panel, T048)', () => {
       { recipeId: 7, targetServings: 2, excludedIngredientIds: [] },
       expect.stringMatching(/^[0-9a-f-]{36}$/),
     );
+    // a new opening is a new intent, so it gets a new key
+    expect(spy.mock.calls[1][1]).not.toBe(spy.mock.calls[0][1]);
   });
 
   it('keeps the sheet open and shows an error when the import fails', async () => {
