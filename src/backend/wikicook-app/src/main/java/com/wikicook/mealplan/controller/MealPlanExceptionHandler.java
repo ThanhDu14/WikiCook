@@ -3,11 +3,14 @@ package com.wikicook.mealplan.controller;
 import com.wikicook.mealplan.service.exception.MealPlanException;
 import com.wikicook.mealplan.service.exception.SlotOccupiedException;
 import org.springframework.core.Ordered;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
@@ -32,7 +35,17 @@ public class MealPlanExceptionHandler {
         return problem;
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
+    /**
+     * Two writes on the same slot at once: the loser fails on {@code @Version} or on the one-dish-per-slot
+     * constraint. Both mean "the slot changed elsewhere" (research R4).
+     */
+    @ExceptionHandler({OptimisticLockingFailureException.class, DataIntegrityViolationException.class})
+    ProblemDetail handleConcurrentWrite(Exception ex) {
+        return problem(HttpStatus.CONFLICT, "SLOT_CHANGED", "The slot changed elsewhere; reload the week");
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class,
+            MissingServletRequestParameterException.class})
     ProblemDetail handleInvalidInput(Exception ex) {
         return problem(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", "The request is not valid");
     }

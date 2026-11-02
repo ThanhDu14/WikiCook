@@ -21,6 +21,10 @@ spring:
   mvc:
     problemdetails:
       enabled: true
+  # "servings": 2.5 is a 400, not silently 2 (030 edge case servings).
+  jackson:
+    deserialization:
+      accept-float-as-int: false
 
 management:
   endpoints:

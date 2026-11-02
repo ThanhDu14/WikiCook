@@ -1,0 +1,59 @@
+package com.wikicook.mealplan.controller;
+
+import com.wikicook.mealplan.domain.Meal;
+import com.wikicook.mealplan.dto.PatchServingsRequest;
+import com.wikicook.mealplan.dto.PlanItemDto;
+import com.wikicook.mealplan.dto.PutSlotRequest;
+import com.wikicook.mealplan.dto.WeekPlanResponse;
+import com.wikicook.mealplan.service.MealPlanService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/** Week endpoints of contracts/openapi.yaml; every call works on the caller's own plan (FR-006, NFR-004). */
+@RestController
+@RequestMapping("/api/v1/meal-plans/{weekStart}")
+@Tag(name = "meal-plans")
+public class MealPlanController {
+
+    private final CurrentUserId currentUser;
+    private final MealPlanService service;
+
+    public MealPlanController(CurrentUserId currentUser, MealPlanService service) {
+        this.currentUser = currentUser;
+        this.service = service;
+    }
+
+    @Operation(operationId = "getWeekPlan", summary = "Lấy kế hoạch của một tuần (tuần chưa có kế hoạch trả về 7 ngày rỗng)")
+    @GetMapping
+    public WeekPlanResponse getWeek(
+            @PathVariable @MondayDate @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekStart) {
+        return service.getWeek(currentUser.get(), weekStart);
+    }
+
+    @Operation(operationId = "putSlot", summary = "Thêm món vào ô trống hoặc thay món đang có (FR-007, FR-008, FR-016)")
+    @PutMapping("/slots/{day}/{meal}")
+    public PlanItemDto putSlot(
+            @PathVariable @MondayDate @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekStart,
+            @PathVariable DayOfWeek day, @PathVariable Meal meal, @Valid @RequestBody PutSlotRequest request) {
+        return service.putSlot(currentUser.get(), weekStart, day, meal, request);
+    }
+
+    @Operation(operationId = "patchServings", summary = "Đổi khẩu phần của món trong ô (FR-011)")
+    @PatchMapping("/slots/{day}/{meal}/servings")
+    public PlanItemDto patchServings(
+            @PathVariable @MondayDate @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekStart,
+            @PathVariable DayOfWeek day, @PathVariable Meal meal, @Valid @RequestBody PatchServingsRequest request) {
+        return service.patchServings(currentUser.get(), weekStart, day, meal, request);
+    }
+}
