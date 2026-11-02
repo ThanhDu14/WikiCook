@@ -4,6 +4,7 @@ import { vi } from '../strings.vi';
 import type { Day, Meal, PlanItem } from '../types';
 import { DishPhoto } from './DishPhoto';
 import { Icon } from './Icon';
+import { dishName } from '../lib/dishName';
 
 interface Props {
   day: Day;
@@ -58,11 +59,11 @@ export function SlotCard({ day, meal, item, onOpen, dense = false, dragHandle, d
         <div className="wk-card__body min-w-0">
           {item.available && item.recipeId ? (
             <Link to={`/recipes/${item.recipeId}`} className={titleClass} style={titleStyle} title={item.recipeName}>
-              {item.recipeName}
+              {dishName(item.recipeName)}
             </Link>
           ) : (
             <span className={titleClass} style={titleStyle} title={item.recipeName}>
-              {item.recipeName}
+              {dishName(item.recipeName)}
             </span>
           )}
           {item.available ? (

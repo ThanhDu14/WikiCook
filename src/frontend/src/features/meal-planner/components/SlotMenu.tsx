@@ -6,6 +6,7 @@ import { DishPhoto } from './DishPhoto';
 import { Icon } from './Icon';
 import { Overlay } from './Overlay';
 import { ServingsInput } from './ServingsInput';
+import { dishName } from '../lib/dishName';
 
 interface Props {
   day: Day;
@@ -37,7 +38,9 @@ export function SlotMenu({ day, meal, date, item, onServings, onReplace, onMove,
             <div className="wk-card wk-card--compact">
               <DishPhoto url={item.available ? item.coverImageUrl : null} name={item.recipeName} />
               <div className="wk-card__body">
-                <span className="wk-card__title">{item.recipeName}</span>
+                <span className="wk-card__title" title={item.recipeName}>
+                  {dishName(item.recipeName)}
+                </span>
                 <span className="wk-caption wk-muted">{vi.slotMenu(vi.meal[meal], vi.dayLong[day], formatDate(date))}</span>
               </div>
             </div>

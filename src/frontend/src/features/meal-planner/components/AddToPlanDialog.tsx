@@ -8,6 +8,7 @@ import { DAYS, MAX_DISHES, MEALS, type Day, type ErrorCode, type Meal, type Week
 import { Icon } from './Icon';
 import { Overlay } from './Overlay';
 import { ServingsInput } from './ServingsInput';
+import { dishName } from '../lib/dishName';
 
 export interface PlannableRecipe extends ChosenRecipe {
   /** Servings of the recipe, shown first in the stepper. */
@@ -187,7 +188,7 @@ export function AddToPlanDialog({ recipe, onClose, onUnauthenticated }: Props) {
                   <div className="wk-banner wk-banner--info">
                     <Icon name="info" />
                     <div>
-                      <strong>{vi.mealHas(dishes.map((i) => i.recipeName).join(', '))}</strong> {vi.mealHasHint}
+                      <strong>{vi.mealHas(dishes.map((i) => dishName(i.recipeName)).join(', '))}</strong> {vi.mealHasHint}
                     </div>
                   </div>
                 )

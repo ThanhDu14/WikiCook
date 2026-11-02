@@ -6,6 +6,7 @@ import { MAX_DISHES, MEALS, type WeekPlan } from '../types';
 import { DishPhoto } from './DishPhoto';
 import { Icon } from './Icon';
 import { Overlay } from './Overlay';
+import { dishName } from '../lib/dishName';
 
 interface Props {
   week: WeekPlan;
@@ -81,7 +82,7 @@ export function MoveToMenu({ week, itemId, onMove, onClose }: Props) {
                           <DishPhoto url={dish.available ? dish.coverImageUrl : null} name={dish.recipeName} size={28} />
                           <span className="wk-card__body min-w-0">
                             <span className="wk-card__title line-clamp-2" style={{ fontSize: 13, lineHeight: '17px' }}>
-                              {dish.recipeName}
+                              {dishName(dish.recipeName)}
                             </span>
                           </span>
                         </span>

@@ -5,6 +5,7 @@ import type { Day, ErrorCode, Meal, PickerResult, PickerScope } from '../types';
 import { DishPhoto } from './DishPhoto';
 import { Icon } from './Icon';
 import { Overlay } from './Overlay';
+import { dishName } from '../lib/dishName';
 
 interface Props {
   day: Day;
@@ -145,7 +146,9 @@ export function RecipePicker({ day, meal, onPick, onClose, suggestionsSlot }: Pr
                   <li key={result.recipeId} className="wk-card wk-card--compact">
                     <DishPhoto url={result.coverImageUrl} name={result.title} size={48} />
                     <div className="wk-card__body">
-                      <span className="wk-card__title">{result.title}</span>
+                      <span className="wk-card__title" title={result.title}>
+                        {dishName(result.title)}
+                      </span>
                       <span className="wk-small wk-muted">{meta(result)}</span>
                       {result.conflicts.length > 0 && (
                         <span className="wk-chips">
