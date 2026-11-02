@@ -9,6 +9,8 @@ interface PreImportBottomSheetProps {
   recipe: RecipeForImport;
   /** Servings currently chosen on the recipe page; defaults to the recipe's base servings. */
   initialServings?: number;
+  /** Import failure to show inside the sheet, which covers the page while it is open. */
+  error?: string | null;
   onConfirm: (request: ImportRecipeRequest) => Promise<unknown>;
   onClose: () => void;
 }
@@ -16,7 +18,7 @@ interface PreImportBottomSheetProps {
 const SERVINGS = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 });
 
 /** SL-03 pre-import preview: every ingredient checked, one-tap staple filter, then import (US2 scenarios 1 and 8). */
-export function PreImportBottomSheet({ recipe, initialServings, onConfirm, onClose }: PreImportBottomSheetProps) {
+export function PreImportBottomSheet({ recipe, initialServings, error, onConfirm, onClose }: PreImportBottomSheetProps) {
   const preview = useIngredientAggregation({
     baseServings: recipe.baseServings,
     initialServings,
@@ -58,7 +60,7 @@ export function PreImportBottomSheet({ recipe, initialServings, onConfirm, onClo
           <div className="sx-between" style={{ flexWrap: 'wrap' }}>
             <span className="wk-serving">
               <button type="button" aria-label="Bớt khẩu phần" onClick={preview.decreaseServings}>
-                <Icon name="chevronLeft" />
+                <Icon name="minus" />
               </button>
               <output aria-live="polite">{`${SERVINGS.format(preview.servings)} người`}</output>
               <button type="button" aria-label="Thêm khẩu phần" onClick={preview.increaseServings}>
@@ -97,6 +99,12 @@ export function PreImportBottomSheet({ recipe, initialServings, onConfirm, onClo
             <div>Đơn vị giống nhau sẽ được cộng dồn và đổi sang đơn vị lớn hơn, ví dụ 600 g + 400 g = 1 kg.</div>
           </div>
         </>
+      )}
+      {error && (
+        <div className="wk-banner wk-banner--danger" role="alert">
+          <Icon name="info" />
+          <div>{error}</div>
+        </div>
       )}
       <div className="wk-dialog__actions">
         <button className="wk-btn wk-btn--secondary" type="button" onClick={onClose}>

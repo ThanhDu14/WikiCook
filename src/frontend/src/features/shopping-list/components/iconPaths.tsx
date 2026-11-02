@@ -9,6 +9,7 @@ export const ICON_PATHS = {
       <circle cx="5" cy="12" r="1" />
     </>
   ),
+  minus: <path d="M5 12h14" />,
   plus: (
     <>
       <path d="M5 12h14" />
