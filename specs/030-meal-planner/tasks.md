@@ -243,7 +243,7 @@ test cũ được viết lại theo hành vi mới.
 
 - [ ] T070 [P] [US4] Test `WeekHeader.test.tsx` – "Tuần trước"/"Tuần sau" đổi `weekStart` ±7 ngày và hiện "13/10 – 19/10/2026" (US4-1); "Tuần này" về tuần hiện tại (US4-2); tuần 28/12/2026 hiện đúng khoảng qua năm (edge case); có prop `aiAction` thì render nó cạnh điều hướng tuần, không có thì không hiện gì (FR-031) trong src/frontend/src/features/meal-planner/__tests__/WeekHeader.test.tsx
 - [ ] T071 [P] [US4] Test `EmptyWeekState.test.tsx` – tuần `empty = true` hiện thông báo + "Thêm món" + phần tử `aiAction` (US4-3); không có `aiAction` (031 chưa đăng ký) thì không có nút "Tạo bằng AI", "Thêm món" vẫn dùng được (FR-031) trong src/frontend/src/features/meal-planner/__tests__/EmptyWeekState.test.tsx
-- [ ] T072 [P] [US4] Integration test `MealPlanControllerUS4IT` – `GET` và thêm/sửa món (`POST …/items`, `PUT …/items/{id}`) trên tuần đã qua (2026-09-28 với `Clock` cố định 2026-10-18) đều 200 (US4-5, FR-023); thêm món ở tuần sau, `GET` tuần này rồi tuần sau → món vẫn còn trong src/backend/src/test/java/com/wikicook/mealplan/controller/MealPlanControllerUS4IT.java
+- [x] T072 [P] [US4] *(xanh ngay lần đầu: service không chặn tuần nào, logic đã có từ US1; đường dẫn thật wikicook-app/src/test/java/…/MealPlanControllerUS4IT.java)* Integration test `MealPlanControllerUS4IT` – `GET` và thêm/sửa món (`POST …/items`, `PUT …/items/{id}`) trên tuần đã qua (2026-09-28 với `Clock` cố định 2026-10-18) đều 200 (US4-5, FR-023); thêm món ở tuần sau, `GET` tuần này rồi tuần sau → món vẫn còn trong src/backend/src/test/java/com/wikicook/mealplan/controller/MealPlanControllerUS4IT.java
 
 ### Implementation for User Story 4
 
