@@ -80,6 +80,13 @@ class ShoppingListControllerTest {
     }
 
     @Test
+    @DisplayName("GET /api/v1/shopping-lists/active without X-User-Id returns 400 Bad Request")
+    void getActiveShoppingList_missingHeader_returns400() throws Exception {
+        mockMvc.perform(get("/api/v1/shopping-lists/active"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @DisplayName("PATCH /api/v1/shopping-lists/active updates title")
     void updateTitle_returns200() throws Exception {
         ShoppingListResponse response = createSampleResponse(1L, "Tiệc sinh nhật cuối tuần", "ACTIVE");

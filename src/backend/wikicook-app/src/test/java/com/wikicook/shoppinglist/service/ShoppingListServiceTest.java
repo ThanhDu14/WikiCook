@@ -46,6 +46,9 @@ class ShoppingListServiceTest {
     @Mock
     private IngredientAggregationService ingredientAggregationService;
 
+    @Mock
+    private com.wikicook.shoppinglist.repository.UnitRepository unitRepository;
+
     @InjectMocks
     private ShoppingListService shoppingListService;
 

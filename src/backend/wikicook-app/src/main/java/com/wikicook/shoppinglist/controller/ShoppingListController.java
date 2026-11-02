@@ -35,14 +35,14 @@ public class ShoppingListController {
 
     @GetMapping("/active")
     public ResponseEntity<ShoppingListResponse> getActiveShoppingList(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId) {
+            @RequestHeader(value = "X-User-Id", required = true) Long userId) {
         ShoppingListResponse response = shoppingListService.getActiveShoppingList(userId);
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/active")
     public ResponseEntity<ShoppingListResponse> renameActiveShoppingList(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
+            @RequestHeader(value = "X-User-Id", required = true) Long userId,
             @Valid @RequestBody UpdateTitleRequest request) {
         ShoppingListResponse response = shoppingListService.renameActiveShoppingList(userId, request.title());
         return ResponseEntity.ok(response);
@@ -50,21 +50,21 @@ public class ShoppingListController {
 
     @PostMapping("/active/archive")
     public ResponseEntity<ShoppingListResponse> archiveActiveShoppingList(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId) {
+            @RequestHeader(value = "X-User-Id", required = true) Long userId) {
         ShoppingListResponse response = shoppingListService.archiveActiveShoppingList(userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping({"", "/history"})
     public ResponseEntity<List<ShoppingListResponse>> getArchivedShoppingLists(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId) {
+            @RequestHeader(value = "X-User-Id", required = true) Long userId) {
         List<ShoppingListResponse> responses = shoppingListService.getArchivedLists(userId);
         return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ShoppingListResponse> getShoppingListById(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
+            @RequestHeader(value = "X-User-Id", required = true) Long userId,
             @PathVariable Long id) {
         ShoppingListResponse response = shoppingListService.getShoppingListById(userId, id);
         return ResponseEntity.ok(response);
@@ -72,7 +72,7 @@ public class ShoppingListController {
 
     @PostMapping("/{id}/restore")
     public ResponseEntity<ShoppingListResponse> restoreArchivedShoppingList(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
+            @RequestHeader(value = "X-User-Id", required = true) Long userId,
             @PathVariable Long id) {
         ShoppingListResponse response = shoppingListService.restoreArchivedList(userId, id);
         return ResponseEntity.ok(response);
@@ -80,7 +80,7 @@ public class ShoppingListController {
 
     @PostMapping({"/items", "/active/items"})
     public ResponseEntity<ShoppingListResponse> createCustomItem(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
+            @RequestHeader(value = "X-User-Id", required = true) Long userId,
             @Valid @RequestBody CreateCustomItemRequest request) {
         ShoppingListResponse response = shoppingListService.createCustomItem(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -89,7 +89,7 @@ public class ShoppingListController {
     @DeleteMapping({"/items/{clientUuid}", "/active/items/{clientUuid}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteShoppingListItem(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
+            @RequestHeader(value = "X-User-Id", required = true) Long userId,
             @PathVariable UUID clientUuid) {
         shoppingListService.deleteItem(userId, clientUuid);
         return ResponseEntity.noContent().build();
@@ -97,7 +97,7 @@ public class ShoppingListController {
 
     @PostMapping({"/import/recipe", "/active/import/recipe"})
     public ResponseEntity<ShoppingListResponse> importRecipeIngredients(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
+            @RequestHeader(value = "X-User-Id", required = true) Long userId,
             @Valid @RequestBody ImportRecipeRequest request) {
         ShoppingListResponse response = shoppingListService.importRecipeIngredients(userId, request);
         return ResponseEntity.ok(response);
@@ -105,7 +105,7 @@ public class ShoppingListController {
 
     @GetMapping({"/items/{clientUuid}/provenance", "/active/items/{clientUuid}/provenance"})
     public ResponseEntity<List<ItemProvenanceDto>> getItemProvenance(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
+            @RequestHeader(value = "X-User-Id", required = true) Long userId,
             @PathVariable UUID clientUuid) {
         List<ItemProvenanceDto> provenance = shoppingListService.getItemProvenance(userId, clientUuid);
         return ResponseEntity.ok(provenance);

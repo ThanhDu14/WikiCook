@@ -2,8 +2,10 @@ package com.wikicook.shoppinglist.service;
 
 import com.wikicook.shoppinglist.domain.ShoppingList;
 import com.wikicook.shoppinglist.domain.ShoppingListItem;
+import com.wikicook.shoppinglist.domain.Unit;
 import com.wikicook.shoppinglist.port.RecipeDetailPort.RecipeImportDto;
 import com.wikicook.shoppinglist.port.RecipeDetailPort.RecipeIngredientImportDto;
+import com.wikicook.shoppinglist.repository.UnitRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,21 +13,48 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 class IngredientAggregationServiceTest {
 
     private UnitConversionService unitConversionService;
+    private UnitRepository unitRepository;
     private IngredientAggregationService ingredientAggregationService;
 
     @BeforeEach
     void setUp() {
         unitConversionService = new UnitConversionService();
-        ingredientAggregationService = new IngredientAggregationService(unitConversionService);
+        unitRepository = mock(UnitRepository.class);
+        List<Unit> standardUnits = List.of(
+                new Unit(1L, "g", "g", "MASS"),
+                new Unit(2L, "kg", "kg", "MASS"),
+                new Unit(3L, "ml", "ml", "VOLUME"),
+                new Unit(4L, "l", "l", "VOLUME"),
+                new Unit(5L, "qua", "quả", "COUNT"),
+                new Unit(6L, "cu", "củ", "COUNT"),
+                new Unit(7L, "cay", "cây", "COUNT")
+        );
+        lenient().when(unitRepository.findById(anyLong())).thenAnswer(inv -> {
+            Long id = inv.getArgument(0);
+            return standardUnits.stream().filter(u -> u.getId().equals(id)).findFirst();
+        });
+        lenient().when(unitRepository.findByCode(anyString())).thenAnswer(inv -> {
+            String code = inv.getArgument(0);
+            return standardUnits.stream().filter(u -> u.getCode().equalsIgnoreCase(code)).findFirst();
+        });
+        lenient().when(unitRepository.findByNameVi(anyString())).thenAnswer(inv -> {
+            String name = inv.getArgument(0);
+            return standardUnits.stream().filter(u -> u.getNameVi().equalsIgnoreCase(name)).findFirst();
+        });
+        ingredientAggregationService = new IngredientAggregationService(unitConversionService, unitRepository);
     }
 
     @Test
@@ -208,5 +237,129 @@ class IngredientAggregationServiceTest {
 
         assertThatThrownBy(() -> ingredientAggregationService.aggregateRecipe(activeList, recipe, new BigDecimal("2"), Collections.emptySet()))
                 .isInstanceOf(CapacityExceededException.class);
+    }
+
+    @Test
+    @DisplayName("F1: resolves unit name and ID dynamically through UnitRepository without hardcoded maps")
+    void aggregateRecipeIngredients_resolvesUnitsDynamicallyFromRepository() {
+        ShoppingList activeList = new ShoppingList(100L, "Danh sách mua sắm");
+
+        Unit customUnit = new Unit(88L, "hop", "hộp", "COUNT");
+        when(unitRepository.findById(88L)).thenReturn(Optional.of(customUnit));
+        when(unitRepository.findByCode("hop")).thenReturn(Optional.of(customUnit));
+        when(unitRepository.findByNameVi("hộp")).thenReturn(Optional.of(customUnit));
+
+        RecipeImportDto recipe = new RecipeImportDto(
+                55L,
+                "Súp nấm hộp",
+                BigDecimal.ONE,
+                List.of(
+                        new RecipeIngredientImportDto(
+                                99L, "Nấm tươi đóng hộp", new BigDecimal("2"), 88L, null, 4L, "PANTRY_SPICES"
+                        )
+                )
+        );
+
+        ingredientAggregationService.aggregateRecipe(activeList, recipe, BigDecimal.ONE, Collections.emptySet());
+
+        assertThat(activeList.getItems()).hasSize(1);
+        ShoppingListItem item = activeList.getItems().get(0);
+        assertThat(item.getUnitId()).isEqualTo(88L);
+        assertThat(item.getUnitName()).isEqualTo("hộp");
+        verify(unitRepository, atLeastOnce()).findById(88L);
+    }
+
+    @Test
+    @DisplayName("F8: resolves aisle category ID from aisle code when defaultAisleCategoryId is null")
+    void aggregateRecipeIngredients_withAisleCodeAndNullId_resolvesAisleFromCode() {
+        ShoppingList activeList = new ShoppingList(100L, "Danh sách mua sắm");
+
+        RecipeImportDto recipe = new RecipeImportDto(
+                60L,
+                "Gia vị nấu canh",
+                BigDecimal.ONE,
+                List.of(
+                        new RecipeIngredientImportDto(
+                                70L, "Tiêu đen xay", new BigDecimal("10"), 1L, "g", null, "PANTRY_SPICES"
+                        )
+                )
+        );
+
+        ingredientAggregationService.aggregateRecipe(activeList, recipe, BigDecimal.ONE, Collections.emptySet());
+
+        assertThat(activeList.getItems()).hasSize(1);
+        ShoppingListItem item = activeList.getItems().get(0);
+        // Code PANTRY_SPICES resolves to aisle 4L
+        assertThat(item.getAisleCategoryId()).isEqualTo(4L);
+    }
+
+    @Test
+    @DisplayName("F8 precedence: aisle code takes precedence over conflicting defaultAisleCategoryId (code wins)")
+    void aggregateRecipeIngredients_conflictingAisleCodeAndId_codeTakesPrecedence() {
+        ShoppingList activeList = new ShoppingList(100L, "Danh sách mua sắm");
+
+        // defaultAisleCategoryId is 1L (PRODUCE), but defaultAisleCode is PANTRY_SPICES
+        // Rule: code wins over ID
+        RecipeImportDto recipe = new RecipeImportDto(
+                61L,
+                "Gia vị tổng hợp",
+                BigDecimal.ONE,
+                List.of(
+                        new RecipeIngredientImportDto(
+                                71L, "Hạt nêm", new BigDecimal("20"), 1L, "g", 1L, "PANTRY_SPICES"
+                        )
+                )
+        );
+
+        ingredientAggregationService.aggregateRecipe(activeList, recipe, BigDecimal.ONE, Collections.emptySet());
+
+        assertThat(activeList.getItems()).hasSize(1);
+        ShoppingListItem item = activeList.getItems().get(0);
+        assertThat(item.getAisleCategoryId()).as("Aisle code PANTRY_SPICES must win over conflicting ID 1L").isEqualTo(4L);
+    }
+
+    @Test
+    @DisplayName("Guards: targetServings null or non-positive throws IllegalArgumentException")
+    void aggregateRecipe_invalidTargetServings_throwsIllegalArgumentException() {
+        ShoppingList activeList = new ShoppingList(100L, "Danh sách mua sắm");
+        RecipeImportDto recipe = new RecipeImportDto(1L, "Test", BigDecimal.ONE, List.of());
+
+        assertThatThrownBy(() -> ingredientAggregationService.aggregateRecipe(activeList, recipe, null, Collections.emptySet()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Target servings must be positive");
+
+        assertThatThrownBy(() -> ingredientAggregationService.aggregateRecipe(activeList, recipe, BigDecimal.ZERO, Collections.emptySet()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Target servings must be positive");
+
+        assertThatThrownBy(() -> ingredientAggregationService.aggregateRecipe(activeList, recipe, new BigDecimal("-1"), Collections.emptySet()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Target servings must be positive");
+    }
+
+    @Test
+    @DisplayName("Guards: null excludedIngredientIds defaults gracefully without NPE")
+    void aggregateRecipe_nullExcludedIngredients_defaultsGracefully() {
+        ShoppingList activeList = new ShoppingList(100L, "Danh sách mua sắm");
+        RecipeImportDto recipe = new RecipeImportDto(
+                1L, "Test", BigDecimal.ONE,
+                List.of(new RecipeIngredientImportDto(1L, "Thịt bò", new BigDecimal("100"), 1L, "g", 2L, "MEAT_SEAFOOD"))
+        );
+
+        ingredientAggregationService.aggregateRecipe(activeList, recipe, BigDecimal.ONE, null);
+
+        assertThat(activeList.getItems()).hasSize(1);
+        assertThat(activeList.getItems().get(0).getSources().get(0).getScaledServings()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Guards: null recipe ingredients returns early without NPE")
+    void aggregateRecipe_nullIngredients_returnsEarlyWithoutNPE() {
+        ShoppingList activeList = new ShoppingList(100L, "Danh sách mua sắm");
+        RecipeImportDto recipe = new RecipeImportDto(1L, "Test", BigDecimal.ONE, null);
+
+        ingredientAggregationService.aggregateRecipe(activeList, recipe, BigDecimal.ONE, Collections.emptySet());
+
+        assertThat(activeList.getItems()).isEmpty();
     }
 }
