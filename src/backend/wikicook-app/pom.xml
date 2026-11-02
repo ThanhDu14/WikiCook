@@ -106,7 +106,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Unit + integration coverage; verify fails below 70% lines/branches on the module and on aiplanner.service. -->
+            <!-- Unit + integration coverage; verify fails below 70% lines/branches on the module and on aiplanner.service and shoppinglist.service. -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -154,6 +154,19 @@
                                     <limits>
                                         <limit>
                                             <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.70</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                                <rule>
+                                    <element>PACKAGE</element>
+                                    <includes>
+                                        <include>com.wikicook.shoppinglist.service</include>
+                                    </includes>
+                                    <limits>
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
                                             <minimum>0.70</minimum>
                                         </limit>

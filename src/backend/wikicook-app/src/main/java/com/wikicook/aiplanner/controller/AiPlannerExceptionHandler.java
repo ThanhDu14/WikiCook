@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -32,8 +33,12 @@ public class AiPlannerExceptionHandler {
 
     private final Clock clock;
 
-    public AiPlannerExceptionHandler(Clock clock) {
-        this.clock = clock;
+    /**
+     * {@code ObjectProvider}: {@code @WebMvcTest} slices of other features load every controller advice but no
+     * {@code Clock} bean, so a required {@code Clock} would break their context.
+     */
+    public AiPlannerExceptionHandler(ObjectProvider<Clock> clock) {
+        this.clock = clock.getIfAvailable(Clock::systemUTC);
     }
 
     @ExceptionHandler(AiPlannerException.class)

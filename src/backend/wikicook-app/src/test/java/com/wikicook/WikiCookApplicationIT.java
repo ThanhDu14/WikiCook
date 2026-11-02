@@ -26,7 +26,7 @@ class WikiCookApplicationIT extends AbstractPostgresIT {
         var info = flyway.info();
         assertThat(info.pending()).isEmpty();
         assertThat(info.applied()).isNotEmpty().allSatisfy(m -> assertThat(m.getState().isFailed()).isFalse());
-        assertThat(info.current().getVersion().getVersion()).isEqualTo("303");
+        assertThat(info.current().getVersion().getVersion()).isEqualTo("403");
     }
 
     @Test
