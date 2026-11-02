@@ -37,6 +37,19 @@ public final class DietRuleSql {
     }
 
     /**
+     * The strictest diet a recipe with these {@code ingredients.kind} values fits: VEGAN, then VEGETARIAN, then
+     * PESCATARIAN, else NONE. Shown on slots and drafts (030 {@code PlanItem.dietType}, 031 FR-009a).
+     */
+    public static DietType dietTypeOf(Set<String> kinds) {
+        for (DietType diet : new DietType[] {DietType.VEGAN, DietType.VEGETARIAN, DietType.PESCATARIAN}) {
+            if (kinds.stream().noneMatch(forbiddenKinds(diet)::contains)) {
+                return diet;
+            }
+        }
+        return DietType.NONE;
+    }
+
+    /**
      * Condition that holds when the recipe whose id is {@code recipeIdColumn} (e.g. {@code r.id}) breaks none of
      * the rules; {@code TRUE} when there are no rules.
      */
