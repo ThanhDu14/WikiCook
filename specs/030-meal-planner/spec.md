@@ -25,6 +25,9 @@ nguyên liệu và shopping list (spec 040), dinh dưỡng theo ngày/tuần (sp
 định dạng ô khớp mục 4.6 của docs/requirements/project-proposal.md để spec 031 đổ kết quả vào cùng
 lịch."
 
+*(Ghi chú 2026-11-02: đoạn Input trên là yêu cầu gốc, giữ nguyên văn; quy tắc "mỗi ô một công thức"
+đã được thay bằng tối đa 4 món mỗi bữa – xem Clarifications 2026-11-02.)*
+
 ## Summary
 
 The Weekly Meal Planner (proposal Module 3.3) lets a signed-in home cook plan what to cook for the
@@ -38,9 +41,9 @@ Planner (spec 031) fills: an AI-generated plan uses the same slots and the same 
 proposal section 4.6, so users edit AI and manual dishes in exactly the same way. The manual
 planner MUST keep working on its own when the AI feature is unavailable.
 
-**In scope**: weekly calendar view (desktop grid, mobile day-by-day view), adding a recipe from an
-empty slot or from the recipe detail page, servings per dish, moving dishes (drag-and-drop on
-desktop, "Move to…" menu everywhere), replacing and removing dishes, clearing a whole day, moving
+**In scope**: weekly calendar view (desktop grid, mobile day-by-day view), up to 4 dishes per meal,
+adding a recipe to a meal or from the recipe detail page, servings per dish, moving and reordering dishes
+(drag-and-drop on desktop, "Move to…", "Move up", "Move down" everywhere), replacing and removing dishes, clearing a whole day, moving
 between weeks, empty-week state with an entry point to AI generation, sending the week to the
 Shopping List, handling recipes that are no longer available, an offline message when there is
 no connection (the planner is not viewable offline), guest redirect to sign-in.
@@ -75,7 +78,7 @@ collections management (spec 080).
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Plan the week by filling empty slots (Priority: P1)
+### User Story 1 - Plan the week by adding dishes to its meals (Priority: P1)
 
 As a **busy home cook**, I want to open my meal planner and put a recipe into each meal slot of
 the week so that I no longer have to decide what to cook every day.
@@ -171,7 +174,8 @@ a dish, remove one dish and clear one day; reload and confirm the calendar match
 3. **Given** a meal with two or more dishes, **When** the user drags a dish before or after another
    dish of the same meal, **Then** the dishes are shown and saved in the new order.
 4. **Given** any layout, **When** the user opens a dish's menu and chooses "Move to…" and then a
-   day and meal of the same week, **Then** the dish moves exactly as with drag-and-drop.
+   day and meal of the same week, **Then** the dish moves exactly as with drag-and-drop; in a meal
+   with two or more dishes, "Move up" and "Move down" change its order as in scenario 3.
 5. **Given** a planned dish, **When** the user chooses "Replace", **Then** the recipe picker opens
    and the chosen recipe takes the place of that dish only, keeping its servings and position.
 6. **Given** a planned dish, **When** the user chooses "Remove", **Then** only that dish leaves the
@@ -373,7 +377,8 @@ button; turn the network back on and confirm the planner reloads the week by its
   week, where it is added at the end, and to change the order of the dishes inside a meal. A meal
   that already holds 4 dishes MUST refuse a dish moved in from another meal.
 - **FR-015**: Every dish MUST offer a "Move to…" action that does the same move by choosing a day
-  and meal, so the planner can be used without drag-and-drop (mobile, keyboard).
+  and meal, and, in a meal with two or more dishes, "Move up" and "Move down" to change its order,
+  so the planner can be used without drag-and-drop (mobile, keyboard).
 - **FR-016**: Every dish MUST offer "Replace" (pick another recipe, keep servings and position) and
   "Remove".
 - **FR-017**: Every day MUST offer "Clear day", which removes all dishes of that day after the user

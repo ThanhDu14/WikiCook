@@ -6,15 +6,18 @@
 
 ## Summary
 
-Lịch thực đơn tuần 7 ngày × 3 bữa cho người dùng đã đăng nhập: thêm món từ ô trống hoặc từ trang
-công thức, khẩu phần riêng từng món, chuyển/đổi chỗ (kéo-thả trên desktop, menu "Chuyển sang…"
+Lịch thực đơn tuần 7 ngày × 3 bữa cho người dùng đã đăng nhập, mỗi bữa 0–4 món có thứ tự (sửa
+2026-11-02): thêm món vào bữa hoặc từ trang công thức, khẩu phần riêng từng món, chuyển món sang bữa
+khác và đổi thứ tự trong bữa (kéo-thả trên desktop, menu "Chuyển sang…", "Lên trên", "Xuống dưới"
 ở mọi nơi), thay, xóa, xóa cả ngày, chuyển tuần, bàn giao sang Shopping List, xử lý công thức
 không còn khả dụng và trạng thái mất mạng.
 
 Cách làm: module `com.wikicook.mealplan` (controller → service → repository) trên hai bảng
-`meal_plans`, `meal_plan_items` của full-schema mục 4.6. Ô định danh bằng
-`(weekStart, day, meal)` của người đang đăng nhập; mỗi lệnh ghi gửi kèm trạng thái ô mong đợi
-để phát hiện xung đột (409). Move/swap đổi nội dung hai dòng trong một transaction có khóa dòng.
+`meal_plans`, `meal_plan_items` của full-schema mục 4.6. Bữa định danh bằng
+`(weekStart, day, meal)` của người đang đăng nhập, món bằng `itemId`; mỗi lệnh sửa một món gửi
+kèm `version` để phát hiện xung đột (409 `SLOT_CHANGED`). Thêm, chuyển, đổi thứ tự và xóa chạy
+trong một transaction có khóa dòng `meal_plans` của tuần; bữa đủ 4 món → 409 `MEAL_FULL` (research
+R4, R5).
 Hộp chọn món là native query tham số hóa, xếp hạng theo bữa → ẩm thực → thời gian → độ khớp tên,
 món vi phạm hồ sơ xuống cuối. Dữ liệu của module khác (hồ sơ, bộ sưu tập, công thức, dinh dưỡng)
 đọc qua port. Frontend React: lưới desktop + xem từng ngày trên mobile, optimistic update có
@@ -39,7 +42,8 @@ Flyway; Vite, Tailwind CSS 3.4, `@dnd-kit/core` (research R13)
 
 **Performance Goals**: p95 xem tuần ≤ 2 s, p95 xác nhận lưu ≤ 1 s, 200 người dùng đồng thời (NFR-001)
 
-**Constraints**: Không xem offline (FR-027); move/swap nguyên tử (NFR-005); chỉ chủ sở hữu thấy
+**Constraints**: Không xem offline (FR-027); chuyển/đổi thứ tự món nguyên tử, không bữa nào quá 4 món
+(NFR-005); chỉ chủ sở hữu thấy
 kế hoạch (NFR-004); tuần theo giờ Asia/Ho_Chi_Minh (FR-002)
 
 **Scale/Scope**: ~10.000 công thức, 21 ô/tuần/người, 1 trang chính + 2 dialog + 1 nút nhúng ở
@@ -130,9 +134,10 @@ theo deliverable Build v0.5 của `docs/management/project-plan.md` (research R1
 | Thứ tự | Nội dung | User story |
 |---|---|---|
 | 1 | Migration `V301`, entity, repository, `WeekCalendar` (giờ VN), bean port mặc định | nền tảng |
-| 2 | GET tuần, PUT ô, PATCH servings, picker + xếp hạng; UI lưới/ngày, `RecipePicker` | US1 (P1) |
-| 3 | `AddToPlanButton`/`AddToPlanDialog`, 409 `SLOT_OCCUPIED`, redirect khách | US2 (P1) |
-| 4 | Move/swap, thay, xóa, xóa ngày, rollback; dnd-kit + `MoveToMenu` | US3 (P1) |
+| 2 | GET tuần, thêm món vào bữa, PATCH servings, picker + xếp hạng; UI lưới/ngày, `RecipePicker` | US1 (P1) |
+| 3 | `AddToPlanButton`/`AddToPlanDialog` (liệt kê món đang có, 409 `MEAL_FULL`), redirect khách | US2 (P1) |
+| 4 | Chuyển món, đổi thứ tự, thay, xóa, xóa ngày, rollback; dnd-kit + `MoveToMenu` | US3 (P1) |
+| 4b | V304 nhiều món mỗi bữa, API theo món (sửa 2026-11-02, tasks Phase 5b) | US1–US3 |
 | 5 | Chuyển tuần, empty state, nút "Tạo bằng AI" (ẩn khi chưa có 031) | US4 (P2) |
 | 6 | Shopping handoff + `MealPlanShoppingFacade` | US5 (P2) |
 | 7 | Hiển thị món không khả dụng | US6 (P2) |

@@ -212,21 +212,21 @@ test cũ được viết lại theo hành vi mới.
 
 ### Tests (viết trước, phải FAIL)
 
-- [ ] T110 [P] Integration test `MealPlanMultiDishSchemaIT` – V304: bỏ UNIQUE theo ô; `position` 0–3; UNIQUE `(plan, day, meal, position)` deferred (hai món đổi vị trí trong một transaction được, trùng vị trí lúc commit bị từ chối); dữ liệu cũ nhận `position = 0` trong src/backend/wikicook-app/src/test/java/com/wikicook/mealplan/repository/MealPlanMultiDishSchemaIT.java
-- [ ] T111 [P] Unit test `MealPlanServiceTest` (viết lại) – thêm vào cuối bữa, servings mặc định (FR-012); bữa đủ 4 → `MealFullException`; thay món giữ servings và vị trí; đổi servings, xóa món dồn vị trí; `version` lệch hoặc món không thuộc tuần → `SlotChangedException`
-- [ ] T112 [P] Unit test `ItemMoveServiceTest` (thay `SlotMoveServiceTest`) – chuyển sang bữa khác vào cuối hoặc vào `position`; dồn vị trí bữa nguồn; đổi thứ tự trong bữa; bữa đích đủ 4 → `MealFullException`, không lưu gì; `version` lệch → `SlotChangedException`; `source` giữ nguyên
-- [ ] T113 [P] Integration test `ItemConcurrencyIT` (thay `SlotMoveAtomicityIT`) – lỗi giữa lúc chuyển → không món nào đổi (NFR-005); 5 lệnh thêm đồng thời vào một bữa trống → đúng 4 thành công, 1 `MEAL_FULL`, vị trí 0–3 không trùng (SC-005)
-- [ ] T114 [P] Integration test `MealPlanControllerIT` (gộp và viết lại US1–US3 IT) – GET trả `slots[].items[]` theo `position`; POST thêm 201, đủ 4 → 409 `MEAL_FULL`; PUT/PATCH/DELETE theo `itemId` + `version`; move 200 trả các bữa bị ảnh hưởng; món của người khác → 409; `DELETE …/days/{day}` 204
-- [ ] T115 [P] Frontend test (viết lại) `useWeekPlan`, `WeekGrid`, `WeekGrid.dnd`, `MoveToMenu`, `SlotMenu`, `AddToPlanDialog`, `MealPlannerPage*` theo hành vi nhiều món: ô bữa xếp nhiều card, "+ Thêm món" ẩn khi đủ 4; kéo vào bữa khác → thêm vào cuối, kéo vào bữa đầy → không gọi API + báo; đổi thứ tự trong bữa bằng bàn phím; dialog liệt kê "Bữa này đã có: …" và khóa xác nhận khi đủ 4
+- [ ] T110 [P] [US1] Integration test `MealPlanMultiDishSchemaIT` – V304: bỏ UNIQUE theo ô; `position` 0–3; UNIQUE `(plan, day, meal, position)` deferred (hai món đổi vị trí trong một transaction được, trùng vị trí lúc commit bị từ chối); dữ liệu cũ nhận `position = 0` trong src/backend/wikicook-app/src/test/java/com/wikicook/mealplan/repository/MealPlanMultiDishSchemaIT.java
+- [ ] T111 [P] [US1] Unit test `MealPlanServiceTest` (viết lại) – thêm vào cuối bữa, servings mặc định (FR-012); bữa đủ 4 → `MealFullException`; thay món giữ servings và vị trí; đổi servings, xóa món dồn vị trí; `version` lệch hoặc món không thuộc tuần → `SlotChangedException`
+- [ ] T112 [P] [US3] Unit test `ItemMoveServiceTest` (thay `SlotMoveServiceTest`) – chuyển sang bữa khác vào cuối hoặc vào `position`; dồn vị trí bữa nguồn; đổi thứ tự trong bữa; bữa đích đủ 4 → `MealFullException`, không lưu gì; `version` lệch → `SlotChangedException`; `source` giữ nguyên
+- [ ] T113 [P] [US3] Integration test `ItemConcurrencyIT` (thay `SlotMoveAtomicityIT`) – lỗi giữa lúc chuyển → không món nào đổi (NFR-005); 5 lệnh thêm đồng thời vào một bữa trống → đúng 4 thành công, 1 `MEAL_FULL`, vị trí 0–3 không trùng (SC-005)
+- [ ] T114 [P] [US1] [US2] [US3] Integration test `MealPlanControllerIT` (gộp và viết lại US1–US3 IT) – GET trả `slots[].items[]` theo `position`; POST thêm 201, đủ 4 → 409 `MEAL_FULL`; PUT/PATCH/DELETE theo `itemId` + `version`; move 200 trả các bữa bị ảnh hưởng; món của người khác → 409; `DELETE …/days/{day}` 204
+- [ ] T115 [P] [US1] [US2] [US3] Frontend test (viết lại, cập nhật mã kịch bản theo spec 2026-11-02: US1-11, US3-1…8) `useWeekPlan`, `WeekGrid`, `WeekGrid.dnd`, `MoveToMenu`, `SlotMenu`, `AddToPlanDialog`, `MealPlannerPage*` theo hành vi nhiều món: ô bữa xếp nhiều card, "+ Thêm món" ẩn khi đủ 4; kéo vào bữa khác → thêm vào cuối, kéo vào bữa đầy → không gọi API + báo; đổi thứ tự trong bữa bằng bàn phím và bằng "Lên trên"/"Xuống dưới" trong menu món (FR-015); dialog liệt kê "Bữa này đã có: …" và khóa xác nhận khi đủ 4
 
 ### Implementation
 
-- [ ] T116 Migration `V304__meal_plan_items_multi.sql` trong src/backend/wikicook-db/src/main/resources/db/migration (làm T110 xanh)
-- [ ] T117 `MealPlanItem.position`, `MealFullException` (`MEAL_FULL` 409), khóa `meal_plans` `FOR UPDATE` trong repository; `MealPlanService` add/replace/servings/remove/clearDay theo món (làm T111 xanh)
-- [ ] T118 `ItemMoveService` thay `SlotMoveService` (làm T112, T113 xanh)
-- [ ] T119 Controller và DTO theo contracts/openapi.yaml 0.2.0; bỏ `PutSlotRequest`, `ExpectedSlotState`, `SlotOccupiedException` (làm T114 xanh)
-- [ ] T120 Frontend: types, `mealPlanApi`, `useWeekPlan`, `WeekGrid` (ô nhiều card, dnd theo món, đổi thứ tự), `MoveToMenu`, `SlotMenu`, `AddToPlanDialog`, `MealPlannerPage` (làm T115 xanh)
-- [ ] T121 `MealPlanWriteFacade` theo integration.md 2.2 bản 2026-11-02 khi làm T100 (Phase 10)
+- [ ] T116 [US1] Migration `V304__meal_plan_items_multi.sql` trong src/backend/wikicook-db/src/main/resources/db/migration (làm T110 xanh)
+- [ ] T117 [US1] `MealPlanItem.position`, `MealFullException` (`MEAL_FULL` 409), khóa `meal_plans` `FOR UPDATE` trong repository; `MealPlanService` add/replace/servings/remove/clearDay theo món (làm T111 xanh)
+- [ ] T118 [US3] `ItemMoveService` thay `SlotMoveService` (làm T112, T113 xanh)
+- [ ] T119 [US1] [US2] [US3] Controller và DTO theo contracts/openapi.yaml 0.2.0; bỏ `PutSlotRequest`, `ExpectedSlotState`, `SlotOccupiedException` (làm T114 xanh)
+- [ ] T120 [US1] [US2] [US3] Frontend: types, `mealPlanApi`, `useWeekPlan`, `WeekGrid` (ô nhiều card, dnd theo món, đổi thứ tự), `MoveToMenu`, `SlotMenu` (thêm "Lên trên"/"Xuống dưới"), `AddToPlanDialog`, `MealPlannerPage` (làm T115 xanh)
+- [ ] T121 [US1] `MealPlanWriteFacade` theo integration.md 2.2 bản 2026-11-02 khi làm T100 (Phase 10)
 
 **Checkpoint**: US1–US3 chạy lại đầy đủ với nhiều món mỗi bữa; quickstart Q1–Q12 (bản 2026-11-02) đạt.
 
@@ -242,13 +242,13 @@ test cũ được viết lại theo hành vi mới.
 
 - [ ] T070 [P] [US4] Test `WeekHeader.test.tsx` – "Tuần trước"/"Tuần sau" đổi `weekStart` ±7 ngày và hiện "13/10 – 19/10/2026" (US4-1); "Tuần này" về tuần hiện tại (US4-2); tuần 28/12/2026 hiện đúng khoảng qua năm (edge case); có prop `aiAction` thì render nó cạnh điều hướng tuần, không có thì không hiện gì (FR-031) trong src/frontend/src/features/meal-planner/__tests__/WeekHeader.test.tsx
 - [ ] T071 [P] [US4] Test `EmptyWeekState.test.tsx` – tuần `empty = true` hiện thông báo + "Thêm món" + phần tử `aiAction` (US4-3); không có `aiAction` (031 chưa đăng ký) thì không có nút "Tạo bằng AI", "Thêm món" vẫn dùng được (FR-031) trong src/frontend/src/features/meal-planner/__tests__/EmptyWeekState.test.tsx
-- [ ] T072 [P] [US4] Integration test `MealPlanControllerUS4IT` – `GET` và `PUT` trên tuần đã qua (2026-09-28 với `Clock` cố định 2026-10-18) đều 200 (US4-5, FR-023); thêm món ở tuần sau, `GET` tuần này rồi tuần sau → món vẫn còn trong src/backend/src/test/java/com/wikicook/mealplan/controller/MealPlanControllerUS4IT.java
+- [ ] T072 [P] [US4] Integration test `MealPlanControllerUS4IT` – `GET` và thêm/sửa món (`POST …/items`, `PUT …/items/{id}`) trên tuần đã qua (2026-09-28 với `Clock` cố định 2026-10-18) đều 200 (US4-5, FR-023); thêm món ở tuần sau, `GET` tuần này rồi tuần sau → món vẫn còn trong src/backend/src/test/java/com/wikicook/mealplan/controller/MealPlanControllerUS4IT.java
 
 ### Implementation for User Story 4
 
 - [ ] T073 [P] [US4] Cài `WeekHeader` (nút trước/sau/tuần này, khoảng ngày bằng `formatWeekRange`, slot `aiAction?: ReactNode`) trong src/frontend/src/features/meal-planner/components/WeekHeader.tsx (làm T070 xanh)
 - [ ] T074 [P] [US4] Cài `EmptyWeekState` (prop `onAddDish`, `aiAction?: ReactNode`) trong src/frontend/src/features/meal-planner/components/EmptyWeekState.tsx (làm T071 xanh)
-- [ ] T075 [US4] Đưa `weekStart` vào URL (`/meal-planner?week=YYYY-MM-DD`, mặc định tuần hiện tại), nối `WeekHeader` + `EmptyWeekState`; "Tạo bằng AI" lấy từ registry tùy chọn `aiPlannerEntry` (spec 031 đăng ký component `AiGenerateButton({ weekStart })`, tự quyết định bật/tắt/ẩn và mở dialog): trang render nó vào `aiAction` của `EmptyWeekState` khi tuần rỗng, và của `WeekHeader` khi tuần đã có món (031 FR-001: tuần còn ít nhất một ô trống); chưa đăng ký thì ẩn (FR-031). Test: thêm vào T071 trường hợp tuần có món → nút nằm ở header, tuần rỗng → chỉ ở empty state trong src/frontend/src/features/meal-planner/pages/MealPlannerPage.tsx và src/frontend/src/features/meal-planner/lib/aiPlannerEntry.ts (làm T072 phía UI)
+- [ ] T075 [US4] Đưa `weekStart` vào URL (`/meal-planner?week=YYYY-MM-DD`, mặc định tuần hiện tại), nối `WeekHeader` + `EmptyWeekState`; "Tạo bằng AI" lấy từ registry tùy chọn `aiPlannerEntry` (spec 031 đăng ký component `AiGenerateButton({ weekStart })`, tự quyết định bật/tắt/ẩn và mở dialog): trang render nó vào `aiAction` của `EmptyWeekState` khi tuần rỗng, và của `WeekHeader` khi tuần đã có món (031 FR-001: tuần còn ít nhất một bữa chưa có món); chưa đăng ký thì ẩn (FR-031). Test: thêm vào T071 trường hợp tuần có món → nút nằm ở header, tuần rỗng → chỉ ở empty state trong src/frontend/src/features/meal-planner/pages/MealPlannerPage.tsx và src/frontend/src/features/meal-planner/lib/aiPlannerEntry.ts (làm T072 phía UI)
 
 **Checkpoint**: US4 chạy độc lập; quickstart Q13, Q14 đạt.
 
@@ -285,7 +285,7 @@ test cũ được viết lại theo hành vi mới.
 ### Tests for User Story 6 ⚠️ (viết trước, phải FAIL)
 
 - [ ] T082 [P] [US6] Bổ sung `MealPlanServiceTest` – công thức `status = ARCHIVED` → `PlanItemDto.available = false`, `recipeName` = snapshot, `coverImageUrl = null` (US6-1, FR-020); `recipe_id = NULL` (công thức bị xóa) cũng `available = false`; item không khả dụng không tính vào `availableItemCount` trong src/backend/src/test/java/com/wikicook/mealplan/service/MealPlanServiceTest.java
-- [ ] T083 [P] [US6] Integration test `UnavailableRecipeIT` – archive công thức qua SQL rồi `GET` tuần → `available = false`; `PUT` công thức ARCHIVED → 422 `RECIPE_NOT_AVAILABLE` (US6-3) trong src/backend/src/test/java/com/wikicook/mealplan/controller/UnavailableRecipeIT.java
+- [ ] T083 [P] [US6] Integration test `UnavailableRecipeIT` – archive công thức qua SQL rồi `GET` tuần → `available = false`; thêm (`POST …/items`) hoặc thay (`PUT …/items/{id}`) bằng công thức ARCHIVED → 422 `RECIPE_NOT_AVAILABLE` (US6-3) trong src/backend/src/test/java/com/wikicook/mealplan/controller/UnavailableRecipeIT.java
 - [ ] T084 [P] [US6] Test `SlotCard.unavailable.test.tsx` – hiện tên + nhãn "Không còn khả dụng" + "Thay" + "Xóa" (US6-1); bấm tên không điều hướng, hiện thông báo công thức đã bị gỡ (US6-2) trong src/frontend/src/features/meal-planner/__tests__/SlotCard.unavailable.test.tsx
 
 ### Implementation for User Story 6
@@ -329,7 +329,7 @@ test cũ được viết lại theo hành vi mới.
 - [ ] T096 [P] Test `DayNutritionBadge.test.tsx` – hiện "~{kcal} kcal/người", disclaimer "Số liệu dinh dưỡng do AI ước tính, chỉ mang tính tham khảo", "{n} món chưa có số liệu" khi `missingDishes > 0`; `nutrition = null` mà ngày có món → "Chưa có số liệu dinh dưỡng"; trên `DayView` badge nằm ở tiêu đề ngày (FR-032) trong src/frontend/src/features/meal-planner/__tests__/DayNutritionBadge.test.tsx
 - [ ] T097 Gắn `DayNutritionPort` vào `MealPlanService.getWeek` (`DayPlanDto.nutrition`) trong src/backend/src/main/java/com/wikicook/mealplan/service/MealPlanService.java (làm T095 xanh) ⛓ 090
 - [ ] T098 Cài `DayNutritionBadge` và đặt ở tiêu đề cột (`WeekGrid`) và tiêu đề ngày (`DayView`) trong src/frontend/src/features/meal-planner/components/DayNutritionBadge.tsx (làm T096 xanh) ⛓ 090
-- [ ] T099 [P] Integration test `MealPlanWriteFacadeIT` – `emptySlots` chỉ trả ô trống; `plannedRecipeIds` trả id công thức của mọi món trong tuần, không trùng, tuần chưa có kế hoạch → tập rỗng, không lẫn món của người dùng khác; `saveDraft` lưu nhiều item trong một transaction với `source` AI/AUTO, bỏ qua ô đã có món (`skippedOccupied`) và công thức không PUBLISHED (`skippedUnavailable`), servings null → `ServingsPolicy` trong src/backend/src/test/java/com/wikicook/mealplan/service/MealPlanWriteFacadeIT.java
+- [ ] T099 [P] Integration test `MealPlanWriteFacadeIT` – `emptySlots` chỉ trả bữa chưa có món nào; `plannedRecipeIds` trả id công thức của mọi món trong tuần, không trùng, tuần chưa có kế hoạch → tập rỗng, không lẫn món của người dùng khác; `saveDraft` lưu nhiều item trong một transaction với `source` AI/AUTO, giữ thứ tự món cùng bữa, tối đa 4 món mỗi bữa, bỏ cả nhóm món của bữa đã có món (`skippedOccupied`) và công thức không PUBLISHED (`skippedUnavailable`), servings null → `ServingsPolicy` trong src/backend/src/test/java/com/wikicook/mealplan/service/MealPlanWriteFacadeIT.java
 - [ ] T100 Cài `MealPlanWriteFacade` theo contracts/integration.md mục 2.2 trong src/backend/src/main/java/com/wikicook/mealplan/api/MealPlanWriteFacade.java và service/MealPlanWriteService.java (làm T099 xanh)
 - [ ] T101 [P] Test `WeekGrid.draft.test.tsx` – prop `draftItems` hiện món nháp kèm nhãn "AI"/"Auto" và ô "Chọn món"; move/thay/xóa trong chế độ nháp gọi `onDraftChange` thay vì API (031 FR-017) trong src/frontend/src/features/meal-planner/__tests__/WeekGrid.draft.test.tsx
 - [ ] T102 Thêm prop `draftItems`, `onDraftChange` và nhãn nguồn AI/Auto cho `WeekGrid`, `DayView`, `SlotCard` trong src/frontend/src/features/meal-planner/components/ (làm T101 xanh)
@@ -342,7 +342,7 @@ test cũ được viết lại theo hành vi mới.
 
 **Purpose**: Hiệu năng, accessibility, độ phủ, kiểm chứng và tài liệu
 
-- [ ] T103 [P] Viết script k6 200 VU: `GET` tuần (p95 < 2 s) và `PUT`/`PATCH`/`POST moves` (p95 < 1 s) theo NFR-001 trong src/backend/perf/meal-planner.k6.js
+- [ ] T103 [P] Viết script k6 200 VU: `GET` tuần (p95 < 2 s) và `POST …/items`/`PATCH …/servings`/`POST …/move` (p95 < 1 s) theo NFR-001 trong src/backend/perf/meal-planner.k6.js
 - [ ] T104 [P] Kiểm tra accessibility thủ công (chỉ bàn phím, NVDA/VoiceOver đọc "ngày, bữa, món", tương phản, vùng chạm ở 360 px) và ghi kết quả vào docs/test/030-meal-planner-a11y.md (NFR-002, NFR-003)
 - [ ] T105 [P] So sánh OpenAPI do springdoc sinh (`/v3/api-docs`) với specs/030-meal-planner/contracts/openapi.yaml, sửa chỗ lệch trong controller/DTO hoặc trong contract
 - [ ] T106 Đảm bảo JaCoCo rule ≥ 70% line coverage cho `com.wikicook.mealplan.service` (thêm rule vào src/backend/pom.xml nếu skeleton chưa có) và `./mvnw verify` xanh

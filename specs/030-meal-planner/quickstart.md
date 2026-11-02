@@ -42,7 +42,7 @@ Kỳ vọng: mọi test xanh; báo cáo JaCoCo của package `com.wikicook.mealp
 | Q6 | Mở một công thức → "Thêm vào meal plan" → Thứ Tư trưa | Có xác nhận + link; bữa đã có món thì dialog liệt kê các món, món mới thêm vào cuối; bữa đủ 4 món thì không cho xác nhận | US2-1/2/3 |
 | Q7 | Đăng xuất, mở công thức, bấm "Thêm vào meal plan" | Sang trang đăng nhập; đăng nhập xong quay lại công thức, dialog mở lại | US2-4, FR-009 |
 | Q8 | Desktop: kéo món sang bữa trống, sang bữa đã có 1 món, sang bữa đủ 4 món; kéo đổi thứ tự trong một bữa | Lần 1, 2 chuyển và món nằm cuối bữa đích; lần 3 bị từ chối, báo bữa đầy; thứ tự mới được lưu; Esc khi kéo → không đổi | US3-1/2/3, Edge Cases |
-| Q9 | Dùng bàn phím: Tab tới món → menu → "Chuyển sang…" | Chuyển như kéo-thả; screen reader đọc ngày, bữa, món | US3-3, NFR-003 |
+| Q9 | Dùng bàn phím: Tab tới món → menu → "Chuyển sang…" | Chuyển như kéo-thả; "Lên trên"/"Xuống dưới" đổi thứ tự trong bữa; screen reader đọc ngày, bữa, món | US3-3, NFR-003 |
 | Q10 | "Đổi món", "Xóa" một món trong bữa có 3 món, "Xóa cả ngày" (Hủy rồi Xác nhận) | Chỉ món được chọn đổi/xóa, các món khác giữ thứ tự; Hủy không đổi gì | US3-5/6/7 |
 | Q11 | Dừng backend rồi thực hiện một thao tác | Lịch trở lại trạng thái cũ, có thông báo lỗi | US3-8, FR-019 |
 | Q12 | Hai tab: tab A xóa món, tab B (chưa tải lại) đổi servings món đó | Tab B bị từ chối (409), báo kế hoạch đã đổi, tự tải lại tuần | Edge Cases |
@@ -60,9 +60,9 @@ Kỳ vọng: mọi test xanh; báo cáo JaCoCo của package `com.wikicook.mealp
 TOKEN=...   # lấy từ đăng nhập (spec 010)
 curl -H "Authorization: Bearer $TOKEN" localhost:8080/api/v1/meal-plans/2026-10-19
 curl -H "Authorization: Bearer $TOKEN" localhost:8080/api/v1/meal-plans/2026-10-20   # 400 INVALID_WEEK_START
-curl -X PUT -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-     -d '{"recipeId": 12, "expected": null}' \
-     localhost:8080/api/v1/meal-plans/2026-10-19/slots/TUESDAY/BREAKFAST            # 200, lần 2 → 409 SLOT_OCCUPIED
+curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+     -d '{"recipeId": 12}' \
+     localhost:8080/api/v1/meal-plans/2026-10-19/meals/TUESDAY/BREAKFAST/items       # 201, lần 5 → 409 MEAL_FULL
 curl localhost:8080/api/v1/meal-plans/2026-10-19                                    # 401
 ```
 
