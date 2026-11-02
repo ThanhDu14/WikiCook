@@ -5,17 +5,25 @@ import { RecipePicker } from '../components/RecipePicker';
 import { SlotMenu } from '../components/SlotMenu';
 import { Snackbar } from '../components/Snackbar';
 import { WeekGrid } from '../components/WeekGrid';
+import { EmptyWeekState } from '../components/EmptyWeekState';
 import { Icon } from '../components/Icon';
+import { WeekHeader } from '../components/WeekHeader';
+import { AiPlannerAction, hasAiPlannerEntry } from '../lib/aiPlannerEntry';
 import { findItem, mealAt, useWeekPlan } from '../hooks/useWeekPlan';
-import { addWeeks, currentWeekStart, dateOf, formatWeekTitle, isMonday } from '../lib/week';
+import { currentWeekStart, dateOf, isMonday } from '../lib/week';
 import { vi } from '../strings.vi';
-import { DAYS, type Day, type Meal } from '../types';
+import { DAYS, type Day, type Meal, type WeekPlan } from '../types';
+
+/** Today when the week holds it, else Monday: where "Thêm món" of the empty week starts. */
+function firstDay(week: WeekPlan | null): Day {
+  return week?.days.find((d) => d.date === week.today)?.day ?? 'MONDAY';
+}
 
 /** The picker adds to a meal, or replaces one dish of it. */
 type Picking = { day: Day; meal: Meal; replaceItemId?: number };
 
 /**
- * The meal planner (T048, T056, T120): `?week=` picks the week; the week as a 7 × 3 grid of meals with up to 4
+ * The meal planner (T048, T056, T075, T120): `?week=` picks the week (this week when absent or not a Monday); the week as a 7 × 3 grid of meals with up to 4
  * dishes each (MP-01), picker (MP-04), dish menu (MP-02) and "Chuyển sang…" (MP-03).
  */
 export function MealPlannerPage() {
@@ -35,30 +43,14 @@ export function MealPlannerPage() {
   /** Id of the dish whose menu or move dialog is open. */
   const [menu, setMenu] = useState<number | null>(null);
   const [moving, setMoving] = useState<number | null>(null);
+  const aiAction = hasAiPlannerEntry() ? <AiPlannerAction weekStart={weekStart} /> : undefined;
+  const ready = plan.week !== null && plan.status === 'ready';
   const menuDish = menu === null ? null : findItem(plan.week, menu);
   const menuMealSize = menuDish ? mealAt(plan.week, menuDish.day, menuDish.meal).length : 0;
 
   return (
     <section className="grid gap-ds-5">
-      <header className="wx-head">
-        <div>
-          <p className="wk-eyebrow">{vi.weekEyebrow}</p>
-          <div className="sx-row" style={{ gap: 8 }}>
-            <button type="button" className="wk-icon-btn" aria-label={vi.previousWeek} onClick={() => goTo(addWeeks(weekStart, -1))}>
-              <Icon name="chevronLeft" />
-            </button>
-            <h1>{formatWeekTitle(weekStart)}</h1>
-            <button type="button" className="wk-icon-btn" aria-label={vi.nextWeek} onClick={() => goTo(addWeeks(weekStart, 1))}>
-              <Icon name="chevronRight" />
-            </button>
-            {weekStart !== currentWeekStart() && (
-              <button type="button" className="wk-link wk-small" style={{ marginLeft: 8 }} onClick={() => goTo(currentWeekStart())}>
-                {vi.thisWeek}
-              </button>
-            )}
-          </div>
-        </div>
-      </header>
+      <WeekHeader weekStart={weekStart} currentWeek={currentWeekStart()} onChange={goTo} aiAction={ready && !plan.week?.empty ? aiAction : undefined} />
 
       {plan.status === 'loading' && <p className="wk-muted">{vi.loading}</p>}
       {plan.status === 'error' && (
@@ -71,6 +63,9 @@ export function MealPlannerPage() {
             {vi.retry}
           </button>
         </div>
+      )}
+      {ready && plan.week?.empty && (
+        <EmptyWeekState aiAction={aiAction} onAddDish={() => setPicking({ day: firstDay(plan.week), meal: 'BREAKFAST' })} />
       )}
       {plan.week && plan.status === 'ready' && (
         <WeekGrid

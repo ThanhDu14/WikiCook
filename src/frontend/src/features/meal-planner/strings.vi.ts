@@ -122,6 +122,9 @@ export const vi = {
   // empty week and offline (MP-06, MP-07)
   emptyWeekTitle: 'Tuần này chưa có món',
   emptyWeekHint: 'Thêm từng món vào ô trống, hoặc để AI tạo nháp cả tuần dựa trên hồ sơ ăn uống.',
+  /** Without the AI planner (FR-031). */
+  emptyWeekHintManual: 'Thêm từng món vào ô trống để bắt đầu lên thực đơn.',
+  weekActions: 'Thao tác với tuần',
   offlineTitle: 'Cần kết nối mạng',
   offlineHint: 'Thực đơn cần internet để xem và chỉnh sửa. Trang sẽ tự tải lại khi có mạng.',
 } as const;
