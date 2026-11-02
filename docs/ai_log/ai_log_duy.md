@@ -841,3 +841,59 @@ Changes.md.
 - Đối chiếu spec 100: User Story 6 là "Audit Trail & Analytics Dashboard", nên bỏ `101-admin-analytics` là đúng.
 - `file` xác nhận Vision vẫn CRLF, model vẫn LF như bản gốc; không còn chuỗi `101-admin` ngoài Revision History và §8.3.
 - Chưa xem render trên GitHub; Chung review PR #49, Hiển review PR #50.
+
+## Mục 13: Chạy thử, đối chiếu frontend Shopping List với màn hình thiết kế và mở PR (SCRUM-56)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-02, khoảng 11:00 – 11:35 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `src/frontend/src/features/shopping-list/`, `src/frontend/src/styles/index.css`, `specs/040-shopping-list/tasks.md`, màn hình `docs/analysis-and-design/ui-ux/screens/W-SL01…W-SL08` (Jira `SCRUM-56`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), chạy trong extension VS Code trên Windows 11 |
+| Mục đích | Xem kết quả frontend US1/US2 trên trình duyệt trước khi push, kiểm tra độ khớp với màn hình thiết kế, sửa phần lệch trong phạm vi task rồi mở PR |
+| Nhánh Git | `feature/scrum-56-frontend-shopping-list-us1-us2` (PR #63) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `baddae3b-69b8-4393-9a22-885e20e8c42c` |
+
+### Prompt đã dùng
+
+Mình hỏi ngắn trong 4 lượt ("cho mình xem thành quả trước khi push", "có dựa theo màn hình screens không, các màn khác nữa", "đồng bộ font chữ màu chưa, có nên làm hết SL không", "sửa 2 chỗ lệch rồi tạo PR"); AI viết lại thành prompt đầy đủ dưới đây, mình đọc lại và đồng ý ghi.
+
+```text
+Bối cảnh: frontend Shopping List US1 + US2 (SCRUM-56) đã commit trên nhánh
+feature/scrum-56-frontend-shopping-list-us1-us2 nhưng chưa push.
+Mục tiêu: (1) chạy app thật (database, backend, frontend) để mình tự xem /shopping-list
+và /shopping-list/history; (2) đối chiếu từng màn web W-SL01…W-SL08 trong
+docs/analysis-and-design/ui-ux/screens với code: chữ hiển thị, class wk-/wx-/sx-,
+token màu, font, cỡ chữ; tách rõ phần lệch thuộc US1/US2 với phần thuộc US3/US4 hoặc
+module khác; (3) khuyên có nên làm hết các màn SL ngay không; (4) sửa các chỗ lệch nằm
+trong phạm vi SCRUM-56, chạy test, lint, build, rồi push và mở PR vào main.
+Ràng buộc: không push trước khi mình xem; không sửa code backend của SCRUM-55 hay
+khung chung AppLayout của người khác, lỗi gặp phải thì báo lại; không gọi API chưa tồn
+tại; giải quyết xung đột với main mà không xóa ghi chú của người khác; commit và PR
+không ghi tên Claude.
+Kết quả mong muốn: link chạy thử, bảng phần khớp và phần lệch theo từng màn, commit sửa
+lỗi lệch font chữ, PR có ghi phần chưa làm và lỗi backend phát hiện được.
+```
+
+### Nội dung do AI tạo
+
+- Dựng môi trường chạy thử: bật Docker Desktop, chạy container database, cài Maven 3.9.11, chạy backend với profile `local` và Vite dev server. Tạo dữ liệu local (1 user, 1 danh sách, 6 quầy, 4 món mẫu) để xem được giao diện.
+- Phát hiện 2 lỗi backend (SCRUM-55): `GET /active` lỗi 500 vì tạo danh sách trong transaction `readOnly`; bảng `aisle_categories` không có migration nào thêm dữ liệu.
+- Script đối chiếu chữ, label và class giữa các màn W-SL và component; so biến CSS và rule giữa CSS thiết kế và `tokens.css` / `soft-editorial.css`.
+- Commit `c2100d4`: tải thêm Be Vietnam Pro 500 và 700, bọc 2 trang shopping list bằng `wk-desktop`.
+- Merge `main`, giải quyết xung đột `tasks.md`; mở PR #63.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Chưa làm SL-04 chọn món, SL-04b, sửa số lượng ở SL-05, SL-06, SL-08 | Để lại | Cần API `PATCH /items` (US3, T056) và luồng công thức của module 020 (T048), cả hai chưa có; làm bây giờ sẽ phình PR ra ngoài phạm vi SCRUM-56 |
+| Không sửa 2 lỗi backend | Báo trong PR | Code backend thuộc SCRUM-55 |
+| Gắn `wk-desktop` ở 2 trang shopping list, không gắn ở AppLayout | Dùng | AppLayout là phần của SCRUM-66 |
+| Xung đột `tasks.md` | Giữ T043–T045 theo main, T046–T047 đánh dấu xong | Không ghi đè ghi chú hoãn sang PA4 của người làm backend |
+
+### Cách sinh viên kiểm chứng
+
+- Tự mở `/shopping-list` và `/shopping-list/history` trên trình duyệt, so với W-SL01, W-SL02, W-SL07.
+- Biến token: 0 khác biệt; rule CSS: 297/317 giống hệt, 20 rule còn lại là khung giả lập điện thoại của bản mobile.
+- `npm test` 80/80, `npm run lint`, `npm run build` qua, cả trước và sau khi merge main.
