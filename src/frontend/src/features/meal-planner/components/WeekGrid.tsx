@@ -263,7 +263,7 @@ function MealCell({ slot, items, enableDrag, onAdd, onOpenItem }: MealCellProps)
           className="sx-row wk-caption wk-muted"
           aria-label={`${vi.addDish}: ${vi.dayLong[slot.day]}, ${vi.mealLong[slot.meal]}`}
           onClick={onAdd}
-          style={{ gap: 4, marginTop: 6, padding: '4px 0', border: 0, background: 'transparent', font: 'inherit', cursor: 'pointer' }}
+          style={{ gap: 4, marginTop: 6, padding: '4px 0', border: 0, background: 'transparent', cursor: 'pointer' }}
         >
           <Icon name="plus" size={16} />
           {vi.addDish}
