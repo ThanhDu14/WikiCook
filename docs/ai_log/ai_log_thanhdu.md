@@ -1403,7 +1403,7 @@ Chỗ lệch so với tasks/thiết kế, AI ghi lại để mình duyệt:
 
 | Trường | Nội dung |
 |---|---|
-| Thời gian truy cập | 2026-11-02, từ 11:50 (giờ Việt Nam, UTC+7) – **đang thực hiện**, cập nhật giờ kết thúc khi xong |
+| Thời gian truy cập | 2026-11-02, 11:50 – 12:20 (giờ Việt Nam, UTC+7); dừng sau bước 2 để sinh viên review và chạy thử |
 | Người thực hiện | Nguyễn Thành Dự |
 | Spec liên quan | 030 – Meal Planner; 031 – AI Meal Planner (phần điền mâm); báo cho người làm 040 vì đổi `full-schema.md` |
 | Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, Spec Kit |
@@ -1462,7 +1462,22 @@ Bước 2 – code, giữ ràng buộc của lần implement trước:
 
 ### Nội dung do AI tạo
 
-- *(cập nhật khi xong)*
+- Bước 1, tài liệu (commit `7e40cdd`, `c702c9c`):
+  - spec 030 sửa FR-004 thành 0–4 món mỗi bữa, cùng các FR, acceptance và edge case liên quan;
+  - data-model, research R4/R5, `openapi.yaml` 0.2.0 (API theo món, `MEAL_FULL`), `integration.md`, quickstart;
+  - tasks.md thêm Phase 5b (T110–T121), `full-schema.md` thêm cột `position`;
+  - spec 031 thêm FR-007a (cả mâm) và T105–T108;
+  - `/speckit-analyze` báo F1–F7, sinh viên duyệt sửa F1–F6.
+- Bước 2, code (commit `7ba1191`, `f9ebfc6`, `c7ba76c`, `f5865a9`):
+  - `V304__meal_plan_items_multi.sql`: cột `position` 0–3, UNIQUE theo vị trí `DEFERRABLE INITIALLY DEFERRED`, dữ liệu cũ nhận `position = 0`;
+  - backend theo món: `MealPlanService` (thêm, thay, đổi phần, xóa, dồn vị trí), `ItemMoveService` (chuyển bữa, đổi thứ tự), `MealFullException`, controller theo `openapi.yaml` 0.2.0;
+  - mọi lệnh ghi khóa dòng `meal_plans` của tuần (`SELECT … FOR UPDATE`) trước khi kiểm tra, theo research R5 đã sửa ở bước 1 (thay cho "khóa theo thứ tự id" trong prompt);
+  - bỏ `PutSlotRequest`, `ExpectedSlotState`, `SlotOccupiedException`, `SlotMoveService`;
+  - test mới: `MealPlanMultiDishSchemaIT`, `MealPlanServiceTest`, `ItemMoveServiceTest`, `ItemConcurrencyIT` (5 lệnh thêm cùng lúc → 4 thành công, 1 `MEAL_FULL`; lỗi giữa lúc chuyển → không món nào đổi), `MealPlanControllerIT` (gộp 3 IT cũ);
+  - frontend: types, `mealPlanApi`, `useWeekPlan` theo món;
+  - lưới W-MP01 xếp tối đa 4 món mỗi ô, "+ Thêm món" ẩn khi đủ 4;
+  - menu món có "Lên trên" / "Xuống dưới", "Chuyển sang…" bỏ đổi chỗ (bữa đủ 4 bị khóa);
+  - dialog W-MP05 hiện "Bữa này đã có: …" và khóa nút khi đủ 4.
 
 ### Phần sinh viên tự quyết định và chỉnh sửa
 
@@ -1475,4 +1490,15 @@ Bước 2 – code, giữ ràng buộc của lần implement trước:
 
 ### Cách sinh viên kiểm chứng
 
-- *(cập nhật khi xong)*
+- AI chạy và báo kết quả thật:
+  - `mvn verify` ở `src/backend`: BUILD SUCCESS, 199 unit + 100 IT, JaCoCo đạt (wikicook-app 91,8% dòng / 80,9% nhánh, gói `mealplan` 97,5% / 91,0%);
+  - `npm test`: 89/89; `npm run lint`, `tsc` và `npm run build` sạch.
+- Chạy thử thật trên backend 8081 + Vite 5173:
+  - V304 áp vào DB dev Docker (bật `SPRING_FLYWAY_OUT_OF_ORDER=true` vì DB đã ở V403), món cũ giữ nguyên;
+  - thêm 3 món vào Trưa T2 qua API → 201, món thứ 5 → 409 `MEAL_FULL`;
+  - chụp màn hình lưới 4 món.
+- Sinh viên cần làm:
+  - review code;
+  - thử trên trình duyệt: thêm/xóa món, Lên trên/Xuống dưới, kéo thả sang bữa khác, bữa đủ 4;
+  - quyết định chuyện cơm không lưu thành món;
+  - báo người làm 040 về thay đổi `full-schema.md`.
