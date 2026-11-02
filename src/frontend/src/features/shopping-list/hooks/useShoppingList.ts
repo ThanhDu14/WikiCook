@@ -10,10 +10,13 @@ export interface NewCustomItem {
   aisleId?: number;
 }
 
+/** Maps a failure to a message: only a fetch that never got a response counts as "cannot connect". */
 function describe(error: unknown): string {
   if (error instanceof ApiError) {
     if (error.status === 422) return `Danh sách đã đủ ${MAX_LIST_ITEMS} món. Hãy dọn bớt trước khi thêm.`;
     if (error.status === 404) return 'Không tìm thấy danh sách hoặc món này nữa.';
+    if (error.status >= 500) return 'Máy chủ đang gặp sự cố. Vui lòng thử lại sau.';
+    return 'Dữ liệu gửi lên không hợp lệ. Vui lòng kiểm tra lại.';
   }
   return 'Không kết nối được máy chủ. Vui lòng thử lại.';
 }
@@ -84,21 +87,31 @@ export function useShoppingList() {
     [mutate],
   );
 
+  /**
+   * Rejects only when the DELETE itself fails. A failed refresh afterwards just sets `error`,
+   * so the caller does not report a successful delete as failed.
+   */
   const deleteItem = useCallback(
-    (clientUuid: string) =>
-      mutate(async () => {
+    async (clientUuid: string) => {
+      try {
         await shoppingListApi.deleteItem(clientUuid);
-        return shoppingListApi.getActive();
-      }),
-    [mutate],
+      } catch (e) {
+        setError(describe(e));
+        throw e;
+      }
+      await reload();
+    },
+    [reload],
   );
 
   const archive = useCallback(() => mutate(() => shoppingListApi.archive()), [mutate]);
 
   const restore = useCallback((id: number) => mutate(() => shoppingListApi.restore(id)), [mutate]);
 
+  /** The caller owns `idempotencyKey` so a retry of the same confirm reuses it (contracts/integration.md 3.1). */
   const importRecipe = useCallback(
-    (request: ImportRecipeRequest) => mutate(() => shoppingListApi.importRecipe(request, crypto.randomUUID())),
+    (request: ImportRecipeRequest, idempotencyKey: string) =>
+      mutate(() => shoppingListApi.importRecipe(request, idempotencyKey)),
     [mutate],
   );
 

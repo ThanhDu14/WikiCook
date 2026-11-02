@@ -51,6 +51,36 @@ describe('useShoppingList', () => {
     expect(result.current.list?.totalItems).toBe(1);
   });
 
+  it('tells a server failure apart from a lost connection', async () => {
+    server.use(
+      http.post(`${BASE}/active/items`, () =>
+        HttpResponse.json({ status: 500, title: 'Internal Server Error' }, { status: 500 }),
+      ),
+    );
+    const { result } = await renderLoaded();
+
+    await act(async () => {
+      await expect(result.current.addItem({ name: 'Giấy bạc' })).rejects.toThrow();
+    });
+
+    expect(result.current.error).toMatch(/Máy chủ đang gặp sự cố/);
+  });
+
+  it('reports a 400 as invalid data, not as a lost connection', async () => {
+    server.use(
+      http.post(`${BASE}/active/items`, () =>
+        HttpResponse.json({ status: 400, title: 'Bad Request' }, { status: 400 }),
+      ),
+    );
+    const { result } = await renderLoaded();
+
+    await act(async () => {
+      await expect(result.current.addItem({ name: 'Giấy bạc' })).rejects.toThrow();
+    });
+
+    expect(result.current.error).toMatch(/không hợp lệ/);
+  });
+
   it('turns the 422 capacity problem into a readable error and keeps the list', async () => {
     server.use(
       http.post(`${BASE}/active/items`, () =>
@@ -101,6 +131,18 @@ describe('useShoppingList', () => {
     expect(result.current.list?.title).toBe('sau khi xóa');
   });
 
+  it('treats a delete as done even when the refresh after it fails', async () => {
+    const { result } = await renderLoaded();
+    server.use(
+      http.delete(`${BASE}/active/items/item-1`, () => new HttpResponse(null, { status: 204 })),
+      http.get(`${BASE}/active`, () => HttpResponse.error()),
+    );
+
+    await act(() => result.current.deleteItem('item-1'));
+
+    expect(result.current.error).toMatch(/Không kết nối được máy chủ/);
+  });
+
   it('archives into a fresh active list', async () => {
     server.use(http.post(`${BASE}/active/archive`, () => HttpResponse.json(makeList({ id: 2 }), { status: 201 })));
     const { result } = await renderLoaded();
@@ -119,16 +161,21 @@ describe('useShoppingList', () => {
     expect(result.current.list).toMatchObject({ id: 7, title: 'Đi chợ 20/10' });
   });
 
-  it('imports a recipe and shows the merged list', async () => {
+  it('imports a recipe with the Idempotency-Key it is given and shows the merged list', async () => {
+    let key: string | null = null;
     server.use(
-      http.post(`${BASE}/active/import/recipe`, () =>
-        HttpResponse.json(makeList({ aisleGroups: [makeGroup([makeItem({ displayName: 'Thịt bò' })])] })),
-      ),
+      http.post(`${BASE}/active/import/recipe`, ({ request }) => {
+        key = request.headers.get('Idempotency-Key');
+        return HttpResponse.json(makeList({ aisleGroups: [makeGroup([makeItem({ displayName: 'Thịt bò' })])] }));
+      }),
     );
     const { result } = await renderLoaded();
 
-    await act(() => result.current.importRecipe({ recipeId: 1, targetServings: 4, excludedIngredientIds: [] }));
+    await act(() =>
+      result.current.importRecipe({ recipeId: 1, targetServings: 4, excludedIngredientIds: [] }, 'key-from-sheet'),
+    );
 
+    expect(key).toBe('key-from-sheet');
     expect(result.current.list?.aisleGroups[0].items[0].displayName).toBe('Thịt bò');
   });
 });
