@@ -71,7 +71,7 @@ export const vi = {
   search: 'Tìm kiếm',
   searchPlaceholder: 'Tìm trong tất cả công thức',
   scopeAll: 'Tất cả',
-  scopeCollections: 'Từ bộ sưu tập của tôi',
+  scopeCollections: 'Bộ sưu tập',
   scopeLabel: 'Nguồn',
   choose: 'Chọn',
   loadMore: 'Xem thêm',
@@ -81,7 +81,7 @@ export const vi = {
   conflict: {
     ALLERGEN: (label: string) => `Có ${label} – bạn bị dị ứng`,
     EXCLUDED_INGREDIENT: (label: string) => `Có ${label} – bạn đã loại trừ`,
-    DIET_TYPE: (label: string) => `Không hợp chế độ ${label}`,
+    DIET_TYPE: (label: string) => `Có ${label} – không hợp chế độ ăn của bạn`,
   },
   conflictTitle: 'Món này không hợp hồ sơ của bạn',
   conflictConfirm: 'Vẫn thêm',

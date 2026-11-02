@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { http, HttpResponse } from 'msw';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { server } from '@/test/server';
 import { routerFuture, routes } from './routes';
 
 function renderAt(path: string) {
@@ -25,6 +27,7 @@ describe('app shell', () => {
   });
 
   it('renders the meal planner at /meal-planner', async () => {
+    server.use(http.get('/api/v1/meal-plans/:week', () => HttpResponse.json({ status: 500 }, { status: 500 })));
     renderAt('/meal-planner');
 
     expect(await screen.findByRole('heading', { name: 'Thực đơn', level: 1 })).toBeInTheDocument();
