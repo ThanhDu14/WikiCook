@@ -1426,8 +1426,8 @@ AI xác nhận spec đang giới hạn một món mỗi ô và nêu các phần 
 rồi sửa lại phần đã làm (Setup, Foundational, US1–US3). Chưa làm US4–US7 và Phase 10.
 
 Bước 1 – tài liệu (chưa code):
-- specs/030-meal-planner: sửa spec.md (FR-004 thành "mỗi bữa có 0..6 món, có thứ tự"; acceptance
-  của US1–US3; edge case bữa đã đủ 6 món), data-model.md, research.md (R4 kiểm tra version theo món,
+- specs/030-meal-planner: sửa spec.md (FR-004 thành "mỗi bữa có 0..4 món, có thứ tự"; acceptance
+  của US1–US3; edge case bữa đã đủ 4 món), data-model.md, research.md (R4 kiểm tra version theo món,
   R5 chuyển món), contracts/openapi.yaml, contracts/integration.md, quickstart.md, tasks.md (thêm task
   mới, ghi rõ task cũ nào bị thay). Cập nhật bảng meal_plan_items trong
   docs/analysis-and-design/database/full-schema.md.
@@ -1442,14 +1442,14 @@ Bước 2 – code, giữ ràng buộc của lần implement trước:
   UNIQUE (meal_plan_id, day_of_week, meal, position) DEFERRABLE; dữ liệu cũ nhận position 0.
 - API theo món, mọi lệnh ghi kiểm tra version của món:
   GET /meal-plans/{weekStart} → mỗi bữa trả items[] theo position;
-  POST /meal-plans/{weekStart}/meals/{day}/{meal}/items (thêm vào cuối, 409 MEAL_FULL khi đã đủ 6);
+  POST /meal-plans/{weekStart}/meals/{day}/{meal}/items (thêm vào cuối, 409 MEAL_FULL khi đã đủ 4);
   PUT /meal-plans/{weekStart}/items/{itemId} (thay món, giữ servings);
   PATCH …/items/{itemId}/servings; DELETE …/items/{itemId}?version=;
   POST …/items/{itemId}/move {day, meal, position?, version} (chuyển sang bữa khác hoặc đổi thứ tự
   trong bữa, một transaction, khóa theo thứ tự id); DELETE …/days/{day} giữ nguyên.
   Bỏ SLOT_OCCUPIED và "đổi chỗ" (swap); giữ SLOT_CHANGED cho món đã bị sửa ở nơi khác.
 - UI theo W-MP01: mỗi ô bữa xếp các card món (ảnh 44 px, tên, thời gian · phần), cuối ô luôn có
-  "+ Thêm món" (ẩn khi đủ 6). Kéo-thả và "Chuyển sang…" làm theo từng món (thả vào bữa khác thì thêm
+  "+ Thêm món" (ẩn khi đủ 4). Kéo-thả và "Chuyển sang…" làm theo từng món (thả vào bữa khác thì thêm
   vào cuối). Dialog W-MP05 bỏ cảnh báo "đã có món", thay bằng dòng "Bữa này đã có: …". Picker ở
   chế độ "Đổi món" vẫn thay đúng món đã chọn.
 - TDD: sửa hoặc viết test trước, chạy cho FAIL, rồi mới code. Mỗi bước một commit Conventional Commits
@@ -1470,7 +1470,8 @@ Bước 2 – code, giữ ràng buộc của lần implement trước:
 |---|---|---|
 | Nhiều món mỗi bữa | Mình chọn | Đúng cách người Việt ăn; đổi bây giờ rẻ hơn sau khi tích hợp 031, 040 |
 | AI 031 điền cả mâm | Mình chọn | Kế hoạch AI tạo ra phải dùng được ngay |
-| Tối đa 6 món mỗi bữa, cơm không lưu thành món | AI đề xuất, chờ mình duyệt | Giữ ô gọn trên lưới tuần |
+| Tối đa 4 món mỗi bữa | Mình sửa (AI đề xuất 6) | Ô trên lưới tuần gọn, mâm thường chỉ 3–4 món |
+| Cơm không lưu thành món | AI đề xuất, mình chưa ý kiến | Giữ mặc định của prompt |
 
 ### Cách sinh viên kiểm chứng
 
