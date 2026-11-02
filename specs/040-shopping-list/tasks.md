@@ -81,7 +81,7 @@
 - [x] T023 [P] [US1] Create MSW mock handlers and API client tests for US1 list operations in `src/frontend/src/features/shopping-list/services/shoppingListApi.test.ts` *(bổ sung ngoài Project Structure)*
 - [x] T024 [P] [US1] Create unit tests for `useShoppingList` hook covering active list loading, custom item addition, archive trigger, and restore trigger in `src/frontend/src/features/shopping-list/hooks/useShoppingList.test.ts` *(bổ sung ngoài Project Structure)*
 - [x] T025 [P] [US1] Create component tests for `AddCustomItemDialog` modal (validation of name, quantity, unit, custom aisle assignment) in `src/frontend/src/features/shopping-list/components/AddCustomItemDialog.test.tsx` *(bổ sung ngoài Project Structure)*
-- [x] T026 [P] [US1] Create component tests for `ArchivedHistoryDrawer` (listing historical trips, pagination, restore confirmation trigger) in `src/frontend/src/features/shopping-list/components/ArchivedHistoryDrawer.test.tsx` *(bổ sung ngoài Project Structure)*
+- [x] T026 [P] [US1] Create component tests for `ArchivedHistory` (listing historical trips, pagination, restore confirmation trigger) in `src/frontend/src/features/shopping-list/components/ArchivedHistory.test.tsx` *(bổ sung ngoài Project Structure)*
 
 ### Implementation for User Story 1
 
@@ -91,10 +91,12 @@
 - [x] T030 [P] [US1] Implement shared API client class for US1 operations adhering to single API layer rule in `src/frontend/src/features/shopping-list/services/shoppingListApi.ts` (depends on T023)
 - [x] T031 [US1] Implement `useShoppingList` React hook managing active list state, inline title editing, custom item addition, archive, and restore in `src/frontend/src/features/shopping-list/hooks/useShoppingList.ts` (depends on T024, T030)
 - [x] T032 [P] [US1] Implement `AddCustomItemDialog` modal component with touch-friendly input fields in `src/frontend/src/features/shopping-list/components/AddCustomItemDialog.tsx` (depends on T025)
-- [x] T033 [P] [US1] Implement `ArchivedHistoryDrawer` drawer component displaying archived trips and restore actions in `src/frontend/src/features/shopping-list/components/ArchivedHistoryDrawer.tsx` (depends on T026)
+- [x] T033 [P] [US1] Implement `ArchivedHistory` component displaying archived trips and restore actions in `src/frontend/src/features/shopping-list/components/ArchivedHistory.tsx` (depends on T026)
+  - Note: rendered as the `/shopping-list/history` page (SL-05), so the planned name `ArchivedHistoryDrawer` was dropped; a single archived trip still opens in a drawer.
 - [x] T034 [US1] Implement main `/shopping-list` view skeleton with default title "Danh sách mua sắm [Ngày/Tháng]", empty state placeholders, and quick import triggers in `src/frontend/src/features/shopping-list/components/ChecklistScreen.tsx` (depends on T031, T032, T033)
-- [ ] T035 [US1] Verify User Story 1 acceptance scenarios and run independent test (`Run: mvn test -Dtest=ShoppingListServiceTest,ShoppingListControllerIT && npm test -- run shoppingListApi useShoppingList AddCustomItemDialog ArchivedHistoryDrawer`)
-  - Trạng thái 02/11 (SCRUM-56): phần frontend đạt (`npm test` 87/87; `ShoppingListServiceTest`, `ShoppingListControllerTest` qua). Chưa đánh dấu xong vì: `ShoppingListControllerIT` chưa có (T022); chạy thật `GET /active` lỗi 500 khi user chưa có danh sách (tạo list trong `@Transactional(readOnly = true)`); `aisle_categories` không có migration seed nên thêm món lỗi khóa ngoại.
+  - Note: the "Nhập từ thực đơn tuần" quick-import button is rendered but disabled until module 030 provides the meal-plan handoff (see T044, T045).
+- [ ] T035 [US1] Verify User Story 1 acceptance scenarios and run independent test (`Run: mvn test -Dtest=ShoppingListServiceTest,ShoppingListControllerIT && npm test -- run shoppingListApi useShoppingList AddCustomItemDialog ArchivedHistory`)
+  - Status 2026-11-02 (SCRUM-56): frontend passes (`npm test` 87/87; `ShoppingListServiceTest` and `ShoppingListControllerTest` pass). Left open because: `ShoppingListControllerIT` does not exist yet (T022); against the real backend, `GET /active` returns 500 when the user has no list yet (the list is created inside `@Transactional(readOnly = true)`); `aisle_categories` has no seed migration, so adding an item fails on the foreign key.
 
 **Checkpoint**: User Story 1 is fully functional and independently verified.
 
@@ -124,13 +126,15 @@
 - [x] T046 [P] [US2] Implement `useIngredientAggregation` hook managing client-side preview aggregation and scaling multipliers in `src/frontend/src/features/shopping-list/hooks/useIngredientAggregation.ts`
 - [x] T047 [P] [US2] Implement `PreImportBottomSheet` modal component with checklist and 1-tap "Bỏ chọn gia vị cơ bản" button in `src/frontend/src/features/shopping-list/components/PreImportBottomSheet.tsx` (depends on T039)
 - [ ] T048 [US2] Implement serving selector + "Add to shopping list" entry button on the 020 recipe detail view (depends on T047) in `src/frontend/src/features/shopping-list/components/` (exact 020 view file TBD - view owned by recipe module; confirm path before implementation)
-  - Trạng thái 02/11 (SCRUM-56): đã có `RecipeIngredientsPanel.tsx` (+ test) theo panel "Nguyên liệu" của W-NU01: bộ chọn khẩu phần đổi mọi số lượng, nút "Thêm vào danh sách đi chợ" mở `PreImportBottomSheet` với khẩu phần đang chọn và gọi import kèm `Idempotency-Key`. Còn lại: gắn panel vào trang chi tiết công thức của 020 (chưa có trên frontend) và kiểm tra tay trên 020.
+  - Status 2026-11-02 (SCRUM-56): `RecipeIngredientsPanel.tsx` (+ tests) implements the "Nguyên liệu" panel of W-NU01: the serving selector rescales every quantity, and "Thêm vào danh sách đi chợ" opens `PreImportBottomSheet` at the chosen servings and imports with an `Idempotency-Key`. Remaining: mount the panel on the 020 recipe detail page (not on the frontend yet) and check it manually on 020.
+  - Idempotency: the sheet creates one key per opening and reuses it on retry, and a second click while saving is ignored. The backend does not read the `Idempotency-Key` header yet (`ShoppingListController` has no `@RequestHeader`), so server-side deduplication of a repeated request is still open (backend, SCRUM-55).
   - Acceptance: selector rescales every displayed quantity; button opens PreImportBottomSheet with serving count + scaled quantities; manual-edit flag/PATCH behaviour unchanged; no duplicate entry point.
   - Tests (test-first): Vitest selector rescale test; Vitest button tap calls RecipeDetailPort with scaled quantities and opens PreImportBottomSheet; manual 020 check.
 - [x] T049 [P] [US2] Implement `ItemProvenanceModal` drawer component displaying contribution breakdown in `src/frontend/src/features/shopping-list/components/ItemProvenanceModal.tsx` (depends on T040)
 - [x] T050 [US2] Update `shoppingListApi.ts` to include import and provenance fetching functions in `src/frontend/src/features/shopping-list/services/shoppingListApi.ts` (depends on T045)
 - [ ] T051 [US2] Verify User Story 2 acceptance scenarios and run independent test (`Run: mvn test -Dtest=UnitConversionServiceTest,IngredientAggregationServiceTest && npm test -- run PreImportBottomSheet ItemProvenanceModal`)
-  - Trạng thái 02/11 (SCRUM-56): `UnitConversionServiceTest`, `IngredientAggregationServiceTest`, `PreImportBottomSheet`, `ItemProvenanceModal` đều qua. Independent Test chạy thật chưa đạt: Bò kho x4 + Bò xào x4 cho 2 dòng Thịt bò 600 và 400 thay vì 1 dòng "1 kg", và `displayUnit` luôn null (backend, SCRUM-55).
+  - Status 2026-11-02 (SCRUM-56): `UnitConversionServiceTest`, `IngredientAggregationServiceTest`, `PreImportBottomSheet` and `ItemProvenanceModal` pass. The Independent Test fails against the real backend: Bò kho x4 + Bò xào x4 gives two Thịt bò rows (600 and 400) instead of one "1 kg" row, and `displayUnit` is always null (backend, SCRUM-55).
+  - Scenario 4 gap: the API returns `aisleGroups[].items` as a flat list with no parent row grouping non-convertible units of one ingredient, so `ChecklistScreen` shows them as separate rows. Grouping needs a backend response shape first; the frontend does not group on its own to avoid drifting from the server.
 
 **Checkpoint**: User Story 2 is fully functional and independently verified.
 
@@ -315,7 +319,7 @@ Task: "T022 Create integration tests with Testcontainers in ShoppingListControll
 Task: "T023 Create MSW mock handlers in shoppingListApi.test.ts"
 Task: "T024 Create unit tests for useShoppingList hook"
 Task: "T025 Create component tests for AddCustomItemDialog"
-Task: "T026 Create component tests for ArchivedHistoryDrawer"
+Task: "T026 Create component tests for ArchivedHistory"
 ```
 
 ### Parallel Opportunities Across Workstreams (After US1 Foundation)
