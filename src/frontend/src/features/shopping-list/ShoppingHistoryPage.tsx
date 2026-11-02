@@ -4,5 +4,10 @@ import { ArchivedHistory } from './components/ArchivedHistory';
 /** `/shopping-list/history`, screen SL-07; after a restore the user lands on the restored list. */
 export function ShoppingHistoryPage() {
   const navigate = useNavigate();
-  return <ArchivedHistory onRestored={() => navigate('/shopping-list')} />;
+  // Same desktop type scale as the W-SL07 screen.
+  return (
+    <div className="wk-desktop">
+      <ArchivedHistory onRestored={() => navigate('/shopping-list')} />
+    </div>
+  );
 }
