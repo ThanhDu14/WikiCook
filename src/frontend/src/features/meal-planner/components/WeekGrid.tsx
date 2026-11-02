@@ -249,7 +249,7 @@ function MealCell({ slot, items, enableDrag, onAdd, onOpenItem }: MealCellProps)
   return (
     <div className={items.some((i) => !i.available) ? 'wk-slot wk-slot--needs' : 'wk-slot'} style={{ gap: 0, padding: 8 }}>
       {items.map((item, index) => (
-        <div key={item.id} style={index > 0 ? { borderTop: '1px dashed var(--color-border)', marginTop: 6, paddingTop: 6 } : undefined}>
+        <div key={item.id} style={index > 0 ? { borderTop: '1px dashed var(--color-border)', marginTop: 10, paddingTop: 10 } : undefined}>
           {enableDrag ? (
             <DraggableCard slot={slot} item={item} dense={dense} onOpen={() => onOpenItem(item)} />
           ) : (
