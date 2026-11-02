@@ -17,6 +17,7 @@ import com.wikicook.mealplan.dto.MealItems;
 import com.wikicook.mealplan.dto.MoveItemRequest;
 import com.wikicook.mealplan.dto.MoveResult;
 import com.wikicook.mealplan.dto.PlanItemDto;
+import com.wikicook.mealplan.port.DayNutritionPort;
 import com.wikicook.mealplan.port.DietaryProfilePort;
 import com.wikicook.mealplan.port.RecipeSummaryPort;
 import com.wikicook.mealplan.repository.MealPlanItemRepository;
@@ -66,7 +67,8 @@ class ItemMoveServiceTest {
         when(items.findMeal(any(), any(), any())).thenAnswer(call -> stored.stream()
                 .filter(i -> i.getDay() == call.getArgument(1) && i.getMeal() == call.getArgument(2))
                 .sorted(Comparator.comparingInt(MealPlanItem::getPosition)).toList());
-        MealPlanService dtos = new MealPlanService(plans, items, recipes, mock(DietaryProfilePort.class), CLOCK);
+        MealPlanService dtos = new MealPlanService(plans, items, recipes, mock(DietaryProfilePort.class),
+                mock(DayNutritionPort.class), CLOCK);
         service = new ItemMoveService(items, dtos, CLOCK);
     }
 

@@ -22,6 +22,9 @@ import com.wikicook.mealplan.dto.PlacedItem;
 import com.wikicook.mealplan.dto.ReplaceItemRequest;
 import com.wikicook.mealplan.dto.SlotDto;
 import com.wikicook.mealplan.dto.WeekPlanResponse;
+import com.wikicook.mealplan.dto.DayNutritionDto;
+import com.wikicook.mealplan.port.DayNutrition;
+import com.wikicook.mealplan.port.DayNutritionPort;
 import com.wikicook.mealplan.port.DietaryProfilePort;
 import com.wikicook.mealplan.port.PlannerProfile;
 import com.wikicook.mealplan.port.RecipeStatus;
@@ -61,6 +64,7 @@ class MealPlanServiceTest {
     private final MealPlanItemRepository items = mock(MealPlanItemRepository.class);
     private final RecipeSummaryPort recipes = mock(RecipeSummaryPort.class);
     private final DietaryProfilePort profiles = mock(DietaryProfilePort.class);
+    private final DayNutritionPort nutrition = mock(DayNutritionPort.class);
     private final Map<Long, RecipeSummary> catalogue = new HashMap<>();
     private final List<MealPlanItem> stored = new ArrayList<>();
     private MealPlanService service;
@@ -68,7 +72,7 @@ class MealPlanServiceTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        service = new MealPlanService(plans, items, recipes, profiles, CLOCK);
+        service = new MealPlanService(plans, items, recipes, profiles, nutrition, CLOCK);
         plan = newPlan(100L);
         when(recipes.findByIds(any())).thenAnswer(call -> {
             Map<Long, RecipeSummary> found = new HashMap<>();
@@ -210,6 +214,54 @@ class MealPlanServiceTest {
         assertThat(gone.totalTimeMinutes()).isNull();
         assertThat(week.availableItemCount()).isEqualTo(1);
         verify(recipes).findByIds(Set.of(1L)); // the null id is not looked up
+    }
+
+    @Test
+    void nutritionIsAskedOnceForTheWeekWithTheAvailableDishesOfEachDay() throws Exception { // T095, FR-032
+        recipe(1, "Canh chua", RecipeStatus.PUBLISHED, false);
+        recipe(2, "Cá kho", RecipeStatus.PUBLISHED, false);
+        recipe(3, "Bò lúc lắc", RecipeStatus.ARCHIVED, false);
+        when(plans.findByUserIdAndWeekStart(USER, WEEK)).thenReturn(Optional.of(plan));
+        existing(DayOfWeek.MONDAY, Meal.DINNER, 1, 4);
+        existing(DayOfWeek.MONDAY, Meal.DINNER, 2, 4);
+        existing(DayOfWeek.MONDAY, Meal.BREAKFAST, 1, 1); // the same recipe twice in a day counts twice
+        existing(DayOfWeek.MONDAY, Meal.LUNCH, 3, 2); // archived: left out
+        existing(DayOfWeek.THURSDAY, Meal.LUNCH, 3, 2); // a day with only an unavailable dish is left out
+        existing(DayOfWeek.SATURDAY, Meal.LUNCH, 2, 6);
+        when(items.findByMealPlanId(100L)).thenReturn(stored);
+        when(nutrition.totals(any())).thenReturn(Map.of(DayOfWeek.MONDAY, new DayNutrition(1450, 3, 0)));
+
+        WeekPlanResponse week = service.getWeek(USER, WEEK);
+
+        verify(nutrition).totals(Map.of(
+                DayOfWeek.MONDAY, List.of(1L, 1L, 2L),
+                DayOfWeek.SATURDAY, List.of(2L)));
+        assertThat(week.days().get(0).nutrition()).isEqualTo(new DayNutritionDto(1450, 3, 0));
+        assertThat(week.days().get(5).nutrition()).isNull(); // the port had no data for Saturday
+        assertThat(week.days().get(3).nutrition()).isNull();
+    }
+
+    @Test
+    void servingsDoNotChangeWhatNutritionIsAskedFor() throws Exception { // 090 Assumptions
+        recipe(1, "Canh chua", RecipeStatus.PUBLISHED, false);
+        when(plans.findByUserIdAndWeekStart(USER, WEEK)).thenReturn(Optional.of(plan));
+        MealPlanItem canh = existing(DayOfWeek.MONDAY, Meal.DINNER, 1, 2);
+        when(items.findByMealPlanId(100L)).thenReturn(stored);
+        service.getWeek(USER, WEEK);
+        canh.setServings(8);
+        service.getWeek(USER, WEEK);
+
+        verify(nutrition, org.mockito.Mockito.times(2)).totals(Map.of(DayOfWeek.MONDAY, List.of(1L)));
+    }
+
+    @Test
+    void aWeekWithoutAvailableDishesDoesNotAskForNutrition() {
+        when(plans.findByUserIdAndWeekStart(USER, WEEK)).thenReturn(Optional.empty());
+
+        WeekPlanResponse week = service.getWeek(USER, WEEK);
+
+        verify(nutrition, never()).totals(any());
+        assertThat(week.days()).allSatisfy(day -> assertThat(day.nutrition()).isNull());
     }
 
     @Test

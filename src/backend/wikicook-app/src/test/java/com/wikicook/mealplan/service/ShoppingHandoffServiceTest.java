@@ -12,6 +12,7 @@ import com.wikicook.mealplan.domain.ItemSource;
 import com.wikicook.mealplan.domain.Meal;
 import com.wikicook.mealplan.domain.MealPlan;
 import com.wikicook.mealplan.domain.MealPlanItem;
+import com.wikicook.mealplan.port.DayNutritionPort;
 import com.wikicook.mealplan.port.DietaryProfilePort;
 import com.wikicook.mealplan.port.RecipeStatus;
 import com.wikicook.mealplan.port.RecipeSummary;
@@ -48,7 +49,7 @@ class ShoppingHandoffServiceTest {
     @BeforeEach
     void setUp() throws Exception {
         MealPlanService weeks = new MealPlanService(plans, items, recipes, mock(DietaryProfilePort.class),
-                Clock.systemUTC());
+                mock(DayNutritionPort.class), Clock.systemUTC());
         service = new ShoppingHandoffService(plans, items, weeks);
         var constructor = MealPlan.class.getDeclaredConstructor();
         constructor.setAccessible(true);

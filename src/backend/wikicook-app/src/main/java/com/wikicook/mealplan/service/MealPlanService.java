@@ -6,6 +6,7 @@ import com.wikicook.mealplan.domain.MealPlan;
 import com.wikicook.mealplan.domain.MealPlanItem;
 import com.wikicook.mealplan.domain.SlotKey;
 import com.wikicook.mealplan.dto.AddItemRequest;
+import com.wikicook.mealplan.dto.DayNutritionDto;
 import com.wikicook.mealplan.dto.DayPlanDto;
 import com.wikicook.mealplan.dto.PatchServingsRequest;
 import com.wikicook.mealplan.dto.PlacedItem;
@@ -13,6 +14,8 @@ import com.wikicook.mealplan.dto.PlanItemDto;
 import com.wikicook.mealplan.dto.ReplaceItemRequest;
 import com.wikicook.mealplan.dto.SlotDto;
 import com.wikicook.mealplan.dto.WeekPlanResponse;
+import com.wikicook.mealplan.port.DayNutrition;
+import com.wikicook.mealplan.port.DayNutritionPort;
 import com.wikicook.mealplan.port.DietaryProfilePort;
 import com.wikicook.mealplan.port.RecipeStatus;
 import com.wikicook.mealplan.port.RecipeSummary;
@@ -28,6 +31,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -49,14 +53,16 @@ public class MealPlanService {
     private final MealPlanItemRepository items;
     private final RecipeSummaryPort recipes;
     private final DietaryProfilePort profiles;
+    private final DayNutritionPort nutrition;
     private final Clock clock;
 
     public MealPlanService(MealPlanRepository plans, MealPlanItemRepository items, RecipeSummaryPort recipes,
-                           DietaryProfilePort profiles, Clock clock) {
+                           DietaryProfilePort profiles, DayNutritionPort nutrition, Clock clock) {
         this.plans = plans;
         this.items = items;
         this.recipes = recipes;
         this.profiles = profiles;
+        this.nutrition = nutrition;
         this.clock = clock;
     }
 
@@ -72,19 +78,41 @@ public class MealPlanService {
                 .collect(Collectors.groupingBy(MealPlanItem::slot,
                         Collectors.mapping(dtos::get, Collectors.toList())));
 
+        Map<DayOfWeek, DayNutrition> totals = nutritionOf(byMeal);
         List<DayPlanDto> days = new ArrayList<>();
         for (DayOfWeek day : DayOfWeek.values()) {
             List<SlotDto> slots = new ArrayList<>();
             for (Meal meal : Meal.values()) {
                 slots.add(new SlotDto(meal, List.copyOf(byMeal.getOrDefault(new SlotKey(day, meal), List.of()))));
             }
-            days.add(new DayPlanDto(WeekCalendar.dateOf(weekStart, day), day, List.copyOf(slots), null));
+            DayNutrition total = totals.get(day);
+            days.add(new DayPlanDto(WeekCalendar.dateOf(weekStart, day), day, List.copyOf(slots), total == null ? null
+                    : new DayNutritionDto(total.kcalPerPerson(), total.includedDishes(), total.missingDishes())));
         }
         LocalDate today = WeekCalendar.today(clock);
         boolean containsToday = !today.isBefore(weekStart) && !today.isAfter(weekStart.plusDays(6));
         int available = (int) dtos.values().stream().filter(PlanItemDto::available).count();
         return new WeekPlanResponse(weekStart, weekStart.plusDays(6), containsToday ? today : null,
                 weekItems.isEmpty(), available, List.copyOf(days));
+    }
+
+    /**
+     * Calories per day from 090 in one call for the week (T097, FR-032): the available dishes of each day, a
+     * recipe twice in a day counted twice; servings play no part. No call when the week has no available dish.
+     */
+    private Map<DayOfWeek, DayNutrition> nutritionOf(Map<SlotKey, List<PlanItemDto>> byMeal) {
+        Map<DayOfWeek, List<Long>> recipeIdsByDay = new EnumMap<>(DayOfWeek.class);
+        for (DayOfWeek day : DayOfWeek.values()) {
+            List<Long> ids = new ArrayList<>();
+            for (Meal meal : Meal.values()) {
+                byMeal.getOrDefault(new SlotKey(day, meal), List.of()).stream()
+                        .filter(PlanItemDto::available).forEach(dish -> ids.add(dish.recipeId()));
+            }
+            if (!ids.isEmpty()) {
+                recipeIdsByDay.put(day, List.copyOf(ids));
+            }
+        }
+        return recipeIdsByDay.isEmpty() ? Map.of() : nutrition.totals(recipeIdsByDay);
     }
 
     /** Adds a dish at the end of a meal (US1-2, US1-11, US2); a meal with 4 dishes is full (FR-004). */
