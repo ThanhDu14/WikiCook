@@ -62,6 +62,15 @@ collections management (spec 080).
   profile (preferred cuisines, maximum cooking time); recipes that break the user's allergies,
   excluded ingredients or diet type go last with a warning. The AI "Suggested for you" list at the
   top of the picker is defined in spec 031.
+### Session 2026-11-02
+
+- Q: Can a meal hold more than one dish (e.g. lunch with soup, a main dish and vegetables)? → A:
+  Yes. Each meal of a day holds 0 to 4 dishes in the order the user arranged them. Plain rice is
+  assumed and is not planned as a dish. Moving a dish to another meal adds it at the end of that
+  meal; dishes no longer swap places. Spec 031 fills whole meals (breakfast 1 dish; lunch and
+  dinner a soup, a main dish and a vegetable dish). This replaces the "one recipe per slot" rule
+  of the 2026-10-08 version (decided by Nguyễn Thành Dự, owner of 030 and 031).
+
 - Session 2026-10-19: Concurrent-user load condition changed from 200 to 100 to match the RC acceptance gate in docs/management/project-plan.md §4.4.2 and Vision Document §7 (SCRUM-36) (edited by Mai Văn Hiển with the owner's agreement).
 
 ## User Scenarios & Testing *(mandatory)*
@@ -81,9 +90,9 @@ dishes are still shown in the right slots with the right servings.
 **Acceptance Scenarios**:
 
 1. **Given** a signed-in user opens the Meal Planner, **When** the page loads, **Then** the current
-   week (Monday → Sunday) is shown with 3 meal slots per day and today's column is highlighted.
-2. **Given** an empty slot, **When** the user selects it, **Then** a recipe picker opens for that
-   slot's meal, where the user can search published recipes by name and switch to "From my
+   week (Monday → Sunday) is shown with 3 meals per day and today's column is highlighted.
+2. **Given** a meal with fewer than 4 dishes, **When** the user selects its "Add dish", **Then** a
+   recipe picker opens for that meal, where the user can search published recipes by name and switch to "From my
    collections" to pick from recipes they have saved; the picker also shows "Suggested for you"
    (spec 031) above the results whenever suggestions are available.
 3. **Given** the picker was opened from a breakfast slot, **When** the user searches "trứng",
@@ -93,20 +102,23 @@ dishes are still shown in the right slots with the right servings.
 4. **Given** a search result breaks the user's allergies, excluded ingredients or diet type,
    **When** results are shown, **Then** it appears after all other results with a warning label
    naming the conflict, and choosing it asks the user to confirm.
-5. **Given** the recipe picker is open, **When** the user chooses a recipe, **Then** the slot shows
-   the recipe's photo, name and total cooking time, and the dish's servings are set to the
+5. **Given** the recipe picker is open, **When** the user chooses a recipe, **Then** the dish is
+   added at the end of the meal and shows the recipe's photo, name and total cooking time, and the dish's servings are set to the
    household size from the user's profile.
 6. **Given** the user's profile has no household size, **When** a recipe is added, **Then** the
    servings default to the recipe's own number of servings.
-7. **Given** a slot with a dish, **When** the user changes its servings to a value between 1 and
-   20, **Then** the new value is saved and shown on the slot.
-8. **Given** a slot with a dish, **When** the user selects the dish's photo or name, **Then** the
+7. **Given** a planned dish, **When** the user changes its servings to a value between 1 and
+   20, **Then** the new value is saved and shown on that dish; other dishes of the meal keep theirs.
+8. **Given** a planned dish, **When** the user selects the dish's photo or name, **Then** the
    recipe detail page opens.
 9. **Given** the user adds or changes a dish, **When** the change is accepted, **Then** it is saved
    immediately without a separate "Save" button, and it is still there after signing in on another
    device.
 10. **Given** the recipe picker search returns no recipes, **When** the results are shown, **Then**
    an empty state explains that nothing matched and suggests a different name.
+11. **Given** a meal that already holds 4 dishes, **When** the week is shown, **Then** that meal
+   offers no "Add dish", and adding to it in any other way is refused with a message that the meal
+   is full.
 
 ---
 
@@ -125,10 +137,11 @@ the current week, then open the Meal Planner and confirm the dish is in Wednesda
 
 1. **Given** a signed-in user is on a published recipe's detail page, **When** they choose "Add to
    meal plan", **Then** a dialog asks for the week (default: current week), the day and the meal.
-2. **Given** the chosen slot is empty, **When** the user confirms, **Then** the dish is added to
-   that slot and a confirmation with a link to the planner is shown.
-3. **Given** the chosen slot already holds a dish, **When** the user confirms, **Then** the dialog
-   names the current dish and asks whether to replace it; choosing "Cancel" changes nothing.
+2. **Given** the chosen meal has fewer than 4 dishes, **When** the user confirms, **Then** the dish
+   is added at the end of that meal and a confirmation with a link to the planner is shown.
+3. **Given** the chosen meal already holds dishes, **When** the user picks it, **Then** the dialog
+   lists them ("This meal already has: …"); when it holds 4 dishes the dialog says the meal is full
+   and does not let the user confirm; choosing "Cancel" changes nothing.
 4. **Given** a guest (not signed in) chooses "Add to meal plan", **When** they sign in, **Then** they
    return to the same recipe page and the "Add to meal plan" dialog opens again.
 5. **Given** a guest opens the Meal Planner page directly, **When** the page loads, **Then** they
@@ -138,30 +151,34 @@ the current week, then open the Meal Planner and confirm the dish is in Wednesda
 
 ### User Story 3 - Rearrange, replace and remove dishes (Priority: P1)
 
-As a **home cook**, I want to move dishes between days and meals, swap a dish for another one and
-remove dishes I no longer want so that the plan fits how my week actually goes.
+As a **home cook**, I want to move dishes between days and meals, reorder the dishes of a meal,
+replace a dish with another one and remove dishes I no longer want so that the plan fits how my week actually goes.
 
 **Why this priority**: Plans change often (a late meeting, leftovers). Proposal section 4.2 step 9
 also relies on this editing to adjust AI-generated plans, so spec 031 depends on it.
 
-**Independent Test**: With a week holding at least two dishes, drag one dish onto an empty slot,
-drag it onto an occupied slot, use "Replace" on a third slot, remove one dish and clear one day;
-reload and confirm the calendar matches every change.
+**Independent Test**: With a week holding at least three dishes, drag one dish into an empty meal,
+drag another into a meal that already has a dish, reorder two dishes of one meal, use "Replace" on
+a dish, remove one dish and clear one day; reload and confirm the calendar matches every change.
 
 **Acceptance Scenarios**:
 
-1. **Given** the desktop layout, **When** the user drags a dish onto an empty slot of the same
-   week, **Then** the dish moves there and its original slot becomes empty.
-2. **Given** the desktop layout, **When** the user drags a dish onto a slot that already holds a
-   dish, **Then** the two dishes swap places.
-3. **Given** any layout, **When** the user opens a dish's menu and chooses "Move to…" and then a
-   day and meal of the same week, **Then** the dish moves (or swaps) exactly as with drag-and-drop.
-4. **Given** a slot with a dish, **When** the user chooses "Replace", **Then** the recipe picker
-   opens and the chosen recipe takes the place of the old one, keeping the slot's servings.
-5. **Given** a slot with a dish, **When** the user chooses "Remove", **Then** the slot becomes empty.
-6. **Given** a day with one or more dishes, **When** the user chooses "Clear day" and confirms,
-   **Then** all slots of that day become empty; choosing "Cancel" changes nothing.
-7. **Given** any edit, **When** the server cannot save it, **Then** the calendar returns to its state
+1. **Given** the desktop layout, **When** the user drags a dish into another meal of the same week
+   that has fewer than 4 dishes, **Then** the dish is added at the end of that meal and leaves its
+   original meal; the other dishes of both meals keep their order.
+2. **Given** the desktop layout, **When** the user drags a dish into a meal that already holds 4
+   dishes, **Then** nothing changes and the user is told the meal is full.
+3. **Given** a meal with two or more dishes, **When** the user drags a dish before or after another
+   dish of the same meal, **Then** the dishes are shown and saved in the new order.
+4. **Given** any layout, **When** the user opens a dish's menu and chooses "Move to…" and then a
+   day and meal of the same week, **Then** the dish moves exactly as with drag-and-drop.
+5. **Given** a planned dish, **When** the user chooses "Replace", **Then** the recipe picker opens
+   and the chosen recipe takes the place of that dish only, keeping its servings and position.
+6. **Given** a planned dish, **When** the user chooses "Remove", **Then** only that dish leaves the
+   meal.
+7. **Given** a day with one or more dishes, **When** the user chooses "Clear day" and confirms,
+   **Then** all meals of that day become empty; choosing "Cancel" changes nothing.
+8. **Given** any edit, **When** the server cannot save it, **Then** the calendar returns to its state
    before the edit and an error message explains that the change was not saved.
 
 ---
@@ -273,15 +290,19 @@ button; turn the network back on and confirm the planner reloads the week by its
 
 ### Edge Cases
 
-- **Two devices or tabs edit the same week**: an edit made on the latest state of a slot is saved,
+- **Two devices or tabs edit the same week**: an edit made on the latest state of a dish is saved,
   and the other device shows it the next time it loads or reloads the week; an edit made on an
-  outdated state of the slot is handled by the next case.
-- **Slot changed elsewhere before an edit is saved** (e.g. a dish was removed on another device):
+  outdated state of the dish is handled by the next case. Two devices adding to the same meal at
+  once both succeed while the meal has room; the add that would make a fifth dish is refused.
+- **Dish changed elsewhere before an edit is saved** (e.g. a dish was removed on another device):
   the edit is refused, the user is told the plan changed, and the planner reloads the week.
-- **Dragging a dish outside any slot** or pressing Escape during a drag: nothing changes.
+- **Dragging a dish outside any meal** or pressing Escape during a drag: nothing changes.
+- **Meal already full (4 dishes)**: adding, moving in or "Add to meal plan" to it is refused with
+  a message; the dishes already there are not changed.
 - **Servings outside 1–20 or not a whole number**: the value is refused with a message and the old
   value is kept.
-- **Adding the same recipe to several slots** (e.g. leftovers for lunch the next day): allowed.
+- **Adding the same recipe to several meals** (e.g. leftovers for lunch the next day), or twice to
+  the same meal: allowed.
 - **Recipe archived while the picker is open**: choosing it fails with a message and the picker
   list refreshes.
 - **Recipe photo missing or fails to load**: the slot shows a placeholder image; name and time
@@ -294,8 +315,8 @@ button; turn the network back on and confirm the planner reloads the week by its
   correct dates.
 - **Household size changes in the profile**: dishes already planned keep their servings; only
   dishes added afterwards use the new default.
-- **AI-generated slots left empty** by spec 031 (flagged for manual selection): they behave as
-  normal empty slots in this planner.
+- **AI-generated meals left empty** by spec 031 (flagged for manual selection): they behave as
+  normal empty meals in this planner.
 - **Account deleted**: all of the user's meal plans are deleted with the account (spec 011).
 
 ## Requirements *(mandatory)*
@@ -309,18 +330,19 @@ button; turn the network back on and confirm the planner reloads the week by its
 - **FR-002**: Each user MUST have at most one plan per calendar week; a week runs Monday → Sunday in
   Vietnam time (UTC+7).
 - **FR-003**: The planner MUST open on the current week, highlight today, and show each day's 3
-  meal slots in the order breakfast, lunch, dinner.
-- **FR-004**: Each meal slot MUST hold at most one recipe.
-- **FR-005**: A filled slot MUST show the recipe photo, name and total cooking time, and MUST open
+  meals in the order breakfast, lunch, dinner.
+- **FR-004**: Each meal of a day MUST hold 0 to 4 dishes, kept in the order the user arranged them;
+  plain rice is assumed and is not a planned dish. The same recipe MAY appear more than once.
+- **FR-005**: Each planned dish MUST show the recipe photo, name and total cooking time, and MUST open
   the recipe detail page when the photo or name is selected (unless the recipe is no longer
   available, see FR-020).
 - **FR-006**: A user MUST only see and change their own meal plans.
 
 **Adding dishes**
 
-- **FR-007**: Selecting an empty slot MUST open a recipe picker that searches published recipes by
+- **FR-007**: Selecting "Add dish" on a meal with fewer than 4 dishes MUST open a recipe picker that searches published recipes by
   name (accent-insensitive) and offers a "From my collections" view of recipes the user has saved.
-- **FR-007a**: Results in a picker opened from a slot MUST be ordered by: (1) suited to the slot's
+- **FR-007a**: Results in a picker opened from a meal MUST be ordered by: (1) suited to that
   meal before not suited; (2) matching the user's preferred cuisines; (3) within the user's maximum
   cooking time; (4) name match quality. With no search text, the same order applies to all
   published recipes.
@@ -331,7 +353,8 @@ button; turn the network back on and confirm the planner reloads the week by its
   spec 031 above the results; they do not depend on the AI language model (spec 031 FR-033). When
   they are not available, the picker MUST work with the ordered results only.
 - **FR-008**: The recipe detail page of a published recipe MUST offer "Add to meal plan", which asks
-  for week, day and meal and asks before replacing a filled slot.
+  for week, day and meal, lists the dishes already in that meal, and adds the recipe at the end of
+  it; a meal that already holds 4 dishes cannot be chosen.
 - **FR-009**: A guest choosing "Add to meal plan" MUST be sent to sign-in and returned to the same
   recipe page with the dialog open.
 - **FR-010**: Only recipes in the published state MUST be selectable in the picker and in "Add to
@@ -346,11 +369,13 @@ button; turn the network back on and confirm the planner reloads the week by its
 
 **Editing**
 
-- **FR-014**: On the desktop layout users MUST be able to drag a dish to another slot of the same
-  week; dropping on an empty slot moves it, dropping on a filled slot swaps the two dishes.
-- **FR-015**: Every dish MUST offer a "Move to…" action that does the same move or swap by choosing
-  a day and meal, so the planner can be used without drag-and-drop (mobile, keyboard).
-- **FR-016**: Every dish MUST offer "Replace" (pick another recipe, keep servings) and "Remove".
+- **FR-014**: On the desktop layout users MUST be able to drag a dish into another meal of the same
+  week, where it is added at the end, and to change the order of the dishes inside a meal. A meal
+  that already holds 4 dishes MUST refuse a dish moved in from another meal.
+- **FR-015**: Every dish MUST offer a "Move to…" action that does the same move by choosing a day
+  and meal, so the planner can be used without drag-and-drop (mobile, keyboard).
+- **FR-016**: Every dish MUST offer "Replace" (pick another recipe, keep servings and position) and
+  "Remove".
 - **FR-017**: Every day MUST offer "Clear day", which removes all dishes of that day after the user
   confirms.
 - **FR-018**: Every accepted change MUST be saved to the server immediately, without a separate save
@@ -360,7 +385,7 @@ button; turn the network back on and confirm the planner reloads the week by its
 
 **Unavailable recipes**
 
-- **FR-020**: When a planned recipe is archived or removed, its slot MUST keep the recipe name as it
+- **FR-020**: When a planned recipe is archived or removed, its dish MUST keep the recipe name as it
   was when added, show "No longer available", and offer "Replace" and "Remove"; it MUST NOT open the
   recipe detail page.
 
@@ -415,7 +440,8 @@ button; turn the network back on and confirm the planner reloads the week by its
 - **NFR-003 (Accessibility)**: Every action, including moving dishes, MUST be possible by keyboard
   only; slots MUST announce their day, meal and dish to screen readers.
 - **NFR-004 (Privacy)**: A user's meal plans MUST be visible only to that user.
-- **NFR-005 (Data integrity)**: A move or swap MUST either complete fully or not at all; a dish
+- **NFR-005 (Data integrity)**: A move or reorder MUST either complete fully or not at all; a meal
+  MUST never end up with more than 4 dishes; a dish
   MUST never be lost or duplicated by a failed move.
 - **NFR-006 (Resilience)**: Losing the connection MUST never discard a plan already saved on the
   server.
@@ -424,10 +450,10 @@ button; turn the network back on and confirm the planner reloads the week by its
 
 - **Meal Plan**: one user's plan for one calendar week — owner, week start date (Monday), created
   and last updated time. Unique per owner and week.
-- **Meal Plan Item**: one dish in a slot — the meal plan it belongs to, day of the week, meal
-  (breakfast / lunch / dinner), recipe reference, recipe name at the time it was added, servings,
-  source (manual, AI planner, or auto backup draft of spec 031 FR-027), added time. At most one item per day and meal of a
-  plan.
+- **Meal Plan Item**: one dish of a meal — the meal plan it belongs to, day of the week, meal
+  (breakfast / lunch / dinner), position inside the meal (0–3), recipe reference, recipe name at the time it was added, servings,
+  source (manual, AI planner, or auto backup draft of spec 031 FR-027), added time. At most 4 items per day and meal
+  of a plan.
 - **Recipe** *(defined in spec 060)*: provides the photo, name, cooking time, servings, diet type
   (derived from ingredient kinds) and published/archived state shown in slots.
 - **Collection** *(defined in spec 080)*: the user's saved recipes, used by the picker's "From my
@@ -438,26 +464,29 @@ button; turn the network back on and confirm the planner reloads the week by its
 
 ### Measurable Outcomes
 
-- **SC-001**: A user can fill all 21 slots of a week in under 10 minutes using the picker.
+- **SC-001**: A user can put one dish in each of the 21 meals of a week in under 10 minutes using the
+  picker.
 - **SC-002**: A user can add a recipe from its detail page to a chosen day and meal in under 15
   seconds.
 - **SC-003**: At least 90% of test participants complete "plan 3 dinners, move one, remove one" on
   their first attempt without help, on both desktop and a phone.
 - **SC-004**: 100% of saved changes are still present after reloading the planner or opening it on
   another device.
-- **SC-005**: 0 dishes are lost or duplicated in move, swap and failed-save tests.
+- **SC-005**: 0 dishes are lost or duplicated, and no meal ever holds more than 4 dishes, in move,
+  reorder, concurrent-add and failed-save tests.
 - **SC-006**: In 100% of offline tests the planner shows the offline message instead of the
   calendar, no edit is accepted, and the calendar comes back within 5 seconds of the connection
   returning.
 - **SC-007**: When at least 5 suitable breakfast recipes match a search made from a breakfast
-  slot, the first 5 results are all breakfast recipes in 100% of tests (same for lunch and dinner).
+  meal, the first 5 results are all breakfast recipes in 100% of tests (same for lunch and dinner).
 - **SC-008**: Every acceptance scenario in this spec has at least one passing automated test.
 
 ## Assumptions
 
 - Weeks start on Monday and use Vietnam time (UTC+7) to decide "today" and "this week".
-- One recipe per meal slot, matching the slot format of proposal section 4.6; several dishes per
-  meal (e.g. rice, soup and a main dish) are not supported in this version.
+- Up to 4 dishes per meal (Clarification 2026-11-02). Each dish keeps the item format of proposal
+  section 4.6; a meal is a list of such items, which goes beyond the one-recipe slot of the
+  proposal.
 - Servings range 1–20 follows the "serving size" input of proposal section 4.3.
 - Users can move between weeks without a limit; plans are kept as long as the account exists.
 - Drag-and-drop is offered on the desktop layout only; touch screens use "Move to…". Moving a dish

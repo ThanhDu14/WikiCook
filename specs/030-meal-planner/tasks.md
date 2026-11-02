@@ -198,6 +198,40 @@ Backend là Maven multi-module (`src/backend/pom.xml`, cập nhật 2026-10-28).
 
 ---
 
+## Phase 5b: Nhiều món mỗi bữa (sửa 2026-11-02, spec Clarifications 2026-11-02)
+
+**Goal**: Mỗi bữa có 0–4 món theo thứ tự; API theo món; bỏ swap và `SLOT_OCCUPIED`, thêm `MEAL_FULL`.
+Thay phần theo-ô của US1–US3 đã làm.
+
+**Task cũ bị thay**: T029/T033/T038/T040 (PUT/PATCH theo ô), T049/T053 (`SLOT_OCCUPIED`), T050/T054
+(dialog hỏi thay), T057–T059/T064–T066 (move/swap theo ô, DELETE theo ô), T060/T061/T068 (kéo-thả và
+"Chuyển sang…" theo ô), T063/T069 (hook move/remove theo ô). Code của các task đó được sửa lại ở đây,
+test cũ được viết lại theo hành vi mới.
+
+**Independent Test**: quickstart Q3, Q6, Q8, Q10 (bản 2026-11-02).
+
+### Tests (viết trước, phải FAIL)
+
+- [ ] T110 [P] Integration test `MealPlanMultiDishSchemaIT` – V304: bỏ UNIQUE theo ô; `position` 0–3; UNIQUE `(plan, day, meal, position)` deferred (hai món đổi vị trí trong một transaction được, trùng vị trí lúc commit bị từ chối); dữ liệu cũ nhận `position = 0` trong src/backend/wikicook-app/src/test/java/com/wikicook/mealplan/repository/MealPlanMultiDishSchemaIT.java
+- [ ] T111 [P] Unit test `MealPlanServiceTest` (viết lại) – thêm vào cuối bữa, servings mặc định (FR-012); bữa đủ 4 → `MealFullException`; thay món giữ servings và vị trí; đổi servings, xóa món dồn vị trí; `version` lệch hoặc món không thuộc tuần → `SlotChangedException`
+- [ ] T112 [P] Unit test `ItemMoveServiceTest` (thay `SlotMoveServiceTest`) – chuyển sang bữa khác vào cuối hoặc vào `position`; dồn vị trí bữa nguồn; đổi thứ tự trong bữa; bữa đích đủ 4 → `MealFullException`, không lưu gì; `version` lệch → `SlotChangedException`; `source` giữ nguyên
+- [ ] T113 [P] Integration test `ItemConcurrencyIT` (thay `SlotMoveAtomicityIT`) – lỗi giữa lúc chuyển → không món nào đổi (NFR-005); 5 lệnh thêm đồng thời vào một bữa trống → đúng 4 thành công, 1 `MEAL_FULL`, vị trí 0–3 không trùng (SC-005)
+- [ ] T114 [P] Integration test `MealPlanControllerIT` (gộp và viết lại US1–US3 IT) – GET trả `slots[].items[]` theo `position`; POST thêm 201, đủ 4 → 409 `MEAL_FULL`; PUT/PATCH/DELETE theo `itemId` + `version`; move 200 trả các bữa bị ảnh hưởng; món của người khác → 409; `DELETE …/days/{day}` 204
+- [ ] T115 [P] Frontend test (viết lại) `useWeekPlan`, `WeekGrid`, `WeekGrid.dnd`, `MoveToMenu`, `SlotMenu`, `AddToPlanDialog`, `MealPlannerPage*` theo hành vi nhiều món: ô bữa xếp nhiều card, "+ Thêm món" ẩn khi đủ 4; kéo vào bữa khác → thêm vào cuối, kéo vào bữa đầy → không gọi API + báo; đổi thứ tự trong bữa bằng bàn phím; dialog liệt kê "Bữa này đã có: …" và khóa xác nhận khi đủ 4
+
+### Implementation
+
+- [ ] T116 Migration `V304__meal_plan_items_multi.sql` trong src/backend/wikicook-db/src/main/resources/db/migration (làm T110 xanh)
+- [ ] T117 `MealPlanItem.position`, `MealFullException` (`MEAL_FULL` 409), khóa `meal_plans` `FOR UPDATE` trong repository; `MealPlanService` add/replace/servings/remove/clearDay theo món (làm T111 xanh)
+- [ ] T118 `ItemMoveService` thay `SlotMoveService` (làm T112, T113 xanh)
+- [ ] T119 Controller và DTO theo contracts/openapi.yaml 0.2.0; bỏ `PutSlotRequest`, `ExpectedSlotState`, `SlotOccupiedException` (làm T114 xanh)
+- [ ] T120 Frontend: types, `mealPlanApi`, `useWeekPlan`, `WeekGrid` (ô nhiều card, dnd theo món, đổi thứ tự), `MoveToMenu`, `SlotMenu`, `AddToPlanDialog`, `MealPlannerPage` (làm T115 xanh)
+- [ ] T121 `MealPlanWriteFacade` theo integration.md 2.2 bản 2026-11-02 khi làm T100 (Phase 10)
+
+**Checkpoint**: US1–US3 chạy lại đầy đủ với nhiều món mỗi bữa; quickstart Q1–Q12 (bản 2026-11-02) đạt.
+
+---
+
 ## Phase 6: User Story 4 - Move between weeks and start an empty week (Priority: P2)
 
 **Goal**: Tuần trước/sau/"Tuần này", tiêu đề khoảng ngày, empty state với "Thêm món" và "Tạo bằng AI", tuần cũ vẫn sửa được.

@@ -45,30 +45,34 @@ NEEDS CLARIFICATION nào trong Technical Context sau phần này; những điể
 - **Alternatives considered**: Tạo khi `GET` – sinh dữ liệu rác; bắt `DataIntegrityViolation`
   rồi đọc lại – được nhưng làm hỏng transaction hiện tại của JPA.
 
-## R4. Định danh ô và phát hiện xung đột
+## R4. Định danh món và phát hiện xung đột *(sửa 2026-11-02: nhiều món mỗi bữa)*
 
-- **Decision**: Ô được định danh bằng `(weekStart, day, meal)` của người dùng đang đăng nhập;
-  URL không chứa `user_id` hay `meal_plan_id`. Mỗi lệnh ghi gửi kèm **trạng thái mong đợi** của
-  ô: `expectedItemId` + `expectedVersion` (hoặc `null` nghĩa là "mong ô đang trống"). Không khớp
-  → `409 SLOT_CHANGED` kèm tuần mới nhất; frontend rollback và tải lại tuần. Cột
-  `meal_plan_items.version` map `@Version`.
-- **Rationale**: Edge case "slot changed elsewhere before an edit is saved → refused, reload".
-  "Last saved change wins" vẫn đúng với các thao tác lần lượt trên dữ liệu mới nhất. Không có
-  id người khác trên URL nên FR-006/NFR-004 đúng theo cấu trúc.
-- **Alternatives considered**: `If-Match`/ETag cho cả tuần – một thay đổi ở ô khác cũng làm
-  thao tác bị từ chối, quá chặt; không kiểm tra gì – vi phạm edge case trên.
+- **Decision**: Bữa được định danh bằng `(weekStart, day, meal)` của người dùng đang đăng nhập; món
+  được định danh bằng `itemId` trong tuần đó. URL không chứa `user_id` hay `meal_plan_id`. Mỗi lệnh
+  sửa, thay, chuyển hay xóa một món gửi kèm `version` của món mà client đã thấy; không khớp (hoặc món
+  không còn) → `409 SLOT_CHANGED`, frontend rollback và tải lại tuần. Thêm món vào bữa không cần
+  `version` vì không ghi đè gì. Cột `meal_plan_items.version` map `@Version`.
+- **Rationale**: Edge case "dish changed elsewhere before an edit is saved → refused, reload". Hai
+  thiết bị cùng thêm món vào một bữa đều thành công khi bữa còn chỗ (không có gì để ghi đè).
+  Không có id người khác trên URL nên FR-006/NFR-004 đúng theo cấu trúc.
+- **Alternatives considered**: Kiểm tra theo ô (`expectedItemId` + `expectedVersion`) như bản một
+  món mỗi ô – không còn nghĩa khi một bữa có nhiều món; `If-Match`/ETag cho cả tuần – quá chặt.
 
-## R5. Move / swap nguyên tử
+## R5. Thêm, chuyển và sắp xếp món nguyên tử *(sửa 2026-11-02)*
 
-- **Decision**: Move vào ô trống = `UPDATE` `day_of_week`, `meal` của item. Swap = **đổi nội
-  dung** (recipe_id, recipe_name_snapshot, servings, source) giữa hai dòng, vị trí giữ nguyên.
-  Cả hai chạy trong một `@Transactional` với `SELECT ... FOR UPDATE` trên các item liên quan
-  theo thứ tự id tăng dần (tránh deadlock), sau đó kiểm tra `expected*` của cả nguồn và đích.
-- **Rationale**: NFR-005, SC-005. Đổi nội dung không bao giờ đụng `UNIQUE (meal_plan_id,
-  day_of_week, meal)` nên không cần constraint `DEFERRABLE` hay ô tạm.
-- **Alternatives considered**: Đổi `day/meal` của hai dòng với constraint `DEFERRABLE
-  INITIALLY DEFERRED` – đúng nhưng phải sửa DDL chung và khó viết bằng JPA; xóa + chèn lại –
-  mất `id` và làm hỏng tham chiếu `shopping_list_item_sources.meal_plan_item_id` của spec 040.
+- **Decision**: Mọi lệnh ghi làm đổi số món hay thứ tự trong một bữa (thêm, chuyển, sắp xếp, xóa)
+  chạy trong một `@Transactional` và khóa dòng `meal_plans` của tuần (`SELECT … FOR UPDATE`) trước
+  khi đọc các món, nên các lệnh ghi trên cùng một tuần chạy lần lượt. Sau khi khóa: đếm món của bữa
+  đích (đủ 4 → `409 MEAL_FULL`), kiểm tra `version`, rồi đổi `day/meal/position` và dồn `position` các
+  món còn lại. `UNIQUE (meal_plan_id, day_of_week, meal, position)` là `DEFERRABLE INITIALLY
+  DEFERRED` nên các bước dồn thứ tự chỉ bị kiểm tra lúc commit; cùng với `CHECK position BETWEEN 0 AND
+  3` nó chặn lỗi ở tầng DB nếu khóa bị bỏ sót. Không còn swap.
+- **Rationale**: NFR-005, SC-005: không mất, không nhân đôi món, không bữa nào quá 4 món. Một khóa
+  theo tuần đơn giản hơn khóa từng món, và một người chỉ sửa tuần của mình nên không bị nghẽn.
+- **Alternatives considered**: Không khóa, chỉ dựa vào UNIQUE – hai lệnh thêm đồng thời sẽ một cái
+  lỗi ngẫu nhiên thay vì chạy lần lượt; xóa + chèn lại khi chuyển – mất `id` và làm hỏng tham chiếu
+  `shopping_list_item_sources.meal_plan_item_id` của spec 040; giữ swap của bản cũ – thả vào bữa có
+  món nay nghĩa là "thêm vào bữa đó", swap không còn tự nhiên.
 
 ## R6. Xếp hạng trong hộp chọn công thức (FR-007, FR-007a, FR-007b)
 
@@ -132,9 +136,10 @@ NEEDS CLARIFICATION nào trong Technical Context sau phần này; những điể
 
 ## R10. "Thêm vào meal plan" từ trang chi tiết (FR-008, FR-009)
 
-- **Decision**: Cùng endpoint `PUT .../slots/{day}/{meal}` với `expectedItemId=null`. Nếu ô đã có
-  món, server trả `409 SLOT_OCCUPIED` kèm tên món hiện tại; dialog hỏi "Thay thế?" rồi gửi lại
-  với `expectedItemId/expectedVersion` của món đó. Khách: frontend chuyển tới
+- **Decision** *(sửa 2026-11-02)*: Dialog dùng cùng endpoint thêm món
+  `POST …/meals/{day}/{meal}/items` như picker: món được thêm vào cuối bữa. Dialog đọc tuần để liệt
+  kê món đang có ("Bữa này đã có: …") và khóa nút xác nhận khi bữa đã đủ 4 món; nếu bữa đầy trong lúc
+  đó, server trả `409 MEAL_FULL` và dialog báo bữa đã đầy. Khách: frontend chuyển tới
   `/login?redirect=` + `encodeURIComponent('/recipes/{id}?action=add-to-plan')`; sau đăng nhập
   trang công thức đọc `action` và mở lại dialog. Công thức "Thêm vào meal plan" là
   `is_snack` thì nút bị ẩn (spec Assumptions).
@@ -143,13 +148,14 @@ NEEDS CLARIFICATION nào trong Technical Context sau phần này; những điể
   `/shopping-list/import?weekStart=YYYY-MM-DD`. Chữ tiếng Việt chỉ nằm trong giao diện
   (`strings.vi.ts`), không nằm trong URL. Cần A (010) và B (060) xác nhận cho `/login` và
   `/recipes/{id}`.
-- **Rationale**: Không cần endpoint riêng; câu hỏi "thay thế" dựa trên trạng thái thật ở server.
+- **Rationale**: Không cần endpoint riêng; giới hạn 4 món dựa trên trạng thái thật ở server.
 - **Alternatives considered**: Endpoint `POST /recipes/{id}/add-to-plan` riêng – trùng logic.
 
 ## R11. Lỗi trả về client
 
 - **Decision**: `ProblemDetail` (RFC 9457, có sẵn trong Spring 6) với trường mở rộng `code`:
-  `VALIDATION_ERROR`, `INVALID_WEEK_START`, `SLOT_CHANGED`, `SLOT_OCCUPIED`,
+  `VALIDATION_ERROR`, `INVALID_WEEK_START`, `SLOT_CHANGED` (món đã đổi hoặc không còn), `MEAL_FULL`
+  (bữa đã đủ 4 món; thay `SLOT_OCCUPIED` của bản một món mỗi ô),
   `RECIPE_NOT_AVAILABLE`, `UNAUTHENTICATED`. Không trả stack trace (constitution IV).
 - **Rationale**: Frontend phân nhánh theo `code`, chuỗi tiếng Việt nằm ở string store frontend.
 - **Alternatives considered**: Object lỗi tự định nghĩa – không chuẩn, phải viết lại handler.

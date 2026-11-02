@@ -69,6 +69,16 @@ dishes).
   by the AI for that slot's meal and the user's profile; search results in the picker are ordered
   by meal, then profile (spec 030 FR-007a). The main search page (spec 020) is not changed.
 
+### Session 2026-11-02
+
+- Q: Spec 030 now lets a meal hold up to 4 dishes. What does the AI fill? → A: Whole meals. A
+  "slot" in this spec means one meal of one day; an empty slot is a meal with no dish. For each
+  selected empty meal the AI plans a full Vietnamese meal: breakfast 1 dish; lunch and dinner a
+  soup, a main dish and a vegetable dish (3 dishes). Plain rice is assumed and is never planned.
+  Meals that already hold any dish are left untouched (FR-007). How a recipe is classed as soup,
+  main or vegetable dish is decided in the plan (proposal: recipe category, e.g. "Món canh" → soup)
+  before Phase 10 (decided by Nguyễn Thành Dự, owner of 030 and 031).
+
 ### Session 2026-10-18
 
 - Q: Which recipes can the AI choose from? → A: Every PUBLISHED recipe in the WikiCook catalogue,
@@ -404,8 +414,12 @@ never chosen again.
 
 **Choosing recipes**
 
-- **FR-007**: The AI MUST fill only the selected slots that are empty; dishes already in the plan
+- **FR-007**: The AI MUST fill only the selected meals that have no dish; dishes already in the plan
   MUST NOT be moved, replaced or removed.
+- **FR-007a**: Each filled meal MUST be a full meal: breakfast 1 dish; lunch and dinner a soup, a
+  main dish and a vegetable dish, in that order (spec 030 FR-004, at most 4 dishes per meal). Plain
+  rice is assumed and not planned. When no suitable recipe of a role is left after the hard rules,
+  that role is left out and the meal is marked "Choose a dish" as in User Story 3.
 - **FR-008**: The AI MUST choose only from recipes that are published at the time of generation,
   including recipes imported into the catalogue from crawled data; it MUST NOT create or describe
   recipes of its own.
@@ -444,7 +458,7 @@ never chosen again.
 - **FR-018**: "Confirm" MUST save the draft dishes into the week's plan (keeping their "AI" or "Auto"
   label and servings) and then open the meal-plan import flow of the Shopping List (spec 040: ingredient
   preview, then "merge into current list" or "archive and start a new list").
-- **FR-019**: On confirm, an AI dish whose slot was filled elsewhere, or whose recipe is no longer
+- **FR-019**: On confirm, the AI dishes of a meal that was filled elsewhere, or whose recipe is no longer
   published, MUST NOT be saved; the user MUST be told how many dishes were skipped.
 - **FR-020**: "Discard" MUST remove the draft and leave the plan exactly as before generation.
 - **FR-021**: "Regenerate" MUST reopen the constraint dialog with the last used constraints and
@@ -572,6 +586,8 @@ never chosen again.
 - When the profile has no household size, servings default to each recipe's own servings, the same
   rule as manual dishes in spec 030, so the shopping list (spec 040) follows one rule
   (Clarifications 2026-10-18).
+- A meal holds up to 4 dishes (spec 030 FR-004, 2026-11-02); the AI uses 1 (breakfast) or 3
+  (lunch, dinner) of them, so the user can still add one more dish by hand.
 - The draft lives only in the current page; it is not saved on the server or across devices.
 - "Not enough recipes" means fewer suitable published recipes than slots to fill, so the no-repeat
   rule can always be met; partial plans with repeats are not offered.

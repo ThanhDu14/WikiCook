@@ -337,6 +337,23 @@ Backend là Maven multi-module (`src/backend/pom.xml`, cập nhật 2026-10-28).
 | T062, T089 | 030 T047 `RecipePicker` `suggestionsSlot` | |
 | T021 | 030 T041 | 030 nên chuyển sang dùng `DietRuleSql` để hai bên một luật |
 
+### Bổ sung 2026-11-02: AI điền cả mâm (spec Clarifications 2026-11-02, FR-007a)
+
+Spec 030 đổi sang tối đa 4 món mỗi bữa. Chữ ký `MealPlanWriteFacade` giữ nguyên; `emptySlots` nay là
+các bữa chưa có món, `saveDraft` giữ thứ tự món của cùng một bữa (030 contracts/integration.md 2.2).
+Các task dưới đây làm cùng 030 Phase 10, chưa làm bây giờ.
+
+- [ ] T105 Chốt cách phân vai món (canh / món mặn / món rau) trong plan.md và research.md: đề xuất dùng
+  `recipes.category_id` ("Món canh" → canh; "Món kho", "Món chiên", "Món nướng", "Món hấp", "Món từ gà",
+  "Món từ bò" → mặn; "Món xào", "Món gỏi - salad", "Món cuốn - trộn" có nguyên liệu chính là rau → rau),
+  cần mình duyệt danh sách
+- [ ] T106 Test trước rồi sửa `CandidateQuery`, `PlanAssembler`, prompt LLM và `BackupDraftService` để mỗi
+  bữa trưa/tối có canh + mặn + rau, bữa sáng 1 món; vai thiếu món phù hợp → bỏ vai đó và đánh dấu
+  "Choose a dish" (FR-007a)
+- [ ] T107 Test trước rồi sửa draft trên lưới tuần (030 `WeekGrid` `draftItems`) và `ConfirmService`
+  cho nhiều món mỗi bữa; bữa đã có món lúc xác nhận → bỏ cả nhóm, đếm vào `skippedOccupied` (FR-019)
+- [ ] T108 Sửa `InMemoryMealPlanFacade` (dev stub) theo nghĩa mới của `emptySlots`/`saveDraft`
+
 ### Phụ thuộc người khác (⛓) – không chặn nhờ fake/mock
 
 | Task | Người | Tạm thời | Khi bên kia xong |
