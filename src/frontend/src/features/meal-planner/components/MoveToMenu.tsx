@@ -1,28 +1,29 @@
 import { useState } from 'react';
-import type { SlotRef } from '../hooks/useWeekPlan';
+import { findItem, type SlotRef } from '../hooks/useWeekPlan';
 import { dayOfMonth } from '../lib/week';
 import { vi } from '../strings.vi';
-import { MEALS, type WeekPlan } from '../types';
+import { MAX_DISHES, MEALS, type WeekPlan } from '../types';
 import { DishPhoto } from './DishPhoto';
 import { Icon } from './Icon';
 import { Overlay } from './Overlay';
 
 interface Props {
   week: WeekPlan;
-  from: SlotRef;
-  onMove: (from: SlotRef, to: SlotRef) => void;
+  itemId: number;
+  onMove: (to: SlotRef) => void;
   onClose: () => void;
 }
 
 /**
- * "Chuyển sang…" (W-MP03, T067): the week in small, one button per slot of the same week, so a dish can be moved
- * with the keyboard or a tap where dragging is not possible (US3-3, FR-015). A slot with a dish says the two swap.
+ * "Chuyển sang…" (W-MP03, T067, T120): the week in small, one button per meal of the same week, so a dish can be
+ * moved with the keyboard or a tap where dragging is not possible (US3-3, FR-015). The dish joins the end of the
+ * chosen meal; its own meal and full meals are not offered (FR-004).
  */
-export function MoveToMenu({ week, from, onMove, onClose }: Props) {
+export function MoveToMenu({ week, itemId, onMove, onClose }: Props) {
   const [to, setTo] = useState<SlotRef | null>(null);
-  const source = week.days.find((d) => d.day === from.day)?.slots.find((s) => s.meal === from.meal)?.item;
-  const target = to ? week.days.find((d) => d.day === to.day)?.slots.find((s) => s.meal === to.meal)?.item : null;
-  const name = source?.recipeName ?? '';
+  const from = findItem(week, itemId);
+  const name = from?.item.recipeName ?? '';
+  const target = to ? week.days.find((d) => d.day === to.day)?.slots.find((s) => s.meal === to.meal)?.items ?? [] : [];
 
   return (
     <Overlay title={vi.moveTitle(name)} onClose={onClose} variant="modal" panelStyle={{ width: 'min(1120px, 100%)' }}>
@@ -52,44 +53,40 @@ export function MoveToMenu({ week, from, onMove, onClose }: Props) {
               <div key={meal} style={{ display: 'contents' }}>
                 <div className="wx-week__meal">{vi.meal[meal]}</div>
                 {week.days.map((d) => {
-                  const dish = d.slots[mealIndex].item;
-                  const isSource = d.day === from.day && meal === from.meal;
+                  const dishes = d.slots[mealIndex].items;
+                  const isSource = d.day === from?.day && meal === from.meal;
+                  const isFull = dishes.length >= MAX_DISHES;
                   const chosen = to?.day === d.day && to.meal === meal;
                   return (
                     <button
                       key={d.day}
                       type="button"
-                      className={dish ? 'wk-slot' : 'wk-slot wk-slot--empty'}
-                      aria-label={vi.slotLabel(vi.dayLong[d.day], vi.mealLong[meal], dish?.recipeName)}
+                      className={dishes.length ? 'wk-slot' : 'wk-slot wk-slot--empty'}
+                      aria-label={vi.slotLabel(vi.dayLong[d.day], vi.mealLong[meal], dishes.map((i) => i.recipeName).join(', ') || undefined)}
                       aria-pressed={chosen}
-                      disabled={isSource}
+                      disabled={isSource || isFull}
                       onClick={() => setTo({ day: d.day, meal })}
                       style={{
                         font: 'inherit',
                         textAlign: 'left',
                         position: 'relative',
-                        opacity: isSource ? 0.5 : undefined,
+                        opacity: isSource || isFull ? 0.5 : undefined,
                         outline: chosen ? '2.5px solid var(--color-primary)' : undefined,
                         outlineOffset: chosen ? 1 : undefined,
                       }}
                     >
-                      {dish ? (
-                        <span className="wk-card wk-card--compact" style={{ alignItems: 'flex-start' }}>
-                          <DishPhoto url={dish.available ? dish.coverImageUrl : null} name={dish.recipeName} size={44} />
-                          <span className="wk-card__body">
-                            <span className="wk-card__title" style={{ fontSize: 14, lineHeight: '18px' }}>
+                      {dishes.length === 0 && <span className="wk-small wk-muted">{vi.emptySlot}</span>}
+                      {dishes.map((dish) => (
+                        <span key={dish.id} className="wk-card wk-card--compact" style={{ alignItems: 'center', gap: 8 }}>
+                          <DishPhoto url={dish.available ? dish.coverImageUrl : null} name={dish.recipeName} size={28} />
+                          <span className="wk-card__body min-w-0">
+                            <span className="wk-card__title line-clamp-2" style={{ fontSize: 13, lineHeight: '17px' }}>
                               {dish.recipeName}
                             </span>
                           </span>
                         </span>
-                      ) : (
-                        <span className="wk-small wk-muted">{vi.emptySlot}</span>
-                      )}
-                      {chosen && dish && (
-                        <span className="wk-caption" style={{ color: 'var(--color-primary)' }}>
-                          {vi.willSwap}
-                        </span>
-                      )}
+                      ))}
+                      {isFull && !isSource && <span className="wk-caption">{vi.fullShort}</span>}
                     </button>
                   );
                 })}
@@ -97,10 +94,10 @@ export function MoveToMenu({ week, from, onMove, onClose }: Props) {
             ))}
           </div>
 
-          {target && (
+          {target.length > 0 && (
             <div className="wk-banner wk-banner--info" role="status">
               <Icon name="move" />
-              <div>{vi.swapWith(target.recipeName)}</div>
+              <div>{vi.addAfter(target[target.length - 1].recipeName)}</div>
             </div>
           )}
 
@@ -108,7 +105,7 @@ export function MoveToMenu({ week, from, onMove, onClose }: Props) {
             <button type="button" className="wk-btn wk-btn--secondary" onClick={onClose}>
               {vi.cancel}
             </button>
-            <button type="button" className="wk-btn wk-btn--primary" disabled={!to} onClick={() => to && onMove(from, to)}>
+            <button type="button" className="wk-btn wk-btn--primary" disabled={!to} onClick={() => to && onMove(to)}>
               {to ? vi.moveHere(vi.meal[to.meal], vi.dayShort[to.day]) : vi.movePending}
             </button>
           </div>

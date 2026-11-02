@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { mealPlanApi, MealPlanApiError } from '../api/mealPlanApi';
-import type { ChosenRecipe } from '../hooks/useWeekPlan';
-import { itemAt } from '../hooks/useWeekPlan';
+import { mealAt, type ChosenRecipe } from '../hooks/useWeekPlan';
 import { addWeeks, currentWeekStart, dateOf, dayOfMonth, formatDate, formatWeekRange, todayInVietnam } from '../lib/week';
 import { vi } from '../strings.vi';
-import { DAYS, MEALS, type Day, type ErrorCode, type Meal, type PlanItem, type WeekPlan } from '../types';
+import { DAYS, MAX_DISHES, MEALS, type Day, type ErrorCode, type Meal, type WeekPlan } from '../types';
 import { Icon } from './Icon';
 import { Overlay } from './Overlay';
 import { ServingsInput } from './ServingsInput';
@@ -28,9 +27,9 @@ const codeOf = (error: unknown): ErrorCode => (error instanceof MealPlanApiError
 const clampServings = (n: number | null | undefined) => Math.min(20, Math.max(1, Math.round(n ?? 1)));
 
 /**
- * "Thêm vào thực đơn" from a recipe (T054, W-MP05 / MP-05): pick a week, a day and a meal, then add. A slot that
- * already holds a dish is named and replaced only after the user confirms (US2-3); the dish shown is the one sent
- * as `expected`, so a change made elsewhere meanwhile is never overwritten.
+ * "Thêm vào thực đơn" from a recipe (T054, T120, W-MP05 / MP-05): pick a week, a day and a meal, then add. The
+ * dish goes to the end of the meal; the dishes already there are named (US2-3), and a meal with 4 dishes cannot
+ * be chosen (FR-004). A meal that filled up elsewhere meanwhile comes back as 409 MEAL_FULL.
  */
 export function AddToPlanDialog({ recipe, onClose, onUnauthenticated }: Props) {
   const [weekStart, setWeekStart] = useState(() => currentWeekStart());
@@ -43,8 +42,6 @@ export function AddToPlanDialog({ recipe, onClose, onUnauthenticated }: Props) {
   const [servings, setServings] = useState(() => clampServings(recipe.servings));
   const [servingsChanged, setServingsChanged] = useState(false);
   const [preview, setPreview] = useState<{ weekStart: string; week: WeekPlan } | null>(null);
-  /** Dish the server reported in a 409 SLOT_OCCUPIED, for the slot it was reported on. */
-  const [reported, setReported] = useState<{ key: string; item: PlanItem } | null>(null);
   const [saving, setSaving] = useState(false);
   const [outcome, setOutcome] = useState<Outcome | null>(null);
 
@@ -61,31 +58,30 @@ export function AddToPlanDialog({ recipe, onClose, onUnauthenticated }: Props) {
     };
   }, [weekStart, onUnauthenticated]);
 
-  const key = `${weekStart}/${day}/${meal}`;
-  const occupied =
-    reported?.key === key ? reported.item : preview?.weekStart === weekStart ? itemAt(preview.week, day, meal) : null;
+  const dishes = preview?.weekStart === weekStart ? mealAt(preview.week, day, meal) : [];
+  const isFull = dishes.length >= MAX_DISHES;
+
+  const reloadPreview = () => {
+    setPreview(null);
+    mealPlanApi.getWeek(weekStart).then((week) => setPreview({ weekStart, week }), () => undefined);
+  };
 
   const submit = async () => {
     setSaving(true);
     setOutcome(null);
     try {
-      await mealPlanApi.putSlot(weekStart, day, meal, {
+      await mealPlanApi.addItem(weekStart, day, meal, {
         recipeId: recipe.recipeId,
         servings: servingsChanged ? servings : null,
-        expected: occupied ? { itemId: occupied.id, version: occupied.version } : null,
       });
       setOutcome({ kind: 'added', day, meal, weekStart });
     } catch (error) {
       const code = codeOf(error);
       if (code === 'UNAUTHENTICATED') {
         onUnauthenticated();
-      } else if (code === 'SLOT_OCCUPIED' && error instanceof MealPlanApiError && error.currentItem) {
-        setReported({ key, item: error.currentItem });
-      } else if (code === 'SLOT_CHANGED') {
-        setReported(null);
-        setPreview(null);
-        mealPlanApi.getWeek(weekStart).then((week) => setPreview({ weekStart, week }), () => undefined);
-        setOutcome({ kind: 'error', message: vi.planChanged });
+      } else if (code === 'MEAL_FULL' || code === 'SLOT_CHANGED') {
+        reloadPreview();
+        setOutcome({ kind: 'error', message: code === 'MEAL_FULL' ? vi.mealFull : vi.planChanged });
       } else {
         setOutcome({ kind: 'error', message: code === 'RECIPE_NOT_AVAILABLE' ? vi.errors.RECIPE_NOT_AVAILABLE : vi.notSaved });
       }
@@ -181,14 +177,20 @@ export function AddToPlanDialog({ recipe, onClose, onUnauthenticated }: Props) {
                 ))}
               </div>
 
-              {occupied && (
+              {isFull ? (
                 <div className="wk-banner wk-banner--warning">
-                  <Icon name="info" />
-                  <div>
-                    <strong>{vi.occupied(vi.meal[meal], vi.dayLong[day], occupied.recipeName)}</strong>
-                    {vi.occupiedHint}
-                  </div>
+                  <Icon name="warning" />
+                  <div>{vi.mealFullHint}</div>
                 </div>
+              ) : (
+                dishes.length > 0 && (
+                  <div className="wk-banner wk-banner--info">
+                    <Icon name="info" />
+                    <div>
+                      <strong>{vi.mealHas(dishes.map((i) => i.recipeName).join(', '))}</strong> {vi.mealHasHint}
+                    </div>
+                  </div>
+                )
               )}
               {outcome?.kind === 'error' && (
                 <div className="wk-banner wk-banner--error" role="alert">
@@ -212,8 +214,8 @@ export function AddToPlanDialog({ recipe, onClose, onUnauthenticated }: Props) {
                 <button type="button" className="wk-btn wk-btn--secondary" onClick={onClose}>
                   {vi.cancel}
                 </button>
-                <button type="button" className="wk-btn wk-btn--primary" disabled={saving} onClick={() => void submit()}>
-                  {occupied ? vi.replace : vi.addToPlan}
+                <button type="button" className="wk-btn wk-btn--primary" disabled={saving || isFull} onClick={() => void submit()}>
+                  {vi.addToPlan}
                 </button>
               </div>
             </>

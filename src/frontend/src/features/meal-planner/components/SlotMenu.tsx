@@ -15,15 +15,20 @@ interface Props {
   onServings: (servings: number) => void;
   onReplace: () => void;
   onMove: () => void;
+  /** Set when the dish is not first in its meal (US3-4). */
+  onMoveUp?: () => void;
+  /** Set when the dish is not last in its meal (US3-4). */
+  onMoveDown?: () => void;
   onRemove: () => void;
   onClose: () => void;
 }
 
 /**
- * Menu of a dish (W-MP02 / MP-02): view the recipe, replace it, move it, change its servings, remove it — in the
- * order of the screen (T067). Shown as a narrow `wx-modal` instead of a popover anchored to the slot.
+ * Menu of a dish (W-MP02 / MP-02): view the recipe, replace it, move it to another meal or up and down inside its
+ * own, change its servings, remove it — in the order of the screen (T067, T120). Shown as a narrow `wx-modal`
+ * instead of a popover anchored to the dish.
  */
-export function SlotMenu({ day, meal, date, item, onServings, onReplace, onMove, onRemove, onClose }: Props) {
+export function SlotMenu({ day, meal, date, item, onServings, onReplace, onMove, onMoveUp, onMoveDown, onRemove, onClose }: Props) {
   return (
     <Overlay title={item.recipeName} onClose={onClose} variant="modal" panelStyle={{ width: 'min(340px, 100%)', padding: 12, gap: 8 }}>
       {() => (
@@ -55,6 +60,18 @@ export function SlotMenu({ day, meal, date, item, onServings, onReplace, onMove,
               <Icon name="move" />
               <span className="sx-grow">{vi.moveTo}</span>
             </button>
+            {onMoveUp && (
+              <button type="button" onClick={onMoveUp}>
+                <Icon name="arrowUp" />
+                <span className="sx-grow">{vi.moveUp}</span>
+              </button>
+            )}
+            {onMoveDown && (
+              <button type="button" onClick={onMoveDown}>
+                <Icon name="arrowDown" />
+                <span className="sx-grow">{vi.moveDown}</span>
+              </button>
+            )}
             <div>
               <Icon name="users" />
               <span className="sx-grow">{vi.servings}</span>

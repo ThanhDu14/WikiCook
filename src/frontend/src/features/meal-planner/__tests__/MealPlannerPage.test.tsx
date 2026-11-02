@@ -31,9 +31,9 @@ describe('MealPlannerPage (T048)', () => {
           hasNext: false,
         }),
       ),
-      http.put(`/api/v1/meal-plans/${WEEK}/slots/WEDNESDAY/LUNCH`, () => {
+      http.post(`/api/v1/meal-plans/${WEEK}/meals/WEDNESDAY/LUNCH/items`, () => {
         saved = true;
-        return HttpResponse.json(item());
+        return HttpResponse.json({ day: 'WEDNESDAY', meal: 'LUNCH', item: item() }, { status: 201 });
       }),
     );
     renderPage();
@@ -52,8 +52,8 @@ describe('MealPlannerPage (T048)', () => {
     const current = item({ id: 5, servings: 4 });
     server.use(
       http.get(`/api/v1/meal-plans/${WEEK}`, () => HttpResponse.json(week({ 'MONDAY/DINNER': current }))),
-      http.patch(`/api/v1/meal-plans/${WEEK}/slots/MONDAY/DINNER/servings`, () =>
-        HttpResponse.json({ ...current, servings: 5, version: 1 }),
+      http.patch(`/api/v1/meal-plans/${WEEK}/items/5/servings`, () =>
+        HttpResponse.json({ day: 'MONDAY', meal: 'DINNER', item: { ...current, servings: 5, version: 1 } }),
       ),
     );
     renderPage();

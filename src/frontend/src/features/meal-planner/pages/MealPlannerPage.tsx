@@ -6,15 +6,18 @@ import { SlotMenu } from '../components/SlotMenu';
 import { Snackbar } from '../components/Snackbar';
 import { WeekGrid } from '../components/WeekGrid';
 import { Icon } from '../components/Icon';
-import { itemAt, useWeekPlan } from '../hooks/useWeekPlan';
+import { findItem, mealAt, useWeekPlan } from '../hooks/useWeekPlan';
 import { addWeeks, currentWeekStart, dateOf, formatWeekTitle, isMonday } from '../lib/week';
 import { vi } from '../strings.vi';
 import { DAYS, type Day, type Meal } from '../types';
 
-type Target = { day: Day; meal: Meal };
-type Picking = Target & { replace: boolean };
+/** The picker adds to a meal, or replaces one dish of it. */
+type Picking = { day: Day; meal: Meal; replaceItemId?: number };
 
-/** The meal planner (T048, T056): `?week=` picks the week; the current week as a 7 × 3 grid (MP-01), picker (MP-04) and dish menu (MP-02). */
+/**
+ * The meal planner (T048, T056, T120): `?week=` picks the week; the week as a 7 × 3 grid of meals with up to 4
+ * dishes each (MP-01), picker (MP-04), dish menu (MP-02) and "Chuyển sang…" (MP-03).
+ */
 export function MealPlannerPage() {
   const [params, setParams] = useSearchParams();
   const asked = params.get('week');
@@ -29,9 +32,11 @@ export function MealPlannerPage() {
   const plan = useWeekPlan(weekStart, { onUnauthenticated: signIn });
   const goTo = (week: string) => setParams(week === currentWeekStart() ? {} : { week });
   const [picking, setPicking] = useState<Picking | null>(null);
-  const [menu, setMenu] = useState<Target | null>(null);
-  const [moving, setMoving] = useState<Target | null>(null);
-  const menuItem = menu ? itemAt(plan.week, menu.day, menu.meal) : null;
+  /** Id of the dish whose menu or move dialog is open. */
+  const [menu, setMenu] = useState<number | null>(null);
+  const [moving, setMoving] = useState<number | null>(null);
+  const menuDish = menu === null ? null : findItem(plan.week, menu);
+  const menuMealSize = menuDish ? mealAt(plan.week, menuDish.day, menuDish.meal).length : 0;
 
   return (
     <section className="grid gap-ds-5">
@@ -71,9 +76,9 @@ export function MealPlannerPage() {
         <WeekGrid
           week={plan.week}
           enableDrag
-          onAdd={(day, meal) => setPicking({ day, meal, replace: false })}
-          onOpenItem={(day, meal) => setMenu({ day, meal })}
-          onMove={(from, to) => void plan.moveItem(from, to)}
+          onAdd={(day, meal) => setPicking({ day, meal })}
+          onOpenItem={(_day, _meal, item) => setMenu(item.id)}
+          onMove={(itemId, to) => void plan.moveItem(itemId, to)}
           onClearDay={(day) => void plan.clearDay(day)}
         />
       )}
@@ -90,45 +95,56 @@ export function MealPlannerPage() {
           meal={picking.meal}
           onClose={() => setPicking(null)}
           onPick={async (recipe) => {
-            // replacing keeps the servings of the dish that was there (US3-4)
-            const code = picking.replace
-              ? await plan.placeDish(picking.day, picking.meal, recipe)
-              : await plan.addDish(picking.day, picking.meal, recipe);
+            // replacing keeps the servings and the place of the dish that was there (US3-5)
+            const code =
+              picking.replaceItemId !== undefined
+                ? await plan.replaceDish(picking.replaceItemId, recipe)
+                : await plan.addDish(picking.day, picking.meal, recipe);
             if (code !== 'RECIPE_NOT_AVAILABLE') setPicking(null);
             return code;
           }}
         />
       )}
-      {menu && menuItem && (
+      {menuDish && (
         <SlotMenu
-          day={menu.day}
-          meal={menu.meal}
-          date={dateOf(weekStart, DAYS.indexOf(menu.day))}
-          item={menuItem}
-          onServings={(servings) => void plan.changeServings(menu.day, menu.meal, servings)}
+          day={menuDish.day}
+          meal={menuDish.meal}
+          date={dateOf(weekStart, DAYS.indexOf(menuDish.day))}
+          item={menuDish.item}
+          onServings={(servings) => void plan.changeServings(menuDish.item.id, servings)}
           onReplace={() => {
             setMenu(null);
-            setPicking({ ...menu, replace: true });
+            setPicking({ day: menuDish.day, meal: menuDish.meal, replaceItemId: menuDish.item.id });
           }}
           onMove={() => {
             setMenu(null);
-            setMoving(menu);
+            setMoving(menuDish.item.id);
           }}
+          onMoveUp={
+            menuDish.index > 0
+              ? () => void plan.moveItem(menuDish.item.id, { day: menuDish.day, meal: menuDish.meal, position: menuDish.index - 1 })
+              : undefined
+          }
+          onMoveDown={
+            menuDish.index < menuMealSize - 1
+              ? () => void plan.moveItem(menuDish.item.id, { day: menuDish.day, meal: menuDish.meal, position: menuDish.index + 1 })
+              : undefined
+          }
           onRemove={() => {
             setMenu(null);
-            void plan.removeDish(menu.day, menu.meal);
+            void plan.removeDish(menuDish.item.id);
           }}
           onClose={() => setMenu(null)}
         />
       )}
-      {moving && plan.week && (
+      {moving !== null && plan.week && (
         <MoveToMenu
           week={plan.week}
-          from={moving}
+          itemId={moving}
           onClose={() => setMoving(null)}
-          onMove={(from, to) => {
+          onMove={(to) => {
             setMoving(null);
-            void plan.moveItem(from, to);
+            void plan.moveItem(moving, to);
           }}
         />
       )}

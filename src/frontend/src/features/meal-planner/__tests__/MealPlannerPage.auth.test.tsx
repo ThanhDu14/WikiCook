@@ -45,7 +45,7 @@ describe('MealPlannerPage sign-in (T052)', () => {
         const plan = week({ 'MONDAY/LUNCH': item({ servings: 4 }) });
         return HttpResponse.json({ ...plan, weekStart: '2026-10-26' });
       }),
-      http.patch('/api/v1/meal-plans/2026-10-26/slots/MONDAY/LUNCH/servings', unauthenticated),
+      http.patch('/api/v1/meal-plans/2026-10-26/items/1/servings', unauthenticated),
     );
     renderAt('/meal-planner?week=2026-10-26');
 

@@ -1,32 +1,30 @@
 import { api, ApiError } from '@/shared/api/client';
 import type {
+  AddItemRequest,
   Day,
   ErrorCode,
-  ExpectedSlotState,
   Meal,
-  MoveRequest,
+  MoveItemRequest,
   MoveResult,
   PatchServingsRequest,
   PickerPage,
   PickerQuery,
-  PlanItem,
-  PutSlotRequest,
+  PlacedItem,
+  ReplaceItemRequest,
   ShoppingHandoff,
   WeekPlan,
 } from '../types';
 
-/** A failed meal plan call: HTTP status (0 = no response), the ProblemDetail `code`, and `currentItem` for 409s. */
+/** A failed meal plan call: HTTP status (0 = no response) and the ProblemDetail `code`. */
 export class MealPlanApiError extends Error {
   readonly status: number;
   readonly code: ErrorCode;
-  readonly currentItem?: PlanItem;
 
-  constructor(status: number, code: ErrorCode, message: string, currentItem?: PlanItem) {
+  constructor(status: number, code: ErrorCode, message: string) {
     super(message);
     this.name = 'MealPlanApiError';
     this.status = status;
     this.code = code;
-    this.currentItem = currentItem;
   }
 }
 
@@ -34,8 +32,7 @@ function toError(error: unknown): MealPlanApiError {
   if (error instanceof MealPlanApiError) return error;
   if (error instanceof ApiError) {
     const code = typeof error.problem.code === 'string' ? (error.problem.code as ErrorCode) : 'UNKNOWN';
-    const currentItem = (error.problem.currentItem ?? undefined) as PlanItem | undefined;
-    return new MealPlanApiError(error.status, code, error.message, currentItem);
+    return new MealPlanApiError(error.status, code, error.message);
   }
   // fetch rejects with a TypeError when the network is down (research R14)
   return new MealPlanApiError(0, 'NETWORK', error instanceof Error ? error.message : 'Network error');
@@ -50,22 +47,26 @@ async function call<T>(request: () => Promise<T>): Promise<T> {
 }
 
 const week = (weekStart: string) => `/meal-plans/${encodeURIComponent(weekStart)}`;
-const slot = (weekStart: string, day: Day, meal: Meal) => `${week(weekStart)}/slots/${day}/${meal}`;
+const itemPath = (weekStart: string, itemId: number) => `${week(weekStart)}/items/${itemId}`;
 
-/** Calls of contracts/openapi.yaml (T026); every call works on the signed-in user's own plan. */
+/** Calls of contracts/openapi.yaml 0.2.0 (T026, T120); every call works on the signed-in user's own plan. */
 export const mealPlanApi = {
   getWeek: (weekStart: string) => call(() => api.get<WeekPlan>(week(weekStart))),
 
-  putSlot: (weekStart: string, day: Day, meal: Meal, body: PutSlotRequest) =>
-    call(() => api.put<PlanItem>(slot(weekStart, day, meal), body)),
+  addItem: (weekStart: string, day: Day, meal: Meal, body: AddItemRequest) =>
+    call(() => api.post<PlacedItem>(`${week(weekStart)}/meals/${day}/${meal}/items`, body)),
 
-  patchServings: (weekStart: string, day: Day, meal: Meal, body: PatchServingsRequest) =>
-    call(() => api.patch<PlanItem>(`${slot(weekStart, day, meal)}/servings`, body)),
+  replaceItem: (weekStart: string, itemId: number, body: ReplaceItemRequest) =>
+    call(() => api.put<PlacedItem>(itemPath(weekStart, itemId), body)),
 
-  moveItem: (weekStart: string, body: MoveRequest) => call(() => api.post<MoveResult>(`${week(weekStart)}/moves`, body)),
+  patchServings: (weekStart: string, itemId: number, body: PatchServingsRequest) =>
+    call(() => api.patch<PlacedItem>(`${itemPath(weekStart, itemId)}/servings`, body)),
 
-  deleteSlot: (weekStart: string, day: Day, meal: Meal, expected: NonNullable<ExpectedSlotState>) =>
-    call(() => api.delete(`${slot(weekStart, day, meal)}?itemId=${expected.itemId}&version=${expected.version}`)),
+  moveItem: (weekStart: string, itemId: number, body: MoveItemRequest) =>
+    call(() => api.post<MoveResult>(`${itemPath(weekStart, itemId)}/move`, body)),
+
+  deleteItem: (weekStart: string, itemId: number, version: number) =>
+    call(() => api.delete(`${itemPath(weekStart, itemId)}?version=${version}`)),
 
   clearDay: (weekStart: string, day: Day) => call(() => api.delete(`${week(weekStart)}/days/${day}`)),
 

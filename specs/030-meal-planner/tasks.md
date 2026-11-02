@@ -217,7 +217,7 @@ test cũ được viết lại theo hành vi mới.
 - [x] T112 [P] [US3] Unit test `ItemMoveServiceTest` (thay `SlotMoveServiceTest`) – chuyển sang bữa khác vào cuối hoặc vào `position`; dồn vị trí bữa nguồn; đổi thứ tự trong bữa; bữa đích đủ 4 → `MealFullException`, không lưu gì; `version` lệch → `SlotChangedException`; `source` giữ nguyên
 - [x] T113 [P] [US3] Integration test `ItemConcurrencyIT` (thay `SlotMoveAtomicityIT`) – lỗi giữa lúc chuyển → không món nào đổi (NFR-005); 5 lệnh thêm đồng thời vào một bữa trống → đúng 4 thành công, 1 `MEAL_FULL`, vị trí 0–3 không trùng (SC-005)
 - [x] T114 [P] [US1] [US2] [US3] Integration test `MealPlanControllerIT` (gộp và viết lại US1–US3 IT) – GET trả `slots[].items[]` theo `position`; POST thêm 201, đủ 4 → 409 `MEAL_FULL`; PUT/PATCH/DELETE theo `itemId` + `version`; move 200 trả các bữa bị ảnh hưởng; món của người khác → 409; `DELETE …/days/{day}` 204
-- [ ] T115 [P] [US1] [US2] [US3] Frontend test (viết lại, cập nhật mã kịch bản theo spec 2026-11-02: US1-11, US3-1…8) `useWeekPlan`, `WeekGrid`, `WeekGrid.dnd`, `MoveToMenu`, `SlotMenu`, `AddToPlanDialog`, `MealPlannerPage*` theo hành vi nhiều món: ô bữa xếp nhiều card, "+ Thêm món" ẩn khi đủ 4; kéo vào bữa khác → thêm vào cuối, kéo vào bữa đầy → không gọi API + báo; đổi thứ tự trong bữa bằng bàn phím và bằng "Lên trên"/"Xuống dưới" trong menu món (FR-015); dialog liệt kê "Bữa này đã có: …" và khóa xác nhận khi đủ 4
+- [x] T115 [P] [US1] [US2] [US3] Frontend test (viết lại, cập nhật mã kịch bản theo spec 2026-11-02: US1-11, US3-1…8) `useWeekPlan`, `WeekGrid`, `WeekGrid.dnd`, `MoveToMenu`, `SlotMenu`, `AddToPlanDialog`, `MealPlannerPage*` theo hành vi nhiều món: ô bữa xếp nhiều card, "+ Thêm món" ẩn khi đủ 4; kéo vào bữa khác → thêm vào cuối, kéo vào bữa đầy → không gọi API + báo; đổi thứ tự trong bữa bằng bàn phím và bằng "Lên trên"/"Xuống dưới" trong menu món (FR-015); dialog liệt kê "Bữa này đã có: …" và khóa xác nhận khi đủ 4
 
 ### Implementation
 
@@ -225,7 +225,7 @@ test cũ được viết lại theo hành vi mới.
 - [x] T117 [US1] `MealPlanItem.position`, `MealFullException` (`MEAL_FULL` 409), khóa `meal_plans` `FOR UPDATE` trong repository; `MealPlanService` add/replace/servings/remove/clearDay theo món (làm T111 xanh)
 - [x] T118 [US3] `ItemMoveService` thay `SlotMoveService` (làm T112, T113 xanh)
 - [x] T119 [US1] [US2] [US3] Controller và DTO theo contracts/openapi.yaml 0.2.0; bỏ `PutSlotRequest`, `ExpectedSlotState`, `SlotOccupiedException` (làm T114 xanh)
-- [ ] T120 [US1] [US2] [US3] Frontend: types, `mealPlanApi`, `useWeekPlan`, `WeekGrid` (ô nhiều card, dnd theo món, đổi thứ tự), `MoveToMenu`, `SlotMenu` (thêm "Lên trên"/"Xuống dưới"), `AddToPlanDialog`, `MealPlannerPage` (làm T115 xanh)
+- [x] T120 [US1] [US2] [US3] Frontend: types, `mealPlanApi`, `useWeekPlan`, `WeekGrid` (ô nhiều card, dnd theo món, đổi thứ tự), `MoveToMenu`, `SlotMenu` (thêm "Lên trên"/"Xuống dưới"), `AddToPlanDialog`, `MealPlannerPage` (làm T115 xanh)
 - [ ] T121 [US1] `MealPlanWriteFacade` theo integration.md 2.2 bản 2026-11-02 khi làm T100 (Phase 10)
 
 **Checkpoint**: US1–US3 chạy lại đầy đủ với nhiều món mỗi bữa; quickstart Q1–Q12 (bản 2026-11-02) đạt.

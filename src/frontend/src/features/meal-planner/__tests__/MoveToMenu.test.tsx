@@ -4,47 +4,53 @@ import { MoveToMenu } from '../components/MoveToMenu';
 import { item, week } from './fixtures';
 
 const pho = item({ id: 5, recipeName: 'Phở bò' });
-const plan = week({ 'MONDAY/LUNCH': pho, 'THURSDAY/LUNCH': item({ id: 6, recipeName: 'Bún riêu' }) });
+const full = [1, 2, 3, 4].map((id) => item({ id: 10 + id, recipeName: `Món ${id}` }));
+const plan = week({
+  'MONDAY/LUNCH': [pho, item({ id: 7, recipeName: 'Rau muống' })],
+  'THURSDAY/LUNCH': item({ id: 6, recipeName: 'Bún riêu' }),
+  'SATURDAY/DINNER': full,
+});
 
 function renderMenu() {
   const onMove = vi.fn();
   const onClose = vi.fn();
-  render(<MoveToMenu week={plan} from={{ day: 'MONDAY', meal: 'LUNCH' }} onMove={onMove} onClose={onClose} />);
+  render(<MoveToMenu week={plan} itemId={5} onMove={onMove} onClose={onClose} />);
   return { onMove, onClose };
 }
 
-describe('MoveToMenu (T061, W-MP03)', () => {
-  it('moves to an empty slot with the keyboard only (US3-3, FR-015)', async () => {
+describe('MoveToMenu (T061, T115, W-MP03)', () => {
+  it('moves to an empty meal with the keyboard only (US3-3, FR-015)', async () => {
     const { onMove } = renderMenu();
     const dialog = screen.getByRole('dialog', { name: 'Chuyển “Phở bò”' });
     expect(within(dialog).getByRole('button', { name: 'Chuyển đến…' })).toBeDisabled();
 
-    // focus lands inside the dialog; Tab to the target and press Enter
     const target = within(dialog).getByRole('button', { name: 'Thứ Sáu, bữa tối, trống' });
     target.focus();
     await userEvent.keyboard('{Enter}');
     expect(target).toHaveAttribute('aria-pressed', 'true');
-    await userEvent.tab({ shift: false });
     const confirm = within(dialog).getByRole('button', { name: 'Chuyển đến Tối T6' });
     confirm.focus();
     await userEvent.keyboard('{Enter}');
 
-    expect(onMove).toHaveBeenCalledWith({ day: 'MONDAY', meal: 'LUNCH' }, { day: 'FRIDAY', meal: 'DINNER' });
+    expect(onMove).toHaveBeenCalledWith({ day: 'FRIDAY', meal: 'DINNER' });
   });
 
-  it('says the dishes will swap when the target has one', async () => {
+  it('says the dish joins the end of a meal that has dishes', async () => {
     const { onMove } = renderMenu();
 
     await userEvent.click(screen.getByRole('button', { name: 'Thứ Năm, bữa trưa, Bún riêu' }));
 
-    expect(screen.getByText('Đổi chỗ với Bún riêu')).toBeInTheDocument();
+    expect(screen.getByText('Thêm vào sau Bún riêu')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Chuyển đến Trưa T5' }));
-    expect(onMove).toHaveBeenCalledWith({ day: 'MONDAY', meal: 'LUNCH' }, { day: 'THURSDAY', meal: 'LUNCH' });
+    expect(onMove).toHaveBeenCalledWith({ day: 'THURSDAY', meal: 'LUNCH' });
   });
 
-  it('does not offer the slot the dish is in', () => {
+  it('does not offer the meal the dish is in or a full meal (FR-004)', () => {
     renderMenu();
 
-    expect(screen.getByRole('button', { name: 'Thứ Hai, bữa trưa, Phở bò' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Thứ Hai, bữa trưa, Phở bò, Rau muống' })).toBeDisabled();
+    const saturday = screen.getByRole('button', { name: 'Thứ Bảy, bữa tối, Món 1, Món 2, Món 3, Món 4' });
+    expect(saturday).toBeDisabled();
+    expect(within(saturday).getByText('Đủ 4 món')).toBeInTheDocument();
   });
 });

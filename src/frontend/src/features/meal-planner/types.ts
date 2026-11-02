@@ -1,4 +1,4 @@
-/** Types of specs/030-meal-planner/contracts/openapi.yaml (T025). Dates are ISO strings "YYYY-MM-DD". */
+/** Types of specs/030-meal-planner/contracts/openapi.yaml 0.2.0 (T025, T120). Dates are ISO strings "YYYY-MM-DD". */
 
 export const DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'] as const;
 export type Day = (typeof DAYS)[number];
@@ -7,15 +7,17 @@ export type Day = (typeof DAYS)[number];
 export const MEALS = ['BREAKFAST', 'LUNCH', 'DINNER'] as const;
 export type Meal = (typeof MEALS)[number];
 
+/** A meal holds 0 to 4 dishes (FR-004). */
+export const MAX_DISHES = 4;
+
 export type ItemSource = 'MANUAL' | 'AI' | 'AUTO';
 export type DietType = 'NONE' | 'VEGETARIAN' | 'VEGAN' | 'PESCATARIAN';
-
-/** The slot as the client saw it; `null` = empty. */
-export type ExpectedSlotState = { itemId: number; version: number } | null;
 
 export interface PlanItem {
   id: number;
   version: number;
+  /** place inside the meal, 0 first */
+  position: number;
   recipeId?: number | null;
   recipeName: string;
   coverImageUrl?: string | null;
@@ -27,9 +29,10 @@ export interface PlanItem {
   dietType?: DietType;
 }
 
+/** A meal of a day: its dishes by position; empty list = empty meal. */
 export interface Slot {
   meal: Meal;
-  item: PlanItem | null;
+  items: PlanItem[];
 }
 
 export interface DayNutrition {
@@ -55,21 +58,31 @@ export interface WeekPlan {
   days: DayPlan[];
 }
 
-export interface PutSlotRequest {
+export interface AddItemRequest {
   recipeId: number;
   servings?: number | null;
   source?: ItemSource;
-  expected: ExpectedSlotState;
+}
+
+export interface ReplaceItemRequest {
+  recipeId: number;
+  servings?: number | null;
+  source?: ItemSource;
+  /** version of the dish the client saw */
+  version: number;
 }
 
 export interface PatchServingsRequest {
   servings: number;
-  expected: ExpectedSlotState;
+  version: number;
 }
 
-export interface MoveRequest {
-  from: { day: Day; meal: Meal; itemId: number; version: number };
-  to: { day: Day; meal: Meal; expected: ExpectedSlotState };
+export interface MoveItemRequest {
+  day: Day;
+  meal: Meal;
+  /** null = the end of the target meal */
+  position?: number | null;
+  version: number;
 }
 
 export interface PlacedItem {
@@ -78,9 +91,15 @@ export interface PlacedItem {
   item: PlanItem;
 }
 
+export interface MealItems {
+  day: Day;
+  meal: Meal;
+  items: PlanItem[];
+}
+
+/** One meal after a reorder, source and target meals after a move. */
 export interface MoveResult {
-  kind: 'MOVED' | 'SWAPPED';
-  items: PlacedItem[];
+  meals: MealItems[];
 }
 
 export type PickerScope = 'ALL' | 'COLLECTIONS';
@@ -126,7 +145,7 @@ export type ErrorCode =
   | 'VALIDATION_ERROR'
   | 'INVALID_WEEK_START'
   | 'SLOT_CHANGED'
-  | 'SLOT_OCCUPIED'
+  | 'MEAL_FULL'
   | 'RECIPE_NOT_AVAILABLE'
   | 'UNAUTHENTICATED'
   | 'NETWORK'

@@ -15,7 +15,7 @@ function renderGrid(plan = week(), handlers: Partial<Parameters<typeof WeekGrid>
   return { onAdd, onOpenItem };
 }
 
-describe('WeekGrid (T035)', () => {
+describe('WeekGrid (T035, T115)', () => {
   it('shows Monday to Sunday and marks today (US1-1)', () => {
     renderGrid();
 
@@ -64,6 +64,22 @@ describe('WeekGrid (T035)', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Tùy chọn: Canh chua cá lóc' }));
     expect(onOpenItem).toHaveBeenCalledWith('TUESDAY', 'BREAKFAST', expect.objectContaining({ id: 1 }));
+  });
+
+  it('stacks up to four dishes of a meal in order, with "Thêm món" until it is full (US1-11, FR-004)', async () => {
+    const dinner = ['Canh chua', 'Cá kho', 'Rau muống xào'].map((recipeName, i) => item({ id: i + 1, recipeName }));
+    const { onAdd } = renderGrid(week({ 'MONDAY/DINNER': dinner, 'TUESDAY/DINNER': [...dinner, item({ id: 9, recipeName: 'Trứng chiên' })] }));
+
+    const monday = screen.getAllByRole('group', { name: /^Thứ Hai, bữa tối, / });
+    expect(monday.map((g) => g.getAttribute('aria-label'))).toEqual([
+      'Thứ Hai, bữa tối, Canh chua',
+      'Thứ Hai, bữa tối, Cá kho',
+      'Thứ Hai, bữa tối, Rau muống xào',
+    ]);
+    await userEvent.click(screen.getByRole('button', { name: 'Thêm món: Thứ Hai, bữa tối' }));
+    expect(onAdd).toHaveBeenCalledWith('MONDAY', 'DINNER');
+    expect(screen.getAllByRole('group', { name: /^Thứ Ba, bữa tối, / })).toHaveLength(4);
+    expect(screen.queryByRole('button', { name: 'Thêm món: Thứ Ba, bữa tối' })).not.toBeInTheDocument();
   });
 
   it('shows dishes that are no longer available (FR-020)', () => {

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { mealPlanApi, MealPlanApiError } from '../api/mealPlanApi';
 import { vi } from '../strings.vi';
-import { DAYS, MEALS, type Day, type ErrorCode, type ItemSource, type Meal, type PlanItem, type WeekPlan } from '../types';
+import { DAYS, MAX_DISHES, MEALS, type Day, type ErrorCode, type ItemSource, type Meal, type PlacedItem, type PlanItem, type WeekPlan } from '../types';
 
 /** A slot of the week. */
 export interface SlotRef {
@@ -48,17 +48,41 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-/** The week with one slot replaced; `empty` and `availableItemCount` follow (FR-022, FR-025). */
-export function withSlot(week: WeekPlan, day: Day, meal: Meal, item: PlanItem | null): WeekPlan {
-  const days = week.days.map((d) =>
-    d.day !== day ? d : { ...d, slots: d.slots.map((s) => (s.meal === meal ? { ...s, item } : s)) },
-  );
-  const items = days.flatMap((d) => d.slots.map((s) => s.item)).filter((i): i is PlanItem => i !== null);
-  return { ...week, days, empty: items.length === 0, availableItemCount: items.filter((i) => i.available).length };
+/** Where a dish goes: a meal, and a place in it (none = its end). */
+export interface MoveTarget extends SlotRef {
+  position?: number;
 }
 
-export function itemAt(week: WeekPlan | null, day: Day, meal: Meal): PlanItem | null {
-  return week?.days[DAYS.indexOf(day)]?.slots[MEALS.indexOf(meal)]?.item ?? null;
+/** The week with the dishes of one meal replaced, positioned in list order; `empty` and `availableItemCount` follow (FR-022, FR-025). */
+export function withMeal(week: WeekPlan, day: Day, meal: Meal, items: PlanItem[]): WeekPlan {
+  const placed = items.map((item, position) => (item.position === position ? item : { ...item, position }));
+  const days = week.days.map((d) =>
+    d.day !== day ? d : { ...d, slots: d.slots.map((s) => (s.meal === meal ? { ...s, items: placed } : s)) },
+  );
+  const all = days.flatMap((d) => d.slots.flatMap((s) => s.items));
+  return { ...week, days, empty: all.length === 0, availableItemCount: all.filter((i) => i.available).length };
+}
+
+/** The dishes of a meal, in order. */
+export function mealAt(week: WeekPlan | null, day: Day, meal: Meal): PlanItem[] {
+  return week?.days[DAYS.indexOf(day)]?.slots[MEALS.indexOf(meal)]?.items ?? [];
+}
+
+/** A dish of the week with its meal and place. */
+export function findItem(week: WeekPlan | null, itemId: number): (SlotRef & { index: number; item: PlanItem }) | null {
+  for (const d of week?.days ?? []) {
+    for (const s of d.slots) {
+      const index = s.items.findIndex((i) => i.id === itemId);
+      if (index >= 0) return { day: d.day, meal: s.meal, index, item: s.items[index] };
+    }
+  }
+  return null;
+}
+
+/** The week with one dish swapped for what the server saved, in the meal the server says. */
+function withPlaced(week: WeekPlan, placed: PlacedItem, replacing = placed.item.id): WeekPlan {
+  const items = mealAt(week, placed.day, placed.meal);
+  return withMeal(week, placed.day, placed.meal, items.map((i) => (i.id === replacing ? placed.item : i)));
 }
 
 const codeOf = (error: unknown): ErrorCode => (error instanceof MealPlanApiError ? error.code : 'UNKNOWN');
@@ -123,6 +147,10 @@ export function useWeekPlan(weekStart: string, options: { onUnauthenticated?: ()
         } else if (code === 'SLOT_CHANGED') {
           dispatch({ type: 'notice', notice: vi.planChanged });
           void reload();
+        } else if (code === 'MEAL_FULL') {
+          // filled up from another tab or device meanwhile
+          dispatch({ type: 'notice', notice: vi.mealFull });
+          void reload();
         } else if (!silent.includes(code)) {
           dispatch({ type: 'notice', notice: vi.notSaved });
         }
@@ -132,59 +160,88 @@ export function useWeekPlan(weekStart: string, options: { onUnauthenticated?: ()
     [reload],
   );
 
-  /**
-   * Puts a recipe in a slot: adds it when the slot is empty, replaces the dish otherwise (servings kept unless
-   * given, US3-4). 409 SLOT_OCCUPIED and 422 are left to the caller (dialog, picker).
-   */
-  const placeDish = useCallback(
-    (day: Day, meal: Meal, recipe: ChosenRecipe, opts: { servings?: number; source?: ItemSource; replace?: PlanItem | null } = {}) => {
-      const current = opts.replace === undefined ? itemAt(latest.current, day, meal) : opts.replace;
-      const optimisticItem: PlanItem = {
-        id: current?.id ?? temporaryId--,
-        version: current?.version ?? 0,
+  /** Says the meal is full without asking the server (FR-004). */
+  const full = useCallback(() => {
+    dispatch({ type: 'notice', notice: vi.mealFull });
+    return Promise.resolve('MEAL_FULL' as ErrorCode);
+  }, []);
+
+  /** Adds a dish at the end of a meal (US1-2, US1-11); 422 is left to the caller (picker). */
+  const addDish = useCallback(
+    (day: Day, meal: Meal, recipe: ChosenRecipe, opts: { servings?: number; source?: ItemSource } = {}) => {
+      const count = mealAt(latest.current, day, meal).length;
+      if (count >= MAX_DISHES) return full();
+      const optimistic: PlanItem = {
+        id: temporaryId--,
+        version: 0,
+        position: count,
         recipeId: recipe.recipeId,
         recipeName: recipe.title,
         coverImageUrl: recipe.coverImageUrl ?? null,
         totalTimeMinutes: recipe.totalTimeMinutes ?? null,
-        servings: opts.servings ?? current?.servings ?? 1,
+        servings: opts.servings ?? 1,
         source: opts.source ?? 'MANUAL',
         available: true,
       };
       return apply(
-        (week) => withSlot(week, day, meal, optimisticItem),
+        (week) => withMeal(week, day, meal, [...mealAt(week, day, meal), optimistic]),
         async () => {
-          const saved = await mealPlanApi.putSlot(weekStart, day, meal, {
+          const placed = await mealPlanApi.addItem(weekStart, day, meal, {
             recipeId: recipe.recipeId,
             servings: opts.servings ?? null,
             ...(opts.source ? { source: opts.source } : {}),
-            expected: current ? { itemId: current.id, version: current.version } : null,
           });
-          return (week) => withSlot(week, day, meal, saved);
+          return (week) => withPlaced(week, placed, optimistic.id);
         },
-        ['SLOT_OCCUPIED', 'RECIPE_NOT_AVAILABLE'],
+        ['RECIPE_NOT_AVAILABLE'],
+      );
+    },
+    [apply, full, weekStart],
+  );
+
+  /** Puts another recipe in the place of a dish; its servings stay unless given (US3-5). */
+  const replaceDish = useCallback(
+    (itemId: number, recipe: ChosenRecipe, opts: { servings?: number; source?: ItemSource } = {}) => {
+      const found = findItem(latest.current, itemId);
+      if (!found) return Promise.resolve('SLOT_CHANGED' as ErrorCode);
+      const { day, meal, item } = found;
+      const optimistic: PlanItem = {
+        ...item,
+        recipeId: recipe.recipeId,
+        recipeName: recipe.title,
+        coverImageUrl: recipe.coverImageUrl ?? null,
+        totalTimeMinutes: recipe.totalTimeMinutes ?? null,
+        servings: opts.servings ?? item.servings,
+        source: opts.source ?? 'MANUAL',
+        available: true,
+      };
+      return apply(
+        (week) => withPlaced(week, { day, meal, item: optimistic }),
+        async () => {
+          const placed = await mealPlanApi.replaceItem(weekStart, itemId, {
+            recipeId: recipe.recipeId,
+            servings: opts.servings ?? null,
+            ...(opts.source ? { source: opts.source } : {}),
+            version: item.version,
+          });
+          return (week) => withPlaced(week, placed);
+        },
+        ['RECIPE_NOT_AVAILABLE'],
       );
     },
     [apply, weekStart],
   );
 
-  const addDish = useCallback(
-    (day: Day, meal: Meal, recipe: ChosenRecipe, opts: { servings?: number; source?: ItemSource } = {}) =>
-      placeDish(day, meal, recipe, { ...opts, replace: null }),
-    [placeDish],
-  );
-
   const changeServings = useCallback(
-    (day: Day, meal: Meal, servings: number) => {
-      const current = itemAt(latest.current, day, meal);
-      if (!current) return Promise.resolve('SLOT_CHANGED' as ErrorCode);
+    (itemId: number, servings: number) => {
+      const found = findItem(latest.current, itemId);
+      if (!found) return Promise.resolve('SLOT_CHANGED' as ErrorCode);
+      const { day, meal, item } = found;
       return apply(
-        (week) => withSlot(week, day, meal, { ...current, servings }),
+        (week) => withPlaced(week, { day, meal, item: { ...item, servings } }),
         async () => {
-          const saved = await mealPlanApi.patchServings(weekStart, day, meal, {
-            servings,
-            expected: { itemId: current.id, version: current.version },
-          });
-          return (week) => withSlot(week, day, meal, saved);
+          const placed = await mealPlanApi.patchServings(weekStart, itemId, { servings, version: item.version });
+          return (week) => withPlaced(week, placed);
         },
       );
     },
@@ -192,42 +249,50 @@ export function useWeekPlan(weekStart: string, options: { onUnauthenticated?: ()
   );
 
   /**
-   * Moves the dish of `from` to `to`; when `to` has a dish the two swap (US3-1, US3-2). The server swaps the
-   * contents of the two rows, so the ids stay with the slots; the optimistic week does the same.
+   * Moves a dish to another meal (its end, or `position`) or to another place in its own meal (US3-1 … US3-4).
+   * A full meal takes nothing more (FR-004). The server returns the meals it changed, in order.
    */
   const moveItem = useCallback(
-    (from: SlotRef, to: SlotRef) => {
-      const source = itemAt(latest.current, from.day, from.meal);
-      if (!source) return Promise.resolve('SLOT_CHANGED' as ErrorCode);
-      if (from.day === to.day && from.meal === to.meal) return Promise.resolve(null);
-      const target = itemAt(latest.current, to.day, to.meal);
+    (itemId: number, to: MoveTarget) => {
+      const found = findItem(latest.current, itemId);
+      if (!found) return Promise.resolve('SLOT_CHANGED' as ErrorCode);
+      const sameMeal = found.day === to.day && found.meal === to.meal;
+      const targetCount = mealAt(latest.current, to.day, to.meal).length;
+      if (!sameMeal && targetCount >= MAX_DISHES) return full();
+      const last = sameMeal ? targetCount - 1 : targetCount;
+      const at = Math.min(to.position ?? last, last);
+      if (sameMeal && at === found.index) return Promise.resolve(null);
       return apply(
         (week) => {
-          if (!target) return withSlot(withSlot(week, from.day, from.meal, null), to.day, to.meal, source);
-          const swapped = withSlot(week, from.day, from.meal, { ...target, id: source.id, version: source.version });
-          return withSlot(swapped, to.day, to.meal, { ...source, id: target.id, version: target.version });
+          const source = mealAt(week, found.day, found.meal).filter((i) => i.id !== itemId);
+          const target = sameMeal ? source : [...mealAt(week, to.day, to.meal)];
+          target.splice(at, 0, found.item);
+          const moved = sameMeal ? week : withMeal(week, found.day, found.meal, source);
+          return withMeal(moved, to.day, to.meal, target);
         },
         async () => {
-          const result = await mealPlanApi.moveItem(weekStart, {
-            from: { day: from.day, meal: from.meal, itemId: source.id, version: source.version },
-            to: { day: to.day, meal: to.meal, expected: target ? { itemId: target.id, version: target.version } : null },
+          const result = await mealPlanApi.moveItem(weekStart, itemId, {
+            day: to.day,
+            meal: to.meal,
+            position: to.position ?? null,
+            version: found.item.version,
           });
-          return (week) => result.items.reduce((w, placed) => withSlot(w, placed.day, placed.meal, placed.item), week);
+          return (week) => result.meals.reduce((w, m) => withMeal(w, m.day, m.meal, m.items), week);
         },
       );
     },
-    [apply, weekStart],
+    [apply, full, weekStart],
   );
 
-  /** Empties a slot (US3-5). */
+  /** Removes one dish; the dishes after it move up (US3-6). */
   const removeDish = useCallback(
-    (day: Day, meal: Meal) => {
-      const current = itemAt(latest.current, day, meal);
-      if (!current) return Promise.resolve(null);
+    (itemId: number) => {
+      const found = findItem(latest.current, itemId);
+      if (!found) return Promise.resolve(null);
       return apply(
-        (week) => withSlot(week, day, meal, null),
+        (week) => withMeal(week, found.day, found.meal, mealAt(week, found.day, found.meal).filter((i) => i.id !== itemId)),
         async () => {
-          await mealPlanApi.deleteSlot(weekStart, day, meal, { itemId: current.id, version: current.version });
+          await mealPlanApi.deleteItem(weekStart, itemId, found.item.version);
           return (week) => week;
         },
       );
@@ -235,11 +300,11 @@ export function useWeekPlan(weekStart: string, options: { onUnauthenticated?: ()
     [apply, weekStart],
   );
 
-  /** Empties the three meals of a day (US3-6); the caller has asked for confirmation. */
+  /** Empties the three meals of a day (US3-7); the caller has asked for confirmation. */
   const clearDay = useCallback(
     (day: Day) =>
       apply(
-        (week) => MEALS.reduce((w, meal) => withSlot(w, day, meal, null), week),
+        (week) => MEALS.reduce((w, meal) => withMeal(w, day, meal, []), week),
         async () => {
           await mealPlanApi.clearDay(weekStart, day);
           return (week) => week;
@@ -257,7 +322,7 @@ export function useWeekPlan(weekStart: string, options: { onUnauthenticated?: ()
     notice: state.notice,
     reload,
     addDish,
-    placeDish,
+    replaceDish,
     changeServings,
     moveItem,
     removeDish,

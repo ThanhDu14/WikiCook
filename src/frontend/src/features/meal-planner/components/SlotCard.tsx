@@ -10,9 +10,11 @@ interface Props {
   meal: Meal;
   item: PlanItem;
   onOpen: () => void;
+  /** Smaller picture and name when the meal has several dishes. */
+  dense?: boolean;
   /** Drag handle of the week grid, when dragging is on. */
   dragHandle?: ReactNode;
-  /** Pointer listeners that let the whole slot be dragged (W-MP01: "Kéo thả món giữa các ô"). */
+  /** Pointer listeners that let the whole dish be dragged (W-MP01: "Kéo thả món"). */
   dragProps?: HTMLAttributes<HTMLDivElement>;
 }
 
@@ -24,44 +26,42 @@ function meta(item: PlanItem) {
 }
 
 /**
- * A slot with a dish, as in W-MP01: a compact card (44 px picture, name linking to the recipe, time and servings).
- * Clicking the slot opens its menu. The menu button and the keyboard drag handle stay out of sight until the slot
- * is hovered or focused, so the grid looks like the screen and still works with the keyboard (T045, NFR-003).
+ * One dish of a meal, as in W-MP01: a compact card (picture, name linking to the recipe, time and servings).
+ * Clicking it opens its menu. The menu button and the keyboard drag handle stay out of sight until the dish is
+ * hovered or focused, so the grid looks like the screen and still works with the keyboard (T045, NFR-003).
  */
-export function SlotCard({ day, meal, item, onOpen, dragHandle, dragProps }: Props) {
+export function SlotCard({ day, meal, item, onOpen, dense = false, dragHandle, dragProps }: Props) {
   const label = vi.slotLabel(vi.dayLong[day], vi.mealLong[meal], item.recipeName);
+  const photo = dense ? 32 : 44;
+  const titleClass = `wk-card__title ${dense ? 'line-clamp-2' : 'line-clamp-3'}`;
+  const titleStyle = { fontSize: dense ? 13 : 14, lineHeight: dense ? '17px' : '18px' };
   return (
-    // Clicking anywhere on the slot is a pointer shortcut; keyboard users reach the same menu through its button.
+    // Clicking anywhere on the dish is a pointer shortcut; keyboard users reach the same menu through its button.
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
     <div
       role="group"
       aria-label={label}
-      className={`group relative h-full cursor-pointer ${item.available ? 'wk-slot' : 'wk-slot wk-slot--needs'}`}
+      className="group relative cursor-pointer"
       onClick={(event) => {
         if (!(event.target as HTMLElement).closest('a, button')) onOpen();
       }}
       {...dragProps}
     >
-      <div className="wk-card wk-card--compact" style={{ alignItems: 'flex-start' }}>
+      <div className="wk-card wk-card--compact" style={{ alignItems: 'flex-start', gap: dense ? 8 : undefined }}>
         {item.available ? (
-          <DishPhoto url={item.coverImageUrl} name={item.recipeName} size={44} />
+          <DishPhoto url={item.coverImageUrl} name={item.recipeName} size={photo} />
         ) : (
-          <div className="wk-photo wk-photo--cream" role="img" aria-label={vi.noPhoto} style={{ width: 44, height: 44 }}>
+          <div className="wk-photo wk-photo--cream" role="img" aria-label={vi.noPhoto} style={{ width: photo, height: photo }}>
             <Icon name="warning" />
           </div>
         )}
         <div className="wk-card__body min-w-0">
           {item.available && item.recipeId ? (
-            <Link
-              to={`/recipes/${item.recipeId}`}
-              className="wk-card__title line-clamp-3"
-              style={{ fontSize: 14, lineHeight: '18px' }}
-              title={item.recipeName}
-            >
+            <Link to={`/recipes/${item.recipeId}`} className={titleClass} style={titleStyle} title={item.recipeName}>
               {item.recipeName}
             </Link>
           ) : (
-            <span className="wk-card__title line-clamp-3" style={{ fontSize: 14, lineHeight: '18px' }} title={item.recipeName}>
+            <span className={titleClass} style={titleStyle} title={item.recipeName}>
               {item.recipeName}
             </span>
           )}
@@ -79,7 +79,7 @@ export function SlotCard({ day, meal, item, onOpen, dragHandle, dragProps }: Pro
           )}
         </div>
       </div>
-      <div className="absolute right-1 top-1 flex opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
+      <div className="absolute right-0 top-0 flex opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
         {dragHandle}
         <button
           type="button"
