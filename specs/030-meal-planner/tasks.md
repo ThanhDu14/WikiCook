@@ -269,7 +269,7 @@ test cũ được viết lại theo hành vi mới.
 
 ### Implementation for User Story 5
 
-- [ ] T079 [US5] Cài `ShoppingHandoffService` và `MealPlanShoppingFacade` (interface trong `api/`, cài đặt dùng service) theo contracts/integration.md mục 2.1 trong src/backend/src/main/java/com/wikicook/mealplan/service/ShoppingHandoffService.java và api/MealPlanShoppingFacade.java (làm T076 xanh) ⛓ D
+- [ ] T079 [US5] *(2026-11-02: giữ contract 2.1 theo `weekStart`; không đụng `shoppinglist.port.MealPlanHandoffPort` của 040 – port đó theo `mealPlanId`, chưa có cài đặt hay chỗ gọi; người làm 040 đổi port sang `weekStart` và tự viết adapter dùng `MealPlanShoppingFacade` + `RecipeDetailPort`)* Cài `ShoppingHandoffService` và `MealPlanShoppingFacade` (interface trong `api/`, cài đặt dùng service) theo contracts/integration.md mục 2.1 trong src/backend/src/main/java/com/wikicook/mealplan/service/ShoppingHandoffService.java và api/MealPlanShoppingFacade.java (làm T076 xanh) ⛓ D
 - [ ] T080 [US5] Thêm endpoint `GET …/shopping-handoff` và DTO `ShoppingHandoffDto` trong src/backend/src/main/java/com/wikicook/mealplan/controller/MealPlanController.java và dto/ShoppingHandoffDto.java (làm T077 xanh)
 - [ ] T081 [US5] Cài `CreateShoppingListButton` và gắn vào `WeekHeader` trong src/frontend/src/features/meal-planner/components/CreateShoppingListButton.tsx (làm T078 xanh) ⛓ D (chốt route `/shopping-list/import`)
 
@@ -285,13 +285,13 @@ test cũ được viết lại theo hành vi mới.
 
 ### Tests for User Story 6 ⚠️ (viết trước, phải FAIL)
 
-- [ ] T082 [P] [US6] Bổ sung `MealPlanServiceTest` – công thức `status = ARCHIVED` → `PlanItemDto.available = false`, `recipeName` = snapshot, `coverImageUrl = null` (US6-1, FR-020); `recipe_id = NULL` (công thức bị xóa) cũng `available = false`; item không khả dụng không tính vào `availableItemCount` trong src/backend/src/test/java/com/wikicook/mealplan/service/MealPlanServiceTest.java
-- [ ] T083 [P] [US6] Integration test `UnavailableRecipeIT` – archive công thức qua SQL rồi `GET` tuần → `available = false`; thêm (`POST …/items`) hoặc thay (`PUT …/items/{id}`) bằng công thức ARCHIVED → 422 `RECIPE_NOT_AVAILABLE` (US6-3) trong src/backend/src/test/java/com/wikicook/mealplan/controller/UnavailableRecipeIT.java
+- [ ] T082 [P] [US6] *(một phần: ARCHIVED → `available = false`, snapshot, không ảnh, không tính vào `availableItemCount` đã có trong `weekShowsDishesWithRecipeDataAndUnavailableOnes`; còn `recipe_id = NULL`)* Bổ sung `MealPlanServiceTest` – công thức `status = ARCHIVED` → `PlanItemDto.available = false`, `recipeName` = snapshot, `coverImageUrl = null` (US6-1, FR-020); `recipe_id = NULL` (công thức bị xóa) cũng `available = false`; item không khả dụng không tính vào `availableItemCount` trong src/backend/src/test/java/com/wikicook/mealplan/service/MealPlanServiceTest.java
+- [ ] T083 [P] [US6] *(một phần: `POST` công thức ARCHIVED → 422 có trong `MealPlanControllerIT.unpublishedRecipeIs422`; còn `GET` sau khi archive và `PUT`)* Integration test `UnavailableRecipeIT` – archive công thức qua SQL rồi `GET` tuần → `available = false`; thêm (`POST …/items`) hoặc thay (`PUT …/items/{id}`) bằng công thức ARCHIVED → 422 `RECIPE_NOT_AVAILABLE` (US6-3) trong src/backend/src/test/java/com/wikicook/mealplan/controller/UnavailableRecipeIT.java
 - [ ] T084 [P] [US6] Test `SlotCard.unavailable.test.tsx` – hiện tên + nhãn "Không còn khả dụng" + "Thay" + "Xóa" (US6-1); bấm tên không điều hướng, hiện thông báo công thức đã bị gỡ (US6-2) trong src/frontend/src/features/meal-planner/__tests__/SlotCard.unavailable.test.tsx
 
 ### Implementation for User Story 6
 
-- [ ] T085 [US6] Tính `available` trong `MealPlanService` khi ghép dữ liệu ô (`recipeId == null` hoặc `RecipeSummary.status != PUBLISHED` → không khả dụng, dùng `recipeNameSnapshot`, bỏ ảnh/link) và `availableItemCount` trong src/backend/src/main/java/com/wikicook/mealplan/service/MealPlanService.java (làm T082, T083 xanh)
+- [x] T085 [US6] *(có sẵn từ US1: `MealPlanService.toDto`/`getWeek`)* Tính `available` trong `MealPlanService` khi ghép dữ liệu ô (`recipeId == null` hoặc `RecipeSummary.status != PUBLISHED` → không khả dụng, dùng `recipeNameSnapshot`, bỏ ảnh/link) và `availableItemCount` trong src/backend/src/main/java/com/wikicook/mealplan/service/MealPlanService.java (làm T082, T083 xanh)
 - [ ] T086 [US6] Thêm biến thể không khả dụng cho `SlotCard` (nhãn, không link, thông báo khi bấm tên, menu chỉ còn Thay/Xóa) trong src/frontend/src/features/meal-planner/components/SlotCard.tsx (làm T084 xanh)
 
 **Checkpoint**: US6 chạy độc lập; quickstart Q15 đạt.
@@ -346,7 +346,7 @@ test cũ được viết lại theo hành vi mới.
 - [ ] T103 [P] Viết script k6 200 VU: `GET` tuần (p95 < 2 s) và `POST …/items`/`PATCH …/servings`/`POST …/move` (p95 < 1 s) theo NFR-001 trong src/backend/perf/meal-planner.k6.js
 - [ ] T104 [P] Kiểm tra accessibility thủ công (chỉ bàn phím, NVDA/VoiceOver đọc "ngày, bữa, món", tương phản, vùng chạm ở 360 px) và ghi kết quả vào docs/test/030-meal-planner-a11y.md (NFR-002, NFR-003)
 - [ ] T105 [P] So sánh OpenAPI do springdoc sinh (`/v3/api-docs`) với specs/030-meal-planner/contracts/openapi.yaml, sửa chỗ lệch trong controller/DTO hoặc trong contract
-- [ ] T106 Đảm bảo JaCoCo rule ≥ 70% line coverage cho `com.wikicook.mealplan.service` (thêm rule vào src/backend/pom.xml nếu skeleton chưa có) và `./mvnw verify` xanh
+- [ ] T106 *(module và `aiplanner.service`, `shoppinglist.service` đã có rule; còn thiếu rule cho `com.wikicook.mealplan.service`)* Đảm bảo JaCoCo rule ≥ 70% line coverage cho `com.wikicook.mealplan.service` (thêm rule vào src/backend/pom.xml nếu skeleton chưa có) và `./mvnw verify` xanh
 - [ ] T107 Chạy quickstart Q1–Q19 (specs/030-meal-planner/quickstart.md) và ghi kết quả vào docs/test/030-meal-planner-acceptance.md
 - [ ] T108 [P] Lập ma trận truy vết acceptance scenario (US1-1 … US7-5) và edge case → test tương ứng trong docs/test/030-meal-planner-traceability.md (SC-008)
 - [ ] T109 [P] Đồng bộ specs/030-meal-planner sang src/specs/030-meal-planner theo src/README.md mục 5

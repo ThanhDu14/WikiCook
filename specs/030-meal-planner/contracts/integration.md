@@ -64,6 +64,11 @@ Nếu `skippedUnavailable > 0` hiện thông báo số món bị bỏ qua, rồi
 `MealPlanShoppingFacade` phía server để dựng preview và câu hỏi gộp/tạo mới (040 FR-004).
 `mealPlanItemId` dùng cho cột `shopping_list_item_sources.meal_plan_item_id` (full-schema câu hỏi 8).
 
+*(2026-11-02)* Spec 040 đang có `shoppinglist.port.MealPlanHandoffPort.getMealPlanForShoppingList(userId,
+mealPlanId)` (trả kèm nguyên liệu), chưa có cài đặt. 030 giữ facade theo `weekStart` ở trên và không trả
+`mealPlanId` cho frontend; phía 040 đổi port sang `weekStart` và viết adapter ghép `MealPlanShoppingFacade`
+với `RecipeDetailPort` của 040 để lấy nguyên liệu và khẩu phần gốc.
+
 ### 2.2. Cho AI Weekly Meal Planner (spec 031, C) *(sửa 2026-11-02: nhiều món mỗi bữa)*
 
 031 điền **cả mâm** cho những bữa còn trống: bữa sáng 1 món; trưa và tối gồm canh, món mặn và món
