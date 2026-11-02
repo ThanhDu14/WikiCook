@@ -192,6 +192,27 @@ class MealPlanServiceTest {
     }
 
     @Test
+    void aDeletedRecipeShowsItsSnapshotAndIsNotCounted() throws Exception { // US6-1, FR-020 (T082)
+        recipe(1, "Phở bò", RecipeStatus.PUBLISHED, false);
+        when(plans.findByUserIdAndWeekStart(USER, WEEK)).thenReturn(Optional.of(plan));
+        existing(DayOfWeek.MONDAY, Meal.LUNCH, 1, 2);
+        MealPlanItem deleted = existing(DayOfWeek.MONDAY, Meal.DINNER, 9, 2);
+        set(deleted, "recipeId", null); // recipes row deleted: ON DELETE SET NULL
+        when(items.findByMealPlanId(100L)).thenReturn(stored);
+
+        WeekPlanResponse week = service.getWeek(USER, WEEK);
+
+        PlanItemDto gone = week.days().get(0).slots().get(2).items().getFirst();
+        assertThat(gone.available()).isFalse();
+        assertThat(gone.recipeId()).isNull();
+        assertThat(gone.recipeName()).isEqualTo("Món 9");
+        assertThat(gone.coverImageUrl()).isNull();
+        assertThat(gone.totalTimeMinutes()).isNull();
+        assertThat(week.availableItemCount()).isEqualTo(1);
+        verify(recipes).findByIds(Set.of(1L)); // the null id is not looked up
+    }
+
+    @Test
     void aMealListsItsDishesByPosition() throws Exception { // US1-11
         recipe(1, "Canh chua", RecipeStatus.PUBLISHED, false);
         recipe(2, "Cá kho", RecipeStatus.PUBLISHED, false);
