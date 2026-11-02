@@ -22,6 +22,11 @@ public interface MealPlanItemRepository extends JpaRepository<MealPlanItem, Long
     Optional<MealPlanItem> findSlot(@Param("planId") Long planId, @Param("day") DayOfWeek day,
                                     @Param("meal") Meal meal);
 
+    /** Id of the item in a slot, without loading it, so it can be locked first (research R5). */
+    @Query("SELECT i.id FROM MealPlanItem i WHERE i.mealPlan.id = :planId AND i.day = :day AND i.meal = :meal")
+    Optional<Long> findSlotItemId(@Param("planId") Long planId, @Param("day") DayOfWeek day,
+                                  @Param("meal") Meal meal);
+
     /** {@code SELECT … FOR UPDATE} in id order, so two moves on the same items cannot deadlock (research R5). */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT i FROM MealPlanItem i WHERE i.id IN :ids ORDER BY i.id")

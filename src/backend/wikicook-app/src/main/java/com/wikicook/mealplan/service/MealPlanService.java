@@ -123,6 +123,27 @@ public class MealPlanService {
         return save(plan, item, null);
     }
 
+    /** Removes the dish the client saw from a slot (US3-5); a dish changed or gone meanwhile is a 409. */
+    @Transactional
+    public void removeSlot(long userId, LocalDate weekStart, DayOfWeek day, Meal meal, ExpectedSlotState expected) {
+        MealPlan plan = plans.findByUserIdAndWeekStart(userId, weekStart).orElseThrow(SlotChangedException::new);
+        MealPlanItem item = items.findSlot(plan.getId(), day, meal).orElseThrow(SlotChangedException::new);
+        requireExpected(item, expected);
+        plan.touch(clock.instant());
+        items.delete(item);
+        items.flush();
+    }
+
+    /** Empties a day (US3-6); the client asked for confirmation, and an empty day or week is fine. */
+    @Transactional
+    public void clearDay(long userId, LocalDate weekStart, DayOfWeek day) {
+        plans.findByUserIdAndWeekStart(userId, weekStart).ifPresent(plan -> {
+            if (items.deleteByMealPlanIdAndDay(plan.getId(), day) > 0) {
+                plan.touch(clock.instant());
+            }
+        });
+    }
+
     static void requireExpected(MealPlanItem item, ExpectedSlotState expected) {
         if (expected == null || !Objects.equals(expected.itemId(), item.getId())
                 || !Objects.equals(expected.version(), item.getVersion())) {
