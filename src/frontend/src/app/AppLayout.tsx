@@ -32,7 +32,7 @@ export function AppLayout() {
           </nav>
         </div>
       </header>
-      <main className={wide ? 'mx-auto w-full max-w-[1680px] px-ds-6 py-ds-6' : 'mx-auto max-w-content px-ds-4 py-ds-6'}>
+      <main className={wide ? 'mx-auto w-full max-w-[1680px] px-ds-4 py-ds-6 lg:px-ds-6' : 'mx-auto max-w-content px-ds-4 py-ds-6'}>
         <Outlet />
       </main>
     </div>

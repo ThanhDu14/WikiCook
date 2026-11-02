@@ -69,7 +69,8 @@ export function SlotCard({ day, meal, item, onOpen, dense = false, onReplace, on
             <button
               type="button"
               className={titleClass}
-              style={{ ...titleStyle, padding: 0, border: 0, background: 'transparent', textAlign: 'left', cursor: 'pointer', font: 'inherit', fontWeight: 600 }}
+              // `font` first: the shorthand would reset the size of the title
+              style={{ font: 'inherit', fontWeight: 600, ...titleStyle, padding: 0, border: 0, background: 'transparent', textAlign: 'left', cursor: 'pointer' }}
               title={item.recipeName}
               aria-label={item.recipeName}
               onClick={() => setExplained(true)}

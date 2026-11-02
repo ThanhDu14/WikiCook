@@ -38,7 +38,7 @@ export function DayView({ week, onAdd, onOpenItem, onReplaceItem, onRemoveItem, 
 
   return (
     <div className="sx-stack" style={{ gap: 12 }}>
-      <div role="group" aria-label={vi.dayOfWeek} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4 }}>
+      <div role="group" aria-label={vi.dayOfWeek} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 2 }}>
         {week.days.map((d, i) => {
           const selected = i === index;
           return (
