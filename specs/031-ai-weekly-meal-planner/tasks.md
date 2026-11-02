@@ -352,7 +352,7 @@ Các task dưới đây làm cùng 030 Phase 10, chưa làm bây giờ.
   "Choose a dish" (FR-007a)
 - [ ] T107 Test trước rồi sửa draft trên lưới tuần (030 `WeekGrid` `draftItems`) và `ConfirmService`
   cho nhiều món mỗi bữa; bữa đã có món lúc xác nhận → bỏ cả nhóm, đếm vào `skippedOccupied` (FR-019)
-- [ ] T108 Sửa `InMemoryMealPlanFacade` (dev stub) theo nghĩa mới của `emptySlots`/`saveDraft`
+- [x] T108 *(không cần nữa: 030 T100 đã cài `MealPlanWriteService` theo nghĩa mới, dev stub bị xóa)* Sửa `InMemoryMealPlanFacade` (dev stub) theo nghĩa mới của `emptySlots`/`saveDraft`
 
 ### Phụ thuộc người khác (⛓) – không chặn nhờ fake/mock
 

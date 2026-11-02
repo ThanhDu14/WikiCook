@@ -3,7 +3,6 @@ package com.wikicook.devstub;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-import com.wikicook.aiplanner.repository.EligibleRecipeQuery;
 import com.wikicook.common.security.CurrentUser;
 import com.wikicook.mealplan.api.MealPlanWriteFacade;
 import com.wikicook.mealplan.domain.DietType;
@@ -18,12 +17,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-/** The dev stubs stand in for 030/010 only when switched on, and step aside for the real beans. */
+/** The dev stubs stand in for 010/011 only when switched on, and step aside for the real beans. */
 class DevStubConfigTest {
 
     private final ApplicationContextRunner runner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(ConfigurationPropertiesAutoConfiguration.class, DevStubConfig.class))
-            .withBean(EligibleRecipeQuery.class, () -> mock(EligibleRecipeQuery.class))
             .withBean(JdbcTemplate.class, () -> mock(JdbcTemplate.class));
 
     @Test
@@ -46,7 +44,7 @@ class DevStubConfigTest {
         runner.withPropertyValues("wikicook.dev-stubs.enabled=true").run(context -> {
             assertThat(context).getBean(CurrentUser.class).isInstanceOf(StubCurrentUser.class);
             assertThat(context).getBean(DietaryProfilePort.class).isInstanceOf(StubDietaryProfile.class);
-            assertThat(context).getBean(MealPlanWriteFacade.class).isInstanceOf(InMemoryMealPlanFacade.class);
+            assertThat(context).doesNotHaveBean(MealPlanWriteFacade.class); // 030 provides the real one
         });
     }
 
@@ -57,9 +55,7 @@ class DevStubConfigTest {
                 .run(context -> {
                     assertThat(context).getBean(CurrentUser.class).isSameAs(RealBeans.USER);
                     assertThat(context).getBean(DietaryProfilePort.class).isSameAs(RealBeans.PROFILE);
-                    assertThat(context).getBean(MealPlanWriteFacade.class).isSameAs(RealBeans.FACADE);
                     assertThat(context).doesNotHaveBean(StubCurrentUser.class);
-                    assertThat(context).doesNotHaveBean(InMemoryMealPlanFacade.class);
                 });
     }
 
@@ -100,7 +96,6 @@ class DevStubConfigTest {
 
         static final CurrentUser USER = () -> 42L;
         static final DietaryProfilePort PROFILE = userId -> PlannerProfile.empty();
-        static final MealPlanWriteFacade FACADE = mock(MealPlanWriteFacade.class);
 
         @Bean
         CurrentUser realCurrentUser() {
@@ -110,11 +105,6 @@ class DevStubConfigTest {
         @Bean
         DietaryProfilePort realProfile() {
             return PROFILE;
-        }
-
-        @Bean
-        MealPlanWriteFacade realFacade() {
-            return FACADE;
         }
     }
 }
