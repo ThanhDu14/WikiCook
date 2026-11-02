@@ -24,6 +24,13 @@ describe('app shell', () => {
     expect(screen.getByRole('link', { name: 'Danh sách đi chợ' })).toHaveClass('text-primary');
   });
 
+  it('renders the meal planner at /meal-planner', async () => {
+    renderAt('/meal-planner');
+
+    expect(await screen.findByRole('heading', { name: 'Thực đơn', level: 1 })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Thực đơn' })).toHaveClass('text-primary');
+  });
+
   it('shows a not-found page for unknown paths', async () => {
     renderAt('/khong-ton-tai');
 

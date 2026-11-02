@@ -60,12 +60,12 @@ Backend là Maven multi-module (`src/backend/pom.xml`, cập nhật 2026-10-28).
 
 **Purpose**: Dependency, khung thư mục, hạ tầng test
 
-- [ ] T001 Kiểm tra skeleton Build v0.5 tồn tại (src/backend/pom.xml, src/frontend/package.json, docker-compose.yml) và tạo các package rỗng `controller`, `service`, `repository`, `domain`, `dto`, `port`, `api`, `config` trong src/backend/src/main/java/com/wikicook/mealplan/ cùng `service`, `repository`, `controller` trong src/backend/src/test/java/com/wikicook/mealplan/
+- [x] T001 *(xong: skeleton v0.5 có đủ; package `controller`, `service`, `repository`, `domain`, `dto`, `port`, `api`, `config` được tạo cùng file đầu tiên – git không giữ thư mục rỗng)* Kiểm tra skeleton Build v0.5 tồn tại (src/backend/pom.xml, src/frontend/package.json, docker-compose.yml) và tạo các package rỗng `controller`, `service`, `repository`, `domain`, `dto`, `port`, `api`, `config` trong src/backend/src/main/java/com/wikicook/mealplan/ cùng `service`, `repository`, `controller` trong src/backend/src/test/java/com/wikicook/mealplan/
 - [x] T002 *(xong: skeleton + 031 đã có springdoc và Testcontainers trong `wikicook-app/pom.xml`)* [P] Thêm (nếu chưa có) `springdoc-openapi-starter-webmvc-ui`, `org.testcontainers:postgresql`, `org.testcontainers:junit-jupiter`, `spring-boot-testcontainers` vào src/backend/pom.xml
-- [ ] T003 [P] Thêm `@dnd-kit/core`, `@dnd-kit/utilities` (dependencies) và `msw` (devDependencies) vào src/frontend/package.json – lý do ở plan.md Complexity Tracking
+- [x] T003 [P] *(xong: `msw` skeleton đã có)* Thêm `@dnd-kit/core`, `@dnd-kit/utilities` (dependencies) và `msw` (devDependencies) vào src/frontend/package.json – lý do ở plan.md Complexity Tracking
 - [x] T004 [P] *(xong, làm cùng 031: `src/backend/wikicook-app/src/test/java/com/wikicook/support/AbstractPostgresIT.java`; một container dùng chung cho mọi test class, lớp con tự thêm `@SpringBootTest` hoặc slice)* Tạo base class `AbstractPostgresIT` dùng `PostgreSQLContainer` với image `pgvector/pgvector:pg16` (`asCompatibleSubstituteFor("postgres")`) + `@ServiceConnection`, chạy Flyway thật, trong src/backend/src/test/java/com/wikicook/support/AbstractPostgresIT.java
-- [ ] T005 [P] Cấu hình msw cho Vitest: src/frontend/src/test/msw/server.ts, src/frontend/src/test/setup.ts (`beforeAll(server.listen)`…) và khai báo `setupFiles` trong src/frontend/vitest.config.ts
-- [ ] T006 [P] Tạo thư mục src/frontend/src/features/meal-planner/{pages,components,hooks,lib,__tests__} và đăng ký route `/meal-planner` (placeholder) trong router của skeleton src/frontend/src/router.tsx
+- [x] T005 [P] *(xong: skeleton đã có `src/test/server.ts`, `src/test/setup.ts` và `setupFiles` trong `vite.config.ts`)* Cấu hình msw cho Vitest: src/frontend/src/test/msw/server.ts, src/frontend/src/test/setup.ts (`beforeAll(server.listen)`…) và khai báo `setupFiles` trong src/frontend/vitest.config.ts
+- [x] T006 [P] *(xong: route ở `src/app/routes.tsx`, thêm link "Thực đơn" ở `AppLayout`, test trong `src/app/App.test.tsx`; thêm thư mục `api/`; nạp CSS `wk-` qua `src/styles/soft-editorial.css`)* Tạo thư mục src/frontend/src/features/meal-planner/{pages,components,hooks,lib,__tests__} và đăng ký route `/meal-planner` (placeholder) trong router của skeleton src/frontend/src/router.tsx
 
 **Checkpoint**: `./mvnw verify` và `npm test` chạy được (chưa có test của 030).
 

@@ -11,6 +11,12 @@ export function AppLayout() {
           </NavLink>
           <nav aria-label="Chính" className="flex items-center gap-ds-4">
             <NavLink
+              to="/meal-planner"
+              className={({ isActive }) => (isActive ? 'font-semibold text-primary' : 'text-ink-muted')}
+            >
+              Thực đơn
+            </NavLink>
+            <NavLink
               to="/shopping-list"
               className={({ isActive }) => (isActive ? 'font-semibold text-primary' : 'text-ink-muted')}
             >
