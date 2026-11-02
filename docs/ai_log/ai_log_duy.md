@@ -953,3 +953,62 @@ chặn việc kiểm chứng.
 - Backend: `ShoppingListServiceTest`, `ShoppingListControllerTest`, `UnitConversionServiceTest`, `IngredientAggregationServiceTest` qua 43/43.
 - Independent Test US2 trên DB thật **không đạt**: Bò kho x4 + Bò xào x4 cho 2 dòng Thịt bò 600 và 400 thay vì "1 kg", `displayUnit` luôn null. Đã ghi vào PR để người làm backend sửa.
 - Chưa xem panel trên trình duyệt vì chưa có trang 020 gắn vào; mới kiểm tra qua test.
+
+## Mục 15: Xử lý review PR #63 của MaiHien3507 (SCRUM-56)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-03, khoảng 00:00 – 00:25 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | Review PR #63 (MaiHien3507, 2026-11-02); `PreImportBottomSheet.tsx`, `RecipeIngredientsPanel.tsx`, `AddCustomItemDialog.tsx`, `Overlay.tsx`, `useShoppingList.ts`, `useIngredientAggregation.ts` (+ test), `specs/040-shopping-list/tasks.md` (Jira `SCRUM-56`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), chạy trong extension VS Code trên Windows 11 |
+| Mục đích | Sửa và trả lời các điểm review bắt buộc (A1–A3) và nên sửa (B1–B4) để PR #63 được approve |
+| Nhánh Git | `feature/scrum-56-frontend-shopping-list-us1-us2` (PR #63), commit `d41d238`..`12dde46` |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `0511564c-b528-4b6e-a30d-8db6ba02d6b9`; comment trả lời: https://github.com/ThanhDu14/WikiCook/pull/63#issuecomment-6583563560 |
+
+### Prompt đã dùng
+
+Mình hỏi ngắn: AI có xem được review PR không, nếu có thì sửa theo review nhưng phải nói trước sẽ làm gì và vì sao, rồi hỏi review có hợp lý không. AI viết lại thành prompt đầy đủ dưới đây, mình đọc lại và đồng ý ghi.
+
+```text
+Bối cảnh: PR #63 (SCRUM-56, frontend US1 + US2 của spec 040) có review của MaiHien3507 chia
+mục A (bắt buộc: Idempotency-Key và chống gửi trùng, sai tên file trong tasks.md, ghi chú
+chưa bằng tiếng Anh), B (nên sửa: Overlay mất focus, thông báo lỗi, banner gộp đơn vị, ghi
+chú T034) và C (nhỏ). Reviewer yêu cầu mỗi điểm A1–A3, B1–B4 phải được sửa hoặc trả lời.
+Mục tiêu: đọc review qua gh, đối chiếu từng điểm với code thật, cho mình biết điểm nào đúng,
+điểm nào nên phản biện, kèm kế hoạch sửa và lý do, trước khi đụng vào code.
+Ràng buộc: không sửa backend (SCRUM-55); không đổi hành vi spec chỉ để khớp lỗi backend;
+test-first, test mới phải fail trên code cũ; giữ nguyên số liệu đã ghi theo ngày trong
+tasks.md; commit tách theo nhóm, không ghi tên AI; nội dung trả lời trên GitHub phải cho mình
+duyệt trước khi đăng.
+Kết quả mong muốn: code và tasks.md đã sửa, test/lint/build qua, một comment trả lời từng
+điểm review.
+```
+
+### Nội dung do AI tạo
+
+- **A1:** sheet tạo `Idempotency-Key` một lần mỗi lần mở và dùng lại khi thử lại; chặn bấm đúp hoặc Enter hai lần bằng ref ở sheet và `AddCustomItemDialog`; hook `importRecipe` nhận key từ bên gọi.
+- **B1:** `Overlay` đọc `onClose` qua ref và có thêm focus trap cho Tab và Shift+Tab.
+- **B2:** tách thông báo lỗi mất kết nối, 5xx và 4xx.
+- **C1:** xóa thành công mà bước tải lại lỗi thì không báo xóa thất bại.
+- **C3:** comment nhắc phải đồng bộ với `UnitConversionService`.
+- **`tasks.md`:** sửa đường dẫn `ArchivedHistory` (A2); viết lại ghi chú T035, T048, T051 bằng tiếng Anh (A3); ghi chú T034 (B4); ghi rõ backend chưa đọc header Idempotency và API chưa trả cấu trúc gom đơn vị (US2-4).
+- **Test:** 13 test mới hoặc sửa lại, gồm `Overlay.test.tsx`.
+- Bản nháp comment trả lời từng điểm review.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| B3: banner "600 g + 400 g = 1 kg" | Không sửa, trả lời bằng comment | Đó là hành vi spec US2-2; lỗi gộp nằm ở backend (SCRUM-55) |
+| A2: sửa `tasks.md` hay đổi tên file | Sửa `tasks.md` | Lịch sử là trang `/shopping-list/history`, không phải drawer |
+| US2-4: frontend tự gom đơn vị | Không làm, ghi vào T051 | Tránh lệch với backend; cần API trả cấu trúc gom trước |
+| C2, C4, C5, C6 | Chỉ trả lời | C5 là refactor ngoài phạm vi; các điểm còn lại reviewer đã ghi là chấp nhận được |
+| Số 87/87 ở ghi chú T035 | Giữ nguyên | Là số liệu của ngày 02/11 |
+| Đăng comment trả lời lên PR | Đồng ý sau khi đọc bản nháp | Comment đăng bằng tài khoản của mình |
+
+### Cách sinh viên kiểm chứng
+
+- 7 test mới chạy trên code cũ (tạm `git stash` phần sửa) đều fail, sau khi sửa thì pass.
+- `npm test` 96/96 (13 file), `npm run lint` và `npm run build` đều exit 0.
+- Không chạy lại backend vì PR này không sửa backend.
