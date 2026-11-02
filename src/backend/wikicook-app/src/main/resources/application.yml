@@ -51,7 +51,7 @@ wikicook:
       total: ${WIKICOOK_AI_DAILY_CAP_TOTAL:100}
       meal-planner-share: 0.7
       nutrition-share: 0.3
-  # Dev stand-ins for 010/011/030 (com.wikicook.devstub); never enable in production.
+  # Dev stand-ins for 010/011 (com.wikicook.devstub); never enable in production.
   dev-stubs:
     enabled: ${WIKICOOK_DEV_STUBS_ENABLED:false}
     user-id: ${WIKICOOK_DEV_STUBS_USER_ID:1}

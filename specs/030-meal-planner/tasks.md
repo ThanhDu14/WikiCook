@@ -343,10 +343,10 @@ test cũ được viết lại theo hành vi mới.
 
 **Purpose**: Hiệu năng, accessibility, độ phủ, kiểm chứng và tài liệu
 
-- [ ] T103 [P] Viết script k6 200 VU: `GET` tuần (p95 < 2 s) và `POST …/items`/`PATCH …/servings`/`POST …/move` (p95 < 1 s) theo NFR-001 trong src/backend/perf/meal-planner.k6.js
+- [x] T103 [P] *(chỉ viết script, chưa chạy 200 VU: máy chưa cài k6; `node --check` sạch. Mỗi VU là một user qua header `X-Dev-User-Id` của dev stub, cần `RECIPE_IDS`)* Viết script k6 200 VU: `GET` tuần (p95 < 2 s) và `POST …/items`/`PATCH …/servings`/`POST …/move` (p95 < 1 s) theo NFR-001 trong src/backend/perf/meal-planner.k6.js
 - [ ] T104 [P] Kiểm tra accessibility thủ công (chỉ bàn phím, NVDA/VoiceOver đọc "ngày, bữa, món", tương phản, vùng chạm ở 360 px) và ghi kết quả vào docs/test/030-meal-planner-a11y.md (NFR-002, NFR-003)
-- [ ] T105 [P] So sánh OpenAPI do springdoc sinh (`/v3/api-docs`) với specs/030-meal-planner/contracts/openapi.yaml, sửa chỗ lệch trong controller/DTO hoặc trong contract
-- [ ] T106 *(module và `aiplanner.service`, `shoppinglist.service` đã có rule; còn thiếu rule cho `com.wikicook.mealplan.service`)* Đảm bảo JaCoCo rule ≥ 70% line coverage cho `com.wikicook.mealplan.service` (thêm rule vào src/backend/pom.xml nếu skeleton chưa có) và `./mvnw verify` xanh
+- [x] T105 [P] *(2026-11-02: lấy `/v3/api-docs` bằng MockMvc rồi so bằng script – đường dẫn, method, operationId, tham số, tên và kiểu field của mọi schema đều khớp. Chỉ khác ở phần springdoc không tự suy ra: mã lỗi 400/401/409/422, `required` của schema phản hồi, enum inline, schema `Problem`; hành vi đã có IT kiểm tra nên không sửa controller/contract)* So sánh OpenAPI do springdoc sinh (`/v3/api-docs`) với specs/030-meal-planner/contracts/openapi.yaml, sửa chỗ lệch trong controller/DTO hoặc trong contract
+- [x] T106 *(thêm rule LINE ≥ 70% cho `com.wikicook.mealplan.service` vào wikicook-app/pom.xml, cạnh rule của module, `aiplanner.service`, `shoppinglist.service`)* Đảm bảo JaCoCo rule ≥ 70% line coverage cho `com.wikicook.mealplan.service` (thêm rule vào src/backend/pom.xml nếu skeleton chưa có) và `./mvnw verify` xanh
 - [ ] T107 Chạy quickstart Q1–Q19 (specs/030-meal-planner/quickstart.md) và ghi kết quả vào docs/test/030-meal-planner-acceptance.md
 - [ ] T108 [P] Lập ma trận truy vết acceptance scenario (US1-1 … US7-5) và edge case → test tương ứng trong docs/test/030-meal-planner-traceability.md (SC-008)
 - [ ] T109 [P] Đồng bộ specs/030-meal-planner sang src/specs/030-meal-planner theo src/README.md mục 5
