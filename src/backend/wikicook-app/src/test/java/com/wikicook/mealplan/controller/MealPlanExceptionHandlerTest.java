@@ -8,13 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.wikicook.mealplan.domain.DietType;
-import com.wikicook.mealplan.domain.ItemSource;
-import com.wikicook.mealplan.dto.PlanItemDto;
 import com.wikicook.mealplan.service.exception.InvalidWeekStartException;
+import com.wikicook.mealplan.service.exception.MealFullException;
 import com.wikicook.mealplan.service.exception.RecipeNotAvailableException;
 import com.wikicook.mealplan.service.exception.SlotChangedException;
-import com.wikicook.mealplan.service.exception.SlotOccupiedException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -37,9 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Import(MealPlanExceptionHandlerTest.FakeController.class)
 class MealPlanExceptionHandlerTest {
 
-    static final PlanItemDto PHO = new PlanItemDto(7L, 3, 42L, "Phở bò", null, 45, 2, ItemSource.MANUAL, true,
-            DietType.NONE);
-
     @Autowired
     MockMvc mvc;
 
@@ -54,7 +48,7 @@ class MealPlanExceptionHandlerTest {
             throw switch (error) {
                 case "week" -> new InvalidWeekStartException();
                 case "changed" -> new SlotChangedException();
-                case "occupied" -> new SlotOccupiedException(PHO);
+                case "full" -> new MealFullException();
                 case "unavailable" -> new RecipeNotAvailableException();
                 default -> new IllegalStateException("boom at com.wikicook.Secret");
             };
@@ -102,13 +96,11 @@ class MealPlanExceptionHandlerTest {
     }
 
     @Test
-    void slotOccupiedIs409WithTheCurrentItem() throws Exception { // US2-3
-        mvc.perform(get("/test/mp/occupied"))
+    void mealFullIs409() throws Exception { // FR-004
+        mvc.perform(get("/test/mp/full"))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.code").value("SLOT_OCCUPIED"))
-                .andExpect(jsonPath("$.currentItem.id").value(7))
-                .andExpect(jsonPath("$.currentItem.version").value(3))
-                .andExpect(jsonPath("$.currentItem.recipeName").value("Phở bò"));
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.code").value("MEAL_FULL"));
     }
 
     @Test

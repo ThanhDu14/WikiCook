@@ -18,7 +18,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 /**
- * {@code meal_plan_items}: the dish in one slot (data-model 1). {@code recipeId} becomes {@code null} when the
+ * {@code meal_plan_items}: one dish of a meal, at {@code position} 0–3 (data-model 1, FR-004). {@code recipeId} becomes {@code null} when the
  * recipe is deleted; the name snapshot keeps what the user saw (research R8). {@code version} detects edits made
  * elsewhere (research R4).
  */
@@ -44,6 +44,9 @@ public class MealPlanItem {
     @Enumerated(EnumType.STRING)
     @Column(name = "meal", nullable = false, length = 10)
     private Meal meal;
+
+    @Column(name = "position", nullable = false)
+    private short position;
 
     @Column(name = "recipe_id")
     private Long recipeId;
@@ -71,15 +74,16 @@ public class MealPlanItem {
     protected MealPlanItem() {
     }
 
-    public MealPlanItem(MealPlan mealPlan, DayOfWeek day, Meal meal, long recipeId, String recipeName, int servings,
-                        ItemSource source) {
+    public MealPlanItem(MealPlan mealPlan, DayOfWeek day, Meal meal, int position, long recipeId, String recipeName,
+                        int servings, ItemSource source) {
         this.mealPlan = Objects.requireNonNull(mealPlan, "mealPlan");
         this.day = Objects.requireNonNull(day, "day");
         this.meal = Objects.requireNonNull(meal, "meal");
+        setPosition(position);
         setDish(recipeId, recipeName, servings, source);
     }
 
-    /** Puts another dish in this slot (replace, swap). */
+    /** Puts another recipe in this place (replace); position stays. */
     public void setDish(Long recipeId, String recipeName, int servings, ItemSource source) {
         this.recipeId = recipeId;
         this.recipeNameSnapshot = snapshot(recipeName);
@@ -87,10 +91,18 @@ public class MealPlanItem {
         this.source = Objects.requireNonNull(source, "source");
     }
 
-    /** Moves this item to another slot of the same week. */
+    /** Moves this item to another meal of the same week. */
     public void moveTo(DayOfWeek newDay, Meal newMeal) {
         this.day = Objects.requireNonNull(newDay, "day");
         this.meal = Objects.requireNonNull(newMeal, "meal");
+    }
+
+    /** Place inside the meal, 0 first (FR-004). */
+    public void setPosition(int newPosition) {
+        if (newPosition < 0 || newPosition >= Meal.MAX_DISHES) {
+            throw new IllegalArgumentException("position " + newPosition);
+        }
+        position = (short) newPosition;
     }
 
     public void setServings(int servings) {
@@ -124,6 +136,10 @@ public class MealPlanItem {
 
     public SlotKey slot() {
         return new SlotKey(day, meal);
+    }
+
+    public int getPosition() {
+        return position;
     }
 
     public Long getRecipeId() {

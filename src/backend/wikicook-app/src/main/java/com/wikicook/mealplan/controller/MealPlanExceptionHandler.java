@@ -1,7 +1,6 @@
 package com.wikicook.mealplan.controller;
 
 import com.wikicook.mealplan.service.exception.MealPlanException;
-import com.wikicook.mealplan.service.exception.SlotOccupiedException;
 import org.springframework.core.Ordered;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -28,20 +27,16 @@ public class MealPlanExceptionHandler {
 
     @ExceptionHandler(MealPlanException.class)
     ProblemDetail handle(MealPlanException ex) {
-        ProblemDetail problem = problem(ex.status(), ex.code(), ex.getMessage());
-        if (ex instanceof SlotOccupiedException occupied) {
-            problem.setProperty("currentItem", occupied.currentItem());
-        }
-        return problem;
+        return problem(ex.status(), ex.code(), ex.getMessage());
     }
 
     /**
-     * Two writes on the same slot at once: the loser fails on {@code @Version} or on the one-dish-per-slot
-     * constraint. Both mean "the slot changed elsewhere" (research R4).
+     * A write that lost a race anyway (writes lock the plan row first): it fails on {@code @Version} or on the
+     * UNIQUE position at commit. Both mean "the dish changed elsewhere" (research R4).
      */
     @ExceptionHandler({OptimisticLockingFailureException.class, DataIntegrityViolationException.class})
     ProblemDetail handleConcurrentWrite(Exception ex) {
-        return problem(HttpStatus.CONFLICT, "SLOT_CHANGED", "The slot changed elsewhere; reload the week");
+        return problem(HttpStatus.CONFLICT, "SLOT_CHANGED", "The dish changed elsewhere; reload the week");
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class,

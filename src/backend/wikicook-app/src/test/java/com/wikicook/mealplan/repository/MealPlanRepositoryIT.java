@@ -9,7 +9,6 @@ import com.wikicook.mealplan.support.MealPlanFixtures;
 import com.wikicook.support.AbstractPostgresIT;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
-/** T009: lazy plan creation is safe under concurrency, reads stay inside the owner's plans, locks go by id. */
+/** T009: lazy plan creation is safe under concurrency and reads and locks stay inside the owner's plans. */
 @SpringBootTest
 class MealPlanRepositoryIT extends AbstractPostgresIT {
 
@@ -87,34 +86,39 @@ class MealPlanRepositoryIT extends AbstractPostgresIT {
     }
 
     @Test
-    void findsSlotsAndItemsOfAPlan() {
+    void findMealReturnsItsDishesByPosition() {
         long user = fixtures.user();
         long plan = fixtures.plan(user, MONDAY);
-        long lunch = fixtures.item(plan, DayOfWeek.MONDAY, "LUNCH", null, "Phở bò", 2);
-        fixtures.item(plan, DayOfWeek.TUESDAY, "DINNER", null, "Cá kho", 3);
+        long second = fixtures.item(plan, DayOfWeek.MONDAY, "LUNCH", 1, null, "Cá kho", 3, "MANUAL");
+        long first = fixtures.item(plan, DayOfWeek.MONDAY, "LUNCH", 0, null, "Canh chua", 2, "MANUAL");
+        fixtures.item(plan, DayOfWeek.TUESDAY, "DINNER", 0, null, "Bún chả", 3, "MANUAL");
 
-        assertThat(items.findByMealPlanId(plan)).hasSize(2);
-        assertThat(items.findSlot(plan, DayOfWeek.MONDAY, Meal.LUNCH)).get()
+        assertThat(items.findByMealPlanId(plan)).hasSize(3);
+        assertThat(items.findMeal(plan, DayOfWeek.MONDAY, Meal.LUNCH)).extracting(MealPlanItem::getId)
+                .containsExactly(first, second);
+        assertThat(items.findMeal(plan, DayOfWeek.MONDAY, Meal.DINNER)).isEmpty();
+        assertThat(items.findByIdAndMealPlanId(second, plan)).get()
                 .satisfies(item -> {
-                    assertThat(item.getId()).isEqualTo(lunch);
-                    assertThat(item.getRecipeNameSnapshot()).isEqualTo("Phở bò");
-                    assertThat(item.getServings()).isEqualTo((short) 2);
-                    assertThat(item.getDay()).isEqualTo(DayOfWeek.MONDAY);
+                    assertThat(item.getRecipeNameSnapshot()).isEqualTo("Cá kho");
+                    assertThat(item.getServings()).isEqualTo((short) 3);
+                    assertThat(item.getPosition()).isEqualTo(1);
                 });
-        assertThat(items.findSlot(plan, DayOfWeek.MONDAY, Meal.DINNER)).isEmpty();
+        assertThat(items.findByIdAndMealPlanId(second, fixtures.plan(user, MONDAY.plusWeeks(1)))).isEmpty();
     }
 
     @Test
-    void lockItemsByIdsOrderedReturnsItemsInIdOrder() {
-        long plan = fixtures.plan(fixtures.user(), MONDAY);
-        long a = fixtures.item(plan, DayOfWeek.MONDAY, "LUNCH", null, "A", 2);
-        long b = fixtures.item(plan, DayOfWeek.FRIDAY, "DINNER", null, "B", 2);
-        long c = fixtures.item(plan, DayOfWeek.WEDNESDAY, "BREAKFAST", null, "C", 2);
+    void lockByUserIdAndWeekStartFindsOnlyTheOwnersPlan() {
+        long owner = fixtures.user();
+        long plan = fixtures.plan(owner, MONDAY);
 
-        List<Long> ids = tx.execute(status -> items.lockItemsByIdsOrdered(List.of(c, a, b)).stream()
-                .map(MealPlanItem::getId).toList());
+        long stranger = fixtures.user();
+        Long locked = tx.execute(status -> plans.lockByUserIdAndWeekStart(owner, MONDAY).orElseThrow().getId());
+        Boolean strangerHasNone = tx.execute(status -> plans.lockByUserIdAndWeekStart(stranger, MONDAY).isEmpty());
+        Long created = tx.execute(status -> plans.findOrCreateLocked(stranger, MONDAY).getUserId());
 
-        assertThat(ids).containsExactly(a, b, c);
+        assertThat(locked).isEqualTo(plan);
+        assertThat(strangerHasNone).isTrue();
+        assertThat(created).isEqualTo(stranger);
     }
 
     @Test

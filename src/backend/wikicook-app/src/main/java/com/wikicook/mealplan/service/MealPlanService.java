@@ -5,11 +5,12 @@ import com.wikicook.mealplan.domain.Meal;
 import com.wikicook.mealplan.domain.MealPlan;
 import com.wikicook.mealplan.domain.MealPlanItem;
 import com.wikicook.mealplan.domain.SlotKey;
+import com.wikicook.mealplan.dto.AddItemRequest;
 import com.wikicook.mealplan.dto.DayPlanDto;
-import com.wikicook.mealplan.dto.ExpectedSlotState;
 import com.wikicook.mealplan.dto.PatchServingsRequest;
+import com.wikicook.mealplan.dto.PlacedItem;
 import com.wikicook.mealplan.dto.PlanItemDto;
-import com.wikicook.mealplan.dto.PutSlotRequest;
+import com.wikicook.mealplan.dto.ReplaceItemRequest;
 import com.wikicook.mealplan.dto.SlotDto;
 import com.wikicook.mealplan.dto.WeekPlanResponse;
 import com.wikicook.mealplan.port.DietaryProfilePort;
@@ -18,18 +19,18 @@ import com.wikicook.mealplan.port.RecipeSummary;
 import com.wikicook.mealplan.port.RecipeSummaryPort;
 import com.wikicook.mealplan.repository.MealPlanItemRepository;
 import com.wikicook.mealplan.repository.MealPlanRepository;
+import com.wikicook.mealplan.service.exception.MealFullException;
 import com.wikicook.mealplan.service.exception.RecipeNotAvailableException;
 import com.wikicook.mealplan.service.exception.SlotChangedException;
-import com.wikicook.mealplan.service.exception.SlotOccupiedException;
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,8 +38,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Reads and edits one user's week (US1). Every lookup goes through the caller's own plan, so no request reaches
- * another user's data (FR-006). Writes check the slot state the client saw (research R4).
+ * Reads one user's week and edits it dish by dish, up to 4 dishes per meal (US1, FR-004). Every lookup goes
+ * through the caller's own plan, so no request reaches another user's data (FR-006). Writes lock the plan row,
+ * then check the version of the dish the client saw (research R4, R5).
  */
 @Service
 public class MealPlanService {
@@ -64,99 +66,122 @@ public class MealPlanService {
         List<MealPlanItem> weekItems = plans.findByUserIdAndWeekStart(userId, weekStart)
                 .map(plan -> items.findByMealPlanId(plan.getId()))
                 .orElse(List.of());
-        Map<SlotKey, PlanItemDto> bySlot = toDtos(weekItems).entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey().slot(), Map.Entry::getValue));
+        Map<MealPlanItem, PlanItemDto> dtos = toDtos(weekItems);
+        Map<SlotKey, List<PlanItemDto>> byMeal = weekItems.stream()
+                .sorted(Comparator.comparingInt(MealPlanItem::getPosition))
+                .collect(Collectors.groupingBy(MealPlanItem::slot,
+                        Collectors.mapping(dtos::get, Collectors.toList())));
 
         List<DayPlanDto> days = new ArrayList<>();
         for (DayOfWeek day : DayOfWeek.values()) {
             List<SlotDto> slots = new ArrayList<>();
             for (Meal meal : Meal.values()) {
-                slots.add(new SlotDto(meal, bySlot.get(new SlotKey(day, meal))));
+                slots.add(new SlotDto(meal, List.copyOf(byMeal.getOrDefault(new SlotKey(day, meal), List.of()))));
             }
             days.add(new DayPlanDto(WeekCalendar.dateOf(weekStart, day), day, List.copyOf(slots), null));
         }
         LocalDate today = WeekCalendar.today(clock);
         boolean containsToday = !today.isBefore(weekStart) && !today.isAfter(weekStart.plusDays(6));
-        int available = (int) bySlot.values().stream().filter(PlanItemDto::available).count();
-        return new WeekPlanResponse(weekStart, weekStart.plusDays(6), containsToday ? today : null, bySlot.isEmpty(),
-                available, List.copyOf(days));
+        int available = (int) dtos.values().stream().filter(PlanItemDto::available).count();
+        return new WeekPlanResponse(weekStart, weekStart.plusDays(6), containsToday ? today : null,
+                weekItems.isEmpty(), available, List.copyOf(days));
     }
 
-    /** Adds a dish to an empty slot or replaces the one there (US1-2, US2, US3-4). */
+    /** Adds a dish at the end of a meal (US1-2, US1-11, US2); a meal with 4 dishes is full (FR-004). */
     @Transactional
-    public PlanItemDto putSlot(long userId, LocalDate weekStart, DayOfWeek day, Meal meal, PutSlotRequest request) {
-        RecipeSummary recipe = recipes.findByIds(Set.of(request.recipeId())).get(request.recipeId());
-        if (recipe == null || !recipe.available()) {
-            throw new RecipeNotAvailableException();
+    public PlacedItem addItem(long userId, LocalDate weekStart, DayOfWeek day, Meal meal, AddItemRequest request) {
+        RecipeSummary recipe = availableRecipe(request.recipeId());
+        MealPlan plan = plans.findOrCreateLocked(userId, weekStart);
+        int count = items.findMeal(plan.getId(), day, meal).size();
+        if (count >= Meal.MAX_DISHES) {
+            throw new MealFullException();
         }
-        MealPlan plan = plans.findOrCreate(userId, weekStart);
+        int servings = request.servings() != null ? request.servings()
+                : ServingsPolicy.defaultServings(profiles.findByUserId(userId), recipe);
         ItemSource source = Objects.requireNonNullElse(request.source(), ItemSource.MANUAL);
-        Optional<MealPlanItem> current = items.findSlot(plan.getId(), day, meal);
-        MealPlanItem item;
-        if (current.isEmpty()) {
-            if (request.expected() != null) {
-                throw new SlotChangedException();
-            }
-            int servings = request.servings() != null ? request.servings()
-                    : ServingsPolicy.defaultServings(profiles.findByUserId(userId), recipe);
-            item = new MealPlanItem(plan, day, meal, recipe.id(), recipe.title(), servings, source);
-        } else {
-            item = current.get();
-            if (request.expected() == null) {
-                throw new SlotOccupiedException(toDto(item));
-            }
-            requireExpected(item, request.expected());
-            int servings = request.servings() != null ? request.servings() : item.getServings();
-            item.setDish(recipe.id(), recipe.title(), servings, source);
-        }
+        return save(plan, new MealPlanItem(plan, day, meal, count, recipe.id(), recipe.title(), servings, source),
+                recipe);
+    }
+
+    /** Another recipe in the same place; servings stay unless sent (US3-5, FR-016). */
+    @Transactional
+    public PlacedItem replaceItem(long userId, LocalDate weekStart, long itemId, ReplaceItemRequest request) {
+        RecipeSummary recipe = availableRecipe(request.recipeId());
+        MealPlan plan = lockedPlan(userId, weekStart);
+        MealPlanItem item = seenItem(plan, itemId, request.version());
+        int servings = request.servings() != null ? request.servings() : item.getServings();
+        ItemSource source = Objects.requireNonNullElse(request.source(), ItemSource.MANUAL);
+        item.setDish(recipe.id(), recipe.title(), servings, source);
         return save(plan, item, recipe);
     }
 
-    /** New servings for the dish of a slot (US1-7); other dishes keep theirs (FR-013). */
+    /** New servings for one dish (US1-7); other dishes keep theirs (FR-013). */
     @Transactional
-    public PlanItemDto patchServings(long userId, LocalDate weekStart, DayOfWeek day, Meal meal,
-                                     PatchServingsRequest request) {
-        MealPlan plan = plans.findByUserIdAndWeekStart(userId, weekStart).orElseThrow(SlotChangedException::new);
-        MealPlanItem item = items.findSlot(plan.getId(), day, meal).orElseThrow(SlotChangedException::new);
-        requireExpected(item, request.expected());
+    public PlacedItem patchServings(long userId, LocalDate weekStart, long itemId, PatchServingsRequest request) {
+        MealPlan plan = lockedPlan(userId, weekStart);
+        MealPlanItem item = seenItem(plan, itemId, request.version());
         item.setServings(request.servings());
         return save(plan, item, null);
     }
 
-    /** Removes the dish the client saw from a slot (US3-5); a dish changed or gone meanwhile is a 409. */
+    /** Removes the dish the client saw (US3-6); the dishes after it in the meal move up (FR-016). */
     @Transactional
-    public void removeSlot(long userId, LocalDate weekStart, DayOfWeek day, Meal meal, ExpectedSlotState expected) {
-        MealPlan plan = plans.findByUserIdAndWeekStart(userId, weekStart).orElseThrow(SlotChangedException::new);
-        MealPlanItem item = items.findSlot(plan.getId(), day, meal).orElseThrow(SlotChangedException::new);
-        requireExpected(item, expected);
+    public void removeItem(long userId, LocalDate weekStart, long itemId, int version) {
+        MealPlan plan = lockedPlan(userId, weekStart);
+        MealPlanItem item = seenItem(plan, itemId, version);
+        List<MealPlanItem> rest = new ArrayList<>(items.findMeal(plan.getId(), item.getDay(), item.getMeal()));
+        rest.remove(item);
         plan.touch(clock.instant());
         items.delete(item);
+        renumber(rest);
         items.flush();
     }
 
-    /** Empties a day (US3-6); the client asked for confirmation, and an empty day or week is fine. */
+    /** Empties a day (US3-7); the client asked for confirmation, and an empty day or week is fine. */
     @Transactional
     public void clearDay(long userId, LocalDate weekStart, DayOfWeek day) {
-        plans.findByUserIdAndWeekStart(userId, weekStart).ifPresent(plan -> {
+        plans.lockByUserIdAndWeekStart(userId, weekStart).ifPresent(plan -> {
             if (items.deleteByMealPlanIdAndDay(plan.getId(), day) > 0) {
                 plan.touch(clock.instant());
             }
         });
     }
 
-    static void requireExpected(MealPlanItem item, ExpectedSlotState expected) {
-        if (expected == null || !Objects.equals(expected.itemId(), item.getId())
-                || !Objects.equals(expected.version(), item.getVersion())) {
+    /** The caller's plan of the week, locked; none means the dish the client saw is gone. */
+    MealPlan lockedPlan(long userId, LocalDate weekStart) {
+        return plans.lockByUserIdAndWeekStart(userId, weekStart).orElseThrow(SlotChangedException::new);
+    }
+
+    /** The dish of this plan at the version the client saw, or {@link SlotChangedException} (research R4). */
+    MealPlanItem seenItem(MealPlan plan, long itemId, int version) {
+        MealPlanItem item = items.findByIdAndMealPlanId(itemId, plan.getId()).orElseThrow(SlotChangedException::new);
+        if (item.getVersion() != version) {
             throw new SlotChangedException();
+        }
+        return item;
+    }
+
+    /** Gives the dishes positions 0, 1, … in list order. */
+    static void renumber(List<MealPlanItem> meal) {
+        for (int i = 0; i < meal.size(); i++) {
+            meal.get(i).setPosition(i);
         }
     }
 
-    private PlanItemDto save(MealPlan plan, MealPlanItem item, RecipeSummary recipe) {
+    private RecipeSummary availableRecipe(long recipeId) {
+        RecipeSummary recipe = recipes.findByIds(Set.of(recipeId)).get(recipeId);
+        if (recipe == null || !recipe.available()) {
+            throw new RecipeNotAvailableException();
+        }
+        return recipe;
+    }
+
+    private PlacedItem save(MealPlan plan, MealPlanItem item, RecipeSummary recipe) {
         var now = clock.instant();
         plan.touch(now);
         item.touch(now);
         MealPlanItem saved = items.saveAndFlush(item);
-        return recipe != null ? toDto(saved, recipe) : toDto(saved);
+        return new PlacedItem(saved.getDay(), saved.getMeal(), recipe != null ? toDto(saved, recipe) : toDto(saved));
     }
 
     /** Item → DTO, reading its recipe through the port. */
@@ -176,7 +201,7 @@ public class MealPlanService {
     /** Unavailable (deleted or not PUBLISHED): snapshot name, no picture or link (FR-020, research R8). */
     static PlanItemDto toDto(MealPlanItem item, RecipeSummary recipe) {
         boolean available = recipe != null && recipe.status() == RecipeStatus.PUBLISHED;
-        return new PlanItemDto(item.getId(), item.getVersion(), item.getRecipeId(),
+        return new PlanItemDto(item.getId(), item.getVersion(), item.getPosition(), item.getRecipeId(),
                 available ? recipe.title() : item.getRecipeNameSnapshot(),
                 available ? recipe.coverImageUrl() : null,
                 available ? recipe.totalTimeMinutes() : null,

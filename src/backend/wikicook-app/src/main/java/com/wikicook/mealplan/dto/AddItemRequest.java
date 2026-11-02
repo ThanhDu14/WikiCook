@@ -1,21 +1,18 @@
 package com.wikicook.mealplan.dto;
 
 import com.wikicook.mealplan.domain.ItemSource;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Add or replace the dish of a slot (FR-007, FR-008, FR-016).
+ * openapi {@code AddItemRequest}: a dish for the end of a meal (FR-004, FR-007, FR-008).
  *
- * @param servings {@code null}: household size or recipe servings when adding (FR-012), the old value when replacing
+ * @param servings {@code null}: household size or recipe servings (FR-012)
  * @param source   {@code null} = MANUAL; AI when picked from 031's suggestions (031 FR-038)
- * @param expected {@code null} = the slot must be empty
  */
-public record PutSlotRequest(
+public record AddItemRequest(
         @NotNull Long recipeId,
         @Min(1) @Max(20) Integer servings,
-        ItemSource source,
-        @Valid ExpectedSlotState expected) {
+        ItemSource source) {
 }
