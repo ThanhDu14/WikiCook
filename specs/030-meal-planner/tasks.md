@@ -27,13 +27,32 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case mà nó phủ.
 
 ## Path Conventions
 
-- Backend main: `src/backend/src/main/java/com/wikicook/mealplan/`
-- Backend test: `src/backend/src/test/java/com/wikicook/mealplan/`
-- Migration: `src/backend/src/main/resources/db/migration/`
-- Frontend: `src/frontend/src/features/meal-planner/` (test trong `__tests__/` cùng thư mục)
-- Tiền điều kiện: skeleton Build v0.5 đã có (`src/backend/pom.xml`, `src/frontend/package.json`,
-  `docker-compose.yml`, Spring Security + JWT của spec 010, API client dùng chung
-  `src/frontend/src/api/client.ts`).
+Backend là Maven multi-module (`src/backend/pom.xml`, cập nhật 2026-10-28). Đường dẫn
+`src/backend/src/...` ghi trong từng task đọc theo bảng sau:
+
+| Ghi trong task | Đường dẫn thật |
+|---|---|
+| `src/backend/src/{main,test}/java/com/wikicook/mealplan/**` | `src/backend/wikicook-app/src/{main,test}/java/com/wikicook/mealplan/**` |
+| `src/backend/src/main/resources/db/migration/` | `src/backend/wikicook-db/src/main/resources/db/migration/` (module chỉ chứa migration) |
+| `src/backend/src/main/resources/application.yml` | `src/backend/wikicook-app/src/main/resources/application.yml` |
+| `src/backend/pom.xml` (dependency) | `src/backend/wikicook-app/pom.xml`; version đặt ở `dependencyManagement` của `src/backend/pom.xml` |
+| `./mvnw verify` | `cd src/backend && mvn verify` (chưa có Maven wrapper) |
+| `src/frontend/src/api/client.ts` | `src/frontend/src/shared/api/client.ts` (client dùng chung của skeleton) |
+| `src/frontend/src/api/mealPlanApi.ts` | `src/frontend/src/features/meal-planner/api/mealPlanApi.ts` (mỗi feature giữ API của mình) |
+| `src/frontend/src/router.tsx` | `src/frontend/src/app/routes.tsx` |
+| `src/frontend/src/test/msw/server.ts`, `vitest.config.ts` | `src/frontend/src/test/server.ts`, `src/test/setup.ts`, khối `test` trong `vite.config.ts` (skeleton đã có) |
+
+- Một số phần của 030 đã làm cùng 031 (nhánh `feature/031-ai-foundation`): migration `V301`, `WeekCalendar`,
+  `@MondayDate`, các enum ở `com.wikicook.mealplan.domain`, `DietaryProfilePort`/`PlannerProfile`, interface
+  `MealPlanWriteFacade` cùng record `DraftItem`/`BatchSaveResult`/`SlotKey`. Task tương ứng ghi "*(xong/một phần,
+  làm cùng 031)*"; không viết lại.
+- Chưa có Spring Security của spec 010: `userId` lấy qua `com.wikicook.common.security.CurrentUser` (bean thật
+  của 010, hoặc dev stub `com.wikicook.devstub` khi `wikicook.dev-stubs.enabled=true`); không có bean thì 401
+  `UNAUTHENTICATED`, giống 031.
+- Clock: dùng bean `Clock` chung ở `com.wikicook.common.ClockConfig` (UTC); `WeekCalendar` tự đổi sang
+  `Asia/Ho_Chi_Minh`, nên không thêm `MealPlanClockConfig`.
+- Giao diện: class `wk-` của Soft Editorial (`docs/analysis-and-design/ui-ux/css/wikicook-soft-editorial.css`,
+  màn MP-01…MP-07 trong `docs/analysis-and-design/ui-ux/screens/`), Tailwind chỉ dùng cho bố cục.
 
 ---
 
@@ -42,7 +61,7 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case mà nó phủ.
 **Purpose**: Dependency, khung thư mục, hạ tầng test
 
 - [ ] T001 Kiểm tra skeleton Build v0.5 tồn tại (src/backend/pom.xml, src/frontend/package.json, docker-compose.yml) và tạo các package rỗng `controller`, `service`, `repository`, `domain`, `dto`, `port`, `api`, `config` trong src/backend/src/main/java/com/wikicook/mealplan/ cùng `service`, `repository`, `controller` trong src/backend/src/test/java/com/wikicook/mealplan/
-- [ ] T002 [P] Thêm (nếu chưa có) `springdoc-openapi-starter-webmvc-ui`, `org.testcontainers:postgresql`, `org.testcontainers:junit-jupiter`, `spring-boot-testcontainers` vào src/backend/pom.xml
+- [x] T002 *(xong: skeleton + 031 đã có springdoc và Testcontainers trong `wikicook-app/pom.xml`)* [P] Thêm (nếu chưa có) `springdoc-openapi-starter-webmvc-ui`, `org.testcontainers:postgresql`, `org.testcontainers:junit-jupiter`, `spring-boot-testcontainers` vào src/backend/pom.xml
 - [ ] T003 [P] Thêm `@dnd-kit/core`, `@dnd-kit/utilities` (dependencies) và `msw` (devDependencies) vào src/frontend/package.json – lý do ở plan.md Complexity Tracking
 - [x] T004 [P] *(xong, làm cùng 031: `src/backend/wikicook-app/src/test/java/com/wikicook/support/AbstractPostgresIT.java`; một container dùng chung cho mọi test class, lớp con tự thêm `@SpringBootTest` hoặc slice)* Tạo base class `AbstractPostgresIT` dùng `PostgreSQLContainer` với image `pgvector/pgvector:pg16` (`asCompatibleSubstituteFor("postgres")`) + `@ServiceConnection`, chạy Flyway thật, trong src/backend/src/test/java/com/wikicook/support/AbstractPostgresIT.java
 - [ ] T005 [P] Cấu hình msw cho Vitest: src/frontend/src/test/msw/server.ts, src/frontend/src/test/setup.ts (`beforeAll(server.listen)`…) và khai báo `setupFiles` trong src/frontend/vitest.config.ts
@@ -60,25 +79,25 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case mà nó phủ.
 
 ### Tests cho Foundational (viết trước, phải FAIL)
 
-- [ ] T007 [P] Unit test `WeekCalendarTest` – `weekStartOf(instant)` theo `Asia/Ho_Chi_Minh` (Chủ nhật 17:30 UTC = thứ Hai 00:30 giờ VN → tuần mới), `isMonday`, `today()` với `Clock.fixed`, 7 ngày của tuần 2026-12-28 → 2027-01-03 (edge case qua năm) trong src/backend/src/test/java/com/wikicook/mealplan/service/WeekCalendarTest.java
+- [x] T007 *(xong, làm cùng 031: `wikicook-app/src/test/java/com/wikicook/mealplan/service/WeekCalendarTest.java`)* [P] Unit test `WeekCalendarTest` – `weekStartOf(instant)` theo `Asia/Ho_Chi_Minh` (Chủ nhật 17:30 UTC = thứ Hai 00:30 giờ VN → tuần mới), `isMonday`, `today()` với `Clock.fixed`, 7 ngày của tuần 2026-12-28 → 2027-01-03 (edge case qua năm) trong src/backend/src/test/java/com/wikicook/mealplan/service/WeekCalendarTest.java
 - [ ] T008 [P] Integration test `MealPlanSchemaIT` (extends `AbstractPostgresIT`) – migration V301 chạy được; vi phạm `UNIQUE (user_id, week_start)`, `CHECK (EXTRACT(ISODOW FROM week_start) = 1)`, `UNIQUE (meal_plan_id, day_of_week, meal)`, `CHECK servings BETWEEN 1 AND 20`, `CHECK meal IN ('BREAKFAST','LUNCH','DINNER')`, `CHECK source IN ('MANUAL','AI','AUTO')` đều bị từ chối; xóa user → plan bị xóa (`CASCADE`, edge case "Account deleted"); xóa recipe → `recipe_id` thành NULL, `recipe_name_snapshot` giữ nguyên (`SET NULL`) trong src/backend/src/test/java/com/wikicook/mealplan/repository/MealPlanSchemaIT.java
 - [ ] T009 [P] Integration test `MealPlanRepositoryIT` – `findOrCreate(userId, weekStart)` gọi đồng thời từ 2 thread chỉ tạo 1 dòng (FR-002); `findByUserIdAndWeekStart` không trả plan của user khác (FR-006); `lockItemsByIdsOrdered` trả item theo id tăng dần trong src/backend/src/test/java/com/wikicook/mealplan/repository/MealPlanRepositoryIT.java
 - [ ] T010 [P] Web slice test `MealPlanExceptionHandlerTest` (`@WebMvcTest` với controller giả) – mỗi exception map đúng `status` + `code` (`VALIDATION_ERROR` 400, `INVALID_WEEK_START` 400, `SLOT_CHANGED` 409, `SLOT_OCCUPIED` 409 kèm `currentItem`, `RECIPE_NOT_AVAILABLE` 422), content type `application/problem+json`, body không có stack trace hay tên class trong src/backend/src/test/java/com/wikicook/mealplan/controller/MealPlanExceptionHandlerTest.java
-- [ ] T011 [P] Unit test `MondayDateValidatorTest` – `2026-10-19` hợp lệ, `2026-10-20` không hợp lệ, `null` không hợp lệ trong src/backend/src/test/java/com/wikicook/mealplan/controller/MondayDateValidatorTest.java
+- [x] T011 *(xong, làm cùng 031)* [P] Unit test `MondayDateValidatorTest` – `2026-10-19` hợp lệ, `2026-10-20` không hợp lệ, `null` không hợp lệ trong src/backend/src/test/java/com/wikicook/mealplan/controller/MondayDateValidatorTest.java
 - [ ] T012 [P] Test frontend `week.test.ts` – `currentWeekStart()` theo UTC+7 bất kể múi giờ máy (giả lập `TZ=America/New_York`), `addWeeks`, `formatWeekRange` ra "13/10 – 19/10/2026", tuần qua năm "28/12/2026 – 03/01/2027", `dayIndexOfToday` trong src/frontend/src/features/meal-planner/__tests__/week.test.ts
 - [ ] T013 [P] Test frontend `mealPlanApi.test.ts` (msw) – mỗi hàm gọi đúng method/URL của contracts/openapi.yaml; ProblemDetail được chuyển thành `ApiError { status, code, currentItem? }`; lỗi mạng (`TypeError`) thành `ApiError { code: 'NETWORK' }` trong src/frontend/src/features/meal-planner/__tests__/mealPlanApi.test.ts
 
 ### Implementation cho Foundational
 
-- [ ] T014 Viết migration src/backend/src/main/resources/db/migration/V301__meal_plans.sql đúng data-model.md mục 1: `meal_plans(id BIGINT GENERATED ALWAYS AS IDENTITY PK, user_id BIGINT NOT NULL REFERENCES users ON DELETE CASCADE, week_start DATE NOT NULL CHECK (EXTRACT(ISODOW FROM week_start) = 1), created_at, updated_at TIMESTAMPTZ NOT NULL DEFAULT now(), UNIQUE (user_id, week_start))`; `meal_plan_items(id …, meal_plan_id BIGINT NOT NULL REFERENCES meal_plans ON DELETE CASCADE, day_of_week SMALLINT NOT NULL CHECK BETWEEN 1 AND 7, meal VARCHAR(10) NOT NULL CHECK IN ('BREAKFAST','LUNCH','DINNER'), recipe_id BIGINT NULL REFERENCES recipes ON DELETE SET NULL, recipe_name_snapshot VARCHAR(100) NOT NULL, servings SMALLINT NOT NULL CHECK BETWEEN 1 AND 20, source VARCHAR(10) NOT NULL CHECK IN ('MANUAL','AI','AUTO'), version INTEGER NOT NULL DEFAULT 0, created_at, updated_at, UNIQUE (meal_plan_id, day_of_week, meal))`; index `(recipe_id)` ⛓ A, B (cần `V101` users và `V202` recipes; nếu chưa merge, tạo migration stub chỉ dùng cho test tại src/backend/src/test/resources/db/migration/V100__test_stub_users_recipes.sql)
-- [ ] T015 [P] *(một phần, làm cùng 031: `Meal` và `DietType` đã có ở `com.wikicook.mealplan.domain`; còn `ItemSource`)* Tạo enum `Meal` (BREAKFAST, LUNCH, DINNER – đúng thứ tự hiển thị FR-003), `ItemSource` (MANUAL, AI, AUTO), `DietType` (NONE, VEGETARIAN, VEGAN, PESCATARIAN) trong src/backend/src/main/java/com/wikicook/mealplan/domain/
+- [x] T014 *(xong, làm cùng 031: `wikicook-db/src/main/resources/db/migration/V301__meal_plans.sql`; bảng `users`, `recipes` thật đã có ở V101/V202 nên không cần migration stub)* Viết migration src/backend/src/main/resources/db/migration/V301__meal_plans.sql đúng data-model.md mục 1: `meal_plans(id BIGINT GENERATED ALWAYS AS IDENTITY PK, user_id BIGINT NOT NULL REFERENCES users ON DELETE CASCADE, week_start DATE NOT NULL CHECK (EXTRACT(ISODOW FROM week_start) = 1), created_at, updated_at TIMESTAMPTZ NOT NULL DEFAULT now(), UNIQUE (user_id, week_start))`; `meal_plan_items(id …, meal_plan_id BIGINT NOT NULL REFERENCES meal_plans ON DELETE CASCADE, day_of_week SMALLINT NOT NULL CHECK BETWEEN 1 AND 7, meal VARCHAR(10) NOT NULL CHECK IN ('BREAKFAST','LUNCH','DINNER'), recipe_id BIGINT NULL REFERENCES recipes ON DELETE SET NULL, recipe_name_snapshot VARCHAR(100) NOT NULL, servings SMALLINT NOT NULL CHECK BETWEEN 1 AND 20, source VARCHAR(10) NOT NULL CHECK IN ('MANUAL','AI','AUTO'), version INTEGER NOT NULL DEFAULT 0, created_at, updated_at, UNIQUE (meal_plan_id, day_of_week, meal))`; index `(recipe_id)` ⛓ A, B (cần `V101` users và `V202` recipes; nếu chưa merge, tạo migration stub chỉ dùng cho test tại src/backend/src/test/resources/db/migration/V100__test_stub_users_recipes.sql)
+- [x] T015 [P] *(xong, làm cùng 031: `Meal`, `ItemSource`, `DietType` ở `com.wikicook.mealplan.domain`)* Tạo enum `Meal` (BREAKFAST, LUNCH, DINNER – đúng thứ tự hiển thị FR-003), `ItemSource` (MANUAL, AI, AUTO), `DietType` (NONE, VEGETARIAN, VEGAN, PESCATARIAN) trong src/backend/src/main/java/com/wikicook/mealplan/domain/
 - [ ] T016 [P] Tạo `DayOfWeekConverter` (`AttributeConverter<DayOfWeek, Short>`, ISO 1 = MONDAY … 7 = SUNDAY) trong src/backend/src/main/java/com/wikicook/mealplan/domain/DayOfWeekConverter.java
 - [ ] T017 Tạo entity `MealPlan` (`Long id`, `Long userId`, `LocalDate weekStart`, `Instant createdAt/updatedAt`) và `MealPlanItem` (`@ManyToOne MealPlan`, `DayOfWeek day`, `Meal meal`, `Long recipeId` nullable, `String recipeNameSnapshot` tối đa 100 ký tự, `short servings`, `ItemSource source`, `@Version int version`) trong src/backend/src/main/java/com/wikicook/mealplan/domain/MealPlan.java và MealPlanItem.java (phụ thuộc T014–T016)
 - [ ] T018 Tạo `MealPlanRepository` (`findByUserIdAndWeekStart`, `findOrCreate` dùng native `INSERT … ON CONFLICT (user_id, week_start) DO NOTHING` rồi `SELECT`) và `MealPlanItemRepository` (`findByMealPlanId`, `findSlot(planId, day, meal)`, `lockItemsByIdsOrdered(ids)` với `@Lock(PESSIMISTIC_WRITE)` + `ORDER BY id`, `deleteByMealPlanIdAndDay`) trong src/backend/src/main/java/com/wikicook/mealplan/repository/ (làm T009 xanh)
-- [ ] T019 [P] *(lưu ý: app đã có bean `Clock` ở `com.wikicook.common.ClockConfig` (UTC) từ 031; sửa bean đó thay vì thêm `Clock` thứ hai, và đổi zone ở `WeekCalendar`)* Tạo `MealPlanClockConfig` (bean `Clock` zone `Asia/Ho_Chi_Minh`) và `WeekCalendar` (`today()`, `currentWeekStart()`, `weekStartOf(LocalDate)`, `isMonday`, `datesOf(weekStart)`) trong src/backend/src/main/java/com/wikicook/mealplan/config/MealPlanClockConfig.java và service/WeekCalendar.java (làm T007 xanh)
-- [ ] T020 [P] Tạo các port và record theo contracts/integration.md mục 1: `DietaryProfilePort` + `PlannerProfile`, `CollectionRecipePort`, `RecipeSummaryPort` + `RecipeSummary`, `DayNutritionPort` + `DayNutrition` trong src/backend/src/main/java/com/wikicook/mealplan/port/
+- [x] T019 *(xong, làm cùng 031: dùng bean `Clock` chung ở `com.wikicook.common.ClockConfig`, `WeekCalendar` đổi sang giờ VN; không thêm `MealPlanClockConfig`)* [P] *(lưu ý: app đã có bean `Clock` ở `com.wikicook.common.ClockConfig` (UTC) từ 031; sửa bean đó thay vì thêm `Clock` thứ hai, và đổi zone ở `WeekCalendar`)* Tạo `MealPlanClockConfig` (bean `Clock` zone `Asia/Ho_Chi_Minh`) và `WeekCalendar` (`today()`, `currentWeekStart()`, `weekStartOf(LocalDate)`, `isMonday`, `datesOf(weekStart)`) trong src/backend/src/main/java/com/wikicook/mealplan/config/MealPlanClockConfig.java và service/WeekCalendar.java (làm T007 xanh)
+- [ ] T020 [P] *(một phần, làm cùng 031: `DietaryProfilePort` + `PlannerProfile` đã có; còn `CollectionRecipePort`, `RecipeSummaryPort`, `DayNutritionPort`)* Tạo các port và record theo contracts/integration.md mục 1: `DietaryProfilePort` + `PlannerProfile`, `CollectionRecipePort`, `RecipeSummaryPort` + `RecipeSummary`, `DayNutritionPort` + `DayNutrition` trong src/backend/src/main/java/com/wikicook/mealplan/port/
 - [ ] T021 Tạo `DefaultPortsConfig` với bean `@ConditionalOnMissingBean`: profile rỗng (householdSize null, dietType NONE, các set rỗng) ⛓ A; bộ sưu tập rỗng ⛓ A; `DayNutritionPort` trả map rỗng ⛓ 090; và adapter tạm `JdbcRecipeSummaryAdapter` đọc `recipes` (title, total_time_minutes, servings, status, is_snack), ảnh `recipe_media` `role = 'COVER'` (`COALESCE(storage_key, external_url)`), diet type suy từ `ingredients.kind` (VEGAN nếu không có MEAT/SEAFOOD/EGG/DAIRY/HONEY; VEGETARIAN nếu không có MEAT/SEAFOOD; PESCATARIAN nếu không có MEAT; ngược lại NONE) ⛓ B trong src/backend/src/main/java/com/wikicook/mealplan/port/DefaultPortsConfig.java và port/JdbcRecipeSummaryAdapter.java
-- [ ] T022 [P] Tạo annotation `@MondayDate` + `MondayDateValidator` trong src/backend/src/main/java/com/wikicook/mealplan/controller/MondayDate.java (làm T011 xanh)
+- [x] T022 *(xong, làm cùng 031)* [P] Tạo annotation `@MondayDate` + `MondayDateValidator` trong src/backend/src/main/java/com/wikicook/mealplan/controller/MondayDate.java (làm T011 xanh)
 - [ ] T023 Tạo exception `InvalidWeekStartException`, `SlotChangedException`, `SlotOccupiedException(PlanItemDto currentItem)`, `RecipeNotAvailableException` trong src/backend/src/main/java/com/wikicook/mealplan/service/exception/ và `MealPlanExceptionHandler` (`@RestControllerAdvice` cho package `mealplan`, trả `ProblemDetail` + property `code`, không lộ stack trace) trong src/backend/src/main/java/com/wikicook/mealplan/controller/MealPlanExceptionHandler.java (làm T010 xanh)
 - [ ] T024 Cấu hình bảo mật: `/api/v1/meal-plans/**` yêu cầu đăng nhập, 401 trả ProblemDetail `UNAUTHENTICATED`; helper `CurrentUser.id()` lấy userId từ `SecurityContext` – thêm rule vào SecurityConfig của spec 010 (src/backend/src/main/java/com/wikicook/auth/config/SecurityConfig.java) và tạo src/backend/src/main/java/com/wikicook/mealplan/controller/CurrentUser.java
 - [ ] T025 [P] Tạo type TypeScript khớp contracts/openapi.yaml (`WeekPlan`, `DayPlan`, `Slot`, `PlanItem`, `Day`, `Meal`, `ItemSource`, `PickerPage`, `PickerResult`, `ShoppingHandoff`, `ApiError`) trong src/frontend/src/features/meal-planner/types.ts
