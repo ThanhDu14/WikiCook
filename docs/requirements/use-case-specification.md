@@ -3732,12 +3732,12 @@ Enables an authenticated user to leave feedback on a published recipe by selecti
 #### 4. Preconditions
 - The user is logged in with a valid JWT token (`Member` role or higher).
 - The recipe exists and is in `PUBLISHED` status.
-- The user has not previously reviewed this recipe (`SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND recipe_id = :recipeId AND deleted_at IS NULL` evaluates to 0).
-- **The user is not the author of the recipe** (`recipes.author_id != auth.user_id`). Recipe owners may post reply comments or upload Cooksnaps through other flows, but are explicitly excluded from submitting star ratings to prevent self-inflation of the aggregate score.
+- The user has not previously reviewed this recipe (`SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND recipe_id = :recipeId AND status = 'VISIBLE'` evaluates to 0).
+- **The user is not the author of the recipe** (`recipes.author_id != auth.user_id`). Recipe owners may upload Cooksnaps through other flows, but are explicitly excluded from submitting star ratings to prevent self-inflation of the aggregate score.
 
 #### 5. Basic Flow
 1. **Open Recipe:** The user navigates to the target recipe page (`/recipes/:id`) and scrolls down to the reviews section.
-2. **Author Guard Check:** The frontend checks whether the current user is the recipe author. If `recipe.author_id == auth.user_id`, the `"Viết đánh giá"` button is **hidden entirely** from the UI. Instead, the author sees a contextual note: *"Bạn là tác giả công thức này — bạn có thể xem đánh giá và trả lời bình luận, nhưng không thể tự chấm điểm."*
+2. **Author Guard Check:** The frontend checks whether the current user is the recipe author. If `recipe.author_id == auth.user_id`, the `"Viết đánh giá"` button is **hidden entirely** from the UI. Instead, the author sees a contextual note: *"Bạn là tác giả công thức này — bạn có thể xem đánh giá, nhưng không thể tự chấm điểm."*
 3. **Start Review:** The user (non-author) clicks the `"Viết đánh giá"` (Write Review) button.
 4. **Show Review Form:** The application displays the review modal (`RV02-WriteReview`), presenting:
    - Recipe thumbnail and title.
@@ -3760,11 +3760,11 @@ Enables an authenticated user to leave feedback on a published recipe by selecti
    - **Author self-review guard:** Server verifies `recipes.author_id != auth.user_id`. If the submitter is the author, returns HTTP 403 Forbidden with error code `SELF_REVIEW_FORBIDDEN`.
    - **Review velocity check (anti-spam):** Server verifies the user has already submitted 5 or more reviews within the past 10 minutes (`SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND created_at > NOW() - INTERVAL '10 minutes'`). If count $\ge 5$, returns HTTP 429 Too Many Requests with message *"Bạn đang đánh giá quá nhanh. Vui lòng đợi vài phút trước khi tiếp tục."*.
    - Opens a database transaction:
-     - Inserts a new row into `reviews` (`user_id`, `recipe_id`, `rating`, `comment`, `tip`, `created_at = NOW()`, `visibility = 'VISIBLE'`).
+     - Inserts a new row into `reviews` (`user_id`, `recipe_id`, `rating`, `comment`, `substitution_tip`, `status = 'VISIBLE'`, `created_at = NOW()`).
      - Atomically recalculates the recipe's aggregate values:
-       $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE deleted\_at IS NULL AND visibility = 'VISIBLE'}$$
-       $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE deleted\_at IS NULL AND visibility = 'VISIBLE'}$$
-       across all visible, non-deleted reviews for this `recipe_id`.
+       $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE status = 'VISIBLE'}$$
+       $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE status = 'VISIBLE'}$$
+       across all visible reviews for this `recipe_id`.
      - Commits the transaction.
 10. **Update UI:** The server returns HTTP 201 Created. The modal closes, a success toast displays *"Đánh giá của bạn đã được đăng thành công"*, the aggregate score and star chart update, and the new review appears at the top with a `"Mới"` (New) badge.
 
@@ -3856,14 +3856,16 @@ Allows users to attach up to 3 photos of their finished dish (Cooksnaps) to thei
    - Each file is $\le 5$ MB.
    - Total count does not exceed 3 photos.
 4. **Render Previews:** The app creates local preview thumbnails in the form with a small `"Xóa"` ($\times$) button on each and displays an upload progress bar with per-file status indicator (*Gap 070-K*).
-5. **Submit Review:** User completes comment/stars and clicks `"Gửi đánh giá"`.
-6. **Upload Files:** The app sends a `multipart/form-data` request containing review fields and binary image parts.
+5. **Submit Review / Cooksnap:** User completes comment/stars (if submitting with review) or clicks upload in the Cooksnap composer.
+6. **Upload Files (API Call):**
+   - **Trường hợp 1 (Upload kèm review lần đầu):** Client gửi request `POST /api/v1/recipes/:id/reviews` với `Content-Type: multipart/form-data` chứa đồng thời các trường text (`rating`, `comment`, `substitution_tip`) và các binary image parts (`cooksnaps[]`).
+   - **Trường hợp 2 (Upload riêng lẻ không kèm review text):** Client gửi request tới endpoint chuyên biệt `POST /api/v1/recipes/:id/cooksnaps` với `Content-Type: multipart/form-data` (kèm `caption` tùy chọn). Trường hợp xóa ảnh Cooksnap riêng lẻ, client gọi `DELETE /api/v1/cooksnaps/:cooksnapId`.
 7. **Server Processing:**
    - Validates image magic bytes to verify actual MIME type.
    - Strips all EXIF metadata (specifically GPS coordinates and camera serial numbers).
    - Generates a 400px wide WebP thumbnail for fast loading.
-   - Stores master images and thumbnails in object storage (`/uploads/cooksnaps/:recipeId/:reviewId/`).
-   - Inserts records into the `cooksnaps` table referencing `review_id`.
+   - Stores master images and thumbnails in object storage (`/uploads/cooksnaps/:recipeId/:userId/`).
+   - Inserts records into the `cooksnaps` table referencing `recipe_id` and `user_id` with `status = 'VISIBLE'`.
 8. **Display on Page:** When the recipe reloads, the review displays the Cooksnap photo grid (`RV01-Reviews`).
 9. **Open Lightbox:** Clicking any photo opens the full-screen lightbox (`RV03-Lightbox`) with skeleton loading state (*Gap 070-B*), swipe navigation, author name, and zoom controls.
 
@@ -3896,8 +3898,8 @@ Allows users to attach up to 3 photos of their finished dish (Cooksnaps) to thei
     3. Displays a retry prompt: *"Tải ảnh thất bại do lỗi kết nối. Dữ liệu đánh giá của bạn đã được lưu nháp."* with a `"Thử lại"` button.
 
 #### 7. Postconditions
-- **Database:** Rows added to `cooksnaps` with image paths, dimensions, and file sizes.
-- **Storage:** Cleaned images and thumbnails stored in persistent storage.
+- **Database:** Rows added to `cooksnaps` (`recipe_id`, `user_id`, `storage_key`, `content_type`, `size_bytes`, `caption`, `status = 'VISIBLE'`).
+- **Storage:** Cleaned images and thumbnails stored in persistent storage (`/uploads/cooksnaps/:recipeId/:userId/`).
 
 #### 8. Special Requirements
 - **Privacy:** 100% of EXIF GPS coordinates must be purged before saving to storage.
@@ -3925,7 +3927,7 @@ Allows users to update their previously submitted reviews (changing rating, text
 
 #### 4. Preconditions
 - User is logged in.
-- User has an existing active review on this recipe (`reviews.user_id = auth.user_id` and `reviews.deleted_at IS NULL`).
+- User has an existing active review on this recipe (`reviews.user_id = auth.user_id` and `reviews.status = 'VISIBLE'`).
 
 #### 5. Basic Flow (Branch A: Edit Review)
 1. **Find Own Review:** The user navigates to the recipe page and locates their own review card (`RV04-OwnReview`), identified by a `"Bạn"` (You) badge.
@@ -3937,8 +3939,8 @@ Allows users to update their previously submitted reviews (changing rating, text
 7. **Persist Updates:** Client sends `PUT /api/v1/recipes/:id/reviews/:reviewId`.
 8. **Server Execution:**
    - Confirms the active user owns the review.
-   - Updates `reviews` table (`rating`, `comment`, `tip`, `updated_at = NOW()`).
-   - Marks removed Cooksnaps as `deleted_at = NOW()` and inserts new photos.
+   - Updates `reviews` table (`rating`, `comment`, `substitution_tip`, `updated_at = NOW()`).
+   - Marks removed Cooksnaps as `status = 'HIDDEN'` (or deletes via `DELETE /api/v1/cooksnaps/:cooksnapId`) and inserts new photos.
    - Recalculates the recipe's `rating_avg` if stars changed.
 9. **UI Confirmation:** The modal closes with a toast *"Đã cập nhật đánh giá thành công"*, showing the updated review with an `"(đã chỉnh sửa)"` label (*Gap 070-C*).
 
@@ -3950,14 +3952,14 @@ Allows users to update their previously submitted reviews (changing rating, text
    - Buttons: `"Hủy"` and `"Xóa"`.
 3. **Confirm:** User clicks `"Xóa"`.
 4. **Send Delete Call:** Browser sends `DELETE /api/v1/recipes/:id/reviews/:reviewId`.
-5. **Server Soft Deletion:**
+5. **Server Soft Deletion / Hiding:**
    - Verifies ownership.
-   - Sets `reviews.deleted_at = NOW()`.
-   - Sets `cooksnaps.deleted_at = NOW()` for linked photos.
-   - **Cascading aggregate recalculation** — updates recipe counts using the atomic formula excluding deleted and hidden reviews:
-     $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE deleted\_at IS NULL AND visibility = 'VISIBLE'}$$
-     $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE deleted\_at IS NULL AND visibility = 'VISIBLE'}$$
-   - **Consistency guarantee:** This recalculation is triggered by *any* event that changes a review's visibility status — whether initiated by the author (self-delete), by a Moderator (hide/delete via `UC-100-02`), or by system automation (spam account suspension). The service-layer method `RecipeAggregateService.recalculate(recipeId)` is the single source of truth for both `rating_avg` and `review_count`, ensuring no code path can alter review visibility without updating the parent recipe's scores.
+   - Sets `reviews.status = 'HIDDEN'`.
+   - Sets `cooksnaps.status = 'HIDDEN'` for linked user Cooksnaps on this recipe (`WHERE recipe_id = :recipeId AND user_id = :userId`).
+   - **Cascading aggregate recalculation** — updates recipe counts using the atomic formula excluding hidden reviews:
+     $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE status = 'VISIBLE'}$$
+     $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE status = 'VISIBLE'}$$
+   - **Consistency guarantee:** This recalculation is triggered by *any* event that changes a review's status — whether initiated by the author (self-hide/delete), by a Moderator (hide via `UC-100-02`), or by system automation (spam account suspension). The service-layer method `RecipeAggregateService.recalculate(recipeId)` is the single source of truth for both `rating_avg` and `review_count`, ensuring no code path can alter review status without updating the parent recipe's scores.
 6. **UI Refresh:** The review card is removed from the list, the review summary updates, and the button reverts back to `"Viết đánh giá"`. If no reviews remain, the empty state (`RV06-Empty`) is shown.
 
 #### 6. Alternative Flows
@@ -3979,12 +3981,13 @@ Allows users to update their previously submitted reviews (changing rating, text
 #### 7. Postconditions
 - **Database:**
   - Edit: `reviews.updated_at` updated; `recipes.rating_avg` recalculated via `RecipeAggregateService.recalculate(recipeId)` if star rating changed.
-  - Delete: `reviews.deleted_at` and `cooksnaps.deleted_at` set; `rating_avg` and `review_count` fully recalculated (not merely decremented) to prevent drift from accumulated rounding.
-  - Admin Hide/Delete (cross-reference `UC-100-02`): When a Moderator hides or deletes a review through the report resolution flow, the same `RecipeAggregateService.recalculate(recipeId)` method is invoked, guaranteeing that the recipe's public score accurately reflects only visible, non-deleted reviews at all times.
+  - Delete: `reviews.status = 'HIDDEN'` and author's `cooksnaps.status = 'HIDDEN'` set; `rating_avg` and `review_count` fully recalculated (not merely decremented) using `WHERE status = 'VISIBLE'` to prevent drift from accumulated rounding.
+  - Admin Hide (cross-reference `UC-100-02`): When a Moderator hides a review through the report resolution flow (`status = 'HIDDEN'`), the same `RecipeAggregateService.recalculate(recipeId)` method is invoked, guaranteeing that the recipe's public score accurately reflects only reviews with `status = 'VISIBLE'` at all times.
+> **[OQ-070-05]:** Schema hiện tại chưa có `reviews.hidden_reason`. Đề xuất thêm cột `hidden_reason VARCHAR(300) NULL` và `hidden_by BIGINT NULL (FK → users SET NULL)` vào bảng `reviews`. Tương tự mẫu đã có trong `recipe_nutrition.hidden_reason`.
 - **UI:** Review card is updated or removed.
 
 #### 8. Special Requirements
-- **Data Retention:** Soft-deleted Cooksnap files are permanently purged from disk after 30 days.
+- **Data Retention:** Hidden Cooksnap files (`status = 'HIDDEN'`) are retained for 30 days before purge to support moderation audit and recovery.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV04-OwnReview.dc.html`](../analysis-and-design/ui-ux/screens/RV04-OwnReview.dc.html), [`W-RV04b-DeleteConfirm.dc.html`](../analysis-and-design/ui-ux/screens/W-RV04b-DeleteConfirm.dc.html).
@@ -4048,11 +4051,8 @@ Enables any visitor to view community reviews and Cooksnaps on a recipe page. Us
     2. Review text, rating, and Cooksnaps remain intact to protect recipe score accuracy.
 
 #### 7. Postconditions
-- **Database:** Read-only query for browse/sort/filter; upvote action inserts or removes a row in `review_votes`.
-- **Entity: `review_votes`** (new table supporting the "Hữu ích" feature):
-  - Attributes: `id` (BIGINT PK), `review_id` (FK → reviews ON DELETE CASCADE), `user_id` (FK → users), `created_at` (TIMESTAMPTZ DEFAULT NOW()).
-  - Constraints: `UNIQUE(review_id, user_id)` — each user can upvote a review only once.
-  - Denormalized counter: `reviews.helpful_count` (INTEGER DEFAULT 0) is incremented/decremented atomically on vote toggle for sort performance, avoiding a `COUNT(*)` subquery on every page load.
+- **Database:** Read-only query for browse/sort/filter.
+> **[OQ-070-04]:** Schema hiện tại chưa có cột `reviews.helpful_count`. Đề xuất bổ sung cột `helpful_count INTEGER DEFAULT 0` vào bảng `reviews` và bảng `review_votes (review_id, user_id, created_at)` vào migration V501. Cần chốt với kỹ sư phụ trách E trước sprint tiếp theo.
 
 #### 8. Special Requirements
 - **Performance:** Review summary block and first page of reviews must load within 300ms.
@@ -4092,13 +4092,18 @@ Allows community members to report reviews or Cooksnap photos that violate commu
    - `"Nội dung không phù hợp"` (`INAPPROPRIATE_CONTENT`)
    - `"Thông tin sai lệch"` (`MISLEADING_INFO`)
    - `"Khác"` (`OTHER`)
-   - Optional description field (`0/500`).
+   - Optional details field (`0/1000`).
 3. **Select Reason:** User selects `"Spam / quảng cáo"` and types an explanation (e.g., *"Đánh giá chứa link bán hàng giả mạo"*).
 4. **Submit:** User clicks `"Gửi báo cáo"`.
-5. **Send API Call:** Client dispatches `POST /api/v1/reports` with `{ target_type: "REVIEW", target_id: 128, reason: "SPAM", description: "..." }`.
+5. **Send API Call:** Client dispatches `POST /api/v1/reports` with `{ target_type: "REVIEW", target_id: 128, reason: "SPAM", details: "..." }`.
 6. **Server Storage:**
-   - Verifies target exists and user hasn't reported it before (`UNIQUE(reporter_id, target_type, target_id)`).
-   - Inserts record into `reports` with `status = 'PENDING'`.
+   - Verifies target exists and user hasn't reported it before.
+   - Maps report target to the dedicated FK column per schema constraint `CHECK (num_nonnulls(recipe_id, review_id, cooksnap_id, reported_user_id) = 1)`:
+     - Báo cáo review $\rightarrow$ server sets `reports.review_id = :reviewId` (các FK còn lại `NULL`).
+     - Báo cáo cooksnap $\rightarrow$ server sets `reports.cooksnap_id = :cooksnapId`.
+     - Báo cáo người dùng $\rightarrow$ server sets `reports.reported_user_id = :userId`.
+     - Báo cáo công thức $\rightarrow$ server sets `reports.recipe_id = :recipeId`.
+   - Inserts record into `reports` with `status = 'OPEN'`.
 7. **Enqueue:** The report appears in the admin moderation dashboard (`AD05-Reports`).
 8. **UI Confirmation:** The modal closes and shows toast: *"Cảm ơn bạn đã báo cáo. Đội ngũ kiểm duyệt sẽ xem xét nội dung này."*. The flag icon turns gray/disabled for this user.
 
@@ -4120,18 +4125,30 @@ Allows community members to report reviews or Cooksnap photos that violate commu
     2. Direct API call returns HTTP 422 Unprocessable Entity (`CANNOT_REPORT_SELF`).
 
 #### 7. Postconditions
-- **Database:** A row is inserted into `reports` with `status = 'PENDING'`.
+- **Database:** A row is inserted into `reports` with `status = 'OPEN'`.
 - **Admin System:** Report counter increments on `AD01-Dashboard`.
 
 #### 8. Special Requirements
 - **Rate Limit:** Maximum 10 reports per user per hour (HTTP 429 Too Many Requests) to prevent report-spamming.
 - **Confidentiality:** The author of the reported review is never informed of who filed the report.
-- **Mass-Report Auto-Escalation:** When a single review or Cooksnap accumulates **≥ 10 distinct reports** (from 10 different users), the system automatically:
-  1. Sets the reported content's visibility to `HIDDEN` (`hidden_reason = 'MASS_REPORT'`) (soft-hide, removing it from public view while preserving it for admin inspection).
-  2. Escalates the report bundle to **high priority** in the moderation queue (`AD05-Reports`), displaying a red `"Khẩn cấp"` badge (*Gap 070-H*).
-  3. Triggers `RecipeAggregateService.recalculate(recipeId)` to immediately exclude the hidden review (`WHERE deleted_at IS NULL AND visibility = 'VISIBLE'`) from the recipe's `rating_avg` and `review_count`, preventing a potentially fraudulent or abusive review from distorting the score while awaiting moderator resolution.
-  4. Inserts a system-generated audit log entry: `action = 'AUTO_HIDE_MASS_REPORTED'`, `target_type = 'REVIEW'`, `target_id`, `new_value = {"report_count": 10, "auto_action": "HIDDEN"}`.
-- **Anti-Coordinated-Abuse Safeguard:** To prevent weaponized mass-reporting (e.g., a group of users coordinating to take down a legitimate review), the auto-hide is **reversible** — a moderator can reinstate the hidden content by selecting `"Khôi phục nội dung"` (Restore Content) during report resolution, which sets visibility back to public (`visibility = 'VISIBLE'`, `hidden_reason = NULL`) and triggers aggregate recalculation.
+- **Mass-Report Auto-Escalation:** When open reports for an item reach **≥ 10 distinct reports** (evaluated independently per target FK):
+  - Đối với báo cáo REVIEW:
+    `SELECT COUNT(*) FROM reports WHERE review_id = :reviewId AND status = 'OPEN'`
+    Khi ngưỡng $\ge 10$ đạt được:
+    `UPDATE reviews SET status = 'HIDDEN' WHERE id = :reviewId`
+  - Đối với báo cáo COOKSNAP:
+    `SELECT COUNT(*) FROM reports WHERE cooksnap_id = :cooksnapId AND status = 'OPEN'`
+    Khi ngưỡng $\ge 10$ đạt được:
+    `UPDATE cooksnaps SET status = 'HIDDEN' WHERE id = :cooksnapId`
+  - Hệ thống tự động thực hiện:
+    1. Ẩn nội dung bị báo cáo khỏi chế độ công khai (`status = 'HIDDEN'`), bảo lưu dữ liệu để kiểm duyệt viên thanh tra.
+    2. Đưa bundle báo cáo lên ưu tiên cao trong hàng đợi kiểm duyệt (`AD05-Reports`), hiển thị huy hiệu đỏ `"Khẩn cấp"` (*Gap 070-H*).
+    3. Nếu là Review: Kích hoạt `RecipeAggregateService.recalculate(recipeId)` để loại trừ ngay review bị ẩn (`WHERE status = 'VISIBLE'`) khỏi `rating_avg` và `review_count`, ngăn ngừa đánh giá rác làm sai lệch điểm số trong lúc chờ kiểm duyệt.
+    4. Ghi log kiểm toán: chèn bản ghi vào `audit_logs` (`action = 'AUTO_HIDE_MASS_REPORTED'`, `target_type = 'REVIEW'` hoặc `'COOKSNAP'`, `target_id`, `details = {"report_count": 10, "auto_action": "HIDDEN"}`).
+- **Anti-Coordinated-Abuse Safeguard:** Để chống phá hoại phối hợp (troll report hàng loạt), cơ chế auto-hide có tính **khả nghịch (reversible)** — kiểm duyệt viên có thể khôi phục nội dung bằng hành động `"Khôi phục nội dung"` (Restore Content):
+  - Với review: `UPDATE reviews SET status = 'VISIBLE' WHERE id = :reviewId` và kích hoạt tính lại aggregate với `WHERE status = 'VISIBLE'`.
+  - Với cooksnap: `UPDATE cooksnaps SET status = 'VISIBLE' WHERE id = :cooksnapId`.
+  - Đồng thời cập nhật các report liên quan: `UPDATE reports SET status = 'DISMISSED', handled_by = auth.user_id, handled_at = NOW()`.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV05-Report.dc.html`](../analysis-and-design/ui-ux/screens/RV05-Report.dc.html), [`W-RV05-Report.dc.html`](../analysis-and-design/ui-ux/screens/W-RV05-Report.dc.html).
@@ -4208,7 +4225,7 @@ Provides an immediate call to action when a user finishes a Cooking Mode session
 | **`UC-070-01`** | Rate & Review Recipe | `US1` (AC 1–6) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-009` | `SC-001`, `SC-003` | Author self-review prevention, review velocity anti-spam |
 | **`UC-070-02`** | Upload Cooksnap Photos | `US2` (AC 1–7) | `FR-006`, `FR-007`, `FR-008` | `SC-002` | — |
 | **`UC-070-03`** | Edit or Delete Own Review | `US3` (AC 1–5) | `FR-009`, `FR-010`, `FR-011` | `SC-001`, `SC-003` | Cascading aggregate recalculation on admin hide/delete |
-| **`UC-070-04`** | Browse, Sort & Filter Reviews | `US4` (AC 1–5) | `FR-012`, `FR-013`, `FR-014`, `FR-017`, `FR-019` | `SC-001` | "Hữu ích nhất" sort, `review_votes` entity, upvote toggle |
+| **`UC-070-04`** | Browse, Sort & Filter Reviews | `US4` (AC 1–5) | `FR-012`, `FR-013`, `FR-014`, `FR-017`, `FR-019` | `SC-001` | "Hữu ích nhất" sort (đề xuất V501 per `[OQ-070-04]`), upvote toggle |
 | **`UC-070-05`** | Report Review or Cooksnap | `US5` (AC 1–5) | `FR-015`, `FR-016` | `SC-004`, `SC-005` | Mass-report auto-escalation (≥10 reports → auto-hide) |
 | **`UC-070-06`** | Respond to Post-Cooking Review Prompt | `US6` (AC 1–4) | `FR-018` | `SC-001` | — |
 
@@ -4254,21 +4271,25 @@ To support task **`SCRUM-58`** (embedding prototype screenshots directly alongsi
    - *Issue:* Can unauthenticated guests browse Cooksnap photo lightboxes (`RV03`) and click helpful votes?
    - *Current Stance in UC-070-04:* Guests have unrestricted read access to browse reviews, view rating distributions, and open photo lightboxes. However, clicking "Hữu ích" (upvote) or "Viết đánh giá" prompts an authentication modal (`AU08-SignInPrompt`) per `FR-001` and `NFR-002`.
    - *Status:* Proposal aligned with Vision §5.7; pending final Use-Case Model freeze on November 02.
-2. **`[OQ-070-02]` Recipe Author Reply & Interaction on Own Reviews:**
-   - *Issue:* To prevent rating self-inflation, recipe authors are barred from star ratings. Can they post clarifying comments or cooking notes in response to community reviews?
-   - *Current Stance in UC-070-01:* Author comments are rendered with a distinct `[Tác giả]` badge. Author responses do not carry star ratings and are excluded from `rating_avg` recalculation, maintaining data integrity.
-   - *Status:* Aligned with Product Owner and Spec 070.
-3. **`[OQ-070-03]` Spec 070 Scope Amendments & Architectural Enhancements:**
+2. **`[OQ-070-02]` Spec 070 Scope Amendments & Architectural Enhancements:**
    - *Issue:* Specifications for Feature 070 in the ratified Spec 070 did not formally define author self-review guard, rate limiting, review upvoting (`review_votes`), or mass-report auto-hide.
-   - *Current Stance in UC-070-01–05:* These 5 architectural enhancements (v2) are specified to satisfy cross-cutting security, anti-spam, community engagement, and moderation resilience needs. They are documented as proposed amendments to Spec 070 for formal team ratification.
+   - *Current Stance in UC-070-01–05:* These architectural enhancements (v2) are specified to satisfy cross-cutting security, anti-spam, community engagement, and moderation resilience needs. They are documented as proposed amendments to Spec 070 for formal team ratification.
    - *Status:* Documented for Product Owner and Tech Lead alignment.
+3. **`[OQ-070-04]` Review Helpful Votes & Counters (Schema Gap):**
+   - *Issue:* Schema hiện tại chưa có cột `reviews.helpful_count` và bảng `review_votes`.
+   - *Current Stance in UC-070-04:* Đề xuất bổ sung cột `helpful_count INTEGER DEFAULT 0` vào bảng `reviews` và bảng `review_votes (review_id, user_id, created_at)` vào migration V501. Cần chốt với kỹ sư phụ trách E trước sprint tiếp theo.
+   - *Status:* Open for team alignment.
+4. **`[OQ-070-05]` Review Hidden Reason & Moderation Tracking (Schema Gap):**
+   - *Issue:* Schema hiện tại chưa có `reviews.hidden_reason`.
+   - *Current Stance in UC-070-03 & UC-100-02:* Đề xuất thêm cột `hidden_reason VARCHAR(300) NULL` và `hidden_by BIGINT NULL (FK → users SET NULL)` vào bảng `reviews`. Tương tự mẫu đã có trong `recipe_nutrition.hidden_reason`.
+   - *Status:* Open for team alignment.
 
 #### 12.3.2. Domain Assumptions Reaffirmed
 - **Aggregate Score Precision:** Recipe average rating `rating_avg` is stored and computed as a numeric floating value rounded to exactly 1 decimal place ($1.0$ to $5.0$).
 - **Anti-Spam Velocity Threshold:** Review submission enforces a limit of $\le 5$ reviews per 10-minute sliding window per user account.
-- **Cascading Aggregate Consistency:** Any event modifying review visibility (`SOFT_DELETE`, `HIDE`, `RESTORE`, `SUBMIT`) MUST synchronously trigger `RecipeAggregateService.recalculate(recipeId)` using the single source of truth formula:
-  $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE deleted\_at IS NULL AND visibility = 'VISIBLE'}$$
-  $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE deleted\_at IS NULL AND visibility = 'VISIBLE'}$$
+- **Cascading Aggregate Consistency:** Any event modifying review status (`HIDE`, `RESTORE`, `SUBMIT`) MUST synchronously trigger `RecipeAggregateService.recalculate(recipeId)` using the single source of truth formula:
+  $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE status = 'VISIBLE'}$$
+  $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE status = 'VISIBLE'}$$
 
 
 ---
@@ -4364,7 +4385,7 @@ Provides an administrative interface to inspect user-submitted recipes in `PENDI
 #### 8. Special Requirements
 - **Performance:** Queue initial page load must complete in $< 800$ms for 20 items.
 - **Resilience:** Failure in AI embedding or nutrition services must not roll back recipe publication.
-- **Presence Channel:** WebSocket/SSE connection for the moderation presence indicator must gracefully degrade — if the real-time channel is unavailable, the system falls back to the HTTP 409 post-action conflict detection without any loss of data integrity.
+- **Presence Channel (Advisory Only):** WebSocket/SSE presence chỉ phục vụ mục đích thông báo. Không có cơ chế pessimistic lock. Xung đột thực sự xử lý bằng HTTP 409 trong AF 1.4. Kết nối WebSocket/SSE presence indicator phải gracefully degrade nếu mất kết nối thời gian thực.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`AD02-Queue.dc.html`](../analysis-and-design/ui-ux/screens/AD02-Queue.dc.html), [`AD03-ReviewDetail.dc.html`](../analysis-and-design/ui-ux/screens/AD03-ReviewDetail.dc.html), [`AD04-RejectDialog.dc.html`](../analysis-and-design/ui-ux/screens/AD04-RejectDialog.dc.html).
@@ -4388,11 +4409,11 @@ Provides a triage interface for user reports on recipes, reviews, Cooksnaps, or 
 
 #### 4. Preconditions
 - Actor is authenticated with `ROLE_MODERATOR` or `ROLE_ADMINISTRATOR`.
-- Pending records exist in the `reports` table.
+- Open records exist in the `reports` table (`reports.status = 'OPEN'`).
 
 #### 5. Basic Flow
 1. **Open Reports:** Moderator opens `/admin/reports` via sidebar (`AD05-Reports`).
-2. **Filter Queue:** System shows pending reports (FIFO). Moderator filters by category chips: `"Tất cả"`, `"Công thức"`, `"Đánh giá"`, `"Cooksnap"`, or `"Người dùng"`.
+2. **Filter Queue:** System shows open reports (FIFO, `status = 'OPEN'`). Moderator filters by category chips: `"Tất cả"`, `"Công thức"`, `"Đánh giá"`, `"Cooksnap"`, or `"Người dùng"`.
 3. **Select Report:** Moderator clicks `"Xem"` on Report #311 (reported spam review on *"Canh chua cá lóc"*).
 4. **View Report Dossier:** System displays the review pane (`AD06-ReportDetail`):
    - Offending content: Full review text, star score, recipe context.
@@ -4402,12 +4423,13 @@ Provides a triage interface for user reports on recipes, reviews, Cooksnaps, or 
 5. **Choose Action:** Moderator selects `"Xóa nội dung"` (Delete Content) (`DELETE_CONTENT`).
 6. **Confirm:** Moderator clicks `"Xác nhận xử lý"` (*Gap 100-B*).
 7. **Server Processing:**
-   - Soft-deletes offending review (`reviews.deleted_at = NOW()`, `reviews.visibility = 'HIDDEN'`).
-   - **Triggers cascading aggregate recalculation:** Invokes `RecipeAggregateService.recalculate(recipeId)` to recompute `rating_avg` and `review_count` on the parent recipe, excluding the now-deleted review (`WHERE deleted_at IS NULL AND visibility = 'VISIBLE'`). This ensures the recipe's public score immediately reflects the removal, maintaining data consistency between the moderation action and the public-facing recipe metrics.
-   - Sets `reports.status = 'RESOLVED'`, `resolved_by = auth.user_id`, `resolved_at = NOW()`.
-   - Writes immutable entry to `audit_logs` (`action = 'CONTENT_DELETED'`).
+   - Offending review is hidden (`reviews.status = 'HIDDEN'`).
+   - **Triggers cascading aggregate recalculation:** Invokes `RecipeAggregateService.recalculate(recipeId)` to recompute `rating_avg` and `review_count` on the parent recipe, excluding the now-hidden review (`WHERE status = 'VISIBLE'`). This ensures the recipe's public score immediately reflects the removal, maintaining data consistency between the moderation action and the public-facing recipe metrics.
+   - Sets `reports.status = 'RESOLVED'`, `handled_by = auth.user_id`, `handled_at = NOW()`.
+   - Inserts record into `moderation_actions` (`actor_id = auth.user_id`, `report_id`, `review_id`, `action = 'HIDE'`).
+   - Writes immutable entry to `audit_logs` (`action = 'CONTENT_HIDDEN'`, `target_type = 'REVIEW'`, `target_id`).
    - Sends notification to reporter: *"Cảm ơn bạn đã báo cáo. Chúng tôi đã xử lý vi phạm."*.
-8. **UI Refresh:** Toast confirms action, Report #311 is removed from queue, and pending counter decrements.
+8. **UI Refresh:** Toast confirms action, Report #311 is removed from queue, and open reports counter decrements.
 
 #### 6. Alternative Flows
 - **AF 2.1: Dismiss Report (No Violation Found):**
@@ -4415,7 +4437,7 @@ Provides a triage interface for user reports on recipes, reviews, Cooksnaps, or 
   - *Steps:*
     1. Moderator selects `"Bỏ qua (không vi phạm)"`.
     2. Clicks `"Xác nhận xử lý"`.
-    3. Server sets `reports.status = 'DISMISSED'`. No penalty is applied to reported user.
+    3. Server sets `reports.status = 'DISMISSED'`, `handled_by = auth.user_id`, `handled_at = NOW()`. No penalty is applied to reported user.
 - **AF 2.2: Report Filed Against a Staff Member / Moderator:**
   - *Trigger:* A community member reports content created by a Moderator or Administrator.
   - *Steps:*
@@ -4426,29 +4448,29 @@ Provides a triage interface for user reports on recipes, reviews, Cooksnaps, or 
   - *Trigger:* Content requires investigation without immediate suspension.
   - *Steps:*
     1. Moderator selects `"Ẩn nội dung"`.
-    2. Server sets `reviews.visibility = 'HIDDEN'`, `reviews.hidden_reason = 'MODERATOR'`. Item visibility is toggled off on public pages but remains inspectable by admin.
-    3. **Aggregate recalculation triggered:** `RecipeAggregateService.recalculate(recipeId)` is invoked to exclude the hidden review from `rating_avg` and `review_count` (`WHERE deleted_at IS NULL AND visibility = 'VISIBLE'`). If the moderator later restores the content (via `"Khôi phục nội dung"`), the aggregate is recalculated again to re-include the restored review.
+    2. Server sets `reviews.status = 'HIDDEN'`. Nội dung bị ẩn khỏi trang công khai nhưng vẫn hiển thị với quản trị viên trong bảng kiểm duyệt. (Đề xuất thêm cột `hidden_reason` per `[OQ-070-05]`).
+    3. **Aggregate recalculation triggered:** `RecipeAggregateService.recalculate(recipeId)` is invoked to exclude the hidden review from `rating_avg` and `review_count` (`WHERE status = 'VISIBLE'`). If the moderator later restores the content (via `"Khôi phục nội dung"`), the aggregate is recalculated again to re-include the restored review.
 - **AF 2.4: Resolve Auto-Hidden (Mass-Reported) Content:**
   - *Trigger:* Moderator opens a reported bundle bearing the red `"Khẩn cấp"` badge (*Gap 100-H*) that was automatically hidden due to $\ge 10$ community reports.
   - *Steps:*
     1. Moderator reviews content context and reporter claims.
     2. If content does NOT violate guidelines (e.g., coordinated troll reporting against a legitimate recipe review), moderator clicks `"Khôi phục nội dung"` (Restore Content).
-    3. Server sets `reviews.visibility = 'VISIBLE'`, `reviews.hidden_reason = NULL`.
-    4. Synchronously triggers `RecipeAggregateService.recalculate(recipeId)` to restore the review into `rating_avg` and `review_count` (`WHERE deleted_at IS NULL AND visibility = 'VISIBLE'`).
-    5. Sets all linked pending reports to `reports.status = 'DISMISSED'`.
-    6. Inserts `audit_logs` record: `action = 'CONTENT_RESTORED'`, `target_type = 'REVIEW'`, `target_id`.
+    3. Server sets `reviews.status = 'VISIBLE'` (hoặc `cooksnaps.status = 'VISIBLE'`).
+    4. Synchronously triggers `RecipeAggregateService.recalculate(recipeId)` to restore the review into `rating_avg` and `review_count` (`WHERE status = 'VISIBLE'`).
+    5. Sets all linked open reports to `reports.status = 'DISMISSED'`, `handled_by = auth.user_id`, `handled_at = NOW()`.
+    6. Inserts `moderation_actions` record (`action = 'UNHIDE'`) and `audit_logs` record: `action = 'CONTENT_RESTORED'`, `target_type = 'REVIEW'`, `target_id`.
     7. UI displays toast *"Nội dung đã được khôi phục thành công"*.
 - **AF 2.5: Suspend Reported User:**
   - *Trigger:* Target entity is an abusive user or moderator decides disciplinary account sanctions are warranted alongside content moderation.
   - *Steps:*
     1. In `AD06-ReportDetail`, moderator selects action `"Đình chỉ tài khoản"` with duration chip (`1 ngày`, `7 ngày`, `30 ngày`).
     2. Enters violation note and confirms.
-    3. Server inserts row into `user_suspensions` (`user_id`, `suspended_by = auth.user_id`, `suspended_until = NOW() + INTERVAL`).
-    4. Sets `reports.status = 'RESOLVED'`.
+    3. Server inserts row into `user_suspensions` (`user_id`, `kind = 'SUSPENSION'`, `reason`, `starts_at = NOW()`, `ends_at = NOW() + INTERVAL`, `created_by = auth.user_id`), and updates `users.status = 'SUSPENDED'`.
+    4. Sets `reports.status = 'RESOLVED'`, `handled_by = auth.user_id`, `handled_at = NOW()`.
     5. Writes to `audit_logs` (`action = 'USER_SUSPENDED'`).
 
 #### 7. Postconditions
-- **Database:** `reports.status` set to `RESOLVED` or `DISMISSED`. Target content soft-deleted (`visibility = 'HIDDEN'`) or restored (`visibility = 'VISIBLE'`); suspension recorded if AF 2.5 selected; logged in `audit_logs`.
+- **Database:** `reports.status` set to `RESOLVED` or `DISMISSED` with `handled_by` and `handled_at`. Target content hidden (`status = 'HIDDEN'`) or restored (`status = 'VISIBLE'`); suspension recorded in `user_suspensions` if AF 2.5 selected; logged in `moderation_actions` and `audit_logs`.
 
 #### 8. Special Requirements
 - **Privacy:** Reported user is never shown the identity of the person who reported them.
@@ -4482,7 +4504,7 @@ Provides account administration tools. Staff can search users (with 300ms input 
 3. **Display Results:** User table displays matching records: Display Name, Masked Email (`n***@gmail.com`), Role badge, Account Status, and recipe count.
 4. **Inspect User:** Staff selects a user row (e.g., *"Khách lạ"*). The right panel shows avatar, join date, publication statistics, and infraction history.
 5. **Issue Suspension:** Staff clicks `"Đình chỉ"`, selects duration from predefined chips (`1 / 7 / 14 / 30 ngày`, e.g., `14 ngày`), types reason (*"Tiếp tục đăng bình luận quấy rối sau 2 lần cảnh cáo"*), and submits.
-6. **Persist:** Server inserts row in `user_suspensions` (`suspended_until = NOW() + 14 DAYS`), sets status to `SUSPENDED`, and writes to `audit_logs`.
+6. **Persist:** Server inserts row in `user_suspensions` (`user_id`, `kind = 'SUSPENSION'`, `reason`, `starts_at = NOW()`, `ends_at = NOW() + INTERVAL '14 days'`, `created_by = auth.user_id`), sets `users.status = 'SUSPENDED'`, and writes to `audit_logs`.
 7. **UI Feedback:** Status badge updates to amber: `"Đình chỉ đến [Date]"`.
 
 #### 6. Alternative Flows
@@ -4493,7 +4515,8 @@ Provides account administration tools. Staff can search users (with 300ms input 
     2. Modal displays double-confirmation warning (*Gap 100-C*): *"Hành động này không thể hoàn tác. Toàn bộ phiên đăng nhập sẽ bị hủy và công thức của người dùng sẽ bị lưu trữ."*.
     3. Administrator enters reason and confirms.
     4. Database transaction:
-       - Inserts `user_suspensions` with `suspended_until = NULL`.
+       - Inserts `user_suspensions` (`user_id`, `kind = 'BAN'`, `reason`, `starts_at = NOW()`, `ends_at = NULL`, `created_by = auth.user_id`).
+       - Updates `users.status = 'BANNED'`.
        - Archives all published recipes owned by this user.
        - Rejects any pending recipes from this user.
        - Revokes all active refresh tokens in Redis/DB to invalidate active sessions immediately.
@@ -4515,15 +4538,15 @@ Provides account administration tools. Staff can search users (with 300ms input 
   - *Trigger:* Successful appeal of an active suspension.
   - *Steps:*
     1. Staff clicks `"Gỡ đình chỉ"`.
-    2. Server sets `user_suspensions.status = 'LIFTED'`, logs to `audit_logs`, and account reverts to active.
+    2. Server updates `user_suspensions` setting `lifted_at = NOW()`, `lifted_by = auth.user_id` where `user_id = :userId AND lifted_at IS NULL AND (ends_at IS NULL OR ends_at > NOW())`, sets `users.status = 'ACTIVE'`, logs to `audit_logs`, and account reverts to active.
 - **AF 3.5: Moderator Exceeds Suspension Cap:**
-  - *Trigger:* A Moderator submits a suspension longer than 30 days or with `suspended_until = NULL` via direct API call.
+  - *Trigger:* A Moderator submits a suspension longer than 30 days or with `kind = 'BAN'` (`ends_at = NULL`) via direct API call.
   - *Steps:*
     1. Server returns HTTP 403 Forbidden (`ADMIN_PRIVILEGE_REQUIRED`).
     2. No row is written to `user_suspensions`.
 
 #### 7. Postconditions
-- **Database:** `user_suspensions` created/updated; `users.role` updated if modified; recorded in `audit_logs`.
+- **Database:** `user_suspensions` created/updated (`kind`, `starts_at`, `ends_at`, `created_by`, `lifted_at`, `lifted_by`); `users.status` and `users.role` updated if modified; recorded in `audit_logs`.
 - **Auth:** Banned user tokens invalidated immediately.
 
 #### 8. Special Requirements
@@ -4691,7 +4714,7 @@ Provides system observability and governance accountability. The dashboard displ
    - Published Recipes: `1.284` (`+36 tuần này`)
    - Pending Recipes Queue: `14` (`cũ nhất 2 ngày`)
    - Registered Users: `5.920` (`+212 tuần này`)
-   - Pending Reports: `6`
+   - Open Reports Queue: `6` (`status = 'OPEN'`)
    - 7-Day Active Users: `1.430`
    - Reviews & Cooksnaps: `8.411`
    - Platform Average Rating: `4,4`
@@ -4783,6 +4806,6 @@ To support task **`SCRUM-58`**, the table below cross-references all administrat
 
 #### 13.3.2. Domain Assumptions Reaffirmed
 - **Forensic Immutability:** Audit records in `audit_logs` are strictly append-only. Application database credentials explicitly revoke `UPDATE` and `DELETE` grants on this table.
-- **Concurrent Moderation Awareness:** The moderation queue employs WebSocket / Server-Sent Events (SSE) presence tracking to notify staff when another moderator opens the same submission, avoiding duplicate review decisions.
-- **Automated Quarantine Threshold:** When an active review accumulates $\ge 10$ unique community reports, the system automatically transitions its visibility to `HIDDEN` (`hidden_reason = 'MASS_REPORT'`) pending moderator review, synchronously triggering aggregate score recalculation.
+- **Concurrent Moderation Awareness (Advisory Only):** The moderation queue employs WebSocket / Server-Sent Events (SSE) presence tracking as an advisory notification to alert staff when another moderator opens the same submission, avoiding duplicate review decisions. This mechanism does not lock the recipe; race conditions are safely resolved via optimistic concurrency control (HTTP 409 Conflict).
+- **Automated Quarantine Threshold:** When an active review or Cooksnap accumulates $\ge 10$ unique community reports (`reports.status = 'OPEN'`), the system automatically transitions its status to `HIDDEN` pending moderator review, synchronously triggering aggregate score recalculation for reviews (`WHERE status = 'VISIBLE'`).
 
