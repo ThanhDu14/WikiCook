@@ -897,3 +897,59 @@ lỗi lệch font chữ, PR có ghi phần chưa làm và lỗi backend phát hi
 - Tự mở `/shopping-list` và `/shopping-list/history` trên trình duyệt, so với W-SL01, W-SL02, W-SL07.
 - Biến token: 0 khác biệt; rule CSS: 297/317 giống hệt, 20 rule còn lại là khung giả lập điện thoại của bản mobile.
 - `npm test` 80/80, `npm run lint`, `npm run build` qua, cả trước và sau khi merge main.
+
+## Mục 14: Implement phần còn lại của SCRUM-56 (T048) và kiểm chứng US1/US2 (T035, T051)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-02, khoảng 11:35 – 12:10 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `src/frontend/src/features/shopping-list/components/RecipeIngredientsPanel.tsx` (+ test), `PreImportBottomSheet.tsx`, `iconPaths.tsx`, `specs/040-shopping-list/tasks.md`, màn hình `W-NU01-Detail` (Jira `SCRUM-56`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), lệnh `/speckit-implement`, chạy trong extension VS Code trên Windows 11 |
+| Mục đích | Làm nốt các task frontend US1/US2 còn mở của mình trong tuần và kiểm chứng kịch bản chấp nhận trước hạn review 03/11 |
+| Nhánh Git | `feature/scrum-56-frontend-shopping-list-us1-us2` (PR #63) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `baddae3b-69b8-4393-9a22-885e20e8c42c` |
+
+### Prompt đã dùng
+
+Mình yêu cầu ngắn "làm implement bằng /speckit-implement các phần còn lại của công việc tuần này của mình"; AI viết lại thành prompt đầy đủ dưới đây, mình đọc lại và đồng ý ghi.
+
+```text
+Bối cảnh: spec 040-shopping-list, mình phụ trách SCRUM-56 (frontend US1 + US2). Các task
+frontend chính đã xong trong PR #63; tasks.md còn mở T035 (kiểm chứng US1), T048 (nút thêm
+vào danh sách đi chợ trên trang chi tiết công thức của 020) và T051 (kiểm chứng US2).
+Mục tiêu: chạy /speckit-implement chỉ cho các task trên; T048 làm theo panel "Nguyên liệu"
+của màn W-NU01 (bộ chọn khẩu phần, danh sách nguyên liệu đổi số lượng theo khẩu phần, nút
+mở PreImportBottomSheet và import kèm Idempotency-Key); T035/T051 chạy đúng lệnh trong
+tasks.md và chạy thử kịch bản chấp nhận trên backend thật.
+Ràng buộc: test-first (Vitest + Testing Library); không làm US3 trở đi và không sửa backend
+của người khác; không bịa đường dẫn trang 020 khi trang đó chưa có; chỉ đánh dấu [X] khi
+kiểm chứng đạt thật; commit tách test / code / tài liệu; không push khi chưa hỏi.
+Kết quả mong muốn: component có test, ghi chú tình trạng trong tasks.md, danh sách lỗi
+chặn việc kiểm chứng.
+```
+
+### Nội dung do AI tạo
+
+- `RecipeIngredientsPanel.tsx` theo W-NU01: bộ chọn khẩu phần (bước 0,5) đổi mọi số lượng, nút "Thêm vào danh sách đi chợ" mở sheet ở khẩu phần đang chọn, báo thành công kèm link "Xem danh sách", lỗi thì giữ sheet.
+- 6 test cho panel, viết trước code; thêm 1 test cho sheet hiển thị lỗi bên trong.
+- `PreImportBottomSheet`: thêm prop `error`, đổi icon nút "Bớt khẩu phần" sang dấu trừ như W-NU01; thêm icon `minus`.
+- Chạy kiểm chứng: frontend 87/87, backend 43/43; chạy Independent Test của US2 trên DB local sau khi tạo tạm dữ liệu nền (quầy, nguyên liệu, đơn vị, công thức).
+- Ghi chú tình trạng dưới T035, T048, T051 trong `tasks.md`; cập nhật mô tả PR #63.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| T048 làm thành component riêng, chưa gắn vào trang | Dùng | Frontend chưa có trang chi tiết công thức của 020; task ghi rõ phải xác nhận đường dẫn trước |
+| Chữ trên nút theo màn hình ("đi chợ") thay vì spec ("mua sắm") | Dùng | Nhóm thống nhất frontend bám màn hình trong `ui-ux/screens` |
+| aria-label "Bớt khẩu phần" / "Thêm khẩu phần" thay vì "Bớt" / "Thêm" như màn hình | Dùng | Rõ nghĩa hơn cho trình đọc màn hình, giống sheet đã có |
+| Không đánh dấu T035, T048, T051 là xong | Dùng | Kiểm chứng trên app thật chưa đạt vì lỗi backend, T048 còn bước gắn vào 020 |
+| Không sửa lỗi backend | Báo trong PR #63 | Code thuộc SCRUM-55 |
+
+### Cách sinh viên kiểm chứng
+
+- Test mới chạy đỏ trước khi có code, sau đó xanh; `npm test` 87/87, `npm run lint`, `tsc -b` sạch.
+- Backend: `ShoppingListServiceTest`, `ShoppingListControllerTest`, `UnitConversionServiceTest`, `IngredientAggregationServiceTest` qua 43/43.
+- Independent Test US2 trên DB thật **không đạt**: Bò kho x4 + Bò xào x4 cho 2 dòng Thịt bò 600 và 400 thay vì "1 kg", `displayUnit` luôn null. Đã ghi vào PR để người làm backend sửa.
+- Chưa xem panel trên trình duyệt vì chưa có trang 020 gắn vào; mới kiểm tra qua test.
