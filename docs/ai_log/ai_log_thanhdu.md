@@ -1303,7 +1303,7 @@ Cái ma trận quản lý rủi ro chưa ta
 
 | Trường | Nội dung |
 |---|---|
-| Thời gian truy cập | 2026-11-02, từ 10:39 (giờ Việt Nam, UTC+7) – **đang thực hiện**, cập nhật giờ kết thúc khi xong |
+| Thời gian truy cập | 2026-11-02, 10:39 – 11:25 (giờ Việt Nam, UTC+7); dừng sau US3 để sinh viên review |
 | Người thực hiện | Nguyễn Thành Dự |
 | Spec liên quan | 030 – Meal Planner (`specs/030-meal-planner`); 031 dùng lại contract của 030 |
 | Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), chạy trong terminal trên Ubuntu Linux, lệnh Spec Kit `/speckit-implement` |
@@ -1359,8 +1359,14 @@ Ràng buộc:
 
 ### Nội dung do AI tạo
 
-- *(cập nhật khi xong)*
 - Chuẩn bị nhánh: merge `main` vào `feature/031-ai-foundation`, gộp luật JaCoCo 70% của hai bên (module, `aiplanner.service`, `shoppinglist.service`) vào execution `check`. Sửa `AiPlannerExceptionHandler` nhận `Clock` qua `ObjectProvider`, vì `@WebMvcTest` của shopping list nạp mọi controller advice mà không có bean `Clock`, làm hỏng 13 test. `mvn verify` pass sau khi sửa.
+- `tasks.md`: đổi Path Conventions sang backend multi-module và `shared/api/client.ts`, đánh dấu task đã có sẵn từ 031; ghi chú lệch thiết kế ngay ở từng task.
+- Phase 1–2: route `/meal-planner`, `@dnd-kit`, CSS Soft Editorial (`soft-editorial.css`, `wikicook-web.css` chép từ `docs/analysis-and-design/ui-ux/css`); entity/repository `MealPlan`, `MealPlanItem`; ProblemDetail + `code`; port `RecipeSummaryPort`, `CollectionRecipePort`, `DayNutritionPort` và bean mặc định; API client, helper tuần theo giờ Việt Nam, chuỗi tiếng Việt.
+- US1: `GET` tuần, `PUT` ô, `PATCH` khẩu phần, picker có xếp hạng và cột xung đột (dùng `DietRuleSql`/`DietRestrictions` của 031); lưới tuần, picker MP-04, menu món, optimistic update + rollback.
+- US2: dialog "Thêm vào thực đơn" theo W-MP05 (tuần, ngày, bữa, hỏi trước khi thay), nút cho trang công thức (ẩn với món ăn vặt, khách → `/login?redirect=`), `?week=` và chuyển đăng nhập khi API trả 401.
+- US3: `POST …/moves` (move/swap trong một transaction, khóa theo thứ tự id), `DELETE` ô, `DELETE` ngày; kéo-thả bằng chuột và bàn phím có thông báo `aria-live`, "Chuyển sang…" theo W-MP03, menu món theo W-MP02, "Xóa cả ngày" có hỏi xác nhận.
+- Mọi phần đều viết test trước, chạy cho đỏ rồi mới code. Riêng T049 (US2) xanh ngay lần đầu vì `SLOT_OCCUPIED` đã cài trong `putSlot` ở US1.
+- 11 commit trên `feature/030-meal-planner` (`433209f` … `75331fb`), chưa push.
 
 ### Phần sinh viên tự quyết định và chỉnh sửa
 
@@ -1370,7 +1376,23 @@ Ràng buộc:
 | Tạo nhánh 030 từ nhánh 031 (đã merge `main`) | Dùng | Contract 030 (`MealPlanWriteFacade`, `WeekCalendar`…) đang nằm ở nhánh 031, PR #62 chưa merge |
 | Dừng sau US3 để review | Mình yêu cầu | Đủ để cài `MealPlanWriteFacade` thật cho 031 |
 | Commit không có dòng attribution của Claude | Mình yêu cầu | Quy tắc của mình cho mọi commit |
+| Giao diện theo màn `docs/analysis-and-design/ui-ux/screens` | Mình nhắc giữa chừng | AI làm theo MP-01…MP-07 và bản desktop W-MP01…W-MP05, class `wk-`/`wx-` |
+| Các chỗ lệch thiết kế (xem bên dưới) | Chờ mình review | AI ghi lại, chưa tự quyết thay mình |
+
+Chỗ lệch so với tasks/thiết kế, AI ghi lại để mình duyệt:
+
+- Picker: món xung đột với hồ sơ vẫn hiện (xếp cuối, có cảnh báo, hỏi lại khi chọn) theo FR-007b, trong khi banner MP-04 ghi "Đã ẩn".
+- Chưa có auth của spec 010: khách nhận ra qua 401 của API, không có route guard thật.
+- `SlotMenu` là `wx-modal` hẹp ở giữa màn hình, chưa neo vào ô như W-MP02.
+- Màn thiết kế không có "Xóa cả ngày": AI đặt nút thùng rác nhỏ ở tiêu đề ngày.
+- Dialog thêm món hiển thị số phần theo công thức; chỉ gửi `servings` khi người dùng đổi, còn lại server tự lấy theo số người trong nhà.
 
 ### Cách sinh viên kiểm chứng
 
-- *(cập nhật khi xong)*
+- AI chạy sau mỗi phase và báo kết quả thật (log ở thư mục scratchpad của phiên):
+  - Phase 2: `mvn verify` BUILD SUCCESS.
+  - US1: `mvn verify` BUILD SUCCESS (`wikicook-app` 83 IT); `npm test` 50/50.
+  - US2: `mvn verify` BUILD SUCCESS (`wikicook-app` 188 unit + 85 IT); `npm test` 61/61.
+  - US3: `mvn verify` BUILD SUCCESS (`wikicook-app` 196 unit + 96 IT, JaCoCo đạt, `mealplan` 97,6% line / 89,9% branch); `npm test` 79/79, `npm run lint` và `npm run build` sạch.
+- Mình review code và các chỗ lệch thiết kế ở trên trước khi cho làm US4–US7 và Phase 10 *(chưa làm)*.
+- Mình chạy thử giao diện trên trình duyệt với dev stub *(chưa làm)*.
