@@ -1502,3 +1502,93 @@ Bước 2 – code, giữ ràng buộc của lần implement trước:
   - thử trên trình duyệt: thêm/xóa món, Lên trên/Xuống dưới, kéo thả sang bữa khác, bữa đủ 4;
   - quyết định chuyện cơm không lưu thành món;
   - báo người làm 040 về thay đổi `full-schema.md`.
+
+---
+
+## Mục 16: Implement phần còn lại của spec 030 – backend (US4–US7, Phase 10, Phase 11)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-02, từ 16:15 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 030 – Meal Planner; 031 – AI Meal Planner (cài `MealPlanWriteFacade` thật); 040 – Shopping List (handoff); 090 – Nutrition (`DayNutritionPort`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, lệnh Spec Kit `/speckit-implement` |
+| Mục đích | Làm nốt backend của 030 sau khi US1–US3 (nhiều món mỗi bữa) đã xong; prompt dài nên tách làm hai lần, backend trước, frontend ở mục sau |
+| Nhánh Git | `feature/030-meal-planner` |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `b9230d07-d95a-4755-80d8-b0fb33122434` |
+
+### Prompt đã dùng
+
+```
+tiếp tục viết prompt implement cho phần 030. nếu dài thì hãy chia ra phần backend trước
+```
+
+Prompt implement phần backend (AI soạn, mình duyệt trước khi chạy):
+
+```
+/speckit-implement Làm nốt phần BACKEND của spec 030 (specs/030-meal-planner) trên nhánh
+feature/030-meal-planner. US1–US3 và Phase 5b (nhiều món mỗi bữa, T110–T122) đã xong; frontend của
+US4–US7 và Phase 10 làm ở lần sau, lần này không đụng src/frontend.
+
+Bước 0 – rà trước khi code (không viết lại code đã có):
+- Đối chiếu tasks.md với code hiện tại. Đánh dấu [x] hoặc ghi "một phần" cho task backend đã có sẵn,
+  ví dụ PlanItemDto.available, availableItemCount, recipeNameSnapshot, RECIPE_NOT_AVAILABLE trong
+  MealPlanService (T085, một phần T082/T083), DayNutritionPort + bean mặc định (Phase 2).
+- 040 đã có port riêng shoppinglist.port.MealPlanHandoffPort
+  (getMealPlanForShoppingList(userId, mealPlanId), trả cả nguyên liệu) khác với
+  MealPlanShoppingFacade theo weekStart trong contracts/integration.md 2.1. So sánh hai bên, đề xuất
+  hướng (ví dụ 030 cài MealPlanShoppingFacade, thêm adapter cài MealPlanHandoffPort cho 040, hoặc sửa
+  contract) rồi DỪNG hỏi mình trước khi làm US5.
+
+Phạm vi, làm theo thứ tự (chỉ task backend):
+1. US4: T072 MealPlanControllerUS4IT (tuần đã qua vẫn GET/POST/PUT được, tuần sau giữ món).
+   Nếu xanh ngay vì logic đã có thì ghi rõ trong báo cáo, không sửa code cho đủ "đỏ trước".
+2. US5: T076, T077 rồi T079, T080 – ShoppingHandoffService, MealPlanShoppingFacade (api/),
+   GET /api/v1/meal-plans/{weekStart}/shopping-handoff, ShoppingHandoffDto, theo hướng mình chốt
+   ở Bước 0. Chỉ món available, đếm skippedUnavailable, tuần chưa có plan → items rỗng.
+3. US6: T082, T083 phần còn thiếu (recipe_id NULL, ARCHIVED → 422 khi POST/PUT), T085 nếu còn thiếu.
+4. Phase 10 backend:
+   - T095, T097: getWeek gọi DayNutritionPort.totals đúng một lần cho cả tuần, chỉ với recipe id
+     khả dụng; ngày port không trả → nutrition = null; servings không đổi tổng.
+   - T099, T100, T121: MealPlanWriteFacade thật theo integration.md 2.2 bản 2026-11-02
+     (MealPlanWriteService): emptySlots = bữa chưa có món nào; plannedRecipeIds không trùng, không lẫn
+     user khác; saveDraft một transaction, giữ thứ tự món cùng bữa làm position, tối đa 4 món mỗi
+     bữa, bỏ cả nhóm món của bữa đã có món (skippedOccupied), bỏ công thức không PUBLISHED
+     (skippedUnavailable), servings null → ServingsPolicy, source AI/AUTO. Dùng cùng khóa
+     meal_plans FOR UPDATE như MealPlanService. Cơm không lưu thành món.
+   - Khi đã có bean thật: tắt InMemoryMealPlanFacade trong com.wikicook.devstub (không để hai bean
+     cùng kiểu), sửa DevStubConfigTest/InMemoryMealPlanFacadeTest và các test của aiplanner đang dựa
+     vào stub; chạy lại test của 031 để chắc 031 vẫn xanh với facade thật.
+5. Phase 11 backend: T103 script k6 (chỉ viết, không bắt buộc chạy 200 VU), T105 so OpenAPI của
+   springdoc với contracts/openapi.yaml và sửa chỗ lệch, T106 JaCoCo.
+
+Ràng buộc (giữ như các lần trước):
+- TDD đúng tasks.md: viết test trước, chạy cho FAIL, rồi mới code cho xanh. Test xanh ngay thì báo.
+- Spring Boot, JPA, Flyway, IT bằng AbstractPostgresIT (Testcontainers); migration mới (nếu cần) là
+  file V30x mới trong wikicook-db, không sửa V301/V304. Giữ ProblemDetail + code giống 031.
+- Chưa có Spring Security của 010: dùng CurrentUser dev stub sẵn có, không tự viết auth.
+- Đường dẫn backend multi-module: code ở wikicook-app (com.wikicook.mealplan), migration ở wikicook-db.
+- Mỗi task hoặc nhóm task nhỏ liền nhau một commit Conventional Commits có "(030 T0xx)" ở cuối;
+  không thêm dòng Co-Authored-By của Claude; chưa push.
+- Sau mỗi user story chạy `mvn verify` ở src/backend, báo kết quả thật (số test, JaCoCo của
+  wikicook-app và gói mealplan), giữ JaCoCo 70%.
+- Cập nhật tasks.md ([x] và ghi chú lệch) cùng commit với code.
+- Gặp chỗ spec/tasks mâu thuẫn với code hoặc với 031/040/090 thì dừng lại hỏi mình, không tự đoán.
+- Xong backend thì dừng, tóm tắt các API/interface frontend sẽ dùng (shopping-handoff, nutrition
+  trong DayPlanDto) để mình duyệt trước khi làm phần frontend.
+```
+
+### Nội dung do AI tạo
+
+- *(cập nhật khi xong)*
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Tách prompt làm hai lần, backend trước | Mình yêu cầu | Phần còn lại dài; frontend cần API handoff và nutrition chốt trước |
+| Hỏi trước khi làm US5 | AI đề xuất, mình duyệt | 040 đã có `MealPlanHandoffPort` theo `mealPlanId`, lệch với contract 2.1 của 030 |
+
+### Cách sinh viên kiểm chứng
+
+- *(cập nhật khi xong)*
