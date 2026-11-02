@@ -4,8 +4,11 @@ interface Props {
   title: string;
   onClose: () => void;
   children: (titleId: string) => ReactNode;
-  /** `sheet` = bottom sheet (MP-02), `page` = full panel (MP-03, MP-04, MP-05), `dialog` = centered `wk-dialog` */
-  variant: 'sheet' | 'page' | 'dialog';
+  /**
+   * `sheet` = bottom sheet (MP-02), `page` = full panel (MP-03, MP-04), `dialog` = centered `wk-dialog`,
+   * `modal` = desktop `wx-modal` (W-MP05)
+   */
+  variant: 'sheet' | 'page' | 'dialog' | 'modal';
   role?: 'dialog' | 'alertdialog';
 }
 
@@ -39,12 +42,17 @@ export function Overlay({ title, onClose, children, variant, role = 'dialog' }: 
     };
   }, []);
 
-  const panelClass =
-    variant === 'sheet' ? 'wk-sheet max-w-reading' : variant === 'dialog' ? 'wk-dialog' : 'flex h-full w-full max-w-reading flex-col bg-bg';
+  const panelClass = {
+    sheet: 'wk-sheet max-w-reading',
+    dialog: 'wk-dialog',
+    modal: 'wx-modal',
+    page: 'flex h-full w-full max-w-reading flex-col bg-bg',
+  }[variant];
+  const scrimClass = { sheet: 'wk-scrim wk-scrim--sheet', modal: 'wx-overlay', dialog: 'wk-scrim', page: 'wk-scrim' }[variant];
   return (
     <div
       role="presentation"
-      className={variant === 'sheet' ? 'wk-scrim wk-scrim--sheet' : 'wk-scrim'}
+      className={scrimClass}
       style={{ position: 'fixed', zIndex: 50, ...(variant === 'page' ? { padding: 0, placeItems: 'stretch center' } : {}) }}
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();

@@ -88,6 +88,7 @@ export const vi = {
 
   // add from recipe (MP-05)
   addToPlan: 'Thêm vào thực đơn',
+  weekOf: 'Tuần',
   day: 'Ngày',
   mealLabel: 'Bữa',
   occupied: (meal: string, day: string, dish: string) => `${meal} ${day} đã có “${dish}”`,

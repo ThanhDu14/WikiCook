@@ -1,20 +1,30 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { RecipePicker } from '../components/RecipePicker';
 import { SlotMenu } from '../components/SlotMenu';
 import { Snackbar } from '../components/Snackbar';
 import { WeekGrid } from '../components/WeekGrid';
 import { Icon } from '../components/Icon';
 import { itemAt, useWeekPlan } from '../hooks/useWeekPlan';
-import { currentWeekStart, dateOf, formatWeekRange } from '../lib/week';
+import { currentWeekStart, dateOf, formatWeekRange, isMonday } from '../lib/week';
 import { vi } from '../strings.vi';
 import { DAYS, type Day, type Meal } from '../types';
 
 type Target = { day: Day; meal: Meal };
 
-/** The meal planner (T048): the current week as a 7 × 3 grid (MP-01), picker (MP-04) and dish menu (MP-02). */
+/** The meal planner (T048, T056): `?week=` picks the week; the current week as a 7 × 3 grid (MP-01), picker (MP-04) and dish menu (MP-02). */
 export function MealPlannerPage() {
-  const [weekStart] = useState(() => currentWeekStart());
-  const plan = useWeekPlan(weekStart);
+  const [params] = useSearchParams();
+  const asked = params.get('week');
+  const weekStart = asked && isMonday(asked) ? asked : currentWeekStart();
+  const location = useLocation();
+  const navigate = useNavigate();
+  // Guests and expired sessions sign in and come back to the same week (T056, FR-001); edits are not kept.
+  const signIn = useCallback(
+    () => navigate(`/login?redirect=${encodeURIComponent(location.pathname + location.search)}`, { replace: true }),
+    [location.pathname, location.search, navigate],
+  );
+  const plan = useWeekPlan(weekStart, { onUnauthenticated: signIn });
   const [picking, setPicking] = useState<Target | null>(null);
   const [menu, setMenu] = useState<Target | null>(null);
   const menuItem = menu ? itemAt(plan.week, menu.day, menu.meal) : null;
