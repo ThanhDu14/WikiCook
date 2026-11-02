@@ -93,15 +93,17 @@ let temporaryId = -1;
  * State of one week (T044, research R12). Every change shows at once, is saved straight away (no separate save
  * step, US1-9), and is put back with a notice when saving fails (FR-019).
  */
-export function useWeekPlan(weekStart: string, options: { onUnauthenticated?: () => void } = {}) {
+export function useWeekPlan(weekStart: string, options: { onUnauthenticated?: () => void; onNetworkError?: () => void } = {}) {
   const [state, dispatch] = useReducer(reducer, { status: 'loading', week: null, error: null, notice: null });
   /** The week as last applied, read by callbacks without waiting for a render. */
   const latest = useRef<WeekPlan | null>(null);
   const request = useRef(0);
   const onUnauthenticated = useRef(options.onUnauthenticated);
+  const onNetworkError = useRef(options.onNetworkError);
   useEffect(() => {
     onUnauthenticated.current = options.onUnauthenticated;
-  }, [options.onUnauthenticated]);
+    onNetworkError.current = options.onNetworkError;
+  }, [options.onUnauthenticated, options.onNetworkError]);
 
   const reload = useCallback(async () => {
     const mine = ++request.current;
@@ -115,6 +117,7 @@ export function useWeekPlan(weekStart: string, options: { onUnauthenticated?: ()
       if (mine !== request.current) return;
       const code = codeOf(error);
       if (code === 'UNAUTHENTICATED') onUnauthenticated.current?.();
+      if (code === 'NETWORK') onNetworkError.current?.();
       dispatch({ type: 'failed', error: code });
     }
   }, [weekStart]);
@@ -154,6 +157,8 @@ export function useWeekPlan(weekStart: string, options: { onUnauthenticated?: ()
         } else if (!silent.includes(code)) {
           dispatch({ type: 'notice', notice: vi.notSaved });
         }
+        // the change was not saved (above); the page now shows it is offline (US7-4)
+        if (code === 'NETWORK') onNetworkError.current?.();
         return code;
       }
     },

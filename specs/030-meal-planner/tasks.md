@@ -306,17 +306,17 @@ test cũ được viết lại theo hành vi mới.
 
 ### Tests for User Story 7 ⚠️ (viết trước, phải FAIL)
 
-- [ ] T087 [P] [US7] Test `DayView.test.tsx` – hiện một ngày, bắt đầu từ hôm nay, nút ngày trước/sau (US7-1, FR-026); menu "Chuyển sang…" có mặt (US7-1) trong src/frontend/src/features/meal-planner/__tests__/DayView.test.tsx
-- [ ] T088 [P] [US7] Test `useOnlineStatus.test.ts` – theo `navigator.onLine`; sự kiện `offline`/`online`; `reportNetworkError()` chuyển sang offline trong src/frontend/src/features/meal-planner/__tests__/useOnlineStatus.test.ts
-- [ ] T089 [P] [US7] Test `MealPlannerPage.offline.test.tsx` – mở trang khi offline → không có lịch, có `OfflineNotice` + "Thử lại" (US7-2); mất mạng khi đang mở → lịch bị thay, không sửa được (US7-3); lưu thất bại do mất mạng → báo chưa lưu rồi hiện offline (US7-4); sự kiện `online` hoặc "Thử lại" khi đã có mạng → gọi lại `getWeek` và hiện lịch (US7-5); không ghi gì vào `localStorage`/`sessionStorage` (FR-027) trong src/frontend/src/features/meal-planner/__tests__/MealPlannerPage.offline.test.tsx
-- [ ] T090 [P] [US7] Test `useIsDesktop.test.ts` – `matchMedia('(min-width: 1024px)')` đổi giá trị khi resize trong src/frontend/src/features/meal-planner/__tests__/useIsDesktop.test.ts
+- [x] T087 [P] [US7] *(theo MP-01: dải 7 ngày + nút "Ngày trước"/"Ngày sau"; thêm test cấp trang trên màn hẹp: không có bảng tuần, menu món có "Chuyển sang…")* Test `DayView.test.tsx` – hiện một ngày, bắt đầu từ hôm nay, nút ngày trước/sau (US7-1, FR-026); menu "Chuyển sang…" có mặt (US7-1) trong src/frontend/src/features/meal-planner/__tests__/DayView.test.tsx
+- [x] T088 [P] [US7] *(thêm `markOnline()` cho "Thử lại")* Test `useOnlineStatus.test.ts` – theo `navigator.onLine`; sự kiện `offline`/`online`; `reportNetworkError()` chuyển sang offline trong src/frontend/src/features/meal-planner/__tests__/useOnlineStatus.test.ts
+- [x] T089 [P] [US7] *(mạng lỗi giả bằng `HttpResponse.error()` của msw; kiểm tra `Storage.prototype.setItem` không bị gọi sau mỗi test)* Test `MealPlannerPage.offline.test.tsx` – mở trang khi offline → không có lịch, có `OfflineNotice` + "Thử lại" (US7-2); mất mạng khi đang mở → lịch bị thay, không sửa được (US7-3); lưu thất bại do mất mạng → báo chưa lưu rồi hiện offline (US7-4); sự kiện `online` hoặc "Thử lại" khi đã có mạng → gọi lại `getWeek` và hiện lịch (US7-5); không ghi gì vào `localStorage`/`sessionStorage` (FR-027) trong src/frontend/src/features/meal-planner/__tests__/MealPlannerPage.offline.test.tsx
+- [x] T090 [P] [US7] Test `useIsDesktop.test.ts` – `matchMedia('(min-width: 1024px)')` đổi giá trị khi resize trong src/frontend/src/features/meal-planner/__tests__/useIsDesktop.test.ts
 
 ### Implementation for User Story 7
 
-- [ ] T091 [P] [US7] Cài `useIsDesktop` trong src/frontend/src/features/meal-planner/hooks/useIsDesktop.ts (làm T090 xanh)
-- [ ] T092 [P] [US7] Cài `useOnlineStatus` trong src/frontend/src/features/meal-planner/hooks/useOnlineStatus.ts (làm T088 xanh)
-- [ ] T093 [US7] Cài `DayView` (một ngày, hôm nay trước, điều hướng ngày, dùng `SlotCard` + `SlotMenu`, vùng chạm ≥ 44 px) trong src/frontend/src/features/meal-planner/components/DayView.tsx (làm T087 xanh)
-- [ ] T094 [US7] Cài `OfflineNotice` và nối vào `MealPlannerPage`: chọn `WeekGrid` (desktop) hoặc `DayView` theo `useIsDesktop`; offline → thay lịch bằng `OfflineNotice`; `useWeekPlan` báo lỗi mạng qua `reportNetworkError`; khi online → tải lại tuần trong src/frontend/src/features/meal-planner/components/OfflineNotice.tsx và pages/MealPlannerPage.tsx (làm T089 xanh)
+- [x] T091 [P] [US7] *(`useSyncExternalStore`)* Cài `useIsDesktop` trong src/frontend/src/features/meal-planner/hooks/useIsDesktop.ts (làm T090 xanh)
+- [x] T092 [P] [US7] Cài `useOnlineStatus` trong src/frontend/src/features/meal-planner/hooks/useOnlineStatus.ts (làm T088 xanh)
+- [x] T093 [US7] *(menu món luôn hiện, 44 px (`SlotCard touch`); "Xóa cả ngày" cạnh tiêu đề ngày, hộp xác nhận tách thành `ClearDayDialog` dùng chung với `WeekGrid`)* Cài `DayView` (một ngày, hôm nay trước, điều hướng ngày, dùng `SlotCard` + `SlotMenu`, vùng chạm ≥ 44 px) trong src/frontend/src/features/meal-planner/components/DayView.tsx (làm T087 xanh)
+- [x] T094 [US7] *(`useWeekPlan` nhận `onNetworkError`; trang tải lại tuần khi `online` chuyển từ false sang true (sự kiện `online` hoặc "Thử lại" khi `navigator.onLine`). Desktop giữ header tuần không có nút thao tác như W-MP07, màn hẹp chỉ còn thông báo như MP-07; offline thì đóng mọi picker/menu. Màn hẹp: header gọn theo MP-01, "Tạo bằng AI"/"Đi chợ" nằm dưới ngày)* Cài `OfflineNotice` và nối vào `MealPlannerPage`: chọn `WeekGrid` (desktop) hoặc `DayView` theo `useIsDesktop`; offline → thay lịch bằng `OfflineNotice`; `useWeekPlan` báo lỗi mạng qua `reportNetworkError`; khi online → tải lại tuần trong src/frontend/src/features/meal-planner/components/OfflineNotice.tsx và pages/MealPlannerPage.tsx (làm T089 xanh)
 
 **Checkpoint**: Mọi user story chạy độc lập; quickstart Q17, Q18 đạt.
 

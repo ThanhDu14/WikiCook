@@ -1,19 +1,23 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { OfflineNotice } from '../components/OfflineNotice';
 import { MoveToMenu } from '../components/MoveToMenu';
 import { RecipePicker } from '../components/RecipePicker';
 import { SlotMenu } from '../components/SlotMenu';
 import { Snackbar } from '../components/Snackbar';
 import { WeekGrid } from '../components/WeekGrid';
 import { CreateShoppingListButton } from '../components/CreateShoppingListButton';
+import { DayView } from '../components/DayView';
 import { EmptyWeekState } from '../components/EmptyWeekState';
 import { Icon } from '../components/Icon';
 import { WeekHeader } from '../components/WeekHeader';
 import { AiPlannerAction, hasAiPlannerEntry } from '../lib/aiPlannerEntry';
+import { useIsDesktop } from '../hooks/useIsDesktop';
+import { useOnlineStatus } from '../hooks/useOnlineStatus';
 import { findItem, mealAt, useWeekPlan } from '../hooks/useWeekPlan';
 import { currentWeekStart, dateOf, isMonday } from '../lib/week';
 import { vi } from '../strings.vi';
-import { DAYS, type Day, type Meal, type WeekPlan } from '../types';
+import { DAYS, type Day, type Meal, type PlanItem, type WeekPlan } from '../types';
 
 /** Today when the week holds it, else Monday: where "Thêm món" of the empty week starts. */
 function firstDay(week: WeekPlan | null): Day {
@@ -24,8 +28,10 @@ function firstDay(week: WeekPlan | null): Day {
 type Picking = { day: Day; meal: Meal; replaceItemId?: number };
 
 /**
- * The meal planner (T048, T056, T075, T120): `?week=` picks the week (this week when absent or not a Monday); the week as a 7 × 3 grid of meals with up to 4
- * dishes each (MP-01), picker (MP-04), dish menu (MP-02) and "Chuyển sang…" (MP-03).
+ * The meal planner (T048, T056, T075, T094, T120): `?week=` picks the week (this week when absent or not a Monday).
+ * Desktop shows the week as a 7 × 3 grid of meals with up to 4 dishes each (W-MP01), a narrow screen one day at a
+ * time (MP-01); both open the picker (MP-04), the dish menu (MP-02) and "Chuyển sang…" (MP-03). Without a
+ * connection the calendar is replaced by the offline notice (MP-07) and nothing is kept on the device (FR-027).
  */
 export function MealPlannerPage() {
   const [params, setParams] = useSearchParams();
@@ -38,7 +44,21 @@ export function MealPlannerPage() {
     () => navigate(`/login?redirect=${encodeURIComponent(location.pathname + location.search)}`, { replace: true }),
     [location.pathname, location.search, navigate],
   );
-  const plan = useWeekPlan(weekStart, { onUnauthenticated: signIn });
+  const isDesktop = useIsDesktop();
+  const { online, reportNetworkError, markOnline } = useOnlineStatus();
+  const plan = useWeekPlan(weekStart, { onUnauthenticated: signIn, onNetworkError: reportNetworkError });
+  const { reload } = plan;
+  // Back online (the `online` event or "Thử lại"): the week is read again from the server (US7-5, FR-029).
+  const wasOnline = useRef(online);
+  useEffect(() => {
+    if (online && !wasOnline.current) void reload();
+    wasOnline.current = online;
+  }, [online, reload]);
+  const retry = () => {
+    if (!navigator.onLine) return;
+    if (online) void reload();
+    else markOnline();
+  };
   const goTo = (week: string) => setParams(week === currentWeekStart() ? {} : { week });
   /** Notices of the page itself, next to those of the week (`plan.notice`). */
   const [pageNotice, setPageNotice] = useState<string | null>(null);
@@ -52,30 +72,44 @@ export function MealPlannerPage() {
   const [menu, setMenu] = useState<number | null>(null);
   const [moving, setMoving] = useState<number | null>(null);
   const aiAction = hasAiPlannerEntry() ? <AiPlannerAction weekStart={weekStart} /> : undefined;
-  const ready = plan.week !== null && plan.status === 'ready';
+  // Offline, the calendar and every way to edit it are gone (US7-3, FR-028).
+  const ready = online && plan.week !== null && plan.status === 'ready';
+  const shopping = (
+    <CreateShoppingListButton
+      weekStart={weekStart}
+      availableItemCount={plan.week?.availableItemCount ?? 0}
+      onError={(code) => {
+        if (code === 'NETWORK') reportNetworkError();
+        else setPageNotice(vi.shoppingFailed);
+      }}
+    />
+  );
+  const calendar = {
+    onAdd: (day: Day, meal: Meal) => setPicking({ day, meal }),
+    onOpenItem: (_day: Day, _meal: Meal, item: PlanItem) => setMenu(item.id),
+    onReplaceItem: (day: Day, meal: Meal, item: PlanItem) => setPicking({ day, meal, replaceItemId: item.id }),
+    onRemoveItem: (item: PlanItem) => void plan.removeDish(item.id),
+    onClearDay: (day: Day) => void plan.clearDay(day),
+  };
   const menuDish = menu === null ? null : findItem(plan.week, menu);
   const menuMealSize = menuDish ? mealAt(plan.week, menuDish.day, menuDish.meal).length : 0;
 
   return (
     <section className="grid gap-ds-5">
-      <WeekHeader
-        weekStart={weekStart}
-        currentWeek={currentWeekStart()}
-        onChange={goTo}
-        aiAction={ready && !plan.week?.empty ? aiAction : undefined}
-        actions={
-          ready && (
-            <CreateShoppingListButton
-              weekStart={weekStart}
-              availableItemCount={plan.week?.availableItemCount ?? 0}
-              onError={(code) => setPageNotice(code === 'NETWORK' ? vi.errors.NETWORK : vi.shoppingFailed)}
-            />
-          )
-        }
-      />
+      {(isDesktop || online) && (
+        <WeekHeader
+          weekStart={weekStart}
+          currentWeek={currentWeekStart()}
+          onChange={goTo}
+          compact={!isDesktop}
+          aiAction={isDesktop && ready && !plan.week?.empty ? aiAction : undefined}
+          actions={isDesktop && ready ? shopping : undefined}
+        />
+      )}
 
-      {plan.status === 'loading' && <p className="wk-muted">{vi.loading}</p>}
-      {plan.status === 'error' && (
+      {!online && <OfflineNotice onRetry={retry} />}
+      {online && plan.status === 'loading' && <p className="wk-muted">{vi.loading}</p>}
+      {online && plan.status === 'error' && (
         <div className="wk-state wk-state--error" role="alert">
           <div className="wk-state__art">
             <Icon name="warning" size={32} />
@@ -89,24 +123,21 @@ export function MealPlannerPage() {
       {ready && plan.week?.empty && (
         <EmptyWeekState aiAction={aiAction} onAddDish={() => setPicking({ day: firstDay(plan.week), meal: 'BREAKFAST' })} />
       )}
-      {plan.week && plan.status === 'ready' && (
-        <WeekGrid
-          week={plan.week}
-          onAdd={(day, meal) => setPicking({ day, meal })}
-          onOpenItem={(_day, _meal, item) => setMenu(item.id)}
-          onReplaceItem={(day, meal, item) => setPicking({ day, meal, replaceItemId: item.id })}
-          onRemoveItem={(item) => void plan.removeDish(item.id)}
-          onClearDay={(day) => void plan.clearDay(day)}
-        />
-      )}
-      {plan.week && plan.status === 'ready' && (
+      {ready && plan.week && (isDesktop ? <WeekGrid week={plan.week} {...calendar} /> : <DayView key={weekStart} week={plan.week} {...calendar} />)}
+      {ready && isDesktop && (
         <div className="wk-banner wk-banner--info">
           <Icon name="info" />
           <div>{vi.gridHint}</div>
         </div>
       )}
+      {ready && !isDesktop && (
+        <div className="sx-row" style={{ flexWrap: 'wrap' }}>
+          {!plan.week?.empty && aiAction}
+          {shopping}
+        </div>
+      )}
 
-      {picking && (
+      {online && picking && (
         <RecipePicker
           day={picking.day}
           meal={picking.meal}
@@ -122,7 +153,7 @@ export function MealPlannerPage() {
           }}
         />
       )}
-      {menuDish && (
+      {online && menuDish && (
         <SlotMenu
           day={menuDish.day}
           meal={menuDish.meal}
@@ -154,7 +185,7 @@ export function MealPlannerPage() {
           onClose={() => setMenu(null)}
         />
       )}
-      {moving !== null && plan.week && (
+      {online && moving !== null && plan.week && (
         <MoveToMenu
           week={plan.week}
           itemId={moving}

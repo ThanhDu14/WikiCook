@@ -24,6 +24,11 @@ export const vi = {
   previousWeek: 'Tuần trước',
   nextWeek: 'Tuần sau',
   today: 'Hôm nay',
+  previousDay: 'Ngày trước',
+  nextDay: 'Ngày sau',
+  dayOfWeek: 'Ngày trong tuần',
+  dayTitle: (day: string, date: string) => `${day}, ${date}`,
+  dayButton: (day: string, date: string) => `${day} ${date}`,
 
   // slots
   addDish: 'Thêm món',
@@ -134,6 +139,7 @@ export const vi = {
   /** Without the AI planner (FR-031). */
   emptyWeekHintManual: 'Thêm từng món vào ô trống để bắt đầu lên thực đơn.',
   weekActions: 'Thao tác với tuần',
+  options: (dish: string) => `Tùy chọn: ${dish}`,
   offlineTitle: 'Cần kết nối mạng',
   offlineHint: 'Thực đơn cần internet để xem và chỉnh sửa. Trang sẽ tự tải lại khi có mạng.',
 } as const;

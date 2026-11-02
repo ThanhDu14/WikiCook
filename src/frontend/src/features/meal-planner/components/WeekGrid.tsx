@@ -3,9 +3,9 @@ import type { SlotRef } from '../hooks/useWeekPlan';
 import { dayOfMonth } from '../lib/week';
 import { vi } from '../strings.vi';
 import { MAX_DISHES, MEALS, type Day, type Meal, type PlanItem, type WeekPlan } from '../types';
+import { ClearDayDialog } from './ClearDayDialog';
 import { EmptySlot } from './EmptySlot';
 import { Icon } from './Icon';
-import { Overlay } from './Overlay';
 import { SlotCard } from './SlotCard';
 
 interface Props {
@@ -87,33 +87,7 @@ export function WeekGrid({ week, onAdd, onOpenItem, onReplaceItem, onRemoveItem,
   return (
     <>
       {grid}
-      {confirmDay && (
-        <Overlay title={vi.clearDayConfirm(vi.dayLong[confirmDay])} variant="dialog" role="alertdialog" onClose={() => setConfirmDay(null)}>
-          {(titleId) => (
-            <>
-              <h2 id={titleId} className="wk-h3">
-                {vi.clearDayConfirm(vi.dayLong[confirmDay])}
-              </h2>
-              <p className="wk-muted">{vi.clearDayHint}</p>
-              <div className="wk-dialog__actions">
-                <button type="button" className="wk-btn wk-btn--secondary" data-autofocus onClick={() => setConfirmDay(null)}>
-                  {vi.cancel}
-                </button>
-                <button
-                  type="button"
-                  className="wk-btn wk-btn--danger"
-                  onClick={() => {
-                    onClearDay?.(confirmDay);
-                    setConfirmDay(null);
-                  }}
-                >
-                  {vi.clearDay}
-                </button>
-              </div>
-            </>
-          )}
-        </Overlay>
-      )}
+      {confirmDay && <ClearDayDialog day={confirmDay} onConfirm={() => onClearDay?.(confirmDay)} onClose={() => setConfirmDay(null)} />}
     </>
   );
 }

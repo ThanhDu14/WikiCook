@@ -16,6 +16,8 @@ interface Props {
   /** "Thay món" and "Xóa" right on a dish that is no longer available (US6-1, W-MP01 `wk-slot--needs`). */
   onReplace?: () => void;
   onRemove?: () => void;
+  /** Touch layout (MP-01): the menu button always shows and is 44 px (NFR-003). */
+  touch?: boolean;
 }
 
 function meta(item: PlanItem) {
@@ -32,7 +34,7 @@ function meta(item: PlanItem) {
  * A dish whose recipe was archived or deleted keeps its name, does not link to the recipe and offers
  * "Thay món" and "Xóa" (T086, FR-020); its name explains the recipe was removed (US6-2).
  */
-export function SlotCard({ day, meal, item, onOpen, dense = false, onReplace, onRemove }: Props) {
+export function SlotCard({ day, meal, item, onOpen, dense = false, onReplace, onRemove, touch = false }: Props) {
   const [explained, setExplained] = useState(false);
   const label = vi.slotLabel(vi.dayLong[day], vi.mealLong[meal], item.recipeName);
   const photo = dense ? 32 : 44;
@@ -49,7 +51,7 @@ export function SlotCard({ day, meal, item, onOpen, dense = false, onReplace, on
         if (!(event.target as HTMLElement).closest('a, button')) onOpen();
       }}
     >
-      <div className="wk-card wk-card--compact" style={{ alignItems: 'flex-start', gap: dense ? 8 : undefined }}>
+      <div className="wk-card wk-card--compact" style={{ alignItems: 'flex-start', gap: dense ? 8 : undefined, paddingRight: touch ? 44 : undefined }}>
         {item.available ? (
           <DishPhoto url={item.coverImageUrl} name={item.recipeName} size={photo} />
         ) : (
@@ -107,13 +109,15 @@ export function SlotCard({ day, meal, item, onOpen, dense = false, onReplace, on
           )}
         </div>
       )}
-      <div className="absolute right-0 top-0 flex opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
+      <div
+        className={`absolute right-0 top-0 flex ${touch ? '' : 'opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100'}`}
+      >
         <button
           type="button"
           className="wk-icon-btn wk-icon-btn--plain"
-          aria-label={`Tùy chọn: ${item.recipeName}`}
+          aria-label={vi.options(item.recipeName)}
           onClick={onOpen}
-          style={{ width: 32, height: 32, minHeight: 32, background: 'var(--color-surface)' }}
+          style={touch ? { width: 44, height: 44, minHeight: 44 } : { width: 32, height: 32, minHeight: 32, background: 'var(--color-surface)' }}
         >
           <Icon name="more" size={16} />
         </button>
