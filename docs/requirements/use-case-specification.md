@@ -26,6 +26,10 @@
 | **Section 11** | Use-Case Specifications for Feature 080: Recipe Bookmarks & Custom Collections (`UC-080-01` – `UC-080-04`) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-50` |
 | **Section 12** | Use-Case Specifications for Feature 070: Community Reviews & Cooksnaps (`UC-070-01` – `UC-070-06`) | **Trần Nguyễn Công Chung (itzchugnn)** | **Mai Văn Hiển (MaiHien3507)** | **Trần Nguyễn Công Chung (itzchugnn)** | `SCRUM-54` |
 | **Section 13** | Use-Case Specifications for Feature 100: Administration & Content Moderation (`UC-100-01` – `UC-100-06`) | **Trần Nguyễn Công Chung (itzchugnn)** | **Mai Văn Hiển (MaiHien3507)** | **Trần Nguyễn Công Chung (itzchugnn)** | `SCRUM-54` |
+| **Section 14** | Use-Case Specifications for Feature 030: Weekly Meal Planner, Manual (`UC-030-01` – `UC-030-05`) | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Thành Dự (ThanhDu14)** | `SCRUM-52` |
+| **Section 15** | Use-Case Specifications for Feature 031: AI Weekly Meal Planner (`UC-031-01` – `UC-031-06`) | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Thành Dự (ThanhDu14)** | `SCRUM-52` |
+| **Section 16** | Use-Case Specifications for Feature 090: Nutrition & Allergen Analyzer (`UC-090-01` – `UC-090-05`) | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Thành Dự (ThanhDu14)** | `SCRUM-52` |
+| **Section 17** | Traceability, Screen Mapping & Open Questions for Features 030, 031 & 090 | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Thành Dự (ThanhDu14)** | `SCRUM-52` |
 
 ### Revision History
 
@@ -35,6 +39,7 @@
 | **29/10/2026** | `v1.1` | Added Sections 6–8: use-case specifications for Feature 020 (`UC-020-01` – `UC-020-06`, including the shared Recipe Detail page) and Feature 060 (`UC-060-01` – `UC-060-07`), with traceability, prototype screen mapping and open questions (`SCRUM-51`). Use-case IDs follow the Use-Case Model v0.1 (`SCRUM-49`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **30/10/2026** | `v1.2` | Added Sections 9–11: 13 use-case specifications for Feature 010 (`UC-010-01` – `UC-010-04`), Feature 011 (`UC-011-01` – `UC-011-05`) and Feature 080 (`UC-080-01` – `UC-080-04`), with traceability, prototype screen mapping and open questions (`SCRUM-50`, first draft). Use-case IDs follow the Use-Case Model v0.1 (`SCRUM-49`). | Mai Văn Hiển (`MaiHien3507`) |
 | **31/10/2026** | `v1.3` | Added Sections 12–13: 12 detailed use-case specifications for Feature 070 (`UC-070-01` – `UC-070-06`) and Feature 100 (`UC-100-01` – `UC-100-06`), complete with author self-review guard, cascading rating recalculation, mass-report auto-quarantine, concurrency inspection presence, traceability matrices, prototype screen mapping and open questions (`SCRUM-54`, first draft). Use-case IDs and titles strictly follow the Use-Case Model v0.1 (`SCRUM-49`). | Trần Nguyễn Công Chung (`itzchugnn`) |
+| **03/11/2026** | `v1.4` | Added Sections 14–17: 16 use-case specifications for Feature 030 (`UC-030-01` – `UC-030-05`), Feature 031 (`UC-031-01` – `UC-031-06`) and Feature 090 (`UC-090-01` – `UC-090-05`), with every AI failure flow (LLM error, timeout, unusable answer, not enough recipes, allergy violation, daily quota, backup draft with the manual planner still usable), traceability, prototype screen mapping and open questions (`SCRUM-52`, first draft for review). Written against the 02/11/2026 Clarification of spec 030 (up to 4 dishes per meal). Use-case IDs follow the Use-Case Model (`SCRUM-49`). | Nguyễn Thành Dự (`ThanhDu14`) |
 
 > [!NOTE]
 > **Use-Case Model Alignment Notice:** The formal Use-Case Model (`docs/requirements/use-case-model.md`) is currently being drafted by Nguyễn Đức Duy under `SCRUM-49` (freeze date: November 02, 2026). The Use Case IDs (`UC-040-01` through `UC-040-05` and `UC-050-01` through `UC-050-05`) and titles documented herein represent the official engineering proposal derived directly from ratified specifications `specs/040-shopping-list/spec.md` and `specs/050-cooking-mode/spec.md`. Once `SCRUM-49` completes model freeze on November 02, any identifier discrepancies will be reconciled during the review phase (`SCRUM-53` final edition, due November 03).
@@ -4809,3 +4814,1624 @@ To support task **`SCRUM-58`**, the table below cross-references all administrat
 - **Concurrent Moderation Awareness (Advisory Only):** The moderation queue employs WebSocket / Server-Sent Events (SSE) presence tracking as an advisory notification to alert staff when another moderator opens the same submission, avoiding duplicate review decisions. This mechanism does not lock the recipe; race conditions are safely resolved via optimistic concurrency control (HTTP 409 Conflict).
 - **Automated Quarantine Threshold:** When an active review or Cooksnap accumulates $\ge 10$ unique community reports (`reports.status = 'OPEN'`), the system automatically transitions its status to `HIDDEN` pending moderator review, synchronously triggering aggregate score recalculation for reviews (`WHERE status = 'VISIBLE'`).
 
+---
+
+## 14. USE-CASE SPECIFICATIONS FOR FEATURE 030: WEEKLY MEAL PLANNER (MANUAL)
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+> [!NOTE]
+> **Sources:** `specs/030-meal-planner/spec.md` (US1–US7, FR-001 – FR-032 including `FR-007a` – `FR-007c`, NFR-001 – NFR-006, SC-001 – SC-008, Clarifications of 08/10 and 02/11/2026), `specs/030-meal-planner/contracts/openapi.yaml` (base path `/api/v1`), `specs/090-nutrition-analysis/spec.md` (`US6`, `FR-022`), [Vision Document](vision-document.md) §5.3 and the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.3 and §4.11 (`SCRUM-49`). The actor is **Member** (a signed-in user with an active account; Contributor, Moderator and Administrator inherit it). In the model `UC-030-02` extends `UC-020-06` (extension point `EP-2 Plan`), `UC-031-05` extends `UC-030-01`, and `UC-030-05` includes `UC-040-02`. Spec 030 has seven user stories and the model has five use cases: `US6` (recipes no longer available) and `US7` (phone and lost connection) are alternative flows of `UC-030-01` and apply to every planner use case, as the model states. Vietnamese labels are the strings of the implemented planner (`src/frontend/src/features/meal-planner/strings.vi.ts`), which follow screens `MP01` – `MP07`.
+>
+> **Terms:** a **week** runs Monday → Sunday in Vietnam time (UTC+7); a **meal** is breakfast ("Sáng"), lunch ("Trưa") or dinner ("Tối") of one day; a **dish** is one planned recipe inside a meal with its own servings. Since the Clarification of 02/11/2026 a meal holds **0 to 4 dishes** in the order the user arranged them; plain rice is assumed and is never planned. The spec and the screens still say "slot" in places; in this section a slot is one meal of one day.
+
+### UC-030-01: Fill Meal Plan Slots
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-030-01`
+- **Use Case Name:** Open the Weekly Planner and Fill Its Meals with Published Recipes through the Recipe Picker
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — a busy home cook planning the family's week (Vision §3.2).
+- **Supporting Use Cases:** `UC-011-05` Apply Dietary Hard Rules (conflict labels in the picker), `UC-080-04` (the "Bộ sưu tập" view reads the actor's collections, spec 080 `FR-026`), `UC-090-02` (stored calories for the day total).
+- **Extending Use Case:** `UC-031-05` Suggest Recipes for One Slot (the "Gợi ý" list at the top of the picker).
+
+#### 3. Description
+Lets a signed-in user open the Meal Planner on the current week, see each day's three meals and put published WikiCook recipes into them with the recipe picker. The picker searches published recipes by name, offers the user's saved collections, ranks results for the meal and the user's profile, and puts recipes that break the user's allergies, excluded ingredients or diet type last with a warning. Each dish shows the recipe's photo, name and total cooking time, has its own servings (by default the household size from the profile) and is saved at once, without a "Save" button. Each day shows an estimated calorie total per person from spec 090. Recipes later archived or removed stay in the calendar under their old name, marked "Không còn khả dụng". The planner needs an internet connection: without it the calendar is replaced by an offline message.
+
+#### 4. Preconditions
+- The actor is signed in with the Member role or above and the account is active (`UC-010-02`; FR-001).
+- The device has an internet connection (FR-027).
+- At least one recipe is in `PUBLISHED` status (only these can be chosen, FR-010).
+
+#### 5. Basic Flow
+1. **Open Planner:** The actor opens "Thực đơn" from the main navigation.
+2. **Load Week:** The system works out the current week in Vietnam time and loads the actor's plan for it (`GET /api/v1/meal-plans/{weekStart}`). Only the actor's own plan is returned (FR-002, FR-006, NFR-004). A week without a plan is shown empty; no plan row is needed until the first dish is added.
+3. **Show Calendar:** The system shows the week with its date range in the header (for example "27/10 – 02/11") and today's column highlighted. Each day shows "Sáng", "Trưa" and "Tối" in this order; each meal lists its dishes in order and, while it holds fewer than 4 dishes, offers "Thêm món" (FR-003, FR-004; US1 AS1). Each day with dishes shows its calorie total (Step 12).
+4. **Start Adding:** The actor selects "Thêm món" on a meal, for example "Tối" of Wednesday.
+5. **Open Picker:** The system opens the recipe picker titled with the meal and day ("Chọn món · Tối T4"), with a search box ("Tìm trong tất cả công thức") and the views "Tất cả" and "Bộ sưu tập" (FR-007; US1 AS2). When suggestions are available, the "Gợi ý" list of `UC-031-05` is shown above the results (FR-007c).
+6. **Show Ordered Results:** Without search text, the system lists published recipes ordered by (1) suited to this meal before not suited, (2) matching the actor's preferred cuisines, (3) within the actor's maximum cooking time, and (4) name match quality (FR-007a). Recipes not suited to the meal carry the label "Không hợp bữa này". Snacks, drinks and desserts, which suit no main meal, are not offered (Assumptions).
+7. **Search:** The actor types part of a name, for example "trứng". The system searches published recipes by name, accent-insensitive ("trung" finds "trứng"), and keeps the same order: for a breakfast meal, breakfast recipes come first (US1 AS3; SC-007).
+8. **Choose Recipe:** The actor selects "Chọn" on a recipe that breaks no hard rule.
+9. **Store Dish:** The system checks on the server that the actor owns the week, that the recipe is still `PUBLISHED` and that the meal holds fewer than 4 dishes, then adds the dish at the end of the meal (`POST /api/v1/meal-plans/{weekStart}/meals/{day}/{meal}/items`). The dish keeps the recipe name as it is now, the source "manual" and the time added (FR-004, FR-010, FR-030). The plan for the week is created with the first dish, at most one per user and week (FR-002).
+10. **Set Servings:** The dish's servings are the household size of the actor's profile (spec 011), for example "4 người" (FR-011, FR-012; US1 AS5).
+11. **Show Dish:** The picker closes and the dish appears at the end of the meal with the recipe photo, name and total cooking time ("40 phút · 4 phần"). The change is already saved; there is no "Save" button, and the dish is there after a reload or on another device (FR-005, FR-018; US1 AS5, AS9; SC-004).
+12. **Update Day Total:** The day shows "~1.240 kcal/người", the sum of calories per serving of each dish of the day that has a shown estimate (spec 090 `FR-022`), with the disclaimer "Số liệu dinh dưỡng do AI ước tính, chỉ mang tính tham khảo" (FR-032; spec 090 `FR-016`). Dish servings scale shopping quantities, not this per-person total (spec 090 Assumptions).
+13. **Repeat:** The actor repeats Steps 4–11 for other meals. The same recipe may be added to several meals, or twice to the same meal (FR-004; Edge Cases).
+
+#### 6. Alternative Flows
+- **AF 1.1: Guest Opens the Planner:**
+  - *Trigger:* At Step 1, the actor is not signed in, or opens the planner URL directly (US2 AS5, FR-001).
+  - *Steps:*
+    1. The system shows no calendar and sends the actor to sign-in (`UC-010-02`).
+    2. After sign-in the system returns the actor to the planner on the same week.
+- **AF 1.2: Pick from Collections:**
+  - *Trigger:* At Step 5, the actor selects "Bộ sưu tập" (US1 AS2, FR-007).
+  - *Steps:*
+    1. The system lists the actor's collections with "Đã lưu" first and, for the chosen one, its published recipes, paged and searchable by name (spec 080 `FR-026`). Recipes of the collection that are no longer available are not offered.
+    2. The same order and conflict labels as Step 6 apply. The actor continues at Step 8.
+    3. When the actor has saved no recipe, the system shows "Bộ sưu tập của bạn chưa có công thức nào." and the actor can return to "Tất cả".
+- **AF 1.3: No Recipe Matches the Search:**
+  - *Trigger:* At Step 7, no published recipe matches the text (US1 AS10).
+  - *Steps:*
+    1. The system shows "Không tìm thấy công thức phù hợp." and suggests trying a different name. The "Gợi ý" list, if shown, stays.
+- **AF 1.4: Recipe Breaks a Hard Rule:**
+  - *Trigger:* At Step 6 or 7, a recipe contains an ingredient linked to one of the actor's allergens, an excluded ingredient, or does not fit the actor's diet type (`UC-011-05`; FR-007b; US1 AS4).
+  - *Steps:*
+    1. The system lists the recipe after all other results with a label naming the conflict, for example "Có đậu phộng – bạn bị dị ứng", "Có ngò rí – bạn đã loại trừ" or "Có thịt bò – không hợp chế độ ăn của bạn". The diet type is derived from the kinds of the catalogue ingredients, never from AI diet labels (FR-030; spec 090 `FR-019`).
+    2. When the actor selects "Chọn" on such a recipe, the system asks "Món này không hợp hồ sơ của bạn" with the conflict, and the buttons "Hủy" and "Vẫn thêm".
+    3. On "Vẫn thêm" the flow continues at Step 9; on "Hủy" nothing is added and the picker stays open.
+  - *Design Rationale:* The picker is a manual choice, so a conflicting recipe is shown last and confirmed rather than hidden; automatic choices of the AI planner never include it (`UC-031-03`).
+- **AF 1.5: Suggestions Not Available:**
+  - *Trigger:* At Step 5, the suggestions of `UC-031-05` are not ready within 3 seconds or the AI planner is switched off (FR-007c, FR-031; spec 031 `FR-037`).
+  - *Steps:*
+    1. The system shows no "Gợi ý" list and no error; the ordered results work as in Step 6.
+- **AF 1.6: Profile Has No Household Size:**
+  - *Trigger:* At Step 10, the actor's profile has no household size (US1 AS6, FR-012).
+  - *Steps:*
+    1. The dish's servings are the recipe's own number of servings.
+- **AF 1.7: Change the Servings of a Dish:**
+  - *Trigger:* After Step 11, the actor opens the dish menu (`UC-030-03` Step 1) and changes "Số phần" with "Bớt" or "Thêm" (US1 AS7, FR-011).
+  - *Steps:*
+    1. The system accepts a whole number from 1 to 20 and saves it at once (`PATCH /api/v1/meal-plans/{weekStart}/items/{itemId}/servings`).
+    2. Only this dish changes; the other dishes of the meal keep their servings.
+- **AF 1.8: Servings Out of Range:**
+  - *Trigger:* At AF 1.7, the value is below 1, above 20 or not a whole number (Edge Cases).
+  - *Steps:*
+    1. The system refuses the value with "Số phần từ 1 đến 20." and keeps the old value.
+- **AF 1.9: Meal Already Holds 4 Dishes:**
+  - *Trigger:* At Step 3, a meal holds 4 dishes (US1 AS11, FR-004).
+  - *Steps:*
+    1. The meal shows "Đủ 4 món" and offers no "Thêm món".
+    2. Any other way of adding to it (from the recipe page, "Chuyển sang…", the AI planner) is refused with "Bữa này đã đủ 4 món."; the dishes already there do not change.
+- **AF 1.10: Meal Filled on Another Device:**
+  - *Trigger:* At Step 9, another device or tab added dishes to the same meal and this add would make a fifth dish (Edge Cases "Two devices").
+  - *Steps:*
+    1. Adds from both devices succeed while the meal has room; the add that would make a fifth dish is refused with "Bữa này đã đủ 4 món." (NFR-005; SC-005).
+    2. The system reloads the week so the actor sees the current meal.
+- **AF 1.11: Recipe Archived While the Picker Is Open:**
+  - *Trigger:* At Step 9, the recipe is no longer `PUBLISHED` (Edge Cases, FR-010).
+  - *Steps:*
+    1. The system adds nothing, shows "Công thức này không còn khả dụng." and refreshes the picker list.
+- **AF 1.12: Open the Recipe of a Dish:**
+  - *Trigger:* After Step 11, the actor selects the photo or name of an available dish, or "Xem công thức" in its menu (US1 AS8, FR-005).
+  - *Steps:*
+    1. The system opens the recipe detail page (`UC-020-06`).
+- **AF 1.13: Planned Recipe No Longer Available:**
+  - *Trigger:* At Step 3, a planned recipe has been archived by its author (spec 060) or removed by a moderator (spec 100) since it was added (US6 AS1, FR-020).
+  - *Steps:*
+    1. The dish keeps the recipe name as it was when added, shows a placeholder image and the label "Không còn khả dụng", and offers "Thay món" (`UC-030-03` AF 3.4) and "Xóa" (`UC-030-03` AF 3.5).
+    2. When the actor selects its name, the recipe detail page does not open; the system shows "Công thức này đã bị gỡ khỏi WikiCook. Hãy thay bằng món khác hoặc xóa." (US6 AS2).
+    3. The dish is not counted in the day total and is left out of the shopping list (`UC-030-05` AF 5.2).
+- **AF 1.14: Recipe Photo Missing:**
+  - *Trigger:* At Step 11, the recipe has no photo or it fails to load (Edge Cases).
+  - *Steps:*
+    1. The dish shows a placeholder image ("Không có ảnh"); name and time still show.
+- **AF 1.15: Very Long Recipe Name:**
+  - *Trigger:* At Step 11, the name does not fit (Edge Cases).
+  - *Steps:*
+    1. The name is shortened in the meal; the full name is shown on hover or focus and on the detail page.
+- **AF 1.16: Save Fails:**
+  - *Trigger:* At Step 9 or AF 1.7, the server cannot save the change (FR-019).
+  - *Steps:*
+    1. The planner returns the meal to its state before the change and shows "Thay đổi chưa được lưu. Vui lòng thử lại.".
+- **AF 1.17: Session Expires:**
+  - *Trigger:* At Step 9 or AF 1.7, the session has expired (Edge Cases).
+  - *Steps:*
+    1. The change is not saved. The system shows "Phiên đăng nhập đã hết hạn.", asks the actor to sign in again (`UC-010-02`) and returns the actor to the same week.
+- **AF 1.18: No Connection When Opening:**
+  - *Trigger:* At Step 2, the device is offline (US7 AS2, FR-027, FR-028).
+  - *Steps:*
+    1. The system shows no calendar. The offline message "Cần kết nối mạng — Thực đơn cần internet để xem và chỉnh sửa. Trang sẽ tự tải lại khi có mạng." offers "Thử lại".
+    2. No plan data is kept on the device, so an older copy is never shown.
+- **AF 1.19: Connection Lost While the Planner Is Open:**
+  - *Trigger:* At any step, the connection drops (US7 AS3, FR-028).
+  - *Steps:*
+    1. The system replaces the calendar with the offline message of AF 1.18; no edit can be made. An open picker or dialog closes.
+    2. When a change was being saved, the actor is told it was not saved (AF 1.16) before the offline message is shown (US7 AS4). Dishes already saved on the server are never lost (NFR-006).
+- **AF 1.20: Connection Returns:**
+  - *Trigger:* At AF 1.18 or AF 1.19, the connection comes back or the actor selects "Thử lại" while online (US7 AS5, FR-029).
+  - *Steps:*
+    1. The system reloads the week being viewed from the server and shows the calendar again, within 5 seconds of the connection returning (SC-006).
+    2. When "Thử lại" is selected while still offline, the message stays.
+- **AF 1.21: Week Cannot Be Loaded:**
+  - *Status:* Proposed — spec 030 states the offline case only; the message is the one already used by the implemented planner.
+  - *Trigger:* At Step 2, the device is online but the server does not answer or returns an error.
+  - *Steps:*
+    1. The system shows "Không tải được thực đơn." with "Thử lại", and no calendar.
+- **AF 1.22: Phone Layout:**
+  - *Trigger:* At Step 3, the screen is narrower than the desktop layout (from 360 px) (US7 AS1, FR-026).
+  - *Steps:*
+    1. The system shows one day at a time, starting with today, with the day strip "T2 … CN" and the controls "Ngày trước" and "Ngày sau".
+    2. The day header holds the day's calorie total (FR-032). All other steps are the same as on desktop.
+- **AF 1.23: Day Total with Missing Data:**
+  - *Trigger:* At Step 12, some or all dishes of the day have no shown estimate (calculating, failed or hidden; spec 090 `US6` AS4–AS5).
+  - *Steps:*
+    1. When some dishes have an estimate, the total sums only those and adds "N món chưa có số liệu", for example "~1.240 kcal/người · 1 món chưa có số liệu".
+    2. When no dish of the day has an estimate, no number is shown, only "Chưa có số liệu dinh dưỡng".
+    3. A day without dishes shows no total.
+- **AF 1.24: Dietary Profile Cannot Be Read:**
+  - *Status:* Proposed — follows the decision on `[OQ-011-01]` of Section 10.3 (a module that cannot read the profile does not choose recipes automatically and shows the reason); spec 030 is to be updated with it, see `[OQ-030-05]`.
+  - *Trigger:* At Step 6, the profile service does not answer.
+  - *Steps:*
+    1. The picker still lists published recipes by meal and name, but shows no conflict labels and the notice that the dietary profile could not be checked, so the actor knows the order and warnings are not applied.
+    2. The "Gợi ý" list is hidden (it depends on the hard rules, `UC-031-05`).
+- **AF 1.25: Meals Left Empty by the AI Planner:**
+  - *Trigger:* At Step 3, a meal was marked "Chọn món" by the AI planner (`UC-031-03`) and confirmed (Edge Cases).
+  - *Steps:*
+    1. After confirmation it is a normal empty meal with "Thêm món"; inside an open draft, selecting "Chọn món" starts this use case at Step 5 for that meal.
+- **AF 1.26: Household Size Changed Later:**
+  - *Trigger:* The actor changes the household size in the profile (`UC-011-01`) after dishes were planned (FR-013).
+  - *Steps:*
+    1. Dishes already planned keep their servings; only dishes added afterwards use the new default.
+- **AF 1.27: Account Deleted:**
+  - *Trigger:* The actor deletes the account (`UC-011-04`; Edge Cases).
+  - *Steps:*
+    1. All of the actor's meal plans and their dishes are deleted with the account. Recipes are not affected.
+
+#### 7. Postconditions
+- **Success:** The meal holds the new dish at its end with the chosen recipe, name, servings and source "manual"; the meal holds at most 4 dishes; the change is stored on the server and visible on every device of the actor.
+- **Failure or refusal:** The meal is as before and a message states why; no dish is half-added (NFR-005).
+- **Offline:** No calendar is shown and nothing is stored on the device.
+
+#### 8. Special Requirements
+- **Performance:** 95% of week views are fully shown within 2 seconds and 95% of edits are confirmed as saved within 1 second, under normal load (up to 100 concurrent users) (NFR-001); one dish in each of the 21 meals takes under 10 minutes (SC-001).
+- **Integrity:** A meal never holds more than 4 dishes, including concurrent adds (NFR-005, SC-005).
+- **Privacy:** A user's meal plans are visible only to that user; the server checks the owner on every request (FR-006, NFR-004; constitution Principle IV).
+- **Usability and accessibility:** Usable from 360 px with touch targets large enough for kitchen use; Vietnamese strings in the shared string store; every action by keyboard; each meal announces its day, meal and dishes to screen readers, for example "Thứ Hai, bữa trưa, Phở bò" (NFR-002, NFR-003; constitution Principle V).
+- **Independence from AI:** The manual planner stays fully usable when the AI planner is unavailable (FR-031).
+- **Testing:** Every acceptance scenario of US1, US6 and US7 has at least one automated test (SC-008; constitution Principle II).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`MP01-Week.dc.html`](../analysis-and-design/ui-ux/screens/MP01-Week.dc.html) (Steps 3, 11–12, phone day view with "Khoảng 1.240 kcal / người · 1 món chưa có số liệu · AI ước tính"), [`MP04-Picker.dc.html`](../analysis-and-design/ui-ux/screens/MP04-Picker.dc.html) (Steps 5–8, "Chọn món · Tối T4", "Đã ẩn món chứa đậu phộng và ngò rí theo hồ sơ của bạn.").
+- **Alternative Flows:** [`MP01-Week.dc.html`](../analysis-and-design/ui-ux/screens/MP01-Week.dc.html) (AF 1.13, "Bò lúc lắc — Không còn khả dụng" with "Thay món" and "Xóa"), [`MP07-Offline.dc.html`](../analysis-and-design/ui-ux/screens/MP07-Offline.dc.html) (AF 1.18 – AF 1.20), [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 1.1), [`AI09-SlotSuggest.dc.html`](../analysis-and-design/ui-ux/screens/AI09-SlotSuggest.dc.html) (Step 5, "Gợi ý").
+- **UI Asset Gap for SCRUM-58:** `MP04` says conflicting recipes are hidden, but FR-007b lists them last with a label and a confirmation (AF 1.4); the meal with several dishes and "Đủ 4 món" (AF 1.9); the picker empty states (AF 1.2, AF 1.3); the "not saved" message (AF 1.16). See Section 17.2 (Gaps 030-A to 030-E).
+
+---
+
+### UC-030-02: Add Recipe to Plan from Detail Page
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-030-02`
+- **Use Case Name:** Add the Recipe Being Read to a Chosen Week, Day and Meal of the Plan
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — a home cook browsing recipes.
+- **Extended Use Case:** `UC-020-06` View Recipe Details (extension point `EP-2 Plan`, button "Thêm vào thực đơn").
+
+#### 3. Description
+Lets a signed-in user add the published recipe they are reading straight into one meal of their plan, without going back to the planner and searching for it again. A dialog asks for the week, the day and the meal, lists the dishes the meal already holds and adds the recipe at the end of it. A meal that already holds 4 dishes cannot be chosen. A Guest is sent to sign-in and brought back to the same recipe with the dialog open again.
+
+#### 4. Preconditions
+- The actor is on the detail page of a recipe in `PUBLISHED` status that suits at least one main meal (FR-010; Assumptions).
+- The actor is signed in with the Member role or above (for a Guest see AF 2.1).
+- The device has an internet connection (FR-027).
+
+#### 5. Basic Flow
+1. **Choose Add:** The actor selects "Thêm vào thực đơn" on the recipe page.
+2. **Open Dialog:** The system opens the dialog "Thêm vào thực đơn" with the recipe name, the week (default: the current week), the days "T2 … CN" with dates and the meals "Sáng", "Trưa", "Tối" (FR-008; US2 AS1).
+3. **Choose Day and Meal:** The actor chooses a day and a meal, for example Wednesday and "Trưa". The system loads that week's plan if needed.
+4. **Show Meal Content:** When the meal already holds dishes, the dialog shows "Bữa này đã có: Cơm gà, Canh bí" and the hint "Món mới được thêm vào cuối bữa." (US2 AS3).
+5. **Confirm:** The actor selects "Xác nhận".
+6. **Store Dish:** The system does the same checks as `UC-030-01` Step 9 (owner, recipe `PUBLISHED`, fewer than 4 dishes) and adds the dish at the end of the meal, with the servings of FR-012 (household size, or the recipe's servings) (US2 AS2).
+7. **Confirm Result:** The dialog closes and the system shows "Đã thêm vào Trưa Thứ Tư." with the link "Xem thực đơn", which opens the planner on that week (US2 AS2; SC-002).
+
+#### 6. Alternative Flows
+- **AF 2.1: Guest Chooses Add:**
+  - *Trigger:* At Step 1, the actor is not signed in (US2 AS4, FR-009).
+  - *Steps:*
+    1. The button reads "Đăng nhập để thêm vào thực đơn"; selecting it sends the actor to sign-in (`UC-010-02`); the extension point behaves as in `UC-020-06` AF 6.1.
+    2. After sign-in the system returns the actor to the same recipe page and opens the dialog again at Step 2.
+- **AF 2.2: Choose Another Week:**
+  - *Trigger:* At Step 2, the actor moves the week to an earlier or later one.
+  - *Steps:*
+    1. The dialog shows that week's days with dates; past weeks may be chosen because past weeks stay editable (FR-023). A week that crosses a month or year shows the right dates (Edge Cases).
+- **AF 2.3: Meal Already Holds 4 Dishes:**
+  - *Trigger:* At Step 3, the chosen meal holds 4 dishes (US2 AS3, FR-008).
+  - *Steps:*
+    1. The dialog lists the 4 dishes and says "Bữa này đã đủ 4 món. Chọn bữa khác."; "Xác nhận" is disabled.
+- **AF 2.4: Meal Filled Meanwhile:**
+  - *Trigger:* At Step 6, another device filled the meal after the dialog was opened (Edge Cases).
+  - *Steps:*
+    1. The system adds nothing and shows "Bữa này đã đủ 4 món."; the dialog stays open so the actor can choose another meal.
+- **AF 2.5: Cancel:**
+  - *Trigger:* At Steps 2–5, the actor selects "Hủy", presses Escape or clicks outside (US2 AS3).
+  - *Steps:*
+    1. The dialog closes and nothing changes.
+- **AF 2.6: Recipe No Longer Published:**
+  - *Trigger:* At Step 6, the recipe was archived or removed while the page was open (FR-010).
+  - *Steps:*
+    1. The system adds nothing and shows "Công thức này không còn khả dụng.".
+- **AF 2.7: Recipe Suits No Main Meal:**
+  - *Trigger:* At Step 1, the recipe is a snack, drink or dessert that suits no main meal (Assumptions).
+  - *Steps:*
+    1. The page does not offer "Thêm vào thực đơn" for this recipe.
+- **AF 2.8: Recipe Breaks the Actor's Hard Rules:**
+  - *Status:* Proposed — FR-007b covers the picker only; the detail page already highlights the actor's allergens in the allergen area (`UC-090-04` Step 4). See `[OQ-030-03]`.
+  - *Trigger:* At Step 2, the recipe conflicts with the actor's allergies, excluded ingredients or diet type.
+  - *Steps:*
+    1. The dialog shows the same conflict label as the picker ("Có đậu phộng – bạn bị dị ứng"); the actor can still confirm, as in `UC-030-01` AF 1.4.
+- **AF 2.9: Save Fails, No Connection or Session Expired:**
+  - *Trigger:* At Step 6, the server cannot save, the device is offline or the session has expired.
+  - *Steps:*
+    1. The system adds nothing and shows "Thay đổi chưa được lưu. Vui lòng thử lại.", "Không có kết nối mạng." or "Phiên đăng nhập đã hết hạn." respectively; for an expired session the actor signs in again and returns to the recipe page as in AF 2.1.
+
+#### 7. Postconditions
+- **Success:** The chosen meal holds the recipe at its end with default servings and source "manual"; the meal holds at most 4 dishes; the actor can open the planner on that week.
+- **Failure or cancel:** The plan is unchanged.
+
+#### 8. Special Requirements
+- **Performance:** Adding a recipe from its page to a chosen day and meal takes under 15 seconds (SC-002).
+- **Consistency:** Same storage and rules as `UC-030-01` (one endpoint, FR-008, FR-010, FR-012).
+- **Usability and accessibility:** The dialog is operable by keyboard and closes with Escape; usable from 360 px; Vietnamese strings in the shared string store (NFR-002, NFR-003).
+- **Testing:** Every acceptance scenario of US2 has at least one automated test (SC-008).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`NU01-Detail.dc.html`](../analysis-and-design/ui-ux/screens/NU01-Detail.dc.html) (Step 1, button "Thêm vào thực đơn"), [`MP05-AddFromRecipe.dc.html`](../analysis-and-design/ui-ux/screens/MP05-AddFromRecipe.dc.html) (Steps 2–5).
+- **Alternative Flows:** [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 2.1).
+- **UI Asset Gap for SCRUM-58:** `MP05` still shows the rule before 02/11/2026 ("Trưa Thứ Tư đã có “Cơm gà” — Món mới sẽ thay thế. Bạn có thể hoàn tác."); it must show "Bữa này đã có: …" and the full-meal state instead (Step 4, AF 2.3). The result confirmation with "Xem thực đơn" (Step 7) is not drawn. See Section 17.2 (Gaps 030-F, 030-G).
+
+---
+
+### UC-030-03: Rearrange, Replace & Remove Planned Dishes
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-030-03`
+- **Use Case Name:** Move a Dish to Another Meal, Reorder, Replace or Remove Dishes and Clear a Day from the Dish Menu
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — a home cook whose week does not go as planned.
+- **Supporting Use Case:** `UC-030-01` (the recipe picker used by "Đổi món"). The AI draft (`UC-031-02`) uses the same actions.
+
+#### 3. Description
+Lets the user change the plan as the week changes: move a dish to another meal of the same week (it is added at the end of that meal), change the order of the dishes of a meal, replace a dish with another recipe while keeping its servings and position, remove one dish, or clear a whole day after confirming. All actions are in the dish menu "⋮"; there is no drag-and-drop (Clarification 02/11/2026). Every accepted change is saved at once; a move either completes fully or not at all, and a failed save puts the calendar back as it was.
+
+#### 4. Preconditions
+- `UC-030-01` Preconditions hold, and the planner shows a week that holds at least one dish.
+
+#### 5. Basic Flow
+1. **Open Dish Menu:** The actor hovers or focuses a dish, which shows only its "⋮" button, and selects it or the dish itself (US3 AS4). The system opens the menu titled with the meal and date ("Trưa · Thứ Tư 29/10") with "Xem công thức", "Đổi món", "Chuyển sang…", "Lên trên" and "Xuống dưới" (only in a meal with two or more dishes), "Số phần" and "Xóa khỏi thực đơn" (FR-015, FR-016).
+2. **Choose Move:** The actor selects "Chuyển sang…".
+3. **Choose Target:** The system shows "Chuyển “Canh chua cá lóc”" with the hint "Chọn bữa đích. Món được thêm vào cuối bữa; bữa đã đủ 4 món không nhận thêm." and every day and meal of the week. Meals that hold 4 dishes are shown as "Đủ 4 món" and cannot be chosen; for a meal that holds dishes, the target reads "Thêm vào sau <last dish>" (US3 AS2, FR-014).
+4. **Confirm Move:** The actor chooses a meal, for example "Trưa" of Thursday, and selects "Chuyển đến Trưa T5".
+5. **Store Move:** The system checks on the server that the dish still exists unchanged and that the target meal holds fewer than 4 dishes, then removes the dish from its meal and adds it at the end of the target meal in one step (`POST /api/v1/meal-plans/{weekStart}/items/{itemId}/move`). Servings and source are kept (NFR-005).
+6. **Show Result:** The dish appears at the end of the target meal and leaves its original meal; the other dishes of both meals keep their order (US3 AS1). Day totals of both days are updated (`UC-030-01` Step 12).
+
+#### 6. Alternative Flows
+- **AF 3.1: Reorder Inside a Meal:**
+  - *Trigger:* At Step 2, in a meal with two or more dishes, the actor selects "Lên trên" or "Xuống dưới" (US3 AS3, FR-015).
+  - *Steps:*
+    1. The system swaps the dish with its neighbour and saves the new order at once (same move endpoint, same meal).
+    2. "Lên trên" is not offered for the first dish and "Xuống dưới" not for the last.
+- **AF 3.2: Target Meal Filled Meanwhile:**
+  - *Trigger:* At Step 5, the target meal reached 4 dishes on another device (US3 AS2).
+  - *Steps:*
+    1. Nothing changes; the system shows "Bữa này đã đủ 4 món." and the dish stays in its original meal and position.
+- **AF 3.3: Close "Chuyển sang…" Without Confirming:**
+  - *Trigger:* At Steps 3–4, the actor selects "Hủy" or "Quay lại", presses Escape or clicks outside (Edge Cases).
+  - *Steps:*
+    1. Nothing changes.
+- **AF 3.4: Replace a Dish:**
+  - *Trigger:* At Step 2, the actor selects "Đổi món", or "Thay món" on a dish marked "Không còn khả dụng" (US3 AS5, FR-016).
+  - *Steps:*
+    1. The system opens the recipe picker of `UC-030-01` (Steps 5–8, with its alternative flows) for this meal.
+    2. The chosen recipe takes the place of this dish only, keeping its servings and position (`PUT /api/v1/meal-plans/{weekStart}/items/{itemId}`); the recipe name is stored as it is now.
+    3. Closing the picker without choosing changes nothing.
+- **AF 3.5: Remove a Dish:**
+  - *Trigger:* At Step 2, the actor selects "Xóa khỏi thực đơn" (or "Xóa" on an unavailable dish) (US3 AS6, FR-016).
+  - *Steps:*
+    1. The system removes only that dish (`DELETE /api/v1/meal-plans/{weekStart}/items/{itemId}`); the remaining dishes of the meal close up and keep their order.
+- **AF 3.6: Clear a Day:**
+  - *Trigger:* The actor selects "Xóa cả ngày" on a day with one or more dishes (US3 AS7, FR-017).
+  - *Steps:*
+    1. The system asks "Xóa mọi món của Thứ Tư?" with "Không thể hoàn tác thao tác này." and the buttons "Hủy" and "Xác nhận".
+    2. On "Xác nhận", all meals of that day become empty (`DELETE /api/v1/meal-plans/{weekStart}/days/{day}`).
+    3. On "Hủy" nothing changes.
+- **AF 3.7: Dish Changed Elsewhere:**
+  - *Trigger:* At Step 5 or AF 3.1 – AF 3.6, the dish or day was changed or removed on another device after this one loaded the week (Edge Cases).
+  - *Steps:*
+    1. The server refuses the edit; the system shows "Kế hoạch đã thay đổi ở nơi khác. Đã tải lại tuần." and reloads the week.
+- **AF 3.8: Save Fails:**
+  - *Trigger:* At Step 5 or AF 3.1 – AF 3.6, the server cannot save the change (US3 AS8, FR-019).
+  - *Steps:*
+    1. The calendar returns to its state before the edit and shows "Thay đổi chưa được lưu. Vui lòng thử lại."; no dish is lost or duplicated (NFR-005; SC-005).
+- **AF 3.9: No Connection or Session Expired:**
+  - *Trigger:* At any step, the connection is lost or the session has expired.
+  - *Steps:*
+    1. As `UC-030-01` AF 1.17 and AF 1.19: the edit is not saved, and the offline message or the sign-in prompt is shown.
+- **AF 3.10: Edit a Dish That Is No Longer Available:**
+  - *Trigger:* At Step 1, the dish is marked "Không còn khả dụng" (FR-020).
+  - *Steps:*
+    1. Its menu offers only "Thay món" (AF 3.4) and "Xóa" (AF 3.5); "Xem công thức" is not offered.
+    2. The actor may still move or reorder it.
+- **AF 3.11: Keyboard and Touch:**
+  - *Trigger:* At Step 1, the actor uses only the keyboard, or touch on a phone (FR-015, NFR-003; US7 AS1).
+  - *Steps:*
+    1. The menu, "Chuyển sang…" and the confirmation work the same with pointer, touch and keyboard on every layout. On the phone layout every meal of the week can be chosen as a target, not only those of the day shown.
+- **AF 3.12: Move to Another Week:**
+  - *Trigger:* The actor wants a dish in a different week (Assumptions).
+  - *Steps:*
+    1. Not supported: "Chuyển sang…" offers only the meals of the week being viewed. The actor removes the dish and adds it again in the other week.
+
+#### 7. Postconditions
+- **Success:** The plan matches the edit: the dish is at the end of the target meal, in the new order, replaced with servings and position kept, removed, or the day is empty; no meal holds more than 4 dishes; the change is stored on the server.
+- **Failure, cancel or refusal:** The plan is exactly as before; no dish is lost or duplicated.
+
+#### 8. Special Requirements
+- **Integrity:** A move or reorder completes fully or not at all; a meal never ends up with more than 4 dishes; a dish is never lost or duplicated by a failed move (NFR-005; SC-005).
+- **Performance:** 95% of edits confirmed as saved within 1 second (NFR-001).
+- **Usability:** At least 90% of test participants complete "plan 3 dinners, move one, remove one" on the first attempt, on desktop and on a phone (SC-003).
+- **Accessibility:** All actions by keyboard; no drag-and-drop is needed for anything (NFR-003; Clarification 02/11/2026).
+- **Testing:** Every acceptance scenario of US3 has at least one automated test (SC-008).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`MP02-SlotMenu.dc.html`](../analysis-and-design/ui-ux/screens/MP02-SlotMenu.dc.html) (Step 1, menu "Trưa · Thứ Tư 29/10" with "Xem công thức", "Đổi món", "Chuyển sang…", "Số phần", "Xóa khỏi thực đơn"), [`MP03-MoveTo.dc.html`](../analysis-and-design/ui-ux/screens/MP03-MoveTo.dc.html) (Steps 3–4).
+- **Alternative Flows:** [`MP04-Picker.dc.html`](../analysis-and-design/ui-ux/screens/MP04-Picker.dc.html) (AF 3.4), [`MP01-Week.dc.html`](../analysis-and-design/ui-ux/screens/MP01-Week.dc.html) (AF 3.10), [`MP07-Offline.dc.html`](../analysis-and-design/ui-ux/screens/MP07-Offline.dc.html) (AF 3.9).
+- **UI Asset Gap for SCRUM-58:** `MP03` still shows the swap rule before 02/11/2026 ("Bữa đã có món sẽ được đổi chỗ", "Sẽ đổi chỗ với món đang chuyển"); it must show "Thêm vào sau …" and "Đủ 4 món" (Step 3). `MP02` lacks "Lên trên" / "Xuống dưới" (AF 3.1). The "Xóa cả ngày" confirmation (AF 3.6) and the "plan changed elsewhere" message (AF 3.7) are not drawn. See Section 17.2 (Gaps 030-H to 030-K).
+
+---
+
+### UC-030-04: Navigate Weeks & Start an Empty Week
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-030-04`
+- **Use Case Name:** Browse Previous and Next Weeks, Return to This Week and Start Planning an Empty Week by Hand or with AI
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — a home cook preparing the coming week or reusing ideas from a past one.
+- **Supporting Use Case:** `UC-031-01` Generate AI Weekly Meal Plan (started from "Tạo bằng AI").
+
+#### 3. Description
+Lets the user move from the current week to the previous or next week and back to "Tuần này", with the week's date range in the header. Past weeks stay viewable and editable. A week without dishes shows an empty state that offers adding a dish by hand or generating the week with AI (spec 031).
+
+#### 4. Preconditions
+- `UC-030-01` Preconditions hold, and the planner shows a week.
+
+#### 5. Basic Flow
+1. **Go to Another Week:** The actor selects "Tuần sau" (or "Tuần trước").
+2. **Load Week:** The system loads the actor's plan for that week (`GET /api/v1/meal-plans/{weekStart}`) and shows it with its date range in the header, for example "03/11 – 09/11/2026" (FR-021; US4 AS1). A week that crosses a month or year is shown as one week with the right dates, for example "29/12 – 04/01" (Edge Cases).
+3. **Show Empty State:** The week has no dishes, so the system shows "Tuần này chưa có món" with "Thêm từng món vào ô trống, hoặc để AI tạo nháp cả tuần dựa trên hồ sơ ăn uống." and the actions "Thêm món" and "Tạo bằng AI" (FR-022; US4 AS3).
+4. **Start with AI:** The actor selects "Tạo bằng AI".
+5. **Open AI Planner:** The system starts `UC-031-01` for this week (US4 AS4).
+6. **Return:** Later the actor selects "Tuần này"; the planner shows the current week again (US4 AS2).
+
+#### 6. Alternative Flows
+- **AF 4.1: Start by Hand:**
+  - *Trigger:* At Step 4, the actor selects "Thêm món" instead (US4 AS3).
+  - *Steps:*
+    1. The planner starts `UC-030-01` at Step 5 for the first meal of the first day shown, or the actor chooses a meal on the calendar.
+- **AF 4.2: Week Already Has Dishes:**
+  - *Trigger:* At Step 3, the week holds dishes.
+  - *Steps:*
+    1. The calendar is shown as in `UC-030-01` Step 3; "Tạo bằng AI" stays in the header while the week has an empty meal (spec 031 `FR-001`).
+    2. When no meal of the week is empty, "Tạo bằng AI" is disabled with the hint that the week has no empty meal (spec 031 Edge Cases).
+- **AF 4.3: Past Week:**
+  - *Trigger:* At Step 2, the week has ended (US4 AS5, FR-023).
+  - *Steps:*
+    1. Its dishes are shown and can still be edited with `UC-030-01` and `UC-030-03`.
+    2. "Tạo bằng AI" is not offered, because the AI planner does not plan past days (spec 031 `FR-001`, Edge Cases). An empty past week therefore shows only "Thêm món" (see `[OQ-030-02]`).
+- **AF 4.4: AI Planner Unavailable:**
+  - *Trigger:* At Step 3, the AI planner is switched off (FR-031).
+  - *Steps:*
+    1. The empty state shows "Thêm từng món vào ô trống để bắt đầu lên thực đơn." and only "Thêm món"; every manual action works.
+- **AF 4.5: Unconfirmed AI Draft Open:**
+  - *Trigger:* At Step 1, an AI draft of the current week is not confirmed (spec 031 `FR-022`).
+  - *Steps:*
+    1. The system asks before the draft is lost, as in `UC-031-02` AF 2.6; the week changes only if the actor accepts.
+- **AF 4.6: Moving Between Days on a Phone:**
+  - *Trigger:* At Step 1, the phone layout is shown (FR-026).
+  - *Steps:*
+    1. "Ngày trước" and "Ngày sau" move between the days of the week shown; "Tuần trước", "Tuần sau" and "Tuần này" change the week. Opening another week shows its Monday, or today when it is the current week.
+- **AF 4.7: Week Cannot Be Loaded or No Connection:**
+  - *Trigger:* At Step 2, the device is offline or the server fails.
+  - *Steps:*
+    1. As `UC-030-01` AF 1.18 and AF 1.21. "Tuần này" and the arrows come back with the calendar.
+- **AF 4.8: Invalid Week in the Address:**
+  - *Trigger:* At Step 2, the address holds a date that is not a Monday or cannot be read.
+  - *Steps:*
+    1. The server refuses it ("Tuần không hợp lệ.") and the planner opens the current week.
+
+#### 7. Postconditions
+- **Success:** The planner shows the chosen week; an empty week offers both ways to start. Moving between weeks changes no data.
+- **AI started:** `UC-031-01` runs for that week.
+
+#### 8. Special Requirements
+- **Time zone:** "Today" and "this week" are decided in Vietnam time (UTC+7) (FR-002; Assumptions).
+- **Retention:** Users can move between weeks without a limit; plans are kept as long as the account exists (Assumptions).
+- **Performance:** 95% of week views fully shown within 2 seconds (NFR-001).
+- **Testing:** Every acceptance scenario of US4 has at least one automated test (SC-008).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`MP06-EmptyWeek.dc.html`](../analysis-and-design/ui-ux/screens/MP06-EmptyWeek.dc.html) (Steps 2–4), [`MP01-Week.dc.html`](../analysis-and-design/ui-ux/screens/MP01-Week.dc.html) (Step 6, "Tuần này").
+- **Alternative Flows:** [`MP07-Offline.dc.html`](../analysis-and-design/ui-ux/screens/MP07-Offline.dc.html) (AF 4.7), [`AI04-LeaveDraft.dc.html`](../analysis-and-design/ui-ux/screens/AI04-LeaveDraft.dc.html) (AF 4.5).
+- **UI Asset Gap for SCRUM-58:** `MP06` shows "Chép từ tuần trước", which no spec defines, and its day strip shows the dates of the previous week (27–02) under the header "03/11 – 09/11". The empty past week (AF 4.3) and the disabled "Tạo bằng AI" (AF 4.2) are not drawn. See Section 17.2 (Gaps 030-L, 030-M) and `[OQ-030-01]`.
+
+---
+
+### UC-030-05: Send Week to Shopping List
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-030-05`
+- **Use Case Name:** Hand Every Available Dish of the Viewed Week, with Its Servings, to the Shopping List Import
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — a home cook about to go to the market.
+- **Included Use Case:** `UC-040-02` Import Ingredients from Recipe or Meal Plan with Scaling & Unit Conversion (owned by Lê Quốc Hưng, Section 1).
+
+#### 3. Description
+Turns the week being viewed into a shopping list in one step. The planner gathers every available dish of the week with its servings and hands them to the Shopping List's meal-plan import, which shows the ingredient preview and asks whether to merge into the current list or archive it and start a new one. Dishes marked "Không còn khả dụng" are left out and the user is told how many. The planner only hands the dishes over; merging, scaling and the list itself belong to spec 040.
+
+#### 4. Preconditions
+- `UC-030-01` Preconditions hold, and the week being viewed holds at least one available dish (FR-025).
+
+#### 5. Basic Flow
+1. **Choose Shopping:** The actor selects "Đi chợ" on the week.
+2. **Gather Dishes:** The system collects every available dish of the week being viewed with its recipe and servings (`GET /api/v1/meal-plans/{weekStart}/shopping-handoff`); a recipe planned several times is handed over once per dish (FR-024).
+3. **Hand Over:** The system starts `UC-040-02` from its meal-plan trigger ("Tạo danh sách mua sắm", `UC-040-02` AF 2.1) with these dishes (US5 AS1).
+4. **Preview and Choose:** `UC-040-02` shows the ingredient preview and the choice "merge into current list" or "archive and start a new list"; the actor completes it there.
+
+#### 6. Alternative Flows
+- **AF 5.1: Week Has No Available Dish:**
+  - *Trigger:* At Step 1, the week has no dish, or only dishes marked "Không còn khả dụng" (US5 AS2, FR-025).
+  - *Steps:*
+    1. "Đi chợ" is disabled with the hint "Cần ít nhất một món trong tuần để tạo danh sách đi chợ.".
+- **AF 5.2: Some Dishes Are No Longer Available:**
+  - *Trigger:* At Step 2, the week holds dishes marked "Không còn khả dụng" (US5 AS3, FR-025).
+  - *Steps:*
+    1. Those dishes are left out. Before handing over, the system shows "2 món không còn khả dụng sẽ không được đưa vào danh sách đi chợ." with "Các món còn lại của tuần vẫn được chuyển sang danh sách đi chợ." and the buttons "Hủy" and "Tiếp tục".
+    2. On "Tiếp tục" the flow continues at Step 3; on "Hủy" nothing is handed over.
+- **AF 5.3: Hand-Off Fails:**
+  - *Trigger:* At Step 2 or 3, the server cannot gather the dishes or the Shopping List does not answer.
+  - *Steps:*
+    1. The system shows "Không tạo được danh sách đi chợ. Vui lòng thử lại."; the plan and the current shopping list are unchanged.
+- **AF 5.4: No Connection or Session Expired:**
+  - *Trigger:* At Step 1 or 2.
+  - *Steps:*
+    1. As `UC-030-01` AF 1.17 and AF 1.19; nothing is handed over.
+- **AF 5.5: Cancel in the Shopping List:**
+  - *Trigger:* At Step 4, the actor leaves the preview without choosing.
+  - *Steps:*
+    1. The current shopping list is unchanged (`UC-040-02`); the plan is never changed by this use case.
+- **AF 5.6: Hand-Off After Confirming an AI Draft:**
+  - *Trigger:* The actor confirmed an AI draft (`UC-031-02` Step 5).
+  - *Steps:*
+    1. The same hand-off runs for the whole week, including dishes placed by hand (spec 031 Assumptions).
+
+#### 7. Postconditions
+- **Success:** `UC-040-02` has received exactly the available dishes of the viewed week with their servings, and the user was told how many unavailable dishes were skipped. The meal plan is unchanged.
+- **Failure or cancel:** Neither the plan nor the shopping list changes.
+
+#### 8. Special Requirements
+- **Contract:** The planner hands over recipe and servings per dish; how ingredients are merged and servings scaled is defined by spec 040 and agreed between the owners of 030 and 040 (Assumptions; `specs/030-meal-planner/contracts/integration.md`).
+- **Testing:** Every acceptance scenario of US5 has at least one automated test (SC-008).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`MP01-Week.dc.html`](../analysis-and-design/ui-ux/screens/MP01-Week.dc.html) (Step 1, "Đi chợ"); the preview belongs to the screens of `UC-040-02` (Section 1).
+- **UI Asset Gap for SCRUM-58:** The skipped-dishes confirmation (AF 5.2), the disabled "Đi chợ" with its hint (AF 5.1) and the hand-off failure (AF 5.3) are not drawn. In `MP01` "Đi chợ" is also the name of a tab in the bottom navigation, so the week action needs a distinct label or icon. See Section 17.2 (Gap 030-N).
+
+---
+
+## 15. USE-CASE SPECIFICATIONS FOR FEATURE 031: AI WEEKLY MEAL PLANNER
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+> [!NOTE]
+> **Sources:** `specs/031-ai-weekly-meal-planner/spec.md` (US1–US8, FR-001 – FR-038 including `FR-007a`, `FR-008a`, `FR-009a`, `FR-025a`, NFR-001 – NFR-006, SC-001 – SC-009, Clarifications of 08/10, 18/10 and 02/11/2026), `specs/031-ai-weekly-meal-planner/contracts/openapi.yaml` (base path `/api/v1`), `specs/031-ai-weekly-meal-planner/research.md` (R7 result check, R8 backup draft), [Project Proposal](project-proposal.md) §4 (flow 4.2, inputs 4.3, output 4.6, errors 4.7, limits 4.8), [Vision Document](vision-document.md) §5.3, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.3 and §4.10 (`SCRUM-49`) and the project constitution (Principle IV: the AI is called only by the backend). The primary actor is **Member**; the **LLM Service** is the secondary actor (language model and embedding API). In the model `UC-031-01` includes `UC-011-05` and `UC-031-03`, `UC-031-04` extends `UC-031-01`, `UC-031-05` extends `UC-030-01`, and `UC-031-06` is included by `UC-100-01` and extends `UC-100-02`. Not enough recipes (`US4`) and the fair-use limit (`US5`) are alternative flows of `UC-031-01`. `UC-031-03` and `UC-031-06` have no human actor and are written with a **Trigger** (Use-Case Model §7, issue 5). The AI planner screens (`AI01` – `AI09`) are not implemented yet, so Vietnamese labels follow those screens and the spec.
+>
+> **Terms:** a **slot** is one meal of one day (Clarification 02/11/2026); an **empty slot** is a meal with no dish. For each selected empty slot the AI plans a **full Vietnamese meal**: breakfast 1 dish; lunch and dinner a soup, a main dish and a vegetable dish (3 dishes); plain rice is assumed. **Hard rules** are allergies, excluded ingredients, diet type and maximum cooking time (FR-009); **preferences** are preferred cuisines, meal suitability, variety and ingredient reuse (FR-010). A **draft** is the unsaved result shown on the calendar; a **counted generation** is one that ends with an AI draft (FR-026).
+
+### UC-031-01: Generate AI Weekly Meal Plan
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-031-01`
+- **Use Case Name:** Generate a Draft for the Empty Meals of a Week from the Dietary Profile with the AI
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — a busy home cook who does not want to decide up to 21 meals by hand.
+- **Secondary Actor:** **LLM Service** — arranges the week from the candidates it is given (called only by WikiCook's server).
+- **Included Use Cases:** `UC-011-05` Apply Dietary Hard Rules, `UC-031-03` Validate AI Recipe Picks.
+- **Extending Use Case:** `UC-031-04` Generate Backup Draft without AI.
+
+#### 3. Description
+From the Meal Planner, the user asks the AI to fill the empty meals of the week being viewed. A constraint dialog is pre-filled from the dietary profile; changes made there apply to this generation only. The system first removes every recipe that breaks a hard rule, retrieves the best-fitting published recipes as candidates and only then asks the AI to arrange the week from those candidates. Every pick is checked before the user sees it. The result appears on the calendar as a draft labelled "AI"; dishes the user already placed are never touched. When there are not enough suitable recipes the user is told what to relax; each user has 5 counted generations per rolling hour; when the AI fails, times out or the platform's daily quota is used up, a backup draft is built without the AI.
+
+#### 4. Preconditions
+- The actor is signed in with the Member role or above and the planner shows the current or a future week (FR-001; `UC-030-04`).
+- The week has at least one empty slot on a day that is not in the past (FR-001, FR-003).
+- The device has an internet connection (spec 030 FR-027).
+
+#### 5. Basic Flow
+1. **Start:** The actor selects "Tạo bằng AI" on the planner (or in the empty state of `UC-030-04`).
+2. **Load Options:** The system reads, on the server, the actor's dietary profile through `UC-011-05`, the empty slots of the week, the days that are not in the past and the remaining generations of the actor in the last 60 minutes (`GET /api/v1/ai-planner/weeks/{weekStart}/options`).
+3. **Show Constraint Dialog:** The system opens "Tạo thực đơn bằng AI" with "AI chỉ chọn món có trong WikiCook. Kiểm tra lại các điều kiện cho lần tạo này." and, pre-filled from the profile (FR-002; US1 AS1):
+   - allergies and excluded ingredients (for example "Không đậu phộng", "Không ngò rí"), with the link "Sửa trong hồ sơ ăn uống";
+   - servings ("Số người ăn: 4 người", the household size), diet type ("Chỉ món ăn chay"), maximum cooking time per dish ("Tối đa 45 phút mỗi món") and preferred cuisines ("Ưu tiên món Việt, Nhật");
+   - the days and meals to fill: all remaining days of the week (from today in the current week, Monday → Sunday in a future week) and all three meals are selected, and only empty slots are counted ("Chỉ ô trống (14)") (FR-003; US1 AS2);
+   - the remaining count ("Còn 4/5 lượt tạo trong 60 phút.") (FR-025; US5 AS1);
+   - the disclaimer "Thực đơn do AI tạo dựa trên hồ sơ của bạn, hãy tự kiểm tra dị ứng và cân bằng dinh dưỡng" (FR-028; US1 AS7).
+4. **Adjust (Optional):** The actor unticks a day or a meal, or changes a constraint, for example the maximum time to 30 minutes. The change is used for this generation only; the saved profile is not changed (FR-004; US1 AS3).
+5. **Generate:** The actor selects "Tạo thực đơn".
+6. **Validate:** The system checks, in the browser and again on the server, that at least one day and one meal are selected, servings is 1–20 or "Theo công thức", and the maximum cooking time is empty or at least 10 minutes (FR-005).
+7. **Check Limits:** The server checks that the actor has a generation left in the rolling 60-minute window and that the platform's daily AI quota for the planner is not used up (FR-025, FR-025a).
+8. **Show Progress:** The planner shows "Đang chọn món cho tuần — Kiểm tra dị ứng và thời gian nấu cho từng món. Thường mất dưới 20 giây." with "Hủy" (FR-023; US1 AS4) (`POST /api/v1/ai-planner/weeks/{weekStart}/generations`).
+9. **Filter by Hard Rules:** The server removes every published recipe that breaks a hard rule: an ingredient linked to an allergen or excluded by the actor (`UC-011-05`), a diet type that does not fit (derived from the kinds of the catalogue ingredients, never from AI diet labels, FR-009a), or a total cooking time above the maximum (FR-008a, FR-009).
+10. **Retrieve Candidates:** From the remaining recipes, the server retrieves for each requested meal and role (breakfast dish; soup, main dish, vegetable dish) the candidates that best fit the meal and the preferences, using the prepared recipe data of `UC-031-06` (FR-008a, FR-010). It checks that there are at least as many suitable recipes as dishes to fill, so no recipe has to repeat (FR-012).
+11. **Ask the AI:** The server sends the LLM Service only the planning constraints, the slots to fill and the candidates (identifier, name, meal, role, cuisine, time, main ingredients) — never the actor's name, email or other account data (NFR-002, NFR-003). It asks for one candidate per role of each slot, no recipe used twice, meals matched to the right dish and ingredients reused where possible (FR-007a, FR-010, FR-011).
+12. **Check Picks:** The AI answers within 60 seconds; the system runs `UC-031-03` on the answer. Wrong picks are removed and their slots marked "Chọn món" (FR-013).
+13. **Count and Record:** The generation ended with an AI draft, so it counts as one of the actor's 5 per hour. The attempt is recorded with user, time, requested slot count, outcome "draft", number of removed picks and "counted" (FR-026, FR-032).
+14. **Show Draft:** The planner shows the draft on the calendar with the banner "Bản nháp AI · chưa lưu — Gợi ý do AI tạo, hãy kiểm tra trước khi lưu" and a summary such as "13 món mới · 1 ô cần bạn chọn · món bạn đã chọn giữ nguyên." Only the selected empty slots are filled; every AI dish is a published recipe with the "AI" label, the chosen servings and a short reason ("Món chay, dưới 45 phút"); dishes the actor placed are unchanged (FR-007, FR-015, FR-016; US1 AS5–AS6). The actor continues with `UC-031-02`.
+
+#### 6. Alternative Flows
+- **AF 1.1: Week Has No Empty Slot:**
+  - *Trigger:* At Step 1, every meal of the remaining days holds a dish (Edge Cases).
+  - *Steps:*
+    1. "Tạo bằng AI" is disabled with the hint that the week has no empty slot.
+- **AF 1.2: Past Week or Late on Sunday:**
+  - *Trigger:* At Step 1, the week has ended, or it is the current week and no meal is left today or later (Edge Cases).
+  - *Steps:*
+    1. For a past week "Tạo bằng AI" is not offered (`UC-030-04` AF 4.3).
+    2. In the current week, past days cannot be selected; when no selectable meal remains, the button is disabled.
+- **AF 1.3: Profile Has No Dietary Information:**
+  - *Trigger:* At Step 3, the profile has no allergies, exclusions, diet type, time or cuisines (US1 AS8, FR-006).
+  - *Steps:*
+    1. The dialog still allows generating and shows a notice suggesting completing the profile for better results, with a link to the profile page (`UC-011-01`).
+- **AF 1.4: Profile Has No Household Size:**
+  - *Trigger:* At Step 3, the household size is missing (FR-002; Clarification 18/10/2026).
+  - *Steps:*
+    1. Servings shows "Theo công thức": each dish uses its recipe's own servings, as in `UC-030-01` AF 1.6.
+    2. The actor may instead enter one number from 1 to 20 to apply to every dish.
+- **AF 1.5: Invalid Constraints:**
+  - *Trigger:* At Step 4 or 6, no day or no meal is ticked, servings is outside 1–20, or the maximum time is below 10 minutes (FR-005; Edge Cases).
+  - *Steps:*
+    1. "Tạo thực đơn" stays disabled while no day or no meal is selected.
+    2. Other invalid values are refused with a message next to the field; nothing is sent to the server and no generation is used.
+- **AF 1.6: Hourly Limit Reached:**
+  - *Trigger:* At Step 2 or 7, the actor has 5 counted generations in the last 60 minutes (US5 AS2, FR-025).
+  - *Steps:*
+    1. The dialog shows "Bạn đã dùng hết 5 lượt tạo — Lượt tiếp theo mở lại lúc 15:20. Trong lúc chờ, bạn vẫn tự thêm món vào thực đơn được." with "Về thực đơn", and the note "“Tạo lại” cũng tính là một lượt. Bản nháp dự phòng khi AI lỗi không tính.".
+    2. "Tạo thực đơn" is disabled; manual planning and slot suggestions (`UC-031-05`) still work (FR-036).
+- **AF 1.7: Platform Daily Quota Reached:**
+  - *Trigger:* At Step 7, the planner's share of the platform-wide daily AI quota is used up (FR-025a; the quota is shared with nutrition estimation, spec 090 FR-020).
+  - *Steps:*
+    1. The system does not call the AI and goes straight to `UC-031-04`, which shows the notice "AI đã hết lượt hôm nay". The generation is not counted.
+- **AF 1.8: Not Enough Suitable Recipes:**
+  - *Trigger:* At Step 10, fewer suitable published recipes remain after the hard rules than dishes to fill — including when there are more than zero (US4 AS1, FR-012; Edge Cases).
+  - *Steps:*
+    1. No draft is produced and no recipe is repeated to fill the gap. The system shows, for example, "Chỉ tìm được 6 món phù hợp — Với dị ứng đậu phộng, chỉ món ăn chay và tối đa 45 phút, WikiCook chưa đủ món cho 14 ô. AI không lặp món để lấp chỗ trống.".
+    2. It suggests concrete changes: increase the maximum cooking time, remove preferred cuisines, or select fewer days or meals, with "Nới điều kiện", which returns to Step 4 with the last constraints (US4 AS2, FR-024).
+    3. The attempt is recorded with outcome "not enough recipes" and is not counted (US4 AS3, FR-026).
+- **AF 1.9: No Recipe for One Role:**
+  - *Trigger:* At Step 10, enough recipes exist overall, but none is left for one role of a meal, for example no vegetable dish suited to dinner (FR-007a).
+  - *Steps:*
+    1. That role is left out; the meal is filled with the other roles and is marked "Chọn món" in the draft, as in `UC-031-03`.
+- **AF 1.10: Actor Cancels the Wait:**
+  - *Trigger:* At Step 8, the actor selects "Hủy" before the draft appears (US1 AS4).
+  - *Steps:*
+    1. The system stops the request (`DELETE /api/v1/ai-planner/generations/{requestId}`); the week is unchanged.
+    2. The attempt is recorded as "cancelled" and is not counted (US5 AS4).
+- **AF 1.11: AI Fails or Is Unreachable:**
+  - *Trigger:* At Step 11, the LLM Service returns an error or cannot be reached (US6 AS1, FR-027).
+  - *Steps:*
+    1. The system continues with `UC-031-04` within 2 seconds. The generation is not counted.
+- **AF 1.12: AI Takes Longer than 60 Seconds:**
+  - *Trigger:* At Step 12, no AI result is ready 60 seconds after Step 5 (US6 AS2, FR-023).
+  - *Steps:*
+    1. The AI attempt ends and the system continues with `UC-031-04`. The generation is recorded as "timeout" and is not counted.
+- **AF 1.13: AI Result Unusable:**
+  - *Trigger:* At Step 12, the answer cannot be read or has the wrong slots (US3 AS5, FR-014).
+  - *Steps:*
+    1. `UC-031-03` retries once; if the second answer is also unusable, the system continues with `UC-031-04`.
+- **AF 1.14: Connection Lost During Generation:**
+  - *Trigger:* At Step 8, the device loses its connection (Edge Cases).
+  - *Steps:*
+    1. The planner shows the offline message of `UC-030-01` AF 1.18. The draft is lost; if no draft appeared, the generation is not counted.
+- **AF 1.15: Session Expires:**
+  - *Trigger:* At Step 5 – 8, the session has expired (Edge Cases).
+  - *Steps:*
+    1. Nothing is generated; the actor signs in again (`UC-010-02`) and returns to the same week.
+- **AF 1.16: Dietary Profile Cannot Be Read:**
+  - *Status:* Proposed — follows the decision on `[OQ-011-01]` (Section 10.3); spec 031 is to be updated with it, see `[OQ-030-05]`.
+  - *Trigger:* At Step 2 or 9, the profile service does not answer.
+  - *Steps:*
+    1. The system does not generate, because the hard rules cannot be checked. It shows that the dietary profile could not be read and suggests trying again later or planning by hand. Nothing is counted.
+- **AF 1.17: Allergen in a Dish the Actor Placed:**
+  - *Trigger:* At Step 14, a dish the actor placed by hand breaks a hard rule (Edge Cases).
+  - *Steps:*
+    1. It is kept as is: the AI fills empty slots only and does not check or change the actor's own dishes.
+- **AF 1.18: Generation in Two Tabs:**
+  - *Trigger:* The actor generates in two tabs (Edge Cases).
+  - *Steps:*
+    1. Each tab has its own draft; both count separately if both end with an AI draft. Confirming in one tab does not change the other until it reloads (`UC-031-02` AF 2.8).
+
+#### 7. Postconditions
+- **Success:** A draft exists in the current page only — not on the server and not on other devices; every AI dish in it is published and breaks no hard rule; the week's saved plan is unchanged until `UC-031-02` confirms; one counted generation is recorded.
+- **Not enough recipes, cancel, failure:** No AI draft; the week is unchanged; the attempt is recorded and not counted. On failure the backup draft of `UC-031-04` may be shown instead.
+
+#### 8. Special Requirements
+- **Safety:** 0 drafts contain a recipe that breaks a hard rule, whatever the AI returns (NFR-004; SC-003).
+- **Performance:** 90% of successful generations show a draft within 30 seconds; no generation waits longer than 60 seconds (NFR-001; SC-002). An empty week to a confirmed 21-dish plan takes under 3 minutes (SC-001).
+- **Security and privacy:** Only the server calls the AI; the AI key never reaches the browser; only planning constraints and recipe data are sent (NFR-002, NFR-003; constitution Principle IV). Recipe names are user content and are treated as untrusted text in the request (research R6).
+- **Quality:** When enough recipes exist, at least 90% of requested slots are filled on average across 20 test generations; 0 drafts repeat a recipe among AI slots (SC-004, SC-005).
+- **Fair use:** The 6th counted generation within an hour is refused in 100% of tests; failed generations never reduce the remaining count (SC-007).
+- **Availability:** An AI outage does not affect any other WikiCook feature (NFR-006).
+- **Usability:** The dialog and the progress state are usable from 360 px, in Vietnamese, without technical text (NFR-005).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`AI01-Constraints.dc.html`](../analysis-and-design/ui-ux/screens/AI01-Constraints.dc.html) (Steps 3–5), [`AI02-Generating.dc.html`](../analysis-and-design/ui-ux/screens/AI02-Generating.dc.html) (Step 8), [`AI03-Draft.dc.html`](../analysis-and-design/ui-ux/screens/AI03-Draft.dc.html) (Step 14).
+- **Alternative Flows:** [`AI06-NotEnough.dc.html`](../analysis-and-design/ui-ux/screens/AI06-NotEnough.dc.html) (AF 1.8), [`AI07-LimitReached.dc.html`](../analysis-and-design/ui-ux/screens/AI07-LimitReached.dc.html) (AF 1.6), [`AI08-Fallback.dc.html`](../analysis-and-design/ui-ux/screens/AI08-Fallback.dc.html) (AF 1.7, AF 1.11 – AF 1.13), [`MP07-Offline.dc.html`](../analysis-and-design/ui-ux/screens/MP07-Offline.dc.html) (AF 1.14).
+- **UI Asset Gap for SCRUM-58:** `AI06` offers "Dùng 6 món, phần còn lại tự chọn", but FR-012 produces no draft (AF 1.8, `[OQ-031-02]`); `AI01` shows allergies and exclusions under "Luôn áp dụng", not editable for one generation as FR-002 and FR-004 allow (`[OQ-031-01]`); the empty-profile notice (AF 1.3), "Theo công thức" (AF 1.4), the disclaimer inside `AI01` (Step 3) and the profile-read failure (AF 1.16) are not drawn. See Section 17.2 (Gaps 031-A to 031-D).
+
+---
+
+### UC-031-02: Review, Adjust & Confirm AI Draft
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-031-02`
+- **Use Case Name:** Review and Edit the Draft with the Planner Tools, Then Save It to the Week or Discard or Regenerate It
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — the home cook who stays in control of what the family eats.
+- **Supporting Use Cases:** `UC-030-01` (picker for "Chọn món"), `UC-030-03` (move, reorder, replace, remove inside the draft), `UC-030-05` (shopping hand-off after saving), `UC-031-01` (regenerate).
+
+#### 3. Description
+The draft produced by `UC-031-01` or `UC-031-04` stays on the calendar, unsaved, until the user decides. The user can fill the slots marked "Chọn món", and move, reorder, replace or remove dishes with the same tools and rules as the manual planner; these changes stay in the draft. "Lưu thực đơn" saves the draft dishes into the week with their "AI" or "Auto" label and opens the Shopping List import for the week. "Bỏ nháp" returns the week exactly to how it was; "Tạo lại" reopens the constraint dialog with the last constraints. Leaving the page with an unconfirmed draft asks first.
+
+#### 4. Preconditions
+- A draft is shown on the planner for the week (`UC-031-01` Step 14 or `UC-031-04` Step 5). The draft exists only in this page.
+
+#### 5. Basic Flow
+1. **Review Draft:** The actor reads the draft: each AI dish shows its photo, name, time, the "AI" label and a short reason; dishes the actor had placed show "bạn đã chọn"; slots needing a choice show "Chọn món" (FR-015, FR-016). The disclaimer of FR-028 is visible (US1 AS7).
+2. **Adjust:** The actor moves, reorders, replaces or removes dishes with the dish menu, exactly as in `UC-030-03`, including the 4-dish limit per meal. The changes are kept in the draft and nothing is saved yet (FR-017; US2 AS1).
+3. **Choose a Dish for a Marked Slot:** The actor selects "Chọn món" on a marked slot; the recipe picker of `UC-030-01` opens for it, with the suggestions of `UC-031-05`, and the chosen recipe joins the draft (FR-015; US3 AS3).
+4. **Save:** The actor selects "Lưu thực đơn" (Confirm).
+5. **Store Draft:** The server checks each draft dish again: its slot must still have no dish saved from elsewhere and its recipe must still be `PUBLISHED`. It saves the accepted dishes into the week's plan in one step, with their servings and the source "AI planner" (shown as "AI") or "auto backup" (shown as "Auto") (`POST /api/v1/ai-planner/weeks/{weekStart}/confirm`) (FR-018; spec 030 FR-030).
+6. **Show Result:** The draft banner disappears, the calendar shows the saved week with the labels kept, and the system shows "Đã lưu 13 món vào thực đơn tuần" (US2 AS2).
+7. **Hand to Shopping List:** The system opens the Shopping List's meal-plan import for the whole week (`UC-030-05` AF 5.6 → `UC-040-02`), with the ingredient preview and the choice "merge into current list" or "archive and start a new list" (FR-018).
+
+#### 6. Alternative Flows
+- **AF 2.1: Discard the Draft:**
+  - *Trigger:* At Step 1–4, the actor selects "Bỏ nháp" (US2 AS3, FR-020).
+  - *Steps:*
+    1. The draft disappears and the week returns exactly to how it was before generation. The generation stays counted if it was an AI draft.
+- **AF 2.2: Regenerate:**
+  - *Trigger:* At Step 1–4, the actor selects "Tạo lại" (US2 AS5, FR-021).
+  - *Steps:*
+    1. The constraint dialog of `UC-031-01` opens with the last used constraints and the remaining count.
+    2. On "Tạo thực đơn" `UC-031-01` runs from Step 6; the new result replaces the current draft, including the actor's edits to it. Dishes the actor placed before generation stay unchanged.
+    3. A regeneration that ends with an AI draft counts as one generation (US5 AS3).
+- **AF 2.3: Slot Filled on Another Device:**
+  - *Trigger:* At Step 5, a slot of the draft received a dish on another device or tab after the draft was made (US2 AS6, FR-019).
+  - *Steps:*
+    1. That slot keeps the other device's dish; the AI dishes for it are not saved.
+    2. Step 6 says how many dishes were skipped, for example "Đã lưu 11 món. 2 món AI không được lưu vì bữa đã có món.".
+- **AF 2.4: Recipe Archived Between Draft and Save:**
+  - *Trigger:* At Step 5, a draft recipe is no longer `PUBLISHED` (Edge Cases, FR-019).
+  - *Steps:*
+    1. That dish is not saved; its slot is marked "Chọn món" and the actor is told how many dishes were skipped.
+- **AF 2.5: Save with Slots Still Marked "Chọn món":**
+  - *Trigger:* At Step 4, some slots are still marked.
+  - *Steps:*
+    1. The other dishes are saved; marked slots become normal empty meals with "Thêm món" (spec 030 Edge Cases; `UC-030-01` AF 1.25).
+- **AF 2.6: Leave with an Unconfirmed Draft:**
+  - *Trigger:* At Step 1–4, the actor tries to leave the planner, change week, reload or close the page (US2 AS4, FR-022).
+  - *Steps:*
+    1. The system asks "Bỏ bản nháp? — 13 món AI gợi ý chưa được lưu vào thực đơn. Nếu rời trang, bản nháp sẽ mất." with "Ở lại" and "Bỏ nháp".
+    2. On "Ở lại" the draft stays; on "Bỏ nháp" the draft is lost and the navigation continues. When the browser closes or reloads the page, its own leave-page prompt is used.
+- **AF 2.7: Save Fails:**
+  - *Status:* Proposed — spec 031 states the skip rules of FR-019 only; the rule follows spec 030 FR-019.
+  - *Trigger:* At Step 5, the server cannot save the draft.
+  - *Steps:*
+    1. Nothing is saved, the draft stays on the calendar unchanged and the system shows "Thay đổi chưa được lưu. Vui lòng thử lại.".
+- **AF 2.8: Draft Open in Two Tabs:**
+  - *Trigger:* The actor has a draft in two tabs (Edge Cases).
+  - *Steps:*
+    1. Each tab keeps its own draft. When the actor saves in the second tab, slots filled by the first are skipped as in AF 2.3.
+- **AF 2.9: Connection Lost While the Draft Is Open:**
+  - *Trigger:* At Step 1–5, the connection drops (Edge Cases).
+  - *Steps:*
+    1. The planner shows the offline message of `UC-030-01` AF 1.19; the unconfirmed draft is lost. When the connection returns the saved week is reloaded without the draft.
+- **AF 2.10: Session Expires While the Draft Is Open:**
+  - *Trigger:* At Step 5, the session has expired (Edge Cases).
+  - *Steps:*
+    1. The draft is lost; the actor signs in again and returns to the same week.
+- **AF 2.11: Edit Rules Refuse an Action:**
+  - *Trigger:* At Step 2, the actor moves a dish into a meal holding 4 dishes, or enters servings outside 1–20.
+  - *Steps:*
+    1. The draft refuses it with the messages of `UC-030-03` AF 3.2 and `UC-030-01` AF 1.8; the draft is unchanged.
+- **AF 2.12: Shopping Import Not Completed:**
+  - *Trigger:* At Step 7, the actor leaves the import preview or it fails (`UC-030-05` AF 5.3, AF 5.5).
+  - *Steps:*
+    1. The week stays saved; the actor can start the import later with "Đi chợ" (`UC-030-05`).
+
+#### 7. Postconditions
+- **Saved:** The week's plan holds the accepted draft dishes with "AI" or "Auto" labels and their servings, next to the actor's own dishes; no meal holds more than 4 dishes; skipped dishes were reported; the Shopping List import was opened for the week.
+- **Discarded, left or lost:** The week's saved plan is exactly as before generation.
+
+#### 8. Special Requirements
+- **Control:** Nothing from the AI reaches the saved plan without "Lưu thực đơn" (proposal §4.2 steps 8–10).
+- **Usability:** At least 80% of test participants confirm a generated plan after changing no more than 5 dishes (SC-006). Usable from 360 px (NFR-005).
+- **Integrity:** Saving either stores all accepted dishes or none; the rules of spec 030 NFR-005 apply.
+- **Testing:** Every acceptance scenario of US2 has at least one automated test (SC-009).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`AI03-Draft.dc.html`](../analysis-and-design/ui-ux/screens/AI03-Draft.dc.html) (Steps 1–4, "Bỏ nháp", "Tạo lại", "Lưu thực đơn"), [`AI05-Saved.dc.html`](../analysis-and-design/ui-ux/screens/AI05-Saved.dc.html) (Steps 6–7, "Đã lưu 13 món vào thực đơn tuần" with "Xem danh sách đi chợ").
+- **Alternative Flows:** [`AI04-LeaveDraft.dc.html`](../analysis-and-design/ui-ux/screens/AI04-LeaveDraft.dc.html) (AF 2.6), [`AI01-Constraints.dc.html`](../analysis-and-design/ui-ux/screens/AI01-Constraints.dc.html) (AF 2.2), [`MP02-SlotMenu.dc.html`](../analysis-and-design/ui-ux/screens/MP02-SlotMenu.dc.html) / [`MP03-MoveTo.dc.html`](../analysis-and-design/ui-ux/screens/MP03-MoveTo.dc.html) (Step 2).
+- **UI Asset Gap for SCRUM-58:** `AI05` shows a link "Xem danh sách đi chợ" while FR-018 opens the import directly (`[OQ-031-03]`); the skipped-dishes message (AF 2.3, AF 2.4) is not drawn; `AI03` shows "Gợi ý khác" on a dish, which no spec defines. See Section 17.2 (Gaps 031-E, 031-F).
+
+---
+
+### UC-031-03: Validate AI Recipe Picks *(included use case)*
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-031-03`
+- **Use Case Name:** Check Every AI Pick against the Catalogue and the Hard Rules before the Draft Is Shown
+
+#### 2. Actor(s)
+- **Trigger:** The answer of the LLM Service in `UC-031-01` Step 12 (no human primary actor; Use-Case Model §7, issue 5).
+- **Including Use Case:** `UC-031-01`. The **Member** is the person whose constraints are checked.
+
+#### 3. Description
+The AI can be confidently wrong: it can name a recipe that does not exist, one that was just archived, one that contains the user's allergen, or the same recipe twice. This use case makes sure none of these ever reaches the user. The answer is read as a list of (day, meal, recipe) picks; an unreadable answer or one with the wrong slots is retried once. Each pick is checked again against the database and the hard rules; a wrong pick is removed and its slot is marked "Chọn món" for the user to choose by hand. The check holds whatever the AI returns, including text injected through recipe names.
+
+#### 4. Preconditions
+- `UC-031-01` reached Step 12 with the candidates, the requested slots and the constraints of this generation.
+
+#### 5. Basic Flow
+1. **Read the Answer:** The system reads the answer in the expected structure — one entry per requested slot and role with a recipe identifier, for example `{"slots":[{"day":"MONDAY","meal":"BREAKFAST","recipeId":123}]}` (research R6). Any text describing a new recipe is ignored; only identifiers are used (FR-008).
+2. **Check the Slots:** The set of (day, meal) in the answer equals the set of requested empty slots (FR-014).
+3. **Check Each Pick:** For each pick, the system checks that the recipe is one of the candidates given to the AI, still exists, is `PUBLISHED` at this moment, and breaks no hard rule of this generation — allergen, excluded ingredient, diet type derived from ingredient kinds, maximum cooking time — read again from the database (FR-009, FR-009a, FR-013).
+4. **Check Repeats:** No recipe is used in more than one AI-filled slot; the first use in day → meal order is kept (FR-011; research R7).
+5. **Mark Removed Picks:** Every removed pick leaves its slot (or its role in the meal) empty and marked "Chọn món" (US3 AS1–AS2).
+6. **Count:** The system counts the removed picks for the record (FR-032) and for the draft summary "N ô cần bạn chọn" (FR-015; US3 AS4).
+7. **Return:** The checked draft returns to `UC-031-01` Step 13.
+
+#### 6. Alternative Flows
+- **AF 3.1: Answer Cannot Be Read:**
+  - *Trigger:* At Step 1, the answer is not in the expected structure (US3 AS5, FR-014).
+  - *Steps:*
+    1. The system asks the AI once more, saying what was wrong ("JSON không hợp lệ"), within the 60-second limit of the generation.
+    2. If the second answer is also unusable, or too little time is left, the system continues with `UC-031-04`.
+- **AF 3.2: Wrong Number of Slots:**
+  - *Trigger:* At Step 2, the answer has fewer or more slots than requested, or slots that were not requested (US3 AS5, FR-014).
+  - *Steps:*
+    1. As AF 3.1, with the message naming the missing or extra slots ("Thiếu ô X, Y").
+- **AF 3.3: Recipe Does Not Exist or Was Not a Candidate:**
+  - *Trigger:* At Step 3, the identifier is unknown or was not given to the AI (US3 AS1).
+  - *Steps:*
+    1. The pick is removed and the slot marked "Chọn món" (Step 5).
+- **AF 3.4: Recipe No Longer Published:**
+  - *Trigger:* At Step 3, the recipe was archived or removed after the candidates were retrieved (US3 AS1, FR-030).
+  - *Steps:*
+    1. The pick is removed and the slot marked "Chọn món".
+- **AF 3.5: Recipe Breaks a Hard Rule:**
+  - *Trigger:* At Step 3, the recipe contains an allergen or excluded ingredient of the user, does not fit the diet type, or exceeds the maximum cooking time, for example because the recipe was edited after retrieval (US3 AS2, FR-009).
+  - *Steps:*
+    1. The pick is removed and the slot marked "Chọn món". It never appears anywhere in the draft (SC-003).
+- **AF 3.6: Same Recipe Twice:**
+  - *Trigger:* At Step 4, the AI used one recipe in several slots (FR-011).
+  - *Steps:*
+    1. The first use in day → meal order is kept; later uses are removed and marked "Chọn món" (research R7).
+- **AF 3.7: Every Pick Removed:**
+  - *Trigger:* At Step 5, no pick is left.
+  - *Steps:*
+    1. The draft shows every requested slot marked "Chọn món" and says how many need a manual choice. See `[OQ-031-04]` about using the backup draft instead.
+- **AF 3.8: Answer Tries to Change Other Dishes:**
+  - *Trigger:* At Step 2, the answer puts a recipe into a meal that already holds a dish.
+  - *Steps:*
+    1. This is a slot that was not requested and is handled as AF 3.2; the actor's own dishes are never changed (FR-007).
+
+#### 7. Postconditions
+- **Always:** Every dish of the returned draft exists, is published and breaks no hard rule of the generation; no recipe repeats among AI slots; every removed pick is a "Chọn món" slot and is counted.
+- **Unusable twice:** No AI draft is returned; `UC-031-04` runs.
+
+#### 8. Special Requirements
+- **Safety:** 0 drafts contain a non-existent, unpublished or rule-breaking recipe; 100% of injected bad picks are removed (NFR-004; SC-003, SC-005).
+- **Untrusted output:** The AI answer is data, never markup or instructions; only recipe identifiers from it are used (research R6, R7).
+- **Testing:** A fake LLM returns unknown, archived, allergen-containing, repeated and malformed picks in automated tests (SC-009; constitution Principle II).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** No own screen. The result is shown in [`AI03-Draft.dc.html`](../analysis-and-design/ui-ux/screens/AI03-Draft.dc.html) ("1 ô cần bạn chọn", "Không đủ món phù hợp cho bữa này", "Chọn món").
+- **UI Asset Gap for SCRUM-58:** A draft where every slot is marked (AF 3.7). See Section 17.2 (Gap 031-G).
+
+---
+
+### UC-031-04: Generate Backup Draft without AI
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-031-04`
+- **Use Case Name:** Build a Rule-Based Draft from the Filtered Candidates When the AI Cannot Help
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — the home cook whose week must not be blocked by an AI outage.
+- **Extended Use Case:** `UC-031-01` (extension point: the AI fails, times out, returns an unusable result twice, or the platform's daily quota is reached).
+
+#### 3. Description
+The AI provider is an outside service that can be slow or down, and the live demo must not depend on it. When `UC-031-01` cannot get a usable AI answer, the system builds a backup draft from the same hard-rule-filtered candidates using fixed rules — meal suitability first, no repeated recipe, then preferred cuisines and ingredient reuse — within 2 seconds. The draft carries the notice "Tạo tự động, không dùng AI", its dishes carry an "Auto" label, and it does not use up a generation. It can be edited, saved, regenerated or discarded like any draft.
+
+#### 4. Preconditions
+- `UC-031-01` reached Step 7 (daily quota) or Step 11–12 (AI failure, timeout, unusable answer twice) with the constraints and slots of this generation.
+
+#### 5. Basic Flow
+1. **Take Candidates:** The system uses the candidates of `UC-031-01` Step 9–10, so every one of them already passes the hard rules (FR-008a).
+2. **Fill by Rules:** Going through the slots in day → meal order, for each role the system picks the unused candidate with the best score: suited to the meal and role, preferred cuisine, ingredients shared with dishes already chosen, and a different category from the previous day; ties follow the retrieval rank (FR-027; research R8). No recipe is used twice.
+3. **Check Picks:** Each pick is read again as in `UC-031-03` Step 3, so a recipe archived in the meantime is not used.
+4. **Record:** The attempt is recorded with the outcome "backup" and the reason (failure, timeout, unusable answer, daily quota) and is not counted (FR-026, FR-032; US6 AS4).
+5. **Show Backup Draft:** Within 2 seconds of the failure, the planner shows the draft with "AI tạm thời không phản hồi — Đây là bản nháp chọn theo quy tắc, không dùng AI. Lượt này không bị trừ." and the notice "Tạo tự động, không dùng AI"; each dish carries "Auto" and the reason "Chọn theo hồ sơ, không dùng AI" (US6 AS1–AS3). The actor continues with `UC-031-02`.
+
+#### 6. Alternative Flows
+- **AF 4.1: Daily Quota Reached:**
+  - *Trigger:* The extension started from `UC-031-01` AF 1.7 (FR-025a).
+  - *Steps:*
+    1. The draft shows the notice "AI đã hết lượt hôm nay" instead of "AI tạm thời không phản hồi"; everything else is the same.
+- **AF 4.2: Rules Cannot Fill Every Slot:**
+  - *Trigger:* At Step 2, no unused candidate is left for a role (US6 AS5).
+  - *Steps:*
+    1. That slot or role is marked "Chọn món" as in `UC-031-03`, and the draft says how many slots need a manual choice.
+- **AF 4.3: Backup Draft Cannot Be Built:**
+  - *Trigger:* At Step 1–3, the recipe data cannot be reached (US6 AS6, FR-027).
+  - *Steps:*
+    1. No draft is shown. The system shows a message suggesting trying again later or planning by hand; the week is unchanged and every manual planner action still works (spec 030 FR-031).
+- **AF 4.4: Try the AI Again:**
+  - *Trigger:* At Step 5, the actor selects "Thử lại AI".
+  - *Steps:*
+    1. This is "Tạo lại" (`UC-031-02` AF 2.2): the dialog opens with the same constraints; a new AI draft would count as one generation.
+
+#### 7. Postconditions
+- **Success:** A backup draft labelled "Auto" exists in the page, with 0 hard-rule violations and 0 repeated recipes; the remaining generation count is unchanged.
+- **Failure:** No draft; the week and the count are unchanged; the manual planner works.
+
+#### 8. Special Requirements
+- **Performance:** With the AI switched off, 100% of generations with enough suitable recipes show a backup draft within 2 seconds of the failure, with 0 hard-rule violations and 0 repeated recipes (SC-002a; matches the fallback criterion in `docs/management/project-plan.md`).
+- **Determinism:** The same constraints and catalogue give the same backup draft, so tests and the demo are repeatable (research R8).
+- **Testing:** Every acceptance scenario of US6 has at least one automated test with the AI switched off (SC-009).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`AI08-Fallback.dc.html`](../analysis-and-design/ui-ux/screens/AI08-Fallback.dc.html) (Step 5, "AI tạm thời không phản hồi", "Chọn theo hồ sơ, không dùng AI", "Thử lại AI").
+- **UI Asset Gap for SCRUM-58:** `AI08` does not show the "Auto" label on dishes or the notice "Tạo tự động, không dùng AI" word for word; the daily-quota variant (AF 4.1) and the "cannot build" message (AF 4.3) are not drawn. See Section 17.2 (Gaps 031-H, 031-I).
+
+---
+
+### UC-031-05: Suggest Recipes for One Slot
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-031-05`
+- **Use Case Name:** Show up to Five "Suggested for You" Recipes for the Meal Being Filled in the Recipe Picker, without Calling the Language Model
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — a home cook filling the week by hand.
+- **Extended Use Case:** `UC-030-01` Fill Meal Plan Slots (extension point: the recipe picker opens for a meal).
+
+#### 3. Description
+Most users fill or fix a few meals rather than generating a whole week. When the planner's recipe picker opens for a meal, the "Gợi ý" list shows up to 5 published recipes suited to that meal and ranked for the user's profile, none breaking a hard rule and none already planned that week. Each suggestion has a short reason. Suggestions use only the retrieval step over the prepared recipe data — never the language model — so they are fast, free and do not use up a generation; if they are not ready within 3 seconds the list is simply hidden.
+
+#### 4. Preconditions
+- `UC-030-01` reached Step 5, opened from an empty meal, from "Chọn món" of a draft, or from "Đổi món" (US7 AS1).
+
+#### 5. Basic Flow
+1. **Request Suggestions:** When the picker opens, the system asks the server for suggestions for this week, day and meal (`GET /api/v1/ai-planner/weeks/{weekStart}/suggestions`).
+2. **Filter:** The server removes recipes that break the user's hard rules (`UC-011-05`; FR-034) and recipes already planned in the same week, including dishes of an open draft (FR-034; Edge Cases).
+3. **Retrieve and Rank:** From the prepared recipe data (`UC-031-06`) the server retrieves recipes suited to the meal and ranks them by meal suitability, then preferred cuisines, then variety against the week's other dishes (FR-033, FR-034). It does not call the language model.
+4. **Show List:** Within 3 seconds the picker shows "Gợi ý" above the results with up to 5 recipes, each with the "AI" label and a short reason such as "Món sáng · Việt Nam · 20 phút" or "Khác vị với bữa trưa, dưới 45 phút", and the AI disclaimer in short form (FR-035; US7 AS3; SC-008).
+5. **Choose:** The actor selects "Chọn" on a suggestion.
+6. **Add:** The dish is added as any picker choice (`UC-030-01` Step 9 – 11) and carries the "AI" label (FR-038; US7 AS4). The request does not count toward the 5 generations per hour (FR-036; US7 AS5).
+
+#### 6. Alternative Flows
+- **AF 5.1: Fewer than 5 or No Suitable Recipe:**
+  - *Trigger:* At Step 3, fewer than 5 recipes are left (US7 AS6).
+  - *Steps:*
+    1. Only those are shown; when none is left, the list says there is no suggestion and the ordered results stay usable.
+- **AF 5.2: Retrieval Slow or Unavailable:**
+  - *Trigger:* At Step 1–4, the suggestions are not ready within 3 seconds or the retrieval step is down (US7 AS7, FR-037).
+  - *Steps:*
+    1. The "Gợi ý" list is hidden without an error; the picker works with the ordered results of spec 030 FR-007a.
+- **AF 5.3: Only the Language Model Is Down:**
+  - *Trigger:* The LLM Service fails for generation but retrieval works (US7 AS7).
+  - *Steps:*
+    1. Suggestions still show, because they never call the language model.
+- **AF 5.4: Hourly Limit or Daily Quota Reached:**
+  - *Trigger:* The actor has no generation left, or the platform's daily AI quota is used up (Edge Cases).
+  - *Steps:*
+    1. Suggestions still work and are not counted (FR-036).
+- **AF 5.5: Picker Opened from a Draft:**
+  - *Trigger:* At Step 1, the picker was opened from a slot of an open draft (Edge Cases).
+  - *Steps:*
+    1. Dishes of the draft count as already planned; the chosen recipe joins the draft, not the saved plan (`UC-031-02` Step 3).
+- **AF 5.6: Suggested Recipe Archived Meanwhile:**
+  - *Trigger:* At Step 6, the recipe is no longer `PUBLISHED`.
+  - *Steps:*
+    1. As `UC-030-01` AF 1.11: nothing is added, the message is shown and the suggestions are requested again.
+- **AF 5.7: Dietary Profile Cannot Be Read:**
+  - *Status:* Proposed — follows `[OQ-011-01]`.
+  - *Trigger:* At Step 2, the profile service does not answer.
+  - *Steps:*
+    1. No suggestion is shown, because the hard rules cannot be checked; the ordered results work as in `UC-030-01` AF 1.24.
+- **AF 5.8: Profile Has No Preferences:**
+  - *Trigger:* At Step 3, the profile has no cuisines (and no hard rules).
+  - *Steps:*
+    1. Ranking uses meal suitability and variety only; the reason shows the meal and time.
+
+#### 7. Postconditions
+- **Success:** The picker showed up to 5 suggestions that fit the meal, break no hard rule and are not planned that week; a chosen suggestion is a planned (or draft) dish with the "AI" label; no generation was used and no language-model call was made.
+- **Hidden:** The picker works with ordered results only.
+
+#### 8. Special Requirements
+- **Performance:** 90% of picker openings show "Gợi ý" within 3 seconds (SC-008).
+- **Safety:** In 100% of tests every suggestion for a breakfast meal is a breakfast recipe that breaks no hard rule (same for lunch and dinner) (SC-008).
+- **Cost:** No language-model call and no generation counted, however often the picker is opened (FR-033, FR-036; Clarification 18/10/2026).
+- **Testing:** Every acceptance scenario of US7 has at least one automated test (SC-009).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`AI09-SlotSuggest.dc.html`](../analysis-and-design/ui-ux/screens/AI09-SlotSuggest.dc.html) (Steps 4–5, "Gợi ý cho bữa tối — Tối Thứ Tư · hợp với Canh chua buổi trưa"), [`MP04-Picker.dc.html`](../analysis-and-design/ui-ux/screens/MP04-Picker.dc.html) (tab "Gợi ý").
+- **UI Asset Gap for SCRUM-58:** `AI09` shows "Gợi ý khác" (more suggestions), which FR-033 does not define (a list of at most 5); the "no suggestion" state (AF 5.1) and the short disclaimer (Step 4) are not drawn. See Section 17.2 (Gap 031-J) and `[OQ-031-05]`.
+
+---
+
+### UC-031-06: Sync Recipe Embeddings *(included / extending use case)*
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-031-06`
+- **Use Case Name:** Keep the Searchable Recipe Data of the AI in Line with Publishing, Editing and Archiving
+
+#### 2. Actor(s)
+- **Trigger:** A recipe becomes `PUBLISHED` (moderator approval in `UC-100-01`, or the seed import of crawled data), an approved revision changes it (`UC-060-05`), or it is archived or removed (`UC-060-06`, `UC-100-02`) (no human primary actor; Use-Case Model §7, issue 5).
+- **Secondary Actor:** **LLM Service** — the embedding API that turns a recipe description into a vector.
+- **Including / Extended Use Cases:** included by `UC-100-01` Moderate Recipe Submission; extends `UC-100-02` Process Content Reports when a report leads to taking a recipe down.
+
+#### 3. Description
+The AI planner and the slot suggestions choose from a prepared, searchable description of every published recipe (the **Recipe Knowledge Entry**). This use case creates the entry when a recipe is published, refreshes it when an approved edit changes the recipe and removes it when the recipe is archived or removed, so that new recipes can be suggested within 24 hours and taken-down recipes are never suggested. A failure here never blocks publishing; a nightly reconcile run catches anything missed.
+
+#### 4. Preconditions
+- The recipe module publishes an event for the change (`specs/031-ai-weekly-meal-planner/contracts/integration.md` §2).
+
+#### 5. Basic Flow
+1. **Receive Event:** After a recipe is published, the system receives the publish event. Publication itself has already completed (FR-031).
+2. **Build Description:** The system builds the recipe's searchable text from its name, category, cuisine, meals it suits, total cooking time and main ingredients.
+3. **Get Embedding:** The server asks the embedding API for the vector of this text (server only, NFR-002).
+4. **Store Entry:** The system stores or replaces the recipe's entry with the vector and the time it was refreshed. The recipe can now be a candidate in `UC-031-01` and `UC-031-05` (FR-029; US8 AS1).
+
+#### 6. Alternative Flows
+- **AF 6.1: Approved Edit:**
+  - *Trigger:* At Step 1, an approved revision changed the recipe (US8 AS2).
+  - *Steps:*
+    1. Steps 2–4 run again; the entry is replaced, so choices use the updated recipe within 24 hours.
+- **AF 6.2: Archived or Removed:**
+  - *Trigger:* At Step 1, the recipe was archived by its author or removed after a report (US8 AS3; `UC-100-02`).
+  - *Steps:*
+    1. The system deletes the entry.
+    2. Even before this happens, the recipe is never shown in a draft from the moment it is archived, because candidates and picks are read as `PUBLISHED` only (`UC-031-03`; FR-030).
+- **AF 6.3: Embedding API Fails:**
+  - *Trigger:* At Step 3, the API returns an error, times out or the quota is used up (US8 AS4).
+  - *Steps:*
+    1. Publishing and editing are not blocked or undone (FR-031).
+    2. The entry stays missing or old; the nightly reconcile run finds published recipes without an up-to-date entry and entries of recipes no longer published, and fixes them, so the 24-hour limit holds (FR-029; plan phase 9, research "job đối soát hằng đêm").
+- **AF 6.4: Seed Import of Crawled Recipes:**
+  - *Trigger:* Many recipes are imported as `PUBLISHED` of the system account "WikiCook" (Clarification 18/10/2026).
+  - *Steps:*
+    1. Each imported recipe is handled as one publish event; entries that cannot be created at once are picked up by the nightly run.
+- **AF 6.5: Restored Without Changes:**
+  - *Trigger:* An archived recipe is restored (`UC-060-06`).
+  - *Steps:*
+    1. It is handled as a publish event: the entry is created again.
+
+#### 7. Postconditions
+- **Success:** Every published recipe has at most one entry, refreshed at most 24 hours after its last publish or approved edit; no entry is used for a recipe that is not published.
+- **Failure:** Publication is unchanged; the entry is fixed by the nightly run.
+
+#### 8. Special Requirements
+- **Timeliness:** A newly published or edited recipe is available to the AI within 24 hours (FR-029).
+- **Isolation:** Failure to refresh never blocks publishing or editing (FR-031); an AI outage affects no other feature (NFR-006).
+- **Security:** Only the server calls the embedding API; only recipe data is sent, never author or user data (NFR-002, NFR-003).
+- **Testing:** Every acceptance scenario of US8 has at least one automated test with a fake embedding client (SC-009).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** No screen; background behaviour.
+
+---
+
+## 16. USE-CASE SPECIFICATIONS FOR FEATURE 090: NUTRITION & ALLERGEN ANALYZER
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+> [!NOTE]
+> **Sources:** `specs/090-nutrition-analysis/spec.md` (US1–US7, FR-001 – FR-027, NFR-001 – NFR-009, SC-001 – SC-008, Clarifications of 18/10/2026), `specs/090-nutrition-analysis/contracts/openapi.yaml` (base path `/api/v1`), [Project Proposal](project-proposal.md) §3.9, [Vision Document](vision-document.md) §5.9, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.9 and §4.11 (`SCRUM-49`) and the project constitution (Principle IV: only the server calls the AI; Principle V: AI disclaimer). Actors: **Guest** (and every signed-in role, which inherits it) reads the figures; **Administrator** manages estimates; the **LLM Service** estimates. In the model `UC-090-01` and `UC-090-04` extend `UC-020-06` (extension point `EP-1 Nutrition`), `UC-100-01` includes `UC-090-02`, `UC-090-02` includes `UC-090-03`, and `UC-090-05` includes `UC-090-02`. `US6` (calories for search and the planner) is not a separate user goal: it is written in `UC-020-02` (calorie filter) and `UC-030-01` (Step 12, AF 1.23). `UC-090-02` and `UC-090-03` have no human actor and are written with a **Trigger** (Use-Case Model §7, issue 5).
+>
+> **Terms:** an **estimate** is the stored AI result for one published recipe: calories (kcal), protein, carbohydrates and fat (grams) **per serving**, plus suggested **diet labels** (only Gluten-Free, Dairy-Free, Nut-Free, Low-Sodium, Vegetarian, Vegan). Its **status** is calculating, available, available with low confidence, failed or hidden; a recipe with no estimate at all has "no data". **Allergen warnings** are not AI output: they come only from the moderator-curated links between catalogue ingredients and allergens. The estimate is calculated **once per approval** and read from storage afterwards; there is no automatic retry and no nightly run (Clarifications 18/10/2026).
+
+### UC-090-01: View Nutrition per Serving
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-090-01`
+- **Use Case Name:** Read the Estimated Calories, Protein, Carbohydrates and Fat per Serving on the Recipe Page, with the AI Disclaimer
+
+#### 2. Actor(s)
+- **Primary Actor:** **Guest** — any visitor; Member and higher roles inherit it. Typical user: a health-conscious home cook (Vision §3.2).
+- **Extended Use Case:** `UC-020-06` View Recipe Details (extension point `EP-1 Nutrition`).
+
+#### 3. Description
+Shows the nutrition block of a published recipe: calories, protein, carbohydrates and fat per serving with the recipe's number of servings, and the permanent disclaimer that the figures are AI estimates for reference only. The values are read from storage; opening a recipe never calls the AI. The block has four states — being calculated, no data, available, available with low confidence — and the rest of the page never waits for it.
+
+#### 4. Preconditions
+- The recipe is in `PUBLISHED` status and the actor is on its detail page (`UC-020-06`). No sign-in is needed.
+
+#### 5. Basic Flow
+1. **Open Nutrition:** The actor opens the tab "Dinh dưỡng" on the recipe page (next to "Nguyên liệu" and "Các bước").
+2. **Read Stored Estimate:** The system reads the stored estimate of the published version (`GET /api/v1/recipes/{recipeId}/nutrition`). No AI request is made (FR-007; US2 AS3).
+3. **Show Values:** The estimate is available, so the block shows "Mỗi phần · 4 phần", the label "AI", the calories as a whole number ("320 kcal") and protein, carbohydrates and fat in whole grams ("28 g Đạm", "18 g Tinh bột", "14 g Chất béo") (FR-014, FR-015; US1 AS1).
+4. **Show Disclaimer:** Inside the block, without expanding anything, the system shows "Số liệu dinh dưỡng do AI ước tính, chỉ mang tính tham khảo" (FR-016; US1 AS2).
+5. **Show Allergens and Labels:** In the same tab the allergen area and the AI diet labels of `UC-090-04` are shown.
+
+#### 6. Alternative Flows
+- **AF 1.1: Being Calculated:**
+  - *Trigger:* At Step 2, the recipe was published moments ago and its estimate is queued or in progress (US1 AS3).
+  - *Steps:*
+    1. The block shows "Đang tính số liệu dinh dưỡng…" and the disclaimer instead of numbers; the rest of the page is fully usable.
+- **AF 1.2: No Data:**
+  - *Trigger:* At Step 2, the estimate failed, was hidden by an Administrator, or does not exist yet — for example for recipes published before this feature (US1 AS4).
+  - *Steps:*
+    1. The block shows "Chưa có số liệu dinh dưỡng" with the disclaimer, no numbers and no error details.
+- **AF 1.3: Low Confidence:**
+  - *Trigger:* At Step 3, some ingredients had no quantity ("to taste") and were left out (US1 AS5, FR-012).
+  - *Steps:*
+    1. The values are shown with the note "Độ tin cậy thấp: chưa tính “me chua vừa đủ”, “nước mắm vừa ăn”." listing those ingredients by name.
+- **AF 1.4: Optional Ingredients Left Out:**
+  - *Trigger:* At Step 3, the recipe has ingredients marked optional in the wizard (spec 060) (FR-013; Edge Cases).
+  - *Steps:*
+    1. The block lists them as not included ("Không tính: nguyên liệu tùy chọn …"). This alone does not make the estimate low confidence.
+- **AF 1.5: Nothing to Estimate:**
+  - *Trigger:* At Step 2, every ingredient is "to taste" or optional, so no AI request was made (Edge Cases).
+  - *Steps:*
+    1. The block shows "Chưa có số liệu dinh dưỡng" as in AF 1.2.
+- **AF 1.6: Actor Changes the Servings Shown:**
+  - *Trigger:* At Step 3, the actor changes "Khẩu phần" on the page, for example from 4 to 6 people (US1 AS6).
+  - *Steps:*
+    1. The ingredient quantities are scaled by `UC-020-06`; the per-serving values stay the same.
+- **AF 1.7: Revision Pending or Approved:**
+  - *Trigger:* At Step 2, the recipe has a revision (spec 060) (US5 AS1 – AS3).
+  - *Steps:*
+    1. While the revision is pending moderation, readers see the estimate of the published version.
+    2. When an approved revision changed ingredients, quantities, units or servings, the old values stop being shown and the block is "being calculated" (AF 1.1) until the new estimate is stored (`UC-090-02` AF 2.2).
+    3. When the approved revision changed only text, photos, steps or tags, the estimate is kept.
+- **AF 1.8: Opened Offline or from Cache:**
+  - *Trigger:* At Step 2, the device is offline (Edge Cases).
+  - *Steps:*
+    1. The block shows the last loaded values with the disclaimer, or nothing if they were never loaded. No AI request is ever made from the browser (FR-003).
+- **AF 1.9: Nutrition Cannot Be Loaded:**
+  - *Status:* Proposed — spec 090 requires only that an AI outage does not slow the page (NFR-002); the state follows "no data".
+  - *Trigger:* At Step 2, the server does not answer for the block.
+  - *Steps:*
+    1. The block shows "Chưa có số liệu dinh dưỡng"; the rest of the page is unaffected.
+- **AF 1.10: Recipe Not Published:**
+  - *Trigger:* At Step 1, the recipe is archived or removed.
+  - *Steps:*
+    1. The page itself is not available (`UC-020-06`, `NU04-Unavailable`); a stored estimate is kept but not shown (Edge Cases).
+- **AF 1.11: Calories Shown Elsewhere:**
+  - *Trigger:* Calories of a recipe are shown outside the block — the planner day total (`UC-030-01` Step 12), search result cards (`UC-020-01`) or the recipe header.
+  - *Steps:*
+    1. Each place shows the AI disclaimer next to the value (FR-016) and only an estimate in an available state (FR-021, FR-022).
+
+#### 7. Postconditions
+- **Always:** The actor has seen the block in exactly one of its four states with the disclaimer; no AI call was made; the page was not slowed.
+
+#### 8. Special Requirements
+- **Isolation:** An AI outage does not increase the time to load a recipe page (NFR-002); opening, searching or planning makes 0 AI calls (SC-005).
+- **Safety of output:** AI output is shown as plain text, never as page markup (NFR-005).
+- **Accessibility:** The state of the block is announced to screen readers (NFR-008); readable from 360 px without horizontal scrolling (NFR-006).
+- **Language:** Vietnamese default; every label, state and the disclaimer is in the shared string store (NFR-007; constitution Principle V).
+- **Comprehension:** At least 90% of usability-test participants say correctly that the figures are estimates (SC-007).
+- **Testing:** Every acceptance scenario of US1 has at least one automated test (SC-008).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`NU01-Detail.dc.html`](../analysis-and-design/ui-ux/screens/NU01-Detail.dc.html) (Step 1, tab "Dinh dưỡng"), [`NU02-Nutrition.dc.html`](../analysis-and-design/ui-ux/screens/NU02-Nutrition.dc.html) (Steps 3–5, with the low-confidence note of AF 1.3).
+- **Alternative Flows:** [`NU03-NutritionStates.dc.html`](../analysis-and-design/ui-ux/screens/NU03-NutritionStates.dc.html) (AF 1.1, AF 1.2), [`NU04-Unavailable.dc.html`](../analysis-and-design/ui-ux/screens/NU04-Unavailable.dc.html) (AF 1.10).
+- **UI Asset Gap for SCRUM-58:** The header of `NU01` shows "320 kcal" without the disclaimer that FR-016 requires next to every calorie value (AF 1.11, `[OQ-090-02]`); the "optional ingredients not included" line (AF 1.4) is not drawn. See Section 17.2 (Gaps 090-A, 090-B).
+
+---
+
+### UC-090-02: Estimate Nutrition on Publication or Change *(included use case)*
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-090-02`
+- **Use Case Name:** Estimate a Recipe's Nutrition Once in the Background When It Is Approved, and Store the Checked Result
+
+#### 2. Actor(s)
+- **Trigger:** A recipe becomes `PUBLISHED` on moderator approval (`UC-100-01`) or by the seed import of crawled data, a revision that changes ingredients, quantities, units or servings is approved (`UC-060-05` via `UC-100-01`), or an Administrator asks for a recalculation (`UC-090-05`) (no human primary actor; Use-Case Model §7, issue 5).
+- **Secondary Actor:** **LLM Service** — estimates the values and diet labels from the ingredient list.
+- **Including Use Cases:** `UC-100-01`, `UC-090-05`. **Included Use Case:** `UC-090-03` Validate AI Nutrition Estimate.
+
+#### 3. Description
+When a recipe is approved, the system queues exactly one estimate request and lets publication complete at once. In the background it sends the AI only the ingredient names, quantities, units, the optional flag and the number of servings, checks the answer and stores the estimate tied to the exact ingredient list and servings it was calculated from. Reading the recipe, searching and planning afterwards use the stored values. If the AI fails, times out or gives an implausible answer, nothing is shown, the recipe stays published and the estimate is "failed"; there is no automatic retry — an Administrator recalculates it from `UC-090-05`.
+
+#### 4. Preconditions
+- The recipe is `PUBLISHED` (or the triggering revision has just been approved) and has at least one quantified, non-optional ingredient.
+- The AI service key is configured on the server only (NFR-003).
+
+#### 5. Basic Flow
+1. **Queue Request:** On approval, the system queues one estimate request for the recipe and sets its status to "calculating". Publication does not wait for it and cannot fail because of it (FR-001, FR-002; US2 AS1).
+2. **Prepare Input:** The system takes the recipe's ingredient names (as stored in the catalogue, with or without diacritics), quantities, units, the "optional" flag and the number of servings, and computes a fingerprint of this list (FR-004, FR-005). Ingredients without a quantity ("to taste") and optional ingredients are left out of the calculation and remembered for display (FR-012, FR-013). Count units ("2 quả trứng") are sent as written.
+3. **Check Quota:** The system checks that nutrition estimation still has room in its configurable share of the platform-wide daily AI quota (FR-020).
+4. **Ask the AI:** The server sends the request to the LLM Service, with no user or author data, and waits at most 60 seconds (FR-003, FR-004, FR-006; NFR-004).
+5. **Check Answer:** The system runs `UC-090-03` on the answer.
+6. **Store:** The answer passed, so the system stores calories, protein, carbohydrates and fat per serving, the low-confidence flag with the left-out ingredients, the remaining diet labels, the fingerprint and the attempt time; the status becomes "available" (or "available with low confidence") (FR-007; US2 AS2).
+7. **Record Attempt:** The attempt is recorded with time, trigger (approval, revision approval, Administrator recalculation, seed import), outcome and, for failures, the reason category, kept for at least 30 days (NFR-009).
+8. **Use Everywhere:** From now on the recipe page (`UC-090-01`, `UC-090-04`), the calorie filter of search (`UC-020-02`) and the planner day total (`UC-030-01`) read the stored values (FR-007, FR-021, FR-022).
+
+#### 6. Alternative Flows
+- **AF 2.1: Seed Import of Crawled Recipes:**
+  - *Trigger:* At Step 1, recipes are imported as `PUBLISHED` (Clarification 18/10/2026; Edge Cases).
+  - *Steps:*
+    1. Each imported recipe is queued exactly once, as one approval.
+    2. When the daily quota is reached, the rest end as "failed" with the reason "usage cap" (AF 2.7) and are recalculated by the Administrator on the following days.
+- **AF 2.2: Revision Changes Ingredients or Servings:**
+  - *Trigger:* At Step 1, an approved revision changes an ingredient, quantity, unit or the number of servings (US5 AS1, FR-001).
+  - *Steps:*
+    1. This counts as a new approval: the old values stop being shown or used (search filter, planner total), the status becomes "calculating", and one new request is queued.
+- **AF 2.3: Text-Only Revision or Unchanged Restore:**
+  - *Trigger:* An approved revision changes only text, photos, steps or tags, or an archived recipe is restored without changes (US5 AS2, AS4; FR-008).
+  - *Steps:*
+    1. No request is made; the existing estimate is kept (or reused) unchanged.
+- **AF 2.4: Nothing to Estimate:**
+  - *Trigger:* At Step 2, every ingredient is "to taste" or optional (Edge Cases).
+  - *Steps:*
+    1. No AI request is made; the recipe has no data and the Administrator list shows the reason "nothing to estimate".
+- **AF 2.5: AI Error or Timeout:**
+  - *Trigger:* At Step 4, the AI returns an error or takes longer than 60 seconds (US2 AS4, FR-006).
+  - *Steps:*
+    1. Nothing is shown; the recipe stays published; the status becomes "failed" with the reason ("Quá thời gian 60 giây" or service error). No automatic retry happens; the recipe appears in the Administrator list (`UC-090-05`).
+- **AF 2.6: Answer Rejected:**
+  - *Trigger:* At Step 5, `UC-090-03` rejects the answer (US3 AS6).
+  - *Steps:*
+    1. Nothing is stored or shown; the status becomes "failed" with the reason category, for example "Calo lệch macro > 20%". No automatic retry.
+- **AF 2.7: Daily Quota Reached:**
+  - *Trigger:* At Step 3, nutrition estimation has used its share of the daily quota (FR-020; Edge Cases).
+  - *Steps:*
+    1. The AI is not called; the status becomes "failed" with the reason "usage cap" ("Hết hạn mức ngày"); the Administrator can recalculate later.
+- **AF 2.8: Late Result for an Outdated List:**
+  - *Trigger:* At Step 6, a revision was approved while this estimate was being calculated, so the fingerprint no longer matches (FR-005; Edge Cases).
+  - *Steps:*
+    1. The older result is discarded; only the estimate of the new request is stored.
+- **AF 2.9: Two Triggers at Once:**
+  - *Trigger:* At Step 1, a request for the same recipe is already queued or running, for example a revision approval and an Administrator recalculation (Edge Cases).
+  - *Steps:*
+    1. Only one estimate is calculated; the other request is dropped.
+- **AF 2.10: Recipe Archived During Calculation:**
+  - *Trigger:* At Step 6, the recipe is no longer `PUBLISHED` (Edge Cases).
+  - *Steps:*
+    1. The result is stored but not shown while the recipe is not published (reused if it is restored unchanged, AF 2.3).
+- **AF 2.11: AI Unavailable for a Long Time:**
+  - *Trigger:* The AI is down for a whole day (US2 AS5).
+  - *Steps:*
+    1. New recipes end as "failed"; browsing, search, the planner and every non-nutrition feature keep working at normal speed (NFR-002).
+
+#### 7. Postconditions
+- **Success:** The recipe has one current estimate tied to its current ingredient list and servings, in an available state, with only valid labels; the attempt is recorded.
+- **Failure:** The recipe is published with no shown values and the status "failed" with a reason; any previously stored estimate of an unchanged list is kept (`UC-090-05` AF 5.2); no retry is scheduled.
+
+#### 8. Special Requirements
+- **Timeliness:** Under normal AI availability, 95% of newly published recipes show an estimate within 5 minutes (NFR-001; SC-001); at least 90% of approved recipes with a quantified ingredient get an available estimate from the single call (SC-002).
+- **Isolation:** Publishing takes the same time with the AI switched off as with it on (SC-005).
+- **Security and privacy:** Only the server calls the AI; the key never appears in a page, response or log; no personal data is sent (FR-003, FR-004; NFR-003, NFR-004; constitution Principle IV).
+- **Accuracy:** For 20 common Vietnamese dishes, at least 80% of calorie estimates are within ±25% of the reference computed from the Vietnamese Food Composition Table (National Institute of Nutrition); the dishes and values are chosen by the spec owner and checked by the reviewer (SC-006).
+- **Testing:** Every acceptance scenario of US2 and US5 has at least one automated test with a fake LLM (SC-008).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** No own screen; the result is shown in [`NU02-Nutrition.dc.html`](../analysis-and-design/ui-ux/screens/NU02-Nutrition.dc.html) and [`NU03-NutritionStates.dc.html`](../analysis-and-design/ui-ux/screens/NU03-NutritionStates.dc.html); failures are listed in [`NU05-AdminEstimates.dc.html`](../analysis-and-design/ui-ux/screens/NU05-AdminEstimates.dc.html).
+
+---
+
+### UC-090-03: Validate AI Nutrition Estimate *(included use case)*
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-090-03`
+- **Use Case Name:** Reject Malformed or Implausible AI Nutrition Answers and Drop Labels that Contradict the Catalogue
+
+#### 2. Actor(s)
+- **Trigger:** The answer of the LLM Service in `UC-090-02` Step 5 (no human primary actor).
+- **Including Use Case:** `UC-090-02`.
+
+#### 3. Description
+The AI can be confidently wrong — a "5,000 kcal salad", negative protein, or "Dairy-Free" on a dish with milk. Before anything is stored, this use case rejects answers that are malformed, contain negative or out-of-range values, or whose calories do not match the macronutrients, and it keeps only the six allowed diet labels that do not contradict the catalogue data of the recipe's ingredients. A rejected answer is never shown; the reason is recorded for Administrators.
+
+#### 4. Preconditions
+- `UC-090-02` reached Step 5 with the AI answer and the recipe's ingredient list.
+
+#### 5. Basic Flow
+1. **Check Structure:** The answer is in the expected structure and contains calories, protein, carbohydrates and fat per serving as numbers (FR-009; US3 AS1).
+2. **Check Signs and Ranges:** No value is negative; calories are at most 3,000 kcal and each macronutrient at most 300 g per serving (FR-009; US3 AS2). The limits are per serving, also for very large servings numbers (Edge Cases).
+3. **Check Consistency:** Calories differ by at most 20% from protein×4 + carbohydrates×4 + fat×9. For example 28 g, 18 g and 14 g give 310 kcal, so 320 kcal is accepted (FR-009; US3 AS3).
+4. **Keep Allowed Labels:** Only Gluten-Free, Dairy-Free, Nut-Free, Low-Sodium, Vegetarian and Vegan are kept (FR-010).
+5. **Drop Contradicting Labels:** The system drops a label that contradicts the catalogue: Gluten-Free with an ingredient linked to gluten, Dairy-Free with milk, Nut-Free with peanut or tree nut, Vegetarian with an ingredient of kind meat or seafood, Vegan with any animal product (FR-011; US3 AS5). These are the same ingredient kinds the AI planner uses for diet type (spec 031 FR-009a).
+6. **Accept:** The values are rounded to whole numbers for display and the answer returns to `UC-090-02` Step 6.
+
+#### 6. Alternative Flows
+- **AF 3.1: Malformed or Incomplete:**
+  - *Trigger:* At Step 1, the answer cannot be read or misses a value (US3 AS1).
+  - *Steps:*
+    1. The answer is rejected with the reason category "malformed"; `UC-090-02` AF 2.6 follows.
+- **AF 3.2: Negative or Out of Range:**
+  - *Trigger:* At Step 2, a value is negative, or above 3,000 kcal or 300 g per serving (US3 AS2).
+  - *Steps:*
+    1. The answer is rejected with the reason "out of range".
+- **AF 3.3: Calories Do Not Match Macronutrients:**
+  - *Trigger:* At Step 3, the difference is above 20% (US3 AS3).
+  - *Steps:*
+    1. The answer is rejected with the reason "Calo lệch macro > 20%".
+- **AF 3.4: Unknown Label:**
+  - *Trigger:* At Step 4, the answer contains a label outside the six, for example "Low-Fat" (US3 AS4).
+  - *Steps:*
+    1. The unknown label is dropped and the rest of the answer is still evaluated.
+- **AF 3.5: No Label Left:**
+  - *Trigger:* At Step 5, every suggested label was dropped.
+  - *Steps:*
+    1. The values are still accepted; the recipe simply shows no AI diet label (`UC-090-04` AF 4.3).
+
+#### 7. Postconditions
+- **Accepted:** The stored values are non-negative, within the per-serving limits and consistent within 20%; every stored label is one of the six and agrees with the catalogue.
+- **Rejected:** Nothing is stored or shown; the reason category is recorded.
+
+#### 8. Special Requirements
+- **Safety:** 100% of prepared invalid answers (malformed, negative, out of range, macro mismatch) are rejected and 0 such values appear on any page (SC-003); 0 recipes show a label that contradicts a catalogue allergen link (SC-004).
+- **Untrusted output:** AI output is treated as untrusted text and never rendered as markup (NFR-005).
+- **Testing:** Each rule is covered by an automated test with a prepared AI response (SC-008; US3 Independent Test).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** No screen; rejection reasons are shown in [`NU05-AdminEstimates.dc.html`](../analysis-and-design/ui-ux/screens/NU05-AdminEstimates.dc.html) ("Calo lệch macro > 20%").
+
+---
+
+### UC-090-04: View Allergen Warnings & AI Diet Labels
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-090-04`
+- **Use Case Name:** See Catalogue-Based Allergen Warnings and, Separately, the AI-Suggested Diet Labels of a Recipe
+
+#### 2. Actor(s)
+- **Primary Actor:** **Guest** — any visitor; for a signed-in **Member** the profile allergens are highlighted. Typical user: a parent cooking for a child with a peanut allergy.
+- **Extended Use Case:** `UC-020-06` View Recipe Details (extension point `EP-1 Nutrition`).
+
+#### 3. Description
+Tells the reader plainly which allergens a recipe contains, from checked data, and keeps them clearly apart from the labels that are only AI suggestions. The allergen area lists each allergen linked to the recipe's ingredients in the moderator-curated catalogue, whether or not an AI estimate exists; allergens in the signed-in user's dietary profile are highlighted. The AI diet labels are shown in a separate area titled as AI suggestions and are never used to hide or filter recipes.
+
+#### 4. Preconditions
+- The recipe is in `PUBLISHED` status and the actor is on its detail page (`UC-020-06`). Its ingredients are approved catalogue ingredients (spec 060).
+
+#### 5. Basic Flow
+1. **Open Nutrition:** The actor opens the tab "Dinh dưỡng" (`UC-090-01` Step 1).
+2. **Derive Allergens:** The system collects the allergens linked to the recipe's ingredients in the catalogue (`GET /api/v1/recipes/{recipeId}/allergens`). AI output never adds or removes an allergen (FR-017).
+3. **Show Allergen Area:** The area "Chất gây dị ứng — Theo danh mục nguyên liệu đã kiểm tra, không phải AI." lists each allergen once, for example "Có cá", "Có đậu phộng" (US4 AS1).
+4. **Highlight Own Allergens:** The actor is signed in and the profile lists peanut, so "Có đậu phộng · trong hồ sơ của bạn" is highlighted, with text as well as colour (FR-018; US4 AS4; NFR-008).
+5. **Show AI Labels:** In a separate, visually different area "Nhãn chế độ ăn — AI gợi ý, không dùng để lọc an toàn." the system shows the stored labels, for example "Không gluten", covered by the disclaimer of the nutrition block (FR-019; US4 AS3).
+
+#### 6. Alternative Flows
+- **AF 4.1: No Allergen Link:**
+  - *Trigger:* At Step 2, no ingredient of the recipe is linked to an allergen (US4 AS2).
+  - *Steps:*
+    1. The area says "Không có chất gây dị ứng đã biết trong danh mục nguyên liệu" — never "Allergen-free".
+- **AF 4.2: Guest or No Profile Allergens:**
+  - *Trigger:* At Step 4, the actor is not signed in, or the profile has no allergens.
+  - *Steps:*
+    1. The allergens are listed without highlight.
+- **AF 4.3: No AI Labels:**
+  - *Trigger:* At Step 5, the estimate is calculating, failed, hidden or missing, or every label was dropped (`UC-090-03` AF 3.5).
+  - *Steps:*
+    1. The labels area is not shown; the allergen area is still shown. A hidden estimate also hides its labels (FR-025).
+- **AF 4.4: Allergen Links Changed:**
+  - *Trigger:* A moderator changed the allergen links of an ingredient used by the recipe (US4 AS5).
+  - *Steps:*
+    1. The next time the page is opened, the area reflects the change without a new AI estimate.
+- **AF 4.5: Profile Cannot Be Read:**
+  - *Status:* Proposed — spec 090 does not state it; highlighting is help, not a filter.
+  - *Trigger:* At Step 4, the profile service does not answer.
+  - *Steps:*
+    1. The allergens are listed without highlight; the area is still complete.
+- **AF 4.6: Labels Never Used for Decisions:**
+  - *Trigger:* Search (spec 020), the AI planner (spec 031) or the planner picker (spec 030) decides which recipes to hide, warn about or rank (US4 AS6, FR-019).
+  - *Steps:*
+    1. They use the catalogue allergen links and ingredient kinds (`UC-011-05`), never the AI diet labels.
+
+#### 7. Postconditions
+- **Always:** The actor has seen the allergens of the recipe from the catalogue, the own allergens highlighted when signed in, and — if any — the AI labels in a separate area marked as AI suggestions. No data changed.
+
+#### 8. Special Requirements
+- **Safety:** 0 allergen warnings are produced from AI output (SC-004); allergen warnings do not rely on colour alone (NFR-008).
+- **Comprehension:** At least 90% of usability-test participants tell the allergen warnings apart from the AI labels (SC-007).
+- **Single source:** `ingredient_allergens` is the only source for allergen warnings and for the label checks of `UC-090-03` (spec 090 Integration Points).
+- **Testing:** Every acceptance scenario of US4 has at least one automated test (SC-008).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`NU02-Nutrition.dc.html`](../analysis-and-design/ui-ux/screens/NU02-Nutrition.dc.html) (Steps 3–5, "Có đậu phộng · trong hồ sơ của bạn", "Nhãn chế độ ăn").
+- **Alternative Flows:** [`NU03-NutritionStates.dc.html`](../analysis-and-design/ui-ux/screens/NU03-NutritionStates.dc.html) (AF 4.1).
+- **UI Asset Gap for SCRUM-58:** `NU02` shows the label "Ít béo", which is not one of the six allowed labels (FR-010, `[OQ-090-01]`). See Section 17.2 (Gap 090-C).
+
+---
+
+### UC-090-05: Review, Recalculate & Hide Estimates
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-090-05`
+- **Use Case Name:** List Recipes by Estimate Status, Ask the AI to Recalculate One, and Hide or Unhide a Wrong Estimate
+
+#### 2. Actor(s)
+- **Primary Actor:** **Administrator** — the only role that manages estimates (Moderators approve recipes but do not manage estimates).
+- **Included Use Case:** `UC-090-02` (one recalculation).
+
+#### 3. Description
+Because there are no automatic retries, this is the only way a failed or wrong estimate gets corrected. In the admin area the Administrator sees published recipes with their estimate status, last attempt time and failure reason, filters and searches them, asks the AI to recalculate one recipe, and hides an estimate that is clearly wrong (with a reason) or unhides it. A hidden estimate behaves as "no data" everywhere. Every action is written to the audit log.
+
+#### 4. Preconditions
+- The actor is signed in as Administrator (`UC-010-02`) and opens the admin area (spec 100).
+
+#### 5. Basic Flow
+1. **Open List:** The actor opens "Ước tính dinh dưỡng" in the admin menu.
+2. **Load List:** The system lists published recipes with status (calculating, available, low confidence, failed, hidden, no data), last attempt time and, for failures, the reason category, for example "Bún bò Huế — Thất bại — 27/10 09:12 — Calo lệch macro > 20%" (`GET /api/v1/admin/nutrition`) (FR-023; US7 AS1).
+3. **Filter and Search:** The actor selects the filter "Thất bại" and searches by recipe name.
+4. **Recalculate:** The actor selects "Tính lại" on a recipe.
+5. **Run Estimate:** The system runs `UC-090-02` once for that recipe with the trigger "Administrator recalculation" (`POST /api/v1/admin/nutrition/{recipeId}/recalculate`). Until it ends, the current estimate (if any) stays shown (US7 AS2).
+6. **Replace:** The result passes `UC-090-03`, so it replaces the stored estimate; the list shows the new status and attempt time (FR-024).
+7. **Audit:** The system writes an audit entry with who, what, when and the recipe (FR-026; spec 010 FR-025; US7 AS6).
+
+#### 6. Alternative Flows
+- **AF 5.1: View Attempts of a Recipe:**
+  - *Trigger:* At Step 2, the actor opens a recipe's history.
+  - *Steps:*
+    1. The system lists its attempts of at least the last 30 days with time, trigger, outcome and reason (`GET /api/v1/admin/nutrition/{recipeId}/attempts`; NFR-009).
+- **AF 5.2: Recalculation Fails or Is Rejected:**
+  - *Trigger:* At Step 5, the AI fails, times out, the answer is rejected or the daily quota is used up (US7 AS3).
+  - *Steps:*
+    1. The previously stored estimate (if any) is kept unchanged and still shown; the actor sees the failure reason in the list.
+- **AF 5.3: Hide an Estimate:**
+  - *Trigger:* At Step 4, the actor selects "Ẩn" on a recipe with a shown estimate (US7 AS4, FR-025).
+  - *Steps:*
+    1. The system asks for a reason, which is mandatory; "Ẩn" stays disabled until one is entered.
+    2. On confirm (`POST /api/v1/admin/nutrition/{recipeId}/hide`), the recipe page shows "Chưa có số liệu dinh dưỡng", the AI diet labels are hidden, and the recipe is excluded from calorie filters and planner totals. The audit entry is written (Step 7).
+- **AF 5.4: Unhide:**
+  - *Trigger:* At Step 4, the recipe is hidden and the actor selects "Bỏ ẩn" (US7 AS4).
+  - *Steps:*
+    1. The estimate is shown and used again (`POST /api/v1/admin/nutrition/{recipeId}/unhide`); the audit entry is written.
+- **AF 5.5: Recalculate a Hidden Estimate:**
+  - *Trigger:* At Step 4, the recipe is hidden.
+  - *Steps:*
+    1. A successful recalculation replaces the values but keeps them hidden until the actor unhides them (FR-025).
+- **AF 5.6: Recalculation Already Running:**
+  - *Trigger:* At Step 5, an estimate is already queued or running for the recipe (Edge Cases "Two triggers").
+  - *Steps:*
+    1. Only one estimate is calculated; the second request is dropped and the actor sees that a calculation is in progress.
+- **AF 5.7: Old Recipes without Data:**
+  - *Trigger:* At Step 3, the actor filters "Chưa có" (recipes published before this feature, or with "nothing to estimate") (Edge Cases).
+  - *Steps:*
+    1. The actor can recalculate each recipe as in Steps 4–7; a recipe with "nothing to estimate" ends again without an AI call (`UC-090-02` AF 2.4).
+- **AF 5.8: Not an Administrator:**
+  - *Trigger:* At Step 1 or 4, a Member, Contributor or Moderator opens the list or calls an action (US7 AS5, FR-027).
+  - *Steps:*
+    1. Access is refused (permission matrix of spec 010); nothing is shown or changed.
+- **AF 5.9: Session Expired or No Connection:**
+  - *Trigger:* At Step 4 or AF 5.3 – AF 5.4.
+  - *Steps:*
+    1. The action is not performed; the actor signs in again or retries when online.
+
+#### 7. Postconditions
+- **Recalculated:** The recipe has a new stored estimate (or keeps the old one when the attempt failed); the attempt is recorded.
+- **Hidden / unhidden:** The estimate behaves as "no data" everywhere (FR-014, FR-021, FR-022), or is shown again.
+- **Always:** Every action has an audit entry.
+
+#### 8. Special Requirements
+- **Access control:** Only Administrators can see the list or use the actions; the server checks the role (FR-027; constitution Principle IV).
+- **Traceability:** Attempts are kept for at least 30 days and viewable by Administrators (NFR-009); actions are in the audit log (FR-026).
+- **Testing:** Every acceptance scenario of US7 has at least one automated test (SC-008).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`NU05-AdminEstimates.dc.html`](../analysis-and-design/ui-ux/screens/NU05-AdminEstimates.dc.html) (Steps 1–4, filters "Tất cả", "Thất bại 12", "Độ tin cậy thấp 31", "Đã ẩn 2", "Chưa có 140", actions "Tính lại" and "Ẩn").
+- **UI Asset Gap for SCRUM-58:** The hide dialog with the mandatory reason (AF 5.3), "Bỏ ẩn" (AF 5.4), the attempts history (AF 5.1) and the filters "Đang tính" / "Có số liệu" are not drawn; `NU05` has no web variant `W-NU05` although the admin area is used on desktop. See Section 17.2 (Gaps 090-D, 090-E).
+
+---
+
+## 17. TRACEABILITY, SCREEN MAPPING & OPEN QUESTIONS FOR FEATURES 030, 031 & 090
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+### 17.1. Traceability
+
+#### Feature 030 (Weekly Meal Planner, Manual)
+
+| Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria | Vision Feature |
+| :---: | :--- | :---: | :--- | :--- | :---: | :---: |
+| **`UC-030-01`** | Fill Meal Plan Slots | `US1` (AS 1–11); `US2` (AS 5); `US6` (AS 1–3); `US7` (AS 1–5); spec 090 `US6` (AS 3–5) | `FR-001` – `FR-007`, `FR-007a`, `FR-007b`, `FR-007c`, `FR-010` – `FR-013`, `FR-018` – `FR-020`, `FR-026` – `FR-032`; spec 090 `FR-016`, `FR-022` | `NFR-001` – `NFR-006` | `SC-001`, `SC-004` – `SC-008` | §5.3 |
+| **`UC-030-02`** | Add Recipe to Plan from Detail Page | `US2` (AS 1–4) | `FR-008`, `FR-009`, `FR-010`, `FR-012`, `FR-023` | `NFR-002`, `NFR-003` | `SC-002`, `SC-008` | §5.3 |
+| **`UC-030-03`** | Rearrange, Replace & Remove Planned Dishes | `US3` (AS 1–8) | `FR-014` – `FR-020` | `NFR-001`, `NFR-003`, `NFR-005` | `SC-003`, `SC-005`, `SC-008` | §5.3 |
+| **`UC-030-04`** | Navigate Weeks & Start an Empty Week | `US4` (AS 1–5) | `FR-002`, `FR-021`, `FR-022`, `FR-023`, `FR-026`, `FR-031` | `NFR-001` | `SC-008` | §5.3 |
+| **`UC-030-05`** | Send Week to Shopping List | `US5` (AS 1–3) | `FR-024`, `FR-025` | — | `SC-008` | §5.3, §5.4 |
+
+*Verification:* All 7 user stories of spec 030 (40 acceptance scenarios), all functional requirements (`FR-001` – `FR-032`, including `FR-007a` – `FR-007c`), the 6 NFRs and `SC-001` – `SC-008` are mapped. `US6` and `US7` are written as alternative flows of `UC-030-01` and are reused by the other planner use cases, following Use-Case Model §4.3. `US2` AS5 (a Guest opening the planner) is `UC-030-01` AF 1.1.
+
+#### Feature 031 (AI Weekly Meal Planner)
+
+| Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria | Vision Feature |
+| :---: | :--- | :---: | :--- | :--- | :---: | :---: |
+| **`UC-031-01`** | Generate AI Weekly Meal Plan | `US1` (AS 1–8); `US4` (AS 1–3); `US5` (AS 1–4) | `FR-001` – `FR-012` (including `FR-007a`, `FR-008a`, `FR-009a`), `FR-023` – `FR-026` (including `FR-025a`), `FR-028`, `FR-032` | `NFR-001` – `NFR-006` | `SC-001`, `SC-002`, `SC-004`, `SC-005`, `SC-007`, `SC-009` | §5.3 |
+| **`UC-031-02`** | Review, Adjust & Confirm AI Draft | `US2` (AS 1–6) | `FR-015` – `FR-022`, `FR-028` | `NFR-005` | `SC-006`, `SC-009` | §5.3 |
+| **`UC-031-03`** | Validate AI Recipe Picks *(included)* | `US3` (AS 1–5) | `FR-007`, `FR-008`, `FR-009`, `FR-009a`, `FR-011`, `FR-013` – `FR-015`, `FR-030`, `FR-032` | `NFR-004` | `SC-003`, `SC-005`, `SC-009` | §5.3 |
+| **`UC-031-04`** | Generate Backup Draft without AI | `US6` (AS 1–6) | `FR-025a`, `FR-026`, `FR-027`, `FR-032` | `NFR-006` | `SC-002a`, `SC-009` | §5.3 |
+| **`UC-031-05`** | Suggest Recipes for One Slot | `US7` (AS 1–7) | `FR-033` – `FR-038` | — | `SC-008`, `SC-009` | §5.3 |
+| **`UC-031-06`** | Sync Recipe Embeddings *(included / extending)* | `US8` (AS 1–4) | `FR-029`, `FR-030`, `FR-031` | `NFR-002`, `NFR-003`, `NFR-006` | `SC-009` | §5.3 |
+
+*Verification:* All 8 user stories of spec 031 (43 acceptance scenarios), all functional requirements (`FR-001` – `FR-038` with `FR-007a`, `FR-008a`, `FR-009a`, `FR-025a`), the 6 NFRs and `SC-001` – `SC-009` (with `SC-002a`) are mapped. `US4` and `US5` are alternative flows of `UC-031-01` (AF 1.6 – AF 1.8), as Use-Case Model §4.3 states. The AI error flows required by `SCRUM-52` are: LLM error (`UC-031-01` AF 1.11 → `UC-031-04`), LLM timeout (AF 1.12), unusable answer (AF 1.13, `UC-031-03` AF 3.1 – AF 3.2), not enough recipes (AF 1.8, AF 1.9), allergy or exclusion violation (`UC-031-03` AF 3.5), daily quota (AF 1.7, `UC-031-04` AF 4.1) and backup failure with the manual planner still usable (`UC-031-04` AF 4.3).
+
+#### Feature 090 (Nutrition & Allergen Analyzer)
+
+| Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria | Vision Feature |
+| :---: | :--- | :---: | :--- | :--- | :---: | :---: |
+| **`UC-090-01`** | View Nutrition per Serving | `US1` (AS 1–6); `US5` (AS 3) | `FR-003`, `FR-007`, `FR-012` – `FR-016`, `FR-021`, `FR-022` | `NFR-002`, `NFR-005` – `NFR-008` | `SC-005`, `SC-007`, `SC-008` | §5.9 |
+| **`UC-090-02`** | Estimate Nutrition on Publication or Change *(included)* | `US2` (AS 1–5); `US5` (AS 1, 2, 4) | `FR-001` – `FR-008`, `FR-012`, `FR-013`, `FR-020` | `NFR-001` – `NFR-004`, `NFR-009` | `SC-001`, `SC-002`, `SC-005`, `SC-006`, `SC-008` | §5.9 |
+| **`UC-090-03`** | Validate AI Nutrition Estimate *(included)* | `US3` (AS 1–6) | `FR-009`, `FR-010`, `FR-011` | `NFR-005` | `SC-003`, `SC-004`, `SC-008` | §5.9 |
+| **`UC-090-04`** | View Allergen Warnings & AI Diet Labels | `US4` (AS 1–6) | `FR-017`, `FR-018`, `FR-019` | `NFR-006`, `NFR-008` | `SC-004`, `SC-007`, `SC-008` | §5.9 |
+| **`UC-090-05`** | Review, Recalculate & Hide Estimates | `US7` (AS 1–6) | `FR-023` – `FR-027` | `NFR-009` | `SC-008` | §5.9 |
+
+*Verification:* All 7 user stories of spec 090 (38 acceptance scenarios), all 27 functional requirements, the 9 NFRs and `SC-001` – `SC-008` are mapped. `US6` (calories for search and the planner) is not a separate use case, following Use-Case Model §4.9: AS1–AS2 are in `UC-020-02` (calorie filter, owned by Nguyễn Đức Duy) and AS3–AS5 in `UC-030-01` Step 12 and AF 1.23. The AI error flows are: LLM error or timeout (`UC-090-02` AF 2.5), implausible answer (`UC-090-03` AF 3.1 – AF 3.3), daily quota (`UC-090-02` AF 2.7) and the recovery path (`UC-090-05`).
+
+### 17.2. Prototype Screen Mapping & UI Asset Gaps (for SCRUM-58)
+
+| Use Case ID | Flow / Step Reference | Existing Screen ID & Filename | Description of Prototype View | Asset Status & Action for SCRUM-58 |
+| :---: | :--- | :--- | :--- | :---: |
+| `UC-030-01` | Basic Flow (Steps 3, 11–12), AF 1.13, AF 1.22 | `MP01-Week.dc.html` | Phone day view "Thứ Tư, 29/10", day total "Khoảng 1.240 kcal / người · 1 món chưa có số liệu · AI ước tính", unavailable "Bò lúc lắc" with "Thay món" / "Xóa" | **Available** |
+| `UC-030-01` | Basic Flow (Steps 5–8) | `MP04-Picker.dc.html` | "Chọn món · Tối T4" with "Gợi ý", "Đã lưu", "Bộ sưu tập", kcal per recipe | **Available** |
+| `UC-030-01` | AF 1.18 – AF 1.20 | `MP07-Offline.dc.html` | "Cần kết nối mạng" with "Thử lại" | **Available** |
+| `UC-030-01` | AF 1.1 | `AU08-SignInPrompt.dc.html` | Guest sent to sign-in | **Available** |
+| `UC-030-01` | AF 1.4 | *Gap 030-A* | `MP04` says "Đã ẩn món chứa đậu phộng và ngò rí", but FR-007b lists such recipes last with a conflict label and a "Vẫn thêm" confirmation | **GAP** (update `MP04`) |
+| `UC-030-01` | AF 1.9 | *Gap 030-B* | A meal holding several dishes and the "Đủ 4 món" state (all screens still show one dish per meal) | **GAP** |
+| `UC-030-01` | AF 1.2, AF 1.3 | *Gap 030-C* | Picker empty states "Không tìm thấy công thức phù hợp." and "Bộ sưu tập của bạn chưa có công thức nào." | **GAP** |
+| `UC-030-01` | AF 1.16 | *Gap 030-D* | "Thay đổi chưa được lưu. Vui lòng thử lại." after the meal is restored | **GAP** |
+| `UC-030-01` | AF 1.21, AF 1.24 | *Gap 030-E* | "Không tải được thực đơn." with "Thử lại"; notice that the dietary profile could not be checked | **GAP** |
+| `UC-030-02` | Basic Flow (Steps 1–5) | `NU01-Detail.dc.html`, `MP05-AddFromRecipe.dc.html` | "Thêm vào thực đơn" button and dialog with days, meals and "Số phần" | **Available** (text outdated, see 030-F) |
+| `UC-030-02` | Step 4, AF 2.3 | *Gap 030-F* | `MP05` says "Trưa Thứ Tư đã có “Cơm gà” — Món mới sẽ thay thế"; must say "Bữa này đã có: …" / "Bữa này đã đủ 4 món. Chọn bữa khác." | **GAP** (update `MP05`) |
+| `UC-030-02` | Step 7 | *Gap 030-G* | "Đã thêm vào Trưa Thứ Tư." with "Xem thực đơn" | **GAP** |
+| `UC-030-03` | Basic Flow (Step 1) | `MP02-SlotMenu.dc.html` | Dish menu "Trưa · Thứ Tư 29/10" | **Available** (see 030-I) |
+| `UC-030-03` | Basic Flow (Steps 3–4) | `MP03-MoveTo.dc.html` | "Chuyển “Canh chua cá lóc”" target list | **Available** (text outdated, see 030-H) |
+| `UC-030-03` | Step 3 | *Gap 030-H* | `MP03` shows the swap rule ("Bữa đã có món sẽ được đổi chỗ"); must show "Thêm vào sau …" and "Đủ 4 món" | **GAP** (update `MP03`) |
+| `UC-030-03` | AF 3.1 | *Gap 030-I* | "Lên trên" / "Xuống dưới" in the dish menu | **GAP** (update `MP02`) |
+| `UC-030-03` | AF 3.6 | *Gap 030-J* | "Xóa mọi món của Thứ Tư?" confirmation | **GAP** |
+| `UC-030-03` | AF 3.7 | *Gap 030-K* | "Kế hoạch đã thay đổi ở nơi khác. Đã tải lại tuần." | **GAP** |
+| `UC-030-04` | Basic Flow (Steps 2–4) | `MP06-EmptyWeek.dc.html` | "Tuần này chưa có món" with "Tạo bằng AI" | **Available** (see 030-L) |
+| `UC-030-04` | Basic Flow | *Gap 030-L* | `MP06` shows "Chép từ tuần trước" (not in any spec) and the dates 27–02 under the header "03/11 – 09/11" | **GAP** (update `MP06`, `[OQ-030-01]`) |
+| `UC-030-04` | AF 4.2, AF 4.3 | *Gap 030-M* | Empty past week without "Tạo bằng AI"; disabled "Tạo bằng AI" on a full week | **GAP** |
+| `UC-030-05` | AF 5.1 – AF 5.3 | *Gap 030-N* | Disabled "Đi chợ" with hint, skipped-dishes confirmation with "Tiếp tục", hand-off failure; a week action distinct from the "Đi chợ" navigation tab | **GAP** |
+| `UC-031-01` | Basic Flow (Steps 3–5) | `AI01-Constraints.dc.html` | "Tạo thực đơn bằng AI", "Luôn áp dụng" / "Cho lần tạo này", "Chỉ ô trống (14)", "Còn 4/5 lượt tạo trong 60 phút." | **Available** (see 031-B) |
+| `UC-031-01` | Basic Flow (Step 8) | `AI02-Generating.dc.html` | "Đang chọn món cho tuần" with "Hủy" | **Available** |
+| `UC-031-01` | Basic Flow (Step 14) | `AI03-Draft.dc.html` | "Bản nháp AI · chưa lưu", "13 món mới · 1 ô cần bạn chọn", "AI" label and reason | **Available** |
+| `UC-031-01` | AF 1.6 | `AI07-LimitReached.dc.html` | "Bạn đã dùng hết 5 lượt tạo", next time "15:20" | **Available** |
+| `UC-031-01` | AF 1.8 | `AI06-NotEnough.dc.html` | "Chỉ tìm được 6 món phù hợp" with suggestions | **Available** (see 031-A) |
+| `UC-031-01` | AF 1.8 | *Gap 031-A* | `AI06` offers "Dùng 6 món, phần còn lại tự chọn", but FR-012 produces no draft | **GAP** (`[OQ-031-02]`) |
+| `UC-031-01` | Steps 3–4 | *Gap 031-B* | `AI01` shows allergies and exclusions as fixed ("Luôn áp dụng"), while FR-002 / FR-004 allow changing them for one generation | **GAP** (`[OQ-031-01]`) |
+| `UC-031-01` | AF 1.3, AF 1.4 | *Gap 031-C* | Notice to complete the profile with link; servings "Theo công thức" | **GAP** |
+| `UC-031-01` | Step 3, AF 1.16 | *Gap 031-D* | Disclaimer of FR-028 inside `AI01`; message when the profile cannot be read | **GAP** |
+| `UC-031-02` | Basic Flow (Steps 1–4) | `AI03-Draft.dc.html` | "Bỏ nháp", "Tạo lại", "Lưu thực đơn", "Chọn món" | **Available** |
+| `UC-031-02` | Basic Flow (Steps 6–7) | `AI05-Saved.dc.html` | "Đã lưu 13 món vào thực đơn tuần" with "Xem danh sách đi chợ" | **Available** (see 031-E) |
+| `UC-031-02` | AF 2.6 | `AI04-LeaveDraft.dc.html` | "Bỏ bản nháp?" with "Ở lại" / "Bỏ nháp" | **Available** |
+| `UC-031-02` | Step 7 | *Gap 031-E* | FR-018 opens the shopping import directly; `AI05` shows only a link | **GAP** (`[OQ-031-03]`) |
+| `UC-031-02` | AF 2.3, AF 2.4 | *Gap 031-F* | "2 món AI không được lưu vì bữa đã có món"; `AI03` "Gợi ý khác" on a dish is not in any spec | **GAP** (`[OQ-031-05]`) |
+| `UC-031-03` | AF 3.7 | *Gap 031-G* | Draft where every slot is marked "Chọn món" | **GAP** |
+| `UC-031-04` | Basic Flow (Step 5), AF 4.4 | `AI08-Fallback.dc.html` | "AI tạm thời không phản hồi", "Chọn theo hồ sơ, không dùng AI", "Thử lại AI" | **Available** (see 031-H) |
+| `UC-031-04` | Step 5 | *Gap 031-H* | "Auto" label on dishes and the notice "Tạo tự động, không dùng AI" word for word | **GAP** (update `AI08`) |
+| `UC-031-04` | AF 4.1, AF 4.3 | *Gap 031-I* | Daily-quota variant "AI đã hết lượt hôm nay"; "cannot build a draft" message | **GAP** |
+| `UC-031-05` | Basic Flow (Steps 4–5) | `AI09-SlotSuggest.dc.html` | "Gợi ý cho bữa tối", up to 3 suggestions with "AI" and reasons | **Available** (see 031-J) |
+| `UC-031-05` | Step 4, AF 5.1 | *Gap 031-J* | Short AI disclaimer and "no suggestion" state; "Gợi ý khác" is not in FR-033 | **GAP** (`[OQ-031-05]`) |
+| `UC-090-01` | Basic Flow (Steps 1–5), AF 1.3 | `NU01-Detail.dc.html`, `NU02-Nutrition.dc.html` | Tab "Dinh dưỡng", "Mỗi phần · 4 phần", 320 kcal / 28 g / 18 g / 14 g, low-confidence note, disclaimer | **Available** |
+| `UC-090-01` | AF 1.1, AF 1.2 | `NU03-NutritionStates.dc.html` | "Đang tính số liệu dinh dưỡng…", "Chưa có số liệu dinh dưỡng" | **Available** |
+| `UC-090-01` | AF 1.10 | `NU04-Unavailable.dc.html` | "Công thức này không còn khả dụng" | **Available** |
+| `UC-090-01` | AF 1.11 | *Gap 090-A* | `NU01` header "320 kcal" without the disclaimer required by FR-016 | **GAP** (`[OQ-090-02]`) |
+| `UC-090-01` | AF 1.4 | *Gap 090-B* | Line listing optional ingredients not included | **GAP** |
+| `UC-090-04` | Basic Flow (Steps 3–5) | `NU02-Nutrition.dc.html` | "Chất gây dị ứng — Theo danh mục nguyên liệu đã kiểm tra, không phải AI.", "Có đậu phộng · trong hồ sơ của bạn", "Nhãn chế độ ăn" | **Available** (see 090-C) |
+| `UC-090-04` | AF 4.1 | `NU03-NutritionStates.dc.html` | "Không có chất gây dị ứng đã biết trong danh mục nguyên liệu" | **Available** |
+| `UC-090-04` | Step 5 | *Gap 090-C* | `NU02` shows "Ít béo", which is not one of the six labels of FR-010 | **GAP** (`[OQ-090-01]`) |
+| `UC-090-05` | Basic Flow (Steps 1–4) | `NU05-AdminEstimates.dc.html` | Estimate list with filters, reasons, "Tính lại", "Ẩn" | **Available** (mobile only) |
+| `UC-090-05` | AF 5.1, AF 5.3, AF 5.4 | *Gap 090-D* | Hide dialog with mandatory reason, "Bỏ ẩn", attempts history | **GAP** |
+| `UC-090-05` | Step 2 | *Gap 090-E* | Filters "Đang tính" and "Có số liệu"; web variant `W-NU05` | **GAP** |
+
+*Note:* `UC-030-01` AF 1.5 – AF 1.8, AF 1.10 – AF 1.12, AF 1.14 – AF 1.15, AF 1.17, AF 1.19 – AF 1.20, AF 1.23, AF 1.25 – AF 1.27; `UC-030-02` AF 2.2, AF 2.4 – AF 2.9; `UC-030-03` AF 3.2 – AF 3.5, AF 3.8 – AF 3.12; `UC-030-04` AF 4.1, AF 4.4 – AF 4.8; `UC-030-05` AF 5.4 – AF 5.6; `UC-031-01` AF 1.1 – AF 1.2, AF 1.5, AF 1.7, AF 1.9 – AF 1.15, AF 1.17 – AF 1.18; `UC-031-02` AF 2.1 – AF 2.2, AF 2.5, AF 2.7 – AF 2.12; `UC-031-03`, `UC-031-06`, `UC-090-02` and `UC-090-03` (background behaviour); `UC-031-05` AF 5.2 – AF 5.8; `UC-090-01` AF 1.5 – AF 1.9; `UC-090-04` AF 4.2 – AF 4.6; `UC-090-05` AF 5.2, AF 5.5 – AF 5.9 reuse the screens above, are background behaviour, or are messages in screens already listed.
+
+*Desktop variants:* every `MP`, `AI` and `NU01` – `NU04` screen above also has a web variant `W-<ID>` in the same folder; the mobile files are listed because the flows are written for the 360 px layout (constitution Principle V). `NU05` has no web variant (Gap 090-E).
+
+### 17.3. Open Questions (For Team Alignment)
+
+*Proposed decisions of 03/11/2026 by Nguyễn Thành Dự (owner of `030`, `031` and `090`) are recorded under each item, to be confirmed in the review by Lê Quốc Hưng. Changes to the specs go through a PR; the use cases above change only where a decision is stated in the flow.*
+
+1. **`[OQ-030-01]` "Chép từ tuần trước" in `MP06`:**
+   - *Issue:* The empty-week prototype offers copying the previous week; no spec defines it (spec 030 Assumptions only allow remove-and-add between weeks).
+   - *Current Stance:* Not written as a flow. `UC-030-04` offers "Thêm món" and "Tạo bằng AI" only (FR-022).
+   - *Owner:* Nguyễn Thành Dự with Trần Nguyễn Công Chung (`SCRUM-58`).
+   - *Proposed Decision:* Remove the button from `MP06` / `W-MP06` for PA3 (Gap 030-L); keep the idea for the PA4 backlog.
+2. **`[OQ-030-02]` "Tạo bằng AI" on an Empty Past Week:**
+   - *Issue:* Spec 030 FR-022 says every empty week offers "Generate with AI"; spec 031 FR-001 and Edge Cases do not offer it for weeks that have ended.
+   - *Current Stance:* `UC-030-04` AF 4.3 follows spec 031 (no AI for a past week).
+   - *Owner:* Nguyễn Thành Dự.
+   - *Proposed Decision:* Change spec 030 FR-022 to "a current or future week without dishes".
+3. **`[OQ-030-03]` Conflict Label in "Thêm vào thực đơn":**
+   - *Issue:* FR-007b labels conflicting recipes in the picker only; the dialog of `UC-030-02` adds the recipe being read without a warning.
+   - *Current Stance:* `UC-030-02` AF 2.8 is written as Proposed: the dialog shows the same label and the actor can still confirm.
+   - *Owner:* Nguyễn Thành Dự with Nguyễn Đức Duy (`UC-020-06`, which already highlights allergens on the page).
+   - *Proposed Decision:* Add the label to FR-008 of spec 030.
+4. **`[OQ-030-04]` Prototypes Still Show the Rules before 02/11/2026:**
+   - *Issue:* The Clarification of 02/11/2026 (up to 4 dishes per meal, add at the end, no swap, no drag-and-drop) is not in `MP03`, `MP05` and `MP02` (Gaps 030-B, 030-F, 030-H, 030-I). The implemented planner already follows the new rules.
+   - *Current Stance:* The use cases follow the spec and the implemented strings.
+   - *Owner:* Trần Nguyễn Công Chung (`SCRUM-58`) with Nguyễn Thành Dự.
+   - *Proposed Decision:* Update the four screens and their `W-` variants.
+5. **`[OQ-030-05]` Planner and AI Planner When the Profile Cannot Be Read (from `[OQ-011-01]`):**
+   - *Issue:* Section 10.3 decided that a module that cannot read the dietary profile does not choose recipes automatically and shows the reason, with one Integration Points row for `020`, `030` and `031`.
+   - *Current Stance:* Written as Proposed flows: `UC-030-01` AF 1.24 (picker without conflict labels and with a notice), `UC-031-01` AF 1.16 (no generation), `UC-031-05` AF 5.7 (no suggestions), `UC-090-04` AF 4.5 (no highlight).
+   - *Owner:* Nguyễn Thành Dự.
+   - *Proposed Decision:* Add the Integration Points row and one FR each to specs 030 and 031.
+6. **`[OQ-030-06]` Answers to Questions Passed from Other Sections:**
+   - *Issue:* `[OQ-060-04]` (archived recipes in meal plans), `[OQ-080-04]` (planner slot of an unavailable recipe; bookmarks as an AI signal) and `[OQ-011-07]` (meal plans of a deleted account) were passed to the owner of `030` and `031`.
+   - *Current Stance:* Archived or removed recipes stay in the plan with the name as added, a placeholder image and "Không còn khả dụng"; selecting the name shows a message and does not open the page (`UC-030-01` AF 1.13, spec 030 FR-020). Meal plans are deleted with the account (`UC-030-01` AF 1.27, spec 030 Edge Cases). Bookmarks are not used by the AI planner; only the "Bộ sưu tập" view of the picker reads them (`UC-030-01` AF 1.2).
+   - *Owner:* Nguyễn Thành Dự.
+   - *Proposed Decision:* Closed with these answers; no spec change.
+7. **`[OQ-031-01]` Allergies in the Constraint Dialog:**
+   - *Issue:* FR-002 and FR-004 let the user change every pre-filled constraint for one generation; `AI01` shows allergies and exclusions as "Luôn áp dụng" with only a link to the profile.
+   - *Current Stance:* `UC-031-01` Step 3 – 4 follow the spec.
+   - *Owner:* Nguyễn Thành Dự.
+   - *Proposed Decision:* Keep allergies and exclusions read-only in the dialog (safer, and they are hard rules from the profile); change FR-002 / FR-004 to allow per-generation changes only for servings, diet type, time and cuisines.
+8. **`[OQ-031-02]` "Dùng 6 món, phần còn lại tự chọn" in `AI06`:**
+   - *Issue:* The prototype offers a partial draft when there are not enough recipes; FR-012 and the Edge Cases say no draft is produced and partial plans are not offered.
+   - *Current Stance:* `UC-031-01` AF 1.8 follows the spec.
+   - *Owner:* Nguyễn Thành Dự with Trần Nguyễn Công Chung (`SCRUM-58`).
+   - *Proposed Decision:* Remove the option from `AI06` (Gap 031-A); keep only "Nới điều kiện".
+9. **`[OQ-031-03]` Shopping Import after "Lưu thực đơn":**
+   - *Issue:* FR-018 opens the shopping import right after saving; `AI05` shows a confirmation with the link "Xem danh sách đi chợ".
+   - *Current Stance:* `UC-031-02` Step 7 follows the spec.
+   - *Owner:* Nguyễn Thành Dự with Lê Quốc Hưng (`040`).
+   - *Proposed Decision:* Keep FR-018; `AI05` shows the confirmation and then the import preview of `UC-040-02`.
+10. **`[OQ-031-04]` Every AI Pick Removed:**
+    - *Issue:* Spec 031 does not say whether a draft in which every pick was removed should be shown (all "Chọn món") or replaced by the backup draft.
+    - *Current Stance:* `UC-031-03` AF 3.7 shows the draft with every slot marked, which is what FR-013 literally requires.
+    - *Owner:* Nguyễn Thành Dự.
+    - *Proposed Decision:* Treat it as an unusable answer (retry once, then `UC-031-04`), and add this to FR-014.
+11. **`[OQ-031-05]` "Gợi ý khác" in `AI03` and `AI09`:**
+    - *Issue:* The prototypes offer "more suggestions" on a draft dish and in the slot list; FR-033 limits the list to 5 and no spec defines a per-dish alternative.
+    - *Current Stance:* Not written as a flow; "Đổi món" with the picker and its "Gợi ý" list covers the need.
+    - *Owner:* Nguyễn Thành Dự with Trần Nguyễn Công Chung (`SCRUM-58`).
+    - *Proposed Decision:* Remove "Gợi ý khác" from both screens (Gaps 031-F, 031-J).
+12. **`[OQ-090-01]` Label "Ít béo" in `NU02`:**
+    - *Issue:* The prototype shows "Ít béo" (low fat); FR-010 allows only Gluten-Free, Dairy-Free, Nut-Free, Low-Sodium, Vegetarian and Vegan.
+    - *Current Stance:* `UC-090-03` AF 3.4 drops such a label.
+    - *Owner:* Nguyễn Thành Dự with Trần Nguyễn Công Chung (`SCRUM-58`).
+    - *Proposed Decision:* Replace it with an allowed label (for example "Ít muối") in `NU02` / `W-NU02`.
+13. **`[OQ-090-02]` Calories Shown without the Disclaimer:**
+    - *Issue:* FR-016 requires the disclaimer next to every calorie value; `NU01` shows "320 kcal" in the recipe header and `MP04` shows kcal on picker cards without it.
+    - *Current Stance:* `UC-090-01` AF 1.11 follows the spec.
+    - *Owner:* Nguyễn Thành Dự with Nguyễn Đức Duy (`UC-020-06`).
+    - *Proposed Decision:* Add the short form "AI ước tính" next to these values, as `MP01` already does for the day total.
+14. **`[OQ-090-03]` Admin Estimate List on Desktop:**
+    - *Issue:* Only the mobile `NU05` exists; the admin area of spec 100 is used mainly on desktop, and spec 090 leaves the place of the list to spec 100.
+    - *Current Stance:* `UC-090-05` uses `NU05`.
+    - *Owner:* Trần Nguyễn Công Chung (`100`, `SCRUM-58`).
+    - *Proposed Decision:* Add `W-NU05` in the admin layout of spec 100 (Gap 090-E).
