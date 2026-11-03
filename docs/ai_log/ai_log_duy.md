@@ -841,3 +841,174 @@ Changes.md.
 - Đối chiếu spec 100: User Story 6 là "Audit Trail & Analytics Dashboard", nên bỏ `101-admin-analytics` là đúng.
 - `file` xác nhận Vision vẫn CRLF, model vẫn LF như bản gốc; không còn chuỗi `101-admin` ngoài Revision History và §8.3.
 - Chưa xem render trên GitHub; Chung review PR #49, Hiển review PR #50.
+
+## Mục 13: Chạy thử, đối chiếu frontend Shopping List với màn hình thiết kế và mở PR (SCRUM-56)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-02, khoảng 11:00 – 11:35 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `src/frontend/src/features/shopping-list/`, `src/frontend/src/styles/index.css`, `specs/040-shopping-list/tasks.md`, màn hình `docs/analysis-and-design/ui-ux/screens/W-SL01…W-SL08` (Jira `SCRUM-56`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), chạy trong extension VS Code trên Windows 11 |
+| Mục đích | Xem kết quả frontend US1/US2 trên trình duyệt trước khi push, kiểm tra độ khớp với màn hình thiết kế, sửa phần lệch trong phạm vi task rồi mở PR |
+| Nhánh Git | `feature/scrum-56-frontend-shopping-list-us1-us2` (PR #63) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `baddae3b-69b8-4393-9a22-885e20e8c42c` |
+
+### Prompt đã dùng
+
+Mình hỏi ngắn trong 4 lượt ("cho mình xem thành quả trước khi push", "có dựa theo màn hình screens không, các màn khác nữa", "đồng bộ font chữ màu chưa, có nên làm hết SL không", "sửa 2 chỗ lệch rồi tạo PR"); AI viết lại thành prompt đầy đủ dưới đây, mình đọc lại và đồng ý ghi.
+
+```text
+Bối cảnh: frontend Shopping List US1 + US2 (SCRUM-56) đã commit trên nhánh
+feature/scrum-56-frontend-shopping-list-us1-us2 nhưng chưa push.
+Mục tiêu: (1) chạy app thật (database, backend, frontend) để mình tự xem /shopping-list
+và /shopping-list/history; (2) đối chiếu từng màn web W-SL01…W-SL08 trong
+docs/analysis-and-design/ui-ux/screens với code: chữ hiển thị, class wk-/wx-/sx-,
+token màu, font, cỡ chữ; tách rõ phần lệch thuộc US1/US2 với phần thuộc US3/US4 hoặc
+module khác; (3) khuyên có nên làm hết các màn SL ngay không; (4) sửa các chỗ lệch nằm
+trong phạm vi SCRUM-56, chạy test, lint, build, rồi push và mở PR vào main.
+Ràng buộc: không push trước khi mình xem; không sửa code backend của SCRUM-55 hay
+khung chung AppLayout của người khác, lỗi gặp phải thì báo lại; không gọi API chưa tồn
+tại; giải quyết xung đột với main mà không xóa ghi chú của người khác; commit và PR
+không ghi tên Claude.
+Kết quả mong muốn: link chạy thử, bảng phần khớp và phần lệch theo từng màn, commit sửa
+lỗi lệch font chữ, PR có ghi phần chưa làm và lỗi backend phát hiện được.
+```
+
+### Nội dung do AI tạo
+
+- Dựng môi trường chạy thử: bật Docker Desktop, chạy container database, cài Maven 3.9.11, chạy backend với profile `local` và Vite dev server. Tạo dữ liệu local (1 user, 1 danh sách, 6 quầy, 4 món mẫu) để xem được giao diện.
+- Phát hiện 2 lỗi backend (SCRUM-55): `GET /active` lỗi 500 vì tạo danh sách trong transaction `readOnly`; bảng `aisle_categories` không có migration nào thêm dữ liệu.
+- Script đối chiếu chữ, label và class giữa các màn W-SL và component; so biến CSS và rule giữa CSS thiết kế và `tokens.css` / `soft-editorial.css`.
+- Commit `c2100d4`: tải thêm Be Vietnam Pro 500 và 700, bọc 2 trang shopping list bằng `wk-desktop`.
+- Merge `main`, giải quyết xung đột `tasks.md`; mở PR #63.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Chưa làm SL-04 chọn món, SL-04b, sửa số lượng ở SL-05, SL-06, SL-08 | Để lại | Cần API `PATCH /items` (US3, T056) và luồng công thức của module 020 (T048), cả hai chưa có; làm bây giờ sẽ phình PR ra ngoài phạm vi SCRUM-56 |
+| Không sửa 2 lỗi backend | Báo trong PR | Code backend thuộc SCRUM-55 |
+| Gắn `wk-desktop` ở 2 trang shopping list, không gắn ở AppLayout | Dùng | AppLayout là phần của SCRUM-66 |
+| Xung đột `tasks.md` | Giữ T043–T045 theo main, T046–T047 đánh dấu xong | Không ghi đè ghi chú hoãn sang PA4 của người làm backend |
+
+### Cách sinh viên kiểm chứng
+
+- Tự mở `/shopping-list` và `/shopping-list/history` trên trình duyệt, so với W-SL01, W-SL02, W-SL07.
+- Biến token: 0 khác biệt; rule CSS: 297/317 giống hệt, 20 rule còn lại là khung giả lập điện thoại của bản mobile.
+- `npm test` 80/80, `npm run lint`, `npm run build` qua, cả trước và sau khi merge main.
+
+## Mục 14: Implement phần còn lại của SCRUM-56 (T048) và kiểm chứng US1/US2 (T035, T051)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-02, khoảng 11:35 – 12:10 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `src/frontend/src/features/shopping-list/components/RecipeIngredientsPanel.tsx` (+ test), `PreImportBottomSheet.tsx`, `iconPaths.tsx`, `specs/040-shopping-list/tasks.md`, màn hình `W-NU01-Detail` (Jira `SCRUM-56`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), lệnh `/speckit-implement`, chạy trong extension VS Code trên Windows 11 |
+| Mục đích | Làm nốt các task frontend US1/US2 còn mở của mình trong tuần và kiểm chứng kịch bản chấp nhận trước hạn review 03/11 |
+| Nhánh Git | `feature/scrum-56-frontend-shopping-list-us1-us2` (PR #63) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `baddae3b-69b8-4393-9a22-885e20e8c42c` |
+
+### Prompt đã dùng
+
+Mình yêu cầu ngắn "làm implement bằng /speckit-implement các phần còn lại của công việc tuần này của mình"; AI viết lại thành prompt đầy đủ dưới đây, mình đọc lại và đồng ý ghi.
+
+```text
+Bối cảnh: spec 040-shopping-list, mình phụ trách SCRUM-56 (frontend US1 + US2). Các task
+frontend chính đã xong trong PR #63; tasks.md còn mở T035 (kiểm chứng US1), T048 (nút thêm
+vào danh sách đi chợ trên trang chi tiết công thức của 020) và T051 (kiểm chứng US2).
+Mục tiêu: chạy /speckit-implement chỉ cho các task trên; T048 làm theo panel "Nguyên liệu"
+của màn W-NU01 (bộ chọn khẩu phần, danh sách nguyên liệu đổi số lượng theo khẩu phần, nút
+mở PreImportBottomSheet và import kèm Idempotency-Key); T035/T051 chạy đúng lệnh trong
+tasks.md và chạy thử kịch bản chấp nhận trên backend thật.
+Ràng buộc: test-first (Vitest + Testing Library); không làm US3 trở đi và không sửa backend
+của người khác; không bịa đường dẫn trang 020 khi trang đó chưa có; chỉ đánh dấu [X] khi
+kiểm chứng đạt thật; commit tách test / code / tài liệu; không push khi chưa hỏi.
+Kết quả mong muốn: component có test, ghi chú tình trạng trong tasks.md, danh sách lỗi
+chặn việc kiểm chứng.
+```
+
+### Nội dung do AI tạo
+
+- `RecipeIngredientsPanel.tsx` theo W-NU01: bộ chọn khẩu phần (bước 0,5) đổi mọi số lượng, nút "Thêm vào danh sách đi chợ" mở sheet ở khẩu phần đang chọn, báo thành công kèm link "Xem danh sách", lỗi thì giữ sheet.
+- 6 test cho panel, viết trước code; thêm 1 test cho sheet hiển thị lỗi bên trong.
+- `PreImportBottomSheet`: thêm prop `error`, đổi icon nút "Bớt khẩu phần" sang dấu trừ như W-NU01; thêm icon `minus`.
+- Chạy kiểm chứng: frontend 87/87, backend 43/43; chạy Independent Test của US2 trên DB local sau khi tạo tạm dữ liệu nền (quầy, nguyên liệu, đơn vị, công thức).
+- Ghi chú tình trạng dưới T035, T048, T051 trong `tasks.md`; cập nhật mô tả PR #63.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| T048 làm thành component riêng, chưa gắn vào trang | Dùng | Frontend chưa có trang chi tiết công thức của 020; task ghi rõ phải xác nhận đường dẫn trước |
+| Chữ trên nút theo màn hình ("đi chợ") thay vì spec ("mua sắm") | Dùng | Nhóm thống nhất frontend bám màn hình trong `ui-ux/screens` |
+| aria-label "Bớt khẩu phần" / "Thêm khẩu phần" thay vì "Bớt" / "Thêm" như màn hình | Dùng | Rõ nghĩa hơn cho trình đọc màn hình, giống sheet đã có |
+| Không đánh dấu T035, T048, T051 là xong | Dùng | Kiểm chứng trên app thật chưa đạt vì lỗi backend, T048 còn bước gắn vào 020 |
+| Không sửa lỗi backend | Báo trong PR #63 | Code thuộc SCRUM-55 |
+
+### Cách sinh viên kiểm chứng
+
+- Test mới chạy đỏ trước khi có code, sau đó xanh; `npm test` 87/87, `npm run lint`, `tsc -b` sạch.
+- Backend: `ShoppingListServiceTest`, `ShoppingListControllerTest`, `UnitConversionServiceTest`, `IngredientAggregationServiceTest` qua 43/43.
+- Independent Test US2 trên DB thật **không đạt**: Bò kho x4 + Bò xào x4 cho 2 dòng Thịt bò 600 và 400 thay vì "1 kg", `displayUnit` luôn null. Đã ghi vào PR để người làm backend sửa.
+- Chưa xem panel trên trình duyệt vì chưa có trang 020 gắn vào; mới kiểm tra qua test.
+
+## Mục 15: Xử lý review PR #63 của MaiHien3507 (SCRUM-56)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-03, khoảng 00:00 – 00:25 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | Review PR #63 (MaiHien3507, 2026-11-02); `PreImportBottomSheet.tsx`, `RecipeIngredientsPanel.tsx`, `AddCustomItemDialog.tsx`, `Overlay.tsx`, `useShoppingList.ts`, `useIngredientAggregation.ts` (+ test), `specs/040-shopping-list/tasks.md` (Jira `SCRUM-56`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), chạy trong extension VS Code trên Windows 11 |
+| Mục đích | Sửa và trả lời các điểm review bắt buộc (A1–A3) và nên sửa (B1–B4) để PR #63 được approve |
+| Nhánh Git | `feature/scrum-56-frontend-shopping-list-us1-us2` (PR #63), commit `d41d238`..`12dde46` |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `0511564c-b528-4b6e-a30d-8db6ba02d6b9`; comment trả lời: https://github.com/ThanhDu14/WikiCook/pull/63#issuecomment-6583563560 |
+
+### Prompt đã dùng
+
+Mình hỏi ngắn: AI có xem được review PR không, nếu có thì sửa theo review nhưng phải nói trước sẽ làm gì và vì sao, rồi hỏi review có hợp lý không. AI viết lại thành prompt đầy đủ dưới đây, mình đọc lại và đồng ý ghi.
+
+```text
+Bối cảnh: PR #63 (SCRUM-56, frontend US1 + US2 của spec 040) có review của MaiHien3507 chia
+mục A (bắt buộc: Idempotency-Key và chống gửi trùng, sai tên file trong tasks.md, ghi chú
+chưa bằng tiếng Anh), B (nên sửa: Overlay mất focus, thông báo lỗi, banner gộp đơn vị, ghi
+chú T034) và C (nhỏ). Reviewer yêu cầu mỗi điểm A1–A3, B1–B4 phải được sửa hoặc trả lời.
+Mục tiêu: đọc review qua gh, đối chiếu từng điểm với code thật, cho mình biết điểm nào đúng,
+điểm nào nên phản biện, kèm kế hoạch sửa và lý do, trước khi đụng vào code.
+Ràng buộc: không sửa backend (SCRUM-55); không đổi hành vi spec chỉ để khớp lỗi backend;
+test-first, test mới phải fail trên code cũ; giữ nguyên số liệu đã ghi theo ngày trong
+tasks.md; commit tách theo nhóm, không ghi tên AI; nội dung trả lời trên GitHub phải cho mình
+duyệt trước khi đăng.
+Kết quả mong muốn: code và tasks.md đã sửa, test/lint/build qua, một comment trả lời từng
+điểm review.
+```
+
+### Nội dung do AI tạo
+
+- **A1:** sheet tạo `Idempotency-Key` một lần mỗi lần mở và dùng lại khi thử lại; chặn bấm đúp hoặc Enter hai lần bằng ref ở sheet và `AddCustomItemDialog`; hook `importRecipe` nhận key từ bên gọi.
+- **B1:** `Overlay` đọc `onClose` qua ref và có thêm focus trap cho Tab và Shift+Tab.
+- **B2:** tách thông báo lỗi mất kết nối, 5xx và 4xx.
+- **C1:** xóa thành công mà bước tải lại lỗi thì không báo xóa thất bại.
+- **C3:** comment nhắc phải đồng bộ với `UnitConversionService`.
+- **`tasks.md`:** sửa đường dẫn `ArchivedHistory` (A2); viết lại ghi chú T035, T048, T051 bằng tiếng Anh (A3); ghi chú T034 (B4); ghi rõ backend chưa đọc header Idempotency và API chưa trả cấu trúc gom đơn vị (US2-4).
+- **Test:** 13 test mới hoặc sửa lại, gồm `Overlay.test.tsx`.
+- Bản nháp comment trả lời từng điểm review.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| B3: banner "600 g + 400 g = 1 kg" | Không sửa, trả lời bằng comment | Đó là hành vi spec US2-2; lỗi gộp nằm ở backend (SCRUM-55) |
+| A2: sửa `tasks.md` hay đổi tên file | Sửa `tasks.md` | Lịch sử là trang `/shopping-list/history`, không phải drawer |
+| US2-4: frontend tự gom đơn vị | Không làm, ghi vào T051 | Tránh lệch với backend; cần API trả cấu trúc gom trước |
+| C2, C4, C5, C6 | Chỉ trả lời | C5 là refactor ngoài phạm vi; các điểm còn lại reviewer đã ghi là chấp nhận được |
+| Số 87/87 ở ghi chú T035 | Giữ nguyên | Là số liệu của ngày 02/11 |
+| Đăng comment trả lời lên PR | Đồng ý sau khi đọc bản nháp | Comment đăng bằng tài khoản của mình |
+
+### Cách sinh viên kiểm chứng
+
+- 7 test mới chạy trên code cũ (tạm `git stash` phần sửa) đều fail, sau khi sửa thì pass.
+- `npm test` 96/96 (13 file), `npm run lint` và `npm run build` đều exit 0.
+- Không chạy lại backend vì PR này không sửa backend.
