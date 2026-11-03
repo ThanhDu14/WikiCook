@@ -32,14 +32,15 @@ class JdbcRecipeSummaryAdapterIT extends AbstractPostgresIT {
 
     @Test
     void readsEverySummaryFieldInOneCall() {
-        long vegan = f.newRecipe("Đậu hũ sốt cà").minutes(10, 20).ingredients(f.ingredient("Đậu hũ", "PLANT"))
-                .create();
+        // Names used only here: the fixture reuses an ingredient by name, and other ITs create theirs as OTHER.
+        long tofu = f.ingredient("Đậu hũ non", "PLANT");
+        long vegan = f.newRecipe("Đậu hũ sốt cà").minutes(10, 20).ingredients(tofu).create();
         jdbc.update("INSERT INTO recipe_media (recipe_id, role, external_url) VALUES (?, 'COVER', ?)", vegan,
                 "https://img.example/dau-hu.jpg");
-        long fish = f.newRecipe("Cá kho tộ").ingredients(f.ingredient("Cá basa", "SEAFOOD")).create();
-        long archived = f.newRecipe("Bò lúc lắc").status("ARCHIVED").ingredients(f.ingredient("Thịt bò", "MEAT"))
+        long fish = f.newRecipe("Cá kho tộ").ingredients(f.ingredient("Cá thu", "SEAFOOD")).create();
+        long archived = f.newRecipe("Bò lúc lắc").status("ARCHIVED").ingredients(f.ingredient("Thăn bò", "MEAT"))
                 .create();
-        long snack = f.newRecipe("Bánh tráng trộn").snack().ingredients(f.ingredient("Đậu hũ", "PLANT")).create();
+        long snack = f.newRecipe("Bánh tráng trộn").snack().ingredients(tofu).create();
 
         Map<Long, RecipeSummary> found = recipes.findByIds(List.of(vegan, fish, archived, snack, -1L));
 
