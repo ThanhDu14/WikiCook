@@ -1,9 +1,11 @@
-/** Placeholder for 040 US1/US2 (SCRUM-56): components/, hooks/ and services/ follow specs/040-shopping-list/plan.md. */
+import { ChecklistScreen } from './components/ChecklistScreen';
+
+/** 040 Shopping List route (`/shopping-list`), screens SL-01 / SL-02. */
 export function ShoppingListPage() {
+  // Web screens (W-SL*) wrap the page in wk-desktop, which switches headings to the desktop type scale.
   return (
-    <section className="space-y-ds-3">
-      <h1>Danh sách đi chợ</h1>
-      <p className="text-ink-muted">Tính năng đang được xây dựng.</p>
-    </section>
+    <div className="wk-desktop">
+      <ChecklistScreen />
+    </div>
   );
 }
