@@ -28,6 +28,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Vă
 | 22 | 2026-10-30 | Task SCRUM-50 – sửa lỗi của AI: Decision đặt sai chỗ, `AF 2.3` và `UC-011-03` chưa nêu là "proposed" | `use-case-specification.md` §9–§11 |
 | 23 | 2026-10-30 | Task SCRUM-50 – nhận xét AI log, hướng dẫn chuyển nhánh, chuẩn bị push và mô tả PR | `ai_log_hien.md`, `use-case-specification.md` §9–§11 |
 | 24 | 2026-11-04 → 2026-11-06 | Task SCRUM-59 – sửa Project Plan lần 2 (bản nháp phần A) và lập `Changes.md` section A | `project-plan.md`, `Changes.md` |
+| 25 | 2026-11-06 | Task SCRUM-67 – chốt Project Plan `v2.0` (phần A), đối chiếu Vision, Use-Case Model, Sprint 03 report và code, viết lại `Changes.md` section A | `project-plan.md`, `Changes.md` |
 
 ---
 
@@ -1634,3 +1635,91 @@ Tóm lược (nguyên văn nằm trong hội thoại):
 - Version Claude Code: 2.1.296.
 - Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
 - Hiển cần tự đối chiếu trước khi nộp: (1) giờ bắt đầu phiên ngày 04/11 và phiên bản Claude Code của từng phiên; (2) từng thay đổi trong bảng A.2 của `Changes.md` với `project-plan.md` đã merge; (3) bốn quyết định AI tự chốt ở mục A.4; (4) câu "all remote branches" ở A.1; (5) hai chỗ Vision (`vision-document.md:532`, `:612`) sau khi lấy PR #71 về, và các câu ở `Changes.md` section A (A.1, A.5 mục 2 và 5) đã lỗi thời so với PR #71; (6) 7 chỗ "pending review" sau khi Hưng đã Approve.
+
+---
+
+## Mục 25: Task SCRUM-67 – chốt Project Plan lần 2 (`v2.0`) và viết lại Changes.md section A
+
+**Task: SCRUM-67**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-06 (sau mốc "chốt cuối ngày 05/11" của task; việc trễ được ghi ở `Changes.md` A.4 quyết định 5) |
+| Giờ truy cập | Phiên bắt đầu 08:25 (timestamp đầu của transcript phiên: `2026-11-06T01:25:39Z`); PR #72 tạo lúc 08:43; commit `425212b` lúc 08:47:12; mục này ghi sau 08:48 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/management/project-plan.md`, `Changes.md` (section A), `docs/requirements/vision-document.md`, `docs/requirements/use-case-model.md`, `docs/requirements/use-case-specification.md`, `docs/management/reports/sprint-03/sprint-03-report.md`, `docs/management/w6-w10-weekly-plan.md`, `docs/analysis-and-design/database/full-schema.md`; để đối chiếu code: `docker-compose.yml`, `src/backend/docker-compose.yml`, `.github/workflows/`, các file `pom.xml`, `application.yml`, migration trong `wikicook-db` |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), phiên bản 2.1.296 (đọc từ trường `version` trong transcript của phiên). Phiên bắt đầu với Sonnet 5.5 (`claude-sonnet-5-5`), đang đọc và đối chiếu thì chuyển sang Opus 5.5 (`claude-opus-5-5`); toàn bộ phần sửa file do Opus 5.5 thực hiện. Hiển chạy thêm `/model opus` sau khi AI báo cáo xong. Transcript có 35 dòng ghi model Sonnet và 106 dòng ghi model Opus |
+| Mục đích | Đối chiếu Plan với Vision v2.0, Use-Case Model, UC spec, Sprint 03 report và code ở `main`; sửa chỗ lệch, đổi nhãn `v2.0-draft` thành `v2.0`, ghi đủ thay đổi so với PA2 vào `Changes.md` section A; sau đó tư vấn file cần add, viết mô tả PR và tìm lý do PR chỉ hiện AI log |
+| Nhánh Git | `docs/scrum-67-final-plan` (commit `425212b`, thông điệp `docs(scrum-67): finalise project plan v2.0 and Changes.md section A`, Hiển tự commit và push); PR #72 vào `main` đang mở, chưa có review |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5) và Opus 5.5 (claude-opus-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập ngày 06/11/2026 (phiên bắt đầu 08:25), prompt: xem phần "Prompt đã dùng" bên dưới, dùng để chốt Project Plan `v2.0` và viết lại `Changes.md` section A; AI đối chiếu Plan với tài liệu và code, sửa `project-plan.md` (36 dòng thêm, 25 dòng bớt trong commit `425212b`), viết lại `Changes.md` section A (69 dòng thêm, 38 dòng bớt), viết mô tả PR và giải thích vì sao PR chỉ hiện AI log.
+
+### Prompt đã dùng
+
+Tóm lược (nguyên văn nằm trong hội thoại):
+
+1. Hiển dán prompt bắt đầu bằng "Nhiệm vụ: SCRUM-67 – chốt Project Plan lần 2 (phần A)." Prompt gồm: Bước 1 đọc tài liệu và lập bảng đối chiếu; Bước 2 đối chiếu 5 nhóm (Vision, Use-Case Model và UC spec, lịch Jira trong Sprint 03 report, feedback TA, 5 việc mở ở `Changes.md` A.5); Bước 3 sửa Plan, giữ dòng `v2.0-draft` làm lịch sử, thêm hàng `v2.0`, Edited by là Nguyễn Đức Duy, không gỡ nhãn "pending review"; Bước 4 cập nhật `Changes.md` section A, không đụng section B; ràng buộc không sửa Vision, `use-case-*.md`, `sprint-03-report.md`, không commit, không push, không thêm dòng Co-Authored-By; mọi khẳng định kỹ thuật phải đối chiếu với code; kèm các lệnh kiểm tra cuối và mẫu đầu ra. Ai soạn prompt này không có trong hội thoại.
+2. ```text
+   tôi nên add file nào
+   ```
+3. ```text
+   viết description cho tôi
+   ```
+4. ```text
+   tại sao file changed chỉ có ai log
+   ```
+5. ```text
+   hãy cập nhật AI log cho tôi
+   ```
+
+### Tóm tắt phản hồi của AI
+
+- Đối chiếu: AI đọc các tài liệu trên rồi đọc cấu hình và cây file thật. Plan khớp Vision v2.0 về Build v0.5, Redis và ngày 05/11. Các chỗ nhắc Redis trong Vision (§3.3, §4.1, NFR-COM-06) mô tả sản phẩm đầy đủ, nên không mâu thuẫn với Plan.
+- Bản nháp SCRUM-59 có các khẳng định sai so với `main`, AI sửa theo code:
+  - Migration: đã có `V001`–`V303` (gồm extension `vector` và `recipe_embeddings` có index HNSW ở `V302`) và `V401`–`V403`, chưa có `V5xx`; bản nháp ghi chỉ có "baseline schema" và extension chưa dùng.
+  - Không có container Mock LLM: `wikicook-ai` chạy client mock ngay trong app (`WIKICOOK_AI_MODE=mock`).
+  - CI không build Docker image; `mvn verify` đã chạy `*IT` trên Testcontainers.
+  - JaCoCo đo `INSTRUCTION` ≥ 0.70 cho `com.wikicook.shoppinglist.service`, không phải line coverage.
+  - `/actuator/health` chỉ trả trạng thái tổng vì không bật `show-details`; job `migrate` thuộc profile `tools`, `docker compose up` không chạy job này.
+  - Tên image thật là `wikicook-app:local` và `wikicook-web:local`, không có `wikicook-backend`.
+- Sửa `project-plan.md`: title block, ghi chú metadata, Revision History và Appendix B (giữ hàng `v2.0-draft`, thêm hàng `v2.0`), 1.2, ASM-03, 2.3 (thêm hàng Part F), `RSK-S3-01`, 4.3.3 (tách 10 feature, 12 spec, 64 use case; map lát cắt 040 sang `UC-040-01`, `UC-040-02`), 4.3.4 (cột task theo ngày trong Sprint 03 report, Review lúc 20:00), 4.4.1, 4.4.2, 4.4.4, 4.4.5, 4.4.6, 4.4.8, 5.4.
+- Thêm dòng attribution cho các subsection đã sửa trong PA3 nhưng còn thiếu (Revision History, 1.2, 2.2, 5.4, Appendix B). Vì vậy số nhãn "pending review" trong Plan tăng từ 7 lên 14; 7 nhãn mới gồm 5 dòng attribution và 2 hàng lịch sử `v2.0`. Hiển đặt điều kiện "vẫn là 7, trừ khi thêm hay bớt có lý do"; AI nêu lý do này trong báo cáo.
+- Viết lại `Changes.md` section A: A.2 có 21 hàng và cột Task, A.3 phần cố ý không đổi, A.4 sáu quyết định kèm danh sách đã kiểm trên `main`, A.5 chín mục có trạng thái và người xử lý. So sánh bằng script: section B giống hệt bản cũ.
+- Việc mở: đóng #2 (Vision), #3 (T6 13/11 là mốc dữ liệu Sprint 4, giữ nguyên), #5 (TA feedback); #4 đóng một phần vì repo chỉ có snapshot Jira ngày 28/10. Thêm #6 (chưa có tag `v0.5.0` và `CHANGELOG.md`), #7 (câu chữ NFR-REL-10 lệch code), #8 (`w6-w10-weekly-plan.md` đề xuất PA4 21/11 và đưa Redis vào v0.5), #9 (MoSCoW F-06–F-10).
+- Trả lời các câu hỏi sau báo cáo: chỉ add `Changes.md` và `project-plan.md`; viết mô tả PR tiếng Việt theo văn phong PR #70; PR chỉ hiện AI log vì hai file mới được stage, chưa commit, trong khi PR #72 đã mở từ trước.
+- Mục này: AI đọc Mục 24, lấy số liệu bằng `git show --numstat 425212b`, `gh pr view 72`, transcript phiên, rồi chèn mục 25 và hàng mục lục #25 bằng script giữ CRLF.
+- Sai sót và hạn chế của AI cần ghi nhận:
+  1. `Changes.md` A.1 vẫn giữ cụm "all remote branches", dù Mục 24 đã ghi cụm này nói quá. AI đọc Mục 24 chỉ sau khi đã viết xong section A nên bỏ sót, và câu sai đã nằm trong commit `425212b`. Chưa sửa.
+  2. Mô tả PR có lỗi `**Thuật ngữ (4.3.4 → 4.3.3):**`, đúng là `4.3.3`. AI đã báo lỗi này, nhưng lúc ghi mục này PR #72 vẫn còn dòng đó.
+  3. Mô tả PR không nhắc commit AI log `45b1d07` nằm trong PR; AI chỉ nhận ra khi kiểm tra Files changed.
+  4. Báo cáo ghi chỉ cần gỡ 1 nhãn ở `Changes.md` dòng 14. Thực tế dòng 7 (File Status) cũng ghi "review by Lê Quốc Hưng pending". `grep -c "pending review" Changes.md` ra 3, trong đó A.5 mục 1 và hàng 18 của A.2 chỉ trích dẫn nhãn.
+  5. Kết luận kỹ thuật dựa vào đọc file cấu hình và mã nguồn. AI không chạy `docker compose up`, `mvn verify` hay xem kết quả CI, nên gate `Build v0.5` chưa được đo. Dòng "Closed for Sprint 3" của `RSK-S3-01` chỉ dựa trên việc skeleton có trên `main`.
+  6. Editor của SCRUM-67 lấy theo prompt của Hiển. Sprint 03 report không có cột editor nên AI không tự kiểm được, và đã ghi vào A.5 mục 4.
+  7. Hàng 31/10 trong 4.3.4 ("missing prototype screens listed on 31/10") không có trong Sprint 03 report. AI giữ nguyên và chưa nêu trong báo cáo.
+  8. Hai lần chạy kiểm tra bị lỗi do shell xử lý ký tự `\` trong heredoc (script Mermaid và script đếm cột bảng), lặp lại lỗi đã ghi ở Mục 24; AI chạy lại bằng file script và có kết quả đúng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Sửa `project-plan.md` bản `v2.0` | Dùng; nằm trong commit `425212b` (36 dòng thêm, 25 dòng bớt) | Số dòng trong commit trùng với `git diff --stat` lúc AI báo cáo (61 dòng), không thấy dấu hiệu Hiển sửa nội dung trước khi commit |
+| `Changes.md` section A | Dùng; nằm trong commit `425212b` (69 dòng thêm, 38 dòng bớt) | Đề PA3 bắt buộc; còn lỗi "all remote branches" ở A.1 |
+| Thông điệp commit AI đề xuất | Dùng phần tiêu đề và gạch đầu dòng đầu tiên; 4 gạch đầu dòng còn lại không có trong commit | Hiển tự chạy lệnh commit |
+| Mô tả PR | Dùng làm nội dung PR #72 (dòng đầu "## Mô tả", còn dòng lỗi 4.3.4 → 4.3.3) | Hiển yêu cầu mô tả PR |
+| Tiêu đề PR đề xuất | Chưa dùng; PR #72 vẫn có tiêu đề `Docs/scrum 67 final plan` | Hiển chưa đổi tại thời điểm ghi mục này |
+| Dòng Co-Authored-By và "Generated with Claude Code" | Bỏ | Hiển yêu cầu không thêm |
+| Sửa Vision, `use-case-*.md`, `sprint-03-report.md`, `w6-w10-weekly-plan.md`, section B | Bỏ (không làm) | Ngoài phạm vi theo prompt; chỗ lệch được ghi thành việc mở cho người phụ trách |
+
+### Cách kiểm chứng
+
+- `git show --numstat 425212b`: `Changes.md` 69 dòng thêm, 38 dòng bớt; `project-plan.md` 36 dòng thêm, 25 dòng bớt; giờ commit `2026-11-06 08:47:12 +0700`; thông điệp không có dòng Co-Authored-By.
+- `gh pr view 72`: `OPEN`, `REVIEW_REQUIRED`, chưa có review, tạo lúc `2026-11-06T01:43:30Z` (08:43 giờ Việt Nam), 3 commit (`45b1d07`, `9a84440`, `425212b`), 3 file; địa chỉ `https://github.com/ThanhDu14/WikiCook/pull/72`.
+- `grep -n "13/11" docs/management/project-plan.md`: còn 2 dòng (41 và 732), đều là hàng lịch sử `v2.0-draft`.
+- `grep -c "pending review"`: `project-plan.md` ra 14, `Changes.md` ra 3.
+- Mermaid: `mermaid.parse` với `mermaid@10.9.1` (cài ở thư mục tạm, không vào repo): 6 khối, 0 lỗi. Số cột bảng Markdown: 0 dòng lệch ở `project-plan.md` và `Changes.md`.
+- Chưa render PDF và chưa chạy `markdownlint`.
+- Version Claude Code: 2.1.296; model theo từng lượt lấy từ transcript phiên.
+- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+- Hiển cần tự đối chiếu trước khi nộp: (1) sửa "all remote branches" ở `Changes.md` A.1; (2) sửa dòng lỗi và thêm `45b1d07` vào mô tả PR #72, đổi tiêu đề PR; (3) từng thay đổi trong bảng A.2 với `project-plan.md`; (4) các nhãn pending review sau khi Hưng duyệt, gồm cả dòng 7 của `Changes.md`; (5) chạy thật gate `Build v0.5`; (6) các mục cần xem trên Jira ở A.5 mục 4.
