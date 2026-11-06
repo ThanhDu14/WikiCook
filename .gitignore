@@ -9,6 +9,10 @@ dist/
 build/
 *.zip
 
+# Playwright results
+test-results/
+playwright-report/
+
 # OS & IDE files
 .DS_Store
 .vscode/

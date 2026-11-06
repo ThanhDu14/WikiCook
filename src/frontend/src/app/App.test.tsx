@@ -36,6 +36,15 @@ describe('app shell', () => {
     expect(screen.getByRole('link', { name: 'Danh sách đi chợ' })).toHaveClass('text-primary');
   });
 
+  it('renders the meal planner at /meal-planner', async () => {
+    server.use(http.get('/api/v1/meal-plans/:week', () => HttpResponse.json({ status: 500 }, { status: 500 })));
+    renderAt('/meal-planner');
+
+    expect(await screen.findByText('Thực đơn tuần')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Thực đơn' })).toHaveClass('text-primary');
+  });
+
   it('renders the shopping history at /shopping-list/history', async () => {
     renderAt('/shopping-list/history');
 

@@ -29,6 +29,7 @@ migration `V301__meal_plans.sql` (C). Cột `created_at`, `updated_at` theo quy 
 | `meal_plan_id` | `BIGINT` | NOT NULL, FK → `meal_plans` `CASCADE` | `@ManyToOne MealPlan mealPlan` |
 | `day_of_week` | `SMALLINT` | NOT NULL, `CHECK BETWEEN 1 AND 7` (1 = thứ Hai) | `DayOfWeek day` (converter ISO 1–7) |
 | `meal` | `VARCHAR(10)` | NOT NULL, `CHECK IN ('BREAKFAST','LUNCH','DINNER')` | `@Enumerated(STRING) Meal meal` |
+| `position` | `SMALLINT` | NOT NULL, `CHECK BETWEEN 0 AND 3` (thêm ở V304) | `short position` |
 | `recipe_id` | `BIGINT` | NULL, FK → `recipes` `ON DELETE SET NULL` | `Long recipeId` |
 | `recipe_name_snapshot` | `VARCHAR(100)` | NOT NULL | `String recipeNameSnapshot` |
 | `servings` | `SMALLINT` | NOT NULL, `CHECK BETWEEN 1 AND 20` | `short servings` |
@@ -36,7 +37,11 @@ migration `V301__meal_plans.sql` (C). Cột `created_at`, `updated_at` theo quy 
 | `version` | `INTEGER` | NOT NULL, default 0 | `@Version int version` |
 | `created_at`, `updated_at` | `TIMESTAMPTZ` | NOT NULL | `Instant` (`created_at` = "added time") |
 
-- `UNIQUE (meal_plan_id, day_of_week, meal)` – FR-004 (một món mỗi ô).
+- `UNIQUE (meal_plan_id, day_of_week, meal, position)` `DEFERRABLE INITIALLY DEFERRED` – FR-004 (tối đa 4
+  món mỗi bữa, thứ tự trong bữa). V304 bỏ `UNIQUE (meal_plan_id, day_of_week, meal)` của V301; dữ liệu
+  cũ nhận `position = 0`. `DEFERRED` để việc dồn thứ tự khi chuyển/xóa món chỉ được kiểm tra lúc
+  commit (research R5).
+- Vị trí trong một bữa luôn liền nhau từ 0 (xóa hay chuyển đi thì các món sau dồn lên).
 - Index `(recipe_id)` – tìm item bị ảnh hưởng khi công thức bị archive/xóa.
 - Thứ tự hiển thị bữa: BREAKFAST, LUNCH, DINNER (FR-003) – thứ tự khai báo của enum `Meal`.
 
@@ -55,11 +60,13 @@ migration `V301__meal_plans.sql` (C). Cột `created_at`, `updated_at` theo quy 
 
 | Tên | Trường | Ghi chú |
 |---|---|---|
-| `SlotRef` | `LocalDate weekStart, DayOfWeek day, Meal meal` | Định danh ô (research R4) |
-| `ExpectedSlotState` | `Long itemId, Integer version` | Cả hai `null` = mong ô trống |
+| `SlotKey` | `DayOfWeek day, Meal meal` | Một bữa của tuần (dùng chung với 031) |
+| `AddItemRequest` | `recipeId, servings?, source?` | Thêm vào cuối bữa |
+| `ReplaceItemRequest` | `recipeId, servings?, source?, version` | Thay một món, giữ servings và vị trí |
+| `MoveItemRequest` | `day, meal, position?, version` | `position` bỏ trống = cuối bữa đích |
 | `WeekPlanResponse` | `weekStart, weekEnd, today, days[7]` | `today` chỉ có khi tuần chứa hôm nay |
 | `DayPlanDto` | `date, day, slots[3], nutrition` | `nutrition` có thể `null` |
-| `SlotDto` | `meal, item` | `item = null` → ô trống |
+| `SlotDto` | `meal, items[0..4]` | Theo `position`; `items` rỗng → bữa trống |
 | `PlanItemDto` | `id, version, recipeId, recipeName, coverImageUrl, totalTimeMinutes, servings, source, available, dietType` | Đúng định dạng ô proposal 4.6 + servings (FR-030); `dietType` suy từ `ingredients.kind` |
 | `DayNutritionDto` | `kcalPerPerson, includedDishes, missingDishes` | Từ spec 090 |
 | `PickerResultDto` | `recipeId, title, coverImageUrl, totalTimeMinutes, cuisineName, mealSuited, conflicts[]` | `conflicts` = `ALLERGEN:<tên>`, `EXCLUDED:<tên>`, `DIET:<kiểu>` |
@@ -73,27 +80,26 @@ migration `V301__meal_plans.sql` (C). Cột `created_at`, `updated_at` theo quy 
 | `day` ∈ 1–7 / `MONDAY…SUNDAY`; `meal` ∈ enum | Bean Validation | FR-003 |
 | `servings` nguyên, 1–20 | `@Min(1) @Max(20)` + CHECK DB | FR-011, Edge Cases |
 | Công thức phải `PUBLISHED` và không phải `is_snack` khi thêm/thay | `MealPlanService` qua `RecipeSummaryPort` → `422 RECIPE_NOT_AVAILABLE` | FR-010, US6-3, spec Assumptions |
-| Trạng thái ô khớp `ExpectedSlotState` | `MealPlanService` → `409 SLOT_CHANGED` / `SLOT_OCCUPIED` | Edge Cases, FR-008 |
-| Move/swap chỉ trong cùng tuần | API không nhận tuần đích | Assumptions |
+| `version` của món khớp | `MealPlanService` → `409 SLOT_CHANGED` | Edge Cases |
+| Bữa tối đa 4 món (thêm, chuyển vào) | `MealPlanService`, khóa các món của bữa đích + UNIQUE `position` 0–3 → `409 MEAL_FULL` | FR-004, FR-008, FR-014 |
+| Move chỉ trong cùng tuần | API không nhận tuần đích | Assumptions |
 | Chỉ chủ sở hữu | Mọi truy vấn lọc theo `userId` từ `SecurityContext` | FR-006, NFR-004 |
 
-## 5. Trạng thái của một ô
+## 5. Trạng thái của một món và một bữa
 
 ```text
-           add (PUT, expected = empty)
-  EMPTY ───────────────────────────────▶ FILLED(available)
-    ▲  ◀── remove / clear day ───────────   │   ▲
-    │                                       │   │ replace (PUT, expected = item)
-    │                                       ▼   │
-    │                        recipe ARCHIVED / deleted (060, 100)
-    │                                       │
-    └──── remove / clear day ◀──── FILLED(unavailable) ── replace ──▶ FILLED(available)
+  bữa: 0 món ── add ──▶ 1 ── add ──▶ 2 ── add ──▶ 3 ── add ──▶ 4 (đầy: add/move vào → 409 MEAL_FULL)
+           ◀── remove / move ra / clear day ──
+
+  món: AVAILABLE ── recipe ARCHIVED / deleted (060, 100) ──▶ UNAVAILABLE
+       UNAVAILABLE ── replace ──▶ AVAILABLE;  cả hai ── remove / clear day ──▶ (xóa)
 ```
 
-- `FILLED(unavailable)` không phải cột lưu trữ: tính lúc đọc (`recipe_id IS NULL` hoặc
+- `UNAVAILABLE` không phải cột lưu trữ: tính lúc đọc (`recipe_id IS NULL` hoặc
   `recipes.status <> 'PUBLISHED'`) – research R8.
-- Move: nội dung của ô nguồn chuyển sang ô đích trống; swap: hai ô đổi nội dung; cả hai tăng
-  `version`.
-- Servings đổi (PATCH) không đổi trạng thái, tăng `version`.
-- `source` giữ nguyên khi move/swap; `replace` đặt `source = MANUAL` (trừ khi chọn từ "Gợi ý cho
-  bạn" của spec 031 → `AI`, 031 FR-038).
+- Move sang bữa khác: món đổi `day/meal`, nhận `position` cuối bữa đích (hoặc vị trí được chọn), các
+  món sau nó ở bữa nguồn dồn lên; reorder trong bữa: đổi `position`. Món được chuyển tăng `version`.
+- Replace: đổi recipe, giữ `servings` (trừ khi gửi mới) và `position`, tăng `version`.
+- Servings đổi (PATCH) tăng `version`.
+- `source` giữ nguyên khi move; `replace` đặt `source = MANUAL` (trừ khi chọn từ "Gợi ý cho bạn"
+  của spec 031 → `AI`, 031 FR-038).

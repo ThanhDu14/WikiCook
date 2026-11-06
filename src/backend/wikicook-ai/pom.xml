@@ -76,11 +76,29 @@
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Fake Gemini endpoint for the live clients (plan.md Complexity Tracking) -->
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <!-- Library module: no spring-boot-maven-plugin repackage. -->
+            <!-- test-jar: wikicook-app reuses the fakes in com.wikicook.ai.testing instead of copying them. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- *IT classes (Testcontainers) run in integration-test, before the JaCoCo check. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

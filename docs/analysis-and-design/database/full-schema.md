@@ -292,6 +292,7 @@ erDiagram
         bigint recipe_id FK
         smallint day_of_week
         varchar meal
+        smallint position
         varchar source
     }
     recipe_embeddings {
@@ -662,13 +663,16 @@ Index `(ingredient_id, recipe_id)` – dùng cho quy tắc loại công thức t
 | `meal_plan_id` | `BIGINT` | NOT NULL | FK → `meal_plans` `CASCADE` | |
 | `day_of_week` | `SMALLINT` | NOT NULL | | `CHECK BETWEEN 1 AND 7` |
 | `meal` | `VARCHAR(10)` | NOT NULL | | `CHECK IN ('BREAKFAST','LUNCH','DINNER')` |
+| `position` | `SMALLINT` | NOT NULL | | Thứ tự món trong bữa, `CHECK BETWEEN 0 AND 3` (030 FR-004, thêm ở V304) |
 | `recipe_id` | `BIGINT` | NULL | FK → `recipes` `SET NULL` | NULL → "Không còn khả dụng" |
 | `recipe_name_snapshot` | `VARCHAR(100)` | NOT NULL | | Tên lúc thêm (030 FR-020) |
 | `servings` | `SMALLINT` | NOT NULL | | `CHECK BETWEEN 1 AND 20`; "Theo công thức" được quy ra số lúc lưu |
 | `source` | `VARCHAR(10)` | NOT NULL | | `CHECK IN ('MANUAL','AI','AUTO')` (031 FR-016, FR-027) |
 | `version` | `INTEGER` | NOT NULL | | Phát hiện sửa trên 2 thiết bị (030 Edge Cases) |
 
-`UNIQUE (meal_plan_id, day_of_week, meal)` (một món mỗi ô); index `(recipe_id)`.
+`UNIQUE (meal_plan_id, day_of_week, meal, position) DEFERRABLE INITIALLY DEFERRED` (tối đa 4 món mỗi
+bữa, đổi thứ tự trong một transaction – 030 FR-004, sửa 2026-11-02; trước đó là một món mỗi ô);
+index `(recipe_id)`.
 
 ### 4.7. AI planner và dinh dưỡng (031, 090 – C)
 
