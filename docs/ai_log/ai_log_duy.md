@@ -26,6 +26,12 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 8 | 2026-10-17, 22:36 – 23:01 | Viết 10 tính năng cốt lõi dạng đoạn văn What/Why/Who ở Mục 5 (`SCRUM-34`) | Vision §5 |
 | 9 | 2026-10-17, 22:36 – 23:01 | Thiết kế 2 sơ đồ Mermaid luồng người dùng ở Mục 6 (`SCRUM-35`) | Vision §6 |
 | 10 | 2026-10-29, 09:00 – 09:16 | Vẽ Use-Case Model Mermaid bao phủ 10 feature (`SCRUM-49`) | Use-Case Model |
+| 11 | 2026-10-29, 11:30 – 12:50 | Viết đặc tả use case cho feature 020 và 060 (`SCRUM-51`) | UC Specification |
+| 12 | 2026-10-29, 12:55 – 13:20 | Sửa Vision Document lần 2 và đồng bộ Use-Case Model v0.2 (`SCRUM-60`, `SCRUM-49`) | Vision, Use-Case Model |
+| 13 | 2026-11-02, 11:00 – 11:35 | Chạy thử, đối chiếu frontend Shopping List với màn hình thiết kế và mở PR (`SCRUM-56`) | 040 frontend |
+| 14 | 2026-11-02, 11:35 – 12:10 | Implement phần còn lại của SCRUM-56 (T048) và kiểm chứng US1/US2 (T035, T051) | 040 frontend |
+| 15 | 2026-11-03, 00:00 – 00:25 | Xử lý review PR #63 của MaiHien3507 (`SCRUM-56`) | 040 frontend |
+| 16 | 2026-11-06, 07:45 – 08:10 | Chốt Vision lần 2, viết `Changes.md` Section B và ghi trạng thái feedback TA (`SCRUM-60`, `SCRUM-47`) | Vision, `Changes.md`, Sprint 03 Report |
 
 ---
 
@@ -1012,3 +1018,59 @@ Kết quả mong muốn: code và tasks.md đã sửa, test/lint/build qua, mộ
 - 7 test mới chạy trên code cũ (tạm `git stash` phần sửa) đều fail, sau khi sửa thì pass.
 - `npm test` 96/96 (13 file), `npm run lint` và `npm run build` đều exit 0.
 - Không chạy lại backend vì PR này không sửa backend.
+
+## Mục 16: Chốt Vision lần 2, viết Changes.md Section B và ghi trạng thái feedback TA (SCRUM-60, SCRUM-47)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-06, khoảng 07:45 – 08:10 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `docs/requirements/vision-document.md`, `Changes.md` (Section A.1, Section B), `docs/management/reports/sprint-03/sprint-03-report.md` (§3.2) (Jira `SCRUM-60`, `SCRUM-47`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.318 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), chạy trong extension VS Code trên Windows 11 |
+| Mục đích | Xác định phần việc PA3 còn thiếu sau khi pull `main`, chốt Vision `v2.0`, viết Section B của `Changes.md` và ghi trạng thái feedback TA khi TA chưa phản hồi |
+| Nhánh Git | `docs/scrum-60-vision-final` (PR #71), commit `1ac22ed`..`e290ef6` |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `44feaab9-7f78-4271-9c0c-64c85d3f89c2` |
+
+### Prompt đã dùng
+
+Mình hỏi ngắn: tuần này mình còn thiếu việc gì, kéo `main` về, TA chưa feedback thì sửa theo kiểu gì; sau đó "ok làm đi". AI viết lại thành prompt đầy đủ dưới đây, mình đọc lại và đồng ý ghi.
+
+```text
+Bối cảnh: PA3 (Sprint 3) nhóm 05, hạn chốt nội bộ 05/11/2026 đã qua, hạn Moodle 00:00
+08/11/2026. Mình phụ trách SCRUM-47 (feedback TA cho PA2), 49, 51, 56 và 60 (Vision lần 2).
+TA vẫn chưa gửi feedback cho PA2.
+Mục tiêu: pull main mới nhất, đối chiếu PR, sprint report và Changes.md để biết task nào
+của mình đã xong, task nào còn thiếu, rồi làm phần còn thiếu.
+Yêu cầu cụ thể: sửa 2 chỗ Vision lệch với Project Plan đã sửa (NFR-REL-10 và ngày Build
+v0.5); chốt Vision v2.0; viết Changes.md Section B (trạng thái feedback TA, mọi thay đổi so
+với Vision PA2, phần cố ý giữ nguyên); ghi trạng thái SCRUM-47 vào sprint report.
+Ràng buộc: theo Decision 2 của buổi Planning, không bịa feedback TA; viết tiếng Anh, có dòng
+Performed by / Reviewed by / Edited by sau mỗi header; không commit thẳng lên main; commit
+tách nhỏ theo việc, không ghi tên AI; không sửa phần của người khác ngoài chỗ cần đồng bộ.
+Kết quả mong muốn: một nhánh riêng, PR có Chung review, và danh sách việc mình còn phải tự làm.
+```
+
+### Nội dung do AI tạo
+
+- Bảng tổng hợp task đã merge (SCRUM-49, 51, 56, bản nháp 60) và còn thiếu (SCRUM-47, chốt 60, `Changes.md` Section B, việc review).
+- Vision: NFR-REL-10 đổi thành `db`, `app`, `web` healthy, Flyway `migrate` exit 0, bỏ Redis khỏi v0.5; §7.11 dòng Build v0.5 đổi 13/11 → 05/11/2026; version `2.0` và dòng `v2.0` trong Revision History.
+- `Changes.md`: B.1 trạng thái feedback TA, B.2 bảng 14 thay đổi so với `v1.1`, B.3 phần cố ý giữ nguyên; sửa câu ở A.1 cho cùng câu chữ.
+- Sprint report: §3.2 "PA2 TA Feedback Status", dòng metadata và Revision History `v1.1`.
+- Mô tả PR #71 và bản nháp mục AI log này.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Khi TA chưa feedback | Ghi rõ "No TA feedback received", thay đổi dựa trên tự rà tính nhất quán | Đúng Decision 2, không bịa feedback |
+| Redis trong NFR-COM-06 và §4.1 | Giữ nguyên | Redis vẫn thuộc kiến trúc sản phẩm; chỉ gate v0.5 bỏ Redis |
+| Bảng backlog `TO DO` trong sprint report | Không sửa, tự cập nhật Jira và báo Hưng | Bảng do Hưng quản lý |
+| A.5 mục 2 và 5 | Không đóng, để Hiển đóng ở SCRUM-67 | Danh sách việc mở của Hiển |
+| Tạo PR và gán Chung review | Đồng ý | Chung là reviewer của SCRUM-60 |
+
+### Cách sinh viên kiểm chứng
+
+- Đối chiếu từng dòng bảng B.2 với `git diff 7290546 HEAD -- docs/requirements/vision-document.md` (bản PA2 → bản hiện tại).
+- Đếm use case: Use-Case Model và Use-Case Specification đều có 64 ID, khớp §8.2.
+- Đối chiếu NFR-REL-10 với gate `Build v0.5` ở Plan 4.4.2 và service trong `docker-compose.yml`.
+- Đọc lại diff từng commit trước khi push.

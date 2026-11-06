@@ -17,6 +17,7 @@
 | **Section 2.2 - 2.3** | Meeting 2 & Meeting 3 Minutes: Weekly Scrum Standups 01 & 02 | **Lê Quốc Hưng (LqHung06)** | **Trần Nguyễn Công Chung (itzchugnn)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-64` |
 | **Section 2.4** | Meeting 4 Minutes: Sprint 03 Review (Nov 04, 2026) | **Lê Quốc Hưng (LqHung06)** | **Trần Nguyễn Công Chung (itzchugnn)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-64` |
 | **Section 3** | Jira Task Management Evidence & Progress Analysis | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-46`, `SCRUM-64` |
+| **Section 3.2** | PA2 TA Feedback Status (`SCRUM-47`) | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Lê Quốc Hưng (LqHung06)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-47` |
 | **Section 4** | AI Usage Declaration & Compliance Log (Appendix) | **Trần Nguyễn Công Chung (itzchugnn)** | **Lê Quốc Hưng (LqHung06)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-63` |
 | **Section 5** | Sprint 03 Retrospective & Action Plan for Sprint 04 | **Lê Quốc Hưng (LqHung06)** | **Trần Nguyễn Công Chung (itzchugnn)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-64` |
 
@@ -25,6 +26,7 @@
 | Date | Version | Description | Author |
 | :---: | :---: | :--- | :--- |
 | **28/10/2026** | `v1.0` | Initialized Sprint 03 Report, established master 22-task Jira Backlog table (`SCRUM-46` to `SCRUM-67`), and documented Meeting 1 (Sprint 03 Planning) minutes ratifying 5 core decisions (`SCRUM-46`). | Lê Quốc Hưng (`LqHung06`) |
+| **06/11/2026** | `v1.1` | Added Section 3.2: PA2 TA feedback status (`SCRUM-47`) — no TA feedback received as of 06/11/2026; Part A and Part B revisions follow the internal consistency audit recorded in `Changes.md`. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 
 ---
 
@@ -205,6 +207,13 @@ At the conclusion of the Sprint Planning meeting on October 28, 2026:
 - **Completed at Kickoff:** 1 task (`SCRUM-46` — Sprint Planning ceremony and backlog setup reached `DONE`).
 - **In To Do Status:** 21 tasks actively scheduled with assignees, reviewers, and strict deadlines.
 - **Post-facto Prevention:** In strict accordance with course guidelines, all 22 tasks are created and allocated upfront. No tasks may be created or bulk-closed retroactively.
+
+### 3.2. PA2 TA Feedback Status (`SCRUM-47`)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Lê Quốc Hưng (LqHung06)*
+
+- **Status:** **No TA feedback received** for PA2 as of 06/11/2026 on the channels named in Decision 2 (Section 2.1.2).
+- **Action taken:** Following Decision 2, no feedback was invented. The Project Plan (Part A, `SCRUM-59` / `SCRUM-67`) and the Vision Document (Part B, `SCRUM-60`) were revised from an internal consistency audit against the Use-Case Model, the Use-Case Specifications and the repository. The same status is stated in `Changes.md`, sections A.1 and B.1.
+- **Late feedback:** feedback that arrives before the Moodle deadline (00:00, 08/11/2026) is applied for blocker points only and added to `Changes.md`; everything else is deferred to PA4.
 
 ---
 
