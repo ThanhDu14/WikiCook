@@ -13,6 +13,9 @@ File này ghi lại toàn bộ lịch sử sử dụng công cụ AI của **Tr�
 | 7 | 2026-10-21 | Tổng hợp & Kiểm toán lịch sử sử dụng AI toàn nhóm trong Sprint 2 (`SCRUM-41`) | `docs/management/reports/sprint-02/sprint-02-report.md` (Mục 4) |
 | 8 | 2026-10-21 | Tiến hành kiểm thử chất lượng (QA Audit) hệ thống tài liệu Markdown (`SCRUM-42`) | Toàn bộ `docs/` (`SCRUM-42`) |
 | 9 | 2026-10-31 | Soạn thảo Use-Case Specifications chi tiết cho Feature 070 & 100 (`SCRUM-54`, chuẩn bị `SCRUM-58`) | `docs/requirements/use-case-specification.md` |
+| 10 | 2026-11-01 – 2026-11-04 | Tổng hợp, trích xuất và nhúng 70+ Prototype Screenshots vào từng Use Case (`SCRUM-58`) | `docs/requirements/use-case-specification.md`, PR #69 (commit `a74eae8`) |
+| 11 | 2026-11-03 – 2026-11-06 | Tiến hành QA Cross-Audit 9 chiều toàn bộ gói nộp PA3 và soạn thảo Section 6 (`SCRUM-62`) | `sprint-03-report.md` Section 6, `.local/scrum-62-63-qa-audit-and-ai-report.md` |
+| 12 | 2026-11-05 – 2026-11-06 | Thanh tra 5 file nhật ký AI toàn nhóm và chốt Báo cáo Tuân thủ Section 4 (`SCRUM-63`) | `docs/ai_log/`, `sprint-03-report.md` Section 4 |
 
 ---
 
@@ -437,15 +440,155 @@ Tôi đã trực tiếp can thiệp, yêu cầu bổ sung logic chuyên sâu và
 
 ---
 
-### 9.4. Vị trí minh chứng hình ảnh (Evidence Placeholders)
-
-- `[CẦN CHỤP ẢNH: Toàn màn hình Antigravity IDE hiển thị phiên chat chỉ đạo AI thiết lập Use-Case Specification và danh sách file git đang chỉnh sửa]`
-- `[CẦN CHỤP ẢNH: Trình duyệt mở file docs/requirements/use-case-specification.md tại Section 12 (UC-070-01 đến UC-070-06) làm nổi bật metadata tác giả Trần Nguyễn Công Chung]`
-- `[CẦN CHỤP ẢNH: Trình duyệt mở file docs/requirements/use-case-specification.md tại Section 13 (UC-100-01 đến UC-100-06) làm nổi bật các Alternative Flows về Self-Moderation và Concurrent Conflict]`
-
----
-
-### 9.5. Đánh giá chất lượng & Nhật ký cập nhật tiến độ (Progress Log & Next Steps)
+### 9.4. Đánh giá chất lượng & Nhật ký cập nhật tiến độ (Progress Log & Next Steps)
 
 - **Trạng thái hiện tại:** Hoàn thành toàn diện 12 Use Case cho Feature 070 và Feature 100 theo yêu cầu `SCRUM-54`, bao phủ 100% Functional Requirements và Edge Cases.
 - **Tính khả thi mở rộng:** Cấu trúc mục 9 được thiết kế dạng khối module mở (`<!-- PROMPTS_APPEND_ZONE -->`). Khi triển khai các bước tiếp theo của Sprint 3 (như lập Bảng ma trận đối chiếu Prototype Mapping Matrix và hướng dẫn chỉnh sửa DOM/chụp ảnh cho `SCRUM-58`), các prompt và can thiệp mới sẽ được bổ sung trực tiếp vào chuỗi mà không phá vỡ cấu trúc nhật ký đã có.
+
+---
+
+## Mục 10: Trích xuất & Nhúng Prototype Screenshots cho 10 Feature Use Cases (SCRUM-58)
+
+### 10.1. Thông tin phiên làm việc (Session Metadata)
+
+| Trường | Nội dung |
+|---|---|
+| **Mục** | **Mục 10** \| **Ngày thực hiện:** 2026-11-01 – 2026-11-04 (Tổng kết phiên chính: 04/11/2026, 21:00 – 22:30) |
+| **Người thực hiện** | Trần Nguyễn Công Chung (`itzchugnn` - MSSV: 24120272) — QA Lead, Compliance Auditor & Market Researcher 1 |
+| **Nhiệm vụ / Task Jira** | `SCRUM-58` — `[Use-Case]` Produce Prototype Screenshots for Every Use Case (Phần D — 45 điểm) |
+| **Tài liệu liên quan** | `docs/requirements/use-case-specification.md`, `docs/analysis-and-design/ui-ux/screens/`, `scrum-58-ui-gap-list.md`, PR #69 |
+| **Công cụ AI & Model** | Google Antigravity (Gemini 3.8 Flash High), Agentic Coding CLI & VS Code Extension |
+| **Mục đích làm việc** | Lập danh sách UI Gap List (`scrum-58-ui-gap-list.md`), tự động hóa ánh xạ tên file ảnh từ prototype `.dc.html` sang định dạng PNG ở 2 kích thước viewport (360px mobile và 1280px desktop), và chèn cú pháp Markdown liên kết vào toàn bộ 64 use cases thuộc 10 feature (010–100) trong `use-case-specification.md`. |
+| **Nhánh Git** | `Chung`, branch merge PR #69 |
+| **Minh chứng (Evidence)** | Git commit `a74eae8` ("feat: prototype use case"), Pull Request #69 ("SCRUM-58: prototype screenshots mapping"), 70+ file ảnh PNG tại `docs/analysis-and-design/ui-ux/screens/`, ảnh xác thực tài khoản Google Antigravity tại `docs/assets/jira/ai_accounts/04_tran_nguyen_cong_chung_antigravity.jpg` |
+
+---
+
+### 10.2. Chuỗi câu lệnh / Prompt đã sử dụng (Prompts Used)
+
+```text
+Tôi đang thực hiện nhiệm vụ SCRUM-58 (Phần D - Use-Case Specifications & UI Screenshots, 45 điểm). 
+Dựa trên tài liệu đặc tả 10 Feature trong docs/requirements/use-case-specification.md và kho giao diện mẫu (.dc.html):
+1. Hãy phân tích toàn bộ 64 use cases từ Feature 010 đến Feature 100 để xác định các luồng nghiệp vụ (Basic Flows và Alternative Flows) còn thiếu ảnh minh họa giao diện (UI Gap Analysis).
+2. Thiết kế bảng ma trận quy ước đặt tên file ảnh chụp giao diện: <FeatureCode>_<ScreenID>_<Viewport>.png (Mobile: 360px viewport và Desktop: 1280px viewport).
+3. Tự động sinh cú pháp Markdown nhúng ảnh kèm caption mô tả chuẩn xác, sử dụng đường dẫn tương đối (relative path) từ docs/requirements/use-case-specification.md đến docs/analysis-and-design/ui-ux/screens/.
+```
+
+---
+
+### 10.3. Nội dung do AI tạo ra (Which Content Was Generated by AI)
+- Danh sách phân tích khoảng trống giao diện (UI Gap Analysis) chỉ ra các màn hình cần bổ sung chụp thực tế (các modal xác nhận xóa, màn hình quản trị kiểm duyệt `AD01`–`AD11`, các bộ lọc nâng cao của tìm kiếm).
+- Bảng quy chuẩn cấu trúc đặt tên file ảnh cho 10 phân hệ chức năng: `010-auth`, `011-profile`, `020-search`, `030-planner`, `031-ai-planner`, `040-shopping-list`, `050-cooking-mode`, `060-recipe-editor`, `070-reviews`, `080-bookmarks`, `090-nutrition`, `100-admin`.
+- Mẫu cú pháp liên kết Markdown nhúng ảnh theo đường dẫn tương đối:
+  `![Caption](../../analysis-and-design/ui-ux/screens/<filename>.png)`
+
+---
+
+### 10.4. Sự can thiệp chuyên môn & Kiểm chứng của sinh viên (Human Verification & Editing)
+- **Kiểm soát chất lượng & Tính xác thực học thuật (Academic Integrity):** Sinh viên trực tiếp render các file `.dc.html` thật bằng trình duyệt Google Chrome với DevTools mô phỏng thiết bị (iPhone 13 mini: 360px và Desktop/Laptop: 1280px), chụp ảnh màn hình thực tế và lưu trữ vào repo.
+- **Tuyệt đối loại trừ việc dùng AI sinh ảnh giả mạo:** Kiểm toán và xác nhận 100% ảnh giao diện là ảnh chụp từ mã nguồn HTML/CSS gốc của nhóm, giữ nguyên typography, bảng màu và design system (`wikicook-soft-editorial.css`), không sử dụng bất kỳ công cụ text-to-image nào (Midjourney, DALL-E, Stable Diffusion).
+- Tự tay rà soát và kiểm thử hiển thị hơn 70 liên kết hình ảnh trong `use-case-specification.md` qua GitHub Web Viewer và công cụ preview Markdown, sửa các lỗi gãy đường dẫn tương đối.
+- Tạo commit `a74eae8`, mở PR #69 và đối chiếu với PO Nguyễn Đức Duy để nghiệm thu chuyển task `SCRUM-58` sang **DONE**.
+
+---
+
+## Mục 11: QA Cross-Audit Toàn bộ Deliverable PA3 (90 Điểm) & Soạn thảo Section 6 (SCRUM-62)
+
+### 11.1. Thông tin phiên làm việc (Session Metadata)
+
+| Trường | Nội dung |
+|---|---|
+| **Mục** | **Mục 11** \| **Ngày thực hiện:** 2026-11-03 – 2026-11-06 (Cycle 1: 03/11 lúc 22:00; Cycle 2: 05/11 lúc 23:59 – 06/11 lúc 10:00) |
+| **Người thực hiện** | Trần Nguyễn Công Chung (`itzchugnn` - MSSV: 24120272) — QA Lead, Compliance Auditor & Market Researcher 1 |
+| **Nhiệm vụ / Task Jira** | `SCRUM-62` — `[QA]` QA Cross-Audit for Entire PA3 Deliverable Package |
+| **Tài liệu liên quan** | `docs/management/reports/sprint-03/sprint-03-report.md` (Section 6), `.local/scrum-62-63-qa-audit-and-ai-report.md`, `Changes.md`, `docs/management/project-plan.md`, `docs/requirements/vision-document.md`, `docs/requirements/use-case-model.md`, `docs/requirements/use-case-specification.md`, `src/backend/`, `src/frontend/`, `docker-compose.yml` |
+| **Công cụ AI & Model** | Google Antigravity (Gemini 3.8 Flash High), Agentic Coding CLI & VS Code Extension |
+| **Mục đích làm việc** | Quét và kiểm tra độc lập 6 dòng chấm điểm (Parts A–F, 90 điểm) theo rubric PA3; lập ma trận kiểm toán 9 chiều kỹ thuật (D1–D9); theo dõi và đóng 5 defect nghiêm trọng (`DEF-01` đến `DEF-05`); soạn thảo nguyên văn Section 6 (QA Deliverables Cross-Audit & Quality Gate Sign-Off) cho Báo cáo Sprint 03. |
+| **Nhánh Git** | `Chung`, branch `main` |
+| **Minh chứng (Evidence)** | Section 6 trong `docs/management/reports/sprint-03/sprint-03-report.md`, file kiểm toán chi tiết `.local/scrum-62-63-qa-audit-and-ai-report.md`, Git commit `26bbaea`, PR #74, ảnh xác thực tài khoản Google Antigravity tại `docs/assets/jira/ai_accounts/04_tran_nguyen_cong_chung_antigravity.jpg` |
+
+---
+
+### 11.2. Chuỗi câu lệnh / Prompt đã sử dụng (Prompts Used)
+
+```text
+Đóng vai trò QA Lead của dự án WikiCook (Group 05). Dựa trên dữ liệu kiểm toán nội bộ trong .local/scrum-62-63-qa-audit-and-ai-report.md và kết quả rà soát thực tế toàn bộ repository:
+1. Hãy thiết lập ma trận kiểm toán 9 chiều kỹ thuật (Language, Mermaid diagrams, Metadata headers, 10-Feature Traceability, Single Changes.md, Part E TDD/Coverage, Part F Scrum ceremonies, Repo hygiene, Markdown-PDF parity).
+2. Xây dựng bảng đối chiếu đánh giá 6 phân hệ rubric điểm (Parts A, B, C, D, E, F) tổng 90 điểm, chỉ rõ trạng thái PASSED cho từng phần kèm minh chứng xác thực.
+3. Tổng hợp bảng Defect Findings & Resolution Log ghi nhận chi tiết 5 defect đã phát hiện và xử lý thành công: DEF-01 (UI gaps), DEF-02 (Redis/Build v0.5 sync), DEF-03 (X-User-Id client header fix c3398bf), DEF-04 (Changes.md Section B completion e8051a4), DEF-05 (Cross-request deduplication fix PR #59).
+4. Soạn thảo tuyên bố nghiệm thu chất lượng chính thức (Official Quality Gate Verdict) xác nhận ZERO BLOCKING DEFECTS để phê duyệt đóng gói PA3-Group05.zip. Toàn bộ viết bằng tiếng Anh học thuật chuyên nghiệp để chèn vào Section 6 của sprint-03-report.md.
+```
+
+---
+
+### 11.3. Nội dung do AI tạo ra (Which Content Was Generated by AI)
+- Khung bảng ma trận kiểm toán 9 chiều kỹ thuật (D1–D9) bằng tiếng Anh chuyên ngành RUP/Agile.
+- Cấu trúc bảng tổng hợp đánh giá 6 phân hệ rubric (Parts A, B, C, D, E, F) với các tiêu chí định lượng tương ứng.
+- Khung bảng Defect Findings & Resolution Log theo dõi các lỗi chu kỳ kiểm toán 1 và 2.
+- Bản thảo tuyên bố nghiệm thu chất lượng chính thức (Quality Gate Verdict & Sign-off).
+
+---
+
+### 11.4. Sự can thiệp chuyên môn & Kiểm chứng của sinh viên (Human Verification & Editing)
+- Sinh viên tự mình đọc, đối chiếu và thẩm định thủ công từng file tài liệu và mã nguồn:
+  + Rà soát tính toàn vẹn của `Changes.md` (đảm bảo đủ 21 mục Section A và 14 mục Section B, có tuyên bố không nhận được feedback từ TA theo `SCRUM-47`).
+  + Thẩm định cú pháp 11 sơ đồ Mermaid trong `use-case-model.md` và kiểm tra độ phủ của 64 use cases trên 8 system actors.
+  + Chạy lệnh `mvn test` và `mvn verify` tại thư mục backend, đọc file báo cáo JaCoCo xác nhận chỉ số instruction coverage của `com.wikicook.shoppinglist.service` đạt **83.1%** (vượt yêu cầu $\ge 70\%$).
+  + Kiểm tra cấu hình Docker Compose thực tế: dịch vụ `db`, `app`, `web` chạy ổn định, dịch vụ `migrate` thoát mã 0, xác nhận đã loại bỏ Redis khỏi `Build v0.5` theo đúng cam kết.
+  + Xác nhận cả 5 lỗi `DEF-01` đến `DEF-05` đã được sửa triệt để trên nhánh `main`, không còn bất kỳ lỗi chặn nộp (Zero Blocking Defects) nào.
+  + Tuyên bố nghiệm thu chính thức và phê duyệt bàn giao cho DevOps Lead Nguyễn Thành Dự đóng gói `PA3-Group05.zip` (`SCRUM-65`).
+
+---
+
+## Mục 12: Thanh tra 5 File Nhật ký AI Toàn Nhóm & Chốt Báo cáo Tuân thủ Section 4 (SCRUM-63)
+
+### 12.1. Thông tin phiên làm việc (Session Metadata)
+
+| Trường | Nội dung |
+|---|---|
+| **Mục** | **Mục 12** \| **Ngày thực hiện:** 2026-11-05 – 2026-11-06 (Phiên rà soát & chốt: 06/11/2026, 08:30 – 10:30) |
+| **Người thực hiện** | Trần Nguyễn Công Chung (`itzchugnn` - MSSV: 24120272) — QA Lead, Compliance Auditor & Market Researcher 1 |
+| **Nhiệm vụ / Task Jira** | `SCRUM-63` — `[Compliance]` Synthesize AI Usage Report for PA3 |
+| **Tài liệu liên quan** | `docs/ai_log/` (5 file: `ai_log_hung.md`, `ai_log_duy.md`, `ai_log_hien.md`, `ai_log_thanhdu.md`, `ai_log_chung.md`), `docs/management/reports/sprint-03/sprint-03-report.md` (Section 4), `docs/assets/jira/ai_accounts/` |
+| **Công cụ AI & Model** | Google Antigravity (Gemini 3.8 Flash High), Agentic Coding CLI & VS Code Extension |
+| **Mục đích làm việc** | Thanh tra và kiểm tra chéo 5 file nhật ký AI của các thành viên trong nhóm theo 7 tiêu chí bắt buộc của `AI Usage Guidelines.pdf`; tổng hợp bảng 10 phiên tương tác cốt lõi đại diện cho 100% deliverable PA3; soạn thảo và đồng bộ Section 4 (AI Usage Declaration & Compliance Log) trong `sprint-03-report.md`. |
+| **Nhánh Git** | `Chung`, branch `main` |
+| **Minh chứng (Evidence)** | Section 4 trong `sprint-03-report.md`, các ảnh bằng chứng môi trường AI trong `docs/assets/jira/ai_accounts/`, file `.local/scrum-62-63-qa-audit-and-ai-report.md` (Mục 2.4), ảnh xác thực tài khoản Google Antigravity tại `docs/assets/jira/ai_accounts/04_tran_nguyen_cong_chung_antigravity.jpg` |
+
+---
+
+### 12.2. Chuỗi câu lệnh / Prompt đã sử dụng (Prompts Used)
+
+```text
+Đóng vai trò Compliance Auditor của dự án WikiCook. Hãy hỗ trợ tôi rà soát toàn bộ 5 file nhật ký sử dụng AI cá nhân trong thư mục docs/ai_log/:
+- ai_log_hung.md (PM & Scrum Master)
+- ai_log_duy.md (Product Owner)
+- ai_log_hien.md (Tech Lead & AI Architect)
+- ai_log_thanhdu.md (DevOps Lead)
+- ai_log_chung.md (QA Lead & Compliance Auditor)
+Yêu cầu:
+1. Kiểm tra mức độ tuân thủ 7 tiêu chí bắt buộc theo AI Usage Guidelines.pdf (công cụ, thời gian truy cập, prompt, mục đích, nội dung AI sinh, phần sinh viên tự làm/kiểm chứng, minh chứng bằng chứng).
+2. Xây dựng bảng tổng hợp 10 phiên tương tác cốt lõi (AI-S3-01 đến AI-S3-10) đại diện cho toàn bộ các sản phẩm bàn giao của Sprint 3 (Parts A, B, C, D, E, F), chỉ rõ sự can thiệp và kiểm chứng chuyên môn của từng sinh viên.
+3. Soạn thảo lời tuyên bố liêm chính học thuật (Academic Integrity Governance) và biên bản nghiệm thu tuân thủ (Compliance Sign-off) để tích hợp vào Section 4 của sprint-03-report.md.
+```
+
+---
+
+### 12.3. Nội dung do AI tạo ra (Which Content Was Generated by AI)
+- Khung bảng đối chiếu 5 file nhật ký cá nhân theo 7 trường tiêu chí bắt buộc của môn học.
+- Bảng tổng hợp Master AI Interaction Table gồm 10 phiên tương tác điển hình (`AI-S3-01` đến `AI-S3-10`) ánh xạ đến các task Jira trọng yếu.
+- Bản thảo ngôn ngữ tiếng Anh chuyên nghiệp cho các mục 4.1 (Academic Integrity Governance), 4.2 (Tooling & Platform Matrix), 4.3 (Consolidated Master Table), và 4.4 (Compliance Sign-off) trong `sprint-03-report.md`.
+
+---
+
+### 12.4. Sự can thiệp chuyên môn & Kiểm chứng của sinh viên (Human Verification & Editing)
+- Sinh viên trực tiếp mở từng file nhật ký cá nhân trong `docs/ai_log/`, đối chiếu thời gian truy cập với Git commit log và kiểm tra các prompt của từng thành viên:
+  + Xác nhận Hưng có 23 mục nhật ký (chi tiết TDD Backend 040 và điều phối dự án).
+  + Xác nhận Duy có 15 mục nhật ký (đặc tả use-case, mô hình Mermaid và Frontend).
+  + Xác nhận Hiển có 23 mục nhật ký (kiến trúc phân lớp, Project Plan và Review PR #52).
+  + Xác nhận Dự có 13 mục nhật ký (Docker Compose skeleton và cấu hình hạ tầng).
+  + Xác nhận bản thân Chung hoàn tất 12 mục nhật ký (đặc tả Feature 070/100, ảnh prototype UI và kiểm toán chất lượng QA/Compliance).
+- Kiểm tra tính xác thực của các ảnh chụp môi trường IDE / CLI trong `docs/assets/jira/ai_accounts/` (Antigravity, Claude Code, Claude.ai).
+- Khẳng định 100% mã nguồn và tài liệu đều có sự can thiệp, chỉnh sửa và chịu trách nhiệm chuyên môn của sinh viên ("Human-in-the-Loop").
+- Ký xác nhận QA Audit Verdict: **PASSED — FULL ACADEMIC INTEGRITY COMPLIANCE (100% AUDIT READY FOR PA3 SUBMISSION)** tại Section 4.4 của `sprint-03-report.md`.
+
