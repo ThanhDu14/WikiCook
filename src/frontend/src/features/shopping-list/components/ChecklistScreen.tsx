@@ -71,8 +71,18 @@ function EditableTitle({ title, onSave }: { title: string; onSave: (title: strin
   );
 }
 
-function AislePanel({ group, onOpen }: { group: AisleGroup; onOpen: (item: ShoppingListItem) => void }) {
-  const remaining = group.items.filter((item) => !item.isChecked).length;
+function AislePanel({
+  group,
+  onOpen,
+  isItemChecked,
+  onToggle,
+}: {
+  group: AisleGroup;
+  onOpen: (item: ShoppingListItem) => void;
+  isItemChecked: (item: ShoppingListItem) => boolean;
+  onToggle: (clientUuid: string) => void;
+}) {
+  const remaining = group.items.filter((item) => !isItemChecked(item)).length;
   return (
     <section className="wk-aisle wx-panel" style={{ gap: 0 }}>
       <div className="wk-aisle__head">
@@ -84,10 +94,17 @@ function AislePanel({ group, onOpen }: { group: AisleGroup; onOpen: (item: Shopp
       </div>
       {group.items.map((item) => {
         const source = sourceLine(item);
+        const checked = isItemChecked(item);
         return (
-          <div key={item.clientUuid} className={`wk-item${item.isChecked ? ' is-checked' : ''}`}>
-            <label className="wk-item__box" title={LATER}>
-              <input type="checkbox" aria-label={item.displayName} checked={item.isChecked} disabled readOnly />
+          <div key={item.clientUuid} className={`wk-item${checked ? ' is-checked' : ''}`}>
+            <label className="wk-item__box" style={{ cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                aria-label={item.displayName}
+                checked={checked}
+                onChange={() => onToggle(item.clientUuid)}
+                style={{ cursor: 'pointer' }}
+              />
             </label>
             <button
               type="button"
@@ -109,11 +126,28 @@ function AislePanel({ group, onOpen }: { group: AisleGroup; onOpen: (item: Shopp
 /** `/shopping-list` per screens SL-01 (list by aisle) and SL-02 (empty), US1 + US2. */
 export function ChecklistScreen() {
   const { list, loading, error, reload, rename, addItem, deleteItem, archive } = useShoppingList();
+  const [localChecked, setLocalChecked] = useState<Record<string, boolean>>({});
   const [adding, setAdding] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmArchive, setConfirmArchive] = useState(false);
   const [archiving, setArchiving] = useState(false);
   const [opened, setOpened] = useState<{ item: ShoppingListItem; aisleName: string } | null>(null);
+
+  const isItemChecked = useCallback(
+    (item: ShoppingListItem) => localChecked[item.clientUuid] ?? item.isChecked,
+    [localChecked],
+  );
+
+  const onToggle = useCallback(
+    (clientUuid: string) => {
+      setLocalChecked((prev) => {
+        const item = list?.aisleGroups.flatMap((g) => g.items).find((i) => i.clientUuid === clientUuid);
+        const current = prev[clientUuid] ?? item?.isChecked ?? false;
+        return { ...prev, [clientUuid]: !current };
+      });
+    },
+    [list],
+  );
 
   const closeAdd = useCallback(() => setAdding(false), []);
   const closeArchive = useCallback(() => setConfirmArchive(false), []);
@@ -143,8 +177,9 @@ export function ChecklistScreen() {
     );
   }
 
-  const total = list.totalItems;
-  const checked = list.checkedItems;
+  const allItems = list.aisleGroups.flatMap((g) => g.items);
+  const total = allItems.length;
+  const checked = allItems.filter(isItemChecked).length;
   const percent = total === 0 ? 0 : Math.round((checked / total) * 100);
 
   async function doArchive() {
@@ -251,6 +286,8 @@ export function ChecklistScreen() {
                   key={group.aisleId}
                   group={group}
                   onOpen={(item) => setOpened({ item, aisleName: group.aisleName })}
+                  isItemChecked={isItemChecked}
+                  onToggle={onToggle}
                 />
               ))}
             </div>
