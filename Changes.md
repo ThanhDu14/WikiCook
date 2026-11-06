@@ -4,7 +4,7 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 05  
 **Submission:** Project Assignment 3 (`PA3-Group05.zip`)  
-**File Status:** Draft scaffold (04/11/2026). Owner: Lê Quốc Hưng (`SCRUM-61`). Section A is drafted from `SCRUM-59`; section B is still to be written from `SCRUM-60`.
+**File Status:** Draft scaffold (04/11/2026). Owner: Lê Quốc Hưng (`SCRUM-61`). Section A is drafted from `SCRUM-59`; section B is written from `SCRUM-60` (06/11/2026).
 
 This is the single change log for the two documents revised after PA2. Each section lists every change against the PA2 baseline, with the document, the location and the content of the change.
 
@@ -17,7 +17,7 @@ This is the single change log for the two documents revised after PA2. Each sect
 
 ### A.1. Source of the changes (TA feedback status)
 
-- **No TA feedback for PA2 was found in the repository** (checked `docs/`, the Sprint 02 and Sprint 03 reports, the git history for `SCRUM-47`, and all remote branches) as of 04/11/2026. The consolidated result of `SCRUM-47` (Nguyễn Đức Duy) has not been recorded in the repository yet.
+- **No TA feedback for PA2 was found in the repository** (checked `docs/`, the Sprint 02 and Sprint 03 reports, the git history for `SCRUM-47`, and all remote branches) as of 04/11/2026. `SCRUM-47` (Nguyễn Đức Duy) confirmed on 06/11/2026 that **no TA feedback for PA2 was received**; the status is recorded in the Sprint 03 Report and in section B.1.
 - Following Decision 2 of the Sprint 03 Planning meeting, **no feedback was invented**. Every change below comes from an internal consistency audit of the plan against the Sprint 03 plan, the Sprint 03 report and the current repository contents.
 - If feedback from the TA arrives before the freeze, it is handled in `SCRUM-67` (blocker points only) and added to this section.
 
@@ -66,4 +66,35 @@ This is the single change log for the two documents revised after PA2. Each sect
 ## SECTION B — VISION DOCUMENT (`docs/requirements/vision-document.md`)
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
 
-*To be written from `SCRUM-60`. It must state the TA feedback status (same wording as A.1), list every change against the PA2 Vision, and fix the two conflicts with the revised Project Plan listed in A.5 item 2 (NFR-REL-10 and the `Build v0.5` date, currently 13/11/2026).*
+**Baseline:** `v1.1` (24/10/2026, PA2 submission). **This revision:** `v2.0-draft` (29/10/2026) and the final `v2.0` (06/11/2026), both under `SCRUM-60`.
+
+### B.1. Source of the changes (TA feedback status)
+
+- **No TA feedback for PA2 was received** as of 06/11/2026 (`SCRUM-47`, Nguyễn Đức Duy). The same status is recorded in the Sprint 03 Report and in section A.1.
+- Following Decision 2 of the Sprint 03 Planning meeting, **no feedback was invented**. Every change below comes from an internal consistency audit of the Vision against the Use-Case Model (`SCRUM-49`), the Use-Case Specifications (`SCRUM-50` – `SCRUM-54`) and the revised Project Plan (`SCRUM-59`).
+- If feedback from the TA arrives before the Moodle deadline, only blocker points are fixed and added to this section; the rest goes to PA4.
+
+### B.2. Changes by section
+
+| # | Vision section | Before (PA2 `v1.1`) | After (PA3 `v2.0`) | Reason |
+| :---: | :--- | :--- | :--- | :--- |
+| 1 | Title block | Version `1.1`, date 24/10/2026. | Version `2.0` (Second Edition), date 06/11/2026. | New revision. |
+| 2 | Metadata matrix and Revision History | Sections 1–7 only; last entry `v1.1`. | Rows for Section 8 and for the Second Edition revisions (`SCRUM-60`); entries `v2.0-draft` and `v2.0`. | Traceability of this revision. |
+| 3 | 1.2 Scope | Pantry matching listed with the other in-scope capabilities. | Pantry matching marked as a **planned increment** (kept in the Use-Case Model as `UC-020-05` at the Brief level). | Spec 020 does not specify pantry matching for the current release. |
+| 4 | 1.3 Definitions | No entry for use case or planned increment. | New entries **Use case (UC)** (`UC-<spec>-<NN>`) and **Planned increment**. | Terms used by the Use-Case Model and Section 8. |
+| 5 | 1.4 References | PA1/PA2 guidelines only; five specifications listed. | PA3 guideline added; all specifications listed with full names (`011`, `040`, `050`, `070`, `080`, `090`, `100` added); new references to the Use-Case Model, the Use-Case Specifications and the Sprint 03 Report. | The references were incomplete. |
+| 6 | 1.5 Overview | Describes Sections 2–7. | Also describes Section 8. | New section. |
+| 7 | 3.3 User Environment | No development or deployment environment. | New bullet **Development and deployment environment**: local Docker Compose stack, `.env` secrets, primary and backup demo laptops with the Mock LLM. | The environment the product is built and demonstrated in was missing. |
+| 8 | 3.4 Key Needs (N1) and 3.5.4 comparison | Search by on-hand ingredients rated 🟢 for WikiCook. | Rated 🟡 *(planned increment)*; the notation explains what 🟡 means for WikiCook. | Same as #3. |
+| 9 | 5.2 Smart Recipe Discovery | Pantry matching described as part of the feature. | Pantry matching described as a planned increment. | Same as #3. |
+| 10 | 5.11 Feature traceability table | Short specification names (`011`, `070`, `080`, `090`); the non-existent `101-admin-analytics`. | Full specification names; `101-admin-analytics` removed (analytics is User Story 6 of `100-admin-moderation`); new column **Use Cases (Section 8)**. | Names did not match `specs/`; link features to use cases. |
+| 11 | 6.1 and 6.2 workflow step tables | Columns Step / Actor / Description / Feature. | New column **Use Case(s)** for every step; note in 6.2 that steps 1–3 (pantry matching) start with keyword search and filters until the increment is specified. | Link workflows to the Use-Case Model. |
+| 12 | 7.6 NFR-REL-10 | "`docker compose up` brings all 4 containers to `healthy`…; the health endpoint reports `UP` for `db` and `redis`." | "`docker compose up` brings the `db`, `app` and `web` containers to `healthy` in ≤ 5 minutes and the Flyway `migrate` job exits with code 0; the health endpoint reports `UP` including the `db` component. Redis is not part of `Build v0.5`; it joins the stack in `Build v0.8 Beta`." | Conflict with the revised Plan 4.4.2 and the repository compose file (A.4 decision 1, A.5 item 2). |
+| 13 | 7.11 Verification Approach | Row "Sprint 3 — Build v0.5" dated 13/11/2026. | Dated 05/11/2026 (tag `v0.5.0`; Moodle deadline 00:00, 08/11/2026). | Same as #12 (real Sprint 3 milestones, A.2 #6). |
+| 14 | 8 *(new)* Traceability to the Use-Case Model | — | 8.1 forward trace from needs N1–N8 to use cases; 8.2 feature coverage (64 use cases over the 10 features, with owners); 8.3 backward trace and consistency check; 8.4 change control. | PA3 requires the Vision to be consistent with the Use-Case Model. |
+
+### B.3. Items not changed on purpose
+
+- Sections 2 (Positioning) and 4 (Product Overview) stay as in PA2; the audit found no conflict with the Use-Case Model.
+- Redis stays in the product architecture (§4.1) and in NFR-COM-06; only the `Build v0.5` gate (NFR-REL-10) drops it, because Redis is first needed in `Build v0.8 Beta`.
+- The other Section 7 NFR thresholds are unchanged.
