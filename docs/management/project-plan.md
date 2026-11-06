@@ -4,12 +4,15 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 05  
 **Process Model:** Agile Scrum (5 Sprints, replacing the classic RUP lifecycle phases of the `rup_sdpln_sp.dot` template)  
-**Document Version:** 1.4 (Sprint 02 Final Baseline — Project Assignment 2)  
-**Date:** October 24, 2026  
+**Document Version:** 2.0-draft (Sprint 03 Draft Revision — Project Assignment 3; baseline `v1.4` from Project Assignment 2)  
+**Date:** November 04, 2026  
 
 ---
 
 ## DOCUMENT METADATA & RESPONSIBILITY MATRIX
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+> **PA3 revision note (`SCRUM-59` draft → `SCRUM-67` final):** the matrix below records the original PA2 authorship. Subsections revised in PA3 (2.3, 3.2, 4.1, 4.3, 4.4) carry their own attribution line directly under the header. All changes against `v1.4` are listed in section A of the root-level `Changes.md`.
 
 | Section | Section Title | Performed by (Author) | Reviewed by | Edited by | Jira Task |
 | :---: | :--- | :---: | :---: | :---: | :---: |
@@ -34,6 +37,7 @@
 | **19/10/2026** | `v1.2` | Aligned ASM-02, RSK-02, and Sec 4.3.3 with Spec 031 and Constitution: removed obsolete deterministic/SQL fallback and fallback caching references; reaffirmed explicit AI error reporting with independent manual planning resilience. | Lê Quốc Hưng (`LqHung06`) |
 | **22/10/2026** | `v1.3` | Final Sprint 02 Audit & Close: Synchronized Appendix A task audit statuses and Table 2.2 deliverables to 100% Verified (DONE) across all 18 tasks matching the live Jira Board and Sprint 02 Report. | Trần Nguyễn Công Chung & Lê Quốc Hưng |
 | **24/10/2026** | `v1.4` | Sprint 02 close-out: corrected group number to Group 05, synchronized deliverable statuses, Sprint 2 Gantt chart and Appendix A with the final Jira board (18/18 Done), and translated Jira task titles into English. | Nguyễn Thành Dự (`ThanhDu14`) |
+| **04/11/2026** | `v2.0-draft` | PA3 draft revision (`SCRUM-59`): Sprint 3 schedule moved to the real milestones (all work done by 05/11/2026, Moodle deadline 00:00 on 08/11/2026, buffer 06–07/11) replacing the old 13/11 estimate; `Build v0.5` scope, date and gate aligned with the repository; new Sprint 03 risks `RSK-S3-01` to `RSK-S3-03`; per-subsection attribution lines. No TA feedback was available, so changes follow a consistency audit (see `Changes.md`, section A). | Mai Văn Hiển (`MaiHien3507`) — review by Lê Quốc Hưng pending |
 
 ---
 
@@ -131,6 +135,8 @@ The functional and technical scope of **WikiCook** encompasses a responsive Sing
 | **Stakeholder Assumption** | **ASM-03** | Course Instructors and Teaching Assistants act as primary external stakeholders and provide timely feedback on **PA2** deliverables to guide revisions in **PA3**. |
 
 ### 2.3. Project Deliverables
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
 The table below catalogues all major engineering and management deliverables produced across the five Sprints (`PA1` through `PA5`), their repository paths, target delivery dates, and primary owners:
 
 | Sprint / Milestone | Deliverable Name | Repository Location / Format | Target Delivery Date | Lead Owner (Assignee) | Status |
@@ -144,9 +150,9 @@ The table below catalogues all major engineering and management deliverables pro
 | **Sprint 2 (PA2)** | **Vision Document v1.0 (Features & NFRs)** | `docs/requirements/vision-document.md` (`.md` & `.pdf`) | **Oct 22, 2026** *(Moodle: Oct 24)* | Nguyễn Đức Duy & Mai Văn Hiển | **Completed** |
 | **Sprint 2 (PA2)** | **Spec Kit Artifacts & Training Log** | `src/` & `docs/management/spec-kit-training-log.md` | **Oct 22, 2026** *(Moodle: Oct 24)* | Trần Nguyễn Công Chung (`itzchugnn`) | **Completed** |
 | **Sprint 2 (PA2)** | **Sprint 02 Report & AI Usage Notes** | `docs/management/reports/sprint-02/sprint-02-report.md` | **Oct 22, 2026** *(Moodle: Oct 24)* | Lê Quốc Hưng & Trần Nguyễn Công Chung | **Completed** |
-| **Sprint 3 (PA3)** | Revised Project Plan v2.0 & Vision v2.0 | `docs/management/project-plan.md`, `vision-document.md` | Nov 13, 2026 *(Est.)* | Lê Quốc Hưng & Nguyễn Đức Duy | Planned |
-| **Sprint 3 (PA3)** | Detailed Use Case Specifications & UI Wireframes | `docs/requirements/` & `docs/analysis-and-design/ui-ux/` | Nov 13, 2026 *(Est.)* | Nguyễn Đức Duy & Trần Nguyễn Công Chung | Planned |
-| **Sprint 3 (PA3)** | Core Backend/Frontend Skeleton (`Build v0.5`) | `src/backend/`, `src/frontend/`, `docker-compose.yml` | Nov 13, 2026 *(Est.)* | Mai Văn Hiển & Nguyễn Thành Dự | Planned |
+| **Sprint 3 (PA3)** | Revised Project Plan v2.0, Vision v2.0 & `Changes.md` | `docs/management/project-plan.md`, `docs/requirements/vision-document.md`, `Changes.md` (repository root) | **Nov 05, 2026** *(Moodle: Nov 08, 00:00)* | Mai Văn Hiển (Plan), Nguyễn Đức Duy (Vision), Lê Quốc Hưng (`Changes.md`) | In Progress |
+| **Sprint 3 (PA3)** | Use-Case Model, Use-Case Specifications & Prototype Screenshots | `docs/requirements/use-case-model.md`, `docs/requirements/use-case-specification.md`, `docs/analysis-and-design/ui-ux/screens/` | **Nov 05, 2026** *(Moodle: Nov 08, 00:00)* | Nguyễn Đức Duy (model), all members (specs), Trần Nguyễn Công Chung (screenshots) | In Progress |
+| **Sprint 3 (PA3)** | Walking Skeleton & Feature 040 Vertical Slice (US1 + US2) (`Build v0.5`) | `src/backend/`, `src/frontend/`, `docker-compose.yml` | **Nov 05, 2026** *(Moodle: Nov 08, 00:00)* | Nguyễn Thành Dự (skeleton), Lê Quốc Hưng & Nguyễn Đức Duy (feature 040 slice) | In Progress |
 | **Sprint 4 (PA4)** | Software Architecture, DB Schema & Test Plan | `docs/analysis-and-design/architecture.md`, `docs/test/` | Dec 04, 2026 *(Est.)* | Mai Văn Hiển & Trần Nguyễn Công Chung | Planned |
 | **Sprint 4 (PA4)** | Core Feature Implementation (`Build v0.8 Beta`) | `src/` (Auth, Recipe Search, AI Planner, Shopping List) | Dec 04, 2026 *(Est.)* | All 5 Full-Stack Engineers | Planned |
 | **Sprint 5 (PA5)** | Final Integrated System (`Build v1.0 RC`) & Live Demo | `src/`, Full Test Suite ($\ge 70\%$ coverage), Demo Deck | Dec 25, 2026 *(Est.)* | All 5 Full-Stack Engineers | Planned |
@@ -212,9 +218,9 @@ To prevent ambiguity and ensure multi-tier peer verification across every artifa
 ---
 
 ### 3.2. Risk Management Matrix & Mitigation Strategies
-*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
-To ensure predictable project execution across the 14-week semester, the team identifies, analyzes, and formulates mitigation protocols for both **project-wide risks** (`RSK-01` to `RSK-05`) and **active Sprint 2 operational risks** (`RSK-S2-01` to `RSK-S2-04`).
+To ensure predictable project execution across the 14-week semester, the team identifies, analyzes, and formulates mitigation protocols for **project-wide risks** (`RSK-01` to `RSK-05`), **Sprint 2 operational risks** (`RSK-S2-01` to `RSK-S2-04`, closed with Sprint 2), and **active Sprint 3 operational risks** (`RSK-S3-01` to `RSK-S3-03`).
 
 #### 3.2.1. Project-Wide Risk Matrix (`SCRUM-30`)
 
@@ -235,6 +241,14 @@ To ensure predictable project execution across the 14-week semester, the team id
 | **RSK-S2-03** | **Spec Kit Artifact Misplacement:** Placing Spec Kit files outside the required directory structure. | Low | High | QA Lead confirms `constitution.md` and spec templates reside directly inside `WikiCook/src/` per `PA2-2026.pdf` Sec C (`SCRUM-37`). |
 | **RSK-S2-04** | **Missing 3–5 Sentence Paragraph Rule on Features:** Features formatted as simple bullet lists rather than complete analytical paragraphs. | Medium | High | Product Owner Nguyễn Đức Duy enforces the *What / Why / Who* 3–5 sentence paragraph structure in Section 5 of the Vision Document (`SCRUM-34`). |
 
+#### 3.2.3. Sprint 03 Specific Operational Risks (28/10 – 05/11/2026)
+
+| ID | Operational Risk | Likelihood | Impact | Practical Mitigation Protocol |
+| :---: | :--- | :---: | :---: | :--- |
+| **RSK-S3-01** | **No Code Skeleton at Sprint Start:** `src/` held only the constitution, templates and specs when Sprint 3 began, yet Part E (feature 040, US1 + US2) must be implemented test-first in the same 8-day window. Without a runnable backend/frontend, the slice cannot be built or demonstrated. *(Occurred at kickoff; the skeleton is now on `main` — status to be re-verified at `SCRUM-67`.)* | High | High | Skeleton tasks `SCRUM-48` (backend: Spring Boot, PostgreSQL, Flyway) and `SCRUM-66` (frontend + Docker Compose), owned by Nguyễn Thành Dự, are front-loaded to 30/10. No Part E code starts before the 28/10 Sprint Planning (Constitution gate). The stack must run locally by Standup 1 (30/10, 22:00); until then the feature owners only write failing tests and specs against the port interfaces. Part E code freeze is 03/11 so that 04–05/11 are left for review, video and packaging. |
+| **RSK-S3-02** | **Dependency on Seed Data for Part E:** Feature 040 import works through abstract ports (`RecipeDetailPort`, `MealPlanHandoffPort`) fed by seed data, because the real recipe editor (060) and meal planner (030) do not exist yet. Incomplete or inconsistent seed lookups (units, ingredients, recipes) would break aggregation, unit conversion (g↔kg, ml↔l) and provenance in the demo, and the demo could be mistaken for a real cross-feature integration. | Medium | High | Seed lookups are versioned as Flyway migrations (`V402`, `V403`) and exposed by `SeedRecipeDetailAdapter`; an integration test (`F2_SeededLookupsIT`) guards them. The seed recipes must contain overlapping ingredients and convertible units so merge and conversion are actually exercised. The report and the demo video must state explicitly that import uses seed data through ports, not the real 060/030 code; the real adapters are replaced in Sprint 4. |
+| **RSK-S3-03** | **Evening-Only Working Hours (from 22:00):** Most members work on the project late in the evening, with ceremonies at 22:00. Review latency, merge-queue delays and missed hand-offs become likely when the team is close to the deadline. | High | Medium | Daily checkpoint is fixed at 22:00 and every task has a single assignee and a written due date. Every PR needs at least one approval, and in the last 48 hours before the deadline urgent/blocking messages and PR reviews are answered within 4 hours (08:00–23:00). Large merges are not started after 23:00. The internal completion milestone is 05/11, so 06–07/11 act only as a blocker-fix buffer (submission no later than 23:00 on 07/11). |
+
 ---
 
 ## 4. PROJECT PLAN (SCRUM SCHEDULE & BUILD PLAN)
@@ -243,6 +257,7 @@ To ensure predictable project execution across the 14-week semester, the team id
 As mandated by **PA2-2026**, WikiCook does **not** follow the traditional RUP lifecycle phases (*Inception, Elaboration, Construction, Transition*). Instead, the project is executed through **5 iterative Scrum Sprints**, each lasting 2–3 weeks and directly mapped to one course Project Assignment (`PA1` through `PA5`).
 
 ### 4.1. Five-Sprint Scrum Roadmap (PA1 – PA5)
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 4.1.1. Scrum Governance Framework
 
@@ -263,7 +278,7 @@ As mandated by **PA2-2026**, WikiCook does **not** follow the traditional RUP li
 | :---: | :---: | :---: | :--- |
 | **Sprint 1** | 28/09/2026 – 09/10/2026 | **PA1** | Project Proposal, Existing Application Survey, Team Governance Charter, Git Repository Initialization. |
 | **Sprint 2** | 14/10/2026 – 22/10/2026 | **PA2** | Vision Document (Features & NFRs), Project Plan (Scrum & Build Plan), Spec Kit `/src` Sync & Team Training Dossier. |
-| **Sprint 3** | 26/10/2026 – 13/11/2026 *(Est.)* | **PA3** | Detailed Use Case Specifications (US-01–07), Domain Analysis Model, UI Wireframes & Navigation Map (`Build v0.5`). |
+| **Sprint 3** | 28/10/2026 – 05/11/2026 *(everything done)*; buffer 06–07/11 *(blocker fixes only)*; Moodle deadline **00:00, 08/11/2026** | **PA3** | Revised Project Plan & Vision with `Changes.md`, Use-Case Model covering the 10 features, Use-Case Specifications with prototype screenshots, and the walking skeleton plus feature 040 vertical slice (US1 + US2) (`Build v0.5`). |
 | **Sprint 4** | 16/11/2026 – 04/12/2026 *(Est.)* | **PA4** | Layered Software Architecture, PostgreSQL/`pgvector` Schema, Core Backend/Frontend Coding & Unit Tests (`Build v0.8 Beta`). |
 | **Sprint 5** | 07/12/2026 – 25/12/2026 *(Est.)* | **PA5** | System Integration, Hands-Free Kitchen Mode, Social Cooksnaps, Test Suite ($\ge 70\%$), Final Demo Release (`Build v1.0 RC`). |
 
@@ -275,7 +290,8 @@ gantt
     section Sprints
     Sprint 1 (PA1 Proposal & Survey)              :done,   s1, 2026-09-28, 2026-10-09
     Sprint 2 (PA2 Vision, Plan & Spec Kit)        :done,   s2, 2026-10-14, 2026-10-22
-    Sprint 3 (PA3 Use Cases, Domain & Wireframes) :        s3, 2026-10-26, 2026-11-13
+    Sprint 3 (PA3 Plan, Vision, Use Cases & Build v0.5) :active, s3, 2026-10-28, 2026-11-05
+    Sprint 3 buffer (blocker fixes only, until midnight 07-08/11) :      s3b, 2026-11-06, 2026-11-08
     Sprint 4 (PA4 Architecture, DB & Core Coding) :        s4, 2026-11-16, 2026-12-04
     Sprint 5 (PA5 Testing, Polish & Final Demo)   :        s5, 2026-12-07, 2026-12-25
 ```
@@ -289,7 +305,7 @@ gantt
 | **M3** | Sprint 2 Draft Freeze | 18/10/2026 | 100% drafts of Vision Doc, Project Plan (Sec 4.1–4.4), NFRs, Spec Kit training log completed across branches. |
 | **M4** | Sprint 2 Review & Retrospective | 21/10/2026 | Deliverables inspected against DoD; 100% Jira Done status captured; PRs merged into `main` (`SCRUM-40`, `43`). |
 | **M5** | PA2 Early Submission | 22/10/2026, 14:00 | `PA2-Group05.zip` uploaded to Moodle (48 hours ahead of hard deadline Oct 24) (`SCRUM-44`). |
-| **M6** | PA3 Submission (Sprint 3 Close) | 13/11/2026 *(Est.)* | Use Case Specifications, Domain Model ERD, UI Wireframes approved; `Build v0.5` backend/frontend skeleton tagged. |
+| **M6** | PA3 Submission (Sprint 3 Close) | 05/11/2026 *(all work done and checked)*; Moodle deadline 08/11/2026, 00:00 *(latest team submission 07/11, 23:00)* | All Sprint 3 Jira tasks Done and PRs merged by 05/11; revised Project Plan and Vision with `Changes.md`, Use-Case Model and Specifications with prototype screenshots, feature 040 US1 + US2 slice with demo video, AI Usage Report and Weekly Report approved; `Build v0.5` tagged; `PA3-Group05.zip` ready. 06–07/11 are used only to fix blockers found by the final audit. |
 | **M7** | PA4 Submission (Sprint 4 Close) | 04/12/2026 *(Est.)* | Software Architecture Document, PostgreSQL schema, working core features merged, unit tests passing (`Build v0.8 Beta`). |
 | **M8** | PA5 Live Demo & Release (Sprint 5 Close) | 25/12/2026 *(Est.)* | Full live feature demo presented; test coverage $\ge 70\%$; final release candidate tagged (`Build v1.0 RC`). |
 
@@ -370,6 +386,7 @@ gantt
 ---
 
 ### 4.3. Sprint 02 Schedule, Dependencies & Preliminary Plan for Sprints 03–05
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 4.3.1. Sprint 02 Day-by-Day Execution Timeline
 
@@ -445,8 +462,9 @@ Any delay in authoring the 10 core features or the technical roadmap propagates 
 #### 4.3.3. Preliminary Backlog & Engineering Plan for Sprints 03, 04, and 05
 *Note: This roadmap provides the forward engineering baseline for upcoming assignments and will be formally refined during the respective Sprint Planning ceremonies.*
 
-**Sprint 3 — Use Case Specifications, Domain Analysis & UI Wireframes (PA3)** *(Proposed: 26/10 – 13/11/2026)*
-- **Candidate User Stories:**
+**Sprint 3 — Revised Plan & Vision, Use-Case Model & Specifications, and Build v0.5 (PA3)** *(Actual: 28/10 – 05/11/2026; Moodle deadline 00:00, 08/11/2026)*
+- **Scope note:** the candidate user stories below (`US-01`–`US-07`) are the PA2 planning subset and are superseded by the **10-feature scope** of the Use-Case Model (features 010/011, 020/060, 030/031/090, 040/050, 070/100, 080). They are kept for traceability only. The Part E code slice is limited to **feature 040, US1 + US2**; US3–US5 are deferred to Sprint 4.
+- **Candidate User Stories (PA2 subset):**
   - `US-01`: User registration and authentication with dietary preference initialization.
   - `US-02`: Multi-criteria pantry search matching ingredients on hand.
   - `US-03`: AI weekly meal plan generation based on dietary caloric ceiling.
@@ -454,7 +472,7 @@ Any delay in authoring the 10 core features or the technical roadmap propagates 
   - `US-05`: Community recipe submission with structured steps and ingredient quantities.
   - `US-06`: Distraction-free hands-free cooking view with concurrent countdown timers.
   - `US-07`: Admin moderation portal for recipe approval and taxonomy curation.
-- **Engineering Deliverables:** Formal Use Case Specifications (Brief, Casual, Fully Dressed), Domain Model Diagram (conceptual class diagram), High-Fidelity UI Wireframes (Figma), Navigation Map, and `Build v0.5` architectural skeleton.
+- **Engineering Deliverables:** Mermaid Use-Case Model (`use-case-model.md`), Use-Case Specifications with prototype screenshots beside each flow (`use-case-specification.md`), revised Project Plan and Vision Document with `Changes.md`, and `Build v0.5`: walking skeleton (Spring Boot backend, React SPA, PostgreSQL 16 with Flyway, Docker Compose, first code CI) carrying the feature 040 US1 + US2 vertical slice, built test-first with a narrated demo video.
 
 **Sprint 4 — Layered Architecture, Database Schema & Core Feature Coding (PA4)** *(Proposed: 16/11 – 04/12/2026)*
 - **Candidate Engineering Tasks:**
@@ -475,10 +493,28 @@ Any delay in authoring the 10 core features or the technical roadmap propagates 
   - Production containerization (`docker-compose.yml`) and live demonstration preparation.
 - **Deliverables:** Final Release Package (`Build v1.0 RC`), Test Execution Report, User Guide, and **Live Demonstration of 100% project features** during course evaluation.
 
+#### 4.3.4. Sprint 03 Day-by-Day Timeline (28/10 – 08/11/2026)
+
+The team finishes **all** Sprint 3 work by the end of **05/11/2026** and treats 06–07/11 only as a blocker-fix buffer. The official Moodle deadline is **00:00 on 08/11/2026**. Daily checkpoints are held at 22:00.
+
+| Date | Milestone | Scheduled Activities & Output Targets | Jira Tasks |
+| :---: | :--- | :--- | :---: |
+| **28/10** | Sprint Planning (22:00) | 22 Jira tasks created and assigned. No Part E code before this meeting. | `SCRUM-46` |
+| **29/10** | TA feedback answer; skeleton | Report whether TA feedback exists; backend/frontend skeleton work starts; first failing tests for feature 040 US1. | `SCRUM-47`, `SCRUM-48`, `SCRUM-66` |
+| **30/10** | Standup 1 (22:00) | Draft Use-Case Model presentable; skeleton runs locally. | `SCRUM-49`, `SCRUM-48`, `SCRUM-66` |
+| **31/10 – 01/11** | Specification & implementation | Use-Case Specifications and Part E code; missing prototype screens listed on 31/10. | `SCRUM-50`–`SCRUM-56`, `SCRUM-58` |
+| **02/11** | **Draft Freeze** | Draft Project Plan (this document) and Vision submitted; no new use cases or scope afterwards, only review fixes. | `SCRUM-59`, `SCRUM-60` |
+| **03/11** | Standup 2 (22:00); Part E code freeze | Peer review done, US2 done, prototype screenshots complete, QA audit cycle 1. | `SCRUM-62`, `SCRUM-64` |
+| **04/11** | Sprint Review & Retro; packaging dry run | PRs merged, demo video, PDF dry run, QA audit cycle 2; final Plan and Vision sign-off starts. | `SCRUM-57`, `SCRUM-67`, `SCRUM-64` |
+| **05/11** | **All work done** | Final QA audit, final Project Plan and Vision, `Changes.md`, `PA3-Group05.zip` built; `v0.5.0` tagged after the gate passes. | `SCRUM-61`, `SCRUM-62`, `SCRUM-65`, `SCRUM-67` |
+| **06/11** | Buffer | Fix only blockers found by the 05/11 audit. | — |
+| **07/11** | Latest submission | Upload to Moodle no later than 23:00. | `SCRUM-65` |
+| **08/11, 00:00** | **Official deadline** | Moodle closes. | — |
+
 ---
 
 ### 4.4. Software Build and Release Plan
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Lê Quốc Hưng (LqHung06)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 In strict accordance with the **PA2-2026** instructions (*"specify how many builds you will produce for testing and when... note that the final sprint includes a demo of all project features"*), the team commits to **5 planned builds**, one per Sprint milestone: **2 documentation baselines** (`v0.1`, `v0.2`) and **3 executable software builds for testing** (`v0.5`, `v0.8 Beta`, `v1.0 RC`). Additional patch or release-candidate builds (e.g., `v0.8.0-beta.2`, `v1.0.0-rc.2`) are produced **only** to fix defects found while testing a planned build; they never add new scope.
 
@@ -499,7 +535,7 @@ In strict accordance with the **PA2-2026** instructions (*"specify how many buil
 | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
 | **`Build v0.1`** | **Sprint 1** | **09/10/2026** | Repository skeleton, `.gitignore`, PA1 documents (proposal, survey, team charter). **No application code.** | GitHub Repository / Markdown | Validate repository structure, `main` branch protection, and Markdown rendering. Documentation checks (`markdownlint`, relative-link check) are run by hand by the QA Lead; there is no automated code CI in Sprint 1. | All PA1 documents peer-reviewed and merged into `main`; `markdownlint` reports 0 errors; 0 broken relative links; PA1 ZIP submitted on time. |
 | **`Build v0.2`** | **Sprint 2** | **22/10/2026** | Spec Kit framework in `WikiCook/src/` (`constitution.md`), Vision Document v1.0, Project Plan v1.0. **No application code.** | GitHub Repository / `src/` | Verify Spec Kit placement, 3-tier metadata, Mermaid rendering, and PDF conversion integrity. | 100% of PA2 deliverables pass the `SCRUM-42` QA checklist; 0 `markdownlint` errors; 0 broken links; every Mermaid diagram renders in both GitHub and PDF with 0 clipped blocks. |
-| **`Build v0.5`** | **Sprint 3** | **13/11/2026** | Walking skeleton: Spring Boot 3.x project (layered packages, health endpoint), React 18 SPA skeleton (routing, API client), PostgreSQL 16 container with **Flyway `V1` baseline only** (schema history + `users` table), Redis 7 container. First automated code CI (GitHub Actions). | Local Docker Compose | Verify multi-tier connectivity (Frontend $\to$ Backend $\to$ PostgreSQL / Redis); CI builds and tests backend and frontend on every PR. | From a clean clone, `docker compose up` brings all 4 containers to `healthy` in $\le 5$ min; `GET /actuator/health` returns `UP` including `db` and `redis` components; SPA displays the health status; Flyway `V1` applies with 0 errors; CI pipeline green on `main`. |
+| **`Build v0.5`** | **Sprint 3** | **05/11/2026** *(tag `v0.5.0`; 06–07/11 only for blocker fixes; Moodle deadline 00:00, 08/11/2026)* | Walking skeleton: Spring Boot 3.x multi-module backend (layered packages, health endpoint), React 18 SPA skeleton (routing, API client), PostgreSQL 16 (`pgvector` image) with Flyway migrations for the baseline schema and the feature 040 shopping-list tables, including seeded lookups (`V401`–`V403`). **Feature 040 vertical slice (US1 + US2)**: shopping-list management and import from a seed recipe (servings scaling, duplicate merge, g↔kg / ml↔l conversion, provenance) behind abstract ports, built test-first, plus a narrated demo video. First automated code CI (GitHub Actions: `backend`, `frontend`). **Redis is not part of `v0.5`** (first needed for rate limiting in `v0.8 Beta`, Sec 4.4.4). | Local Docker Compose | Verify multi-tier connectivity (Frontend $\to$ Backend $\to$ PostgreSQL); verify the 040 US1 + US2 acceptance scenarios with seed data; CI builds and tests backend and frontend on every PR. | From a clean clone, `docker compose up` brings the `db`, `app` and `web` containers to `healthy` in $\le 5$ min and the Flyway `migrate` job exits with code 0; `GET /actuator/health` returns `UP` including the `db` component; SPA is served on the `web` container; failing tests exist before the code and pass afterwards; service-package line coverage $\ge 70\%$ (JaCoCo) for the 040 slice; CI pipeline green on `main`; no secrets committed. |
 | **`Build v0.8 Beta`** | **Sprint 4** | **04/12/2026** | Core services: **F-01** Auth (JWT/BCrypt) **with RBAC** for the 4 roles (`Guest`, `Standard User`, `Culinary Creator`, `Platform Administrator`); **F-02** Recipe Search; **F-03** AI Meal Planner with **RAG vector service** (`pgvector` column + index, embedding generation for seeded/new recipes, top-k retrieval, prompt assembly, LLM call with a 60 s hard limit; on AI failure the user sees an error and manual planning keeps working, with no SQL fallback); **F-04** Shopping List; **F-05** basic step-by-step view; **F-06** basic recipe authoring. **Full relational schema** (Flyway `V2…Vn`) and 50+ seeded recipes. | Docker Compose Local Staging (Mock LLM + real LLM) | Service-level unit tests, REST API integration tests (Testcontainers), RBAC permission matrix tests, RAG retrieval tests, and a test with the LLM disconnected (`LLM_MODE=offline`) followed by manual planner operations. | All in-scope user stories accepted by the PO; line and branch coverage each $\ge 70\%$ (JaCoCo) **for the `service` package of the modules implemented so far**; P95 $< 500$ ms for non-AI endpoints at 20 virtual users for 5 min (k6); AI weekly draft shown in $\le 30$ s for P90 of successful generations (hard limit 60 s); slot suggestions shown in $\le 3$ s for 90% of picker openings; RAG retrieval + prompt assembly (LLM call excluded) P95 $\le 5$ s; with the LLM disabled, an error is shown and 100% of manual planner actions still succeed; RBAC matrix 100% pass; 0 open S1 defects. |
 | **`Build v1.0 RC`** | **Sprint 5** | **18/12/2026** *(RC tag)* → **25/12/2026** *(demo)* | Feature-complete release candidate: all **10 features** (adds **F-05** full hands-free mode with voice/keyboard and concurrent timers, **F-06** media & moderation flow, **F-07** Cooksnaps, **F-08** Collections, **F-09** AI Nutrition Analyzer, **F-10** Admin Dashboard); offline demo mode; demo seed snapshot. | Dockerized Demo Release (Sec 4.4.6) | Full regression suite, E2E smoke tests of demo scenarios D1–D10 (Playwright), load test at 100 concurrent users, and two demo dry runs (Sec 4.4.7). | All 10 features pass demo scenarios D1–D10 in **2 consecutive dry runs**; line and branch coverage each $\ge 70\%$ **across all backend business logic** (`service` package); at 100 concurrent users for 10 min: P95 $< 500$ ms (non-AI), error rate $< 1\%$ (HTTP 5xx, AI endpoints excluded); the AI thresholds of `v0.8` still hold (P90 draft $\le 30$ s, retrieval + prompt P95 $\le 5$ s); 95% of page loads reach LCP $\le 2.0$ s on the demo machine (Lighthouse, mobile profile, simulated 4G); 0 open S1/S2 defects; offline mode verified. |
 
@@ -522,15 +558,15 @@ In strict accordance with the **PA2-2026** instructions (*"specify how many buil
 | Layer / Integration Point | `Build v0.5` (Sprint 3) | `Build v0.8 Beta` (Sprint 4) | `Build v1.0 RC` (Sprint 5) |
 | :--- | :--- | :--- | :--- |
 | **Frontend (React 18 SPA)** $\leftrightarrow$ **Backend** | Routing shell + API client calling `/actuator/health`. | Pages for F-01–F-06 wired to real REST APIs with JWT handling. | All 10 feature UIs; Screen Wake Lock, voice/keyboard navigation (F-05). |
-| **Backend (Spring Boot 3.x)** | Layered package skeleton, health endpoint, OpenAPI stub. | JWT/BCrypt + RBAC (Spring Security method-level rules for 4 roles); REST APIs for F-01–F-06. | All endpoints; input validation, account lockout, rate limiting; admin APIs (F-10). |
-| **Backend** $\leftrightarrow$ **PostgreSQL 16 / `pgvector`** | Flyway `V1` baseline only; `pgvector` image used, extension not yet used. | Full relational schema (Flyway `V2…Vn`); `vector` embedding column + similarity index; 50+ seeded recipes. | Migrations for Cooksnaps, Collections, moderation; frozen demo seed snapshot. |
-| **Backend** $\leftrightarrow$ **Redis 7** | Container + health check only. | Rate limit on AI generation (5 counted generations per user in any rolling 60-minute window, spec 031 FR-025). | Rate limit on login/auth. |
+| **Backend (Spring Boot 3.x)** | Layered package skeleton, health endpoint, OpenAPI stub, feature 040 US1 + US2 REST API. | JWT/BCrypt + RBAC (Spring Security method-level rules for 4 roles); REST APIs for F-01–F-06. | All endpoints; input validation, account lockout, rate limiting; admin APIs (F-10). |
+| **Backend** $\leftrightarrow$ **PostgreSQL 16 / `pgvector`** | Flyway baseline schema plus feature 040 shopping-list tables and seeded lookups (`V401`–`V403`); `pgvector` image used, extension not yet used. | Full relational schema (Flyway `V2…Vn`); `vector` embedding column + similarity index; 50+ seeded recipes. | Migrations for Cooksnaps, Collections, moderation; frozen demo seed snapshot. |
+| **Backend** $\leftrightarrow$ **Redis 7** | Not included (no Redis container in `v0.5`). | Rate limit on AI generation (5 counted generations per user in any rolling 60-minute window, spec 031 FR-025). | Rate limit on login/auth. |
 | **Backend** $\leftrightarrow$ **LLM / Embedding API** | Not integrated (Mock LLM container only). | Embedding pipeline + RAG retrieval and prompt assembly for F-03; 60 s hard limit on generation; AI error reported while manual planning keeps working (no SQL fallback); Mock LLM in CI. | F-09 nutrition analysis via LLM; `LLM_MODE=live/mock/offline` switch for the demo. |
 | **CI (GitHub Actions)** | Backend build + unit tests, frontend build + lint, Docker image build. | + Integration tests (Testcontainers), JaCoCo coverage report. | + E2E smoke (Playwright) on demo scenarios, k6 load test before RC tag. |
 
 ```mermaid
 flowchart LR
-    B05["<b>v0.5</b><br/>FE ↔ BE ↔ PostgreSQL (V1)<br/>Redis container<br/>Code CI starts"] --> B08["<b>v0.8 Beta</b><br/>Full schema + pgvector<br/>RBAC · RAG planner<br/>AI-error isolation · F-01–F-06"]
+    B05["<b>v0.5</b><br/>FE ↔ BE ↔ PostgreSQL<br/>Feature 040 slice (US1 + US2)<br/>Code CI starts"] --> B08["<b>v0.8 Beta</b><br/>Full schema + pgvector<br/>RBAC · RAG planner<br/>AI-error isolation · F-01–F-06"]
     B08 --> B10["<b>v1.0 RC</b><br/>All 10 features<br/>Offline demo mode<br/>E2E + load tests"]
 ```
 
@@ -562,14 +598,14 @@ flowchart LR
 ```
 
 1. **Development Environment:** All developers run localized Spring Boot and Vite servers with hot-reload enabled. Developers execute unit tests locally prior to raising Pull Requests.
-2. **Containerized Staging Environment (`docker-compose.yml`, from `v0.5`):** Replicates production dependencies locally via Docker Compose, including PostgreSQL 16 with the `pgvector` extension and Redis 7. Integrates a mock LLM service allowing integration testing without consuming external cloud API quotas. Builds `v0.5` and `v0.8 Beta` are tested here.
+2. **Containerized Staging Environment (`docker-compose.yml`, from `v0.5`):** Replicates production dependencies locally via Docker Compose, including PostgreSQL 16 with the `pgvector` extension and, from `v0.8 Beta`, Redis 7. Integrates a mock LLM service allowing integration testing without consuming external cloud API quotas. Builds `v0.5` and `v0.8 Beta` are tested here.
 3. **Demo Release Environment (`Build v1.0 RC`):** A pre-configured, self-contained container stack running the tagged images with pre-seeded recipe data (50+ Vietnamese and international dishes), ensuring the live demonstration during **PA5** remains resilient against internet dropouts or third-party API throttling.
 
 #### 4.4.7. Code Freeze, Demo Dry-Run & Contingency Plan
 
 | Date | Checkpoint | Rule / Activity | Owner |
 | :---: | :--- | :--- | :--- |
-| **11/11/2026** | `v0.5` code freeze | Only `fix:` PRs allowed; tag `v0.5.0` on 13/11 after the gate passes. | Nguyễn Thành Dự |
+| **03/11/2026** | `v0.5` code freeze | Part E code freeze; only `fix:` PRs allowed afterwards. Tag `v0.5.0` on 05/11 after the gate passes; 06–07/11 are for blocker fixes only. | Nguyễn Thành Dự |
 | **30/11/2026** | `v0.8` feature freeze | No new user stories enter Sprint 4. | Lê Quốc Hưng |
 | **02/12/2026** | `v0.8` code freeze | Tag `v0.8.0-beta.1`; Test Owner runs the full Beta test suite until 04/12. | Nguyễn Thành Dự & Trần Nguyễn Công Chung |
 | **16/12/2026** | `v1.0` feature freeze | All 10 features merged into `main`; only S1/S2 fixes after this date. | Lê Quốc Hưng |
@@ -591,7 +627,8 @@ flowchart LR
 | Topic | Other Section | How Section 4.4 Aligns |
 | :--- | :--- | :--- |
 | **CI timing** | Sec 3.1.2 places Docker/CI setup in Sprints 3–5. | Sprint 1–2 builds use documentation checks only (`markdownlint`, link check). Automated code CI starts with `Build v0.5`. |
-| **Database schema** | Sec 4.3.3 places the full PostgreSQL schema and `pgvector` index in Sprint 4. | `Build v0.5` contains only the Flyway `V1` baseline; the full schema and `pgvector` arrive in `Build v0.8 Beta`. |
+| **Database schema** | Sec 4.3.3 places the full PostgreSQL schema and `pgvector` index in Sprint 4. | `Build v0.5` contains only the baseline migrations and the feature 040 shopping-list tables (`V401`–`V403`); the complete schema, embeddings and `pgvector` index arrive in `Build v0.8 Beta`. |
+| **Sprint 3 dates** | Sec 2.3, 4.1.2, 4.1.3 (M6) and 4.3.4. | `Build v0.5` is tagged on 05/11/2026, the same day all Sprint 3 work is done; the Moodle deadline is 00:00 on 08/11/2026 and 06–07/11 is blocker-fix buffer only. |
 | **Coverage target** | Sec 2.3 and milestone M8 set $\ge 70\%$ coverage in Sprint 5. | `v0.8 Beta`: line and branch $\ge 70\%$ for implemented modules only; `v1.0 RC`: line and branch $\ge 70\%$ across all backend business logic, matching M8 and Vision NFR-MNT-01/02. |
 | **Demo scope** | `RSK-03` requires only Must-have modules for the PA5 demo. | `v1.0 RC` commits to demonstrating all 10 features; Must-have F-01–F-05 is the minimum Go condition (Sec 4.4.5), so `RSK-03` remains the fallback, not the target. |
 
@@ -635,7 +672,7 @@ No Jira task in Sprint 2 or subsequent sprints may be transitioned to the **DONE
 | :--- | :--- | :--- |
 | **1. Content & Scope Completeness** | The deliverable fulfills 100% of the prompt guidelines in `PA2-2026.pdf` and its assigned Jira Acceptance Criteria with zero placeholder text (`TBD` or `Lorem Ipsum`). | Assigned Task Author |
 | **2. Academic English & Clarity** | Written in clear, professional US English with consistent domain terminology and zero grammatical or typographical errors. | Designated Peer Reviewer |
-| **3. Three-Tier Header Metadata** | Every top-level section (`##`) immediately includes the standardized attribution line: `*Performed by: [Author] | Reviewed by: [Reviewer] | Edited by: Lê Quốc Hưng (LqHung06)*`. | QA Lead (`SCRUM-42`) |
+| **3. Three-Tier Header Metadata** | Every section (`##`, and every `###` subsection revised in a later Sprint) immediately includes the standardized attribution line: `*Performed by: [Author] \| Reviewed by: [Reviewer] \| Edited by: [Editor]*`. The editor is the one named on the Jira task of the revision; Lê Quốc Hưng (LqHung06), as Chief Editor, is the default when the task names none. | QA Lead (`SCRUM-42`) |
 | **4. Markdown & Mermaid Integrity** | All Markdown tables align cleanly, relative image paths resolve properly, and all Mermaid diagrams render without syntax errors or clipping in both GitHub and PDF outputs. | QA Lead & DevOps Lead |
 | **5. AI Academic Integrity Compliance** | Any AI assistance used during drafting or diagramming is logged in the Sprint Report Appendix (`SCRUM-41`) with exact timestamps, prompts, revisions, and screenshot proofs. | All 5 Members & QA Lead |
 | **6. Version Control & Jira Sync** | Changes are committed to the member's Git branch following conventional commit rules, merged into `main` via approved PR, and the corresponding Jira issue status is updated with accurate timestamps. | DevOps Lead & Scrum Master |
@@ -682,3 +719,4 @@ No Jira task in Sprint 2 or subsequent sprints may be transitioned to the **DONE
 | **`v1.2`** | 19/10/2026 | Lê Quốc Hưng (`LqHung06`) | Nguyễn Thành Dự | Aligned ASM-02, RSK-02, and Sec 4.3.3 with Spec 031 and Constitution: removed obsolete deterministic/SQL fallback references; reaffirmed explicit AI error reporting with independent manual planning resilience. |
 | **`v1.3`** | 22/10/2026 | Trần Nguyễn Công Chung & Lê Quốc Hưng | Lê Quốc Hưng | Final Sprint 02 Audit & Close: Synchronized Appendix A task audit statuses and Table 2.2 deliverables to 100% Verified (DONE) across all 18 tasks matching the live Jira Board and Sprint 02 Report. |
 | **`v1.4`** | 24/10/2026 | Nguyễn Thành Dự (`ThanhDu14`) | Lê Quốc Hưng | Sprint 02 close-out: corrected group number to Group 05, synchronized statuses in Section 2.3, the Sprint 2 Gantt chart and Appendix A with the final Jira board, and translated Jira task titles into English. |
+| **`v2.0-draft`** | 04/11/2026 | Mai Văn Hiển (`MaiHien3507`) | Lê Quốc Hưng — pending review (editor: Nguyễn Đức Duy) | PA3 draft revision (`SCRUM-59`): Sprint 3 moved to the real milestones (done by 05/11/2026, Moodle deadline 00:00 on 08/11/2026, replacing 13/11); `Build v0.5` scope, date and gate aligned with the repository; risks `RSK-S3-01`–`RSK-S3-03`; new Sec 4.3.4; per-subsection attribution lines. Based on a consistency audit because no TA feedback was available; see `Changes.md`, section A. |
