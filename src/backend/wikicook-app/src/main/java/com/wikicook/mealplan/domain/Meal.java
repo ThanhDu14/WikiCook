@@ -7,5 +7,8 @@ package com.wikicook.mealplan.domain;
 public enum Meal {
     BREAKFAST,
     LUNCH,
-    DINNER
+    DINNER;
+
+    /** A meal holds 0 to 4 dishes (030 FR-004, Clarifications 2026-11-02). */
+    public static final int MAX_DISHES = 4;
 }

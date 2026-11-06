@@ -1,8 +1,6 @@
 package com.wikicook.devstub;
 
-import com.wikicook.aiplanner.repository.EligibleRecipeQuery;
 import com.wikicook.common.security.CurrentUser;
-import com.wikicook.mealplan.api.MealPlanWriteFacade;
 import com.wikicook.mealplan.port.DietaryProfilePort;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -43,11 +41,5 @@ public class DevStubConfig {
     @ConditionalOnMissingBean(DietaryProfilePort.class)
     DietaryProfilePort stubDietaryProfile(DevStubProperties properties) {
         return new StubDietaryProfile(properties.profile().toPlannerProfile());
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(MealPlanWriteFacade.class)
-    MealPlanWriteFacade inMemoryMealPlanFacade(EligibleRecipeQuery eligibleQuery) {
-        return new InMemoryMealPlanFacade(eligibleQuery);
     }
 }

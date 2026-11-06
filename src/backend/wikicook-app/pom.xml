@@ -162,6 +162,19 @@
                                 <rule>
                                     <element>PACKAGE</element>
                                     <includes>
+                                        <include>com.wikicook.mealplan.service</include>
+                                    </includes>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.70</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                                <rule>
+                                    <element>PACKAGE</element>
+                                    <includes>
                                         <include>com.wikicook.shoppinglist.service</include>
                                     </includes>
                                     <limits>

@@ -19,6 +19,7 @@ import com.wikicook.aiplanner.service.CandidateService;
 import com.wikicook.aiplanner.service.InFlightGenerations;
 import com.wikicook.aiplanner.support.RecipeFixtures;
 import com.wikicook.aiplanner.support.RecipeSeed;
+import com.wikicook.devstub.DevUserProvisioner;
 import com.wikicook.devstub.StubCurrentUser;
 import com.wikicook.mealplan.api.DraftItem;
 import com.wikicook.mealplan.api.MealPlanWriteFacade;
@@ -96,6 +97,9 @@ class AiPlannerControllerUS1IT extends AbstractPostgresIT {
 
     @Autowired
     MealPlanWriteFacade mealPlans;
+
+    @Autowired
+    DevUserProvisioner provisioner;
 
     @Autowired
     InFlightGenerations inFlight;
@@ -237,6 +241,7 @@ class AiPlannerControllerUS1IT extends AbstractPostgresIT {
         for (Meal meal : Meal.values()) {
             monday.add(new DraftItem(DayOfWeek.MONDAY, meal, seed.allDay().get(meal.ordinal()), 2, ItemSource.MANUAL));
         }
+        provisioner.ensure(user); // the real 030 tables reference users; the stub kept weeks in memory
         mealPlans.saveDraft(user, nextWeek, monday);
 
         generate(nextWeek, monday())

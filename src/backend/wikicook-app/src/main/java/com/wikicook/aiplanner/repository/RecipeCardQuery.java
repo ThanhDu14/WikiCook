@@ -48,11 +48,6 @@ public class RecipeCardQuery {
     }
 
     static DietType dietType(Set<String> kinds) {
-        for (DietType diet : new DietType[] {DietType.VEGAN, DietType.VEGETARIAN, DietType.PESCATARIAN}) {
-            if (kinds.stream().noneMatch(DietRuleSql.forbiddenKinds(diet)::contains)) {
-                return diet;
-            }
-        }
-        return DietType.NONE;
+        return DietRuleSql.dietTypeOf(kinds);
     }
 }

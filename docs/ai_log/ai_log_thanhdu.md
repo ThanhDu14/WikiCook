@@ -29,6 +29,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 11 | 2026-10-18, 21:52 – 22:23 | Lập plan, tasks và analyze cho spec 031 | 031, 030 |
 | 12 | 2026-10-18, 22:25 – 23:36 | Lập plan, tasks và analyze cho spec 090, commit và đồng bộ `src/specs` | 090 |
 | 13 | 2026-10-21, 13:02 – 13:06 | Kiểm tra ma trận quản lý rủi ro (Mục 3.2 project plan) theo acceptance criteria của `SCRUM-30` | Project plan §3.2 |
+| 14 | 2026-11-02, từ 10:39 | Implement spec 030 (Meal Planner) bằng `/speckit-implement`: Setup, Foundational, US1–US3 (đang làm) | 030, 031 |
 
 ---
 
@@ -1295,3 +1296,332 @@ Cái ma trận quản lý rủi ro chưa ta
 
 - Mở `docs/management/project-plan.md` Mục 3.2, đối chiếu từng dòng RSK-01, RSK-02, RSK-03, RSK-05 với 4 rủi ro trong mô tả task.
 - Kiểm tra dòng `SCRUM-30` trong bảng Sprint 2 backlog của project plan.
+
+---
+
+## Mục 14: Implement spec 030 (Meal Planner) – Setup, Foundational, US1–US3
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-02, 10:39 – 11:25 (giờ Việt Nam, UTC+7); dừng sau US3 để sinh viên review |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 030 – Meal Planner (`specs/030-meal-planner`); 031 dùng lại contract của 030 |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), chạy trong terminal trên Ubuntu Linux, lệnh Spec Kit `/speckit-implement` |
+| Mục đích | Làm backend + frontend của 030 tới hết US3 để thay dev stub của 031 bằng code thật, sau đó tích hợp lại 031 |
+| Nhánh Git | `feature/030-meal-planner`, tạo từ `feature/031-ai-foundation` sau khi merge `main` (commit merge `cf0d412`) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `ada2421f-5418-470f-afdf-363a5f6c869a` (file `ada2421f-5418-470f-afdf-363a5f6c869a.jsonl`) |
+
+### Prompt đã dùng
+
+Trước khi implement, mình nhờ AI tóm lại tiến độ 031, xem task Jira của mình, rồi chốt hướng làm 030 trước:
+
+```
+hmmmmm, vì phần ai của tôi liên quan tới 030 nên là tôi nghĩ phần api trả ra là khá ổn rồi, giờ mình qua 030 để mà tạo giao diện và các api nhỉ. sau đó tích hợp lại phần 031
+```
+
+```
+oke nhé. kế hoạch là thế. nhưng trước khi implement bạn phải gửi prompt cho mình phần implement và update nó vào ai_log nhé
+```
+
+Prompt implement (AI soạn theo kế hoạch đã chốt, mình duyệt trước khi chạy):
+
+```
+/speckit-implement Implement spec 030 (specs/030-meal-planner) trên nhánh feature/030-meal-planner
+(tạo từ feature/031-ai-foundation sau khi đã merge main), để sau đó tích hợp lại 031.
+
+Phạm vi lần này, làm theo thứ tự:
+1. Dọn tasks.md: đổi Path Conventions sang backend multi-module (wikicook-app cho code
+   com.wikicook.mealplan, wikicook-db cho migration) giống cách đã làm ở tasks.md của 031; đánh dấu
+   [x] hoặc ghi "một phần, làm cùng 031" cho task đã có sẵn: V301__meal_plans.sql (T014),
+   WeekCalendar + test (T007, T019), @MondayDate + test (T011, T022), Meal/ItemSource/DietType (T015),
+   DietaryProfilePort/PlannerProfile (một phần T020). Không viết lại code đã có.
+2. Phase 1 + Phase 2 (Setup, Foundational).
+3. US1 (Phase 3) đầy đủ backend + frontend, rồi US2 (Phase 4) và US3 (Phase 5).
+   Dừng sau US3 để mình review trước khi làm US4–US7 và Phase 10 (tích hợp 090, 031).
+
+Ràng buộc:
+- TDD đúng tasks.md: viết test trước, chạy cho FAIL, rồi mới code cho xanh.
+- Backend: Spring Boot, JPA, Flyway, test bằng AbstractPostgresIT (Testcontainers). Giữ contract
+  contracts/openapi.yaml và contracts/integration.md; ProblemDetail + code giống 031.
+- Chưa có Spring Security của spec 010: dùng CurrentUser dev stub sẵn có, không tự viết auth.
+- Dùng chung với 031, không viết lại: Clock bean ở com.wikicook.common.ClockConfig,
+  DietRuleSql/DietRestrictions cho cột conflict của picker, SlotKey, MealPlanWriteFacade.
+- Frontend: React + TypeScript trong src/frontend/src/features/meal-planner, API client dùng
+  src/frontend/src/shared/api/client.ts (không phải src/api/client.ts như tasks ghi), test bằng
+  Vitest + msw. Giao diện theo màn Meal Planner của Soft Editorial (tokens, class wk-), chữ tiếng Việt
+  đặt trong strings.vi.ts.
+- Mỗi task (hoặc nhóm task nhỏ liền nhau) một commit theo Conventional Commits, có mã task
+  "(030 T0xx)" ở cuối; không thêm dòng Co-Authored-By của Claude. Chưa push khi mình chưa bảo.
+- Sau mỗi phase chạy `mvn verify` ở src/backend và `npm test` ở src/frontend, báo kết quả thật
+  (pass/fail kèm output), giữ JaCoCo 70%.
+- Gặp chỗ spec/tasks mâu thuẫn với code đã có thì dừng lại hỏi mình, không tự đoán.
+```
+
+### Nội dung do AI tạo
+
+- Chuẩn bị nhánh: merge `main` vào `feature/031-ai-foundation`, gộp luật JaCoCo 70% của hai bên (module, `aiplanner.service`, `shoppinglist.service`) vào execution `check`. Sửa `AiPlannerExceptionHandler` nhận `Clock` qua `ObjectProvider`, vì `@WebMvcTest` của shopping list nạp mọi controller advice mà không có bean `Clock`, làm hỏng 13 test. `mvn verify` pass sau khi sửa.
+- `tasks.md`: đổi Path Conventions sang backend multi-module và `shared/api/client.ts`, đánh dấu task đã có sẵn từ 031; ghi chú lệch thiết kế ngay ở từng task.
+- Phase 1–2: route `/meal-planner`, `@dnd-kit`, CSS Soft Editorial (`soft-editorial.css`, `wikicook-web.css` chép từ `docs/analysis-and-design/ui-ux/css`); entity/repository `MealPlan`, `MealPlanItem`; ProblemDetail + `code`; port `RecipeSummaryPort`, `CollectionRecipePort`, `DayNutritionPort` và bean mặc định; API client, helper tuần theo giờ Việt Nam, chuỗi tiếng Việt.
+- US1: `GET` tuần, `PUT` ô, `PATCH` khẩu phần, picker có xếp hạng và cột xung đột (dùng `DietRuleSql`/`DietRestrictions` của 031); lưới tuần, picker MP-04, menu món, optimistic update + rollback.
+- US2: dialog "Thêm vào thực đơn" theo W-MP05 (tuần, ngày, bữa, hỏi trước khi thay), nút cho trang công thức (ẩn với món ăn vặt, khách → `/login?redirect=`), `?week=` và chuyển đăng nhập khi API trả 401.
+- US3: `POST …/moves` (move/swap trong một transaction, khóa theo thứ tự id), `DELETE` ô, `DELETE` ngày; kéo-thả bằng chuột và bàn phím có thông báo `aria-live`, "Chuyển sang…" theo W-MP03, menu món theo W-MP02, "Xóa cả ngày" có hỏi xác nhận.
+- Mọi phần đều viết test trước, chạy cho đỏ rồi mới code. Riêng T049 (US2) xanh ngay lần đầu vì `SLOT_OCCUPIED` đã cài trong `putSlot` ở US1.
+- 11 commit trên `feature/030-meal-planner` (`433209f` … `75331fb`), chưa push.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Làm 030 trước, tích hợp 031 sau | Mình chốt | API của 031 đã ổn; 031 đang chạy trên dev stub của 030 |
+| Tạo nhánh 030 từ nhánh 031 (đã merge `main`) | Dùng | Contract 030 (`MealPlanWriteFacade`, `WeekCalendar`…) đang nằm ở nhánh 031, PR #62 chưa merge |
+| Dừng sau US3 để review | Mình yêu cầu | Đủ để cài `MealPlanWriteFacade` thật cho 031 |
+| Commit không có dòng attribution của Claude | Mình yêu cầu | Quy tắc của mình cho mọi commit |
+| Giao diện theo màn `docs/analysis-and-design/ui-ux/screens` | Mình nhắc giữa chừng | AI làm theo MP-01…MP-07 và bản desktop W-MP01…W-MP05, class `wk-`/`wx-` |
+| Các chỗ lệch thiết kế (xem bên dưới) | Chờ mình review | AI ghi lại, chưa tự quyết thay mình |
+
+Chỗ lệch so với tasks/thiết kế, AI ghi lại để mình duyệt:
+
+- Picker: món xung đột với hồ sơ vẫn hiện (xếp cuối, có cảnh báo, hỏi lại khi chọn) theo FR-007b, trong khi banner MP-04 ghi "Đã ẩn".
+- Chưa có auth của spec 010: khách nhận ra qua 401 của API, không có route guard thật.
+- `SlotMenu` là `wx-modal` hẹp ở giữa màn hình, chưa neo vào ô như W-MP02.
+- Màn thiết kế không có "Xóa cả ngày": AI đặt nút thùng rác nhỏ ở tiêu đề ngày.
+- Dialog thêm món hiển thị số phần theo công thức; chỉ gửi `servings` khi người dùng đổi, còn lại server tự lấy theo số người trong nhà.
+
+### Cách sinh viên kiểm chứng
+
+- AI chạy sau mỗi phase và báo kết quả thật (log ở thư mục scratchpad của phiên):
+  - Phase 2: `mvn verify` BUILD SUCCESS.
+  - US1: `mvn verify` BUILD SUCCESS (`wikicook-app` 83 IT); `npm test` 50/50.
+  - US2: `mvn verify` BUILD SUCCESS (`wikicook-app` 188 unit + 85 IT); `npm test` 61/61.
+  - US3: `mvn verify` BUILD SUCCESS (`wikicook-app` 196 unit + 96 IT, JaCoCo đạt, `mealplan` 97,6% line / 89,9% branch); `npm test` 79/79, `npm run lint` và `npm run build` sạch.
+- Mình review code và các chỗ lệch thiết kế ở trên trước khi cho làm US4–US7 và Phase 10 *(chưa làm)*.
+- Mình chạy thử giao diện trên trình duyệt với dev stub *(chưa làm)*.
+
+---
+
+## Mục 15: Đổi spec 030 sang nhiều món mỗi bữa
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-02, 11:50 – 12:20 (giờ Việt Nam, UTC+7); dừng sau bước 2 để sinh viên review và chạy thử |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 030 – Meal Planner; 031 – AI Meal Planner (phần điền mâm); báo cho người làm 040 vì đổi `full-schema.md` |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, Spec Kit |
+| Mục đích | Bữa cơm Việt thường có nhiều món (cơm, canh, mặn, rau), spec cũ chỉ cho một món mỗi ô (FR-004, `UNIQUE (meal_plan_id, day_of_week, meal)`) |
+| Nhánh Git | `feature/030-meal-planner` |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `ada2421f-5418-470f-afdf-363a5f6c869a` |
+
+### Prompt đã dùng
+
+Khi chạy thử giao diện, mình hỏi:
+
+```
+Lỡ người ta ăn trưa 2 món 3 món , ăn tối nhiều món thì sao mà thêm
+```
+
+AI xác nhận spec đang giới hạn một món mỗi ô và nêu các phần bị ảnh hưởng. Mình chọn "Nhiều món mỗi bữa" và "AI 031 điền cả mâm theo bữa". Prompt implement (AI soạn, mình duyệt trước khi chạy):
+
+```
+Đổi spec 030 từ "một món mỗi ô" sang "nhiều món mỗi bữa" trên nhánh feature/030-meal-planner,
+rồi sửa lại phần đã làm (Setup, Foundational, US1–US3). Chưa làm US4–US7 và Phase 10.
+
+Bước 1 – tài liệu (chưa code):
+- specs/030-meal-planner: sửa spec.md (FR-004 thành "mỗi bữa có 0..4 món, có thứ tự"; acceptance
+  của US1–US3; edge case bữa đã đủ 4 món), data-model.md, research.md (R4 kiểm tra version theo món,
+  R5 chuyển món), contracts/openapi.yaml, contracts/integration.md, quickstart.md, tasks.md (thêm task
+  mới, ghi rõ task cũ nào bị thay). Cập nhật bảng meal_plan_items trong
+  docs/analysis-and-design/database/full-schema.md.
+- specs/031: ghi yêu cầu "AI điền cả mâm": bữa sáng 1 món; trưa và tối gồm canh + món mặn + rau
+  (cơm mặc định, không lưu thành món). Đổi MealPlanWriteFacade: thay emptySlots bằng các bữa còn
+  trống, saveDraft thêm món vào bữa trống. Chỉ sửa tài liệu và interface; phần AI làm ở Phase 10.
+- Chạy /speckit-analyze cho 030, báo mâu thuẫn trước khi sang bước 2.
+
+Bước 2 – code, giữ ràng buộc của lần implement trước:
+- Migration mới wikicook-db V304__meal_plan_items_multi.sql (không sửa V301 vì đã chạy trên DB dev):
+  bỏ UNIQUE (meal_plan_id, day_of_week, meal); thêm cột position smallint NOT NULL,
+  UNIQUE (meal_plan_id, day_of_week, meal, position) DEFERRABLE; dữ liệu cũ nhận position 0.
+- API theo món, mọi lệnh ghi kiểm tra version của món:
+  GET /meal-plans/{weekStart} → mỗi bữa trả items[] theo position;
+  POST /meal-plans/{weekStart}/meals/{day}/{meal}/items (thêm vào cuối, 409 MEAL_FULL khi đã đủ 4);
+  PUT /meal-plans/{weekStart}/items/{itemId} (thay món, giữ servings);
+  PATCH …/items/{itemId}/servings; DELETE …/items/{itemId}?version=;
+  POST …/items/{itemId}/move {day, meal, position?, version} (chuyển sang bữa khác hoặc đổi thứ tự
+  trong bữa, một transaction, khóa theo thứ tự id); DELETE …/days/{day} giữ nguyên.
+  Bỏ SLOT_OCCUPIED và "đổi chỗ" (swap); giữ SLOT_CHANGED cho món đã bị sửa ở nơi khác.
+- UI theo W-MP01: mỗi ô bữa xếp các card món (ảnh 44 px, tên, thời gian · phần), cuối ô luôn có
+  "+ Thêm món" (ẩn khi đủ 4). Kéo-thả và "Chuyển sang…" làm theo từng món (thả vào bữa khác thì thêm
+  vào cuối). Dialog W-MP05 bỏ cảnh báo "đã có món", thay bằng dòng "Bữa này đã có: …". Picker ở
+  chế độ "Đổi món" vẫn thay đúng món đã chọn.
+- TDD: sửa hoặc viết test trước, chạy cho FAIL, rồi mới code. Mỗi bước một commit Conventional Commits
+  có "(030 T0xx)", không có dòng Co-Authored-By của Claude, chưa push.
+- Sau mỗi bước chạy `mvn verify` ở src/backend và `npm test`, `npm run lint` ở src/frontend, báo kết quả
+  thật, giữ JaCoCo 70%.
+- Gặp chỗ mâu thuẫn hoặc phải chọn hướng thì dừng lại hỏi mình. Xong thì dừng để mình review và
+  chạy thử trên trình duyệt.
+```
+
+### Nội dung do AI tạo
+
+- Bước 1, tài liệu (commit `7e40cdd`, `c702c9c`):
+  - spec 030 sửa FR-004 thành 0–4 món mỗi bữa, cùng các FR, acceptance và edge case liên quan;
+  - data-model, research R4/R5, `openapi.yaml` 0.2.0 (API theo món, `MEAL_FULL`), `integration.md`, quickstart;
+  - tasks.md thêm Phase 5b (T110–T121), `full-schema.md` thêm cột `position`;
+  - spec 031 thêm FR-007a (cả mâm) và T105–T108;
+  - `/speckit-analyze` báo F1–F7, sinh viên duyệt sửa F1–F6.
+- Bước 2, code (commit `7ba1191`, `f9ebfc6`, `c7ba76c`, `f5865a9`):
+  - `V304__meal_plan_items_multi.sql`: cột `position` 0–3, UNIQUE theo vị trí `DEFERRABLE INITIALLY DEFERRED`, dữ liệu cũ nhận `position = 0`;
+  - backend theo món: `MealPlanService` (thêm, thay, đổi phần, xóa, dồn vị trí), `ItemMoveService` (chuyển bữa, đổi thứ tự), `MealFullException`, controller theo `openapi.yaml` 0.2.0;
+  - mọi lệnh ghi khóa dòng `meal_plans` của tuần (`SELECT … FOR UPDATE`) trước khi kiểm tra, theo research R5 đã sửa ở bước 1 (thay cho "khóa theo thứ tự id" trong prompt);
+  - bỏ `PutSlotRequest`, `ExpectedSlotState`, `SlotOccupiedException`, `SlotMoveService`;
+  - test mới: `MealPlanMultiDishSchemaIT`, `MealPlanServiceTest`, `ItemMoveServiceTest`, `ItemConcurrencyIT` (5 lệnh thêm cùng lúc → 4 thành công, 1 `MEAL_FULL`; lỗi giữa lúc chuyển → không món nào đổi), `MealPlanControllerIT` (gộp 3 IT cũ);
+  - frontend: types, `mealPlanApi`, `useWeekPlan` theo món;
+  - lưới W-MP01 xếp tối đa 4 món mỗi ô, "+ Thêm món" ẩn khi đủ 4;
+  - menu món có "Lên trên" / "Xuống dưới", "Chuyển sang…" bỏ đổi chỗ (bữa đủ 4 bị khóa);
+  - dialog W-MP05 hiện "Bữa này đã có: …" và khóa nút khi đủ 4.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Nhiều món mỗi bữa | Mình chọn | Đúng cách người Việt ăn; đổi bây giờ rẻ hơn sau khi tích hợp 031, 040 |
+| AI 031 điền cả mâm | Mình chọn | Kế hoạch AI tạo ra phải dùng được ngay |
+| Tối đa 4 món mỗi bữa | Mình sửa (AI đề xuất 6) | Ô trên lưới tuần gọn, mâm thường chỉ 3–4 món |
+| Cơm không lưu thành món | AI đề xuất, mình chưa ý kiến | Giữ mặc định của prompt |
+
+### Cách sinh viên kiểm chứng
+
+- AI chạy và báo kết quả thật:
+  - `mvn verify` ở `src/backend`: BUILD SUCCESS, 199 unit + 100 IT, JaCoCo đạt (wikicook-app 91,8% dòng / 80,9% nhánh, gói `mealplan` 97,5% / 91,0%);
+  - `npm test`: 89/89; `npm run lint`, `tsc` và `npm run build` sạch.
+- Chạy thử thật trên backend 8081 + Vite 5173:
+  - V304 áp vào DB dev Docker (bật `SPRING_FLYWAY_OUT_OF_ORDER=true` vì DB đã ở V403), món cũ giữ nguyên;
+  - thêm 3 món vào Trưa T2 qua API → 201, món thứ 5 → 409 `MEAL_FULL`;
+  - chụp màn hình lưới 4 món.
+- Sinh viên cần làm:
+  - review code;
+  - thử trên trình duyệt: thêm/xóa món, Lên trên/Xuống dưới, kéo thả sang bữa khác, bữa đủ 4;
+  - quyết định chuyện cơm không lưu thành món;
+  - báo người làm 040 về thay đổi `full-schema.md`.
+
+---
+
+## Mục 16: Implement phần còn lại của spec 030 – backend (US4–US7, Phase 10, Phase 11)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-02, 16:15 – 16:50 (giờ Việt Nam, UTC+7); dừng sau backend để sinh viên duyệt API trước khi làm frontend |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 030 – Meal Planner; 031 – AI Meal Planner (cài `MealPlanWriteFacade` thật); 040 – Shopping List (handoff); 090 – Nutrition (`DayNutritionPort`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, lệnh Spec Kit `/speckit-implement` |
+| Mục đích | Làm nốt backend của 030 sau khi US1–US3 (nhiều món mỗi bữa) đã xong; prompt dài nên tách làm hai lần, backend trước, frontend ở mục sau |
+| Nhánh Git | `feature/030-meal-planner` |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `b9230d07-d95a-4755-80d8-b0fb33122434` |
+
+### Prompt đã dùng
+
+```
+tiếp tục viết prompt implement cho phần 030. nếu dài thì hãy chia ra phần backend trước
+```
+
+Prompt implement phần backend (AI soạn, mình duyệt trước khi chạy):
+
+```
+/speckit-implement Làm nốt phần BACKEND của spec 030 (specs/030-meal-planner) trên nhánh
+feature/030-meal-planner. US1–US3 và Phase 5b (nhiều món mỗi bữa, T110–T122) đã xong; frontend của
+US4–US7 và Phase 10 làm ở lần sau, lần này không đụng src/frontend.
+
+Bước 0 – rà trước khi code (không viết lại code đã có):
+- Đối chiếu tasks.md với code hiện tại. Đánh dấu [x] hoặc ghi "một phần" cho task backend đã có sẵn,
+  ví dụ PlanItemDto.available, availableItemCount, recipeNameSnapshot, RECIPE_NOT_AVAILABLE trong
+  MealPlanService (T085, một phần T082/T083), DayNutritionPort + bean mặc định (Phase 2).
+- 040 đã có port riêng shoppinglist.port.MealPlanHandoffPort
+  (getMealPlanForShoppingList(userId, mealPlanId), trả cả nguyên liệu) khác với
+  MealPlanShoppingFacade theo weekStart trong contracts/integration.md 2.1. So sánh hai bên, đề xuất
+  hướng (ví dụ 030 cài MealPlanShoppingFacade, thêm adapter cài MealPlanHandoffPort cho 040, hoặc sửa
+  contract) rồi DỪNG hỏi mình trước khi làm US5.
+
+Phạm vi, làm theo thứ tự (chỉ task backend):
+1. US4: T072 MealPlanControllerUS4IT (tuần đã qua vẫn GET/POST/PUT được, tuần sau giữ món).
+   Nếu xanh ngay vì logic đã có thì ghi rõ trong báo cáo, không sửa code cho đủ "đỏ trước".
+2. US5: T076, T077 rồi T079, T080 – ShoppingHandoffService, MealPlanShoppingFacade (api/),
+   GET /api/v1/meal-plans/{weekStart}/shopping-handoff, ShoppingHandoffDto, theo hướng mình chốt
+   ở Bước 0. Chỉ món available, đếm skippedUnavailable, tuần chưa có plan → items rỗng.
+3. US6: T082, T083 phần còn thiếu (recipe_id NULL, ARCHIVED → 422 khi POST/PUT), T085 nếu còn thiếu.
+4. Phase 10 backend:
+   - T095, T097: getWeek gọi DayNutritionPort.totals đúng một lần cho cả tuần, chỉ với recipe id
+     khả dụng; ngày port không trả → nutrition = null; servings không đổi tổng.
+   - T099, T100, T121: MealPlanWriteFacade thật theo integration.md 2.2 bản 2026-11-02
+     (MealPlanWriteService): emptySlots = bữa chưa có món nào; plannedRecipeIds không trùng, không lẫn
+     user khác; saveDraft một transaction, giữ thứ tự món cùng bữa làm position, tối đa 4 món mỗi
+     bữa, bỏ cả nhóm món của bữa đã có món (skippedOccupied), bỏ công thức không PUBLISHED
+     (skippedUnavailable), servings null → ServingsPolicy, source AI/AUTO. Dùng cùng khóa
+     meal_plans FOR UPDATE như MealPlanService. Cơm không lưu thành món.
+   - Khi đã có bean thật: tắt InMemoryMealPlanFacade trong com.wikicook.devstub (không để hai bean
+     cùng kiểu), sửa DevStubConfigTest/InMemoryMealPlanFacadeTest và các test của aiplanner đang dựa
+     vào stub; chạy lại test của 031 để chắc 031 vẫn xanh với facade thật.
+5. Phase 11 backend: T103 script k6 (chỉ viết, không bắt buộc chạy 200 VU), T105 so OpenAPI của
+   springdoc với contracts/openapi.yaml và sửa chỗ lệch, T106 JaCoCo.
+
+Ràng buộc (giữ như các lần trước):
+- TDD đúng tasks.md: viết test trước, chạy cho FAIL, rồi mới code cho xanh. Test xanh ngay thì báo.
+- Spring Boot, JPA, Flyway, IT bằng AbstractPostgresIT (Testcontainers); migration mới (nếu cần) là
+  file V30x mới trong wikicook-db, không sửa V301/V304. Giữ ProblemDetail + code giống 031.
+- Chưa có Spring Security của 010: dùng CurrentUser dev stub sẵn có, không tự viết auth.
+- Đường dẫn backend multi-module: code ở wikicook-app (com.wikicook.mealplan), migration ở wikicook-db.
+- Mỗi task hoặc nhóm task nhỏ liền nhau một commit Conventional Commits có "(030 T0xx)" ở cuối;
+  không thêm dòng Co-Authored-By của Claude; chưa push.
+- Sau mỗi user story chạy `mvn verify` ở src/backend, báo kết quả thật (số test, JaCoCo của
+  wikicook-app và gói mealplan), giữ JaCoCo 70%.
+- Cập nhật tasks.md ([x] và ghi chú lệch) cùng commit với code.
+- Gặp chỗ spec/tasks mâu thuẫn với code hoặc với 031/040/090 thì dừng lại hỏi mình, không tự đoán.
+- Xong backend thì dừng, tóm tắt các API/interface frontend sẽ dùng (shopping-handoff, nutrition
+  trong DayPlanDto) để mình duyệt trước khi làm phần frontend.
+```
+
+### Nội dung do AI tạo
+
+- Bước 0 (commit `6b3c8f6`):
+  - rà tasks.md với code, ghi T085 đã có sẵn, T082/T083 làm một phần;
+  - so `MealPlanHandoffPort` của 040 với contract 2.1 rồi hỏi mình trước khi làm US5.
+- US4 (`6b74022`): `MealPlanControllerUS4IT` với `Clock` cố định 2026-10-18. Xanh ngay lần đầu vì service không chặn tuần nào; AI không sửa code để ép test đỏ.
+- US5 (`fbbc3a1`):
+  - `MealPlanShoppingFacade`, `ShoppingHandoff`, `HandoffItem` trong `api/`;
+  - `ShoppingHandoffService` dùng lại `MealPlanService.toDtos` để chung quy tắc "khả dụng" với lưới tuần;
+  - `GET …/shopping-handoff`: test đỏ trước (`UnsupportedOperationException`, 404) rồi mới cài.
+- US6 (`b36fdcb`): thêm test cho `recipe_id = NULL` và `UnavailableRecipeIT` (archive, xóa hẳn, PUT/POST → 422). Xanh ngay vì T085 đã có.
+- Phase 10:
+  - `660fd06`: `getWeek` gọi `DayNutritionPort.totals` một lần cho cả tuần, chỉ với món khả dụng, món trùng đếm mỗi lần; tuần không có món khả dụng thì không gọi.
+  - `b6bf799`: `MealPlanWriteService` cài `MealPlanWriteFacade` thật (bữa trống, `plannedRecipeIds`, `saveDraft` theo cả nhóm món của bữa, tối đa 4, khóa `FOR UPDATE`). Xóa dev stub `InMemoryMealPlanFacade`; test 031 `AiPlannerControllerUS1IT` phải tạo user trước `saveDraft` vì bảng thật có khóa ngoại. Đánh dấu 031 T108 không cần nữa.
+- Phase 11 (`f0c1738`):
+  - script k6 `src/backend/perf/meal-planner.k6.js`;
+  - so `/v3/api-docs` với `openapi.yaml`;
+  - rule JaCoCo 70% cho `com.wikicook.mealplan.service`.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Tách prompt làm hai lần, backend trước | Mình yêu cầu | Phần còn lại dài; frontend cần API handoff và nutrition chốt trước |
+| Hỏi trước khi làm US5 | AI đề xuất, mình duyệt | 040 đã có `MealPlanHandoffPort` theo `mealPlanId`, lệch với contract 2.1 của 030 |
+| Giữ contract 030 theo `weekStart`, không đụng code 040 | Mình chọn (AI đề xuất) | Port của 040 chưa có cài đặt hay chỗ gọi; người làm 040 đổi port sang `weekStart` và tự ghép nguyên liệu bằng `RecipeDetailPort` |
+| Xóa hẳn dev stub facade | AI làm theo prompt | Bean thật luôn có, stub không còn được dùng |
+| Không thêm `@ApiResponse` cho mã lỗi (T105) | AI đề xuất, chờ mình duyệt | Hành vi khớp contract và đã có IT; chỉ springdoc không tự suy ra mã lỗi |
+
+### Cách sinh viên kiểm chứng
+
+- AI chạy `mvn verify` ở `src/backend` sau mỗi user story, đều BUILD SUCCESS:
+  - US4: 199 unit + 102 IT;
+  - US5: 201 + 107;
+  - US6: 202 + 110;
+  - Phase 10: 198 + 118 (số unit giảm vì xóa test của stub);
+  - Phase 11: 198 + 118, "All coverage checks have been met".
+- JaCoCo cuối cùng:
+  - wikicook-app 92,2% dòng / 81,3% nhánh;
+  - gói `mealplan` 98,4% / 92,2%;
+  - `mealplan.service` 100% / 98,1%.
+- Test 031 (`AiPlannerControllerUS1IT` và các IT khác) vẫn xanh khi chạy với facade thật.
+- Sinh viên cần làm:
+  - review code;
+  - chạy k6 khi có máy cài k6 *(chưa làm)*;
+  - báo người làm 040 về hướng handoff theo `weekStart`;
+  - duyệt API cho phần frontend.

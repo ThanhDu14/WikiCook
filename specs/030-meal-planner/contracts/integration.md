@@ -64,19 +64,30 @@ Nếu `skippedUnavailable > 0` hiện thông báo số món bị bỏ qua, rồi
 `MealPlanShoppingFacade` phía server để dựng preview và câu hỏi gộp/tạo mới (040 FR-004).
 `mealPlanItemId` dùng cho cột `shopping_list_item_sources.meal_plan_item_id` (full-schema câu hỏi 8).
 
-### 2.2. Cho AI Weekly Meal Planner (spec 031, C)
+*(2026-11-02)* Spec 040 đang có `shoppinglist.port.MealPlanHandoffPort.getMealPlanForShoppingList(userId,
+mealPlanId)` (trả kèm nguyên liệu), chưa có cài đặt. 030 giữ facade theo `weekStart` ở trên và không trả
+`mealPlanId` cho frontend; phía 040 đổi port sang `weekStart` và viết adapter ghép `MealPlanShoppingFacade`
+với `RecipeDetailPort` của 040 để lấy nguyên liệu và khẩu phần gốc.
+
+### 2.2. Cho AI Weekly Meal Planner (spec 031, C) *(sửa 2026-11-02: nhiều món mỗi bữa)*
+
+031 điền **cả mâm** cho những bữa còn trống: bữa sáng 1 món; trưa và tối gồm canh, món mặn và món
+rau (cơm mặc định, không lưu thành món). Chữ ký giữ nguyên để 031 không phải đổi code gọi; nghĩa của
+"ô" nay là một bữa `(day, meal)`.
 
 ```java
 public interface MealPlanWriteFacade {
-    /** Ô trống của tuần (để 031 chỉ điền ô trống, 031 FR-007). */
+    /** Bữa chưa có món nào của tuần (031 chỉ điền bữa trống, 031 FR-007). */
     Set<SlotKey> emptySlots(long userId, LocalDate weekStart);
 
-    /** Id công thức đã có trong tuần, không trùng (để gợi ý một ô loại món đã xếp, 031 FR-034). */
+    /** Id công thức đã có trong tuần, không trùng (để gợi ý loại món đã xếp, 031 FR-034). */
     Set<Long> plannedRecipeIds(long userId, LocalDate weekStart);
 
     /**
-     * Lưu nhiều món một lần trong một transaction (031 FR-018, FR-019).
-     * Bỏ qua ô đã có món hoặc công thức không còn PUBLISHED; trả về số món bị bỏ qua.
+     * Lưu nhiều món một lần trong một transaction (031 FR-018, FR-019). Các món cùng (day, meal)
+     * giữ thứ tự trong danh sách làm thứ tự trong bữa; mỗi bữa tối đa 4 món (món thứ 5 trở đi bị
+     * bỏ). Bỏ qua cả nhóm món của một bữa nếu bữa đó đã có món (đếm vào skippedOccupied), và món có
+     * công thức không còn PUBLISHED (skippedUnavailable).
      */
     BatchSaveResult saveDraft(long userId, LocalDate weekStart, List<DraftItem> items);
 }
