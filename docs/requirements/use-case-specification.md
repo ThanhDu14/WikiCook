@@ -120,6 +120,27 @@ Enables an authenticated user to maintain a centralized active shopping list (`S
 - **Basic Flow:** [`SL01-List.dc.html`](../analysis-and-design/ui-ux/screens/SL01-List.dc.html), [`SL04-AddItem.dc.html`](../analysis-and-design/ui-ux/screens/SL04-AddItem.dc.html).
 - **Alternative Flows:** [`SL02-Empty.dc.html`](../analysis-and-design/ui-ux/screens/SL02-Empty.dc.html), [`SL07-History.dc.html`](../analysis-and-design/ui-ux/screens/SL07-History.dc.html).
 - **UI Asset Gap for SCRUM-58:** Needs confirmation modal screenshot for AF 1.2 ("Lưu trữ danh sách cũ để khôi phục").
+- **Prototype Screenshots (SCRUM-58):**
+  - **Danh sách đi chợ theo quầy (`SL01-List`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      *(Đang cập nhật sau khi chụp)*
+    - **Desktop Web View:**  
+      *(Đang cập nhật sau khi chụp)*
+  - **Hộp thoại thêm món vào danh sách (`SL04-AddItem`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_AddItemDialog Mobile](../assets/screenshots/use-cases/040-shopping-list/UC040_01_Basic_AddItemDialog_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_AddItemDialog Desktop](../assets/screenshots/use-cases/040-shopping-list/UC040_01_Basic_AddItemDialog_desktop.png)
+  - **Danh sách đi chợ trống (`SL02-Empty`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![AF1_EmptyList Mobile](../assets/screenshots/use-cases/040-shopping-list/UC040_01_AF1_EmptyList_mobile.png)
+    - **Desktop Web View:**  
+      ![AF1_EmptyList Desktop](../assets/screenshots/use-cases/040-shopping-list/UC040_01_AF1_EmptyList_desktop.png)
+  - **Ngăn kéo lịch sử đi chợ (`SL07-History`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![AF2_HistoryDrawer Mobile](../assets/screenshots/use-cases/040-shopping-list/UC040_01_AF2_HistoryDrawer_mobile.png)
+    - **Desktop Web View:**  
+      ![AF2_HistoryDrawer Desktop](../assets/screenshots/use-cases/040-shopping-list/UC040_01_AF2_HistoryDrawer_desktop.png)
 
 ---
 
@@ -207,6 +228,17 @@ Allows a cook to import ingredient sets into their active shopping list from an 
 - **Basic Flow:** [`SL03-ImportPreview.dc.html`](../analysis-and-design/ui-ux/screens/SL03-ImportPreview.dc.html), [`SL04b-Breakdown.dc.html`](../analysis-and-design/ui-ux/screens/SL04b-Breakdown.dc.html).
 - **Alternative Flows:** [`W-SL03-ImportPreview.dc.html`](../analysis-and-design/ui-ux/screens/W-SL03-ImportPreview.dc.html) (Desktop dialog variant).
 - **UI Asset Gap for SCRUM-58:** Pre-import modal showing the active "Bỏ chọn gia vị cơ bản" state.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Xem trước nguyên liệu nhập từ công thức (`SL03-ImportPreview`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_PreImportSheet Mobile](../assets/screenshots/use-cases/040-shopping-list/UC040_02_Basic_PreImportSheet_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_PreImportSheet Desktop](../assets/screenshots/use-cases/040-shopping-list/UC040_02_Basic_PreImportSheet_desktop.png)
+  - **Chi tiết nguồn gốc nguyên liệu (`SL04b-Breakdown`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_IngredientProvenance Mobile](../assets/screenshots/use-cases/040-shopping-list/UC040_02_Basic_IngredientProvenance_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_IngredientProvenance Desktop](../assets/screenshots/use-cases/040-shopping-list/UC040_02_Basic_IngredientProvenance_desktop.png)
 
 ---
 
@@ -289,6 +321,22 @@ Provides the primary in-store shopping experience. Items are grouped under stand
 - **Basic Flow:** [`SL01-List.dc.html`](../analysis-and-design/ui-ux/screens/SL01-List.dc.html).
 - **Alternative Flows:** [`SL05-ItemDetail.dc.html`](../analysis-and-design/ui-ux/screens/SL05-ItemDetail.dc.html), [`SL06-MoveAisle.dc.html`](../analysis-and-design/ui-ux/screens/SL06-MoveAisle.dc.html).
 - **UI Asset Gap for SCRUM-58:** Screenshot of the 5-second transient undo snackbar.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Danh sách các món đã mua (`SL01-CheckedItems`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_CheckedItems Mobile](../assets/screenshots/use-cases/040-shopping-list/UC040_03_Basic_CheckedItems_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_CheckedItems Desktop](../assets/screenshots/use-cases/040-shopping-list/UC040_03_Basic_CheckedItems_desktop.png)
+  - **Chi tiết món và chỉnh sửa số lượng (`SL05-ItemDetail`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![AF4_ItemDetail Mobile](../assets/screenshots/use-cases/040-shopping-list/UC040_03_AF4_ItemDetail_mobile.png)
+    - **Desktop Web View:**  
+      ![AF4_ItemDetail Desktop](../assets/screenshots/use-cases/040-shopping-list/UC040_03_AF4_ItemDetail_desktop.png)
+  - **Hộp thoại chuyển đổi quầy nguyên liệu (`SL06-MoveAisle`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![AF5_MoveAisleModal Mobile](../assets/screenshots/use-cases/040-shopping-list/UC040_03_AF5_MoveAisleModal_mobile.png)
+    - **Desktop Web View:**  
+      ![AF5_MoveAisleModal Desktop](../assets/screenshots/use-cases/040-shopping-list/UC040_03_AF5_MoveAisleModal_desktop.png)
 
 ---
 
@@ -356,6 +404,12 @@ Guarantees uninterrupted shopping list usability when cellular and Wi-Fi signals
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Basic Flow:** [`SL08-Offline.dc.html`](../analysis-and-design/ui-ux/screens/SL08-Offline.dc.html).
 - **UI Asset Gap for SCRUM-58:** Screenshot of the sync success toast banner ("Đã đồng bộ dữ liệu").
+- **Prototype Screenshots (SCRUM-58):**
+  - **Banner trạng thái ngoại tuyến & mất mạng (`SL08-Offline`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_OfflineBanner Mobile](../assets/screenshots/use-cases/040-shopping-list/UC040_04_Basic_OfflineBanner_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_OfflineBanner Desktop](../assets/screenshots/use-cases/040-shopping-list/UC040_04_Basic_OfflineBanner_desktop.png)
 
 ---
 
@@ -498,6 +552,17 @@ Provides the initial transition into the kitchen execution environment. From any
 - **Basic Flow:** [`CK01-Step.dc.html`](../analysis-and-design/ui-ux/screens/CK01-Step.dc.html).
 - **Alternative Flows:** [`CK02-StepHC.dc.html`](../analysis-and-design/ui-ux/screens/CK02-StepHC.dc.html).
 - **UI Asset Gap for SCRUM-58:** Screen Wake Lock unsupported warning banner.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Chế độ nấu ăn toàn màn hình từng bước (`CK01-StepView`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_StepView Mobile](../assets/screenshots/use-cases/050-cooking-mode/UC050_01_Basic_StepView_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_StepView Desktop](../assets/screenshots/use-cases/050-cooking-mode/UC050_01_Basic_StepView_desktop.png)
+  - **Chế độ hiển thị độ tương phản cao trong bếp (`CK01b-HighContrast`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![AF3_HighContrast Mobile](../assets/screenshots/use-cases/050-cooking-mode/UC050_01_AF3_HighContrast_mobile.png)
+    - **Desktop Web View:**  
+      ![AF3_HighContrast Desktop](../assets/screenshots/use-cases/050-cooking-mode/UC050_01_AF3_HighContrast_desktop.png)
 
 ---
 
@@ -561,6 +626,17 @@ Enables the cook to navigate forward and backward through recipe instructions us
 - **Basic Flow:** [`CK01-Step.dc.html`](../analysis-and-design/ui-ux/screens/CK01-Step.dc.html).
 - **Alternative Flows:** [`CK05-Ingredients.dc.html`](../analysis-and-design/ui-ux/screens/CK05-Ingredients.dc.html), [`CK09-Finished.dc.html`](../analysis-and-design/ui-ux/screens/CK09-Finished.dc.html).
 - **UI Asset Gap for SCRUM-58:** None (Screens CK01, CK05, CK09 cover all states).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Ngăn kéo tra cứu nguyên liệu khi nấu (`CK02-Ingredients`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![AF2_IngredientsDrawer Mobile](../assets/screenshots/use-cases/050-cooking-mode/UC050_02_AF2_IngredientsDrawer_mobile.png)
+    - **Desktop Web View:**  
+      ![AF2_IngredientsDrawer Desktop](../assets/screenshots/use-cases/050-cooking-mode/UC050_02_AF2_IngredientsDrawer_desktop.png)
+  - **Màn hình hoàn thành món ăn (`CK03-Finished`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![AF3_CookingFinished Mobile](../assets/screenshots/use-cases/050-cooking-mode/UC050_02_AF3_CookingFinished_mobile.png)
+    - **Desktop Web View:**  
+      ![AF3_CookingFinished Desktop](../assets/screenshots/use-cases/050-cooking-mode/UC050_02_AF3_CookingFinished_desktop.png)
 
 ---
 
@@ -643,6 +719,17 @@ Provides parallel kitchen countdown timers directly integrated into cooking step
 - **Basic Flow:** [`CK01-Step.dc.html`](../analysis-and-design/ui-ux/screens/CK01-Step.dc.html), [`CK04-AddTimer.dc.html`](../analysis-and-design/ui-ux/screens/CK04-AddTimer.dc.html).
 - **Alternative Flows:** [`CK03-TimerOverdue.dc.html`](../analysis-and-design/ui-ux/screens/CK03-TimerOverdue.dc.html).
 - **UI Asset Gap for SCRUM-58:** Screenshot of multiple simultaneous expired timer cards.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Hộp thoại thêm bộ hẹn giờ song song (`CK04-AddTimer`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_AddTimerDialog Mobile](../assets/screenshots/use-cases/050-cooking-mode/UC050_03_Basic_AddTimerDialog_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_AddTimerDialog Desktop](../assets/screenshots/use-cases/050-cooking-mode/UC050_03_Basic_AddTimerDialog_desktop.png)
+  - **Cảnh báo chuông hẹn giờ quá hạn (`CK05-TimerOverdue`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![AF2_TimerOverdue Mobile](../assets/screenshots/use-cases/050-cooking-mode/UC050_03_AF2_TimerOverdue_mobile.png)
+    - **Desktop Web View:**  
+      ![AF2_TimerOverdue Desktop](../assets/screenshots/use-cases/050-cooking-mode/UC050_03_AF2_TimerOverdue_desktop.png)
 
 ---
 
@@ -718,6 +805,12 @@ Provides an optional online progressive enhancement allowing the cook to advance
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Basic Flow:** [`CK06-Voice.dc.html`](../analysis-and-design/ui-ux/screens/CK06-Voice.dc.html).
 - **UI Asset Gap for SCRUM-58:** Amber indicator toast for rejected low-confidence audio ("Không rõ khẩu lệnh").
+- **Prototype Screenshots (SCRUM-58):**
+  - **Trạng thái lắng nghe khẩu lệnh rảnh tay (`CK06-VoiceListening`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_VoiceListening Mobile](../assets/screenshots/use-cases/050-cooking-mode/UC050_04_Basic_VoiceListening_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_VoiceListening Desktop](../assets/screenshots/use-cases/050-cooking-mode/UC050_04_Basic_VoiceListening_desktop.png)
 
 ---
 
@@ -797,6 +890,17 @@ Safeguards the cooking progress and active timers against catastrophic loss caus
 - **Basic Flow:** [`CK07-Resume.dc.html`](../analysis-and-design/ui-ux/screens/CK07-Resume.dc.html).
 - **Alternative Flows:** [`CK08-ExitTimers.dc.html`](../analysis-and-design/ui-ux/screens/CK08-ExitTimers.dc.html).
 - **UI Asset Gap for SCRUM-58:** Compact floating background widget screenshot on the recipe overview page.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Khôi phục phiên nấu dở dang (`CK07-ResumeSession`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_ResumeSession Mobile](../assets/screenshots/use-cases/050-cooking-mode/UC050_05_Basic_ResumeSession_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_ResumeSession Desktop](../assets/screenshots/use-cases/050-cooking-mode/UC050_05_Basic_ResumeSession_desktop.png)
+  - **Cảnh báo thoát khi còn bộ hẹn giờ chạy (`CK08-ExitConfirm`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![AF2_ExitConfirmTimers Mobile](../assets/screenshots/use-cases/050-cooking-mode/UC050_05_AF2_ExitConfirmTimers_mobile.png)
+    - **Desktop Web View:**  
+      ![AF2_ExitConfirmTimers Desktop](../assets/screenshots/use-cases/050-cooking-mode/UC050_05_AF2_ExitConfirmTimers_desktop.png)
 
 ---
 
@@ -993,6 +1097,17 @@ Lets any visitor type the name of a dish or an ingredient and immediately see ma
 - **Basic Flow:** [`SR01-Home.dc.html`](../analysis-and-design/ui-ux/screens/SR01-Home.dc.html), [`SR02-Results.dc.html`](../analysis-and-design/ui-ux/screens/SR02-Results.dc.html).
 - **Alternative Flows:** [`SR04-NoResults.dc.html`](../analysis-and-design/ui-ux/screens/SR04-NoResults.dc.html) (AF 1.4), [`SR07-LoadingError.dc.html`](../analysis-and-design/ui-ux/screens/SR07-LoadingError.dc.html) (Step 4, AF 1.5).
 - **UI Asset Gap for SCRUM-58:** No screen yet for the shortened-keyword notice (AF 1.2) and the rate-limit message (AF 1.7) — *Gap 020-A*.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Ô tìm kiếm tại Trang chủ (`SE01-HomeSearch`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_HomeSearch Mobile](../assets/screenshots/use-cases/020-search/UC020_01_Basic_HomeSearch_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_HomeSearch Desktop](../assets/screenshots/use-cases/020-search/UC020_01_Basic_HomeSearch_desktop.png)
+  - **Danh sách kết quả tìm kiếm công thức (`SE02-SearchResults`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_SearchResults Mobile](../assets/screenshots/use-cases/020-search/UC020_01_Basic_SearchResults_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_SearchResults Desktop](../assets/screenshots/use-cases/020-search/UC020_01_Basic_SearchResults_desktop.png)
 
 ---
 
@@ -1066,6 +1181,12 @@ Extends `UC-020-01` at the results page. The actor narrows the results by total 
 - **Basic Flow:** [`SR02-Results.dc.html`](../analysis-and-design/ui-ux/screens/SR02-Results.dc.html) (active filters as chips).
 - **Alternative Flows:** [`SR01-Home.dc.html`](../analysis-and-design/ui-ux/screens/SR01-Home.dc.html) (AF 2.1), [`SR03-FilterSheet.dc.html`](../analysis-and-design/ui-ux/screens/SR03-FilterSheet.dc.html) (AF 2.2), [`SR04-NoResults.dc.html`](../analysis-and-design/ui-ux/screens/SR04-NoResults.dc.html) (AF 2.4).
 - **UI Asset Gap for SCRUM-58:** No screen shows the note "recipes without a calorie estimate are hidden" (AF 2.3) — *Gap 020-B*.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Bộ lọc tìm kiếm nâng cao (`SE03-FilterSheet`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_FilterBottomSheet Mobile](../assets/screenshots/use-cases/020-search/UC020_02_Basic_FilterBottomSheet_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_FilterBottomSheet Desktop](../assets/screenshots/use-cases/020-search/UC020_02_Basic_FilterBottomSheet_desktop.png)
 
 ---
 
@@ -1136,6 +1257,17 @@ Extends `UC-020-01` when the actor is signed in and has a dietary profile. Every
 - **Basic Flow:** [`SR02-Results.dc.html`](../analysis-and-design/ui-ux/screens/SR02-Results.dc.html) (notice "Đã ẩn 6 món theo hồ sơ ăn uống").
 - **Alternative Flows:** [`SR06-ShownWithWarning.dc.html`](../analysis-and-design/ui-ux/screens/SR06-ShownWithWarning.dc.html) (AF 3.1), [`SR05-AllHidden.dc.html`](../analysis-and-design/ui-ux/screens/SR05-AllHidden.dc.html) (AF 3.2).
 - **UI Asset Gap for SCRUM-58:** No screen for the "sign in again to apply your profile" notice (AF 3.4) — *Gap 020-C*.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Cảnh báo xung đột bộ lọc & sở thích ăn uống (`SE04-FilterConflict`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![AF1_WarningConflict Mobile](../assets/screenshots/use-cases/020-search/UC020_03_AF1_WarningConflict_mobile.png)
+    - **Desktop Web View:**  
+      ![AF1_WarningConflict Desktop](../assets/screenshots/use-cases/020-search/UC020_03_AF1_WarningConflict_desktop.png)
+  - **Trạng thái ẩn toàn bộ kết quả do dị ứng (`SE05-AllHidden`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![AF2_AllHiddenDietary Mobile](../assets/screenshots/use-cases/020-search/UC020_03_AF2_AllHiddenDietary_mobile.png)
+    - **Desktop Web View:**  
+      ![AF2_AllHiddenDietary Desktop](../assets/screenshots/use-cases/020-search/UC020_03_AF2_AllHiddenDietary_desktop.png)
 
 ---
 
@@ -1200,6 +1332,12 @@ Extends `UC-020-01` at the results page. The actor changes the sort order (Relev
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Basic Flow:** [`SR02-Results.dc.html`](../analysis-and-design/ui-ux/screens/SR02-Results.dc.html) (sort control "Sắp xếp · Liên quan").
 - **UI Asset Gap for SCRUM-58:** No screen shows the open sort menu and the numbered pagination control — *Gap 020-D*.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Trạng thái không tìm thấy kết quả phù hợp (`SE06-EmptyResults`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![AF4_EmptyResults Mobile](../assets/screenshots/use-cases/020-search/UC020_04_AF4_EmptyResults_mobile.png)
+    - **Desktop Web View:**  
+      ![AF4_EmptyResults Desktop](../assets/screenshots/use-cases/020-search/UC020_04_AF4_EmptyResults_desktop.png)
 
 ---
 
@@ -1330,6 +1468,12 @@ Shows one published recipe as readers see it: header (cover, name, category and 
 - **Basic Flow:** [`NU01-Detail.dc.html`](../analysis-and-design/ui-ux/screens/NU01-Detail.dc.html) (header, "Khẩu phần", "Nguyên liệu", "Các bước", "Bắt đầu nấu", "Thêm vào thực đơn").
 - **Alternative Flows:** [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 6.1), [`CM01-NotFound.dc.html`](../analysis-and-design/ui-ux/screens/CM01-NotFound.dc.html) (AF 6.3), [`CM04-OfflinePage.dc.html`](../analysis-and-design/ui-ux/screens/CM04-OfflinePage.dc.html) (AF 6.6).
 - **UI Asset Gap for SCRUM-58:** No screen for "Công thức này không còn khả dụng" (AF 6.2) — *Gap 020-E*; NU01 does not yet show the equipment list, video block and the "Thêm vào danh sách đi chợ" / "Lưu công thức" buttons in one view — *Gap 020-F*.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Chi tiết công thức nấu ăn chung (`SE07-RecipeDetailShared`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_RecipeDetailShared Mobile](../assets/screenshots/use-cases/020-search/UC020_06_Basic_RecipeDetailShared_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_RecipeDetailShared Desktop](../assets/screenshots/use-cases/020-search/UC020_06_Basic_RecipeDetailShared_desktop.png)
 
 ---
 
@@ -1450,6 +1594,27 @@ The Member writes a recipe one step at a time in a six-step wizard — (1) Gener
 - **Basic Flow:** [`RE02-General.dc.html`](../analysis-and-design/ui-ux/screens/RE02-General.dc.html), [`RE03-Ingredients.dc.html`](../analysis-and-design/ui-ux/screens/RE03-Ingredients.dc.html), [`RE04-Equipment.dc.html`](../analysis-and-design/ui-ux/screens/RE04-Equipment.dc.html), [`RE05-Steps.dc.html`](../analysis-and-design/ui-ux/screens/RE05-Steps.dc.html), [`RE06-Video.dc.html`](../analysis-and-design/ui-ux/screens/RE06-Video.dc.html), [`RE07-Review.dc.html`](../analysis-and-design/ui-ux/screens/RE07-Review.dc.html).
 - **Alternative Flows:** [`RE02-General.dc.html`](../analysis-and-design/ui-ux/screens/RE02-General.dc.html) (AF 1.1 — step 1 with errors), [`RE07-Review.dc.html`](../analysis-and-design/ui-ux/screens/RE07-Review.dc.html) (AF 1.2, AF 1.3).
 - **UI Asset Gap for SCRUM-58:** No screens for the submit confirmation dialog and success message (Steps 10–13), image errors (AF 1.4, AF 1.5) and the submission/draft limit messages (AF 1.10, AF 1.11) — *Gap 060-A*.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Wizard tạo công thức - Bước 1: Thông tin cơ bản (`RC01-Step1`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_WizardStep1 Mobile](../assets/screenshots/use-cases/060-recipe-editor/UC060_01_Basic_WizardStep1_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_WizardStep1 Desktop](../assets/screenshots/use-cases/060-recipe-editor/UC060_01_Basic_WizardStep1_desktop.png)
+  - **Wizard tạo công thức - Bước 2: Nguyên liệu & Khẩu phần (`RC02-Step2`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_WizardStep2 Mobile](../assets/screenshots/use-cases/060-recipe-editor/UC060_01_Basic_WizardStep2_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_WizardStep2 Desktop](../assets/screenshots/use-cases/060-recipe-editor/UC060_01_Basic_WizardStep2_desktop.png)
+  - **Wizard tạo công thức - Bước 4: Các bước nấu (`RC03-Step4`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_WizardStep4 Mobile](../assets/screenshots/use-cases/060-recipe-editor/UC060_01_Basic_WizardStep4_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_WizardStep4 Desktop](../assets/screenshots/use-cases/060-recipe-editor/UC060_01_Basic_WizardStep4_desktop.png)
+  - **Wizard tạo công thức - Xem lại và xuất bản (`RC04-Review`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_WizardReview Mobile](../assets/screenshots/use-cases/060-recipe-editor/UC060_01_Basic_WizardReview_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_WizardReview Desktop](../assets/screenshots/use-cases/060-recipe-editor/UC060_01_Basic_WizardReview_desktop.png)
 
 ---
 
@@ -1594,6 +1759,12 @@ Closes the moderation loop from the author's side. A recipe set to `REVISION_REQ
 - **Basic Flow:** [`RE01-MyRecipes.dc.html`](../analysis-and-design/ui-ux/screens/RE01-MyRecipes.dc.html) (tab "Cần sửa", "Sửa và gửi lại"), [`RE08-RevisionNote.dc.html`](../analysis-and-design/ui-ux/screens/RE08-RevisionNote.dc.html).
 - **Alternative Flows:** [`RE09-Rejected.dc.html`](../analysis-and-design/ui-ux/screens/RE09-Rejected.dc.html) (AF 3.1), [`RE01-MyRecipes.dc.html`](../analysis-and-design/ui-ux/screens/RE01-MyRecipes.dc.html) ("Rút lại", AF 3.2).
 - **UI Asset Gap for SCRUM-58:** No screen for the withdraw confirmation (AF 3.2) — *Gap 060-C*.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Xem ghi chú kiểm duyệt từ Moderator (`RC05-ModeratorNotes`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_ModeratorNotes Mobile](../assets/screenshots/use-cases/060-recipe-editor/UC060_03_Basic_ModeratorNotes_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_ModeratorNotes Desktop](../assets/screenshots/use-cases/060-recipe-editor/UC060_03_Basic_ModeratorNotes_desktop.png)
 
 ---
 
@@ -1661,6 +1832,12 @@ One page, "Công thức của tôi", lists all recipes of the author in tabs by 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Basic Flow:** [`RE01-MyRecipes.dc.html`](../analysis-and-design/ui-ux/screens/RE01-MyRecipes.dc.html) (tabs, counts, cards and actions for every status).
 - **UI Asset Gap for SCRUM-58:** No screens for the empty state (AF 4.1) and the loading error (AF 4.2) — *Gap 060-D*.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Tab quản lý công thức của tôi (`RC06-MyRecipes`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_MyRecipesTabs Mobile](../assets/screenshots/use-cases/060-recipe-editor/UC060_04_Basic_MyRecipesTabs_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_MyRecipesTabs Desktop](../assets/screenshots/use-cases/060-recipe-editor/UC060_04_Basic_MyRecipesTabs_desktop.png)
 
 ---
 
@@ -2069,6 +2246,17 @@ Lets a visitor create a WikiCook account with a display name, an email address, 
 - **Basic Flow:** [`AU02-Register.dc.html`](../analysis-and-design/ui-ux/screens/AU02-Register.dc.html) (Steps 2–5), [`AU03-CheckEmail.dc.html`](../analysis-and-design/ui-ux/screens/AU03-CheckEmail.dc.html) (Step 9).
 - **Alternative Flows:** [`AU02-Register.dc.html`](../analysis-and-design/ui-ux/screens/AU02-Register.dc.html) (AF 1.2, password rules failed), [`AU03-CheckEmail.dc.html`](../analysis-and-design/ui-ux/screens/AU03-CheckEmail.dc.html) (AF 1.9, countdown and 3-per-15-minutes note), [`AU04-LinkExpired.dc.html`](../analysis-and-design/ui-ux/screens/AU04-LinkExpired.dc.html) (AF 1.11).
 - **UI Asset Gap for SCRUM-58:** Needs screens for the "email already registered" error (AF 1.1), the "email verified" confirmation (Step 11), and the "request limit reached" state of the resend button (AF 1.10). See Section 9.2 (Gaps 010-A, 010-B, 010-C).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Màn hình Đăng ký tài khoản (`AU02-Register`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_Register Mobile](../assets/screenshots/use-cases/010-auth/UC010_01_Basic_Register_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_Register Desktop](../assets/screenshots/use-cases/010-auth/UC010_01_Basic_Register_desktop.png)
+  - **Màn hình Chờ xác thực Email (`AU03-CheckEmail`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_VerifyEmail Mobile](../assets/screenshots/use-cases/010-auth/UC010_01_Basic_VerifyEmail_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_VerifyEmail Desktop](../assets/screenshots/use-cases/010-auth/UC010_01_Basic_VerifyEmail_desktop.png)
 
 ---
 
@@ -2213,6 +2401,12 @@ Lets a registered user authenticate with an email and a password so that the per
 - **Basic Flow:** [`W-AU01-Login.dc.html`](../analysis-and-design/ui-ux/screens/W-AU01-Login.dc.html) (Steps 2–5, 11; the web variant — there is no mobile `AU01`). It also shows the generic error of AF 2.1 ("Email hoặc mật khẩu không đúng"), the warning that 5 failures in a row lock the account for 15 minutes, "Ghi nhớ (30 ngày)", "Quên mật khẩu?", the Google button, and the guest-save context of AF 2.9.
 - **Alternative Flows:** [`AU07-Locked.dc.html`](../analysis-and-design/ui-ux/screens/AU07-Locked.dc.html) (AF 2.3, AF 2.4, AF 2.5), [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 2.9), [`AU09-AccessDenied.dc.html`](../analysis-and-design/ui-ux/screens/AU09-AccessDenied.dc.html) (AF 2.16).
 - **UI Asset Gap for SCRUM-58:** Needs the unverified-email reminder (AF 2.7), the session-expired prompt (AF 2.12) and the role-change notice (AF 2.15). See Section 9.2 (Gaps 010-F to 010-H).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Hộp thoại Đăng nhập (`W-AU01-Login`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_SignInModal Mobile](../assets/screenshots/use-cases/010-auth/UC010_02_Basic_SignInModal_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_SignInModal Desktop](../assets/screenshots/use-cases/010-auth/UC010_02_Basic_SignInModal_desktop.png)
 
 ---
 
@@ -2302,6 +2496,17 @@ Lets a registered user regain access without contacting support. The user reques
 - **Basic Flow:** [`AU05-ForgotPassword.dc.html`](../analysis-and-design/ui-ux/screens/AU05-ForgotPassword.dc.html) (Steps 2–5), [`AU06-ResetPassword.dc.html`](../analysis-and-design/ui-ux/screens/AU06-ResetPassword.dc.html) (Steps 8–10).
 - **Alternative Flows:** [`AU07-Locked.dc.html`](../analysis-and-design/ui-ux/screens/AU07-Locked.dc.html) (AF 3.8, entry from the locked-account screen), [`AU05-ForgotPassword.dc.html`](../analysis-and-design/ui-ux/screens/AU05-ForgotPassword.dc.html) (AF 3.1 and AF 3.7 look the same as the neutral message).
 - **UI Asset Gap for SCRUM-58:** Needs the "reset link invalid or expired" screen (AF 3.4), the "password changed" confirmation (Step 12) and the failed-rule state of the new-password form (AF 3.5). See Section 9.2 (Gaps 010-I, 010-J, 010-K).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Màn hình Quên mật khẩu (`AU05-ForgotPassword`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_ForgotPassword Mobile](../assets/screenshots/use-cases/010-auth/UC010_03_Basic_ForgotPassword_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_ForgotPassword Desktop](../assets/screenshots/use-cases/010-auth/UC010_03_Basic_ForgotPassword_desktop.png)
+  - **Màn hình Đặt lại mật khẩu (`AU06-ResetPassword`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_ResetPassword Mobile](../assets/screenshots/use-cases/010-auth/UC010_03_Basic_ResetPassword_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_ResetPassword Desktop](../assets/screenshots/use-cases/010-auth/UC010_03_Basic_ResetPassword_desktop.png)
 
 ---
 
@@ -2640,6 +2845,12 @@ Lets a signed-in user record, in one place and once, what must be avoided and ho
 - **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1), [`PF02-DietEmpty.dc.html`](../analysis-and-design/ui-ux/screens/PF02-DietEmpty.dc.html) (Step 2), [`PF03-DietForm.dc.html`](../analysis-and-design/ui-ux/screens/PF03-DietForm.dc.html) (Steps 3–7).
 - **Alternative Flows:** [`PF03-DietForm.dc.html`](../analysis-and-design/ui-ux/screens/PF03-DietForm.dc.html) (AF 1.1, edit mode).
 - **UI Asset Gap for SCRUM-58:** Needs the field-level validation states (AF 1.3, AF 1.4, AF 1.6), the save-failed state with "Try again" (AF 1.9) and the notice about merged or deleted ingredients (AF 1.13). See Section 10.2 (Gaps 011-A to 011-C).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Màn hình Hồ sơ dinh dưỡng & Sở thích ăn uống (`PR02-DietaryProfile`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_DietaryProfile Mobile](../assets/screenshots/use-cases/011-profile/UC011_01_Basic_DietaryProfile_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_DietaryProfile Desktop](../assets/screenshots/use-cases/011-profile/UC011_01_Basic_DietaryProfile_desktop.png)
 
 ---
 
@@ -2756,6 +2967,17 @@ Lets a signed-in user change the display name (1–50 characters), write a short
 - **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1), [`PF04-EditProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF04-EditProfile.dc.html) (Steps 2–9), [`PF05-PublicProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF05-PublicProfile.dc.html) (Step 10).
 - **Alternative Flows:** [`PF05-PublicProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF05-PublicProfile.dc.html) (AF 2.6).
 - **UI Asset Gap for SCRUM-58:** Needs the error states for the display name, the bio and the avatar file (AF 2.1 – AF 2.4), the Administrator's view of a user's profile (AF 2.8) and the public profile of a user without published recipes (see `[OQ-011-02]`). See Section 10.2 (Gaps 011-D to 011-F).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Màn hình Trang cá nhân người dùng (`PR01-ProfileView`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_ProfileView Mobile](../assets/screenshots/use-cases/011-profile/UC011_02_Basic_ProfileView_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_ProfileView Desktop](../assets/screenshots/use-cases/011-profile/UC011_02_Basic_ProfileView_desktop.png)
+  - **Màn hình Chỉnh sửa thông tin cá nhân (`PR03-EditProfile`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_EditProfile Mobile](../assets/screenshots/use-cases/011-profile/UC011_02_Basic_EditProfile_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_EditProfile Desktop](../assets/screenshots/use-cases/011-profile/UC011_02_Basic_EditProfile_desktop.png)
 
 ---
 
@@ -2966,6 +3188,12 @@ Lets a user delete the own account and personal data immediately, in one step th
 - **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1), [`PF07-DeleteAccount.dc.html`](../analysis-and-design/ui-ux/screens/PF07-DeleteAccount.dc.html) (Steps 2–5), [`PF08-Goodbye.dc.html`](../analysis-and-design/ui-ux/screens/PF08-Goodbye.dc.html) (Step 8).
 - **Alternative Flows:** No prototype screen exists for AF 4.1 – AF 4.4.
 - **UI Asset Gap for SCRUM-58:** Needs the refusal messages for the last Administrator (AF 4.3) and for a temporarily suspended account (AF 4.4), the error state for a wrong credential or a wrong confirmation word (AF 4.1) and the Google re-authentication variant of the form (AF 4.2). See Section 10.2 (Gaps 011-J to 011-M).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Màn hình / Hộp thoại Xóa tài khoản (`PR04-DeleteAccount`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_DeleteAccount Mobile](../assets/screenshots/use-cases/011-profile/UC011_04_Basic_DeleteAccount_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_DeleteAccount Desktop](../assets/screenshots/use-cases/011-profile/UC011_04_Basic_DeleteAccount_desktop.png)
 
 ---
 
@@ -3270,6 +3498,12 @@ Lets a signed-in user save a published recipe to the built-in list "Đã lưu" w
 - **Basic Flow:** [`BM05-SavedToast.dc.html`](../analysis-and-design/ui-ux/screens/BM05-SavedToast.dc.html) (Steps 5–6, detail page with "Đã lưu · trong 2 bộ sưu tập" and the confirmation with "Thêm vào bộ sưu tập").
 - **Alternative Flows:** [`BM06-UnsaveConfirm.dc.html`](../analysis-and-design/ui-ux/screens/BM06-UnsaveConfirm.dc.html) (AF 1.3), [`BM05-SavedToast.dc.html`](../analysis-and-design/ui-ux/screens/BM05-SavedToast.dc.html) (AF 1.8, "Danh sách Đã lưu đã đầy (1.000)" with "Xem"), [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 1.7), [`BM03-CollectionDetail.dc.html`](../analysis-and-design/ui-ux/screens/BM03-CollectionDetail.dc.html) (undo toast "Hoàn tác" pattern).
 - **UI Asset Gap for SCRUM-58:** Needs the unsave-with-undo confirmation on the detail page (AF 1.2), and the failure and offline messages of the save icon (AF 1.10, AF 1.11), and the "recipe no longer available" refusal (AF 1.9). See Section 11.2 (Gaps 080-A to 080-C).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Lưu nhanh công thức một chạm (`CL01-SaveOneTap`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_SaveOneTap Mobile](../assets/screenshots/use-cases/080-collections/UC080_01_Basic_SaveOneTap_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_SaveOneTap Desktop](../assets/screenshots/use-cases/080-collections/UC080_01_Basic_SaveOneTap_desktop.png)
 
 ---
 
@@ -3388,6 +3622,12 @@ Lets a signed-in user add a published recipe to one or more collections, or remo
 - **Basic Flow:** [`BM04-SaveDialog.dc.html`](../analysis-and-design/ui-ux/screens/BM04-SaveDialog.dc.html) (Steps 2–5, with "Đã đầy", "Tạo bộ sưu tập mới" and "Xong"), [`BM05-SavedToast.dc.html`](../analysis-and-design/ui-ux/screens/BM05-SavedToast.dc.html) (Step 1, the "Thêm vào bộ sưu tập" action).
 - **Alternative Flows:** [`BM04-SaveDialog.dc.html`](../analysis-and-design/ui-ux/screens/BM04-SaveDialog.dc.html) (AF 2.3 with the message "Bạn đã có bộ sưu tập tên này", AF 2.5).
 - **UI Asset Gap for SCRUM-58:** Needs the dialog empty state (AF 2.9), the save-failed state with "Try again" (AF 2.7) and the result confirmation "Đã thêm vào 2 bộ sưu tập" (Step 7). See Section 11.2 (Gaps 080-D to 080-F).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Hộp thoại chọn bộ sưu tập lưu trữ (`CL02-SaveToCollection`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_SaveToCollectionModal Mobile](../assets/screenshots/use-cases/080-collections/UC080_02_Basic_SaveToCollectionModal_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_SaveToCollectionModal Desktop](../assets/screenshots/use-cases/080-collections/UC080_02_Basic_SaveToCollectionModal_desktop.png)
 
 ---
 
@@ -3633,6 +3873,12 @@ Lets a signed-in user see all saved recipes and collections at a glance and open
 - **Basic Flow:** [`BM01-Collections.dc.html`](../analysis-and-design/ui-ux/screens/BM01-Collections.dc.html) (Steps 1–2), [`BM03-CollectionDetail.dc.html`](../analysis-and-design/ui-ux/screens/BM03-CollectionDetail.dc.html) (Steps 3–6, with sort chips "Mới thêm" and "Tên A–Z" and the "Hoàn tác" toast).
 - **Alternative Flows:** [`BM02-Empty.dc.html`](../analysis-and-design/ui-ux/screens/BM02-Empty.dc.html) (AF 4.1), [`BM03-CollectionDetail.dc.html`](../analysis-and-design/ui-ux/screens/BM03-CollectionDetail.dc.html) (AF 4.7, AF 4.8: "1 món không còn khả dụng", "Bỏ tất cả món không còn khả dụng", the "Bò lúc lắc — Không còn khả dụng" item with "Bỏ khỏi bộ sưu tập"), [`CM04-OfflinePage.dc.html`](../analysis-and-design/ui-ux/screens/CM04-OfflinePage.dc.html) (AF 4.5), [`CM01-NotFound.dc.html`](../analysis-and-design/ui-ux/screens/CM01-NotFound.dc.html) (AF 4.14), [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 4.4).
 - **UI Asset Gap for SCRUM-58:** Needs the empty-collection state (AF 4.2), the server-failure state (AF 4.6), the confirmations of "Bỏ tất cả" (AF 4.9, AF 4.10), the message shown when an unavailable item is selected (AF 4.7) and the detail page of "Đã lưu". See Section 11.2 (Gaps 080-K to 080-N).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Lưới hiển thị danh sách các bộ sưu tập (`CL03-CollectionsGrid`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_CollectionsGrid Mobile](../assets/screenshots/use-cases/080-collections/UC080_04_Basic_CollectionsGrid_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_CollectionsGrid Desktop](../assets/screenshots/use-cases/080-collections/UC080_04_Basic_CollectionsGrid_desktop.png)
 
 ---
 
@@ -3831,7 +4077,17 @@ Enables an authenticated user to leave feedback on a published recipe by selecti
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/RV01-Reviews.dc.html), [`RV02-WriteReview.dc.html`](../analysis-and-design/ui-ux/screens/RV02-WriteReview.dc.html).
 - **Gaps:** *Gap 070-A* — Success toast notification after review submission (Basic Flow Step 10). *Gap 070-I* — Contextual author guard banner replacing "Viết đánh giá" button (Basic Flow Step 2). *Gap 070-J* — Anti-spam HTTP 429 warning toast ("Đang đánh giá quá nhanh", AF 1.7).
-
+- **Prototype Screenshots (SCRUM-58):**
+  - **Khu vực danh sách đánh giá công thức (`RV01-Reviews`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_ReviewSection Mobile](../assets/screenshots/use-cases/070-reviews/UC070_01_Basic_ReviewSection_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_ReviewSection Desktop](../assets/screenshots/use-cases/070-reviews/UC070_01_Basic_ReviewSection_desktop.png)
+  - **Hộp thoại viết đánh giá & chấm sao (`RV02-WriteReview`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_WriteModal Mobile](../assets/screenshots/use-cases/070-reviews/UC070_01_Basic_WriteModal_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_WriteModal Desktop](../assets/screenshots/use-cases/070-reviews/UC070_01_Basic_WriteModal_desktop.png)
 
 ---
 
@@ -3913,6 +4169,12 @@ Allows users to attach up to 3 photos of their finished dish (Cooksnaps) to thei
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV02-WriteReview.dc.html`](../analysis-and-design/ui-ux/screens/RV02-WriteReview.dc.html), [`RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/RV01-Reviews.dc.html), [`RV03-Lightbox.dc.html`](../analysis-and-design/ui-ux/screens/RV03-Lightbox.dc.html).
 - **Gaps:** *Gap 070-K* — Image upload progress bar with per-file status indicator (Basic Flow Step 4). *Gap 070-B* — Lightbox skeleton loading state (Basic Flow Step 9).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Lightbox xem ảnh thành phẩm Cooksnap (`RV03-CooksnapLightbox`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_CooksnapLightbox Mobile](../assets/screenshots/use-cases/070-reviews/UC070_02_Basic_CooksnapLightbox_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_CooksnapLightbox Desktop](../assets/screenshots/use-cases/070-reviews/UC070_02_Basic_CooksnapLightbox_desktop.png)
 
 ---
 
@@ -3997,6 +4259,17 @@ Allows users to update their previously submitted reviews (changing rating, text
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV04-OwnReview.dc.html`](../analysis-and-design/ui-ux/screens/RV04-OwnReview.dc.html), [`W-RV04b-DeleteConfirm.dc.html`](../analysis-and-design/ui-ux/screens/W-RV04b-DeleteConfirm.dc.html).
 - **Gaps:** *Gap 070-C* — Inline `(đã chỉnh sửa)` label on modified reviews (Branch A Step 9).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Chỉnh sửa đánh giá của chính mình (`RV04-EditReview`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_EditOwnReview Mobile](../assets/screenshots/use-cases/070-reviews/UC070_03_Basic_EditOwnReview_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_EditOwnReview Desktop](../assets/screenshots/use-cases/070-reviews/UC070_03_Basic_EditOwnReview_desktop.png)
+  - **Hộp thoại xác nhận xóa đánh giá (`W-RV04b-DeleteConfirm`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      *(Đang cập nhật sau khi chụp)*
+    - **Desktop Web View:**  
+      ![Basic_DeleteConfirm Desktop](../assets/screenshots/use-cases/070-reviews/UC070_03_Basic_DeleteConfirm_desktop.png)
 
 ---
 
@@ -4067,6 +4340,12 @@ Enables any visitor to view community reviews and Cooksnaps on a recipe page. Us
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/RV01-Reviews.dc.html), [`W-RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/W-RV01-Reviews.dc.html), [`RV06-Empty.dc.html`](../analysis-and-design/ui-ux/screens/RV06-Empty.dc.html).
 - **Gaps:** *Gap 070-D* — Filter empty state ("Không tìm thấy đánh giá nào có ảnh Cooksnap", AF 4.2). *Gap 070-G* — Active upvote state button and count display on review cards (Basic Flow Step 6).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Trạng thái chưa có đánh giá nào (`RV05-EmptyReviews`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![AF4_EmptyReviews Mobile](../assets/screenshots/use-cases/070-reviews/UC070_04_AF4_EmptyReviews_mobile.png)
+    - **Desktop Web View:**  
+      ![AF4_EmptyReviews Desktop](../assets/screenshots/use-cases/070-reviews/UC070_04_AF4_EmptyReviews_desktop.png)
 
 ---
 
@@ -4158,6 +4437,12 @@ Allows community members to report reviews or Cooksnap photos that violate commu
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV05-Report.dc.html`](../analysis-and-design/ui-ux/screens/RV05-Report.dc.html), [`W-RV05-Report.dc.html`](../analysis-and-design/ui-ux/screens/W-RV05-Report.dc.html).
 - **Gaps:** *Gap 070-E* — Duplicate report warning banner (AF 5.2). *Gap 070-H* — Auto-hidden content notification badge & restoration action in moderation panel (Special Requirements).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Hộp thoại báo cáo vi phạm đánh giá (`RV06-ReportDialog`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_ReportDialog Mobile](../assets/screenshots/use-cases/070-reviews/UC070_05_Basic_ReportDialog_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_ReportDialog Desktop](../assets/screenshots/use-cases/070-reviews/UC070_05_Basic_ReportDialog_desktop.png)
 
 ---
 
@@ -4395,6 +4680,16 @@ Provides an administrative interface to inspect user-submitted recipes in `PENDI
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`AD02-Queue.dc.html`](../analysis-and-design/ui-ux/screens/AD02-Queue.dc.html), [`AD03-ReviewDetail.dc.html`](../analysis-and-design/ui-ux/screens/AD03-ReviewDetail.dc.html), [`AD04-RejectDialog.dc.html`](../analysis-and-design/ui-ux/screens/AD04-RejectDialog.dc.html).
 - **Gaps:** *Gap 100-A* — HTTP 409 Concurrent Moderation conflict banner dialog (AF 1.4). *Gap 100-G* — Real-time "another moderator is viewing" presence banner on `AD03-ReviewDetail` (AF 1.4b).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Hàng đợi duyệt công thức của Admin (`AD02-Queue`):**
+    - **Desktop Web View (1440x900):**  
+      ![Basic_Queue Desktop](../assets/screenshots/use-cases/100-admin/UC100_01_Basic_Queue_desktop.png)
+  - **Chi tiết công thức chờ duyệt (`AD03-ReviewDetail`):**
+    - **Desktop Web View (1440x900):**  
+      ![Basic_ReviewDetail Desktop](../assets/screenshots/use-cases/100-admin/UC100_01_Basic_ReviewDetail_desktop.png)
+  - **Hộp thoại từ chối công thức (`AD04-RejectDialog`):**
+    - **Desktop Web View (1440x900):**  
+      ![AF2_RejectDialog Desktop](../assets/screenshots/use-cases/100-admin/UC100_01_AF2_RejectDialog_desktop.png)
 
 ---
 
@@ -4483,6 +4778,13 @@ Provides a triage interface for user reports on recipes, reviews, Cooksnaps, or 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`AD05-Reports.dc.html`](../analysis-and-design/ui-ux/screens/AD05-Reports.dc.html), [`AD06-ReportDetail.dc.html`](../analysis-and-design/ui-ux/screens/AD06-ReportDetail.dc.html).
 - **Gaps:** *Gap 100-B* — Resolution confirmation dialog with preview (Basic Flow Step 6). *Gap 100-H* — Automated mass-report escalation badge and urgent triage filter (AF 2.4).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Hàng đợi xử lý báo cáo vi phạm (`AD05-ReportsQueue`):**
+    - **Desktop Web View (1440x900):**  
+      ![Basic_ReportsQueue Desktop](../assets/screenshots/use-cases/100-admin/UC100_02_Basic_ReportsQueue_desktop.png)
+  - **Chi tiết báo cáo vi phạm (`AD06-ReportDetail`):**
+    - **Desktop Web View (1440x900):**  
+      ![Basic_ReportDetail Desktop](../assets/screenshots/use-cases/100-admin/UC100_02_Basic_ReportDetail_desktop.png)
 
 ---
 
@@ -4560,6 +4862,10 @@ Provides account administration tools. Staff can search users (with 300ms input 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`AD07-Users.dc.html`](../analysis-and-design/ui-ux/screens/AD07-Users.dc.html).
 - **Gaps:** *Gap 100-C* — Double-confirmation modal dialog for Permanent Ban (AF 3.1 Step 2).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Quản lý người dùng & phân quyền (`AD07-Users`):**
+    - **Desktop Web View (1440x900):**  
+      ![Basic_UsersManagement Desktop](../assets/screenshots/use-cases/100-admin/UC100_03_Basic_UsersManagement_desktop.png)
 
 ---
 
@@ -4621,6 +4927,10 @@ Enables Administrators to manage system classification data across Categories, C
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`AD08-Taxonomy.dc.html`](../analysis-and-design/ui-ux/screens/AD08-Taxonomy.dc.html), [`AD11-IngredientProposals.dc.html`](../analysis-and-design/ui-ux/screens/AD11-IngredientProposals.dc.html).
 - **Gaps:** *Gap 100-D* — Taxonomy creation modal dialog (Basic Flow Step 4–5).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Quản lý danh mục & phân loại (`AD08-Taxonomy`):**
+    - **Desktop Web View (1440x900):**  
+      ![Basic_TaxonomyTabs Desktop](../assets/screenshots/use-cases/100-admin/UC100_04_Basic_TaxonomyTabs_desktop.png)
 
 ---
 
@@ -4681,6 +4991,10 @@ Enables Administrators to pin selected published recipes to prominent showcase s
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`AD09-Featured.dc.html`](../analysis-and-design/ui-ux/screens/AD09-Featured.dc.html).
 - **Gaps:** *Gap 100-E* — Featured pin config dialog with datepicker (Basic Flow Step 4–5).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Tuyển chọn công thức tiêu biểu (`AD09-Featured`):**
+    - **Desktop Web View (1440x900):**  
+      ![Basic_FeaturedCuration Desktop](../assets/screenshots/use-cases/100-admin/UC100_05_Basic_FeaturedCuration_desktop.png)
 
 ---
 
@@ -4748,6 +5062,13 @@ Provides system observability and governance accountability. The dashboard displ
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`AD10-AuditLog.dc.html`](../analysis-and-design/ui-ux/screens/AD10-AuditLog.dc.html), [`AD01-Dashboard.dc.html`](../analysis-and-design/ui-ux/screens/AD01-Dashboard.dc.html).
 - **Gaps:** *Gap 100-F* — Expanded JSON diff modal for audit entries (Basic Flow Step 6).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Dashboard thống kê chỉ số hệ thống (`AD01-Dashboard`):**
+    - **Desktop Web View (1440x900):**  
+      ![Basic_MetricsDashboard Desktop](../assets/screenshots/use-cases/100-admin/UC100_06_Basic_MetricsDashboard_desktop.png)
+  - **Nhật ký kiểm toán quản trị (`AD10-AuditLog`):**
+    - **Desktop Web View (1440x900):**  
+      ![Basic_AuditLog Desktop](../assets/screenshots/use-cases/100-admin/UC100_06_Basic_AuditLog_desktop.png)
 
 ---
 
@@ -5006,6 +5327,17 @@ Lets a signed-in user open the Meal Planner on the current week, see each day's 
 - **Basic Flow:** [`MP01-Week.dc.html`](../analysis-and-design/ui-ux/screens/MP01-Week.dc.html) (Steps 3, 11–12, phone day view with "Khoảng 1.240 kcal / người · 1 món chưa có số liệu · AI ước tính"), [`MP04-Picker.dc.html`](../analysis-and-design/ui-ux/screens/MP04-Picker.dc.html) (Steps 5–8, "Chọn món · Tối T4", "Đã ẩn món chứa đậu phộng và ngò rí theo hồ sơ của bạn.").
 - **Alternative Flows:** [`MP01-Week.dc.html`](../analysis-and-design/ui-ux/screens/MP01-Week.dc.html) (AF 1.13, "Bò lúc lắc — Không còn khả dụng" with "Thay món" and "Xóa"), [`MP07-Offline.dc.html`](../analysis-and-design/ui-ux/screens/MP07-Offline.dc.html) (AF 1.18 – AF 1.20), [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 1.1), [`AI09-SlotSuggest.dc.html`](../analysis-and-design/ui-ux/screens/AI09-SlotSuggest.dc.html) (Step 5, "Gợi ý").
 - **UI Asset Gap for SCRUM-58:** `MP04` says conflicting recipes are hidden, but FR-007b lists them last with a label and a confirmation (AF 1.4); the meal with several dishes and "Đủ 4 món" (AF 1.9); the picker empty states (AF 1.2, AF 1.3); the "not saved" message (AF 1.16). See Section 17.2 (Gaps 030-A to 030-E).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Lịch thực đơn tuần (`MP01-Week`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      *(Đang cập nhật sau khi chụp)*
+    - **Desktop Web View:**  
+      ![Basic_WeekCalendar Desktop](../assets/screenshots/use-cases/030-planner/UC030_01_Basic_WeekCalendar_desktop.png)
+  - **Bộ chọn công thức thêm vào lịch (`MP02-RecipePicker`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_RecipePicker Mobile](../assets/screenshots/use-cases/030-planner/UC030_01_Basic_RecipePicker_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_RecipePicker Desktop](../assets/screenshots/use-cases/030-planner/UC030_01_Basic_RecipePicker_desktop.png)
 
 ---
 
@@ -5091,6 +5423,12 @@ Lets a signed-in user add the published recipe they are reading straight into on
 - **Basic Flow:** [`NU01-Detail.dc.html`](../analysis-and-design/ui-ux/screens/NU01-Detail.dc.html) (Step 1, button "Thêm vào thực đơn"), [`MP05-AddFromRecipe.dc.html`](../analysis-and-design/ui-ux/screens/MP05-AddFromRecipe.dc.html) (Steps 2–5).
 - **Alternative Flows:** [`AU08-SignInPrompt.dc.html`](../analysis-and-design/ui-ux/screens/AU08-SignInPrompt.dc.html) (AF 2.1).
 - **UI Asset Gap for SCRUM-58:** `MP05` still shows the rule before 02/11/2026 ("Trưa Thứ Tư đã có “Cơm gà” — Món mới sẽ thay thế. Bạn có thể hoàn tác."); it must show "Bữa này đã có: …" and the full-meal state instead (Step 4, AF 2.3). The result confirmation with "Xem thực đơn" (Step 7) is not drawn. See Section 17.2 (Gaps 030-F, 030-G).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Hộp thoại thêm món vào bữa ăn (`MP03-AddModal`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_AddModal Mobile](../assets/screenshots/use-cases/030-planner/UC030_02_Basic_AddModal_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_AddModal Desktop](../assets/screenshots/use-cases/030-planner/UC030_02_Basic_AddModal_desktop.png)
 
 ---
 
@@ -5190,6 +5528,17 @@ Lets the user change the plan as the week changes: move a dish to another meal o
 - **Basic Flow:** [`MP02-SlotMenu.dc.html`](../analysis-and-design/ui-ux/screens/MP02-SlotMenu.dc.html) (Step 1, menu "Trưa · Thứ Tư 29/10" with "Xem công thức", "Đổi món", "Chuyển sang…", "Số phần", "Xóa khỏi thực đơn"), [`MP03-MoveTo.dc.html`](../analysis-and-design/ui-ux/screens/MP03-MoveTo.dc.html) (Steps 3–4).
 - **Alternative Flows:** [`MP04-Picker.dc.html`](../analysis-and-design/ui-ux/screens/MP04-Picker.dc.html) (AF 3.4), [`MP01-Week.dc.html`](../analysis-and-design/ui-ux/screens/MP01-Week.dc.html) (AF 3.10), [`MP07-Offline.dc.html`](../analysis-and-design/ui-ux/screens/MP07-Offline.dc.html) (AF 3.9).
 - **UI Asset Gap for SCRUM-58:** `MP03` still shows the swap rule before 02/11/2026 ("Bữa đã có món sẽ được đổi chỗ", "Sẽ đổi chỗ với món đang chuyển"); it must show "Thêm vào sau …" and "Đủ 4 món" (Step 3). `MP02` lacks "Lên trên" / "Xuống dưới" (AF 3.1). The "Xóa cả ngày" confirmation (AF 3.6) and the "plan changed elsewhere" message (AF 3.7) are not drawn. See Section 17.2 (Gaps 030-H to 030-K).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Menu tùy chọn ô bữa ăn (`MP04-SlotMenu`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_SlotMenu Mobile](../assets/screenshots/use-cases/030-planner/UC030_03_Basic_SlotMenu_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_SlotMenu Desktop](../assets/screenshots/use-cases/030-planner/UC030_03_Basic_SlotMenu_desktop.png)
+  - **Hộp thoại chuyển món sang bữa khác (`MP05-MoveToSlot`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_MoveToSlot Mobile](../assets/screenshots/use-cases/030-planner/UC030_03_Basic_MoveToSlot_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_MoveToSlot Desktop](../assets/screenshots/use-cases/030-planner/UC030_03_Basic_MoveToSlot_desktop.png)
 
 ---
 
@@ -5268,6 +5617,12 @@ Lets the user move from the current week to the previous or next week and back t
 - **Basic Flow:** [`MP06-EmptyWeek.dc.html`](../analysis-and-design/ui-ux/screens/MP06-EmptyWeek.dc.html) (Steps 2–4), [`MP01-Week.dc.html`](../analysis-and-design/ui-ux/screens/MP01-Week.dc.html) (Step 6, "Tuần này").
 - **Alternative Flows:** [`MP07-Offline.dc.html`](../analysis-and-design/ui-ux/screens/MP07-Offline.dc.html) (AF 4.7), [`AI04-LeaveDraft.dc.html`](../analysis-and-design/ui-ux/screens/AI04-LeaveDraft.dc.html) (AF 4.5).
 - **UI Asset Gap for SCRUM-58:** `MP06` shows "Chép từ tuần trước", which no spec defines, and its day strip shows the dates of the previous week (27–02) under the header "03/11 – 09/11". The empty past week (AF 4.3) and the disabled "Tạo bằng AI" (AF 4.2) are not drawn. See Section 17.2 (Gaps 030-L, 030-M) and `[OQ-030-01]`.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Trạng thái tuần chưa có thực đơn (`MP06-EmptyWeek`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_EmptyWeek Mobile](../assets/screenshots/use-cases/030-planner/UC030_04_Basic_EmptyWeek_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_EmptyWeek Desktop](../assets/screenshots/use-cases/030-planner/UC030_04_Basic_EmptyWeek_desktop.png)
 
 ---
 
@@ -5484,6 +5839,17 @@ From the Meal Planner, the user asks the AI to fill the empty meals of the week 
 - **Basic Flow:** [`AI01-Constraints.dc.html`](../analysis-and-design/ui-ux/screens/AI01-Constraints.dc.html) (Steps 3–5), [`AI02-Generating.dc.html`](../analysis-and-design/ui-ux/screens/AI02-Generating.dc.html) (Step 8), [`AI03-Draft.dc.html`](../analysis-and-design/ui-ux/screens/AI03-Draft.dc.html) (Step 14).
 - **Alternative Flows:** [`AI06-NotEnough.dc.html`](../analysis-and-design/ui-ux/screens/AI06-NotEnough.dc.html) (AF 1.8), [`AI07-LimitReached.dc.html`](../analysis-and-design/ui-ux/screens/AI07-LimitReached.dc.html) (AF 1.6), [`AI08-Fallback.dc.html`](../analysis-and-design/ui-ux/screens/AI08-Fallback.dc.html) (AF 1.7, AF 1.11 – AF 1.13), [`MP07-Offline.dc.html`](../analysis-and-design/ui-ux/screens/MP07-Offline.dc.html) (AF 1.14).
 - **UI Asset Gap for SCRUM-58:** `AI06` offers "Dùng 6 món, phần còn lại tự chọn", but FR-012 produces no draft (AF 1.8, `[OQ-031-02]`); `AI01` shows allergies and exclusions under "Luôn áp dụng", not editable for one generation as FR-002 and FR-004 allow (`[OQ-031-01]`); the empty-profile notice (AF 1.3), "Theo công thức" (AF 1.4), the disclaimer inside `AI01` (Step 3) and the profile-read failure (AF 1.16) are not drawn. See Section 17.2 (Gaps 031-A to 031-D).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Thiết lập tiêu chí và ràng buộc gợi ý AI (`AI01-Constraints`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_AIConstraints Mobile](../assets/screenshots/use-cases/031-ai-planner/UC031_01_Basic_AIConstraints_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_AIConstraints Desktop](../assets/screenshots/use-cases/031-ai-planner/UC031_01_Basic_AIConstraints_desktop.png)
+  - **Trạng thái AI đang tính toán thực đơn (`AI02-Generating`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_AIGenerating Mobile](../assets/screenshots/use-cases/031-ai-planner/UC031_01_Basic_AIGenerating_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_AIGenerating Desktop](../assets/screenshots/use-cases/031-ai-planner/UC031_01_Basic_AIGenerating_desktop.png)
 
 ---
 
@@ -5582,6 +5948,12 @@ The draft produced by `UC-031-01` or `UC-031-04` stays on the calendar, unsaved,
 - **Basic Flow:** [`AI03-Draft.dc.html`](../analysis-and-design/ui-ux/screens/AI03-Draft.dc.html) (Steps 1–4, "Bỏ nháp", "Tạo lại", "Lưu thực đơn"), [`AI05-Saved.dc.html`](../analysis-and-design/ui-ux/screens/AI05-Saved.dc.html) (Steps 6–7, "Đã lưu 13 món vào thực đơn tuần" with "Xem danh sách đi chợ").
 - **Alternative Flows:** [`AI04-LeaveDraft.dc.html`](../analysis-and-design/ui-ux/screens/AI04-LeaveDraft.dc.html) (AF 2.6), [`AI01-Constraints.dc.html`](../analysis-and-design/ui-ux/screens/AI01-Constraints.dc.html) (AF 2.2), [`MP02-SlotMenu.dc.html`](../analysis-and-design/ui-ux/screens/MP02-SlotMenu.dc.html) / [`MP03-MoveTo.dc.html`](../analysis-and-design/ui-ux/screens/MP03-MoveTo.dc.html) (Step 2).
 - **UI Asset Gap for SCRUM-58:** `AI05` shows a link "Xem danh sách đi chợ" while FR-018 opens the import directly (`[OQ-031-03]`); the skipped-dishes message (AF 2.3, AF 2.4) is not drawn; `AI03` shows "Gợi ý khác" on a dish, which no spec defines. See Section 17.2 (Gaps 031-E, 031-F).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Xem trước và duyệt bản nháp thực đơn AI (`AI03-DraftReview`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_AIDraftReview Mobile](../assets/screenshots/use-cases/031-ai-planner/UC031_02_Basic_AIDraftReview_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_AIDraftReview Desktop](../assets/screenshots/use-cases/031-ai-planner/UC031_02_Basic_AIDraftReview_desktop.png)
 
 ---
 
@@ -5791,6 +6163,12 @@ Most users fill or fix a few meals rather than generating a whole week. When the
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Basic Flow:** [`AI09-SlotSuggest.dc.html`](../analysis-and-design/ui-ux/screens/AI09-SlotSuggest.dc.html) (Steps 4–5, "Gợi ý cho bữa tối — Tối Thứ Tư · hợp với Canh chua buổi trưa"), [`MP04-Picker.dc.html`](../analysis-and-design/ui-ux/screens/MP04-Picker.dc.html) (tab "Gợi ý").
 - **UI Asset Gap for SCRUM-58:** `AI09` shows "Gợi ý khác" (more suggestions), which FR-033 does not define (a list of at most 5); the "no suggestion" state (AF 5.1) and the short disclaimer (Step 4) are not drawn. See Section 17.2 (Gap 031-J) and `[OQ-031-05]`.
+- **Prototype Screenshots (SCRUM-58):**
+  - **Gợi ý món thông minh theo ô bữa ăn (`AI04-SlotSuggest`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_SlotSuggest Mobile](../assets/screenshots/use-cases/031-ai-planner/UC031_05_Basic_SlotSuggest_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_SlotSuggest Desktop](../assets/screenshots/use-cases/031-ai-planner/UC031_05_Basic_SlotSuggest_desktop.png)
 
 ---
 
@@ -5953,6 +6331,12 @@ Shows the nutrition block of a published recipe: calories, protein, carbohydrate
 - **Basic Flow:** [`NU01-Detail.dc.html`](../analysis-and-design/ui-ux/screens/NU01-Detail.dc.html) (Step 1, tab "Dinh dưỡng"), [`NU02-Nutrition.dc.html`](../analysis-and-design/ui-ux/screens/NU02-Nutrition.dc.html) (Steps 3–5, with the low-confidence note of AF 1.3).
 - **Alternative Flows:** [`NU03-NutritionStates.dc.html`](../analysis-and-design/ui-ux/screens/NU03-NutritionStates.dc.html) (AF 1.1, AF 1.2), [`NU04-Unavailable.dc.html`](../analysis-and-design/ui-ux/screens/NU04-Unavailable.dc.html) (AF 1.10).
 - **UI Asset Gap for SCRUM-58:** The header of `NU01` shows "320 kcal" without the disclaimer that FR-016 requires next to every calorie value (AF 1.11, `[OQ-090-02]`); the "optional ingredients not included" line (AF 1.4) is not drawn. See Section 17.2 (Gaps 090-A, 090-B).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Bảng thông tin dinh dưỡng theo khẩu phần (`NU01-NutritionFacts`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_NutritionFacts Mobile](../assets/screenshots/use-cases/090-nutrition/UC090_01_Basic_NutritionFacts_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_NutritionFacts Desktop](../assets/screenshots/use-cases/090-nutrition/UC090_01_Basic_NutritionFacts_desktop.png)
 
 ---
 
@@ -6173,6 +6557,12 @@ Tells the reader plainly which allergens a recipe contains, from checked data, a
 - **Basic Flow:** [`NU02-Nutrition.dc.html`](../analysis-and-design/ui-ux/screens/NU02-Nutrition.dc.html) (Steps 3–5, "Có đậu phộng · trong hồ sơ của bạn", "Nhãn chế độ ăn").
 - **Alternative Flows:** [`NU03-NutritionStates.dc.html`](../analysis-and-design/ui-ux/screens/NU03-NutritionStates.dc.html) (AF 4.1).
 - **UI Asset Gap for SCRUM-58:** `NU02` shows the label "Ít béo", which is not one of the six allowed labels (FR-010, `[OQ-090-01]`). See Section 17.2 (Gap 090-C).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Cảnh báo dị ứng & nhãn ăn kiêng AI (`NU04-AllergenWarning`):**
+    - **Mobile View (iPhone 12 Pro):**  
+      ![Basic_AllergenWarning Mobile](../assets/screenshots/use-cases/090-nutrition/UC090_04_Basic_AllergenWarning_mobile.png)
+    - **Desktop Web View:**  
+      ![Basic_AllergenWarning Desktop](../assets/screenshots/use-cases/090-nutrition/UC090_04_Basic_AllergenWarning_desktop.png)
 
 ---
 
@@ -6254,6 +6644,10 @@ Because there are no automatic retries, this is the only way a failed or wrong e
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Basic Flow:** [`NU05-AdminEstimates.dc.html`](../analysis-and-design/ui-ux/screens/NU05-AdminEstimates.dc.html) (Steps 1–4, filters "Tất cả", "Thất bại 12", "Độ tin cậy thấp 31", "Đã ẩn 2", "Chưa có 140", actions "Tính lại" and "Ẩn").
 - **UI Asset Gap for SCRUM-58:** The hide dialog with the mandatory reason (AF 5.3), "Bỏ ẩn" (AF 5.4), the attempts history (AF 5.1) and the filters "Đang tính" / "Có số liệu" are not drawn; `NU05` has no web variant `W-NU05` although the admin area is used on desktop. See Section 17.2 (Gaps 090-D, 090-E).
+- **Prototype Screenshots (SCRUM-58):**
+  - **Quản trị tính toán dinh dưỡng (`NU05-AdminEstimates`):**
+    - **Desktop Web View (1440x900):**  
+      *(Đang cập nhật sau khi chụp)*
 
 ---
 
