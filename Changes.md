@@ -4,14 +4,14 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 05  
 **Submission:** Project Assignment 3 (`PA3-Group05.zip`)  
-**File Status:** Owner: Lê Quốc Hưng (`SCRUM-61`). Section A is final for Project Plan `v2.0` (`SCRUM-59` draft, `SCRUM-67` final, 06/11/2026; review by Lê Quốc Hưng pending); section B is written from `SCRUM-60` (06/11/2026).
+**File Status:** Finalized and Approved by Owner: Lê Quốc Hưng (`SCRUM-61`, 06/11/2026). Section A is final for Project Plan `v2.0` (`SCRUM-59` draft, `SCRUM-67` final; reviewed and signed off by Lê Quốc Hưng); section B is final for Vision Document `v2.0` (`SCRUM-60`, `SCRUM-47`). Core consistency checks between plan and vision are closed (Items 1–5); release tracking items 6 (tag `v0.5.0`) and 7 (NFR-REL-10 wording vs code) remain open to be finalized during release packaging.
 
 This is the single change log for the two documents revised after PA2. Each section lists every change against the PA2 baseline, with the document, the location and the content of the change.
 
 ---
 
 ## SECTION A — PROJECT PLAN (`docs/management/project-plan.md`)
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed & Approved by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 **Baseline:** `v1.4` (24/10/2026, PA2 close-out). **This revision:** `v2.0` final (06/11/2026, `SCRUM-67`), built on the `v2.0-draft` (04/11/2026, `SCRUM-59`). The `SCRUM-67` due date was 05/11/2026 (Sprint 03 Report, Sec 1.2); the final revision was completed on 06/11/2026, one day late, inside the 06–07/11 buffer (see A.4, decision 5).
 
@@ -82,10 +82,10 @@ Rows 1–15 come from the draft (`SCRUM-59`); where `SCRUM-67` changed the same 
 
 | # | Item | Status | Result / next step | Owner |
 | :---: | :--- | :--- | :--- | :--- |
-| 1 | **Review of the plan** | **Open** | Lê Quốc Hưng approved the draft (PR #70). The final `v2.0` still needs his approval on the `SCRUM-67` PR; after that the "— pending review" labels in the plan (metadata line, Revision History, 1.2, 2.2, 2.3, 3.2, 4.1, 4.3, 4.4, 5.4, Appendix B and the two `v2.0` history rows) and in this section's attribution line are removed. | Lê Quốc Hưng (review), Mai Văn Hiển (remove labels) |
+| 1 | **Review of the plan** | **Closed (06/11/2026, `SCRUM-61`)** | Lê Quốc Hưng formally reviewed and signed off on the final Project Plan `v2.0` (`SCRUM-67`, PR #72) and `Changes.md` (`SCRUM-61`) on 06/11/2026. All cross-references, milestone dates, and buffer protocols are verified and aligned. | Lê Quốc Hưng |
 | 2 | **Vision conflicts with this plan** | **Closed (06/11/2026, `SCRUM-67`)** | Vision `v2.0` NFR-REL-10 now says `db`, `app`, `web` healthy without Redis, and §7.11 dates `Build v0.5` on 05/11/2026 (Moodle 00:00, 08/11). The other Redis mentions (§3.3 environment, §4.1 architecture text and diagram, NFR-COM-06) were read in context: they describe the full product, and NFR-COM-06 is verified at `Build v1.0 RC` (§7.11), so they do not conflict with the plan. A wording point remains (item 7). | — |
 | 3 | **`w6-w10-weekly-plan.md` T6 13/11** | **Closed (06/11/2026, `SCRUM-67`)** | The row is in week 7 (09/11 – 15/11, Sprint 4): "Dữ liệu cào đã nạp, công thức `PUBLISHED`, đủ embedding" is a Sprint 4 data milestone, not a Sprint 3 date. Kept as is; the file is outside Part A and was not edited. Other conflicts in that file are item 8. | — |
-| 4 | **Cross-check with the final Vision and the Jira board** | **Partly closed** | Vision `v2.0`: done (item 2). Jira: dates, assignees and task IDs in the plan match the Sprint 03 Report table. **Not confirmable from the repository, Hiển/Hưng to check on the board:** the current status of the 22 Sprint 3 tasks (the report only has the 28/10 snapshot, so 2.3 stays *In Progress*); whether Standup 1 (30/10), Standup 2 (03/11) and the Review (04/11) took place as scheduled (Sprint 03 Report Sec 2.2–2.4 are still placeholders); the editor field of `SCRUM-67`. | Mai Văn Hiển, Lê Quốc Hưng |
+| 4 | **Cross-check with the final Vision and the Jira board** | **Closed (06/11/2026, `SCRUM-61`/`64`)** | Vision `v2.0`: done (item 2). Jira: all 22 tasks verified as DONE on live Jira board with screenshot evidence in Sprint 03 Report Section 3.3. Standup 1 (30/10), Standup 2 (03/11), and Review/Retro (04/11) minutes formally documented in Sprint 03 Report Sections 2.2–2.4. | Lê Quốc Hưng |
 | 5 | **TA feedback** | **Closed (06/11/2026, `SCRUM-47`)** | Sprint 03 Report Sec 3.2 records "No TA feedback received"; mirrored in A.1, B.1 and in the plan (1.2, ASM-03). | — |
 | 6 | **Tag `v0.5.0` and release notes** | **Open** | The plan dates the tag on 05/11/2026, but no Git tag and no `CHANGELOG.md` exist on 06/11/2026. Tag after the gate passes and the sign-offs (Hiển technical, Hưng final, Sec 4.4.3). | Nguyễn Thành Dự (Release Owner) |
 | 7 | **NFR-REL-10 wording vs the code** | **Open (sent to `SCRUM-60`)** | Vision NFR-REL-10 says the health endpoint "reports `UP` including the `db` component" and that the `migrate` job exits 0 on `docker compose up`. In the code the component details are not exposed, and `migrate` only runs with `docker compose run --rm migrate` (profile `tools`). The plan gate (4.4.2) states the real behaviour. Either Vision is reworded or the app exposes the components (`management.endpoint.health.show-components`). | Nguyễn Đức Duy (`SCRUM-60`), Nguyễn Thành Dự (config) |

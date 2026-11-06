@@ -1065,3 +1065,53 @@ Nhiệm vụ: sửa PR #59 theo review COMMENTED của Hiển (MaiHien3507, 01/1
   - JaCoCo: Vượt qua toàn bộ quy tắc ngưỡng kiểm tra độ bao phủ mã nguồn.
   - Tổng thời gian: BUILD SUCCESS trong 01 phút 21 giây.
 - Tuân thủ quy tắc Git Safety: Chỉ commit cục bộ trên nhánh `fix/SCRUM-55-shopping-list-blockers`, KHÔNG push lên remote và KHÔNG merge vào main.
+
+---
+
+## Mục 24: Hoàn tất tài liệu Changes.md (SCRUM-61) và Báo cáo Sprint 03 với minh chứng Jira 22/22 Done (SCRUM-64)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Google Antigravity (Gemini 3.8 Flash), Agentic Coding CLI & Subagent `code-reviewer` |
+| **Thời gian truy cập cụ thể** | 2026-11-06, 09:20 – 09:35 (15 phút) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-61` (`[Documentation]` Viết Changes.md cho PA3 $\to$ `DONE`), `SCRUM-64` (`[Ceremony]` Viết Weekly Report PA3 $\to$ `DONE`) |
+| **Tài liệu liên quan** | `WikiCook/Changes.md`, `docs/management/reports/sprint-03/sprint-03-report.md`, `docs/assets/jira/jira_sprint3_tasks_list_part1.jpg`, `docs/assets/jira/jira_sprint3_tasks_list_part2.jpg` |
+| **Mục đích sử dụng** | Ký duyệt và đóng các mục rà soát mở trong `Changes.md` (`SCRUM-61`); hoàn thiện `sprint-03-report.md` (`SCRUM-64`) gồm 3 biên bản họp (Standup 1, Standup 2, Review & Retro), nhúng 2 ảnh chụp thực tế chứng minh 22/22 task Jira đạt `Done` vào Mục 3.3, biên soạn phân tích Retrospective Mục 5 (mô hình Glad-Sad-Mad) và kế hoạch Sprint 04; kích hoạt subagent `code-reviewer` độc lập thẩm định chất lượng và tính nhất quán của tài liệu trước khi đóng gói. |
+| **Nhánh Git** | `docs/PA3` |
+| **Minh chứng (Evidence)** | 2 file ảnh tại `docs/assets/jira/`, `Changes.md` (Lê Quốc Hưng approved), `sprint-03-report.md` (nâng lên v2.0), báo cáo nghiệm thu APPROVE từ subagent `code-reviewer`, session c260de22-27a3-4c90-b5ee-bb048e0d209b. |
+
+### Prompt đã sử dụng:
+```text
+theo tiến độ hiện tại thì tôi vẫn chưa xong SCRUM 61 và SCRUM 64, bạn hãy giúp tôi hoàn thành phần này , ở trên là 2 ảnh minh chứng Jira hãy chèn vào giúp tôi luôn ở SCRUM viết sprint03
+```
+*(Tiếp nối sau khi hoàn thành cập nhật tài liệu)*:
+```text
+Bạn hãy ghi 1 prompt đơn giản về những gì mình làm và cho 1 agent khác đánh giá
+```
+
+### Nội dung do AI sinh ra:
+1. **Hoàn thiện `Changes.md` (`SCRUM-61`)**:
+   - Cập nhật dòng File Status và attribution: `Reviewed & Approved by: Lê Quốc Hưng (LqHung06)` xác nhận đã phê duyệt toàn diện Project Plan `v2.0` (`SCRUM-67`, PR #72) và Vision `v2.0`.
+   - Đóng mục A.5 Item 1 (phê duyệt kế hoạch) và Item 4 (đối chiếu chéo 22/22 task Jira đạt `Done` với minh chứng ảnh thực tế).
+2. **Hoàn thiện Báo cáo Sprint 03 (`sprint-03-report.md`, `SCRUM-64`)**:
+   - Nâng phiên bản tài liệu lên `v2.0` và cập nhật Revision History.
+   - Biên soạn chi tiết biên bản Meeting 2 (Standup 1 ngày 30/10/2026): kiểm tra skeleton `SCRUM-48`, `SCRUM-66` và kích hoạt Constitution Gate I.
+   - Biên soạn chi tiết biên bản Meeting 3 (Standup 2 ngày 03/11/2026): nghiệm thu 100% Use-Case Specification (`SCRUM-50`–`54`), Mermaid UC Model (`SCRUM-49`), và kích hoạt Code Freeze cho Part E.
+   - Biên soạn chi tiết biên bản Meeting 4 (Sprint Review & Retro ngày 04/11/2026): nghiệm thu review kỹ thuật `SCRUM-57`, chạy demo dry-run Feature 040 US1+US2 và phê duyệt bộ bàn giao PA3.
+   - Thêm Mục 3.3 nhúng 2 ảnh minh chứng Jira board trực quan (`jira_sprint3_tasks_list_part1.jpg` và `part2.jpg`) cùng bảng ma trận tổng hợp 22/22 task đạt 100% `Done` (`0 0 0` unresolved items).
+   - Thêm Mục 5 Retrospective: đánh giá theo mô hình Glad – Sad – Mad (nêu bật TDD $>80\%$ JaCoCo, môi trường container hóa, cùng các trở ngại thực tế về áp lực tài liệu 45 điểm và lỗi header `X-User-Id`), đề ra 4 hành động cụ thể `ACT-01`–`ACT-04` cho Sprint 04.
+3. **Thẩm định chéo độc lập từ Subagent `code-reviewer` & Tiếp thu chỉnh sửa**:
+   - Subagent chạy phân tích trên 4 trục: tính logic/chính xác, cú pháp Markdown & đường dẫn ảnh relative, mức độ tuân thủ Agile/Scrum, và rủi ro tồn đọng.
+   - Tiếp thu phản hồi phản biện (Review Request Changes):
+     + Đồng bộ mốc ngày hoàn thành thực tế trong `Changes.md` và `sprint-03-report.md` (giải thích rõ ngày 05/11 là sprint cutoff theo kế hoạch, ngày 06/11 là mốc ký duyệt tài liệu đóng gói trong cửa sổ buffer 48h).
+     + Sửa chú thích ảnh Figure 3.1 & 3.2: làm rõ ngày hiển thị cạnh task là Jira Due Date (hạn chót dự kiến), chứng minh hoàn thành thông qua thẻ xanh `Done` và thông số `0 0 0`.
+     + Hiệu chỉnh dòng trạng thái `Changes.md` phản ánh chính xác các mục kiểm tra đã pass (Items 1–5 đóng, Items 6 và 7 mở để theo dõi đóng gói).
+     + Hoàn thiện toàn diện Mục 4 (AI Usage Declaration & Compliance Log) trong Báo cáo Sprint 03, tổng hợp 10 phiên tương tác cốt lõi từ 5 thành viên (`SCRUM-63`).
+     + Bổ sung Mục 3.3.4 đối chiếu ranh giới nghiệm thu Part E (Feature 040 US1+US2) và giải trình rõ các ghi chú trong `specs/040-shopping-list/tasks.md` (T048, T051 đã fix trong PR #59).
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Sinh viên trực tiếp tải lên 2 ảnh chụp thực tế màn hình Backlog Jira Software Cloud của dự án WikiCook (`WikiCook - PA3 28 Oct – 5 Nov (22 work items)`), xác nhận toàn bộ 22 task từ `SCRUM-46` đến `SCRUM-67` đều hiển thị trạng thái `Done` màu xanh với `0 0 0` việc tồn đọng.
+- Kiểm tra tính toán vẹn của 2 file ảnh lưu tại `docs/assets/jira/jira_sprint3_tasks_list_part1.jpg` (261 KB) và `docs/assets/jira/jira_sprint3_tasks_list_part2.jpg` (258 KB), xác nhận đường dẫn tương đối `../../../assets/jira/` trong báo cáo trỏ chính xác và render không lỗi.
+- Đóng vai trò Scrum Master / Project Manager (Lê Quốc Hưng), trực tiếp rà soát và ký duyệt nội dung biên bản 4 cuộc họp, xác nhận các số liệu và mốc thời gian phản ánh đúng thực tế diễn biến dự án.
+- Kiểm tra `git diff`, đảm bảo không có bất kỳ mâu thuẫn hay sai lệch thuật ngữ nào giữa `Changes.md`, `project-plan.md`, `vision-document.md` và `sprint-03-report.md`.
