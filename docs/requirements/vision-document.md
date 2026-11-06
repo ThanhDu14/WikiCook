@@ -4,8 +4,8 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 05  
 **Template:** Adapted from the RUP Vision template for small projects (`rup_vision_sp.docx`)  
-**Document Version:** 2.0-draft (Second Edition — Project Assignment 3, Part B; draft 02/11/2026, final 05/11/2026)  
-**Date:** October 29, 2026  
+**Document Version:** 2.0 (Second Edition — Project Assignment 3, Part B)  
+**Date:** November 6, 2026  
 
 ---
 
@@ -35,7 +35,8 @@
 | **19/10/2026** | `v0.10` | Authored Section 7: quantifiable non-functional requirements grouped by ISO/IEC 25010, with applicable standards and verification approach (`SCRUM-36`). | Mai Văn Hiển (`MaiHien3507`) |
 | **22/10/2026** | `v1.0` | Sprint 02 Final Baseline: Completed cross-peer review, synchronized traceability across all 10 features & NFRs, and finalized documentation for submission. | Nguyễn Đức Duy & Lê Quốc Hưng |
 | **24/10/2026** | `v1.1` | PA2 submission fixes: corrected group number to Group 05 and updated the document header. | Nguyễn Thành Dự (`ThanhDu14`) |
-| **29/10/2026** | `v2.0-draft` | Second Edition draft (`SCRUM-60`): aligned with the Use-Case Model (`SCRUM-49`) and Use-Case Specifications (`SCRUM-50` – `54`); added Section 8 with bidirectional traceability between user needs, features and the 64 use cases; marked pantry matching as a planned increment (§1.2, §3.4, §3.5.4, §5.2, §6.2); corrected specification names in §5.11 and removed the non-existent `101-admin-analytics`; completed the references and definitions (§1.3, §1.4); added the development and deployment environment (§3.3). TA feedback on PA2 (`SCRUM-47`) will be incorporated if and when it is received. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
+| **29/10/2026** | `v2.0-draft` | Second Edition draft (`SCRUM-60`): aligned with the Use-Case Model (`SCRUM-49`) and Use-Case Specifications (`SCRUM-50` – `54`); added Section 8 with bidirectional traceability between user needs, features and the 64 use cases; marked pantry matching as a planned increment (§1.2, §3.4, §3.5.4, §5.2, §6.2); corrected specification names in §5.11 and removed the non-existent `101-admin-analytics`; completed the references and definitions (§1.3, §1.4); added the development and deployment environment (§3.3). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
+| **06/11/2026** | `v2.0` | Second Edition final (`SCRUM-60`): aligned NFR-REL-10 and the `Build v0.5` row of §7.11 with the revised Project Plan (`SCRUM-59`): `db`, `app` and `web` containers healthy with no Redis, and `Build v0.5` on 05/11/2026 (Moodle deadline 00:00, 08/11/2026). No TA feedback on PA2 was received as of 06/11/2026 (`SCRUM-47`), so every change in this edition comes from an internal consistency audit against the Use-Case Model, the Use-Case Specifications and the revised Project Plan; see `Changes.md`, Section B. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 
 ---
 
@@ -529,7 +530,7 @@ WikiCook runs on free-tier and local infrastructure (Plan CON-03) and depends on
 | **NFR-REL-07** | Cooking mode works without a connection and survives reloads. | 100% of step navigation and timer functions work offline once the recipe has loaded; 100% of step index and timer state restored when reopened within 4 hours. | Playwright offline test; page-reload test within and after the 4-hour window. | Spec 050 NFR-004, SC-005 |
 | **NFR-REL-08** | Online-only pages recover automatically. | When the connection is lost, the planner and collection pages show the offline message instead of content and accept 0 edits; content returns ≤ 5 s after the connection returns. | Playwright with the network switched off and on. | Spec 030 SC-006; Spec 080 SC-009 |
 | **NFR-REL-09** | A faulty release can be rolled back quickly. | Rollback to the previous tagged build in ≤ 10 minutes. | Timed rollback drill: switch the image tags and restart the stack. | Plan 4.4.7 (contingency measure 1) |
-| **NFR-REL-10** | The stack starts from a clean clone. | `docker compose up` brings all 4 containers to `healthy` in ≤ 5 minutes; the health endpoint reports `UP` for `db` and `redis`. | Timed run on a clean clone. | Plan 4.4.2 (Build v0.5 gate) |
+| **NFR-REL-10** | The stack starts from a clean clone. | `docker compose up` brings the `db`, `app` and `web` containers to `healthy` in ≤ 5 minutes and the Flyway `migrate` job exits with code 0; the health endpoint reports `UP` including the `db` component. Redis is not part of `Build v0.5`; it joins the stack in `Build v0.8 Beta`. | Timed run on a clean clone. | Plan 4.4.2 (Build v0.5 gate) |
 | **NFR-REL-11** | The release is stable for the demo. | All 10 demo scenarios D1–D10 pass in 2 consecutive dry runs; 0 open S1 or S2 defects at the RC gate. | Dry runs on the primary and backup demo machines; Jira defect report. | Plan 4.4.2 (RC gate), 4.4.7 |
 
 ### 7.6. Usability & Accessibility
@@ -609,7 +610,7 @@ Each requirement is verified at the build gate of the Sprint in which its featur
 | Sprint / Build | Date | NFR groups and rows verified |
 | :--- | :--- | :--- |
 | **Sprint 2 — Build v0.2** | 22/10/2026 | No runnable code. This section is reviewed by the Reviewer named in the metadata line; no NFR is measured. |
-| **Sprint 3 — Build v0.5** | 13/11/2026 | NFR-REL-10 (healthy stack in ≤ 5 minutes); NFR-MNT-05, NFR-MNT-06, NFR-MNT-08 (first CI pipeline, migration baseline, lint); NFR-SEC-12 (secret scan). |
+| **Sprint 3 — Build v0.5** | 05/11/2026 *(tag `v0.5.0`; Moodle deadline 00:00, 08/11/2026)* | NFR-REL-10 (healthy stack in ≤ 5 minutes); NFR-MNT-05, NFR-MNT-06, NFR-MNT-08 (first CI pipeline, migration baseline, lint); NFR-SEC-12 (secret scan). |
 | **Sprint 4 — Build v0.8 Beta** | 04/12/2026 | NFR-PERF-02 at the reduced load of 20 virtual users for 5 minutes, NFR-PERF-03, NFR-PERF-04, NFR-PERF-07; NFR-SEC-01 to NFR-SEC-07, NFR-SEC-09 to NFR-SEC-11, NFR-SEC-13 to NFR-SEC-16; NFR-MNT-01 to NFR-MNT-04, NFR-MNT-07 for the modules implemented so far; NFR-REL-01, NFR-REL-02 with the Mock LLM and the LLM disconnected; NFR-REL-04; NFR-AI-01 to NFR-AI-12; NFR-PRV-01 to NFR-PRV-05, NFR-PRV-09. |
 | **Sprint 5 — Build v1.0 RC** | RC tag 18/12/2026; demo 25/12/2026 | Full verification of all rows. Load rows NFR-PERF-01, NFR-PERF-02, NFR-PERF-05 and NFR-PERF-06 are measured at 100 concurrent users for 10 minutes. The remaining PERF rows, NFR-REL-03 and NFR-REL-05 to NFR-REL-11, NFR-USA-01 to NFR-USA-08, NFR-COM-01 to NFR-COM-06, NFR-AI-13, NFR-PRV-06 to NFR-PRV-08 and NFR-PRV-10 are verified with the Playwright suite and the two demo dry runs. NFR-MNT-01 applies to all backend business logic. |
 

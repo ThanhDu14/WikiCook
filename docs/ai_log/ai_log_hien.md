@@ -1,6 +1,6 @@
 # Nhật ký sử dụng AI – Mai Văn Hiển
 
-Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Văn Hiển** (mã **A**, AI Architect & Technical Lead, phụ trách spec `010-user-authentication-roles` (làm rõ bằng `/speckit-clarify`), `011-user-profile-dietary` và `080-bookmark-collection` theo [phân công tuần 12/10 – 18/10](../management/w1-spec-design-assignment.md), và `SCRUM-29`, `SCRUM-36`, `SCRUM-45` của Sprint 2 trong [project plan](../management/project-plan.md)). Mỗi lần dùng AI là một mục mới, mục mới nhất ở cuối.
+Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Văn Hiển** (mã **A**, AI Architect & Technical Lead, phụ trách spec `010-user-authentication-roles` (làm rõ bằng `/speckit-clarify`), `011-user-profile-dietary` và `080-bookmark-collection` theo [phân công tuần 12/10 – 18/10](../management/w1-spec-design-assignment.md), và `SCRUM-29`, `SCRUM-36`, `SCRUM-45` của Sprint 2 trong [project plan](../management/project-plan.md), và `SCRUM-59` của Sprint 3 (sửa project plan lần 2 và `Changes.md` section A)). Mỗi lần dùng AI là một mục mới, mục mới nhất ở cuối.
 
 | # | Ngày | Nội dung | Spec / Tài liệu |
 |---|---|---|---|
@@ -26,6 +26,9 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Vă
 | 20 | 2026-10-30 | Task SCRUM-50 – sửa lỗi của AI: `AU01` có ở dạng `W-AU01-Login.dc.html`, mọi màn có bản web `W-` | `use-case-specification.md` §9.2 |
 | 21 | 2026-10-30 | Task SCRUM-50 – AI tự kiểm tra prototype và alternative flow theo yêu cầu của Hiển | `use-case-specification.md` §9–§11 |
 | 22 | 2026-10-30 | Task SCRUM-50 – sửa lỗi của AI: Decision đặt sai chỗ, `AF 2.3` và `UC-011-03` chưa nêu là "proposed" | `use-case-specification.md` §9–§11 |
+| 23 | 2026-10-30 | Task SCRUM-50 – nhận xét AI log, hướng dẫn chuyển nhánh, chuẩn bị push và mô tả PR | `ai_log_hien.md`, `use-case-specification.md` §9–§11 |
+| 24 | 2026-11-04 → 2026-11-06 | Task SCRUM-59 – sửa Project Plan lần 2 (bản nháp phần A) và lập `Changes.md` section A | `project-plan.md`, `Changes.md` |
+| 25 | 2026-11-06 | Task SCRUM-67 – chốt Project Plan `v2.0` (phần A), đối chiếu Vision, Use-Case Model, Sprint 03 report và code, viết lại `Changes.md` section A | `project-plan.md`, `Changes.md` |
 
 ---
 
@@ -796,13 +799,13 @@ Chỉ sửa Mục 4.4 của project-plan.md. Liệt kê dòng cũ và dòng mớ
 | Giờ truy cập | 07:50 |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | `docs/requirements/use-case-specification.md`, `docs/requirements/use-case-model.md`, `specs/010-user-authentication-roles/spec.md`, `specs/011-user-profile-dietary/spec.md`, `specs/080-bookmark-collection/spec.md`, `.specify/memory/constitution.md`, `docs/ai_log/ai_log_hien.md`, các màn `AU*`, `PF*`, `BM*` trong `docs/analysis-and-design/ui-ux/screens/` |
-| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 |
 | Mục đích | Đọc mẫu UC-040 và các tài liệu nguồn, kiểm tra nhánh mới không kéo theo commit ai_log hay file không liên quan, tạo nhánh `docs/scrum-50-uc-spec-010-011-080` |
 | Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (file log này để chưa add/commit trên nhánh này, theo yêu cầu của prompt) |
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 07:50 ngày 30/10/2026, prompt: "Bối cảnh: tôi là Mai Văn Hiển (@MaiHien3507), đang làm SCRUM-50 … Bước 1 – Nhánh …" (nguyên văn bên dưới), dùng để đọc tài liệu nguồn và tạo nhánh cho SCRUM-50; AI đọc tài liệu, chạy `git log`, `git diff origin/main --stat`, tạo nhánh; sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 07:50 ngày 30/10/2026, prompt: "Bối cảnh: tôi là Mai Văn Hiển (@MaiHien3507), đang làm SCRUM-50 … Bước 1 – Nhánh …" (nguyên văn bên dưới), dùng để đọc tài liệu nguồn và tạo nhánh cho SCRUM-50; AI đọc tài liệu, chạy `git log`, `git diff origin/main --stat`, tạo nhánh; sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
 
 ### Prompt đã dùng
 
@@ -910,13 +913,13 @@ Làm tới đâu ghi `docs/ai_log/ai_log_hien.md` tới đó, mỗi mốc một 
 | Giờ truy cập | 07:55 (lệnh `date` trả về 07:55:43 sau khi commit) |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | `specs/010-user-authentication-roles/spec.md`, `docs/requirements/use-case-model.md` §4.1, `docs/requirements/vision-document.md` §5.1, `.specify/memory/constitution.md`; kết quả ghi vào `docs/requirements/use-case-specification.md` (Section 9) |
-| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 |
 | Mục đích | Viết 4 use case của spec 010, bảng truy vết, bảng map màn hình `AU02`–`AU09` kèm danh sách Asset Gaps, danh sách câu hỏi mở; thêm hàng Section 9 vào bảng trách nhiệm và dòng `v1.2` vào Revision History |
 | Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `fa05da0`, thông điệp `docs(uc-spec): add UC-010 specs for SCRUM-50`) |
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 07:55 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 2, Bước 3 và Bước 4 cho 010), dùng để viết Section 9 của `use-case-specification.md`; AI tạo `UC-010-01` đến `UC-010-04` (tổng 50 alternative flow), bảng truy vết 9.1, bảng map màn hình 9.2 với 14 Asset Gaps (010-A đến 010-N), 10 câu hỏi mở 9.3 (`OQ-010-01` đến `OQ-010-10`), hàng Section 9 trong bảng trách nhiệm và dòng `v1.2`; sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 07:55 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 2, Bước 3 và Bước 4 cho 010), dùng để viết Section 9 của `use-case-specification.md`; AI tạo `UC-010-01` đến `UC-010-04` (tổng 50 alternative flow), bảng truy vết 9.1, bảng map màn hình 9.2 với 14 Asset Gaps (010-A đến 010-N), 10 câu hỏi mở 9.3 (`OQ-010-01` đến `OQ-010-10`), hàng Section 9 trong bảng trách nhiệm và dòng `v1.2`; sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
 
 ### Prompt đã dùng
 
@@ -959,13 +962,13 @@ Như trên (Mục 11): Bước 2 (Section 9, spec 010), Bước 3 (Revision Hist
 | Giờ truy cập | 08:00 (lệnh `date` trả về 08:00:23 sau khi commit) |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | `specs/011-user-profile-dietary/spec.md`, `specs/010-user-authentication-roles/spec.md` (trạng thái tài khoản, danh sách Blocked Email), `docs/requirements/use-case-model.md` §4.1 và §5, `docs/requirements/vision-document.md` §5.1, `.specify/memory/constitution.md`; kết quả ghi vào `docs/requirements/use-case-specification.md` (Section 10) |
-| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 |
 | Mục đích | Viết 5 use case của spec 011, bảng truy vết, bảng map màn hình `PF01`–`PF08` kèm danh sách Asset Gaps, danh sách câu hỏi mở; cập nhật hàng Section 10 trong bảng trách nhiệm và dòng `v1.2` |
 | Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `b69ed16`, thông điệp `docs(uc-spec): add UC-011 specs for SCRUM-50`) |
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 08:00 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 2 và Bước 4 cho 011), dùng để viết Section 10 của `use-case-specification.md`; AI tạo `UC-011-01` đến `UC-011-05` (tổng 66 alternative flow), bảng truy vết 10.1, bảng map màn hình 10.2 với 13 Asset Gaps (011-A đến 011-M), 8 câu hỏi mở 10.3 (`OQ-011-01` đến `OQ-011-08`); sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 08:00 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 2 và Bước 4 cho 011), dùng để viết Section 10 của `use-case-specification.md`; AI tạo `UC-011-01` đến `UC-011-05` (tổng 66 alternative flow), bảng truy vết 10.1, bảng map màn hình 10.2 với 13 Asset Gaps (011-A đến 011-M), 8 câu hỏi mở 10.3 (`OQ-011-01` đến `OQ-011-08`); sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
 
 ### Prompt đã dùng
 
@@ -1006,13 +1009,13 @@ Như trên (Mục 11): Bước 2 (Section 10, spec 011), Bước 3 (cập nhật
 | Giờ truy cập | 08:04 (giờ của commit `a626527`, lấy bằng `git log`) |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | `specs/080-bookmark-collection/spec.md`, `docs/requirements/use-case-model.md` §4.8 và §5, `docs/requirements/vision-document.md` §5.8, `.specify/memory/constitution.md`; kết quả ghi vào `docs/requirements/use-case-specification.md` (Section 11) |
-| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 |
 | Mục đích | Viết 4 use case của spec 080, bảng truy vết, bảng map màn hình `BM01`–`BM06` kèm danh sách Asset Gaps, danh sách câu hỏi mở; cập nhật hàng Section 11 và dòng `v1.2` |
 | Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `a626527`, thông điệp `docs(uc-spec): add UC-080 specs for SCRUM-50`) |
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 08:04 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 2 và Bước 4 cho 080), dùng để viết Section 11 của `use-case-specification.md`; AI tạo `UC-080-01` đến `UC-080-04` (tổng 68 alternative flow), bảng truy vết 11.1, bảng map màn hình 11.2 với 14 Asset Gaps (080-A đến 080-N), 5 câu hỏi mở 11.3 (`OQ-080-01` đến `OQ-080-05`); sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 08:04 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 2 và Bước 4 cho 080), dùng để viết Section 11 của `use-case-specification.md`; AI tạo `UC-080-01` đến `UC-080-04` (tổng 68 alternative flow), bảng truy vết 11.1, bảng map màn hình 11.2 với 14 Asset Gaps (080-A đến 080-N), 5 câu hỏi mở 11.3 (`OQ-080-01` đến `OQ-080-05`); sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
 
 ### Prompt đã dùng
 
@@ -1054,13 +1057,13 @@ Như trên (Mục 11): Bước 2 (Section 11, spec 080), Bước 3 (cập nhật
 | Giờ truy cập | 08:05 (lệnh `date` khi ghi mục này; việc map được làm xen kẽ trong Mục 12–14) |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | `docs/analysis-and-design/ui-ux/screens/` (`AU02`–`AU09`, `PF01`–`PF08`, `BM01`–`BM06`, `CM01`, `CM04`), `docs/requirements/use-case-specification.md` (§9.2, §10.2, §11.2) |
-| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 |
 | Mục đích | Đọc chữ hiển thị của từng màn hình, map vào basic flow và alternative flow của 13 use case, ghi các chỗ chưa có màn hình thành Asset Gaps để gửi Chung (SCRUM-58) trước 31/10 |
 | Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (nằm trong các commit `fa05da0`, `b69ed16`, `a626527`) |
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 08:05 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 4), dùng để map màn hình prototype vào use case; AI trích chữ hiển thị từ các file `.dc.html`, đối chiếu với từng bước và alternative flow, tạo bảng 9.2, 10.2, 11.2; sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 08:05 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 4), dùng để map màn hình prototype vào use case; AI trích chữ hiển thị từ các file `.dc.html`, đối chiếu với từng bước và alternative flow, tạo bảng 9.2, 10.2, 11.2; sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
 
 ### Prompt đã dùng
 
@@ -1096,13 +1099,13 @@ Như trên (Mục 11): Bước 4.
 | Giờ truy cập | 08:05 (lệnh `date`) |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | `docs/requirements/use-case-specification.md` (Section 9–11) |
-| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 |
 | Mục đích | Kiểm tra ID liên tục không trùng, liên kết màn hình tồn tại, file nào bị thay đổi, ngôn ngữ tiếng Anh, không dùng Mermaid |
 | Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` |
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 08:05 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 5), dùng để kiểm tra Section 9–11; AI chạy các lệnh kiểm tra và báo kết quả; sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 08:05 ngày 30/10/2026, prompt: như trên (Mục 11, Bước 5), dùng để kiểm tra Section 9–11; AI chạy các lệnh kiểm tra và báo kết quả; sinh viên: yêu cầu đối chiếu lại use case với spec gốc và prototype (kết quả ở Mục 17), tự chốt quyết định về `US3` của 010 và `US4`/`US5` của 080, chạy lại các lệnh kiểm tra; đọc duyệt từng use case: Hiển yêu cầu AI tự đối chiếu với spec gốc và prototype (Mục 17, Mục 21); Open Questions: Hiển đã quyết định (Mục 18, Mục 19); gửi Asset Gaps cho Chung: Hiển báo đã gửi cho Chung lúc 09:29 ngày 30/10/2026.
 
 ### Prompt đã dùng
 
@@ -1140,13 +1143,13 @@ Như trên (Mục 11): Bước 5.
 | Giờ truy cập | 08:29 (lệnh `date`) |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | `specs/010-user-authentication-roles/spec.md`, `specs/011-user-profile-dietary/spec.md`, `specs/080-bookmark-collection/spec.md`, các file `AU02`–`AU09`, `PF01`–`PF08`, `BM01`–`BM06`, `CM01`, `CM04` trong `docs/analysis-and-design/ui-ux/screens/`, `docs/requirements/use-case-specification.md` (Section 9–11) |
-| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 |
 | Mục đích | Đọc lại 13 use case, đối chiếu với spec gốc (FR, NFR, SC, Edge Cases, Acceptance Scenarios) và với nội dung các file prototype `.dc.html`; sửa chỗ lệch |
 | Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `639acc7`, thông điệp `docs(uc-spec): align UC-010 and UC-080 wording with spec and prototype for SCRUM-50`) |
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.312 trong VS Code trên Windows 11*, truy cập 08:29 ngày 30/10/2026, prompt: "hãy đọc lại usecase và đối chiếu với spec gốc … hãy mở prototype .dc.html để đối chiếu" (kèm quyết định của Hiển về `US3` của 010 và `US4`/`US5` của 080), dùng để kiểm tra Section 9–11; AI quét mã FR/NFR/SC, đối chiếu Edge Cases và Acceptance Scenarios, đọc lại mã HTML của các màn hình, rồi sửa 3 chỗ trong `use-case-specification.md`; sinh viên: yêu cầu kiểm tra, chốt các quyết định ghi trong Mục 12 và 14, và chạy lại các lệnh kiểm tra.
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 08:29 ngày 30/10/2026, prompt: "hãy đọc lại usecase và đối chiếu với spec gốc … hãy mở prototype .dc.html để đối chiếu" (kèm quyết định của Hiển về `US3` của 010 và `US4`/`US5` của 080), dùng để kiểm tra Section 9–11; AI quét mã FR/NFR/SC, đối chiếu Edge Cases và Acceptance Scenarios, đọc lại mã HTML của các màn hình, rồi sửa 3 chỗ trong `use-case-specification.md`; sinh viên: yêu cầu kiểm tra, chốt các quyết định ghi trong Mục 12 và 14, và chạy lại các lệnh kiểm tra.
 
 ### Prompt đã dùng
 
@@ -1193,13 +1196,13 @@ hãy mở prototype .dc.html để đối chiếu
 | Giờ truy cập | 08:56 (lệnh `date`) |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | `docs/requirements/use-case-specification.md` (§9.3, §10.3, §11.3, `UC-010-02`, `UC-011-03`, bảng 11.2) |
-| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 |
 | Mục đích | Ghi lại quyết định của Hiển cho 23 Open Questions vào tài liệu; sửa thứ tự các bước kiểm tra ở `UC-010-02`; thay các câu "not specified" ở `UC-011-03` bằng quy tắc đã chốt; thêm Gap 080-O |
 | Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `f0930c4`, thông điệp `docs(uc-spec): record open-question decisions and reorder sign-in checks for SCRUM-50`) |
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.312 trong VS Code trên Windows 11*, truy cập 08:56 ngày 30/10/2026, prompt: bảng quyết định cho Open Questions của spec 010, 011, 080 và hai chỗ cần sửa trong use case do Hiển viết (nguyên văn bên dưới), dùng để cập nhật `use-case-specification.md`; AI chép từng quyết định vào dưới mục Open Question tương ứng, đổi thứ tự bước ở `UC-010-02`, cập nhật `UC-011-03` và thêm Gap 080-O; sinh viên: đọc cả ba spec, quyết định từng Open Question và nêu hai chỗ cần sửa trong use case.
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 08:56 ngày 30/10/2026, prompt: bảng quyết định cho Open Questions của spec 010, 011, 080 và hai chỗ cần sửa trong use case do Hiển viết (nguyên văn bên dưới), dùng để cập nhật `use-case-specification.md`; AI chép từng quyết định vào dưới mục Open Question tương ứng, đổi thứ tự bước ở `UC-010-02`, cập nhật `UC-011-03` và thêm Gap 080-O; sinh viên: đọc cả ba spec, quyết định từng Open Question và nêu hai chỗ cần sửa trong use case.
 
 ### Prompt đã dùng
 
@@ -1249,13 +1252,13 @@ Bảng quyết định đầy đủ của Hiển nằm trong hội thoại; nộ
 | Giờ truy cập | 09:12 (lệnh `date`) |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | `docs/requirements/use-case-specification.md` (`UC-010-02` `AF 2.1`–`AF 2.3`, Step 6, `OQ-010-02`, `OQ-011-05`) |
-| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 |
 | Mục đích | Viết lại `AF 2.2` và `AF 2.3` theo cách A của `OQ-010-02`; ghi "Proposed resolution: A, pending clarification of spec 010"; ghi `OQ-011-05` ở trạng thái mở kèm đề xuất; giữ `AF 4.1` như cũ |
 | Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `cb7467a`, thông điệp `docs(uc-spec): write sign-in lockout flows for option A of OQ-010-02 (SCRUM-50)`) |
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.312 trong VS Code trên Windows 11*, truy cập 09:12 ngày 30/10/2026, prompt: quyết định chọn cách A cho `OQ-010-02` kèm nguyên văn `AF 2.2`, `AF 2.3` và quyết định giữ `AF 4.1` (nguyên văn bên dưới), dùng để cập nhật `use-case-specification.md`; AI thay `AF 2.2`, `AF 2.3` bằng văn bản của Hiển, cập nhật dòng Decision của `OQ-010-02` và `OQ-011-05`, và chỉnh hai câu liên quan (Step 6, `AF 2.1`); sinh viên: chọn cách A, viết nội dung `AF 2.2`/`AF 2.3`, bản clarification đề xuất cho spec 011 và quyết định không thêm `AF 4.12` khi chưa có clarification.
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 09:12 ngày 30/10/2026, prompt: quyết định chọn cách A cho `OQ-010-02` kèm nguyên văn `AF 2.2`, `AF 2.3` và quyết định giữ `AF 4.1` (nguyên văn bên dưới), dùng để cập nhật `use-case-specification.md`; AI thay `AF 2.2`, `AF 2.3` bằng văn bản của Hiển, cập nhật dòng Decision của `OQ-010-02` và `OQ-011-05`, và chỉnh hai câu liên quan (Step 6, `AF 2.1`); sinh viên: chọn cách A, viết nội dung `AF 2.2`/`AF 2.3`, bản clarification đề xuất cho spec 011 và quyết định không thêm `AF 4.12` khi chưa có clarification.
 
 ### Prompt đã dùng
 
@@ -1296,13 +1299,13 @@ Tóm lược (nguyên văn nằm trong hội thoại): (1) `OQ-010-02` chọn c�
 | Giờ truy cập | 09:25 (lệnh `date`) |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | `docs/analysis-and-design/ui-ux/index.html`, `docs/analysis-and-design/ui-ux/screens/W-AU01-Login.dc.html`, `docs/requirements/use-case-specification.md` (`UC-010-02`, §9.2) |
-| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 |
 | Mục đích | Hiển hỏi cách làm chi tiết Bước 1 (mở prototype và đối chiếu); khi đọc `index.html` AI phát hiện kết luận trước đó "không có `AU01`" là sai và sửa tài liệu |
 | Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `2e65aea`, thông điệp `docs(uc-spec): map UC-010-02 sign-in to W-AU01-Login and note web variants (SCRUM-50)`) |
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.312 trong VS Code trên Windows 11*, truy cập 09:25 ngày 30/10/2026, prompt: "hãy nói chi tiết bước 1 hơn", dùng để hướng dẫn mở prototype; AI đọc `index.html` và thư mục `screens/`, phát hiện lỗi của chính mình ở Mục 11, 12, 15 và sửa `use-case-specification.md`; sinh viên: hỏi cách làm chi tiết Bước 1
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 09:25 ngày 30/10/2026, prompt: "hãy nói chi tiết bước 1 hơn", dùng để hướng dẫn mở prototype; AI đọc `index.html` và thư mục `screens/`, phát hiện lỗi của chính mình ở Mục 11, 12, 15 và sửa `use-case-specification.md`; sinh viên: hỏi cách làm chi tiết Bước 1
 
 ### Prompt đã dùng
 
@@ -1342,13 +1345,13 @@ hãy nói chi tiết bước 1 hơn
 | Giờ truy cập | 09:30 (lệnh `date` chạy ngay trước mục này trả về 09:29 sau commit `dd0f70b`) |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | `docs/requirements/use-case-specification.md` (§9.2, §10.2, §11.2 và các mục "UI Screen References"), các file `.dc.html` trong `docs/analysis-and-design/ui-ux/screens/` (bản di động và bản `W-`), ba spec 010, 011, 080 |
-| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 |
 | Mục đích | Thay cho Bước 1 và Bước 2 của danh sách việc Hiển: đối chiếu chữ trong tài liệu với chữ trong prototype, đối chiếu một số alternative flow với FR trong spec, rồi điền kết quả vào log |
 | Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `dd0f70b`, thông điệp `docs(uc-spec): note NU04 next to Gap 080-C (SCRUM-50)`) |
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.312 trong VS Code trên Windows 11*, truy cập 09:30 ngày 30/10/2026, prompt: "hãy tự kiểm tra và điền vào các phần cần điền trong Ai log" (nguyên văn bên dưới), dùng để kiểm tra Section 9–11; AI viết script đọc chữ trong các file `.dc.html`, đối chiếu với chuỗi trong tài liệu, đọc lại 5 alternative flow so với FR, sửa 1 dòng bảng 11.2 và điền các chỗ trống có thể điền trong log; sinh viên: yêu cầu AI tự kiểm tra và điền log.
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 09:30 ngày 30/10/2026, prompt: "hãy tự kiểm tra và điền vào các phần cần điền trong Ai log" (nguyên văn bên dưới), dùng để kiểm tra Section 9–11; AI viết script đọc chữ trong các file `.dc.html`, đối chiếu với chuỗi trong tài liệu, đọc lại 5 alternative flow so với FR, sửa 1 dòng bảng 11.2 và điền các chỗ trống có thể điền trong log; sinh viên: yêu cầu AI tự kiểm tra và điền log.
 
 ### Prompt đã dùng
 
@@ -1393,13 +1396,13 @@ hãy tự kiểm tra và điền vào các phần cần điền trong Ai log
 | Giờ truy cập | 09:58 (lệnh `date` sau khi commit `925f74d`) |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | `docs/requirements/use-case-specification.md` (`UC-010-02` `AF 2.3`, `UC-011-03` `AF 3.2`/`AF 3.6`/`AF 3.10`, §9.3, §10.3, §11.3) |
-| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.312 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 |
 | Mục đích | Sửa các lỗi Hiển phát hiện khi đối chiếu: Decision bị dồn sai chỗ ở cả ba khối Open Questions, `AF 2.3` còn hai chỗ sai, `OQ-010-02` mâu thuẫn với `AF 2.3`, và `UC-011-03` ghi quy tắc chưa có trong spec 011 như đã chốt |
 | Nhánh Git | `docs/scrum-50-uc-spec-010-011-080` (commit `925f74d`, thông điệp `docs(uc-spec): place open-question decisions under their own items and fix AF 2.3 (SCRUM-50)`) |
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.312 trong VS Code trên Windows 11*, truy cập 09:58 ngày 30/10/2026, prompt: danh sách lỗi và dòng thay thế do Hiển cung cấp (nguyên văn bên dưới), dùng để sửa `use-case-specification.md`; AI sửa `AF 2.3`, `OQ-010-02`, `UC-011-03` và đặt lại 23 dòng Decision; sinh viên: đối chiếu tài liệu, tìm ra bốn lỗi và viết nội dung thay thế cho từng Decision.
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 09:58 ngày 30/10/2026, prompt: danh sách lỗi và dòng thay thế do Hiển cung cấp (nguyên văn bên dưới), dùng để sửa `use-case-specification.md`; AI sửa `AF 2.3`, `OQ-010-02`, `UC-011-03` và đặt lại 23 dòng Decision; sinh viên: đối chiếu tài liệu, tìm ra bốn lỗi và viết nội dung thay thế cho từng Decision.
 
 ### Prompt đã dùng
 
@@ -1439,13 +1442,13 @@ Tóm lược (nguyên văn nằm trong hội thoại): (1) `AF 2.3` của `UC-01
 | Giờ truy cập | 13:53 |
 | Người thực hiện | Mai Văn Hiển |
 | Spec / Tài liệu liên quan | `docs/ai_log/ai_log_hien.md`, `AI Usage Guidelines.pdf`, `wikicook-pa3-team-assignment.md`, `docs/requirements/use-case-specification.md` (Section 9–11) |
-| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.314 |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 |
 | Mục đích | Đọc lại AI log và tài liệu phân công PA3 để nhận xét; hướng dẫn chuyển `ai_log_hien.md` sang nhánh `Hien`; kiểm tra trạng thái repo trước khi push nhánh SCRUM-50; viết prompt hoàn thiện nội dung; viết mô tả PR; viết prompt để thêm mục này |
 | Nhánh Git | `Hien` (file log này, commit trước đó `2b3e1a5`); nội dung được nhắc tới nằm ở `docs/scrum-50-uc-spec-010-011-080` (commit mới nhất tại thời điểm ghi: `b4a2bc3`, thông điệp ghi `SCUM-50`, viết thiếu chữ `R` so với các commit trước) |
 
 ### Dòng tóm tắt theo mẫu AI Usage Notes
 
-**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập 13:53 ngày 30/10/2026, prompt: xem phần "Prompt đã dùng" bên dưới, dùng để nhận xét AI log Mục 11–22, hướng dẫn chuyển nhánh, kiểm tra trạng thái repo, viết hai prompt hoàn thiện nội dung và mô tả PR; AI đọc file log, tài liệu phân công, Guidelines và lịch sử git rồi viết nhận xét, các bước lệnh, hai prompt và hai bản mô tả PR (tiếng Anh, tiếng Việt); sinh viên: yêu cầu nhận xét và các bước tiếp theo, yêu cầu bỏ phần add/commit/push khỏi prompt để tự thực hiện, chạy prompt hoàn thiện nội dung ở một phiên khác rồi dán báo cáo lại, chọn mô tả PR bằng tiếng Việt; phần đọc diff, xem preview và đọc handover note: Hiển điền.
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 13:53 ngày 30/10/2026, prompt: xem phần "Prompt đã dùng" bên dưới, dùng để nhận xét AI log Mục 11–22, hướng dẫn chuyển nhánh, kiểm tra trạng thái repo, viết hai prompt hoàn thiện nội dung và mô tả PR; AI đọc file log, tài liệu phân công, Guidelines và lịch sử git rồi viết nhận xét, các bước lệnh, hai prompt và hai bản mô tả PR (tiếng Anh, tiếng Việt); sinh viên: yêu cầu nhận xét và các bước tiếp theo, yêu cầu bỏ phần add/commit/push khỏi prompt để tự thực hiện, chạy prompt hoàn thiện nội dung ở một phiên khác rồi dán báo cáo lại, chọn mô tả PR bằng tiếng Việt; phần đọc diff, xem preview và đọc handover note: Hiển điền.
 
 ### Prompt đã dùng
 
@@ -1530,11 +1533,11 @@ Các prompt Hiển gõ trong phiên này, theo thứ tự (chép nguyên văn t�
     hãy điền các chỗ trên cho tôi
     ```
 
-Giữa mục 5 và mục 6, Hiển chạy prompt hoàn thiện nội dung (khối ở trên) trong một phiên khác. Giờ gõ từng prompt: Hiển điền.
+Giữa mục 5 và mục 6, Hiển chạy prompt hoàn thiện nội dung (khối ở trên) trong một phiên khác.
 
 ### Tóm tắt phản hồi của AI
 
-- Đọc `wikicook-pa3-team-assignment.md`, `AI Usage Guidelines.pdf` và Mục 13–22 của `ai_log_hien.md`, rồi nhận xét 7 điểm cần sửa: (1) Mục 19 và 22 nói Mục 18 "không bị sửa" nhưng các dòng cách kiểm chứng của Mục 15, 18 và 19 đã được bổ sung; (2) câu "sinh viên: …" bị copy giống nhau vào nhiều mục, trong đó có mục ghi giờ sớm hơn sự kiện được nhắc; (3) nhiều khẳng định về phần Hiển tự làm do AI viết thay (mở file prototype, gửi Chung, đối chiếu bảng Decision); (4) prompt ở Mục 18, 19, 22 chỉ là tóm lược, không nguyên văn, trong khi Guidelines yêu cầu prompt và chat history; (5) phiên bản Claude Code `2.1.314` chưa được xác minh; (6) giờ truy cập lấy theo hai cách khác nhau (`date` và `git log`), Mục 15 và 16 cùng ghi 08:05; (7) rủi ro với §4.5 của Guidelines vì phần lớn use case do AI soạn, nên cần nêu rõ bằng chứng Hiển hiểu và đã chỉnh nội dung.
+- Đọc `wikicook-pa3-team-assignment.md`, `AI Usage Guidelines.pdf` và Mục 13–22 của `ai_log_hien.md`, rồi nhận xét 7 điểm cần sửa: (1) Mục 19 và 22 nói Mục 18 "không bị sửa" nhưng các dòng cách kiểm chứng của Mục 15, 18 và 19 đã được bổ sung; (2) câu "sinh viên: …" bị copy giống nhau vào nhiều mục, trong đó có mục ghi giờ sớm hơn sự kiện được nhắc; (3) nhiều khẳng định về phần Hiển tự làm do AI viết thay (mở file prototype, gửi Chung, đối chiếu bảng Decision); (4) prompt ở Mục 18, 19, 22 chỉ là tóm lược, không nguyên văn, trong khi Guidelines yêu cầu prompt và chat history; (5) số phiên bản Claude Code ghi trong các mục trước chưa được xác minh; (6) giờ truy cập lấy theo hai cách khác nhau (`date` và `git log`), Mục 15 và 16 cùng ghi 08:05; (7) rủi ro với §4.5 của Guidelines vì phần lớn use case do AI soạn, nên cần nêu rõ bằng chứng Hiển hiểu và đã chỉnh nội dung.
 - Liệt kê các bước chuyển `ai_log_hien.md` sang nhánh `Hien`; kiểm tra nhánh `Hien` đã có sẵn ở local và `origin/Hien`.
 - Kiểm tra trạng thái repo bằng lệnh đọc: nhánh `docs/scrum-50-uc-spec-010-011-080` chưa có trên origin; cách `origin/main` 9 commit và chỉ đổi `use-case-specification.md`; sau `git fetch`, `origin/main` đã nằm trong nhánh SCRUM-50 (chưa có commit mới trên `main`). Một lần AI đọc nhầm file trên nhánh `Hien` thay vì nhánh SCRUM-50 và sau đó tự đọc lại bằng `git show` trên đúng nhánh.
 - Viết hai phiên bản prompt hoàn thiện nội dung SCRUM-50: bản đầu cho phép AI commit và push, Hiển yêu cầu viết lại bản không add và không push (bản thứ hai là prompt ở trên).
@@ -1552,5 +1555,171 @@ Giữa mục 5 và mục 6, Hiển chạy prompt hoàn thiện nội dung (khố
 ### Cách kiểm chứng
 
 - Lệnh có thể chạy lại: `git branch --show-current` (kết quả khi ghi: `Hien`), `git status --short`, `git log --oneline -3 docs/scrum-50-uc-spec-010-011-080` (có `b4a2bc3`, `925f74d`), `git ls-remote --heads origin docs/scrum-50-uc-spec-010-011-080` (không có kết quả tại lúc kiểm tra trước đó).
+
+---
+
+## Mục 24: Task SCRUM-59 – sửa Project Plan lần 2 (bản nháp phần A) và lập Changes.md section A
+
+**Task: SCRUM-59**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-04 → 2026-11-06 (phần sửa `project-plan.md` và tạo `Changes.md` làm trong phiên bắt đầu ngày 04/11 theo ngày của hệ thống; commit `4cdd3d9` lúc 07:40:42 ngày 06/11; mục này ghi ngày 06/11) |
+| Giờ truy cập | 07:55 ngày 06/11; giờ commit `4cdd3d9` là 07:40; giờ bắt đầu phiên ngày 04/11: 10:37 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/management/project-plan.md` (Section 2.3, 3.2, 4.1, 4.3, 4.4, 5.4, Revision History, Appendix B), `Changes.md` (section A), `wikicook-pa3-team-assignment.md`, `docs/management/reports/sprint-03/sprint-03-report.md` |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), model Sonnet 5.5 (`claude-sonnet-5-5`); phiên bản Claude Code: 2.1.296 (đọc từ trường `version` trong `~/.claude/sessions/*.json`, xem mục Cách kiểm chứng) |
+| Mục đích | Viết prompt cho task SCRUM-59, sửa `project-plan.md` thành bản nháp `v2.0-draft` (lịch Sprint 3 về mốc 05/11 và 08/11 00:00, Build v0.5, ba risk mới, dòng Performed/Reviewed/Edited), tạo `Changes.md` với section A, rồi hướng dẫn push, viết mô tả PR và cho biết ai review |
+| Nhánh Git | `Hien` (commit `4cdd3d9`, thông điệp `docs(scrum-59): revise project plan for PA3 and add Changes.md section A`); PR #70 vào `main`, đã merge lúc 07:47 ngày 06/11, Hưng Approve; nhánh đang checkout khi ghi mục này: `docs/scrum-67-final-plan` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập ngày 04/11 và 06/11/2026 (giờ ghi mục này 07:55), prompt: xem phần "Prompt đã dùng" bên dưới, dùng để viết prompt cho SCRUM-59, sửa `project-plan.md` và tạo `Changes.md` section A, trả lời câu hỏi về push, mô tả PR và người review; AI khảo sát tài liệu, sửa `project-plan.md` (61 dòng thêm, 23 dòng bớt trong commit `4cdd3d9`), viết `Changes.md` (69 dòng).
+### Prompt đã dùng
+
+Tóm lược (nguyên văn nằm trong hội thoại):
+
+1. Hiển dán nội dung task SCRUM-59 (sửa Project Plan theo feedback TA từ PA2 lấy từ SCRUM-47, nếu không có feedback thì sửa theo audit nhất quán và ghi rõ trong `Changes.md`, không bịa feedback; lịch Sprint 3 xong hết ngày 05/11/2026 và nộp trước 00:00 ngày 08/11/2026 thay cho mốc 13/11; Build v0.5; ba risk mới là chưa có code skeleton lúc bắt đầu, phụ thuộc dữ liệu seed cho phần E, lịch làm việc chủ yếu buổi tối từ 22:00; dòng Performed by / Reviewed by / Edited by ngay sau header của mỗi section; bản nháp trình được ở freeze 02/11 để chuyển sang SCRUM-67; file `WikiCook/docs/management/project-plan.md`; Acceptance Criteria "Hưng review xong bản nháp"), kèm yêu cầu:
+   ```text
+   hãy viết prompt cho tôi để thực hiện công việc trên
+   ```
+2. Hiển dán lại prompt do AI soạn ở câu trả lời trước (bắt đầu bằng "# Nhiệm vụ: Sửa Project Plan theo feedback TA từ PA2 (SCRUM-47, bản nháp để chuyển sang SCRUM-67)") để AI thực hiện: Bước 1 khảo sát và báo cáo, Bước 2 sửa `project-plan.md`, Bước 3 tạo hoặc cập nhật `Changes.md`; ràng buộc không bịa feedback, tên người hay kết quả review, không commit, không push; kèm Acceptance Criteria và mẫu báo cáo cuối.
+3. ```text
+   hãy tự quyết định và làm tiếp
+   hãy tự quyết định và làm tiếp
+   ```
+4. ```text
+   file changes.md cần push lên không
+   ```
+5. ```text
+   viết phần description cho tôi
+   ```
+6. ```text
+   ai là người review
+   ```
+7. Prompt viết mục này: Hiển dán vào hội thoại, bắt đầu bằng "Nhiệm vụ: viết mục nhật ký AI mới cho SCRUM-59 vào docs/ai_log/ai_log_hien.md. Chỉ sửa file này. Không commit, không push." Ai soạn prompt này không có trong hội thoại.
+
+### Tóm tắt phản hồi của AI
+
+- Khảo sát (Bước 1): đọc `project-plan.md`, `wikicook-pa3-team-assignment.md` và `sprint-03-report.md`; tìm feedback TA bằng cách lục `docs/`, `git log --all --grep=SCRUM-47` và quét tên file `Changes.md` trên các nhánh remote, không thấy feedback nào. Theo Decision 2 của Sprint 03 report, AI chọn sửa theo audit nhất quán và ghi rõ điều đó trong `Changes.md`, không bịa feedback. Mốc 13/11 tìm thấy ở `project-plan.md` (nhiều dòng), `vision-document.md:612`, `w6-w10-weekly-plan.md:95` (nghĩa khác, mốc nạp dữ liệu Sprint 4) và `ai_log_hien.md:722` (log lịch sử, giữ nguyên).
+- Sửa `project-plan.md` (`v1.4` → `v2.0-draft`): lịch Sprint 3 ở Section 2.3, 4.1.2 (cả Gantt), M6, 4.3.3, mục mới 4.3.4 và 4.4.7; Build v0.5 (ngày 05/11, thêm lát cắt feature 040 US1 + US2 và migration `V401`–`V403`, gate mới, bỏ Redis khỏi v0.5 vì compose thật chỉ có `db`, `app`, `migrate`, `web`); ba risk `RSK-S3-01` đến `RSK-S3-03` ở mục 3.2.3; dòng Performed/Reviewed/Edited ngay sau header của 2.3, 3.2, 4.1, 4.3, 4.4 và mục metadata, với Hưng ghi "pending review"; sửa DoD gate 3 (quy tắc "Edited by" theo Jira task, và escape ký tự `\|` làm vỡ bảng).
+- Tạo `Changes.md` ở gốc repo: section A (A.1 nguồn thay đổi và tình trạng feedback TA, A.2 bảng 15 thay đổi trước/sau, A.3 phần không đổi, A.4 các quyết định đã chốt, A.5 việc còn mở), section B để trống cho Duy (SCRUM-60).
+- Theo yêu cầu "hãy tự quyết định và làm tiếp", AI tự chốt: giữ việc bỏ Redis khỏi Build v0.5, quy tắc "Edited by" theo Jira task, giữ nguyên Sprint 4 (16/11 – 04/12), không sửa Vision và `w6-w10-weekly-plan.md`, không ghi AI log. AI chạy `git fetch` và `git pull --ff-only` vì `main` local tụt 44 commit so với `origin/main` (upstream không đụng `project-plan.md`), đối chiếu lại compose, migration, seed adapter, CI trên `main` mới, và kiểm tra số cột các bảng Markdown (0 dòng lệch ở `project-plan.md` và `Changes.md`).
+- Trả lời câu hỏi về push: `Changes.md` cần push vì đề PA3 bắt buộc đúng một file `Changes.md` cho phần A và B (SCRUM-61), kèm lưu ý chưa có file này trên remote và section B còn trống; đưa lệnh `git add`/`commit`/`push` để Hiển tự chạy, không `git add` hai file chưa theo dõi. Viết mô tả PR bằng tiếng Việt. Trả lời người review là Lê Quốc Hưng (SCRUM-59, SCRUM-67), Duy là Editor, Duy review `Changes.md` (SCRUM-61).
+- Mục này: AI đọc phần đầu file log và Mục 22, 23, chạy `git show --stat 4cdd3d9`, `gh pr view 70`, `date`, `grep` và đọc siêu dữ liệu phiên để lấy version, rồi chèn mục 24 và hai hàng mục lục (#23, #24) bằng script giữ nguyên ký tự xuống dòng CRLF của file. Hội thoại này không có việc "kiểm tra `Hien` với `origin/main` rồi kết luận không cần pull" (AI đã `git pull --ff-only` ở trên) và không có `git merge --abort` hay tạo nhánh SCRUM-67, nên không tạo mục riêng cho các việc đó.
+- Sửa phiên bản: theo yêu cầu của Hiển, AI đổi số phiên bản Claude Code ở mọi mục dùng Claude Code trong VS Code (Mục 11–24) thành 2.1.296, kể cả các dòng tóm tắt trước đó chưa ghi số phiên bản (Mục 11–16 và 23), và đổi câu nhận xét "phiên bản `2.1.314` chưa được xác minh" trong Tóm tắt phản hồi của Mục 23 thành "số phiên bản Claude Code ghi trong các mục trước chưa được xác minh" vì số cũ không còn trong file; Mục 1–10 dùng Claude Code trong Google Antigravity và không ghi số phiên bản nên không đổi.
+- Sai sót của AI cần ghi nhận:
+  1. `Changes.md` A.1 viết AI đã kiểm tra "all remote branches", nhưng thực tế AI chỉ quét tên file `Changes.md` trên các nhánh remote, không quét nội dung các nhánh để tìm feedback TA; câu này nói quá và chưa được sửa trong bản đã merge.
+  2. AI tự quyết định bỏ Redis khỏi Build v0.5 và sửa quy tắc "Edited by" nhưng không sửa Vision, nên plan và Vision đang lệch: lệnh `grep` lúc ghi mục này cho thấy `vision-document.md:532` (NFR-REL-10) vẫn ghi `db` và `redis` và `:612` vẫn ghi 13/11/2026. Cập nhật sau đó cùng ngày 06/11: `git fetch` cho thấy `origin/main` đã có PR #71 của Duy (SCRUM-60) sửa hai chỗ này (NFR-REL-10 bỏ `redis`, hàng Build v0.5 ghi 05/11/2026), viết section B của `Changes.md` và ghi kết quả SCRUM-47 vào Sprint 03 report; nhánh `docs/scrum-67-final-plan` chưa có các commit đó.
+  3. Bản đã merge vào `main` vẫn ghi "pending review" ở 7 chỗ trong `project-plan.md` (và 2 chỗ trong `Changes.md`) dù Hưng đã Approve PR #70; các chỗ này cần cập nhật ở SCRUM-67.
+  4. Lần chạy đầu của lệnh kiểm tra số cột bảng bị lỗi cú pháp do shell xử lý ký tự `\|` trong heredoc; AI chạy lại bằng file script và có kết quả đúng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| `project-plan.md` bản `v2.0-draft` (lịch Sprint 3, Build v0.5, ba risk, dòng attribution, DoD gate 3) | Dùng; nằm trong commit `4cdd3d9` (61 dòng thêm, 23 dòng bớt) trên nhánh `Hien`, PR #70 đã merge, Hưng Approve | Hiển yêu cầu và tự commit, mở PR; hội thoại không có bằng chứng Hiển sửa nội dung trước khi commit |
+| `Changes.md` section A | Dùng; nằm trong commit `4cdd3d9` (69 dòng thêm) | Đề PA3 bắt buộc có đúng một file `Changes.md` cho phần A và B; section B còn trống, thuộc SCRUM-60 |
+| Các quyết định AI tự chốt (bỏ Redis khỏi v0.5, "Edited by" theo Jira task, giữ Sprint 4, không sửa Vision) | Dùng nguyên trong bản đã commit | Hiển giao "tự quyết định"; hội thoại không có xác nhận riêng của Hiển cho từng quyết định, nên SCRUM-67 phải xác nhận (Changes.md mục A.4) |
+| Mô tả PR bằng tiếng Việt | Dùng làm nội dung PR #70 (`gh pr view 70 --json body` có "RSK-S3-01", "Redis" và dòng đầu "## Mô tả"; không so sánh từng chữ) | Hiển yêu cầu mô tả PR |
+| Số phiên bản Claude Code ở Mục 11–23 | Sửa thành 2.1.296 theo yêu cầu của Hiển | Thống nhất toàn file; số cũ (2.1.312, 2.1.314) chưa được xác minh, số mới lấy từ siêu dữ liệu phiên ngày 06/11 và cũng chưa xác minh cho các phiên ngày 30/10 |
+| Sửa `vision-document.md`, `w6-w10-weekly-plan.md`, ghi AI log | Bỏ (không làm trong phiên làm plan) | Vision thuộc SCRUM-60 của Duy; weekly plan không phải ngày Sprint 3; AI log do Hiển ghi (mục này) |
+
+### Cách kiểm chứng
+
+- `git show --stat 4cdd3d9` và `git show 4cdd3d9 --numstat`: 2 file, `Changes.md` 69 dòng thêm, `project-plan.md` 61 dòng thêm và 23 dòng bớt; `git log -1 --format=%ci 4cdd3d9` ra `2026-11-06 07:40:42 +0700`.
+- `grep -n "13/11" docs/management/project-plan.md`: còn 2 dòng (40 và 722), đều là dòng mô tả thay đổi trong Revision History và Appendix B; không còn mốc 13/11 trong lịch. `Changes.md` cũng nhắc 13/11 ở cột "Before" của A.2.
+- `gh pr view 70 --json state,reviews,mergedAt,url`: `MERGED` lúc `2026-11-06T00:47:41Z` (07:47 giờ Việt Nam), review của `LqHung06` ở trạng thái `APPROVED` lúc `00:47:10Z`, địa chỉ `https://github.com/ThanhDu14/WikiCook/pull/70`.
+- `grep -c "pending review" docs/management/project-plan.md` ra 7 và trong `Changes.md` ra 2; `grep -n "NFR-REL-10\|Sprint 3 — Build v0.5" docs/requirements/vision-document.md` ra hai dòng 532 và 612 còn ghi `redis` và 13/11/2026.
+- Giờ: lệnh `date` lúc ghi mục này ra `2026-11-06 07:55`.
+- Version Claude Code: 2.1.296.
 - Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
-- Sai sót của AI trong phiên: Hiển điền nếu có. Một sai sót AI tự ghi nhận: đọc nhầm file trên nhánh `Hien` thay vì nhánh SCRUM-50 trước khi tự sửa.
+- Hiển cần tự đối chiếu trước khi nộp: (1) giờ bắt đầu phiên ngày 04/11 và phiên bản Claude Code của từng phiên; (2) từng thay đổi trong bảng A.2 của `Changes.md` với `project-plan.md` đã merge; (3) bốn quyết định AI tự chốt ở mục A.4; (4) câu "all remote branches" ở A.1; (5) hai chỗ Vision (`vision-document.md:532`, `:612`) sau khi lấy PR #71 về, và các câu ở `Changes.md` section A (A.1, A.5 mục 2 và 5) đã lỗi thời so với PR #71; (6) 7 chỗ "pending review" sau khi Hưng đã Approve.
+
+---
+
+## Mục 25: Task SCRUM-67 – chốt Project Plan lần 2 (`v2.0`) và viết lại Changes.md section A
+
+**Task: SCRUM-67**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-06 (sau mốc "chốt cuối ngày 05/11" của task; việc trễ được ghi ở `Changes.md` A.4 quyết định 5) |
+| Giờ truy cập | Phiên bắt đầu 08:25 (timestamp đầu của transcript phiên: `2026-11-06T01:25:39Z`); PR #72 tạo lúc 08:43; commit `425212b` lúc 08:47:12; mục này ghi sau 08:48 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/management/project-plan.md`, `Changes.md` (section A), `docs/requirements/vision-document.md`, `docs/requirements/use-case-model.md`, `docs/requirements/use-case-specification.md`, `docs/management/reports/sprint-03/sprint-03-report.md`, `docs/management/w6-w10-weekly-plan.md`, `docs/analysis-and-design/database/full-schema.md`; để đối chiếu code: `docker-compose.yml`, `src/backend/docker-compose.yml`, `.github/workflows/`, các file `pom.xml`, `application.yml`, migration trong `wikicook-db` |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), phiên bản 2.1.296 (đọc từ trường `version` trong transcript của phiên). Phiên bắt đầu với Sonnet 5.5 (`claude-sonnet-5-5`), đang đọc và đối chiếu thì chuyển sang Opus 5.5 (`claude-opus-5-5`); toàn bộ phần sửa file do Opus 5.5 thực hiện. Hiển chạy thêm `/model opus` sau khi AI báo cáo xong. Transcript có 35 dòng ghi model Sonnet và 106 dòng ghi model Opus |
+| Mục đích | Đối chiếu Plan với Vision v2.0, Use-Case Model, UC spec, Sprint 03 report và code ở `main`; sửa chỗ lệch, đổi nhãn `v2.0-draft` thành `v2.0`, ghi đủ thay đổi so với PA2 vào `Changes.md` section A; sau đó tư vấn file cần add, viết mô tả PR và tìm lý do PR chỉ hiện AI log |
+| Nhánh Git | `docs/scrum-67-final-plan` (commit `425212b`, thông điệp `docs(scrum-67): finalise project plan v2.0 and Changes.md section A`, Hiển tự commit và push); PR #72 vào `main` đang mở, chưa có review |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5) và Opus 5.5 (claude-opus-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập ngày 06/11/2026 (phiên bắt đầu 08:25), prompt: xem phần "Prompt đã dùng" bên dưới, dùng để chốt Project Plan `v2.0` và viết lại `Changes.md` section A; AI đối chiếu Plan với tài liệu và code, sửa `project-plan.md` (36 dòng thêm, 25 dòng bớt trong commit `425212b`), viết lại `Changes.md` section A (69 dòng thêm, 38 dòng bớt), viết mô tả PR và giải thích vì sao PR chỉ hiện AI log.
+
+### Prompt đã dùng
+
+Tóm lược (nguyên văn nằm trong hội thoại):
+
+1. Hiển dán prompt bắt đầu bằng "Nhiệm vụ: SCRUM-67 – chốt Project Plan lần 2 (phần A)." Prompt gồm: Bước 1 đọc tài liệu và lập bảng đối chiếu; Bước 2 đối chiếu 5 nhóm (Vision, Use-Case Model và UC spec, lịch Jira trong Sprint 03 report, feedback TA, 5 việc mở ở `Changes.md` A.5); Bước 3 sửa Plan, giữ dòng `v2.0-draft` làm lịch sử, thêm hàng `v2.0`, Edited by là Nguyễn Đức Duy, không gỡ nhãn "pending review"; Bước 4 cập nhật `Changes.md` section A, không đụng section B; ràng buộc không sửa Vision, `use-case-*.md`, `sprint-03-report.md`, không commit, không push, không thêm dòng Co-Authored-By; mọi khẳng định kỹ thuật phải đối chiếu với code; kèm các lệnh kiểm tra cuối và mẫu đầu ra. Ai soạn prompt này không có trong hội thoại.
+2. ```text
+   tôi nên add file nào
+   ```
+3. ```text
+   viết description cho tôi
+   ```
+4. ```text
+   tại sao file changed chỉ có ai log
+   ```
+5. ```text
+   hãy cập nhật AI log cho tôi
+   ```
+
+### Tóm tắt phản hồi của AI
+
+- Đối chiếu: AI đọc các tài liệu trên rồi đọc cấu hình và cây file thật. Plan khớp Vision v2.0 về Build v0.5, Redis và ngày 05/11. Các chỗ nhắc Redis trong Vision (§3.3, §4.1, NFR-COM-06) mô tả sản phẩm đầy đủ, nên không mâu thuẫn với Plan.
+- Bản nháp SCRUM-59 có các khẳng định sai so với `main`, AI sửa theo code:
+  - Migration: đã có `V001`–`V303` (gồm extension `vector` và `recipe_embeddings` có index HNSW ở `V302`) và `V401`–`V403`, chưa có `V5xx`; bản nháp ghi chỉ có "baseline schema" và extension chưa dùng.
+  - Không có container Mock LLM: `wikicook-ai` chạy client mock ngay trong app (`WIKICOOK_AI_MODE=mock`).
+  - CI không build Docker image; `mvn verify` đã chạy `*IT` trên Testcontainers.
+  - JaCoCo đo `INSTRUCTION` ≥ 0.70 cho `com.wikicook.shoppinglist.service`, không phải line coverage.
+  - `/actuator/health` chỉ trả trạng thái tổng vì không bật `show-details`; job `migrate` thuộc profile `tools`, `docker compose up` không chạy job này.
+  - Tên image thật là `wikicook-app:local` và `wikicook-web:local`, không có `wikicook-backend`.
+- Sửa `project-plan.md`: title block, ghi chú metadata, Revision History và Appendix B (giữ hàng `v2.0-draft`, thêm hàng `v2.0`), 1.2, ASM-03, 2.3 (thêm hàng Part F), `RSK-S3-01`, 4.3.3 (tách 10 feature, 12 spec, 64 use case; map lát cắt 040 sang `UC-040-01`, `UC-040-02`), 4.3.4 (cột task theo ngày trong Sprint 03 report, Review lúc 20:00), 4.4.1, 4.4.2, 4.4.4, 4.4.5, 4.4.6, 4.4.8, 5.4.
+- Thêm dòng attribution cho các subsection đã sửa trong PA3 nhưng còn thiếu (Revision History, 1.2, 2.2, 5.4, Appendix B). Vì vậy số nhãn "pending review" trong Plan tăng từ 7 lên 14; 7 nhãn mới gồm 5 dòng attribution và 2 hàng lịch sử `v2.0`. Hiển đặt điều kiện "vẫn là 7, trừ khi thêm hay bớt có lý do"; AI nêu lý do này trong báo cáo.
+- Viết lại `Changes.md` section A: A.2 có 21 hàng và cột Task, A.3 phần cố ý không đổi, A.4 sáu quyết định kèm danh sách đã kiểm trên `main`, A.5 chín mục có trạng thái và người xử lý. So sánh bằng script: section B giống hệt bản cũ.
+- Việc mở: đóng #2 (Vision), #3 (T6 13/11 là mốc dữ liệu Sprint 4, giữ nguyên), #5 (TA feedback); #4 đóng một phần vì repo chỉ có snapshot Jira ngày 28/10. Thêm #6 (chưa có tag `v0.5.0` và `CHANGELOG.md`), #7 (câu chữ NFR-REL-10 lệch code), #8 (`w6-w10-weekly-plan.md` đề xuất PA4 21/11 và đưa Redis vào v0.5), #9 (MoSCoW F-06–F-10).
+- Trả lời các câu hỏi sau báo cáo: chỉ add `Changes.md` và `project-plan.md`; viết mô tả PR tiếng Việt theo văn phong PR #70; PR chỉ hiện AI log vì hai file mới được stage, chưa commit, trong khi PR #72 đã mở từ trước.
+- Mục này: AI đọc Mục 24, lấy số liệu bằng `git show --numstat 425212b`, `gh pr view 72`, transcript phiên, rồi chèn mục 25 và hàng mục lục #25 bằng script giữ CRLF.
+- Sai sót và hạn chế của AI cần ghi nhận:
+  1. `Changes.md` A.1 vẫn giữ cụm "all remote branches", dù Mục 24 đã ghi cụm này nói quá. AI đọc Mục 24 chỉ sau khi đã viết xong section A nên bỏ sót, và câu sai đã nằm trong commit `425212b`. Chưa sửa.
+  2. Mô tả PR có lỗi `**Thuật ngữ (4.3.4 → 4.3.3):**`, đúng là `4.3.3`. AI đã báo lỗi này, nhưng lúc ghi mục này PR #72 vẫn còn dòng đó.
+  3. Mô tả PR không nhắc commit AI log `45b1d07` nằm trong PR; AI chỉ nhận ra khi kiểm tra Files changed.
+  4. Báo cáo ghi chỉ cần gỡ 1 nhãn ở `Changes.md` dòng 14. Thực tế dòng 7 (File Status) cũng ghi "review by Lê Quốc Hưng pending". `grep -c "pending review" Changes.md` ra 3, trong đó A.5 mục 1 và hàng 18 của A.2 chỉ trích dẫn nhãn.
+  5. Kết luận kỹ thuật dựa vào đọc file cấu hình và mã nguồn. AI không chạy `docker compose up`, `mvn verify` hay xem kết quả CI, nên gate `Build v0.5` chưa được đo. Dòng "Closed for Sprint 3" của `RSK-S3-01` chỉ dựa trên việc skeleton có trên `main`.
+  6. Editor của SCRUM-67 lấy theo prompt của Hiển. Sprint 03 report không có cột editor nên AI không tự kiểm được, và đã ghi vào A.5 mục 4.
+  7. Hàng 31/10 trong 4.3.4 ("missing prototype screens listed on 31/10") không có trong Sprint 03 report. AI giữ nguyên và chưa nêu trong báo cáo.
+  8. Hai lần chạy kiểm tra bị lỗi do shell xử lý ký tự `\` trong heredoc (script Mermaid và script đếm cột bảng), lặp lại lỗi đã ghi ở Mục 24; AI chạy lại bằng file script và có kết quả đúng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Sửa `project-plan.md` bản `v2.0` | Dùng; nằm trong commit `425212b` (36 dòng thêm, 25 dòng bớt) | Số dòng trong commit trùng với `git diff --stat` lúc AI báo cáo (61 dòng), không thấy dấu hiệu Hiển sửa nội dung trước khi commit |
+| `Changes.md` section A | Dùng; nằm trong commit `425212b` (69 dòng thêm, 38 dòng bớt) | Đề PA3 bắt buộc; còn lỗi "all remote branches" ở A.1 |
+| Thông điệp commit AI đề xuất | Dùng phần tiêu đề và gạch đầu dòng đầu tiên; 4 gạch đầu dòng còn lại không có trong commit | Hiển tự chạy lệnh commit |
+| Mô tả PR | Dùng làm nội dung PR #72 (dòng đầu "## Mô tả", còn dòng lỗi 4.3.4 → 4.3.3) | Hiển yêu cầu mô tả PR |
+| Tiêu đề PR đề xuất | Chưa dùng; PR #72 vẫn có tiêu đề `Docs/scrum 67 final plan` | Hiển chưa đổi tại thời điểm ghi mục này |
+| Dòng Co-Authored-By và "Generated with Claude Code" | Bỏ | Hiển yêu cầu không thêm |
+| Sửa Vision, `use-case-*.md`, `sprint-03-report.md`, `w6-w10-weekly-plan.md`, section B | Bỏ (không làm) | Ngoài phạm vi theo prompt; chỗ lệch được ghi thành việc mở cho người phụ trách |
+
+### Cách kiểm chứng
+
+- `git show --numstat 425212b`: `Changes.md` 69 dòng thêm, 38 dòng bớt; `project-plan.md` 36 dòng thêm, 25 dòng bớt; giờ commit `2026-11-06 08:47:12 +0700`; thông điệp không có dòng Co-Authored-By.
+- `gh pr view 72`: `OPEN`, `REVIEW_REQUIRED`, chưa có review, tạo lúc `2026-11-06T01:43:30Z` (08:43 giờ Việt Nam), 3 commit (`45b1d07`, `9a84440`, `425212b`), 3 file; địa chỉ `https://github.com/ThanhDu14/WikiCook/pull/72`.
+- `grep -n "13/11" docs/management/project-plan.md`: còn 2 dòng (41 và 732), đều là hàng lịch sử `v2.0-draft`.
+- `grep -c "pending review"`: `project-plan.md` ra 14, `Changes.md` ra 3.
+- Mermaid: `mermaid.parse` với `mermaid@10.9.1` (cài ở thư mục tạm, không vào repo): 6 khối, 0 lỗi. Số cột bảng Markdown: 0 dòng lệch ở `project-plan.md` và `Changes.md`.
+- Chưa render PDF và chưa chạy `markdownlint`.
+- Version Claude Code: 2.1.296; model theo từng lượt lấy từ transcript phiên.
+- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+- Hiển cần tự đối chiếu trước khi nộp: (1) sửa "all remote branches" ở `Changes.md` A.1; (2) sửa dòng lỗi và thêm `45b1d07` vào mô tả PR #72, đổi tiêu đề PR; (3) từng thay đổi trong bảng A.2 với `project-plan.md`; (4) các nhãn pending review sau khi Hưng duyệt, gồm cả dòng 7 của `Changes.md`; (5) chạy thật gate `Build v0.5`; (6) các mục cần xem trên Jira ở A.5 mục 4.

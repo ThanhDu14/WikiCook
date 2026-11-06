@@ -49,6 +49,9 @@ export async function fetchJson<T>(url: string, init: RequestInit = {}): Promise
   if (init.body !== undefined && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');
   }
+  if (!headers.has('X-User-Id')) {
+    headers.set('X-User-Id', '1');
+  }
 
   const response = await fetch(new URL(url, window.location.origin), { ...init, headers });
   if (!response.ok) {
