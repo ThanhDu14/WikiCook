@@ -4,7 +4,7 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 05  
 **Submission:** Project Assignment 3 (`PA3-Group05.zip`)  
-**File Status:** Finalized and Approved by Owner: Lê Quốc Hưng (`SCRUM-61`, 06/11/2026). Section A is final for Project Plan `v2.0` (`SCRUM-59` draft, `SCRUM-67` final; reviewed and signed off by Lê Quốc Hưng); section B is final for Vision Document `v2.0` (`SCRUM-60`, `SCRUM-47`). Core consistency checks between plan and vision are closed (Items 1–5); release tracking items 6 (tag `v0.5.0`) and 7 (NFR-REL-10 wording vs code) remain open to be finalized during release packaging.
+**File Status:** Finalized and Approved by Owner: Lê Quốc Hưng (`SCRUM-61`, 06/11/2026). Section A is final for Project Plan `v2.0` (`SCRUM-59` draft, `SCRUM-67` final; reviewed and signed off by Lê Quốc Hưng); section B is final for Vision Document `v2.0` (`SCRUM-60`, `SCRUM-47`). Core consistency checks between plan and vision are closed (Items 1–5); item 7 (NFR-REL-10 wording vs code) was closed on 07/11/2026; release item 6 (tag `v0.5.0`) is closed when the tag is pushed during release packaging.
 
 This is the single change log for the two documents revised after PA2. Each section lists every change against the PA2 baseline, with the document, the location and the content of the change.
 
@@ -24,7 +24,7 @@ This is the single change log for the two documents revised after PA2. Each sect
 
 ### A.2. Changes by section
 
-Rows 1–15 come from the draft (`SCRUM-59`); where `SCRUM-67` changed the same place again, the *After* column shows the final text and marks the `SCRUM-67` part. Rows 16–21 are new in `SCRUM-67`.
+Rows 1–15 come from the draft (`SCRUM-59`); where `SCRUM-67` changed the same place again, the *After* column shows the final text and marks the `SCRUM-67` part. Rows 16–21 are new in `SCRUM-67`; row 22 records the sign-off fix of 07/11/2026.
 
 | # | Plan section | Before (PA2 `v1.4`) | After (PA3 `v2.0`) | Reason | Task |
 | :---: | :--- | :--- | :--- | :--- | :---: |
@@ -49,6 +49,7 @@ Rows 1–15 come from the draft (`SCRUM-59`); where `SCRUM-67` changed the same 
 | 19 | 4.4.1 Docker image tags | Example `wikicook-backend:0.8.0-beta.1`; every image tagged from `v0.5`. | Released images are tagged with the Git version (`wikicook-app:…`, `wikicook-web:…`); local Compose builds use `:local`. | The compose files name the images `wikicook-app:local` and `wikicook-web:local`; there is no `wikicook-backend` image. | `SCRUM-67` |
 | 20 | 4.4.2 `Build v0.8 Beta` | "`pgvector` column + index" and "**Full relational schema** (Flyway `V2…Vn`)" arrive in `v0.8`. | Embeddings are written into `recipe_embeddings`, whose `VECTOR(768)` column and HNSW index already exist in `V302`; the schema for the `v0.8` services is already in `V001`–`V303` and `V401`–`V403`, with new migrations only where needed. | Consistency with #11; the DDL is already on `main`. | `SCRUM-67` |
 | 21 | 4.4.5 MoSCoW note | "MoSCoW priorities for F-06–F-10 … will be confirmed by the Product Owner in PA3." | Not confirmed in PA3 (Vision `v2.0` has no MoSCoW priority); confirmed by the Product Owner no later than Sprint 4 Planning. | PA3 is ending and the promise was not met. | `SCRUM-67` |
+| 22 | Attribution lines, Revision History, Appendix B | Reviewer shown as "Lê Quốc Hưng (LqHung06) — pending review" in 14 places. | "Reviewed & Approved by: Lê Quốc Hưng (LqHung06)" in the attribution lines and "approved 06/11/2026" in the history tables. | The review was signed off on 06/11/2026 (A.5, item 1); the plan still showed it as pending. | `SCRUM-61` |
 
 ### A.3. Items not changed on purpose
 
@@ -75,7 +76,7 @@ Rows 1–15 come from the draft (`SCRUM-59`); where `SCRUM-67` changed the same 
    - Actuator exposes `health,info` with no `show-details` / `show-components` setting, so `/actuator/health` returns only the aggregate status.
    - `git tag -l` is empty and there is no root `CHANGELOG.md`.
    - `docs/requirements/use-case-model.md` (10 features, 8 actors, 64 use cases) and `use-case-specification.md` present.
-5. **Late finalisation, recorded openly.** `SCRUM-67` was due on 05/11/2026. The final plan was completed on 06/11/2026, inside the buffer that the plan reserves for blocker fixes only. No new scope was added: the changes are consistency fixes. Lê Quốc Hưng's review of the final version is still open (A.5, item 1).
+5. **Late finalisation, recorded openly.** `SCRUM-67` was due on 05/11/2026. The final plan was completed on 06/11/2026, inside the buffer that the plan reserves for blocker fixes only. No new scope was added: the changes are consistency fixes. Lê Quốc Hưng reviewed and approved the final version on 06/11/2026 (A.5, item 1).
 6. **TA feedback:** none received (`SCRUM-47`), so no late feedback had to be triaged.
 
 ### A.5. Open items
@@ -88,7 +89,7 @@ Rows 1–15 come from the draft (`SCRUM-59`); where `SCRUM-67` changed the same 
 | 4 | **Cross-check with the final Vision and the Jira board** | **Closed (06/11/2026, `SCRUM-61`/`64`)** | Vision `v2.0`: done (item 2). Jira: all 22 tasks verified as DONE on live Jira board with screenshot evidence in Sprint 03 Report Section 3.3. Standup 1 (30/10), Standup 2 (03/11), and Review/Retro (04/11) minutes formally documented in Sprint 03 Report Sections 2.2–2.4. | Lê Quốc Hưng |
 | 5 | **TA feedback** | **Closed (06/11/2026, `SCRUM-47`)** | Sprint 03 Report Sec 3.2 records "No TA feedback received"; mirrored in A.1, B.1 and in the plan (1.2, ASM-03). | — |
 | 6 | **Tag `v0.5.0` and release notes** | **Open** | The plan dates the tag on 05/11/2026, but no Git tag and no `CHANGELOG.md` exist on 06/11/2026. Tag after the gate passes and the sign-offs (Hiển technical, Hưng final, Sec 4.4.3). | Nguyễn Thành Dự (Release Owner) |
-| 7 | **NFR-REL-10 wording vs the code** | **Open (sent to `SCRUM-60`)** | Vision NFR-REL-10 says the health endpoint "reports `UP` including the `db` component" and that the `migrate` job exits 0 on `docker compose up`. In the code the component details are not exposed, and `migrate` only runs with `docker compose run --rm migrate` (profile `tools`). The plan gate (4.4.2) states the real behaviour. Either Vision is reworded or the app exposes the components (`management.endpoint.health.show-components`). | Nguyễn Đức Duy (`SCRUM-60`), Nguyễn Thành Dự (config) |
+| 7 | **NFR-REL-10 wording vs the code** | **Closed (07/11/2026)** | Vision NFR-REL-10 was reworded to the real behaviour stated in the plan gate (4.4.2): the `app` applies the migrations on startup, the standalone `migrate` job runs with `docker compose run --rm migrate` (profile `tools`), and `GET /actuator/health` returns the aggregate `UP` with the `db` indicator included but component details not exposed. See B.2, row 12. | Nguyễn Đức Duy (`SCRUM-60`), Nguyễn Thành Dự |
 | 8 | **`w6-w10-weekly-plan.md` vs this plan** | **Open** | That file (author Nguyễn Thành Dự, review by the PM pending) proposes PA4 on 21/11 and PA5 in week 10 and plans `FE ↔ BE ↔ PostgreSQL ↔ Redis` and an Actuator `redis` component for `v0.5`, which contradicts decisions 1 and 3. Confirm the dates with the lecturer and either update this plan (4.1.2, 4.1.3, 4.4.2) or the weekly plan. | Nguyễn Thành Dự, Lê Quốc Hưng |
 | 9 | **MoSCoW priorities for F-06–F-10** | **Open** | Still provisional (4.4.5, row 21). | Nguyễn Đức Duy (PO), by Sprint 4 Planning |
 
@@ -120,7 +121,7 @@ Rows 1–15 come from the draft (`SCRUM-59`); where `SCRUM-67` changed the same 
 | 9 | 5.2 Smart Recipe Discovery | Pantry matching described as part of the feature. | Pantry matching described as a planned increment. | Same as #3. |
 | 10 | 5.11 Feature traceability table | Short specification names (`011`, `070`, `080`, `090`); the non-existent `101-admin-analytics`. | Full specification names; `101-admin-analytics` removed (analytics is User Story 6 of `100-admin-moderation`); new column **Use Cases (Section 8)**. | Names did not match `specs/`; link features to use cases. |
 | 11 | 6.1 and 6.2 workflow step tables | Columns Step / Actor / Description / Feature. | New column **Use Case(s)** for every step; note in 6.2 that steps 1–3 (pantry matching) start with keyword search and filters until the increment is specified. | Link workflows to the Use-Case Model. |
-| 12 | 7.6 NFR-REL-10 | "`docker compose up` brings all 4 containers to `healthy`…; the health endpoint reports `UP` for `db` and `redis`." | "`docker compose up` brings the `db`, `app` and `web` containers to `healthy` in ≤ 5 minutes and the Flyway `migrate` job exits with code 0; the health endpoint reports `UP` including the `db` component. Redis is not part of `Build v0.5`; it joins the stack in `Build v0.8 Beta`." | Conflict with the revised Plan 4.4.2 and the repository compose file (A.4 decision 1, A.5 item 2). |
+| 12 | 7.6 NFR-REL-10 | "`docker compose up` brings all 4 containers to `healthy`…; the health endpoint reports `UP` for `db` and `redis`." | "`docker compose up` brings the `db`, `app` and `web` containers to `healthy` in ≤ 5 minutes (the `app` applies the Flyway migrations on startup), and the standalone Flyway `migrate` job (`docker compose run --rm migrate`, profile `tools`) exits with code 0; `GET /actuator/health` reports `UP`, with the `db` health indicator part of that status (component details are not exposed in `Build v0.5`). Redis is not part of `Build v0.5`; it joins the stack in `Build v0.8 Beta`." *07/11 (A.5 item 7):* wording aligned with the code and with Plan 4.4.2 — `migrate` runs only on demand and the health endpoint exposes the aggregate status only. | Conflict with the revised Plan 4.4.2 and the repository compose file (A.4 decision 1, A.5 items 2 and 7). |
 | 13 | 7.11 Verification Approach | Row "Sprint 3 — Build v0.5" dated 13/11/2026. | Dated 05/11/2026 (tag `v0.5.0`; Moodle deadline 00:00, 08/11/2026). | Same as #12 (real Sprint 3 milestones, A.2 #6). |
 | 14 | 8 *(new)* Traceability to the Use-Case Model | — | 8.1 forward trace from needs N1–N8 to use cases; 8.2 feature coverage (64 use cases over the 10 features, with owners); 8.3 backward trace and consistency check; 8.4 change control. | PA3 requires the Vision to be consistent with the Use-Case Model. |
 
