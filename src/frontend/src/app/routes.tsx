@@ -1,5 +1,7 @@
-import { Navigate, type RouteObject } from 'react-router-dom';
+import { type RouteObject } from 'react-router-dom';
 import { MealPlannerPage } from '@/features/meal-planner/pages/MealPlannerPage';
+import { HomePage } from '@/features/search/pages/HomePage';
+import { SearchResultsPage } from '@/features/search/pages/SearchResultsPage';
 import { ShoppingHistoryPage } from '@/features/shopping-list/ShoppingHistoryPage';
 import { ShoppingListPage } from '@/features/shopping-list/ShoppingListPage';
 import { AppLayout } from './AppLayout';
@@ -19,7 +21,8 @@ export const routes: RouteObject[] = [
   {
     element: <AppLayout />,
     children: [
-      { index: true, element: <Navigate to="/shopping-list" replace /> },
+      { index: true, element: <HomePage /> },
+      { path: 'search', element: <SearchResultsPage /> },
       { path: 'meal-planner', element: <MealPlannerPage />, handle: { wide: true } },
       { path: 'shopping-list', element: <ShoppingListPage /> },
       { path: 'shopping-list/history', element: <ShoppingHistoryPage /> },

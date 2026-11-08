@@ -1,24 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { strings } from '../strings.vi';
 
 export interface SearchBoxProps {
   initialValue?: string;
   onSearch: (keyword: string) => void;
   className?: string;
-  autoFocus?: boolean;
 }
 
 export function SearchBox({
   initialValue = '',
   onSearch,
   className = '',
-  autoFocus = false,
 }: SearchBoxProps) {
   const [value, setValue] = useState(initialValue);
+  const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
 
-  useEffect(() => {
+  if (initialValue !== prevInitialValue) {
+    setPrevInitialValue(initialValue);
     setValue(initialValue);
-  }, [initialValue]);
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +38,6 @@ export function SearchBox({
         onChange={(e) => setValue(e.target.value)}
         placeholder={strings.search.searchPlaceholder}
         aria-label={strings.search.searchAriaLabel}
-        autoFocus={autoFocus}
       />
     </form>
   );

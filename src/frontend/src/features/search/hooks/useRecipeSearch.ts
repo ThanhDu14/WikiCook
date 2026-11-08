@@ -18,7 +18,7 @@ export interface UseRecipeSearchResult {
  */
 export function useRecipeSearch(state: SearchState): UseRecipeSearchResult {
   const [data, setData] = useState<SearchResponse | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loadedKey, setLoadedKey] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [retryCount, setRetryCount] = useState<number>(0);
 
@@ -26,6 +26,8 @@ export function useRecipeSearch(state: SearchState): UseRecipeSearchResult {
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const queryString = toSearchString(state);
+  const currentKey = `${queryString}#${retryCount}`;
+  const loading = loadedKey !== currentKey;
 
   const retry = useCallback(() => {
     setRetryCount((c) => c + 1);
@@ -40,9 +42,6 @@ export function useRecipeSearch(state: SearchState): UseRecipeSearchResult {
 
     const currentRequestId = ++requestIdRef.current;
 
-    setLoading(true);
-    setError(null);
-
     searchApi
       .searchRecipes(queryString)
       .then((res) => {
@@ -50,20 +49,21 @@ export function useRecipeSearch(state: SearchState): UseRecipeSearchResult {
           return;
         }
         setData(res);
-        setLoading(false);
+        setError(null);
+        setLoadedKey(currentKey);
       })
       .catch((err: unknown) => {
         if (controller.signal.aborted || currentRequestId !== requestIdRef.current) {
           return;
         }
         setError(err instanceof Error ? err : new Error(String(err)));
-        setLoading(false);
+        setLoadedKey(currentKey);
       });
 
     return () => {
       controller.abort();
     };
-  }, [queryString, retryCount]);
+  }, [queryString, retryCount, currentKey]);
 
   return {
     data,
