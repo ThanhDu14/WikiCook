@@ -33,6 +33,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 15 | 2026-11-03, 00:00 – 00:25 | Xử lý review PR #63 của MaiHien3507 (`SCRUM-56`) | 040 frontend |
 | 16 | 2026-11-06, 07:45 – 08:10 | Chốt Vision lần 2, viết `Changes.md` Section B và ghi trạng thái feedback TA (`SCRUM-60`, `SCRUM-47`) | Vision, `Changes.md`, Sprint 03 Report |
 | 17 | 2026-11-09, 01:30 – 02:10 | Lập plan và task tuần 7 cho 020 và 060, chia việc backend (Claude Code) / frontend (Gemini) | 020, 060 |
+| 18 | 2026-11-09, 02:06 – 03:16 | Gemini làm frontend tìm kiếm 020 (US1–US4) trên mock MSW, Claude Code kiểm chứng | 020 frontend |
 
 ---
 
@@ -1129,3 +1130,62 @@ Kết quả mong muốn: plan, research, data-model, contracts, quickstart, task
 - Đối chiếu tên bảng và cột trong data model với `V010`, `V201`, `V202`, `V203`, `V210`, `V303` và `tools/angingon-scraper/import.sql`.
 - Đối chiếu devstub: `StubDietaryProfile` trả cùng một hồ sơ cho mọi user, nên sửa lại bước kiểm tra dị ứng trong quickstart 020.
 - Kiểm tra `RecipePickerQueryRepository`, image Testcontainers `pgvector/pgvector:pg16` và rule JaCoCo hiện có để task theo đúng cách nhóm đang làm.
+
+## Mục 18: Gemini làm frontend tìm kiếm 020 (US1–US4) trên mock MSW
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-09, 02:06 – 03:16 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `src/frontend/src/features/search/`, `src/frontend/src/shared/ui/RecipeCard.tsx`, `src/frontend/src/mocks/`, `src/frontend/src/main.tsx`, `src/frontend/src/app/routes.tsx` (task [FE] trong `specs/020-recipe-search-filter/tasks.md`; Jira Sprint 4 chưa có mã) |
+| Công cụ AI, phiên bản, nền tảng | Google Antigravity trên Windows 11: subagent Gemini Flash đọc tài liệu, viết test, code và commit (02:08 – 03:01); Gemini 4 Argon (Medium) tự review và sửa giao diện (03:02 – 03:16). Claude Code 2.1.318 (Claude Opus 5.5) soạn prompt và kiểm chứng kết quả |
+| Mục đích | Làm frontend trang chủ, trang kết quả tìm kiếm, bộ lọc, thông báo dị ứng, sắp xếp và phân trang theo contract, song song với backend do Claude Code làm |
+| Nhánh Git | `feat/020-search-frontend` (worktree `WikiCook-frontend`), commit `baab5d5`..`151cd03` |
+| Lịch sử chat (bằng chứng) | Cuộc trò chuyện Antigravity "Frontend Implementer Phase 1 to US1", subagent `93035f98-3293-4482-b57d-b12343183102`; prompt do phiên Claude Code `d8925a83-3500-431f-a79e-a0154d97932e` soạn |
+
+### Prompt đã dùng
+
+Prompt do Claude Code soạn (mục 17), dán nguyên văn vào Antigravity. Tóm tắt các phần:
+
+```text
+Bối cảnh: đồ án WikiCook, B phụ trách 020 và 060, Sprint 4 tuần 7. Thư mục làm việc là worktree
+WikiCook-frontend (nhánh feat/020-search-frontend); không đụng thư mục backend của Claude Code.
+Đọc trước: constitution, tasks.md, contracts/openapi.yaml, plan.md, data-model.md mục 6, spec.md,
+màn hình SR01–SR07 và W-SR01–W-SR07, code frontend shopping-list và meal-planner để làm theo.
+Nhiệm vụ: các task [FE] của 020 (T002–T005, T016, T023–T027, T031–T033, T037, T039, T043),
+không làm T040 (nối API thật).
+Quy tắc: test trước rồi mới code; chỉ sửa đúng danh sách file cho phép; không sửa
+shared/api/client.ts, specs/, docs/, src/backend/; contract sai thì dừng lại báo, không tự đổi;
+không thêm thư viện; chuỗi tiếng Việt tập trung; ẩn bộ lọc calo; commit nhỏ, không ghi tên AI,
+không push; không ghi AI log.
+Kiểm tra: lint, test, build xanh; chạy chế độ mock, chụp màn hình ở 390×844 và 1280×800.
+Tiết kiệm quota: Flash viết code, Argon chỉ tự review cuối.
+Báo cáo: bảng task → commit, output lint/test/build, ảnh chụp, điểm contract cần quyết định,
+model và thời gian.
+```
+
+### Nội dung do AI tạo
+
+- Chế độ mock MSW trên trình duyệt (`VITE_API_MOCK=true`, chỉ bật khi `DEV`) và handler mock dựng từ ví dụ trong contract.
+- Types theo contract, chuỗi tiếng Việt, component dùng chung `RecipeCard`.
+- State tìm kiếm trên URL, hook tìm kiếm bỏ qua response cũ (FR-026), trang chủ, trang kết quả với 4 trạng thái (đang tải, rỗng, lỗi, có dữ liệu).
+- `FilterPanel` / `FilterSheet`, chip bộ lọc, `QuickFilters`, `DietaryNotice`, `SortSelect`, `Pagination`.
+- Tự review bằng Argon: ảnh dự phòng cho `RecipeCard`, lưới 3 cột trên desktop, sheet/sidebar ở mốc 768 px. Phần sửa này được gộp vào commit T043 bằng `amend`.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Chia việc | Gemini làm frontend trên mock, không đụng backend và `client.ts` | Hai bên làm song song, không sửa chung file |
+| Thư mục | Worktree riêng `WikiCook-frontend` | Tránh hai AI checkout đè nhánh của nhau |
+| Model | Flash viết code, Argon chỉ tự review | Tiết kiệm quota Argon |
+| T040 (nối API thật) | Để sau khi backend merge | Backend chưa có |
+| Hai lỗi nhỏ (warning lint của `mockServiceWorker.js`, file này bị copy vào `dist/`) | Claude Code sửa sau, không gọi lại Gemini | Lỗi nhỏ, không đáng tốn quota |
+
+### Cách sinh viên kiểm chứng
+
+Claude Code tự kiểm tra trên repo, không dựa vào báo cáo của Gemini:
+
+- `git log` và `git status`: commit theo đúng thứ tự task, không còn thay đổi dở dang, không sửa file nào ngoài phạm vi cho phép.
+- Sau bước review của Argon: `npm run lint` (0 lỗi, 1 warning trong file MSW tự sinh), `npm test` (50 file, 299 test pass), `npm run build` thành công.
+- Đọc code: mock chỉ bật khi `DEV`, không dùng `dangerouslySetInnerHTML`, chip calo đã ẩn, có test cho FR-026.
