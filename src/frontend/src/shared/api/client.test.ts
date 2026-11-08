@@ -1,6 +1,105 @@
 import { http, HttpResponse } from 'msw';
 import { server } from '@/test/server';
 import { api, ApiError } from './client';
+import { GUEST, setAccessToken, setDevUserId } from './session';
+import { installMemoryStorage } from './memoryStorage.testutil';
+
+beforeAll(() => {
+  installMemoryStorage();
+});
+
+/** Echoes the identity headers the backend reads (ACT-01). */
+const echoHeaders = ({ request }: { request: Request }) =>
+  HttpResponse.json({
+    userId: request.headers.get('x-user-id'),
+    devUserId: request.headers.get('x-dev-user-id'),
+    authorization: request.headers.get('authorization'),
+    contentType: request.headers.get('content-type'),
+  });
+
+describe('api client identity headers (ACT-01)', () => {
+  afterEach(() => {
+    window.localStorage.clear();
+  });
+
+  it('sends the default dev user 1 in X-User-Id and X-Dev-User-Id, no Authorization', async () => {
+    server.use(http.get('/api/v1/whoami', echoHeaders));
+
+    await expect(api.get('/whoami')).resolves.toMatchObject({ userId: '1', devUserId: '1', authorization: null });
+  });
+
+  it('sends the dev user chosen in the session', async () => {
+    setDevUserId(5);
+    server.use(http.get('/api/v1/whoami', echoHeaders));
+
+    await expect(api.get('/whoami')).resolves.toMatchObject({ userId: '5', devUserId: '5' });
+  });
+
+  it('sends no user headers when the dev user is a guest', async () => {
+    setDevUserId(GUEST);
+    server.use(http.get('/api/v1/whoami', echoHeaders));
+
+    await expect(api.get('/whoami')).resolves.toMatchObject({ userId: null, devUserId: null });
+  });
+
+  it('sends Authorization: Bearer when a token is stored', async () => {
+    setAccessToken('abc.def.ghi');
+    server.use(http.get('/api/v1/whoami', echoHeaders));
+
+    await expect(api.get('/whoami')).resolves.toMatchObject({ authorization: 'Bearer abc.def.ghi' });
+  });
+
+  it('upload() posts multipart form data with the same headers and no JSON content type', async () => {
+    setDevUserId(5);
+    setAccessToken('tok');
+    server.use(
+      http.post('/api/v1/recipes/9/cover', async ({ request }) => {
+        const form = await request.formData();
+        const file = form.get('file') as File;
+        return HttpResponse.json({
+          devUserId: request.headers.get('x-dev-user-id'),
+          authorization: request.headers.get('authorization'),
+          multipart: (request.headers.get('content-type') ?? '').startsWith('multipart/form-data'),
+          fileName: file.name,
+        });
+      }),
+    );
+    const form = new FormData();
+    form.append('file', new File(['x'], 'cover.jpg', { type: 'image/jpeg' }));
+
+    await expect(api.upload('/recipes/9/cover', form)).resolves.toEqual({
+      devUserId: '5',
+      authorization: 'Bearer tok',
+      multipart: true,
+      fileName: 'cover.jpg',
+    });
+  });
+
+  it('upload() turns an error response into an ApiError', async () => {
+    server.use(
+      http.post('/api/v1/recipes/9/cover', () =>
+        HttpResponse.json(
+          { status: 415, title: 'Unsupported Media Type', code: 'UNSUPPORTED_MEDIA_TYPE' },
+          { status: 415, headers: { 'Content-Type': 'application/problem+json' } },
+        ),
+      ),
+    );
+
+    await expect(api.upload('/recipes/9/cover', new FormData())).rejects.toMatchObject({
+      status: 415,
+      problem: { code: 'UNSUPPORTED_MEDIA_TYPE' },
+    });
+  });
+
+  it('a header passed by the caller is not overwritten', async () => {
+    server.use(http.get('/api/v1/whoami', echoHeaders));
+
+    const { fetchJson } = await import('./client');
+    await expect(fetchJson('/api/v1/whoami', { headers: { 'X-Dev-User-Id': '9' } })).resolves.toMatchObject({
+      devUserId: '9',
+    });
+  });
+});
 
 describe('api client', () => {
   it('prefixes /api/v1 and returns the JSON body', async () => {
