@@ -1,0 +1,350 @@
+openapi: 3.0.3
+info:
+  title: WikiCook Recipe Search & Filtering API (020)
+  description: |
+    Read-only search over PUBLISHED recipes (spec 020). Guests and signed-in users use the same
+    endpoints; for a signed-in user with a dietary profile, recipes that contain their allergens or
+    excluded ingredients are hidden unless `showHidden=true`.
+
+    Viewer identity (until spec 010 lands): header `X-Dev-User-Id`. No header = guest.
+    After spec 010: `Authorization: Bearer <jwt>`; no token = guest. Search never returns 401.
+
+    All list parameters are repeatable (`cuisine=viet-nam&cuisine=nhat-ban`). Unknown or invalid values
+    are ignored, never rejected (FR-024); `appliedFilters` in the response shows what was used.
+  version: 1.0.0
+servers:
+  - url: /api/v1
+
+paths:
+  /recipes/search:
+    get:
+      operationId: searchRecipes
+      summary: Search and filter published recipes
+      parameters:
+        - name: q
+          in: query
+          description: Keyword. Trimmed; blank = browse all; cut to 100 characters (FR-006).
+          schema: { type: string }
+          example: pho bo
+        - name: time
+          in: query
+          description: Total time range, one value (FR-007).
+          schema: { $ref: '#/components/schemas/TimeRange' }
+        - name: cuisine
+          in: query
+          description: Cuisine slugs (OR within the group).
+          schema: { type: array, items: { type: string } }
+          style: form
+          explode: true
+        - name: category
+          in: query
+          description: Category slugs (OR within the group).
+          schema: { type: array, items: { type: string } }
+          style: form
+          explode: true
+        - name: difficulty
+          in: query
+          schema: { type: array, items: { $ref: '#/components/schemas/Difficulty' } }
+          style: form
+          explode: true
+        - name: method
+          in: query
+          description: Cooking-method tag slugs (`tags.kind = METHOD`).
+          schema: { type: array, items: { type: string } }
+          style: form
+          explode: true
+        - name: diet
+          in: query
+          description: Diet filter, one value; never applied automatically from the profile (FR-022).
+          schema: { $ref: '#/components/schemas/DietFilter' }
+        - name: sort
+          in: query
+          description: Default RELEVANCE with a keyword, NEWEST without. RELEVANCE without a keyword behaves as NEWEST.
+          schema: { $ref: '#/components/schemas/SearchSort' }
+        - name: page
+          in: query
+          description: 1-based. Pages beyond the last return the last page; the response states the real page.
+          schema: { type: integer, minimum: 1, default: 1 }
+        - name: showHidden
+          in: query
+          description: Show recipes hidden by the dietary profile, with conflict warnings (FR-020).
+          schema: { type: boolean, default: false }
+        - name: X-Dev-User-Id
+          in: header
+          required: false
+          description: Dev-only viewer id until spec 010. Absent = guest.
+          schema: { type: integer, format: int64, minimum: 1 }
+      responses:
+        '200':
+          description: One page of results (always 200, also for zero results).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SearchResponse' }
+              examples:
+                withResults:
+                  summary: Keyword + filters, dietary profile hid 6 recipes (SR-02)
+                  value:
+                    items:
+                      - id: 101
+                        title: Gà kho gừng
+                        coverImageUrl: https://cdn.example.com/recipes/101.jpg
+                        totalTimeMinutes: 25
+                        difficulty: EASY
+                        ratingAvg: 4.7
+                        reviewCount: 88
+                        cuisine: Việt Nam
+                        conflicts: []
+                      - id: 102
+                        title: Cháo gà hành phi
+                        coverImageUrl: null
+                        totalTimeMinutes: 30
+                        difficulty: EASY
+                        ratingAvg: null
+                        reviewCount: 0
+                        cuisine: Việt Nam
+                        conflicts: []
+                    page: 1
+                    pageSize: 20
+                    totalItems: 42
+                    totalPages: 3
+                    sort: RELEVANCE
+                    keyword: ga
+                    keywordTruncated: false
+                    appliedFilters:
+                      time: LE30
+                      cuisines: [{ slug: viet-nam, name: Việt Nam }]
+                      categories: []
+                      difficulties: [EASY]
+                      methods: []
+                      diet: null
+                    dietary:
+                      profileAvailable: true
+                      applied: true
+                      hiddenCount: 6
+                      showingHidden: false
+                showingHidden:
+                  summary: Override on, conflicting recipes carry warnings (SR-06)
+                  value:
+                    items:
+                      - id: 230
+                        title: Gỏi gà bắp cải
+                        coverImageUrl: https://cdn.example.com/recipes/230.jpg
+                        totalTimeMinutes: 25
+                        difficulty: EASY
+                        ratingAvg: 4.6
+                        reviewCount: 54
+                        cuisine: Việt Nam
+                        conflicts:
+                          - { type: ALLERGEN, name: Đậu phộng }
+                          - { type: EXCLUDED_INGREDIENT, name: Ngò rí }
+                    page: 1
+                    pageSize: 20
+                    totalItems: 48
+                    totalPages: 3
+                    sort: RELEVANCE
+                    keyword: ga
+                    keywordTruncated: false
+                    appliedFilters: { time: null, cuisines: [], categories: [], difficulties: [], methods: [], diet: null }
+                    dietary: { profileAvailable: true, applied: false, hiddenCount: 0, showingHidden: true }
+                allHidden:
+                  summary: Every match hidden by the profile (SR-05)
+                  value:
+                    items: []
+                    page: 1
+                    pageSize: 20
+                    totalItems: 0
+                    totalPages: 0
+                    sort: RELEVANCE
+                    keyword: goi ga
+                    keywordTruncated: false
+                    appliedFilters: { time: null, cuisines: [], categories: [], difficulties: [], methods: [], diet: null }
+                    dietary: { profileAvailable: true, applied: true, hiddenCount: 4, showingHidden: false }
+                noResults:
+                  summary: Nothing matches, guest (SR-04)
+                  value:
+                    items: []
+                    page: 1
+                    pageSize: 20
+                    totalItems: 0
+                    totalPages: 0
+                    sort: RELEVANCE
+                    keyword: xyzabc
+                    keywordTruncated: false
+                    appliedFilters: { time: null, cuisines: [], categories: [], difficulties: [], methods: [], diet: null }
+                    dietary: { profileAvailable: false, applied: false, hiddenCount: 0, showingHidden: false }
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /recipes/search/options:
+    get:
+      operationId: getSearchOptions
+      summary: Filter options for the filter panel and chips (FR-009)
+      description: Active cuisines, categories and cooking methods from the admin-managed lists, plus the fixed codes.
+      responses:
+        '200':
+          description: Options
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SearchOptions' }
+              example:
+                cuisines: [{ slug: viet-nam, name: Việt Nam }, { slug: nhat-ban, name: Nhật Bản }]
+                categories: [{ slug: mon-chinh, name: Món chính }, { slug: canh-sup, name: Canh / Súp }]
+                methods: [{ slug: chien, name: Chiên }, { slug: luoc, name: Luộc }, { slug: nuong, name: Nướng }]
+                timeRanges: [LE15, LE30, LE60, GT60]
+                difficulties: [EASY, MEDIUM, HARD]
+                diets: [VEGETARIAN, VEGAN, PESCATARIAN]
+                sorts: [RELEVANCE, NEWEST, TOP_RATED, QUICKEST]
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /recipes/featured:
+    get:
+      operationId: getFeaturedRecipes
+      summary: Home page "Nổi bật tuần này" (SR-01)
+      description: |
+        Up to `limit` published recipes with a `featured_position`, in that order; when fewer exist the
+        list is filled with the newest published recipes. Same for every viewer: no dietary hiding and
+        `conflicts` is always empty (the dietary rule applies to search results only, FR-018).
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 20, default: 10 }
+      responses:
+        '200':
+          description: Featured cards
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/RecipeCard' }
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    TimeRange:
+      type: string
+      enum: [LE15, LE30, LE60, GT60]
+      description: "≤ 15, ≤ 30, ≤ 60 or > 60 minutes of prep + cook time"
+    Difficulty:
+      type: string
+      enum: [EASY, MEDIUM, HARD]
+    DietFilter:
+      type: string
+      enum: [VEGETARIAN, VEGAN, PESCATARIAN]
+    SearchSort:
+      type: string
+      enum: [RELEVANCE, NEWEST, TOP_RATED, QUICKEST]
+    TaxonomyOption:
+      type: object
+      required: [slug, name]
+      properties:
+        slug: { type: string, example: viet-nam }
+        name: { type: string, example: Việt Nam }
+    Conflict:
+      type: object
+      required: [type, name]
+      properties:
+        type: { type: string, enum: [ALLERGEN, EXCLUDED_INGREDIENT] }
+        name: { type: string, example: Đậu phộng }
+    RecipeCard:
+      type: object
+      required: [id, title, totalTimeMinutes, difficulty, reviewCount, conflicts]
+      properties:
+        id: { type: integer, format: int64 }
+        title: { type: string }
+        coverImageUrl:
+          type: string
+          nullable: true
+          description: null → show the placeholder image
+        totalTimeMinutes: { type: integer }
+        difficulty: { $ref: '#/components/schemas/Difficulty' }
+        ratingAvg:
+          type: number
+          nullable: true
+          description: null when reviewCount = 0 → "Chưa có đánh giá"
+        reviewCount: { type: integer }
+        cuisine: { type: string, nullable: true }
+        conflicts:
+          type: array
+          description: Non-empty only for recipes shown through showHidden.
+          items: { $ref: '#/components/schemas/Conflict' }
+    AppliedFilters:
+      type: object
+      required: [cuisines, categories, difficulties, methods]
+      properties:
+        time: { allOf: [{ $ref: '#/components/schemas/TimeRange' }], nullable: true }
+        cuisines: { type: array, items: { $ref: '#/components/schemas/TaxonomyOption' } }
+        categories: { type: array, items: { $ref: '#/components/schemas/TaxonomyOption' } }
+        difficulties: { type: array, items: { $ref: '#/components/schemas/Difficulty' } }
+        methods: { type: array, items: { $ref: '#/components/schemas/TaxonomyOption' } }
+        diet: { allOf: [{ $ref: '#/components/schemas/DietFilter' }], nullable: true }
+    DietaryNotice:
+      type: object
+      required: [profileAvailable, applied, hiddenCount, showingHidden]
+      properties:
+        profileAvailable:
+          type: boolean
+          description: false for guests (and for a session that expired) → no notice
+        applied:
+          type: boolean
+          description: Profile is non-empty and the override is off
+        hiddenCount:
+          type: integer
+          description: Recipes removed by the profile for this search (0 when not applied)
+        showingHidden: { type: boolean }
+    SearchResponse:
+      type: object
+      required: [items, page, pageSize, totalItems, totalPages, sort, keyword, keywordTruncated, appliedFilters, dietary]
+      properties:
+        items:
+          type: array
+          maxItems: 20
+          items: { $ref: '#/components/schemas/RecipeCard' }
+        page: { type: integer, description: Page actually returned (1-based; 1 when totalPages = 0) }
+        pageSize: { type: integer, enum: [20] }
+        totalItems: { type: integer }
+        totalPages: { type: integer }
+        sort: { $ref: '#/components/schemas/SearchSort' }
+        keyword: { type: string, description: Trimmed keyword echoed back ("" = browse all). Render as text only. }
+        keywordTruncated: { type: boolean, description: The keyword was cut to 100 characters }
+        appliedFilters: { $ref: '#/components/schemas/AppliedFilters' }
+        dietary: { $ref: '#/components/schemas/DietaryNotice' }
+    SearchOptions:
+      type: object
+      required: [cuisines, categories, methods, timeRanges, difficulties, diets, sorts]
+      properties:
+        cuisines: { type: array, items: { $ref: '#/components/schemas/TaxonomyOption' } }
+        categories: { type: array, items: { $ref: '#/components/schemas/TaxonomyOption' } }
+        methods: { type: array, items: { $ref: '#/components/schemas/TaxonomyOption' } }
+        timeRanges: { type: array, items: { $ref: '#/components/schemas/TimeRange' } }
+        difficulties: { type: array, items: { $ref: '#/components/schemas/Difficulty' } }
+        diets: { type: array, items: { $ref: '#/components/schemas/DietFilter' } }
+        sorts: { type: array, items: { $ref: '#/components/schemas/SearchSort' } }
+    Problem:
+      type: object
+      description: RFC 7807 ProblemDetail; never contains a stack trace.
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        code: { type: string, example: VALIDATION_ERROR }
+
+  responses:
+    BadRequest:
+      description: Only for a malformed X-Dev-User-Id header; query values are never rejected.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    ServerError:
+      description: Unexpected error; the UI shows SR-07 with "Thử lại" and keeps the search state.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
