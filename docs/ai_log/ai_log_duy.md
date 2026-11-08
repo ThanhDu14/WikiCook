@@ -35,6 +35,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 17 | 2026-11-09, 01:30 – 02:10 | Lập plan và task tuần 7 cho 020 và 060, chia việc backend (Claude Code) / frontend (Gemini) | 020, 060 |
 | 18 | 2026-11-09, 02:06 – 03:16 | Gemini làm frontend tìm kiếm 020 (US1–US4) trên mock MSW, Claude Code kiểm chứng | 020 frontend |
 | 19 | 2026-11-09, 03:00 – 04:02 | Gemini làm frontend 060 (wizard đăng công thức, trang chi tiết) trên mock MSW, Claude Code kiểm chứng | 060 frontend |
+| 20 | 2026-11-09, 04:20 – 04:45 | Backend tìm kiếm 020 và ACT-01 (header API dùng chung) | 020 backend, client API |
 
 ---
 
@@ -1249,3 +1250,52 @@ Claude Code tự kiểm tra trên repo, không dựa vào báo cáo của Gemini
 - Đọc code thì phát hiện `CoverUpload.tsx` gọi `fetch` với header cứng `X-User-Id: 1`, lệch contract (`X-Dev-User-Id`). Đã ghi việc sửa vào T040 của 060 và T015 của 020 (commit `a65455e`).
 - Đối chiếu các chỗ gắn khối trong code: số spec đúng (050 nấu ăn, 070 đánh giá, 090 dinh dưỡng). Chỉ báo cáo của Gemini ghi nhầm.
 - iframe video có `sandbox`; không dùng `dangerouslySetInnerHTML`.
+
+## Mục 20: Backend tìm kiếm 020 và ACT-01 (header API dùng chung)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-09, khoảng 04:20 – 04:45 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `src/backend/wikicook-db/.../V204__recipe_search_vector.sql`, package `com.wikicook.search` (main và test), `src/backend/wikicook-app/pom.xml`, `src/frontend/src/shared/api/` (task [BE] trong `specs/020-recipe-search-filter/tasks.md`; Jira Sprint 4 chưa có mã) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.318 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), chạy trong extension VS Code trên Windows 11 |
+| Mục đích | Làm backend 020 (từ khóa có/không dấu, bộ lọc, ẩn món theo dị ứng, sắp xếp, phân trang, món nổi bật) và ACT-01 (header định danh và upload trong client API dùng chung) |
+| Nhánh Git | `feat/020-search-backend`, commit `be2ed43`..`3b7105e` (10 commit) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `d8925a83-3500-431f-a79e-a0154d97932e` |
+
+### Prompt đã dùng
+
+```text
+Bối cảnh: frontend 020/060 đã xong trên mock; backend 020 chưa có, hạn T4 11/11 phải chạy qua Swagger.
+Mục tiêu: làm các task [BE] của 020 theo tasks.md và ACT-01, rồi dừng, chưa sang 060.
+Yêu cầu: test trước (thấy fail rồi mới code); migration V204 cho search_vector; parser bỏ qua giá trị
+URL sai; dùng lại DietRuleSql; 3 endpoint theo contract; mvn verify toàn module với JaCoCo
+search.service ≥ 70% dòng và nhánh; test search không được làm hỏng dữ liệu test của module khác;
+ACT-01 gồm session.ts, header X-User-Id / X-Dev-User-Id / Authorization và api.upload().
+Ràng buộc: không sửa migration đã merge; commit nhỏ, không ghi tên AI, không push; máy thiếu
+công cụ thì tự cài.
+Kết quả mong muốn: danh sách commit, kết quả test/coverage, việc còn lại, bản nháp AI log.
+```
+
+### Nội dung do AI tạo
+
+- Migration `V204`: hàm `f_recipe_search_vector` (tên món trọng số A, nguyên liệu và tag/cách nấu B, mô tả C, bỏ dấu bằng `f_unaccent`) và điền lại cho các món đã xuất bản.
+- Package `com.wikicook.search`: `Keyword` (chỉ giữ chữ và số), `SearchCriteriaParser`, câu truy vấn (từ khóa, bộ lọc, ẩn món theo dị ứng bằng `DietRuleSql`, 4 kiểu sắp xếp, món nổi bật), service, `RecipeSearchIndexFacade`, controller 3 endpoint, `SearchViewerPort` phân biệt khách.
+- 75 test cho module search và rule JaCoCo cho `search.service`.
+- Frontend: `session.ts`, header định danh trong `client.ts`, `api.upload()`, 11 test mới.
+- Cài Temurin JDK 21 (winget) và Maven 3.9.16 (bản tải từ Apache, đã kiểm checksum).
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Phạm vi lượt này | Làm xong backend 020 và ACT-01 rồi dừng, chưa làm 060 | Kiểm chứng xong 020 trước |
+| Dữ liệu test dùng chung | Test search không được tắt dữ liệu tra cứu của module khác | Tránh làm hỏng test của người khác |
+| Coverage | Bắt buộc ≥ 70% cả dòng lẫn nhánh cho `search.service` | Theo cổng nghiệm thu `v0.8` |
+
+### Cách sinh viên kiểm chứng
+
+- Chạy test thấy fail trước rồi mới pass cho V204, câu truy vấn, service, controller, facade và ACT-01. Hai chỗ không theo đúng thứ tự được ghi rõ: test V204 viết cùng lúc với migration (sau đó tạm bỏ migration, clean `target/`, chạy thấy 5/5 fail rồi mới trả về), và test `DevHeaderSearchViewer` viết sau code.
+- `mvn verify` toàn module `wikicook-app`: 155 test pass, mọi rule coverage đạt; `com.wikicook.search.service` dòng 100%, nhánh 92,6%.
+- Frontend: 233 test pass, `npm run lint` sạch, `npm run build` thành công.
+- Khi test thứ tự tên dị ứng fail, đọc lại thì thấy câu truy vấn trả đúng thứ tự tiếng Việt (Đ trước G); lỗi nằm ở kỳ vọng trong test, đã sửa test.
