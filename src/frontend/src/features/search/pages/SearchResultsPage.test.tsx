@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse, delay } from 'msw';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
@@ -28,7 +28,12 @@ function renderSearchResults(initialUrl = '/search?q=ga') {
 
 describe('SearchResultsPage (T025, US1)', () => {
   beforeEach(() => {
+    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
     server.use(...searchHandlers);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('displays loading skeleton while fetching initial results', async () => {
@@ -207,6 +212,60 @@ describe('SearchResultsPage (T025, US1)', () => {
       await screen.findByRole('heading', { level: 2, name: 'Không tìm thấy “xyzabc”' });
       expect(screen.queryByText(/hồ sơ ăn uống/i)).not.toBeInTheDocument();
       expect(screen.queryByText(/Hiện cho lần tìm này/i)).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Sorting and Pagination (US4, T039)', () => {
+    it('changes sort order and resets to page 1', async () => {
+      const { router } = renderSearchResults('/search?q=ga&page=2');
+
+      const sortSelect = await screen.findByLabelText(/Sắp xếp/i);
+      expect(sortSelect).toBeInTheDocument();
+
+      await userEvent.selectOptions(sortSelect, 'TOP_RATED');
+
+      await waitFor(() => {
+        expect(router.state.location.search).toContain('sort=TOP_RATED');
+        // page 1 is default so page param should be dropped or reset
+        expect(router.state.location.search).not.toContain('page=2');
+      });
+    });
+
+    it('navigates between pages and scrolls to top', async () => {
+      const { router } = renderSearchResults('/search?q=ga');
+
+      // Wait for results
+      await screen.findByText('Gà kho gừng');
+
+      const page2Btn = screen.getByRole('button', { name: '2' });
+      await userEvent.click(page2Btn);
+
+      await waitFor(() => {
+        expect(router.state.location.search).toContain('page=2');
+      });
+      expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+    });
+
+    it('restores previous search state when pressing browser back', async () => {
+      const { router } = renderSearchResults('/search?q=ga');
+
+      await screen.findByText('Gà kho gừng');
+
+      const page2Btn = screen.getByRole('button', { name: '2' });
+      await userEvent.click(page2Btn);
+
+      await waitFor(() => {
+        expect(router.state.location.search).toContain('page=2');
+      });
+
+      // User hits back
+      await act(async () => {
+        router.navigate(-1);
+      });
+
+      await waitFor(() => {
+        expect(router.state.location.search).not.toContain('page=2');
+      });
     });
   });
 });

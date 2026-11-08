@@ -5,13 +5,15 @@ import { ActiveFilterChips } from '../components/ActiveFilterChips';
 import { DietaryNotice, DietaryAllHiddenState } from '../components/DietaryNotice';
 import { FilterPanel } from '../components/FilterPanel';
 import { FilterSheet } from '../components/FilterSheet';
+import { Pagination } from '../components/Pagination';
 import { EmptyState, ErrorState, LoadingState } from '../components/ResultStates';
 import { ResultsList } from '../components/ResultsList';
 import { SearchBox } from '../components/SearchBox';
+import { SortSelect } from '../components/SortSelect';
 import { useRecipeSearch } from '../hooks/useRecipeSearch';
 import { parseSearchState, toSearchParams, updateSearchState } from '../lib/searchState';
 import { strings } from '../strings.vi';
-import type { SearchOptions, SearchState } from '../types';
+import type { SearchOptions, SearchSort, SearchState } from '../types';
 
 export function SearchResultsPage() {
   const navigate = useNavigate();
@@ -81,6 +83,21 @@ export function SearchResultsPage() {
 
   const handleShowHidden = () => {
     const next = updateSearchState(searchState, { showHidden: true });
+    setSearchParams(toSearchParams(next));
+  };
+
+  const handleSortChange = (newSort: SearchSort) => {
+    const next = updateSearchState(searchState, {
+      sort: newSort,
+      page: undefined,
+    });
+    setSearchParams(toSearchParams(next));
+  };
+
+  const handlePageChange = (newPage: number) => {
+    const next = updateSearchState(searchState, {
+      page: newPage === 1 ? undefined : newPage,
+    });
     setSearchParams(toSearchParams(next));
   };
 
@@ -159,15 +176,28 @@ export function SearchResultsPage() {
         )}
 
         <main className="sx-body sx-stack" style={{ gap: '16px', flex: 1, minWidth: 0 }}>
-          {/* Results count & status announced via aria-live */}
+          {/* Results count & sort select (T039, US4) */}
           {data && (
             <div
               className="sx-between"
-              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '8px',
+              }}
             >
               <p className="wk-small" role="status" aria-live="polite" style={{ margin: 0 }}>
                 <strong>{strings.search.resultsCount(data.totalItems, data.keyword)}</strong>
               </p>
+              {data.totalItems > 0 && (
+                <SortSelect
+                  value={data.sort}
+                  hasKeyword={Boolean(data.keyword && data.keyword.trim())}
+                  onChange={handleSortChange}
+                />
+              )}
             </div>
           )}
 
@@ -202,7 +232,16 @@ export function SearchResultsPage() {
               />
             )}
 
-          {data && data.totalItems > 0 && <ResultsList items={data.items} />}
+          {data && data.totalItems > 0 && (
+            <>
+              <ResultsList items={data.items} />
+              <Pagination
+                currentPage={data.page}
+                totalPages={data.totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
+          )}
         </main>
       </div>
 

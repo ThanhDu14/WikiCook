@@ -219,8 +219,22 @@ export const searchHandlers = [
       },
     ];
 
+    const page2Items = [
+      {
+        id: 103,
+        title: 'Gà hấp lá chanh',
+        coverImageUrl: null,
+        totalTimeMinutes: 35,
+        difficulty: 'MEDIUM' as const,
+        ratingAvg: 4.8,
+        reviewCount: 15,
+        cuisine: 'Việt Nam',
+        conflicts: [],
+      },
+    ];
+
     return HttpResponse.json({
-      items: page === 1 ? defaultItems : [],
+      items: page === 1 ? defaultItems : page2Items,
       page,
       pageSize: 20,
       totalItems: 42,
