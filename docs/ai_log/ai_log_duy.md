@@ -32,6 +32,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 14 | 2026-11-02, 11:35 – 12:10 | Implement phần còn lại của SCRUM-56 (T048) và kiểm chứng US1/US2 (T035, T051) | 040 frontend |
 | 15 | 2026-11-03, 00:00 – 00:25 | Xử lý review PR #63 của MaiHien3507 (`SCRUM-56`) | 040 frontend |
 | 16 | 2026-11-06, 07:45 – 08:10 | Chốt Vision lần 2, viết `Changes.md` Section B và ghi trạng thái feedback TA (`SCRUM-60`, `SCRUM-47`) | Vision, `Changes.md`, Sprint 03 Report |
+| 17 | 2026-11-09, 01:30 – 02:10 | Lập plan và task tuần 7 cho 020 và 060, chia việc backend (Claude Code) / frontend (Gemini) | 020, 060 |
 
 ---
 
@@ -1074,3 +1075,57 @@ Kết quả mong muốn: một nhánh riêng, PR có Chung review, và danh sác
 - Đếm use case: Use-Case Model và Use-Case Specification đều có 64 ID, khớp §8.2.
 - Đối chiếu NFR-REL-10 với gate `Build v0.5` ở Plan 4.4.2 và service trong `docker-compose.yml`.
 - Đọc lại diff từng commit trước khi push.
+
+## Mục 17: Lập plan và task tuần 7 cho 020 và 060, chia việc giữa Claude Code và Gemini
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-09, khoảng 01:30 – 02:10 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `specs/020-recipe-search-filter/` và `specs/060-recipe-editor/`: `plan.md`, `research.md`, `data-model.md`, `quickstart.md`, `contracts/openapi.yaml`, `contracts/integration.md`, `tasks.md` (Jira Sprint 4 chưa có mã, bổ sung sau) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.318 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), chạy trong extension VS Code trên Windows 11 |
+| Mục đích | Xác định việc tuần 7 của B theo `w6-w10-weekly-plan.md`, lập plan và task bằng `/speckit-plan`, `/speckit-tasks` cho 020 và 060, chia việc backend cho Claude Code và frontend cho Gemini (Antigravity), viết prompt giao việc cho Gemini |
+| Nhánh Git | `feat/020-060-plan`, commit `f4e8b64`..`614df88`; worktree `WikiCook-frontend` (nhánh `feat/020-search-frontend`) cho Gemini |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `d8925a83-3500-431f-a79e-a0154d97932e` |
+
+### Prompt đã dùng
+
+```text
+Bối cảnh: Sprint 4 tuần 7 (09/11–15/11/2026), mình (B) phụ trách 020 và 060. Theo
+w6-w10-weekly-plan.md, tuần này cần API + giao diện F-02 (tìm kiếm) và F-06 cơ bản
+(wizard, lưu nháp, gửi duyệt). 020/060 mới có spec.md, chưa có plan/tasks.
+Mục tiêu: pull main, xác định việc tuần này của mình, lập plan và task cho 020 và 060,
+chia việc giữa Claude Code (backend) và Gemini trong Antigravity (frontend).
+Yêu cầu cụ thể: chạy /speckit-plan và /speckit-tasks cho 020 và 060; contract OpenAPI
+có ví dụ đủ để frontend code trên mock trước khi backend xong; gắn người làm cho từng task;
+viết prompt hoàn chỉnh cho Gemini.
+Ràng buộc: chỉ phạm vi bắt buộc của tuần 7; không sửa migration đã merge; tái dùng rule
+dị ứng chung (DietRuleSql); test-first; tài liệu tiếng Anh có dòng Performed/Reviewed/
+Edited by; commit nhỏ, không ghi tên AI; chưa có mã Jira thì để trống, bổ sung sau.
+Kết quả mong muốn: plan, research, data-model, contracts, quickstart, tasks cho 020 và
+060 trên một nhánh riêng, cùng prompt để giao việc frontend cho Gemini.
+```
+
+### Nội dung do AI tạo
+
+- Bảng việc tuần 7 của B rút từ `w6-w10-weekly-plan.md` và tình trạng repo (V201–V203 đã có, `search_vector` chưa được ghi, chưa có seed cách nấu / dụng cụ, chưa có plan/tasks cho 020 và 060).
+- 020: plan, research R1–R11 (hàm `f_recipe_search_vector` trong `V204`, tsquery OR từ token chữ/số, tái dùng `DietRuleSql`, `SearchViewerPort` cho khách), data model, contract 3 endpoint có ví dụ cho SR-02/04/05/06, integration, quickstart, 44 task.
+- 060 (F-06 cơ bản): plan, research R1–R13 (lưu cả tài liệu với `@Version`, `client_draft_id` trong `V205` chống tạo trùng, ảnh bìa trên volume, seed `R__seed_recipe_taxonomy.sql`), data model, contract 10 endpoint, integration, quickstart, 42 task.
+- Git worktree cho Gemini và prompt giao task [FE] của 020 cho Gemini.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Chia việc | Backend cho Claude Code, frontend cho Gemini, hai bên nối qua `openapi.yaml` | Không sửa chung file, làm song song được |
+| Model Gemini | Flash để code, Argon chỉ để tự review cuối | Tiết kiệm quota Argon |
+| Mã Jira | Làm trước, bổ sung mã vào PR khi có | Jira Sprint 4 chưa tạo task |
+| Phạm vi 060 | Chỉ F-06 cơ bản tuần 7, phần còn lại tuần 9 | Theo weekly plan |
+| Bộ lọc calo, giới hạn tìm kiếm | Hoãn | Chưa có dữ liệu dinh dưỡng và Redis |
+
+### Cách sinh viên kiểm chứng
+
+- Parse thử hai file `openapi.yaml` (PyYAML): 020 có 3 path, 060 có 10 path.
+- Đối chiếu tên bảng và cột trong data model với `V010`, `V201`, `V202`, `V203`, `V210`, `V303` và `tools/angingon-scraper/import.sql`.
+- Đối chiếu devstub: `StubDietaryProfile` trả cùng một hồ sơ cho mọi user, nên sửa lại bước kiểm tra dị ứng trong quickstart 020.
+- Kiểm tra `RecipePickerQueryRepository`, image Testcontainers `pgvector/pgvector:pg16` và rule JaCoCo hiện có để task theo đúng cách nhóm đang làm.
