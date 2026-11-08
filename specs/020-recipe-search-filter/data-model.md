@@ -69,8 +69,7 @@ transaction.
 | `SearchOptionsDto` | `cuisines[]`, `categories[]`, `methods[]` (`slug`, `name`), `timeRanges[]`, `difficulties[]`, `diets[]`, `sorts[]` (fixed codes; labels are in the UI string store) |
 
 `coverImageUrl`: `external_url` of the `COVER` media row; when only `storage_key` exists the URL is
-`/media/{storage_key}` (served by the media module once it exists; until then such recipes show the
-placeholder in practice).
+`/api/v1/media/{storage_key}` (served by 060, `specs/060-recipe-editor/research.md` R7).
 
 ## 5. Dietary rule
 

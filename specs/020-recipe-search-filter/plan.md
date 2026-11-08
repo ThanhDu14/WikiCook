@@ -161,4 +161,3 @@ src/frontend/src/
 
 - Calories filter and `kcal` chip hidden (R9).
 - Rate limit NFR-007 not enforced (R10).
-- Cover images from `storage_key` show the placeholder until the media module serves `/media/**`.

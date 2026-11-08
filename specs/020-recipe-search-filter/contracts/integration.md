@@ -35,7 +35,7 @@ Recipes published before `V204` are back-filled by the migration itself.
 | Field | Source | Owner | Note |
 |---|---|---|---|
 | `ratingAvg`, `reviewCount` | `recipes.rating_avg`, `recipes.review_count` | E (070) updates them when a review is added/removed | Search only reads. `ratingAvg` is returned as `null` when `review_count = 0`. |
-| `coverImageUrl` | `recipe_media` role `COVER` | B (060) | `external_url`, else `/media/{storage_key}` |
+| `coverImageUrl` | `recipe_media` role `COVER` | B (060) | `external_url`, else `/api/v1/media/{storage_key}` |
 | calories | `recipe_nutrition.kcal` | C (090) | Not used in week 7 (research R9) |
 | cuisines / categories / method tags | `cuisines`, `categories`, `tags` (`kind = METHOD`) | E (100) manages | Search lists `is_active = true` only; a deactivated value in a shared URL is ignored |
 
