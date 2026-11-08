@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { strings } from '../strings.vi';
 import type { SearchOptions, SearchState } from '../types';
 import { FilterPanel } from './FilterPanel';
@@ -22,6 +22,7 @@ export function FilterSheet({
 }: FilterSheetProps) {
   const [draftFilters, setDraftFilters] = useState<SearchState>(currentFilters);
   const [prevOpen, setPrevOpen] = useState(isOpen);
+  const sheetRef = useRef<HTMLDivElement>(null);
 
   // Sync draft filters when sheet opens
   if (isOpen && !prevOpen) {
@@ -30,6 +31,13 @@ export function FilterSheet({
   } else if (!isOpen && prevOpen) {
     setPrevOpen(false);
   }
+
+  // Focus sheet dialog when opened
+  useEffect(() => {
+    if (isOpen) {
+      sheetRef.current?.focus();
+    }
+  }, [isOpen]);
 
   // Handle escape key
   useEffect(() => {
@@ -81,6 +89,8 @@ export function FilterSheet({
         }}
       />
       <div
+        ref={sheetRef}
+        tabIndex={-1}
         className="wk-sheet"
         role="dialog"
         aria-modal="true"
@@ -89,11 +99,13 @@ export function FilterSheet({
           position: 'relative',
           width: '100%',
           maxHeight: '85vh',
-          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
           background: 'var(--color-surface)',
           borderTopLeftRadius: 'var(--radius-lg)',
           borderTopRightRadius: 'var(--radius-lg)',
-          padding: '20px',
+          padding: '16px 20px 20px',
+          outline: 'none',
         }}
       >
         <span
@@ -103,20 +115,32 @@ export function FilterSheet({
             width: '40px',
             height: '4px',
             borderRadius: '2px',
-            background: 'var(--color-border)',
-            margin: '0 auto 16px',
+            background: 'var(--color-border-strong)',
+            margin: '0 auto 12px',
+            flexShrink: 0,
           }}
         />
 
-        <FilterPanel
-          options={options}
-          selected={draftFilters}
-          onChange={setDraftFilters}
-        />
+        <div style={{ overflowY: 'auto', flex: 1, paddingRight: '4px' }}>
+          <FilterPanel
+            options={options}
+            selected={draftFilters}
+            onChange={setDraftFilters}
+            variant="sheet"
+          />
+        </div>
 
         <div
           className="sx-row"
-          style={{ display: 'flex', gap: '12px', marginTop: '20px', alignItems: 'center' }}
+          style={{
+            display: 'flex',
+            gap: '12px',
+            marginTop: '12px',
+            paddingTop: '12px',
+            borderTop: '1px solid var(--color-border)',
+            alignItems: 'center',
+            flexShrink: 0,
+          }}
         >
           <button
             className="wk-btn wk-btn--secondary"

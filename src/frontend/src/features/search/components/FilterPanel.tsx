@@ -11,6 +11,7 @@ export interface FilterPanelProps {
   options: SearchOptions;
   selected: SearchState;
   onChange: (next: SearchState) => void;
+  variant?: 'sidebar' | 'sheet';
   className?: string;
 }
 
@@ -18,6 +19,7 @@ export function FilterPanel({
   options,
   selected,
   onChange,
+  variant = 'sidebar',
   className = '',
 }: FilterPanelProps) {
   const handleToggleTime = (time: TimeRange) => {
@@ -55,8 +57,18 @@ export function FilterPanel({
     onChange({});
   };
 
+  const Container = variant === 'sheet' ? 'div' : 'aside';
+  const containerClass =
+    variant === 'sheet'
+      ? `sx-stack ${className}`
+      : `wx-panel wx-aside ${className}`;
+
   return (
-    <aside className={`wx-panel wx-aside ${className}`} aria-label={strings.filters.title}>
+    <Container
+      className={containerClass}
+      aria-label={variant === 'sidebar' ? strings.filters.title : undefined}
+      style={variant === 'sheet' ? { gap: '16px' } : undefined}
+    >
       <div
         className="sx-between"
         style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
@@ -64,14 +76,16 @@ export function FilterPanel({
         <h2 className="wk-h3" style={{ margin: 0 }}>
           {strings.filters.title}
         </h2>
-        <button
-          className="wk-link wk-small"
-          type="button"
-          onClick={handleReset}
-          style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
-        >
-          {strings.filters.reset}
-        </button>
+        {variant === 'sidebar' && (
+          <button
+            className="wk-link wk-small"
+            type="button"
+            onClick={handleReset}
+            style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0, minHeight: '44px' }}
+          >
+            {strings.filters.reset}
+          </button>
+        )}
       </div>
 
       {/* Time group (single choice) */}
@@ -229,6 +243,6 @@ export function FilterPanel({
           </div>
         </div>
       )}
-    </aside>
+    </Container>
   );
 }

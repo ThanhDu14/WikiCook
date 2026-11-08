@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
+import type { SearchOptions } from '@/features/search/types';
 
-export const mockSearchOptions = {
+export const mockSearchOptions: SearchOptions = {
   cuisines: [
     { slug: 'viet-nam', name: 'Việt Nam' },
     { slug: 'nhat-ban', name: 'Nhật Bản' },

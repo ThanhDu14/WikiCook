@@ -9,8 +9,7 @@ export interface ResultsListProps {
 export function ResultsList({ items, className = '' }: ResultsListProps) {
   return (
     <div
-      className={`sx-stack ${className}`}
-      style={{ gap: '16px' }}
+      className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-ds-4 ${className}`}
       data-testid="search-results-list"
     >
       {items.map((recipe) => (

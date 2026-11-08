@@ -87,4 +87,21 @@ describe('ActiveFilterChips (T032, US2)', () => {
 
     expect(handleClearAll).toHaveBeenCalled();
   });
+
+  it('ensures chip buttons meet touch target size >= 44x44 px (NFR-002, a11y)', () => {
+    render(
+      <ActiveFilterChips
+        appliedFilters={mockApplied}
+        state={mockState}
+        onRemove={vi.fn()}
+        onClearAll={vi.fn()}
+      />,
+    );
+
+    const chip = screen.getByRole('button', { name: /Việt Nam/i });
+    expect(chip).toHaveStyle({ minHeight: '44px' });
+
+    const clearAll = screen.getByRole('button', { name: 'Xóa tất cả' });
+    expect(clearAll).toHaveStyle({ minHeight: '44px' });
+  });
 });

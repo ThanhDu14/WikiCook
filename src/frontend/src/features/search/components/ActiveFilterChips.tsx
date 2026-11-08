@@ -111,7 +111,7 @@ export function ActiveFilterChips({
           type="button"
           onClick={() => onRemove(chip.key, chip.value)}
           aria-label={strings.filters.removeChipAriaLabel(chip.label)}
-          style={{ minHeight: '36px' }}
+          style={{ minHeight: '44px' }}
         >
           {chip.label}
           <span className="wk-chip__remove" aria-hidden="true" style={{ marginLeft: '4px' }}>
@@ -133,6 +133,9 @@ export function ActiveFilterChips({
           padding: '4px 8px',
           cursor: 'pointer',
           textDecoration: 'underline',
+          minHeight: '44px',
+          display: 'inline-flex',
+          alignItems: 'center',
         }}
       >
         {strings.search.clearAll}

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { strings } from '@/features/search/strings.vi';
 import type { RecipeCard as RecipeCardType } from '@/features/search/types';
@@ -9,6 +10,8 @@ export interface RecipeCardProps {
 }
 
 export function RecipeCard({ recipe, horizontal = false, className = '' }: RecipeCardProps) {
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+  const showCoverImage = Boolean(recipe.coverImageUrl && failedUrl !== recipe.coverImageUrl);
   const hasRating = recipe.ratingAvg !== null && recipe.reviewCount > 0;
   const formattedRating = recipe.ratingAvg !== null
     ? new Intl.NumberFormat('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(recipe.ratingAvg)
@@ -20,11 +23,12 @@ export function RecipeCard({ recipe, horizontal = false, className = '' }: Recip
       className={`wk-card ${horizontal ? 'wk-card--horizontal' : ''} ${className}`}
       style={{ textDecoration: 'none', color: 'inherit' }}
     >
-      {recipe.coverImageUrl ? (
+      {showCoverImage && recipe.coverImageUrl ? (
         <div className="wk-photo">
           <img
             src={recipe.coverImageUrl}
             alt={strings.recipeCard.imageAlt(recipe.title)}
+            onError={() => setFailedUrl(recipe.coverImageUrl)}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
         </div>

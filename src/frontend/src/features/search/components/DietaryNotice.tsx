@@ -52,10 +52,13 @@ export function DietaryNotice({
             style={{
               background: 'none',
               border: 'none',
-              padding: 0,
+              padding: '8px 4px',
               cursor: 'pointer',
               font: 'inherit',
               textDecoration: 'underline',
+              minHeight: '44px',
+              display: 'inline-flex',
+              alignItems: 'center',
             }}
           >
             {strings.dietary.showForThisSearch}

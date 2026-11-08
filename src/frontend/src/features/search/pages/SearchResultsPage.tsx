@@ -146,36 +146,36 @@ export function SearchResultsPage() {
         </button>
       </div>
 
-      {/* Active filter chips (T032) */}
-      <ActiveFilterChips
-        appliedFilters={data?.appliedFilters}
-        state={searchState}
-        onRemove={handleRemoveFilter}
-        onClearAll={handleClearFilters}
-      />
-
-      {/* Dietary notice / warning banner (T037, US3, SR-02, SR-06) */}
-      {data && (data.totalItems > 0 || data.dietary?.showingHidden) && (
-        <DietaryNotice
-          notice={data.dietary}
-          conflictingCount={conflictingCount}
-          onShowHidden={handleShowHidden}
-        />
-      )}
-
-      <div className="wx-split wx-split--left" style={{ display: 'flex', gap: '24px' }}>
-        {/* Desktop sidebar filter panel (hidden on mobile via CSS) */}
+      <div className="flex flex-col md:flex-row gap-ds-5 items-start">
+        {/* Desktop sidebar filter panel (>= 768px) */}
         {options && (
-          <aside className="wx-aside hidden lg:block" style={{ width: '280px', flexShrink: 0 }}>
+          <div className="hidden md:block w-[280px] shrink-0">
             <FilterPanel
               options={options}
               selected={searchState}
               onChange={handleApplyFilters}
             />
-          </aside>
+          </div>
         )}
 
-        <main className="sx-body sx-stack" style={{ gap: '16px', flex: 1, minWidth: 0 }}>
+        <div className="sx-stack w-full" style={{ gap: '16px', flex: 1, minWidth: 0 }}>
+          {/* Active filter chips (T032) */}
+          <ActiveFilterChips
+            appliedFilters={data?.appliedFilters}
+            state={searchState}
+            onRemove={handleRemoveFilter}
+            onClearAll={handleClearFilters}
+          />
+
+          {/* Dietary notice / warning banner (T037, US3, SR-02, SR-06) */}
+          {data && (data.totalItems > 0 || data.dietary?.showingHidden) && (
+            <DietaryNotice
+              notice={data.dietary}
+              conflictingCount={conflictingCount}
+              onShowHidden={handleShowHidden}
+            />
+          )}
+
           {/* Results count & sort select (T039, US4) */}
           {data && (
             <div
@@ -242,7 +242,7 @@ export function SearchResultsPage() {
               />
             </>
           )}
-        </main>
+        </div>
       </div>
 
       {/* Mobile filter sheet (< 768px) */}

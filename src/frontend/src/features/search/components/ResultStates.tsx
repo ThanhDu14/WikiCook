@@ -1,4 +1,5 @@
 import { strings } from '../strings.vi';
+import { QuickFilters } from './QuickFilters';
 
 export function LoadingState() {
   return (
@@ -18,31 +19,55 @@ export function LoadingState() {
 
 export interface EmptyStateProps {
   keyword: string;
+  lastFilterLabel?: string;
+  onClearLastFilter?: () => void;
   onClearFilters?: () => void;
 }
 
-export function EmptyState({ keyword, onClearFilters }: EmptyStateProps) {
+export function EmptyState({
+  keyword,
+  lastFilterLabel,
+  onClearLastFilter,
+  onClearFilters,
+}: EmptyStateProps) {
   return (
-    <div className="wk-state">
-      <div className="wk-state__art">
-        <svg className="wk-icon wk-icon--32" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.3-4.3" />
-        </svg>
-      </div>
-      <h2 className="wk-h3">{strings.emptyState.noResultsTitle(keyword)}</h2>
-      <p>{strings.emptyState.suggestions}</p>
-      {onClearFilters && (
-        <div className="sx-stack" style={{ width: '100%' }}>
-          <button
-            className="wk-btn wk-btn--ghost wk-btn--block"
-            type="button"
-            onClick={onClearFilters}
-          >
-            {strings.emptyState.clearAllFilters}
-          </button>
+    <div className="sx-stack" style={{ gap: '16px' }}>
+      <div className="wk-state">
+        <div className="wk-state__art">
+          <svg className="wk-icon wk-icon--32" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
         </div>
-      )}
+        <h2 className="wk-h3">{strings.emptyState.noResultsTitle(keyword)}</h2>
+        <p>{strings.emptyState.suggestions}</p>
+        {(onClearLastFilter || onClearFilters) && (
+          <div className="sx-stack" style={{ width: '100%', gap: '8px' }}>
+            {lastFilterLabel && onClearLastFilter && (
+              <button
+                className="wk-btn wk-btn--secondary wk-btn--block"
+                type="button"
+                onClick={onClearLastFilter}
+              >
+                {strings.emptyState.clearLastFilter(lastFilterLabel)}
+              </button>
+            )}
+            {onClearFilters && (
+              <button
+                className="wk-btn wk-btn--ghost wk-btn--block"
+                type="button"
+                onClick={onClearFilters}
+              >
+                {strings.emptyState.clearAllFilters}
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+      <div className="sx-stack" style={{ gap: '8px' }}>
+        <p className="wk-label" style={{ margin: 0 }}>{strings.emptyState.tryQuick}</p>
+        <QuickFilters />
+      </div>
     </div>
   );
 }

@@ -44,7 +44,7 @@ export function HomePage() {
   };
 
   return (
-    <div className="sx-stack" style={{ gap: '24px', maxWidth: '720px', margin: '0 auto' }}>
+    <div className="sx-stack" style={{ gap: '24px', maxWidth: '1080px', margin: '0 auto' }}>
       <header className="sx-stack" style={{ gap: '8px' }}>
         <p className="wk-eyebrow" style={{ margin: 0 }}>
           {strings.home.greeting}
@@ -54,7 +54,7 @@ export function HomePage() {
         </h1>
       </header>
 
-      <div className="sx-stack" style={{ gap: '12px' }}>
+      <div className="sx-stack" style={{ gap: '12px', maxWidth: '720px' }}>
         <SearchBox onSearch={handleSearch} />
         <QuickFilters />
       </div>
@@ -80,7 +80,7 @@ export function HomePage() {
             aria-busy="true"
           />
         ) : (
-          <div className="sx-stack" style={{ gap: '16px' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-ds-4">
             {featured.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe} />
             ))}

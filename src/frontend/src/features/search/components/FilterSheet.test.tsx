@@ -94,4 +94,21 @@ describe('FilterSheet (T031, US2, SR-03)', () => {
     expect(handleClose).toHaveBeenCalled();
     expect(handleApply).not.toHaveBeenCalled();
   });
+
+  it('closes sheet when Escape key is pressed (a11y)', async () => {
+    const handleClose = vi.fn();
+    render(
+      <FilterSheet
+        isOpen={true}
+        onClose={handleClose}
+        options={mockSearchOptions}
+        currentFilters={initialFilters}
+        onApply={vi.fn()}
+        totalResults={42}
+      />,
+    );
+
+    await userEvent.keyboard('{Escape}');
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
 });
