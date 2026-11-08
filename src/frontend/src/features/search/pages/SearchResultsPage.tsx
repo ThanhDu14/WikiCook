@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { searchApi } from '../api/searchApi';
+import { ActiveFilterChips } from '../components/ActiveFilterChips';
 import { FilterPanel } from '../components/FilterPanel';
 import { FilterSheet } from '../components/FilterSheet';
 import { EmptyState, ErrorState, LoadingState } from '../components/ResultStates';
@@ -9,7 +10,7 @@ import { SearchBox } from '../components/SearchBox';
 import { useRecipeSearch } from '../hooks/useRecipeSearch';
 import { parseSearchState, toSearchParams, updateSearchState } from '../lib/searchState';
 import { strings } from '../strings.vi';
-import type { SearchOptions } from '../types';
+import type { SearchOptions, SearchState } from '../types';
 
 export function SearchResultsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,7 +39,7 @@ export function SearchResultsPage() {
     setSearchParams(toSearchParams(next));
   };
 
-  const handleApplyFilters = (appliedFilters: typeof searchState) => {
+  const handleApplyFilters = (appliedFilters: SearchState) => {
     const next = updateSearchState(searchState, {
       ...appliedFilters,
       q: searchState.q,
@@ -47,8 +48,32 @@ export function SearchResultsPage() {
     setSearchParams(toSearchParams(next));
   };
 
+  const handleRemoveFilter = (key: keyof SearchState, value?: string) => {
+    if (key === 'time' || key === 'diet') {
+      const next = updateSearchState(searchState, { [key]: undefined });
+      setSearchParams(toSearchParams(next));
+    } else if (key === 'cuisine' || key === 'category' || key === 'difficulty' || key === 'method') {
+      const current = (searchState[key] as string[] | undefined) ?? [];
+      const nextArray = current.filter((item) => item !== value);
+      const next = updateSearchState(searchState, {
+        [key]: nextArray.length > 0 ? nextArray : undefined,
+      } as Partial<SearchState>);
+      setSearchParams(toSearchParams(next));
+    }
+  };
+
   const handleClearFilters = () => {
-    const next = updateSearchState({ q: searchState.q }, {});
+    const next = updateSearchState(
+      { q: searchState.q, showHidden: searchState.showHidden },
+      {
+        time: undefined,
+        cuisine: undefined,
+        category: undefined,
+        difficulty: undefined,
+        method: undefined,
+        diet: undefined,
+      },
+    );
     setSearchParams(toSearchParams(next));
   };
 
@@ -92,6 +117,14 @@ export function SearchResultsPage() {
           </svg>
         </button>
       </div>
+
+      {/* Active filter chips (T032) */}
+      <ActiveFilterChips
+        appliedFilters={data?.appliedFilters}
+        state={searchState}
+        onRemove={handleRemoveFilter}
+        onClearAll={handleClearFilters}
+      />
 
       <div className="wx-split wx-split--left" style={{ display: 'flex', gap: '24px' }}>
         {/* Desktop sidebar filter panel (hidden on mobile via CSS) */}
