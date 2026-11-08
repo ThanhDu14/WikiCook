@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { searchApi } from '../api/searchApi';
 import { ActiveFilterChips } from '../components/ActiveFilterChips';
+import { DietaryNotice, DietaryAllHiddenState } from '../components/DietaryNotice';
 import { FilterPanel } from '../components/FilterPanel';
 import { FilterSheet } from '../components/FilterSheet';
 import { EmptyState, ErrorState, LoadingState } from '../components/ResultStates';
@@ -13,6 +14,7 @@ import { strings } from '../strings.vi';
 import type { SearchOptions, SearchState } from '../types';
 
 export function SearchResultsPage() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const searchState = parseSearchState(searchParams);
   const { data, loading, error, retry } = useRecipeSearch(searchState);
@@ -77,6 +79,15 @@ export function SearchResultsPage() {
     setSearchParams(toSearchParams(next));
   };
 
+  const handleShowHidden = () => {
+    const next = updateSearchState(searchState, { showHidden: true });
+    setSearchParams(toSearchParams(next));
+  };
+
+  const conflictingCount = data?.items.filter(
+    (item) => item.conflicts && item.conflicts.length > 0,
+  ).length;
+
   return (
     <div className="sx-stack" style={{ gap: '20px', maxWidth: '1080px', margin: '0 auto' }}>
       <header className="sx-top" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -126,6 +137,15 @@ export function SearchResultsPage() {
         onClearAll={handleClearFilters}
       />
 
+      {/* Dietary notice / warning banner (T037, US3, SR-02, SR-06) */}
+      {data && (data.totalItems > 0 || data.dietary?.showingHidden) && (
+        <DietaryNotice
+          notice={data.dietary}
+          conflictingCount={conflictingCount}
+          onShowHidden={handleShowHidden}
+        />
+      )}
+
       <div className="wx-split wx-split--left" style={{ display: 'flex', gap: '24px' }}>
         {/* Desktop sidebar filter panel (hidden on mobile via CSS) */}
         {options && (
@@ -156,12 +176,31 @@ export function SearchResultsPage() {
 
           {error && !data && <ErrorState onRetry={retry} />}
 
-          {data && data.totalItems === 0 && (
-            <EmptyState
-              keyword={data.keyword || searchState.q || ''}
-              onClearFilters={handleClearFilters}
-            />
-          )}
+          {data &&
+            data.totalItems === 0 &&
+            data.dietary?.profileAvailable &&
+            data.dietary?.applied &&
+            data.dietary?.hiddenCount > 0 && (
+              <DietaryAllHiddenState
+                hiddenCount={data.dietary.hiddenCount}
+                keyword={data.keyword || searchState.q || ''}
+                onShowHidden={handleShowHidden}
+                onEditProfile={() => navigate('/profile/diet')}
+              />
+            )}
+
+          {data &&
+            data.totalItems === 0 &&
+            !(
+              data.dietary?.profileAvailable &&
+              data.dietary?.applied &&
+              data.dietary?.hiddenCount > 0
+            ) && (
+              <EmptyState
+                keyword={data.keyword || searchState.q || ''}
+                onClearFilters={handleClearFilters}
+              />
+            )}
 
           {data && data.totalItems > 0 && <ResultsList items={data.items} />}
         </main>

@@ -161,4 +161,52 @@ describe('SearchResultsPage (T025, US1)', () => {
 
     expect(await screen.findByText('Gà kho gừng')).toBeInTheDocument();
   });
+
+  describe('Dietary Profile Integration (US3, T037)', () => {
+    it('renders dietary notice SR-02 and reveals hidden results on click', async () => {
+      const { router } = renderSearchResults('/search?q=ga');
+
+      // SR-02 banner
+      expect(
+        await screen.findByText(/Đã ẩn 6 món theo hồ sơ ăn uống/i),
+      ).toBeInTheDocument();
+
+      const showBtn = screen.getByRole('button', { name: /Hiện cho lần tìm này/i });
+      await userEvent.click(showBtn);
+
+      // URL should have showHidden=true
+      await waitFor(() => {
+        expect(router.state.location.search).toContain('showHidden=true');
+      });
+
+      // SR-06 warning banner
+      expect(
+        await screen.findByText(/Đang hiện 1 món không hợp hồ sơ/i),
+      ).toBeInTheDocument();
+    });
+
+    it('renders SR-05 all-hidden empty state when all matches are hidden', async () => {
+      const { router } = renderSearchResults('/search?q=goi ga');
+
+      expect(
+        await screen.findByRole('heading', { level: 2, name: 'Cả 4 món đều bị ẩn' }),
+      ).toBeInTheDocument();
+
+      const showBtn = screen.getByRole('button', { name: /Hiện cho lần tìm này/i });
+      await userEvent.click(showBtn);
+
+      await waitFor(() => {
+        expect(router.state.location.search).toContain('showHidden=true');
+      });
+      expect(await screen.findByText('Gỏi gà bắp cải')).toBeInTheDocument();
+    });
+
+    it('does not display any dietary banner for guests (profileAvailable=false)', async () => {
+      renderSearchResults('/search?q=xyzabc');
+
+      await screen.findByRole('heading', { level: 2, name: 'Không tìm thấy “xyzabc”' });
+      expect(screen.queryByText(/hồ sơ ăn uống/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Hiện cho lần tìm này/i)).not.toBeInTheDocument();
+    });
+  });
 });
