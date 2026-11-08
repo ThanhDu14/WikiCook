@@ -104,7 +104,7 @@ the code task after it is started.
 **Independent test**: quickstart §4 checks 7–8; UI walkthrough step 6.
 
 - [ ] T034 [US3] [BE] Extend `RecipeSearchQueryRepositoryIT` with `hidesAllergenAndExcluded` (uses `DietRuleSql.notViolating("r.id", new DietRestrictions(allergenIds, excludedIds, DietType.NONE))`; diet type from the profile is never applied — FR-022) and `conflictsForPage` (allergen `name_vi` / ingredient `name`, distinct, sorted)
-- [ ] T035 [US3] [BE] Extend `RecipeSearchServiceTest` with `reportsHiddenCount` (count without rule − count with rule), `showHiddenSkipsRuleAndAddsConflicts`, `guestHasNoProfile` (`profileAvailable = false`), `emptyProfileNotApplied`; then implement it in `RecipeSearchService` reading the profile through `com.wikicook.mealplan.port.DietaryProfilePort`
+- [ ] T035 [US3] [BE] Extend `RecipeSearchServiceTest` with `reportsHiddenCount` (count without rule − count with rule), `showHiddenSkipsRuleAndAddsConflicts` (hiddenCount still = total conflicting recipes over all pages), `guestHasNoProfile` (`profileAvailable = false`), `emptyProfileNotApplied`; then implement it in `RecipeSearchService` reading the profile through `com.wikicook.mealplan.port.DietaryProfilePort`
 - [ ] T036 [US3] [BE] Extend `RecipeSearchControllerIT` with `guestSeesEverything` (no header) and `showHiddenReturnsConflicts` (header `X-Dev-User-Id`, dev stub profile with an allergen id)
 - [ ] T037 [P] [US3] [FE] Write `DietaryNotice.test.tsx` first ("Đã ẩn 6 món theo hồ sơ ăn uống" + "Hiện cho lần tìm này" sets `showHidden=true`; SR-06 banner "Đang hiện {n} món không hợp hồ sơ — Chỉ áp dụng cho lần tìm này"; SR-05 empty state when `totalItems = 0` and `hiddenCount > 0`; nothing for guests), then implement `src/frontend/src/features/search/components/DietaryNotice.tsx` and wire it in `SearchResultsPage`
 
@@ -123,7 +123,7 @@ the code task after it is started.
 
 ## Phase 7: Polish & Integration
 
-- [ ] T040 [FE] Switch from mocks to the real API after `[BE]` is merged: run the UI walkthrough of `quickstart.md` §5 with `VITE_API_MOCK` unset against `docker compose up`, fix any contract mismatch (report it instead of changing the contract on the FE side)
+- [ ] T040 [FE] Switch from mocks to the real API after `[BE]` is merged. Contract change of 2026-11-09: `dietary.hiddenCount` is now also filled when `showingHidden = true` (total over all pages); update the `showingHidden` mock example and make the SR-06 banner in `DietaryNotice.tsx` / `SearchResultsPage.tsx` use `hiddenCount` instead of counting `conflicts` on the current page. Then: run the UI walkthrough of `quickstart.md` §5 with `VITE_API_MOCK` unset against `docker compose up`, fix any contract mismatch (report it instead of changing the contract on the FE side)
 - [ ] T041 [BE] Add the `search_vector` refresh line to the importer (integration §1) in `tools/angingon-scraper/import.sql` before the final `SELECT`, in its own PR with C (Nguyễn Thành Dự) as reviewer
 - [ ] T042 [P] [BE] Add JaCoCo check ≥ 70 % line and branch for `com.wikicook.search.service` in `src/backend/wikicook-app/pom.xml` (follow the existing rule for `shoppinglist`)
 - [ ] T043 [P] [FE] Accessibility pass: keyboard-only use of search box, filters, chips, sort, pagination; visible labels; `npm run lint` clean (jsx-a11y)
