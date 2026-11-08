@@ -34,6 +34,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 16 | 2026-11-06, 07:45 – 08:10 | Chốt Vision lần 2, viết `Changes.md` Section B và ghi trạng thái feedback TA (`SCRUM-60`, `SCRUM-47`) | Vision, `Changes.md`, Sprint 03 Report |
 | 17 | 2026-11-09, 01:30 – 02:10 | Lập plan và task tuần 7 cho 020 và 060, chia việc backend (Claude Code) / frontend (Gemini) | 020, 060 |
 | 18 | 2026-11-09, 02:06 – 03:16 | Gemini làm frontend tìm kiếm 020 (US1–US4) trên mock MSW, Claude Code kiểm chứng | 020 frontend |
+| 19 | 2026-11-09, 03:00 – 04:02 | Gemini làm frontend 060 (wizard đăng công thức, trang chi tiết) trên mock MSW, Claude Code kiểm chứng | 060 frontend |
 
 ---
 
@@ -1189,3 +1190,62 @@ Claude Code tự kiểm tra trên repo, không dựa vào báo cáo của Gemini
 - `git log` và `git status`: commit theo đúng thứ tự task, không còn thay đổi dở dang, không sửa file nào ngoài phạm vi cho phép.
 - Sau bước review của Argon: `npm run lint` (0 lỗi, 1 warning trong file MSW tự sinh), `npm test` (50 file, 299 test pass), `npm run build` thành công.
 - Đọc code: mock chỉ bật khi `DEV`, không dùng `dangerouslySetInnerHTML`, chip calo đã ẩn, có test cho FR-026.
+
+## Mục 19: Gemini làm frontend 060 (wizard đăng công thức, trang chi tiết) trên mock MSW
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-09, 03:00 – 04:02 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `src/frontend/src/features/recipe-editor/`, `src/frontend/src/features/recipe-detail/`, `src/frontend/src/mocks/handlers/recipe.ts`, `src/frontend/src/app/routes.tsx` (task [FE] trong `specs/060-recipe-editor/tasks.md`; Jira Sprint 4 chưa có mã) |
+| Công cụ AI, phiên bản, nền tảng | Google Antigravity trên Windows 11, model Gemini Flash (mức Medium) viết test, code và commit. Claude Code 2.1.318 (Claude Opus 5.5) soạn prompt và kiểm chứng kết quả |
+| Mục đích | Làm frontend wizard 6 bước, lưu nháp tự động, hộp thoại xung đột phiên bản, rút lại công thức đang chờ duyệt, và trang chi tiết công thức có chỗ gắn khối của module khác |
+| Nhánh Git | `feat/060-recipe-frontend` (worktree `WikiCook-frontend`, tách từ `feat/020-search-frontend`), commit `134bd84`..`baad318` (19 commit) |
+| Lịch sử chat (bằng chứng) | Cuộc trò chuyện mới trong Antigravity cho lượt 060; prompt do phiên Claude Code `d8925a83-3500-431f-a79e-a0154d97932e` soạn |
+
+### Prompt đã dùng
+
+Prompt do Claude Code soạn, dán nguyên văn vào Antigravity. Tóm tắt các phần:
+
+```text
+MODEL: Gemini Flash (không dùng Argon). Loại việc: code frontend.
+Bối cảnh: frontend 020 đã xong và đã kiểm chứng; lượt này làm frontend 060 (wizard đăng công
+thức và trang chi tiết). Tạo nhánh feat/060-recipe-frontend từ feat/020-search-frontend để dùng
+lại chế độ mock MSW và RecipeCard; không đụng thư mục backend của Claude Code.
+Đọc trước: tasks.md, contracts/openapi.yaml, research.md (Week 7 scope, R5, R9, R13),
+data-model.md mục 3, màn hình RE02–RE07, RE10, NU01-Detail (cả bản W-).
+Nhiệm vụ: các task [FE] của 060 (T003–T005, T020–T028, T030–T032, T034, T037, T038, T041),
+không làm T040 (nối API thật).
+Quy tắc: test trước rồi mới code; chỉ sửa đúng danh sách file cho phép; không sửa
+shared/api/client.ts, specs/, docs/, src/backend/, features/search/; không thêm thư viện; không
+dangerouslySetInnerHTML; iframe phải có sandbox; commit nhỏ, không ghi tên AI, không push;
+không chụp màn hình để tiết kiệm quota.
+Kiểm tra: lint, test, build xanh. Báo cáo: task → commit, output lint/test/build, điểm contract,
+model và thời gian.
+```
+
+### Nội dung do AI tạo
+
+- Types theo contract, chuỗi tiếng Việt, mock MSW cho 10 endpoint của 060.
+- Xử lý số lượng ("1/2", "0,5", "1 1/2"), link YouTube/TikTok, tài liệu nháp (nhóm nguyên liệu, đổi thứ tự).
+- Wizard 6 bước: thông tin chung, upload ảnh bìa, nguyên liệu (gợi ý, đề xuất nguyên liệu mới), dụng cụ, các bước, video, xem lại và gửi duyệt.
+- Tự lưu nháp, lưu cục bộ khi mất mạng, cảnh báo khi rời trang, hộp thoại xung đột phiên bản, rút lại công thức đang chờ duyệt.
+- Trang chi tiết công thức gắn `RecipeIngredientsPanel` của 040 và chừa chỗ cho khối 030, 050, 070, 080, 090.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Model | Gemini Flash mức Medium, không chụp màn hình | Task đã viết chi tiết, test bắt lỗi; tiết kiệm quota |
+| T040 (nối API thật) | Để sau khi backend merge | Backend chưa có |
+| Header khi upload ảnh bìa | Thêm `api.upload()` vào client dùng chung (ACT-01), T040 đổi `CoverUpload.tsx` sang dùng hàm này | Không sửa thẳng code của Gemini, giữ một chỗ gửi header |
+
+### Cách sinh viên kiểm chứng
+
+Claude Code tự kiểm tra trên repo, không dựa vào báo cáo của Gemini:
+
+- `git log`, `git diff --name-only`, `git reflog`: 19 commit, không sửa file nào ngoài phạm vi cho phép, không dùng amend.
+- `npm run lint` (0 lỗi, 1 warning trong file MSW tự sinh), `npm test` (68 file, 360 test pass), `npm run build` thành công.
+- Đọc code thì phát hiện `CoverUpload.tsx` gọi `fetch` với header cứng `X-User-Id: 1`, lệch contract (`X-Dev-User-Id`). Đã ghi việc sửa vào T040 của 060 và T015 của 020 (commit `a65455e`).
+- Đối chiếu các chỗ gắn khối trong code: số spec đúng (050 nấu ăn, 070 đánh giá, 090 dinh dưỡng). Chỉ báo cáo của Gemini ghi nhầm.
+- iframe video có `sandbox`; không dùng `dangerouslySetInnerHTML`.
