@@ -1,0 +1,95 @@
+import { Link } from 'react-router-dom';
+import { strings } from '@/features/search/strings.vi';
+import type { RecipeCard as RecipeCardType } from '@/features/search/types';
+
+export interface RecipeCardProps {
+  recipe: RecipeCardType;
+  horizontal?: boolean;
+  className?: string;
+}
+
+export function RecipeCard({ recipe, horizontal = false, className = '' }: RecipeCardProps) {
+  const hasRating = recipe.ratingAvg !== null && recipe.reviewCount > 0;
+  const formattedRating = recipe.ratingAvg !== null
+    ? new Intl.NumberFormat('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(recipe.ratingAvg)
+    : null;
+
+  return (
+    <Link
+      to={`/recipes/${recipe.id}`}
+      className={`wk-card ${horizontal ? 'wk-card--horizontal' : ''} ${className}`}
+      style={{ textDecoration: 'none', color: 'inherit' }}
+    >
+      {recipe.coverImageUrl ? (
+        <div className="wk-photo">
+          <img
+            src={recipe.coverImageUrl}
+            alt={strings.recipeCard.imageAlt(recipe.title)}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </div>
+      ) : (
+        <div
+          className="wk-photo wk-photo--warm"
+          role="img"
+          aria-label={strings.recipeCard.defaultImageAlt}
+        >
+          <svg className="wk-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z" />
+            <path d="M7 21h10" />
+            <path d="M19.5 12 22 6" />
+            <path d="M16.25 3c.27.1.8.53.75 1.36-.06.83-.93 1.2-1 2.02-.05.78.34 1.24.73 1.62" />
+            <path d="M11.25 3c.27.1.8.53.74 1.36-.05.83-.93 1.2-.98 2.02-.06.78.33 1.24.72 1.62" />
+          </svg>
+        </div>
+      )}
+
+      <div className="wk-card__body" style={{ flex: 1, minWidth: 0 }}>
+        <h3 className="wk-card__title" style={{ fontSize: '17px', lineHeight: '22px' }}>
+          {recipe.title}
+        </h3>
+        <div className="wk-meta">
+          <span>
+            <svg className="wk-icon wk-icon--16" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 6v6l4 2" />
+            </svg>
+            {strings.recipeCard.timeMinutes(recipe.totalTimeMinutes)}
+          </span>
+          <span>
+            <svg className="wk-icon wk-icon--16" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 20V10" />
+              <path d="M12 20V4" />
+              <path d="M6 20v-6" />
+            </svg>
+            {strings.difficulty[recipe.difficulty] ?? recipe.difficulty}
+          </span>
+          {hasRating ? (
+            <span className="wk-rating">
+              <svg className="wk-icon wk-icon--16 is-on" viewBox="0 0 24 24" aria-hidden="true">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+              <strong>{formattedRating}</strong> ({recipe.reviewCount})
+            </span>
+          ) : (
+            <span>{strings.recipeCard.noRating}</span>
+          )}
+        </div>
+        {recipe.conflicts && recipe.conflicts.length > 0 && (
+          <div className="wk-chips" style={{ marginTop: '4px' }}>
+            {recipe.conflicts.map((conflict) => (
+              <span key={conflict.name} className="wk-chip wk-chip--allergen">
+                <svg className="wk-icon wk-icon--16" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                  <path d="M12 9v4" />
+                  <path d="M12 17h.01" />
+                </svg>
+                {strings.recipeCard.conflictBadge(conflict.name)}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </Link>
+  );
+}
