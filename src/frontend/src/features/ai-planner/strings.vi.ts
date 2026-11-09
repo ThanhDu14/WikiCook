@@ -1,4 +1,4 @@
-import type { AiErrorCode, DietType } from './types';
+import type { AiErrorCode, DietType, RelaxSuggestion } from './types';
 
 /** Vietnamese strings of the AI planner (T027); words seen by the user, never technical terms. */
 export const strings = {
@@ -58,11 +58,17 @@ export const strings = {
   leaveText: (n: number) => `${n} món AI gợi ý chưa được lưu vào thực đơn. Nếu rời trang, bản nháp sẽ mất.`,
   stay: 'Ở lại',
 
+  notEnoughTitle: (n: number) => `Chỉ tìm được ${n} món phù hợp`,
+  notEnoughText: (slots: number) =>
+    `Với các điều kiện đã chọn, WikiCook chưa đủ món cho ${slots} ô. AI không lặp món để lấp chỗ trống.`,
+  suggestionsLabel: 'Gợi ý',
+  relaxConditions: 'Nới điều kiện',
   relax: {
     INCREASE_MAX_COOK_TIME: 'Tăng thời gian nấu tối đa',
     REMOVE_PREFERRED_CUISINES: 'Bỏ ưu tiên ẩm thực',
     SELECT_FEWER_SLOTS: 'Chọn ít ngày hoặc ít bữa hơn',
-  },
+  } satisfies Record<RelaxSuggestion, string>,
+
 
   errors: {
     VALIDATION_ERROR: 'Điều kiện chưa hợp lệ, hãy kiểm tra lại.',

@@ -123,3 +123,13 @@ export type AiErrorCode =
   | 'NETWORK'
   | 'ABORTED'
   | 'UNKNOWN';
+
+/** What the user can relax when a meal has too few suitable recipes (US4-2, FR-024). */
+export type RelaxSuggestion = 'INCREASE_MAX_COOK_TIME' | 'REMOVE_PREFERRED_CUISINES' | 'SELECT_FEWER_SLOTS';
+
+/** Details of a 422 `NOT_ENOUGH_RECIPES` (openapi `NotEnoughRecipesProblem`). */
+export interface NotEnoughRecipes {
+  eligibleCount: number;
+  requestedSlots: number;
+  suggestions: RelaxSuggestion[];
+}

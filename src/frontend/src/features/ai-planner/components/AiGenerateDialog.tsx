@@ -4,9 +4,11 @@ import { Overlay } from '@/features/meal-planner/components/Overlay';
 import { vi as mp } from '@/features/meal-planner/strings.vi';
 import { DAYS, MEALS } from '@/features/meal-planner/types';
 import { aiPlannerApi, AiPlannerApiError, newRequestId } from '../api/aiPlannerApi';
+import { notEnoughOf } from '../lib/problem';
 import { strings } from '../strings.vi';
-import type { Day, DietType, DraftResponse, GenerateRequest, GenerationOptions, Meal } from '../types';
+import type { Day, DietType, DraftResponse, GenerateRequest, GenerationOptions, Meal, NotEnoughRecipes } from '../types';
 import { GenerationProgress } from './GenerationProgress';
+import { NotEnoughRecipesMessage } from './NotEnoughRecipesMessage';
 
 interface Props {
   weekStart: string;
@@ -23,6 +25,9 @@ const MAX_SERVINGS = 20;
 const MIN_COOK_TIME = 10;
 const DEFAULT_COOK_TIME = 45;
 
+/** What the dialog shows instead of the form: too few recipes (US4). */
+type Stop = { kind: 'notEnough' } & NotEnoughRecipes;
+
 /** Toggles `value` in `list`, keeping the order of `all`. */
 function toggle<T>(list: T[], value: T, all: readonly T[]): T[] {
   return list.includes(value) ? list.filter((v) => v !== value) : all.filter((v) => v === value || list.includes(v));
@@ -31,7 +36,8 @@ function toggle<T>(list: T[], value: T, all: readonly T[]): T[] {
 /**
  * The constraints dialog (W-AI01, AI-01, T045): filled from the profile (US1-1), every remaining day and all 3 meals
  * selected (US1-2). "Tạo thực đơn" waits for the draft with a progress state and "Hủy" (W-AI02, US1-4); an error
- * shows its Vietnamese message and keeps the form.
+ * shows its Vietnamese message and keeps the form. Too few recipes (422) shows what to relax and goes back to the same
+ * choices (W-AI06, US4).
  */
 export function AiGenerateDialog({ weekStart, options, initial = null, onDraft, onClose }: Props) {
   // allergens, excluded ingredients and favourite cuisines always come from the profile; the choices of this time
@@ -49,6 +55,7 @@ export function AiGenerateDialog({ weekStart, options, initial = null, onDraft, 
   const [preferCuisines, setPreferCuisines] = useState(last.preferredCuisineIds.length > 0);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [stop, setStop] = useState<Stop | null>(null);
   const controller = useRef<AbortController | null>(null);
 
   // closing the dialog while waiting stops the wait
@@ -82,7 +89,9 @@ export function AiGenerateDialog({ weekStart, options, initial = null, onDraft, 
     } catch (e) {
       if (abort.signal.aborted) return;
       const code = e instanceof AiPlannerApiError ? e.code : 'UNKNOWN';
-      setError(strings.errors[code]);
+      const problem = e instanceof AiPlannerApiError ? e.problem : {};
+      if (code === 'NOT_ENOUGH_RECIPES') setStop({ kind: 'notEnough', ...notEnoughOf(problem) });
+      else setError(strings.errors[code]);
       setGenerating(false);
     }
   };
@@ -103,6 +112,8 @@ export function AiGenerateDialog({ weekStart, options, initial = null, onDraft, 
       {() =>
         generating ? (
           <GenerationProgress onCancel={cancel} />
+        ) : stop?.kind === 'notEnough' ? (
+          <NotEnoughRecipesMessage {...stop} onBack={() => setStop(null)} />
         ) : (
           <>
             <div className="wx-modal__head">

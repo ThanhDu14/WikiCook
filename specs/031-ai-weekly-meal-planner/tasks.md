@@ -191,13 +191,13 @@ Backend là Maven multi-module (`src/backend/pom.xml`, cập nhật 2026-10-28).
 ### Tests for User Story 4 ⚠️ (viết trước, phải FAIL)
 
 - [x] T063 [P] [US4] *(xong: các case nằm trong `GenerationServiceTest` (`fewerEligibleRecipes…`, `notEnoughSuggests…`))* Unit test `GenerationServiceNotEnoughTest` – bữa nào có số hợp lệ < số ô của bữa đó → `NotEnoughRecipesException` (US4-1), kể cả khi số hợp lệ > 0 (edge case); `suggestions`: `INCREASE_MAX_COOK_TIME` khi có thời gian tối đa, `REMOVE_PREFERRED_CUISINES` khi có ẩm thực ưa thích, `SELECT_FEWER_SLOTS` luôn có (US4-2, FR-024); không gọi LLM, `finish(NOT_ENOUGH, calledLlm = false)`, không tính lượt (US4-3) trong src/backend/src/test/java/com/wikicook/aiplanner/service/GenerationServiceNotEnoughTest.java
-- [ ] T064 [P] [US4] Integration test `NotEnoughRecipesIT` – 422 `NOT_ENOUGH_RECIPES` với `eligibleCount`, `requestedSlots`, `suggestions`; `remaining` không đổi trong src/backend/src/test/java/com/wikicook/aiplanner/controller/NotEnoughRecipesIT.java
-- [ ] T065 [P] [US4] Test `NotEnoughRecipesMessage.test.tsx` – hiện lý do và từng gợi ý bằng tiếng Việt, nút quay lại dialog giữ ràng buộc trong src/frontend/src/features/ai-planner/__tests__/NotEnoughRecipesMessage.test.tsx
+- [x] T064 [P] [US4] *(xong: `maxCookTime = 15` để bữa sáng có vài món (> 0, < 7); kiểm tra dòng `NOT_ENOUGH`, `counted = false`, không gọi LLM; xanh ngay vì T066 đã cài)* Integration test `NotEnoughRecipesIT` – 422 `NOT_ENOUGH_RECIPES` với `eligibleCount`, `requestedSlots`, `suggestions`; `remaining` không đổi trong src/backend/src/test/java/com/wikicook/aiplanner/controller/NotEnoughRecipesIT.java
+- [x] T065 [P] [US4] *(xong: test component và test 422 trong dialog (quay lại giữ ngày, kiểu ăn, thời gian); 422 thiếu chi tiết vẫn hiện)* Test `NotEnoughRecipesMessage.test.tsx` – hiện lý do và từng gợi ý bằng tiếng Việt, nút quay lại dialog giữ ràng buộc trong src/frontend/src/features/ai-planner/__tests__/NotEnoughRecipesMessage.test.tsx
 
 ### Implementation for User Story 4
 
 - [x] T066 [US4] *(xong cùng T042)* Thêm kiểm tra số hợp lệ theo bữa (sau bước lọc, trước truy hồi) và dựng `suggestions` trong src/backend/src/main/java/com/wikicook/aiplanner/service/GenerationService.java (làm T063, T064 xanh)
-- [ ] T067 [US4] Cài `NotEnoughRecipesMessage` và hiển thị trong `AiGenerateDialog` khi nhận 422 trong src/frontend/src/features/ai-planner/components/NotEnoughRecipesMessage.tsx (làm T065 xanh)
+- [x] T067 [US4] *(xong, đổi so với mô tả: theo W-AI06 thay form trong dialog bằng `wk-state` + danh sách gợi ý + "Nới điều kiện"; bỏ nút "Dùng {n} món, phần còn lại tự chọn" của mockup vì API trả 422 không kèm bản nháp; câu mô tả ghi "Với các điều kiện đã chọn" thay vì liệt kê tên điều kiện; đọc chi tiết bằng `lib/problem.ts`)* Cài `NotEnoughRecipesMessage` và hiển thị trong `AiGenerateDialog` khi nhận 422 trong src/frontend/src/features/ai-planner/components/NotEnoughRecipesMessage.tsx (làm T065 xanh)
 
 **Checkpoint**: US4 chạy độc lập; quickstart A15.
 
