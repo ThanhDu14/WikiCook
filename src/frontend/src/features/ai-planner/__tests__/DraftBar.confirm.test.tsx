@@ -107,10 +107,11 @@ describe('DraftBar actions (T051, US2-2, US2-3, US2-5, US2-6)', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Lưu thực đơn' }));
 
-    expect(await screen.findByText(/2 món bị bỏ qua/)).toBeInTheDocument();
+    // W-AI05 / AI05: a snackbar with what was saved and the way on to the shopping list
+    expect(await screen.findByText('Đã lưu 0 món vào thực đơn tuần · 2 món bị bỏ qua')).toBeInTheDocument();
     expect(screen.queryByText('Bản nháp AI · chưa lưu')).not.toBeInTheDocument();
     expect(router.state.location.pathname).toBe('/meal-planner');
-    await userEvent.click(screen.getByRole('button', { name: 'Đi chợ cho tuần này' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Xem danh sách đi chợ' }));
     expect(await screen.findByText(`Nhập danh sách ?weekStart=${WEEK}`)).toBeInTheDocument();
   });
 

@@ -50,8 +50,9 @@ export const strings = {
   regenerate: 'Tạo lại',
   save: 'Lưu thực đơn',
   saving: 'Đang lưu…',
-  skipped: (n: number) => `Đã lưu thực đơn. ${n} món bị bỏ qua vì bữa đó đã có món hoặc công thức không còn.`,
-  goShopping: 'Đi chợ cho tuần này',
+  saved: (saved: number, skipped: number) =>
+    `Đã lưu ${saved} món vào thực đơn tuần` + (skipped > 0 ? ` · ${skipped} món bị bỏ qua` : ''),
+  goShopping: 'Xem danh sách đi chợ',
 
   leaveTitle: 'Bỏ bản nháp?',
   leaveText: (n: number) => `${n} món AI gợi ý chưa được lưu vào thực đơn. Nếu rời trang, bản nháp sẽ mất.`,

@@ -32,10 +32,12 @@ function usePlannerDraft(weekStart: string, page: AiPlannerPageContext = {}): Ai
     [change],
   );
 
+  const dismissSaved = useCallback(() => setSkipped(null), []);
+
   const overlay = createElement(LeaveDraftDialog, { guard, count: draft?.items.length ?? 0 });
   if (!draft) {
     if (skipped?.weekStart !== weekStart) return { overlay };
-    return { overlay, banner: createElement(SavedNotice, { weekStart, result: skipped, onDismiss: () => setSkipped(null) }) };
+    return { overlay, banner: createElement(SavedNotice, { weekStart, result: skipped, onDismiss: dismissSaved }) };
   }
   return {
     draftItems,
