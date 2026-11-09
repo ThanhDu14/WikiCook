@@ -11,7 +11,7 @@ import { DayView } from '../components/DayView';
 import { EmptyWeekState } from '../components/EmptyWeekState';
 import { Icon } from '../components/Icon';
 import { WeekHeader } from '../components/WeekHeader';
-import { AiPlannerAction, hasAiPlannerEntry } from '../lib/aiPlannerEntry';
+import { AiPlannerAction, hasAiPlannerEntry, useAiPlannerDraft } from '../lib/aiPlannerEntry';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 import { useOnlineStatus } from '../hooks/useOnlineStatus';
 import { findItem, mealAt, useWeekPlan } from '../hooks/useWeekPlan';
@@ -72,6 +72,9 @@ export function MealPlannerPage() {
   const [menu, setMenu] = useState<number | null>(null);
   const [moving, setMoving] = useState<number | null>(null);
   const aiAction = hasAiPlannerEntry() ? <AiPlannerAction weekStart={weekStart} /> : undefined;
+  // The unsaved AI draft of spec 031, when registered: shown on the calendar with its banner (031 T046).
+  const aiDraft = useAiPlannerDraft(weekStart);
+  const hasDraft = (aiDraft.draftItems?.length ?? 0) > 0;
   // Offline, the calendar and every way to edit it are gone (US7-3, FR-028).
   const ready = online && plan.week !== null && plan.status === 'ready';
   const shopping = (
@@ -90,6 +93,8 @@ export function MealPlannerPage() {
     onReplaceItem: (day: Day, meal: Meal, item: PlanItem) => setPicking({ day, meal, replaceItemId: item.id }),
     onRemoveItem: (item: PlanItem) => void plan.removeDish(item.id),
     onClearDay: (day: Day) => void plan.clearDay(day),
+    draftItems: aiDraft.draftItems,
+    onDraftChange: aiDraft.onDraftChange,
   };
   const menuDish = menu === null ? null : findItem(plan.week, menu);
   const menuMealSize = menuDish ? mealAt(plan.week, menuDish.day, menuDish.meal).length : 0;
@@ -102,7 +107,7 @@ export function MealPlannerPage() {
           currentWeek={currentWeekStart()}
           onChange={goTo}
           compact={!isDesktop}
-          aiAction={isDesktop && ready && !plan.week?.empty ? aiAction : undefined}
+          aiAction={isDesktop && ready && (!plan.week?.empty || hasDraft) ? aiAction : undefined}
           actions={isDesktop && ready ? shopping : undefined}
         />
       )}
@@ -120,7 +125,8 @@ export function MealPlannerPage() {
           </button>
         </div>
       )}
-      {ready && plan.week?.empty && (
+      {ready && aiDraft.banner}
+      {ready && plan.week?.empty && !hasDraft && (
         <EmptyWeekState aiAction={aiAction} onAddDish={() => setPicking({ day: firstDay(plan.week), meal: 'BREAKFAST' })} />
       )}
       {ready && plan.week && (isDesktop ? <WeekGrid week={plan.week} {...calendar} /> : <DayView key={weekStart} week={plan.week} {...calendar} />)}
@@ -132,7 +138,7 @@ export function MealPlannerPage() {
       )}
       {ready && !isDesktop && (
         <div className="sx-row" style={{ flexWrap: 'wrap' }}>
-          {!plan.week?.empty && aiAction}
+          {(!plan.week?.empty || hasDraft) && aiAction}
           {shopping}
         </div>
       )}
