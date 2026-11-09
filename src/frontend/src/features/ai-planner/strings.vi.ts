@@ -69,6 +69,11 @@ export const strings = {
     SELECT_FEWER_SLOTS: 'Chọn ít ngày hoặc ít bữa hơn',
   } satisfies Record<RelaxSuggestion, string>,
 
+  limitTitle: 'Bạn đã dùng hết 5 lượt tạo',
+  limitText: (at: string | null) =>
+    `Lượt tiếp theo mở lại ${at ? `lúc ${at}` : 'trong vòng 60 phút'}. Trong lúc chờ, bạn vẫn tự thêm món vào thực đơn được.`,
+  limitNote: '“Tạo lại” cũng tính là một lượt. Bản nháp dự phòng khi AI lỗi không tính.',
+  backToPlan: 'Về thực đơn',
 
   errors: {
     VALIDATION_ERROR: 'Điều kiện chưa hợp lệ, hãy kiểm tra lại.',
