@@ -5,13 +5,15 @@ import { vi as mp } from '@/features/meal-planner/strings.vi';
 import { DAYS, MEALS } from '@/features/meal-planner/types';
 import { aiPlannerApi, AiPlannerApiError, newRequestId } from '../api/aiPlannerApi';
 import { strings } from '../strings.vi';
-import type { Day, DietType, DraftResponse, GenerationOptions, Meal } from '../types';
+import type { Day, DietType, DraftResponse, GenerateRequest, GenerationOptions, Meal } from '../types';
 import { GenerationProgress } from './GenerationProgress';
 
 interface Props {
   weekStart: string;
   options: GenerationOptions;
-  onDraft: (draft: DraftResponse) => void;
+  /** the request of the draft shown now: "Tạo lại" starts from its constraints instead of the profile (US2-5) */
+  initial?: GenerateRequest | null;
+  onDraft: (draft: DraftResponse, request: GenerateRequest) => void;
   onClose: () => void;
 }
 
@@ -31,16 +33,20 @@ function toggle<T>(list: T[], value: T, all: readonly T[]): T[] {
  * selected (US1-2). "Tạo thực đơn" waits for the draft with a progress state and "Hủy" (W-AI02, US1-4); an error
  * shows its Vietnamese message and keeps the form.
  */
-export function AiGenerateDialog({ weekStart, options, onDraft, onClose }: Props) {
+export function AiGenerateDialog({ weekStart, options, initial = null, onDraft, onClose }: Props) {
+  // allergens, excluded ingredients and favourite cuisines always come from the profile; the choices of this time
+  // start from the last generation on "Tạo lại" (US2-5), else from the profile
   const defaults = options.defaults;
-  const [days, setDays] = useState<Day[]>(options.selectableDays);
-  const [meals, setMeals] = useState<Meal[]>([...MEALS]);
-  const [byRecipe, setByRecipe] = useState(defaults.servings === null);
-  const [servings, setServings] = useState(defaults.servings ?? 2);
-  const [dietType, setDietType] = useState<DietType>(defaults.dietType);
-  const [limitTime, setLimitTime] = useState(defaults.maxCookTimeMinutes !== null);
-  const [maxCookTime, setMaxCookTime] = useState(defaults.maxCookTimeMinutes ?? DEFAULT_COOK_TIME);
-  const [preferCuisines, setPreferCuisines] = useState(defaults.preferredCuisineIds.length > 0);
+  const last = initial?.constraints ?? defaults;
+  const initialDays = initial?.days.filter((d) => options.selectableDays.includes(d)) ?? [];
+  const [days, setDays] = useState<Day[]>(initialDays.length > 0 ? initialDays : options.selectableDays);
+  const [meals, setMeals] = useState<Meal[]>(initial && initial.meals.length > 0 ? initial.meals : [...MEALS]);
+  const [byRecipe, setByRecipe] = useState(last.servings === null);
+  const [servings, setServings] = useState(last.servings ?? 2);
+  const [dietType, setDietType] = useState<DietType>(last.dietType);
+  const [limitTime, setLimitTime] = useState(last.maxCookTimeMinutes !== null);
+  const [maxCookTime, setMaxCookTime] = useState(last.maxCookTimeMinutes ?? DEFAULT_COOK_TIME);
+  const [preferCuisines, setPreferCuisines] = useState(last.preferredCuisineIds.length > 0);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const controller = useRef<AbortController | null>(null);
@@ -57,25 +63,22 @@ export function AiGenerateDialog({ weekStart, options, onDraft, onClose }: Props
     setError(null);
     setGenerating(true);
     try {
-      const draft = await aiPlannerApi.generate(
-        weekStart,
-        {
-          requestId: newRequestId(),
-          days,
-          meals,
-          constraints: {
-            allergenIds: defaults.allergenIds,
-            excludedIngredientIds: defaults.excludedIngredientIds,
-            dietType,
-            servings: byRecipe ? null : servings,
-            maxCookTimeMinutes: limitTime ? maxCookTime : null,
-            preferredCuisineIds: preferCuisines ? defaults.preferredCuisineIds : [],
-          },
+      const request: GenerateRequest = {
+        requestId: newRequestId(),
+        days,
+        meals,
+        constraints: {
+          allergenIds: defaults.allergenIds,
+          excludedIngredientIds: defaults.excludedIngredientIds,
+          dietType,
+          servings: byRecipe ? null : servings,
+          maxCookTimeMinutes: limitTime ? maxCookTime : null,
+          preferredCuisineIds: preferCuisines ? defaults.preferredCuisineIds : [],
         },
-        abort.signal,
-      );
+      };
+      const draft = await aiPlannerApi.generate(weekStart, request, abort.signal);
       if (abort.signal.aborted) return;
-      onDraft(draft);
+      onDraft(draft, request);
     } catch (e) {
       if (abort.signal.aborted) return;
       const code = e instanceof AiPlannerApiError ? e.code : 'UNKNOWN';

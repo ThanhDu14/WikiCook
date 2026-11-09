@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
@@ -16,6 +16,7 @@ vi.mock('@/features/meal-planner/lib/week', async (importOriginal) => {
 });
 
 afterEach(() => {
+  cleanup(); // unmount the page before taking its hooks away
   registerAiPlannerEntry(null);
   registerAiPlannerDraft(null);
   clearAllAiDrafts();

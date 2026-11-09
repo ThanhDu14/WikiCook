@@ -57,8 +57,8 @@ export function AiGenerateButton({ weekStart }: { weekStart: string }) {
           weekStart={weekStart}
           options={options}
           onClose={() => setOpenFor(null)}
-          onDraft={(draft) => {
-            setDraft(draft);
+          onDraft={(draft, request) => {
+            setDraft(draft, request);
             setOpenFor(null);
           }}
         />

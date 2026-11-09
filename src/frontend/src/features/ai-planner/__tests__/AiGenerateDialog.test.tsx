@@ -86,7 +86,7 @@ describe('AiGenerateDialog (T033)', () => {
     await userEvent.click(screen.getByRole('checkbox', { name: /Ưu tiên ẩm thực yêu thích/ }));
     await userEvent.click(createButton());
 
-    await vi.waitFor(() => expect(onDraft).toHaveBeenCalledWith(draftResponse()));
+    await vi.waitFor(() => expect(onDraft).toHaveBeenCalledWith(draftResponse(), body));
     expect(body).toMatchObject({
       days: ['MONDAY', 'TUESDAY'],
       meals: ['BREAKFAST', 'LUNCH'],

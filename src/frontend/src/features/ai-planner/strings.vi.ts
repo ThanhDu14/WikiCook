@@ -46,6 +46,17 @@ export const strings = {
   chooseSlots: (n: number) => `${n} ô cần bạn chọn`,
   chooseDish: 'Chọn món',
 
+  discard: 'Bỏ nháp',
+  regenerate: 'Tạo lại',
+  save: 'Lưu thực đơn',
+  saving: 'Đang lưu…',
+  skipped: (n: number) => `Đã lưu thực đơn. ${n} món bị bỏ qua vì bữa đó đã có món hoặc công thức không còn.`,
+  goShopping: 'Đi chợ cho tuần này',
+
+  leaveTitle: 'Bỏ bản nháp?',
+  leaveText: (n: number) => `${n} món AI gợi ý chưa được lưu vào thực đơn. Nếu rời trang, bản nháp sẽ mất.`,
+  stay: 'Ở lại',
+
   relax: {
     INCREASE_MAX_COOK_TIME: 'Tăng thời gian nấu tối đa',
     REMOVE_PREFERRED_CUISINES: 'Bỏ ưu tiên ẩm thực',

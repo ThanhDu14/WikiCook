@@ -73,7 +73,7 @@ export function MealPlannerPage() {
   const [moving, setMoving] = useState<number | null>(null);
   const aiAction = hasAiPlannerEntry() ? <AiPlannerAction weekStart={weekStart} /> : undefined;
   // The unsaved AI draft of spec 031, when registered: shown on the calendar with its banner (031 T046).
-  const aiDraft = useAiPlannerDraft(weekStart);
+  const aiDraft = useAiPlannerDraft(weekStart, { reload: () => void reload(), reportNetworkError });
   const hasDraft = (aiDraft.draftItems?.length ?? 0) > 0;
   // Offline, the calendar and every way to edit it are gone (US7-3, FR-028).
   const ready = online && plan.week !== null && plan.status === 'ready';
@@ -202,6 +202,7 @@ export function MealPlannerPage() {
           }}
         />
       )}
+      {aiDraft.overlay}
       <Snackbar message={plan.notice ?? pageNotice} onDismiss={dismissNotice} />
     </section>
   );
