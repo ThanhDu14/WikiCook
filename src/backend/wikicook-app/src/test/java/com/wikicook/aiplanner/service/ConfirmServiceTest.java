@@ -10,6 +10,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import com.wikicook.ai.quota.AiOutcome;
+import com.wikicook.ai.testing.MutableClock;
 import com.wikicook.aiplanner.dto.ConfirmRequest;
 import com.wikicook.aiplanner.dto.ConfirmResult;
 import com.wikicook.mealplan.api.BatchSaveResult;
@@ -18,6 +20,7 @@ import com.wikicook.mealplan.api.MealPlanWriteFacade;
 import com.wikicook.mealplan.domain.ItemSource;
 import com.wikicook.mealplan.domain.Meal;
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -30,8 +33,11 @@ class ConfirmServiceTest {
     private static final LocalDate WEEK = LocalDate.of(2026, 11, 16);
 
     private final MealPlanWriteFacade facade = mock(MealPlanWriteFacade.class);
-    // Only the 030 facade: no LlmClient, no AiQuotaService, so confirming can neither call AI nor write ai_requests.
-    private final ConfirmService service = new ConfirmService(facade);
+    private final MutableClock clock = new MutableClock(Instant.parse("2026-11-09T02:00:00Z"));
+    private final InFlightGenerations inFlight = new InFlightGenerations(clock);
+    // Only the 030 facade and the in-memory list: no LlmClient, no AiQuotaService, so confirming can neither call AI
+    // nor write ai_requests.
+    private final ConfirmService service = new ConfirmService(facade, inFlight);
 
     @Test
     void savesEveryDishKeepingSourceAndServings_US2_2() {
@@ -60,5 +66,20 @@ class ConfirmServiceTest {
         when(facade.saveDraft(anyLong(), any(), anyList())).thenReturn(new BatchSaveResult(1, 1, 1));
 
         assertThat(service.confirm(USER, WEEK, request)).isEqualTo(new ConfirmResult(1, 1, 1));
+    }
+
+    @Test
+    void confirmingMarksTheGenerationSoItCannotBeRefunded_T072() {
+        UUID requestId = UUID.randomUUID();
+        try (InFlightGenerations.Running running = inFlight.begin(USER, requestId)) {
+            running.finished(42, AiOutcome.AI_DRAFT);
+        }
+        when(facade.saveDraft(anyLong(), any(), anyList())).thenReturn(new BatchSaveResult(1, 0, 0));
+
+        service.confirm(USER, WEEK, new ConfirmRequest(requestId, List.of(
+                new ConfirmRequest.Item(DayOfWeek.MONDAY, Meal.LUNCH, 12, null, ItemSource.AI))));
+
+        assertThat(inFlight.finished(USER, requestId)).hasValueSatisfying(f -> assertThat(f.confirmed()).isTrue());
+        assertThat(inFlight.takeRefundable(USER, requestId)).isEmpty();
     }
 }

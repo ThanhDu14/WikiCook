@@ -129,13 +129,16 @@ public class GenerationService {
                 run(slots, constraints, reservation.llmAllowed(), started.plus(budget), running.token(), attempt);
             } catch (NotEnoughRecipesException e) {
                 quota.finish(reservation.requestRowId(), AiOutcome.NOT_ENOUGH, false, null, null);
+                running.finished(reservation.requestRowId(), AiOutcome.NOT_ENOUGH);
                 throw e;
             } catch (RuntimeException e) {
                 quota.finish(reservation.requestRowId(), AiOutcome.FAILED, attempt.calledLlm, null, "BACKUP_FAILED");
+                running.finished(reservation.requestRowId(), AiOutcome.FAILED);
                 throw new BackupUnavailableException(e);
             }
             quota.finish(reservation.requestRowId(), attempt.outcome, attempt.calledLlm,
                     attempt.mode == DraftMode.AI ? attempt.removedPicks : null, attempt.reason);
+            running.finished(reservation.requestRowId(), attempt.outcome);
             DraftResponse draft = response(request, weekStart, constraints, attempt, quota.userAllowance(userId));
             log.info("Generation of {} slots: mode={} outcome={} items={} chooseSlots={} removedPicks={} llmCalls={}"
                             + " in {} ms", slots.size(), attempt.mode, attempt.outcome, draft.items().size(),

@@ -75,7 +75,7 @@ class GenerationFixture {
     final EligibleRecipeQuery eligible = mock(EligibleRecipeQuery.class);
     final CandidateService candidateService = mock(CandidateService.class);
     final RecipeCardQuery cards = mock(RecipeCardQuery.class);
-    final InFlightGenerations inFlight = new InFlightGenerations();
+    final InFlightGenerations inFlight = new InFlightGenerations(clock);
     final Map<Meal, List<Candidate>> candidates = new EnumMap<>(Meal.class);
 
     GenerationFixture() {

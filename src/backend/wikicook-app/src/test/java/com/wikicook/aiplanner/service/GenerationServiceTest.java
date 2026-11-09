@@ -151,6 +151,30 @@ class GenerationServiceTest {
     }
 
     @Test
+    void finishedGenerationIsKeptForCancelAndConfirm_T072() {
+        llm.thenReply(validReply());
+        GenerateRequest request = request();
+
+        service.generate(USER, WEEK, request);
+
+        assertThat(f.inFlight.finished(USER, request.requestId())).hasValueSatisfying(finished -> {
+            assertThat(finished.requestRowId()).isEqualTo(ROW);
+            assertThat(finished.outcome()).isEqualTo(AiOutcome.AI_DRAFT);
+        });
+    }
+
+    @Test
+    void notEnoughIsKeptWithItsOutcome_T072() {
+        when(f.eligible.eligibleByMeal(anySet(), any(), any())).thenReturn(Map.of(
+                Meal.BREAKFAST, List.of(1L), Meal.LUNCH, List.of(11L), Meal.DINNER, List.of(21L, 22L)));
+        GenerateRequest request = request();
+
+        assertThatThrownBy(() -> service.generate(USER, WEEK, request)).isInstanceOf(NotEnoughRecipesException.class);
+        assertThat(f.inFlight.finished(USER, request.requestId()))
+                .hasValueSatisfying(finished -> assertThat(finished.outcome()).isEqualTo(AiOutcome.NOT_ENOUGH));
+    }
+
+    @Test
     void pastWeekIsRejectedBeforeAnything() {
         assertThatThrownBy(() -> service.generate(USER, WEEK.minusWeeks(2), request()))
                 .isInstanceOf(PastWeekException.class);
