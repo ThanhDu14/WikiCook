@@ -43,6 +43,7 @@ export const vi = {
   sourceAi: 'AI',
   sourceAuto: 'Auto',
   chooseDish: 'Chọn món',
+  chooseDishReason: 'Không đủ món phù hợp cho bữa này',
   draftDish: 'Món nháp',
   mealFull: 'Bữa này đã đủ 4 món.',
   fullShort: 'Đủ 4 món',
