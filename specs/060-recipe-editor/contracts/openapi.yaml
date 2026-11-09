@@ -1,0 +1,533 @@
+openapi: 3.0.3
+info:
+  title: WikiCook Recipe Editor & Recipe Detail API (060, week 7)
+  description: |
+    Wizard drafts, submit / withdraw, cover photo, recipe detail and "my recipes".
+    Author identity until spec 010: header `X-Dev-User-Id` (dev default user 1). After 010: `Authorization: Bearer`.
+    Errors are RFC 7807 ProblemDetail with a machine-readable `code`.
+  version: 1.0.0
+servers:
+  - url: /api/v1
+
+paths:
+  /recipes/editor/options:
+    get:
+      operationId: getEditorOptions
+      summary: Lookup lists for the wizard (active rows only)
+      responses:
+        '200':
+          description: Options
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EditorOptions' }
+              example:
+                cuisines: [{ id: 1, slug: viet-nam, name: Việt Nam }]
+                categories: [{ id: 3, slug: mon-canh, name: Món canh }]
+                methods: [{ id: 10, slug: luoc, name: Luộc }, { id: 11, slug: chien, name: Chiên }]
+                tags: [{ id: 30, slug: mon-nhanh, name: Món nhanh }]
+                equipment: [{ id: 20, slug: noi-com-dien, name: Nồi cơm điện }]
+                units:
+                  - { id: 1, code: g, name: g, requiresQuantity: true }
+                  - { id: 26, code: to_taste, name: vừa đủ, requiresQuantity: false }
+
+  /ingredients/suggest:
+    get:
+      operationId: suggestIngredients
+      summary: Ingredient suggestions, accent- and case-insensitive (FR-007)
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, minLength: 1, maxLength: 100 }, example: hanh la }
+      responses:
+        '200':
+          description: Up to 10 suggestions; approved ones plus the caller's own proposed ones
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items: { type: array, maxItems: 10, items: { $ref: '#/components/schemas/IngredientSuggestion' } }
+              example:
+                items: [{ id: 42, name: Hành lá, proposed: false }, { id: 43, name: Hành tây, proposed: false }]
+
+  /recipes:
+    post:
+      operationId: createDraft
+      summary: Create an empty draft (idempotent by clientDraftId, FR-022)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [clientDraftId]
+              properties:
+                clientDraftId: { type: string, format: uuid }
+      responses:
+        '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/RecipeDraft' } } } }
+        '200': { description: Same clientDraftId sent again; the existing draft, content: { application/json: { schema: { $ref: '#/components/schemas/RecipeDraft' } } } }
+        '409': { description: '`DRAFT_LIMIT` — already 20 open drafts (FR-030)', content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } } }
+
+  /recipes/{id}/draft:
+    parameters:
+      - $ref: '#/components/parameters/RecipeId'
+    get:
+      operationId: getDraft
+      summary: Load the author's editable copy, with current submit issues (step 6)
+      responses:
+        '200': { description: Draft, content: { application/json: { schema: { $ref: '#/components/schemas/RecipeDraft' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      operationId: saveDraft
+      summary: Save the whole wizard document (manual save, autosave, step change)
+      description: Allowed when status is DRAFT or REVISION_REQUESTED. Required fields may be missing (FR-015); limits and formats are checked.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RecipeDraftInput' }
+            example:
+              version: 3
+              lastWizardStep: 2
+              general:
+                title: Canh chua cá lóc
+                description: Canh chua miền Tây
+                cuisineId: 1
+                categoryId: 3
+                methodIds: [10]
+                tagIds: []
+                difficulty: MEDIUM
+                prepTimeMinutes: 15
+                cookTimeMinutes: 25
+                servings: 4
+              ingredients:
+                - { groupName: Phần nước dùng, ingredientId: 55, quantityText: '1,5', unitId: 4, note: null, optional: false }
+                - { groupName: Phần nước dùng, proposedName: Bạc hà (dọc mùng), quantityText: '2', unitId: 13, note: tước vỏ, optional: false }
+                - { groupName: null, ingredientId: 7, quantityText: '', unitId: 26, note: null, optional: true }
+              equipmentIds: []
+              steps:
+                - { content: Sơ chế cá, cắt khúc., timerSeconds: null }
+                - { content: Nấu nước dùng với me., timerSeconds: 900 }
+              video: { url: 'https://youtu.be/dQw4w9WgXcQ' }
+      responses:
+        '200': { description: Saved; new version, content: { application/json: { schema: { $ref: '#/components/schemas/RecipeDraft' } } } }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: |
+            `VERSION_CONFLICT` — changed on another device; `current` holds the server copy (FR-021, RE-10).
+            `NOT_EDITABLE` — status is PENDING / PUBLISHED / REJECTED / ARCHIVED (FR-026).
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - type: object
+                    properties:
+                      current: { $ref: '#/components/schemas/RecipeDraft' }
+
+  /recipes/{id}/cover:
+    parameters:
+      - $ref: '#/components/parameters/RecipeId'
+    post:
+      operationId: uploadCover
+      summary: Upload or replace the cover photo (JPEG / PNG / WebP, ≤ 5 MB, checked by content)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file: { type: string, format: binary }
+      responses:
+        '200':
+          description: Stored
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [coverImageUrl]
+                properties:
+                  coverImageUrl: { type: string, example: /api/v1/media/5b0c3c1e-7a1f-4a59-9a43-0c1f2b7d9e10.jpg }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: '`NOT_EDITABLE`', content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } } }
+        '413': { description: '`FILE_TOO_LARGE`', content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } } }
+        '415': { description: '`UNSUPPORTED_MEDIA_TYPE` — not JPEG/PNG/WebP by content', content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } } }
+
+  /recipes/{id}/submit:
+    parameters:
+      - $ref: '#/components/parameters/RecipeId'
+    post:
+      operationId: submitRecipe
+      summary: DRAFT → PENDING (idempotent when already PENDING)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [version]
+              properties:
+                version: { type: integer }
+      responses:
+        '200': { description: Now PENDING, content: { application/json: { schema: { $ref: '#/components/schemas/RecipeDraft' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: '`VERSION_CONFLICT` or `INVALID_TRANSITION`', content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } } }
+        '422':
+          description: '`INCOMPLETE` — required items missing (FR-025); `issues` lists each one'
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - type: object
+                    required: [issues]
+                    properties:
+                      issues: { type: array, items: { $ref: '#/components/schemas/Issue' } }
+        '429':
+          description: '`SUBMIT_LIMIT` — 10 submissions in 24 h; `retryAt` says when (FR-030)'
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - type: object
+                    properties:
+                      retryAt: { type: string, format: date-time }
+
+  /recipes/{id}/withdraw:
+    parameters:
+      - $ref: '#/components/parameters/RecipeId'
+    post:
+      operationId: withdrawRecipe
+      summary: PENDING → DRAFT (idempotent when already DRAFT)
+      responses:
+        '200': { description: Now DRAFT, content: { application/json: { schema: { $ref: '#/components/schemas/RecipeDraft' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: '`INVALID_TRANSITION`', content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } } }
+
+  /recipes/{id}:
+    parameters:
+      - $ref: '#/components/parameters/RecipeId'
+    get:
+      operationId: getRecipeDetail
+      summary: Recipe detail page content owned by 060
+      description: PUBLISHED → anyone (guest too). Any other status → only the author; everyone else gets 404 (NFR-004).
+      responses:
+        '200': { description: Detail, content: { application/json: { schema: { $ref: '#/components/schemas/RecipeDetail' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /me/recipes:
+    get:
+      operationId: listMyRecipes
+      summary: The author's recipes, most recently updated first, 20 per page (FR-031)
+      parameters:
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/RecipeStatus' } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+      responses:
+        '200':
+          description: One page plus the count per status (tab badges)
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, page, totalPages, counts]
+                properties:
+                  items: { type: array, items: { $ref: '#/components/schemas/MyRecipeCard' } }
+                  page: { type: integer }
+                  totalPages: { type: integer }
+                  counts:
+                    type: object
+                    description: Every status key is present, 0 when empty
+                    additionalProperties: { type: integer }
+                    example: { DRAFT: 2, PENDING: 1, PUBLISHED: 0, REJECTED: 0, REVISION_REQUESTED: 0, ARCHIVED: 0 }
+
+  /media/{storageKey}:
+    get:
+      operationId: getMedia
+      summary: Uploaded image bytes
+      parameters:
+        - { name: storageKey, in: path, required: true, schema: { type: string, pattern: '^[0-9a-f-]{36}\.(jpg|png|webp)$' } }
+      responses:
+        '200':
+          description: Image (Cache-Control public, max-age=31536000, immutable)
+          content:
+            image/jpeg: { schema: { type: string, format: binary } }
+            image/png: { schema: { type: string, format: binary } }
+            image/webp: { schema: { type: string, format: binary } }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+components:
+  parameters:
+    RecipeId:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, format: int64 }
+
+  schemas:
+    RecipeStatus:
+      type: string
+      enum: [DRAFT, PENDING, PUBLISHED, REJECTED, REVISION_REQUESTED, ARCHIVED]
+    Difficulty:
+      type: string
+      enum: [EASY, MEDIUM, HARD]
+    LookupOption:
+      type: object
+      required: [id, slug, name]
+      properties:
+        id: { type: integer, format: int64 }
+        slug: { type: string }
+        name: { type: string }
+    UnitOption:
+      type: object
+      required: [id, code, name, requiresQuantity]
+      properties:
+        id: { type: integer, format: int64 }
+        code: { type: string }
+        name: { type: string }
+        requiresQuantity: { type: boolean, description: false → quantity may be empty ("vừa đủ") }
+    EditorOptions:
+      type: object
+      required: [cuisines, categories, methods, tags, equipment, units]
+      properties:
+        cuisines: { type: array, items: { $ref: '#/components/schemas/LookupOption' } }
+        categories: { type: array, items: { $ref: '#/components/schemas/LookupOption' } }
+        methods: { type: array, items: { $ref: '#/components/schemas/LookupOption' } }
+        tags: { type: array, items: { $ref: '#/components/schemas/LookupOption' } }
+        equipment: { type: array, items: { $ref: '#/components/schemas/LookupOption' } }
+        units: { type: array, items: { $ref: '#/components/schemas/UnitOption' } }
+    IngredientSuggestion:
+      type: object
+      required: [id, name, proposed]
+      properties:
+        id: { type: integer, format: int64 }
+        name: { type: string }
+        proposed: { type: boolean, description: true = the caller's own proposal awaiting approval }
+
+    GeneralInput:
+      type: object
+      properties:
+        title: { type: string, maxLength: 100, nullable: true }
+        description: { type: string, maxLength: 500, nullable: true }
+        cuisineId: { type: integer, format: int64, nullable: true }
+        categoryId: { type: integer, format: int64, nullable: true }
+        methodIds: { type: array, items: { type: integer, format: int64 } }
+        tagIds: { type: array, maxItems: 10, items: { type: integer, format: int64 } }
+        difficulty: { allOf: [{ $ref: '#/components/schemas/Difficulty' }], nullable: true }
+        prepTimeMinutes: { type: integer, minimum: 0, maximum: 1440, nullable: true }
+        cookTimeMinutes: { type: integer, minimum: 0, maximum: 1440, nullable: true }
+        servings: { type: integer, minimum: 1, maximum: 50, nullable: true }
+    IngredientRowInput:
+      type: object
+      description: Exactly one of ingredientId / proposedName.
+      properties:
+        groupName: { type: string, maxLength: 60, nullable: true }
+        ingredientId: { type: integer, format: int64, nullable: true }
+        proposedName: { type: string, maxLength: 100, nullable: true }
+        quantityText: { type: string, maxLength: 20, description: '"1/2", "0,5", "0.5", "1 1/2"; empty only for units with requiresQuantity = false' }
+        unitId: { type: integer, format: int64, nullable: true }
+        note: { type: string, maxLength: 100, nullable: true }
+        optional: { type: boolean, default: false }
+    StepInput:
+      type: object
+      properties:
+        content: { type: string, maxLength: 1000, nullable: true }
+        timerSeconds: { type: integer, minimum: 10, maximum: 86400, nullable: true }
+    RecipeDraftInput:
+      type: object
+      required: [version, lastWizardStep, general, ingredients, equipmentIds, steps]
+      properties:
+        version: { type: integer }
+        lastWizardStep: { type: integer, minimum: 1, maximum: 6 }
+        general: { $ref: '#/components/schemas/GeneralInput' }
+        ingredients: { type: array, maxItems: 50, items: { $ref: '#/components/schemas/IngredientRowInput' } }
+        equipmentIds: { type: array, items: { type: integer, format: int64 } }
+        steps: { type: array, maxItems: 30, items: { $ref: '#/components/schemas/StepInput' } }
+        video:
+          type: object
+          nullable: true
+          properties:
+            url: { type: string, nullable: true, description: 'YouTube watch / youtu.be / shorts, or TikTok @user/video/<id>' }
+    IngredientRow:
+      allOf:
+        - $ref: '#/components/schemas/IngredientRowInput'
+        - type: object
+          properties:
+            ingredientName: { type: string, description: Catalogue name (also for proposed rows after save) }
+            proposed: { type: boolean, description: '"Mới — chờ duyệt" badge' }
+    Issue:
+      type: object
+      required: [step, field, code]
+      properties:
+        step: { type: integer, minimum: 1, maximum: 6, description: Wizard step that fixes it }
+        field: { type: string, example: general.cuisineId, description: 'Path in the document, e.g. ingredients[2].unitId, cover' }
+        code: { type: string, example: REQUIRED, description: 'REQUIRED, TOO_SHORT, TOO_LONG, OUT_OF_RANGE, INVALID_QUANTITY, UNKNOWN_OPTION, INACTIVE_OPTION, INVALID_VIDEO_URL, TOO_MANY, TOTAL_TIME_ZERO, DUPLICATE_INGREDIENT' }
+    RecipeDraft:
+      type: object
+      required: [id, status, version, lastWizardStep, general, ingredients, equipmentIds, steps, issues, updatedAt]
+      properties:
+        id: { type: integer, format: int64 }
+        status: { $ref: '#/components/schemas/RecipeStatus' }
+        version: { type: integer }
+        lastWizardStep: { type: integer }
+        coverImageUrl: { type: string, nullable: true }
+        general: { $ref: '#/components/schemas/GeneralInput' }
+        ingredients: { type: array, items: { $ref: '#/components/schemas/IngredientRow' } }
+        equipmentIds: { type: array, items: { type: integer, format: int64 } }
+        steps: { type: array, items: { $ref: '#/components/schemas/StepInput' } }
+        video:
+          type: object
+          nullable: true
+          properties:
+            url: { type: string }
+            platform: { type: string, enum: [YOUTUBE, TIKTOK] }
+        issues:
+          type: array
+          description: What still blocks "Gửi duyệt" (empty = ready). DUPLICATE_INGREDIENT is a warning only.
+          items: { $ref: '#/components/schemas/Issue' }
+        updatedAt: { type: string, format: date-time }
+
+    RecipeDetail:
+      type: object
+      required: [id, status, title, difficulty, totalTimeMinutes, servings, reviewCount, ingredientGroups, steps, methods, tags, equipment, author, isOwner]
+      properties:
+        id: { type: integer, format: int64 }
+        status: { $ref: '#/components/schemas/RecipeStatus' }
+        title: { type: string }
+        description: { type: string, nullable: true }
+        coverImageUrl: { type: string, nullable: true }
+        cuisine: { allOf: [{ $ref: '#/components/schemas/LookupOption' }], nullable: true }
+        category: { allOf: [{ $ref: '#/components/schemas/LookupOption' }], nullable: true }
+        methods: { type: array, items: { $ref: '#/components/schemas/LookupOption' } }
+        tags: { type: array, items: { $ref: '#/components/schemas/LookupOption' } }
+        equipment: { type: array, items: { $ref: '#/components/schemas/LookupOption' } }
+        difficulty: { $ref: '#/components/schemas/Difficulty' }
+        prepTimeMinutes: { type: integer, nullable: true }
+        cookTimeMinutes: { type: integer }
+        totalTimeMinutes: { type: integer }
+        servings: { type: integer }
+        ratingAvg: { type: number, nullable: true, description: null when reviewCount = 0 }
+        reviewCount: { type: integer }
+        ingredientGroups:
+          type: array
+          description: Ungrouped rows first as name = null
+          items:
+            type: object
+            required: [items]
+            properties:
+              name: { type: string, nullable: true }
+              items:
+                type: array
+                items:
+                  type: object
+                  required: [ingredientId, name, unit, optional]
+                  properties:
+                    ingredientId: { type: integer, format: int64 }
+                    name: { type: string }
+                    quantity: { type: number, nullable: true }
+                    unit: { type: object, properties: { code: { type: string }, name: { type: string } } }
+                    amountText: { type: string, nullable: true }
+                    note: { type: string, nullable: true }
+                    optional: { type: boolean }
+        steps:
+          type: array
+          items:
+            type: object
+            required: [position, imageUrls]
+            properties:
+              position: { type: integer }
+              title: { type: string, nullable: true }
+              content: { type: string, nullable: true }
+              timerSeconds: { type: integer, nullable: true }
+              imageUrls: { type: array, items: { type: string } }
+        video:
+          type: object
+          nullable: true
+          properties:
+            url: { type: string }
+            platform: { type: string, enum: [YOUTUBE, TIKTOK] }
+        author:
+          type: object
+          properties:
+            id: { type: integer, format: int64, nullable: true }
+            displayName: { type: string }
+        source:
+          type: object
+          nullable: true
+          description: Attribution for imported recipes (must be shown, scraper README)
+          properties:
+            name: { type: string, example: angingon.com }
+            url: { type: string }
+        publishedAt: { type: string, format: date-time, nullable: true }
+        isOwner: { type: boolean }
+      example:
+        id: 101
+        status: PUBLISHED
+        title: Gà kho gừng
+        description: Món kho đậm đà cho ngày mưa
+        coverImageUrl: https://cdn.example.com/recipes/101.jpg
+        cuisine: { id: 1, slug: viet-nam, name: Việt Nam }
+        category: { id: 4, slug: mon-kho, name: Món kho }
+        methods: [{ id: 15, slug: kho, name: Kho }]
+        tags: []
+        equipment: []
+        difficulty: EASY
+        prepTimeMinutes: 10
+        cookTimeMinutes: 15
+        totalTimeMinutes: 25
+        servings: 3
+        ratingAvg: 4.7
+        reviewCount: 88
+        ingredientGroups:
+          - name: null
+            items:
+              - { ingredientId: 12, name: Thịt gà, quantity: 500, unit: { code: g, name: g }, amountText: '500', note: chặt miếng, optional: false }
+              - { ingredientId: 31, name: Gừng, quantity: 1, unit: { code: cu, name: củ }, amountText: '1', note: null, optional: false }
+        steps:
+          - { position: 1, title: null, content: Ướp gà với gừng và nước mắm 15 phút., timerSeconds: 900, imageUrls: [] }
+          - { position: 2, title: null, content: Kho lửa nhỏ đến khi sệt., timerSeconds: null, imageUrls: [] }
+        video: null
+        author: { id: 1, displayName: WikiCook }
+        source: { name: angingon.com, url: 'https://angingon.com/ga-kho-gung' }
+        publishedAt: '2026-11-08T10:00:00Z'
+        isOwner: false
+
+    MyRecipeCard:
+      type: object
+      required: [id, status, updatedAt, lastWizardStep]
+      properties:
+        id: { type: integer, format: int64 }
+        title: { type: string, nullable: true, description: null for an untitled draft → "Công thức chưa đặt tên" }
+        coverImageUrl: { type: string, nullable: true }
+        status: { $ref: '#/components/schemas/RecipeStatus' }
+        updatedAt: { type: string, format: date-time }
+        lastWizardStep: { type: integer }
+        lastMessage: { type: string, nullable: true, description: Latest rejection reason / moderator note }
+
+    Problem:
+      type: object
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        code: { type: string }
+
+  responses:
+    NotFound:
+      description: '`NOT_FOUND` — does not exist or is not visible to the caller (same answer for both)'
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    ValidationError:
+      description: '`VALIDATION_ERROR` — shape or limit violated; `issues` lists them'
+      content:
+        application/problem+json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Problem'
+              - type: object
+                properties:
+                  issues: { type: array, items: { $ref: '#/components/schemas/Issue' } }
