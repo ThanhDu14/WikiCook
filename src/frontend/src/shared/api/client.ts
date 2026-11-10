@@ -1,5 +1,7 @@
 /** Shared HTTP client: every feature calls the backend through `api` (REST under /api/v1). */
 
+import { GUEST, getAccessToken, getDevUserId } from './session';
+
 export const API_BASE = '/api/v1';
 
 /** RFC 7807 body returned by the backend (Spring ProblemDetail). */
@@ -42,16 +44,31 @@ async function toProblem(response: Response): Promise<ProblemDetail> {
   return { status: response.status, title: response.statusText || 'Request failed' };
 }
 
+/**
+ * Identity headers of every request (ACT-01): `X-User-Id` (shopping list) and `X-Dev-User-Id` (dev stubs) from the
+ * dev session, none for a guest; `Authorization: Bearer` once spec 010 stores a token. Headers set by the caller win.
+ */
+function addIdentity(headers: Headers) {
+  const user = getDevUserId();
+  if (user !== GUEST) {
+    if (!headers.has('X-User-Id')) headers.set('X-User-Id', String(user));
+    if (!headers.has('X-Dev-User-Id')) headers.set('X-Dev-User-Id', String(user));
+  }
+  const token = getAccessToken();
+  if (token && !headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+}
+
 /** Fetches `url` (same-origin path) and returns the parsed JSON body; non-2xx responses throw {@link ApiError}. */
 export async function fetchJson<T>(url: string, init: RequestInit = {}): Promise<T> {
   const headers = new Headers(init.headers);
   headers.set('Accept', 'application/json, application/problem+json');
-  if (init.body !== undefined && !headers.has('Content-Type')) {
+  // FormData sets its own multipart Content-Type with the boundary.
+  if (init.body !== undefined && !(init.body instanceof FormData) && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');
   }
-  if (!headers.has('X-User-Id')) {
-    headers.set('X-User-Id', '1');
-  }
+  addIdentity(headers);
 
   const response = await fetch(new URL(url, window.location.origin), { ...init, headers });
   if (!response.ok) {
@@ -71,4 +88,6 @@ export const api = {
   put: <T>(path: string, body: unknown) => fetchJson<T>(API_BASE + path, withBody('PUT', body)),
   patch: <T>(path: string, body: unknown) => fetchJson<T>(API_BASE + path, withBody('PATCH', body)),
   delete: <T = void>(path: string) => fetchJson<T>(API_BASE + path, { method: 'DELETE' }),
+  /** Multipart POST (e.g. a recipe cover, spec 060) with the same identity headers. */
+  upload: <T>(path: string, form: FormData) => fetchJson<T>(API_BASE + path, { method: 'POST', body: form }),
 };
