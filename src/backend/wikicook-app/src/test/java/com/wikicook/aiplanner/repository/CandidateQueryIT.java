@@ -80,12 +80,17 @@ class CandidateQueryIT extends AbstractPostgresIT {
     }
 
     @Test
-    void takesTheNearestKPerMeal() { // US1-2, research R5: k = max(3 × slots, 20)
+    void takesKVariedRecipesAmongTheNearestPerMeal() { // US1-2, research R5: k = max(3 × slots, 20); T111
         List<Candidate> sevenSlots = breakfast(7, constraints(Set.of())).get(Meal.BREAKFAST);
         List<Candidate> oneSlot = breakfast(1, constraints(Set.of())).get(Meal.BREAKFAST);
 
-        assertThat(sevenSlots).extracting(Candidate::recipeId).containsExactlyElementsOf(breakfastByDistance.subList(0, 21));
+        assertThat(sevenSlots).hasSize(21).extracting(Candidate::recipeId).doesNotHaveDuplicates()
+                .isSubsetOf(breakfastByDistance.subList(0, Math.min(42, breakfastByDistance.size())));
+        assertThat(sevenSlots.getFirst().recipeId()).isEqualTo(breakfastByDistance.getFirst());
         assertThat(sevenSlots).extracting(Candidate::rank).startsWith(0, 1, 2);
+        List<Long> pool = candidateQuery.nearest(breakfastByDistance, angle(0), FakeEmbeddingClient.MODEL, 42).stream()
+                .map(Candidate::recipeId).toList();
+        assertThat(pool).containsExactlyElementsOf(breakfastByDistance.subList(0, pool.size())); // the query: by distance
         assertThat(oneSlot).hasSize(20);
         Candidate first = sevenSlots.getFirst();
         assertThat(first.meals()).contains(Meal.BREAKFAST);
@@ -121,17 +126,21 @@ class CandidateQueryIT extends AbstractPostgresIT {
         embeddingClient.failing(true);
 
         List<Candidate> result = breakfast(7, constraints(Set.of(seed.japanese()))).get(Meal.BREAKFAST);
+        List<Candidate> bySql = candidateQuery.bySql(breakfastByDistance, Set.of(seed.japanese()), 42);
 
-        assertThat(result).hasSize(21);
-        // Preferred cuisine first, then rating, then id.
+        // The service varies the SQL list (T111): 21 of its first 42, starting with its best.
+        assertThat(result).hasSize(21).extracting(Candidate::recipeId)
+                .isSubsetOf(bySql.stream().map(Candidate::recipeId).toList());
+        assertThat(result.getFirst().recipeId()).isEqualTo(bySql.getFirst().recipeId());
+        // The SQL order itself: preferred cuisine first, then rating, then id.
         int lastJapanese = 0;
-        for (int i = 0; i < result.size(); i++) {
-            if (result.get(i).cuisineId() == seed.japanese()) {
+        for (int i = 0; i < bySql.size(); i++) {
+            if (bySql.get(i).cuisineId() == seed.japanese()) {
                 lastJapanese = i;
             }
         }
-        assertThat(result.subList(0, lastJapanese + 1)).allSatisfy(c -> assertThat(c.cuisineId()).isEqualTo(seed.japanese()));
-        assertThat(result.subList(lastJapanese + 1, result.size()))
+        assertThat(bySql.subList(0, lastJapanese + 1)).allSatisfy(c -> assertThat(c.cuisineId()).isEqualTo(seed.japanese()));
+        assertThat(bySql.subList(lastJapanese + 1, bySql.size()))
                 .isSortedAccordingTo(Comparator.comparingDouble(this::rating).reversed());
     }
 

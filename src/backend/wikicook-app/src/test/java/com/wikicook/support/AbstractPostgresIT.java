@@ -11,9 +11,14 @@ import org.testcontainers.utility.DockerImageName;
  */
 public abstract class AbstractPostgresIT {
 
+    /**
+     * Each cached Spring context keeps its own connection pool open until the JVM exits; the default 100 connections
+     * run out once the suite has about ten contexts.
+     */
     @ServiceConnection
     protected static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>(
-            DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres"));
+            DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres"))
+            .withCommand("postgres", "-c", "max_connections=300");
 
     static {
         POSTGRES.start(); // stopped by Testcontainers' Ryuk when the JVM exits

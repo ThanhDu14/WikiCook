@@ -27,3 +27,8 @@ export function withDraft(week: WeekPlan, drafts: DraftItem[] | undefined): Week
     return { ...withMeal(w, draft.day, draft.meal, [...items, shown]), empty: week.empty, availableItemCount: week.availableItemCount };
   }, week);
 }
+
+/** A draft meal with no dish: the draft could not fill it and the user picks one (031 US3-3). */
+export function isChooseSlot(item: PlanItem): boolean {
+  return Boolean(item.draftKey) && item.recipeId === null;
+}

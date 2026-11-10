@@ -6,6 +6,7 @@ import { MAX_DISHES, MEALS, type Day, type DraftChange, type DraftItem, type Mea
 import { ClearDayDialog } from './ClearDayDialog';
 import { DayNutritionBadge } from './DayNutritionBadge';
 import { useDraftLayer } from '../hooks/useDraftLayer';
+import { isChooseSlot } from '../lib/draft';
 import { ChooseDishButton } from './ChooseDishButton';
 import { EmptySlot } from './EmptySlot';
 import { Icon } from './Icon';
@@ -119,10 +120,10 @@ function MealCell({ slot, items, onAdd, onOpenItem, onReplaceItem, onRemoveItem,
   if (items.length === 0) return <EmptySlot day={slot.day} meal={slot.meal} onAdd={onAdd} />;
   const dense = items.length > 1;
   return (
-    <div className={items.some((i) => !i.available) ? 'wk-slot wk-slot--needs' : 'wk-slot'} style={{ gap: 0, padding: 8 }}>
+    <div className={items.some((i) => !i.available || isChooseSlot(i)) ? 'wk-slot wk-slot--needs' : 'wk-slot'} style={{ gap: 0, padding: 8 }}>
       {items.map((item, index) => (
         <div key={item.id} style={index > 0 ? { borderTop: '1px dashed var(--color-border)', marginTop: 10, paddingTop: 10 } : undefined}>
-          {item.draftKey && item.recipeId === null ? (
+          {isChooseSlot(item) ? (
             <ChooseDishButton item={item} day={slot.day} meal={slot.meal} onChoose={() => onChoose(item)} />
           ) : (
             <SlotCard

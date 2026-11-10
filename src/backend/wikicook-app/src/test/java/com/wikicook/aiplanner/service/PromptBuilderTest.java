@@ -90,4 +90,29 @@ class PromptBuilderTest {
         assertThat(retry.systemPrompt()).isEqualTo(first.systemPrompt());
         assertThat(retry.responseSchema()).isEqualTo(first.responseSchema());
     }
+
+    /** Candidate ids in the order the prompt lists them. */
+    private static List<Long> listed(LlmRequest request) {
+        String prompt = request.userPrompt();
+        return prompt.substring(prompt.indexOf("Món được phép chọn")).lines().skip(1)
+                .takeWhile(line -> !line.isBlank())
+                .map(line -> Long.parseLong(line.substring(0, line.indexOf(' ')))).toList();
+    }
+
+    @Test
+    void candidatesAreShuffledBySeed_T112() { // the LLM leans on the first lines: change them per generation
+        List<Candidate> lunch = java.util.stream.LongStream.rangeClosed(1, 12)
+                .mapToObj(id -> candidate(id, "Món " + id, Meal.LUNCH)).toList();
+        Map<Meal, List<Candidate>> candidates = Map.of(Meal.LUNCH, lunch);
+
+        List<Long> first = listed(builder.build(SLOTS, candidates, List.of(), 1L));
+        List<Long> again = listed(builder.build(SLOTS, candidates, List.of(), 1L));
+        List<Long> other = listed(builder.build(SLOTS, candidates, List.of(), 2L));
+
+        assertThat(first).isEqualTo(again).containsExactlyInAnyOrderElementsOf(
+                lunch.stream().map(Candidate::recipeId).toList());
+        assertThat(other).containsExactlyInAnyOrderElementsOf(first).isNotEqualTo(first);
+        assertThat(listed(builder.build(SLOTS, candidates, List.of())))
+                .containsExactlyElementsOf(lunch.stream().map(Candidate::recipeId).toList()); // no seed: as ranked
+    }
 }
