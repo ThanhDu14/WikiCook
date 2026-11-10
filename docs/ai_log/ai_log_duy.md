@@ -1435,4 +1435,4 @@ Kiểm chứng: npm run test, lint, build. Commit nhỏ, không ghi tên AI, kh�
 - Frontend sau khi dọn: `npm run test` 63 file, 376 test pass; `npm run lint` không lỗi, không warning; `npm run build` thành công.
 - Backend: `mvn -pl wikicook-app -am verify` BUILD SUCCESS (165 integration test); CI của PR #81 xanh cả backend và frontend sau commit `45ccb06`.
 - Import: `import.sql` báo 1647 dòng trong file, 1647 món được thêm; sau khi tính `search_vector`, DB có 1581 món đã xuất bản và đều có `search_vector`; tìm "pho", "chao thit bo" qua API đều ra kết quả.
-- Chạy thật: backend 020 nối DB demo; `/api/v1/recipes/featured` và `/api/v1/recipes/search?sort=NEWEST` qua proxy của vite đều trả dữ liệu; Claude Code bật backend + frontend tại `http://localhost:5173/` để mình xem bằng mắt (desktop và dưới 900 px) đối chiếu với W-SR01 / SR01.
+- Chạy thật: backend 020 nối DB demo; `/api/v1/recipes/featured` và `/api/v1/recipes/search?sort=NEWEST` qua proxy của vite đều trả dữ liệu; Claude Code bật backend + frontend tại `http://localhost:5173/`, mình mở xem bằng mắt và đối chiếu với W-SR01 / SR01.
