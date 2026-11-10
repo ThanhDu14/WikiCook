@@ -1,2 +1,3 @@
 com.wikicook.devstub.DevStubConfig
 com.wikicook.mealplan.port.DefaultPortsConfig
+com.wikicook.search.port.SearchPortsConfig
