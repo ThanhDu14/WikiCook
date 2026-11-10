@@ -1115,3 +1115,36 @@ Bạn hãy ghi 1 prompt đơn giản về những gì mình làm và cho 1 agent
 - Kiểm tra tính toán vẹn của 2 file ảnh lưu tại `docs/assets/jira/jira_sprint3_tasks_list_part1.jpg` (261 KB) và `docs/assets/jira/jira_sprint3_tasks_list_part2.jpg` (258 KB), xác nhận đường dẫn tương đối `../../../assets/jira/` trong báo cáo trỏ chính xác và render không lỗi.
 - Đóng vai trò Scrum Master / Project Manager (Lê Quốc Hưng), trực tiếp rà soát và ký duyệt nội dung biên bản 4 cuộc họp, xác nhận các số liệu và mốc thời gian phản ánh đúng thực tế diễn biến dự án.
 - Kiểm tra `git diff`, đảm bảo không có bất kỳ mâu thuẫn hay sai lệch thuật ngữ nào giữa `Changes.md`, `project-plan.md`, `vision-document.md` và `sprint-03-report.md`.
+
+---
+
+## Mục 25: Tạo Sprint 04 Report scaffold và ghi nhận Sprint Planning (`SCRUM-68`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | OpenCode (model hiển thị cho phiên: GPT; phiên bản ứng dụng chưa được xác minh), terminal/file tools trong workspace WikiCook |
+| **Thời gian truy cập cụ thể** | 2026-11-10, khoảng 21:16 – 21:18 +07 (ghi nhận lúc 21:18; xác nhận lại theo lịch sử/session và Git trước khi chốt) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-68` — `[Ceremony] Organize Sprint 4 Planning & Establish PA4 Jira Backlog` |
+| **Tài liệu liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md`, `docs/management/reports/sprint-03/sprint-03-report.md`, `docs/ai_log/ai_log_hung.md`, `tasks/PA4/wikicook-pa4-team-assignment.md` |
+| **Mục đích sử dụng** | Tạo báo cáo Sprint 04 theo cấu trúc tham khảo Sprint 03 và ghi phần khung overview/backlog cùng Meeting 1 Planning cho SCRUM-68. Ghi nhận việc dùng AI để soạn nội dung và kiểm tra căn cứ; không giả lập nội dung cuộc họp chưa được xác minh. |
+| **Nhánh Git** | Chưa xác minh ở thời điểm ghi log |
+| **Minh chứng (Evidence)** | Lịch sử phiên OpenCode hiện tại; các file nêu trên. Chưa có commit hash — bổ sung sau khi commit nếu có. |
+
+### Prompt đã sử dụng:
+```text
+Bạn hay đọc và tiến hành ghi sprint-04-report.md của SCRUM 68 giúp tôi , ở đúng dự án WikiCook , nhớ là cập nhật ai-log của tôi theo format nhé, ai-log về phần SCRUM 68
+```
+
+### Nội dung do AI sinh ra:
+1. Tạo `docs/management/reports/sprint-04/sprint-04-report.md` bản `v0.1`, gồm metadata/revision history, Sprint 04 overview, bảng backlog theo kế hoạch và Meeting 1 Planning scaffold cho `SCRUM-68`.
+2. Tóm tắt rubric PA4 theo baseline 90 điểm và phạm vi hai nhóm Part E đã ghi trong team assignment (`010+011` và `070`).
+3. Thêm các trường chờ xác minh cho cuộc họp (thời gian, nền tảng, người tham dự, quyết định thực tế), tránh ghi là sự kiện đã diễn ra khi chưa có chứng cứ.
+4. Ghi chú sai khác ngày hạn `SCRUM-89` giữa team-assignment (19/11) và ảnh Jira người dùng đã cung cấp (23/11), cùng yêu cầu đối chiếu ngày nộp chính thức.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Sinh viên đã cung cấp kế hoạch phân công PA4 và ảnh Jira backlog trong hội thoại; nội dung kế hoạch/assignee/due dates trong báo cáo được đối chiếu với file `tasks/PA4/wikicook-pa4-team-assignment.md` đã có trong workspace.
+- Đối chiếu cấu trúc báo cáo với `docs/management/reports/sprint-03/sprint-03-report.md` và format AI log hiện hành trong file này.
+- Xác nhận thư mục `docs/management/reports/sprint-04/` tồn tại nhưng trước thao tác chưa có báo cáo; tạo `sprint-04-report.md` mới.
+- Ban đầu chưa tự xác nhận Planning đã diễn ra. Sau đó, người dùng xác nhận cuộc họp đã diễn ra; báo cáo được cập nhật thành biên bản dựa trên xác nhận này, kế hoạch đã duyệt và ảnh Jira do người dùng cung cấp. Không tự suy đoán thời gian/nền tảng họp, danh sách người tham dự hoặc nội dung thảo luận không có bằng chứng.
+- Chưa có Git commit hash tại thời điểm ghi mục này; cập nhật trường nhánh/hash và thời gian chính xác theo Git/session log khi commit.
