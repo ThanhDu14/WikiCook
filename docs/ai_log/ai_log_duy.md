@@ -1368,7 +1368,7 @@ Báo cáo: bảng task → commit, output verify, chỗ contract cần Duy quy�
 | Tài liệu liên quan | `src/frontend/src/features/search/pages/HomePage.tsx`, `components/SearchBox.tsx`, `components/QuickFilters.tsx`, `strings.vi.ts`, `src/frontend/src/shared/ui/RecipeCard.tsx`, `src/frontend/src/app/routes.tsx`, `AppLayout.tsx`, `src/frontend/src/test/setup.ts`; `RecipeSearchQueryRepositoryIT.java`, `tools/angingon-scraper/data/` (task T026, T027, T033 trong `specs/020-recipe-search-filter/tasks.md`; nhóm nhờ làm thêm, không có mã Jira Sprint 4) |
 | Công cụ AI, phiên bản, nền tảng | Claude Code (Claude Opus 5.5) trong VS Code: kiểm tra phân công, soạn prompt, sửa CI, review và dọn code, bật server và nạp dữ liệu. Google Antigravity trên Windows 11, model Gemini 4 Argon (Medium), 23:15 – 23:31: merge main, code trang chủ, viết test, commit |
 | Mục đích | Làm trang chủ theo màn hình SR-01 / W-SR01 nối API thật, không đè lên phần việc của thành viên khác trong tuần; đưa backend 020 lên `main` để trang chủ có API gọi |
-| Nhánh Git | `feat/020-060-plan` → PR #81 (merge `main`, commit `45ccb06`); `feat/020-home-page` (từ `feat/020-search-frontend`), commit `2c60dc0`, `a8f0f81`, `0e0895e`, `bf803a7`, `904731f`, chưa push |
+| Nhánh Git | `feat/020-060-plan` → PR #81 (merge `main`, commit `45ccb06`); `feat/020-home-page` (từ `feat/020-search-frontend`), commit `2c60dc0`, `a8f0f81`, `0e0895e`, `bf803a7`, `904731f` → PR #82 |
 | Lịch sử chat (bằng chứng) | Phiên Claude Code `5b44b34c-6d19-4af5-9967-1bc42f6be719`; cuộc trò chuyện Antigravity chạy prompt trang chủ |
 
 ### Prompt đã dùng
@@ -1435,4 +1435,4 @@ Kiểm chứng: npm run test, lint, build. Commit nhỏ, không ghi tên AI, kh�
 - Frontend sau khi dọn: `npm run test` 63 file, 376 test pass; `npm run lint` không lỗi, không warning; `npm run build` thành công.
 - Backend: `mvn -pl wikicook-app -am verify` BUILD SUCCESS (165 integration test); CI của PR #81 xanh cả backend và frontend sau commit `45ccb06`.
 - Import: `import.sql` báo 1647 dòng trong file, 1647 món được thêm; sau khi tính `search_vector`, DB có 1581 món đã xuất bản và đều có `search_vector`; tìm "pho", "chao thit bo" qua API đều ra kết quả.
-- Chạy thật: backend 020 nối DB demo, `/api/v1/recipes/featured` và `/api/v1/recipes/search?sort=NEWEST` trả dữ liệu; mình mở `http://localhost:5173/` xem bản desktop và bản dưới 900 px, đối chiếu với W-SR01 / SR01.
+- Chạy thật: backend 020 nối DB demo; `/api/v1/recipes/featured` và `/api/v1/recipes/search?sort=NEWEST` qua proxy của vite đều trả dữ liệu; Claude Code bật backend + frontend tại `http://localhost:5173/` để mình xem bằng mắt (desktop và dưới 900 px) đối chiếu với W-SR01 / SR01.
