@@ -150,5 +150,8 @@ describe('DraftBar actions (T051, US2-2, US2-3, US2-5, US2-6)', () => {
     expect(generated).toHaveLength(2);
     expect(generated[1].constraints.servings).toBe(3);
     expect(generated[1].requestId).not.toBe(generated[0].requestId);
+    // T113: the new draft should not be the same dishes again (soft, the server decides)
+    expect(generated[0].avoidRecipeIds).toBeUndefined();
+    expect(generated[1].avoidRecipeIds).toEqual([7, 8]);
   });
 });

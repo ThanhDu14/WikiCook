@@ -9,10 +9,12 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
@@ -43,10 +45,23 @@ public class PromptBuilder {
      */
     public LlmRequest build(List<SlotKey> slots, Map<Meal, List<Candidate>> candidates,
                             List<String> preferredCuisineNames) {
+        return build(slots, candidates, preferredCuisineNames, null);
+    }
+
+    /**
+     * @param seed when given, the candidates are listed in an order shuffled by it (one per generation), so the LLM
+     *             does not keep picking the first lines; {@code null} lists them as ranked
+     */
+    public LlmRequest build(List<SlotKey> slots, Map<Meal, List<Candidate>> candidates,
+                            List<String> preferredCuisineNames, Long seed) {
         StringBuilder prompt = new StringBuilder("Các ô cần điền (ngày | bữa):\n");
         slots.stream().sorted().forEach(slot -> prompt.append(slot.day()).append(" | ").append(slot.meal()).append('\n'));
         prompt.append("\nMón được phép chọn (id | tên | bữa | phút | ẩm thực | nguyên liệu chính):\n");
-        allowedMeals(candidates).forEach((candidate, meals) -> prompt.append(line(candidate, meals)).append('\n'));
+        List<Map.Entry<Candidate, Set<Meal>>> allowed = new ArrayList<>(allowedMeals(candidates).entrySet());
+        if (seed != null) {
+            Collections.shuffle(allowed, new Random(seed)); // the LLM leans on the first lines
+        }
+        allowed.forEach(entry -> prompt.append(line(entry.getKey(), entry.getValue())).append('\n'));
         if (!preferredCuisineNames.isEmpty()) {
             prompt.append("\nẨm thực ưa thích: ").append(String.join(", ", preferredCuisineNames)).append('\n');
         }

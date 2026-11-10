@@ -78,6 +78,11 @@ public class GenerationOptionsService {
         return days;
     }
 
+    /** Recipes already planned in the user's week (030), to avoid offering them again. */
+    public Set<Long> plannedRecipeIds(long userId, LocalDate weekStart) {
+        return mealPlans.plannedRecipeIds(userId, weekStart);
+    }
+
     /** Empty slots of selectable days, without the meals of today already past their cutoff; day → meal order. */
     public Set<SlotKey> availableSlots(long userId, LocalDate weekStart) {
         List<DayOfWeek> days = selectableDays(weekStart);

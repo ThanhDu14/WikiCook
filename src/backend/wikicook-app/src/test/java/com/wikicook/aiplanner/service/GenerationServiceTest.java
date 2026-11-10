@@ -258,4 +258,45 @@ class GenerationServiceTest {
         assertThat(service.generate(USER, WEEK, request()).items().getFirst().day())
                 .isEqualTo(MON_BREAKFAST.day());
     }
+
+    private static List<Long> range(long from, long to) {
+        return java.util.stream.LongStream.rangeClosed(from, to).boxed().toList();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<Meal, List<Long>> eligiblePassedToRetrieval() {
+        org.mockito.ArgumentCaptor<Map<Meal, List<Long>>> eligible = org.mockito.ArgumentCaptor.forClass(Map.class);
+        verify(f.candidateService).candidates(eligible.capture(), anyMap(), any());
+        return eligible.getValue();
+    }
+
+    @Test
+    void avoidsRecipesOfTheLastDraftThisWeekAndLastWeek_T110() {
+        when(f.eligible.eligibleByMeal(anySet(), any(), any())).thenReturn(Map.of(
+                Meal.BREAKFAST, range(1, 10), Meal.LUNCH, range(11, 20), Meal.DINNER, range(21, 30)));
+        when(f.facade.plannedRecipeIds(USER, WEEK)).thenReturn(Set.of(11L));
+        when(f.facade.plannedRecipeIds(USER, WEEK.minusWeeks(1))).thenReturn(Set.of(1L, 2L));
+        llm.thenReply(validReply());
+        GenerateRequest regenerate = new GenerateRequest(UUID.randomUUID(), EnumSet.of(DayOfWeek.MONDAY,
+                DayOfWeek.TUESDAY), EnumSet.allOf(Meal.class), constraints(4), Set.of(21L, 22L));
+
+        service.generate(USER, WEEK, regenerate);
+
+        Map<Meal, List<Long>> eligible = eligiblePassedToRetrieval();
+        assertThat(eligible.get(Meal.BREAKFAST)).doesNotContain(1L, 2L).hasSize(8);
+        assertThat(eligible.get(Meal.LUNCH)).doesNotContain(11L);
+        assertThat(eligible.get(Meal.DINNER)).doesNotContain(21L, 22L);
+    }
+
+    @Test
+    void avoidingNeverMakesNotEnough_T110() {
+        // two breakfasts for two breakfast slots, both eaten last week: still planned, not a 422
+        when(f.eligible.eligibleByMeal(anySet(), any(), any())).thenReturn(Map.of(
+                Meal.BREAKFAST, List.of(1L, 2L), Meal.LUNCH, range(11, 20), Meal.DINNER, range(21, 30)));
+        when(f.facade.plannedRecipeIds(USER, WEEK.minusWeeks(1))).thenReturn(Set.of(1L, 2L));
+        llm.thenReply(validReply());
+
+        assertThat(service.generate(USER, WEEK, request()).mode()).isEqualTo(DraftMode.AI);
+        assertThat(eligiblePassedToRetrieval().get(Meal.BREAKFAST)).containsExactly(1L, 2L);
+    }
 }

@@ -282,6 +282,15 @@ components:
           uniqueItems: true
           items: { $ref: '#/components/schemas/Meal' }
         constraints: { $ref: '#/components/schemas/GenerationConstraints' }
+        avoidRecipeIds:
+          type: array
+          maxItems: 84
+          uniqueItems: true
+          items: { type: integer, format: int64 }
+          description: >-
+            Tùy chọn (bổ sung 2026-11-10). Món nên tránh, vd. các món của bản nháp mà "Tạo lại" thay thế.
+            Chỉ là ưu tiên mềm: server bỏ chúng (và món đã lên lịch tuần này, tuần trước) khỏi danh sách ứng
+            viên khi mỗi bữa còn ≥ 2 món hợp lệ cho mỗi ô; không bao giờ gây NOT_ENOUGH_RECIPES.
 
     DraftItem:
       type: object

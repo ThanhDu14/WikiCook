@@ -40,8 +40,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,7 +128,8 @@ public class GenerationService {
                     slots.size(), constraints);
             Attempt attempt = new Attempt();
             try {
-                run(slots, constraints, reservation.llmAllowed(), started.plus(budget), running.token(), attempt);
+                run(slots, constraints, avoid(userId, weekStart, request), seed(request), reservation.llmAllowed(),
+                        started.plus(budget), running.token(), attempt);
             } catch (NotEnoughRecipesException e) {
                 quota.finish(reservation.requestRowId(), AiOutcome.NOT_ENOUGH, false, null, null);
                 running.finished(reservation.requestRowId(), AiOutcome.NOT_ENOUGH);
@@ -148,25 +151,27 @@ public class GenerationService {
         }
     }
 
-    private void run(List<SlotKey> slots, GenerationConstraints constraints, boolean llmAllowed, Instant deadline,
-                     CancellationToken token, Attempt attempt) {
+    private void run(List<SlotKey> slots, GenerationConstraints constraints, Set<Long> avoid, long seed,
+                     boolean llmAllowed, Instant deadline, CancellationToken token, Attempt attempt) {
         Map<Meal, Integer> slotsPerMeal = new EnumMap<>(Meal.class);
         slots.forEach(slot -> slotsPerMeal.merge(slot.meal(), 1, Integer::sum));
         Map<Meal, List<Long>> eligible = eligibleQuery.eligibleByMeal(slotsPerMeal.keySet(),
                 constraints.restrictions(), constraints.maxCookTimeMinutes());
         checkEnough(slotsPerMeal, eligible, constraints);
-        Map<Meal, List<Candidate>> candidates = candidateService.candidates(eligible, slotsPerMeal, constraints);
+        Map<Meal, List<Candidate>> candidates = candidateService.candidates(
+                RepeatAvoider.apply(eligible, slotsPerMeal, avoid), slotsPerMeal, constraints);
         if (!llmAllowed) {
-            backup(slots, candidates, constraints, DraftNotice.AI_DAILY_CAP, AiOutcome.QUOTA_CAP, null, attempt);
+            backup(slots, candidates, constraints, seed, DraftNotice.AI_DAILY_CAP, AiOutcome.QUOTA_CAP, null,
+                    attempt);
             return;
         }
         try {
             LlmRequest prompt = promptBuilder.build(slots, candidates,
-                    candidateService.cuisineNames(constraints.preferredCuisineIds()));
+                    candidateService.cuisineNames(constraints.preferredCuisineIds()), seed);
             ValidationResult result = ask(prompt, slots, candidates, constraints, deadline, token, attempt);
             if (result instanceof Retry retry) {
                 if (remaining(deadline).compareTo(MIN_RETRY_BUDGET) < 0) {
-                    backup(slots, candidates, constraints, DraftNotice.AUTO_NO_AI, AiOutcome.AUTO_DRAFT,
+                    backup(slots, candidates, constraints, seed, DraftNotice.AUTO_NO_AI, AiOutcome.AUTO_DRAFT,
                             "RETRY_NO_TIME", attempt);
                     return;
                 }
@@ -181,11 +186,11 @@ public class GenerationService {
                 attempt.outcome = AiOutcome.AI_DRAFT;
                 return;
             }
-            backup(slots, candidates, constraints, DraftNotice.AUTO_NO_AI, AiOutcome.AUTO_DRAFT, "RETRY_FAILED",
+            backup(slots, candidates, constraints, seed, DraftNotice.AUTO_NO_AI, AiOutcome.AUTO_DRAFT, "RETRY_FAILED",
                     attempt);
         } catch (AiUnavailableException e) {
             boolean timedOut = !clock.instant().isBefore(deadline);
-            backup(slots, candidates, constraints, DraftNotice.AUTO_NO_AI,
+            backup(slots, candidates, constraints, seed, DraftNotice.AUTO_NO_AI,
                     timedOut ? AiOutcome.TIMEOUT : AiOutcome.AUTO_DRAFT, timedOut ? "TIMEOUT" : "LLM_UNAVAILABLE",
                     attempt);
         }
@@ -207,8 +212,8 @@ public class GenerationService {
     }
 
     private void backup(List<SlotKey> slots, Map<Meal, List<Candidate>> candidates, GenerationConstraints constraints,
-                        DraftNotice notice, AiOutcome outcome, String reason, Attempt attempt) {
-        BackupPlanner.Plan plan = backupPlanner.plan(slots, candidates, constraints.preferredCuisineIds());
+                        long seed, DraftNotice notice, AiOutcome outcome, String reason, Attempt attempt) {
+        BackupPlanner.Plan plan = backupPlanner.plan(slots, candidates, constraints.preferredCuisineIds(), seed);
         attempt.picks = plan.picks();
         attempt.chooseSlots = plan.chooseSlots();
         attempt.removedPicks = 0;
@@ -216,6 +221,22 @@ public class GenerationService {
         attempt.notice = notice;
         attempt.outcome = outcome;
         attempt.reason = reason;
+    }
+
+    /**
+     * Recipes better not offered again: the draft "Tạo lại" replaces (sent by the client) and what is planned this
+     * week and last week. Soft, see {@link RepeatAvoider}.
+     */
+    private Set<Long> avoid(long userId, LocalDate weekStart, GenerateRequest request) {
+        Set<Long> avoid = new HashSet<>(request.avoidRecipeIds());
+        avoid.addAll(options.plannedRecipeIds(userId, weekStart));
+        avoid.addAll(options.plannedRecipeIds(userId, weekStart.minusWeeks(1)));
+        return avoid;
+    }
+
+    /** One seed per generation: a new request id, so "Tạo lại", lists and ties differently. */
+    private static long seed(GenerateRequest request) {
+        return request.requestId().getMostSignificantBits() ^ request.requestId().getLeastSignificantBits();
     }
 
     /** US4: a meal with fewer eligible recipes than slots cannot be planned without repeats (FR-012, FR-024). */

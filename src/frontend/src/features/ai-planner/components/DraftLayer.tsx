@@ -92,6 +92,7 @@ export function DraftLayer({ weekStart, picking, onPickingDone, reload, reportNe
           weekStart={weekStart}
           options={regenerate}
           initial={request}
+          avoidRecipeIds={draft.items.map((item) => item.recipeId)}
           onClose={() => setRegenerate(null)}
           onDraft={(next, nextRequest) => {
             setDraft(next, nextRequest);

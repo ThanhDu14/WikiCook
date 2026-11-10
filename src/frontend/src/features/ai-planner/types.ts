@@ -41,6 +41,8 @@ export interface GenerateRequest {
   days: Day[];
   meals: Meal[];
   constraints: GenerationConstraints;
+  /** dishes better not offered again, e.g. those of the draft "Tạo lại" replaces; at most 84, soft */
+  avoidRecipeIds?: number[];
 }
 
 /** One dish of a draft, as the backend sends it. */

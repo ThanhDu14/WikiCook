@@ -219,7 +219,7 @@ Backend là Maven multi-module (`src/backend/pom.xml`, cập nhật 2026-10-28).
 
 - [x] T071 [US5] *(xong: không cần sửa code, `RateLimitIT` xanh với phần đã cài)* Kiểm tra `AiQuotaService.userAllowance` trước khi `reserve` và ném `RateLimitedException` (kèm `nextAvailableAt`); trả `remaining`/`nextAvailableAt` trong `DraftResponse` trong src/backend/src/main/java/com/wikicook/aiplanner/service/GenerationService.java (làm T068 xanh)
 - [x] T072 [US5] *(xong, đổi so với mô tả: không giữ `Future` vì lượt tạo chạy đồng bộ, hủy qua `CancellationToken`; `Running.finished(row, outcome)` ghi kết quả, `close()` đưa vào danh sách "vừa xong" 10 phút (dọn khi truy cập); `markConfirmed(userId, requestId)` gọi từ `ConfirmService`; `takeRefundable` cho T082)* Cài `InFlightGenerations` (`ConcurrentHashMap<userId, InFlight(requestId, Future, CancellationToken)>` + danh sách "vừa xong" giữ 10 phút theo research R9, `markConfirmed(requestId)` gọi từ `ConfirmService`) và dùng trong `GenerationService` trong src/backend/src/main/java/com/wikicook/aiplanner/service/InFlightGenerations.java (làm T069 xanh)
-- [x] T073 [US5] *(xong, đổi so với mô tả: theo W-AI07, hết lượt thì dialog thay form bằng `LimitReachedMessage` (giờ mở lại theo giờ Việt Nam, "Về thực đơn"), nên nút "Tạo" không hiện thay vì bị tắt; 429 chuyển về cùng trạng thái)* Hiển thị lượt còn lại / giờ có lượt mới và xử lý 429 trong `AiGenerateDialog` trong src/frontend/src/features/ai-planner/components/AiGenerateDialog.tsx (làm T070 xanh)
+- [x] T073 [US5] *(xong, đổi so với mô tả: theo W-AI07, hết lượt thì dialog thay form bằng `LimitReachedMessage` (giờ mở lại theo giờ Việt Nam, "Về thực đơn"), nên nút "Tạo" không hiện thay vì bị tắt; 429 chuyển về cùng trạng thái; 2026-11-10: dialog render qua portal ra `document.body`, vì mở từ tuần trống của 030 thì nó nằm trong `wk-state` và bị kế thừa chữ căn giữa, `p` tối đa 36ch)* Hiển thị lượt còn lại / giờ có lượt mới và xử lý 429 trong `AiGenerateDialog` trong src/frontend/src/features/ai-planner/components/AiGenerateDialog.tsx (làm T070 xanh)
 
 **Checkpoint**: US5 chạy độc lập; quickstart A16.
 
@@ -361,6 +361,27 @@ Các task dưới đây làm cùng 030 Phase 10, chưa làm bây giờ.
 - [ ] T107 Test trước rồi sửa draft trên lưới tuần (030 `WeekGrid` `draftItems`) và `ConfirmService`
   cho nhiều món mỗi bữa; bữa đã có món lúc xác nhận → bỏ cả nhóm, đếm vào `skippedOccupied` (FR-019)
 - [x] T108 *(không cần nữa: 030 T100 đã cài `MealPlanWriteService` theo nghĩa mới, dev stub bị xóa)* Sửa `InMemoryMealPlanFacade` (dev stub) theo nghĩa mới của `emptySlots`/`saveDraft`
+
+### Bổ sung 2026-11-10: tăng đa dạng của bản nháp
+
+Bản nháp hay lặp lại: mỗi bữa chỉ có một vector truy vấn nên top-k gần như cố định, thứ tự món trong
+prompt cố định, "Tạo lại" và tuần trước không được tính tới. Mọi thay đổi dưới đây đều "mềm": không đổi
+luật cứng, không làm phát sinh `NOT_ENOUGH_RECIPES` mới.
+
+- [x] T110 [P] *(xong: 4 test `RepeatAvoiderTest`, 2 case trong `GenerationServiceTest`)* Unit test `RepeatAvoiderTest` và thêm case vào `GenerationServiceTest` – món cần tránh
+  (`avoidRecipeIds` của request ∪ món đã lên lịch tuần này ∪ tuần trước) bị bỏ khỏi danh sách hợp lệ của
+  bữa khi phần còn lại ≥ 2 × số ô của bữa; ít hơn thì giữ nguyên; kiểm tra "không đủ món" vẫn chạy trên
+  danh sách đầy đủ
+- [x] T111 [P] *(xong: 6 test `CandidateDiversifierTest`, 2 test `CandidateServiceTest`; sửa `CandidateQueryIT` cho hành vi mới (k món lấy từ 2k món gần nhất, món gần nhất vẫn đứng đầu; thứ tự SQL kiểm thẳng ở `CandidateQuery.bySql`))* Unit test `CandidateDiversifierTest` và `CandidateServiceTest` – lấy 2k món gần nhất rồi chọn
+  k món, phạt món cùng danh mục hoặc cùng nguyên liệu đầu tiên với món đã chọn; giữ thứ tự gần khi không
+  trùng; tất định
+- [x] T112 [P] *(xong)* Thêm case vào `PromptBuilderTest` (thứ tự món trong prompt xáo theo seed, cùng seed cùng thứ
+  tự, đủ món) và `BackupPlannerTest` (phạt trùng nguyên liệu đầu tiên với ngày trước; hòa điểm thì seed
+  quyết định trong cùng nhóm hạng)
+- [x] T113 [P] *(xong: thêm vào test "Tạo lại" của `DraftBar.confirm.test.tsx`)* Test frontend – "Tạo lại" gửi `avoidRecipeIds` là các món của bản nháp đang có
+- [x] T114 *(xong: phạt 3 điểm cho mỗi món đã chọn cùng danh mục hoặc cùng nguyên liệu đầu tiên; `BackupPlanner` phạt −2 khi trùng nguyên liệu đầu tiên với ngày trước, hòa điểm trong nhóm 5 hạng thì seed quyết định; seed = các bit của `requestId`; món đã lên lịch đọc qua `GenerationOptionsService.plannedRecipeIds` (030 `MealPlanWriteFacade`); temperature giữ 0.4, để T097 đo rồi mới đổi)* Cài `RepeatAvoider`, `CandidateDiversifier`, seed theo `requestId` cho prompt và `BackupPlanner`;
+  thêm `avoidRecipeIds` (tùy chọn, tối đa 84) vào `GenerateRequest` và contracts/openapi.yaml (làm T110 – T112 xanh)
+- [x] T115 *(xong)* Gửi `avoidRecipeIds` khi "Tạo lại" trong `AiGenerateDialog`/`DraftLayer` (làm T113 xanh)
 
 ### Phụ thuộc người khác (⛓) – không chặn nhờ fake/mock
 

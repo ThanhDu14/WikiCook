@@ -125,6 +125,18 @@ describe('AiGenerateDialog (T033)', () => {
     expect(createButton()).toBeEnabled();
   });
 
+  it('renders outside the button it was opened from, so the empty week styles do not leak in', () => {
+    // the empty week of 030 holds "Tạo bằng AI" inside `wk-state` (centred text, `p` at most 36ch)
+    render(
+      <section className="wk-state" data-testid="empty-week">
+        <AiGenerateDialog weekStart={WEEK} options={options()} onDraft={vi.fn()} onClose={vi.fn()} />
+      </section>,
+    );
+
+    const dialog = screen.getAllByRole('dialog', { name: 'Tạo thực đơn bằng AI' }).at(-1)!;
+    expect(screen.getByTestId('empty-week')).not.toContainElement(dialog);
+  });
+
   it('closes with "Hủy" or the close button', async () => {
     const { onClose } = renderDialog();
     await userEvent.click(screen.getByRole('button', { name: 'Đóng' }));

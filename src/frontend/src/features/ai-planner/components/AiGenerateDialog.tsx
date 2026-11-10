@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Icon } from '@/features/meal-planner/components/Icon';
 import { Overlay } from '@/features/meal-planner/components/Overlay';
 import { vi as mp } from '@/features/meal-planner/strings.vi';
@@ -16,6 +17,8 @@ interface Props {
   options: GenerationOptions;
   /** the request of the draft shown now: "Tạo lại" starts from its constraints instead of the profile (US2-5) */
   initial?: GenerateRequest | null;
+  /** the dishes of that draft, so the new one offers others when it can */
+  avoidRecipeIds?: number[];
   onDraft: (draft: DraftResponse, request: GenerateRequest) => void;
   onClose: () => void;
 }
@@ -25,6 +28,8 @@ const MIN_SERVINGS = 1;
 const MAX_SERVINGS = 20;
 const MIN_COOK_TIME = 10;
 const DEFAULT_COOK_TIME = 45;
+/** `GenerateRequest.avoidRecipeIds` max: 4 dishes in each of 21 meals */
+const MAX_AVOID = 84;
 
 /** What the dialog shows instead of the form: too few recipes (US4) or no generation left this hour (US5). */
 type Stop = ({ kind: 'notEnough' } & NotEnoughRecipes) | { kind: 'limit'; nextAvailableAt: string | null };
@@ -40,7 +45,7 @@ function toggle<T>(list: T[], value: T, all: readonly T[]): T[] {
  * shows its Vietnamese message and keeps the form. Too few recipes (422) shows what to relax and goes back to the same
  * choices (W-AI06, US4); no generation left (`remaining = 0` or a 429) shows when the next one opens (W-AI07, US5-2).
  */
-export function AiGenerateDialog({ weekStart, options, initial = null, onDraft, onClose }: Props) {
+export function AiGenerateDialog({ weekStart, options, initial = null, avoidRecipeIds = [], onDraft, onClose }: Props) {
   // allergens, excluded ingredients and favourite cuisines always come from the profile; the choices of this time
   // start from the last generation on "Tạo lại" (US2-5), else from the profile
   const defaults = options.defaults;
@@ -85,6 +90,7 @@ export function AiGenerateDialog({ weekStart, options, initial = null, onDraft, 
           maxCookTimeMinutes: limitTime ? maxCookTime : null,
           preferredCuisineIds: preferCuisines ? defaults.preferredCuisineIds : [],
         },
+        ...(avoidRecipeIds.length > 0 && { avoidRecipeIds: [...new Set(avoidRecipeIds)].slice(0, MAX_AVOID) }),
       };
       const draft = await aiPlannerApi.generate(weekStart, request, abort.signal);
       if (abort.signal.aborted) return;
@@ -111,7 +117,9 @@ export function AiGenerateDialog({ weekStart, options, initial = null, onDraft, 
     defaults.excludedIngredientIds.length > 0 && strings.excluded(defaults.excludedIngredientIds.length),
   ].filter((v): v is string => Boolean(v));
 
-  return (
+  // in a portal: opened from 030's empty week, the dialog would sit inside its `wk-state` and take its centred
+  // text and 36ch paragraphs
+  return createPortal(
     <Overlay title={strings.dialogTitle} variant="modal" onClose={generating ? cancel : onClose}>
       {() =>
         generating ? (
@@ -256,6 +264,7 @@ export function AiGenerateDialog({ weekStart, options, initial = null, onDraft, 
           </>
         )
       }
-    </Overlay>
+    </Overlay>,
+    document.body,
   );
 }
