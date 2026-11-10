@@ -64,4 +64,26 @@ class GenerateRequestValidationTest {
         assertThat(invalidPaths(new GenerateRequest(null, Set.of(DayOfWeek.MONDAY), Set.of(Meal.LUNCH), null)))
                 .containsExactly("constraints", "requestId");
     }
+
+    @Test
+    void avoidRecipeIdsAreOptionalAndAtMost84_T114() throws Exception {
+        GenerateRequest none = new GenerateRequest(UUID.randomUUID(), Set.of(DayOfWeek.MONDAY), Set.of(Meal.LUNCH),
+                constraints(2, null), null);
+        assertThat(none.avoidRecipeIds()).isEmpty();
+        assertThat(request(Set.of(DayOfWeek.MONDAY), Set.of(Meal.LUNCH), constraints(2, null)).avoidRecipeIds())
+                .isEmpty();
+
+        Set<Long> tooMany = java.util.stream.LongStream.rangeClosed(1, 85).boxed()
+                .collect(java.util.stream.Collectors.toSet());
+        assertThat(invalidPaths(new GenerateRequest(UUID.randomUUID(), Set.of(DayOfWeek.MONDAY), Set.of(Meal.LUNCH),
+                constraints(2, null), tooMany))).containsExactly("avoidRecipeIds");
+
+        // an older client sends no avoidRecipeIds at all
+        GenerateRequest parsed = new com.fasterxml.jackson.databind.ObjectMapper().readValue("""
+                {"requestId":"%s","days":["MONDAY"],"meals":["LUNCH"],
+                 "constraints":{"allergenIds":[],"excludedIngredientIds":[],"dietType":"NONE","servings":2,
+                                "maxCookTimeMinutes":null,"preferredCuisineIds":[]}}"""
+                .formatted(UUID.randomUUID()), GenerateRequest.class);
+        assertThat(parsed.avoidRecipeIds()).isEmpty();
+    }
 }

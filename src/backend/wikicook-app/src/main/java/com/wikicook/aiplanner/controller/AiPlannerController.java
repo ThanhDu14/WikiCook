@@ -1,8 +1,11 @@
 package com.wikicook.aiplanner.controller;
 
+import com.wikicook.aiplanner.dto.ConfirmRequest;
+import com.wikicook.aiplanner.dto.ConfirmResult;
 import com.wikicook.aiplanner.dto.DraftResponse;
 import com.wikicook.aiplanner.dto.GenerateRequest;
 import com.wikicook.aiplanner.dto.GenerationOptionsResponse;
+import com.wikicook.aiplanner.service.ConfirmService;
 import com.wikicook.aiplanner.service.GenerationOptionsService;
 import com.wikicook.aiplanner.service.GenerationService;
 import com.wikicook.common.security.CurrentUser;
@@ -21,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** US1 endpoints of contracts/openapi.yaml; every call works on the caller's own week. */
+/** US1/US2 endpoints of contracts/openapi.yaml; every call works on the caller's own week. */
 @RestController
 @RequestMapping("/api/v1/ai-planner")
 @Tag(name = "ai-planner")
@@ -30,13 +33,15 @@ public class AiPlannerController {
     private final ObjectProvider<CurrentUser> currentUser;
     private final GenerationOptionsService options;
     private final GenerationService generation;
+    private final ConfirmService confirmation;
 
     /** {@link CurrentUser} comes from spec 010 (or the dev stubs); while neither exists every call is a 401. */
     public AiPlannerController(ObjectProvider<CurrentUser> currentUser, GenerationOptionsService options,
-                               GenerationService generation) {
+                               GenerationService generation, ConfirmService confirmation) {
         this.currentUser = currentUser;
         this.options = options;
         this.generation = generation;
+        this.confirmation = confirmation;
     }
 
     @Operation(operationId = "getGenerationOptions",
@@ -54,6 +59,14 @@ public class AiPlannerController {
             @PathVariable @MondayDate @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekStart,
             @Valid @RequestBody GenerateRequest request) {
         return generation.generate(userId(), weekStart, request);
+    }
+
+    @Operation(operationId = "confirmDraft", summary = "Lưu bản nháp vào kế hoạch tuần (FR-018, FR-019)")
+    @PostMapping("/weeks/{weekStart}/confirm")
+    public ConfirmResult confirm(
+            @PathVariable @MondayDate @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate weekStart,
+            @Valid @RequestBody ConfirmRequest request) {
+        return confirmation.confirm(userId(), weekStart, request);
     }
 
     private long userId() {

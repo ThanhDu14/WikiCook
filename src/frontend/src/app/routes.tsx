@@ -1,4 +1,4 @@
-import { type RouteObject } from 'react-router-dom';
+import { Navigate, type RouteObject } from 'react-router-dom';
 import { MealPlannerPage } from '@/features/meal-planner/pages/MealPlannerPage';
 import { HomePage } from '@/features/search/pages/HomePage';
 import { SearchResultsPage } from '@/features/search/pages/SearchResultsPage';
@@ -23,9 +23,12 @@ export const routes: RouteObject[] = [
     children: [
       { index: true, element: <HomePage /> },
       { path: 'search', element: <SearchResultsPage /> },
-      { path: 'meal-planner', element: <MealPlannerPage />, handle: { wide: true } },
+      { path: 'meal-planner', element: <MealPlannerPage /> },
       { path: 'shopping-list', element: <ShoppingListPage /> },
       { path: 'shopping-list/history', element: <ShoppingHistoryPage /> },
+      // The import of a week (030 "Đi chợ", 031 "Lưu thực đơn") is D's page, not built yet (040 T041/T044/T045 in PA4):
+      // until then it opens the shopping list instead of the not-found page.
+      { path: 'shopping-list/import', element: <Navigate to="/shopping-list" replace /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

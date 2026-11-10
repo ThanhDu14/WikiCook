@@ -5,6 +5,7 @@ import { MAX_DISHES, MEALS, type Day, type DayPlan, type DraftChange, type Draft
 import { ClearDayDialog } from './ClearDayDialog';
 import { DayNutritionBadge } from './DayNutritionBadge';
 import { useDraftLayer } from '../hooks/useDraftLayer';
+import { isChooseSlot } from '../lib/draft';
 import { ChooseDishButton } from './ChooseDishButton';
 import { Icon } from './Icon';
 import { SlotCard } from './SlotCard';
@@ -142,13 +143,13 @@ function MealSection({ day, meal, items, onAdd, onOpenItem, onReplaceItem, onRem
     );
   }
   return (
-    <div className={items.some((i) => !i.available) ? 'wk-slot wk-slot--needs' : 'wk-slot'}>
+    <div className={items.some((i) => !i.available || isChooseSlot(i)) ? 'wk-slot wk-slot--needs' : 'wk-slot'}>
       <div className="wk-slot__meal">
         <span>{vi.meal[meal]}</span>
       </div>
       {items.map((item, index) => (
         <div key={item.id} style={index > 0 ? { borderTop: '1px dashed var(--color-border)', paddingTop: 10 } : undefined}>
-          {item.draftKey && item.recipeId === null ? (
+          {isChooseSlot(item) ? (
             <ChooseDishButton item={item} day={day.day} meal={meal} onChoose={() => onChoose(item)} touch />
           ) : (
             <SlotCard

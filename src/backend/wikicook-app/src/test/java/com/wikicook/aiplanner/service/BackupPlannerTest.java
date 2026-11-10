@@ -140,4 +140,35 @@ class BackupPlannerTest {
         assertThat(plan.picks()).hasSize(21);
         assertThat(millis).isLessThan(50);
     }
+
+    @Test
+    void avoidsTheMainIngredientOfTheDayBefore_T112() {
+        Map<Meal, List<Candidate>> candidates = Map.of(Meal.LUNCH, List.of(
+                candidate(1, 0, VIET, 1, 100L), candidate(2, 1, VIET, 2, 100L), candidate(3, 2, VIET, 3, 200L)));
+
+        Plan plan = planner.plan(List.of(slot(MONDAY, Meal.LUNCH), slot(TUESDAY, Meal.LUNCH)), candidates, Set.of());
+
+        assertThat(plan.picks()).containsEntry(slot(MONDAY, Meal.LUNCH), 1L)
+                .containsEntry(slot(TUESDAY, Meal.LUNCH), 3L); // not 2: pork again the next day
+    }
+
+    @Test
+    void seedBreaksTiesAmongCloseRanksAndIsRepeatable_T112() {
+        List<Candidate> lunch = new java.util.ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            lunch.add(candidate(10 + i, i, VIET, 1 + i));
+        }
+        lunch.add(candidate(99, 9, VIET, 99)); // far in the ranking: never wins a tie with the close ones
+        Map<Meal, List<Candidate>> candidates = Map.of(Meal.LUNCH, lunch);
+        List<SlotKey> monday = List.of(slot(MONDAY, Meal.LUNCH));
+
+        Set<Long> picked = new HashSet<>();
+        for (long seed = 1; seed <= 30; seed++) {
+            Plan plan = planner.plan(monday, candidates, Set.of(), seed);
+            assertThat(plan).isEqualTo(planner.plan(monday, candidates, Set.of(), seed));
+            picked.add(plan.picks().get(slot(MONDAY, Meal.LUNCH)));
+        }
+
+        assertThat(picked).hasSizeGreaterThan(1).doesNotContain(99L);
+    }
 }

@@ -65,7 +65,7 @@ transaction.
 | `ConflictDto` | `type` (`ALLERGEN` \| `EXCLUDED_INGREDIENT`), `name` (allergen `name_vi` or ingredient `name`) |
 | `SearchResponse` | `items` (≤ 20 `RecipeCardDto`), `page`, `pageSize` (= 20), `totalItems`, `totalPages`, `sort` (effective), `keyword` (echoed, trimmed), `keywordTruncated`, `appliedFilters` (`AppliedFiltersDto`), `dietary` (`DietaryNoticeDto`) |
 | `AppliedFiltersDto` | `time`, `cuisines[]`, `categories[]`, `difficulties[]`, `methods[]`, `diet` — only values that were valid; each slug item carries `slug` + `name` so chips can show labels |
-| `DietaryNoticeDto` | `applied` (bool: viewer has a non-empty profile and override is off), `hiddenCount` (int, 0 when not applied), `showingHidden` (bool), `profileAvailable` (bool: false for guests) |
+| `DietaryNoticeDto` | `applied` (bool: viewer has a non-empty profile and override is off), `hiddenCount` (int: recipes in the whole result set that conflict with the profile, whether hidden or shown through the override; 0 for guests and empty profiles), `showingHidden` (bool), `profileAvailable` (bool: false for guests) |
 | `SearchOptionsDto` | `cuisines[]`, `categories[]`, `methods[]` (`slug`, `name`), `timeRanges[]`, `difficulties[]`, `diets[]`, `sorts[]` (fixed codes; labels are in the UI string store) |
 
 `coverImageUrl`: `external_url` of the `COVER` media row; when only `storage_key` exists the URL is

@@ -103,7 +103,7 @@ description: "Task list for 060 Recipe Editor, F-06 basic (Sprint 4 week 7)"
 ## Phase 7: Polish & Integration
 
 - [ ] T039 [P] [BE] Add JaCoCo ≥ 70 % line and branch for `com.wikicook.recipe.service` in `src/backend/wikicook-app/pom.xml`
-- [ ] T040 [FE] After `[BE]` is merged: run quickstart §4 with `VITE_API_MOCK` unset; report contract mismatches instead of changing the contract
+- [ ] T040 [FE] After `[BE]` is merged: replace the direct `fetch` with hard-coded `X-User-Id: 1` in `components/CoverUpload.tsx` by `api.upload()` from `shared/api/client.ts` (added with 020 T015 / ACT-01, sends `X-Dev-User-Id` and `Authorization`); then run quickstart §4 with `VITE_API_MOCK` unset; report contract mismatches instead of changing the contract
 - [ ] T041 [P] [FE] Responsive (360 px) and keyboard pass over the wizard and the detail page; `npm run lint` clean
 - [ ] T042 [BE] Run quickstart §1–§3 on a clean database and record results in the PR description
 

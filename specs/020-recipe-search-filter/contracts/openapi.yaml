@@ -145,7 +145,7 @@ paths:
                     keyword: ga
                     keywordTruncated: false
                     appliedFilters: { time: null, cuisines: [], categories: [], difficulties: [], methods: [], diet: null }
-                    dietary: { profileAvailable: true, applied: false, hiddenCount: 0, showingHidden: true }
+                    dietary: { profileAvailable: true, applied: false, hiddenCount: 4, showingHidden: true }
                 allHidden:
                   summary: Every match hidden by the profile (SR-05)
                   value:
@@ -297,7 +297,11 @@ components:
           description: Profile is non-empty and the override is off
         hiddenCount:
           type: integer
-          description: Recipes removed by the profile for this search (0 when not applied)
+          description: |
+            Number of recipes in the whole result set (all pages) that conflict with the profile.
+            applied = true → they were removed ("Đã ẩn N món", SR-02 / SR-05).
+            showingHidden = true → they are included and marked ("Đang hiện N món không hợp hồ sơ", SR-06).
+            0 for guests and empty profiles.
         showingHidden: { type: boolean }
     SearchResponse:
       type: object

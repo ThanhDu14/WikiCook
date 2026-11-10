@@ -91,8 +91,9 @@ diet, dietary-profile exclusion, sorting, pagination. Calories filter and rate l
 - **Decision**: For a signed-in viewer the service builds `DietRestrictions(allergenIds,
   excludedIngredientIds, DietType.NONE)` from the profile and adds
   `DietRuleSql.notViolating("r.id", restrictions)` to the query. `hiddenCount` = count without the rule
-  minus count with it (two `COUNT(*)` over the same filtered set). With `showHidden=true` the rule is
-  not applied and each card carries `conflicts[]` (allergen `name_vi` or ingredient `name`) for the
+  minus count with it (two `COUNT(*)` over the same filtered set), computed both with and without the
+  override so the SR-06 banner can show the total over all pages, not only the current page. With
+  `showHidden=true` the rule is not applied and each card carries `conflicts[]` (allergen `name_vi` or ingredient `name`) for the
   recipes that break it, read with one extra query for the 20 ids on the page. Diet type is never taken
   from the profile (FR-022).
 - **Rationale**: FR-021 requires the same rule as the AI planner; `DietRuleSql` is that rule

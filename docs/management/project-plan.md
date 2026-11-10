@@ -10,7 +10,7 @@
 ---
 
 ## DOCUMENT METADATA & RESPONSIBILITY MATRIX
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed & Approved by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 > **PA3 revision note (`SCRUM-59` draft → `SCRUM-67` final):** the matrix below records the original PA2 authorship. Subsections revised in PA3 (Revision History, 1.2, 2.2, 2.3, 3.2, 4.1, 4.3, 4.4, 5.4 and Appendix B) carry their own attribution line directly under the header. All changes against `v1.4` are listed in section A of the root-level `Changes.md`.
 
@@ -26,7 +26,7 @@
 | **Appendices** | Jira Board Verification & Revision History | **Mai Văn Hiển & Trần Nguyễn Công Chung** | **Lê Quốc Hưng (LqHung06)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-29`, `SCRUM-42` |
 
 ### Revision History
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed & Approved by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Date | Version | Description | Author |
 | :---: | :---: | :--- | :--- |
@@ -39,7 +39,7 @@
 | **22/10/2026** | `v1.3` | Final Sprint 02 Audit & Close: Synchronized Appendix A task audit statuses and Table 2.2 deliverables to 100% Verified (DONE) across all 18 tasks matching the live Jira Board and Sprint 02 Report. | Trần Nguyễn Công Chung & Lê Quốc Hưng |
 | **24/10/2026** | `v1.4` | Sprint 02 close-out: corrected group number to Group 05, synchronized deliverable statuses, Sprint 2 Gantt chart and Appendix A with the final Jira board (18/18 Done), and translated Jira task titles into English. | Nguyễn Thành Dự (`ThanhDu14`) |
 | **04/11/2026** | `v2.0-draft` | PA3 draft revision (`SCRUM-59`): Sprint 3 schedule moved to the real milestones (all work done by 05/11/2026, Moodle deadline 00:00 on 08/11/2026, buffer 06–07/11) replacing the old 13/11 estimate; `Build v0.5` scope, date and gate aligned with the repository; new Sprint 03 risks `RSK-S3-01` to `RSK-S3-03`; per-subsection attribution lines. No TA feedback was available, so changes follow a consistency audit (see `Changes.md`, section A). | Mai Văn Hiển (`MaiHien3507`) — review by Lê Quốc Hưng pending |
-| **06/11/2026** | `v2.0` | PA3 final revision (`SCRUM-67`): cross-checked with Vision `v2.0` (`SCRUM-60`), the Use-Case Model (`SCRUM-49`: 10 features, 64 use cases) and the Sprint 03 Report; `Build v0.5` statements re-checked against `main` (Flyway `V001`–`V303` and `V401`–`V403`, in-process Mock LLM, CI steps, JaCoCo rule, health endpoint); Sprint 3 timeline task IDs aligned with the Jira due dates; TA feedback status recorded (none received, `SCRUM-47`). Finalised on 06/11, one day after the `SCRUM-67` due date of 05/11, inside the buffer (see `Changes.md`, section A). | Mai Văn Hiển (`MaiHien3507`); editor Nguyễn Đức Duy; reviewer Lê Quốc Hưng — pending review |
+| **06/11/2026** | `v2.0` | PA3 final revision (`SCRUM-67`): cross-checked with Vision `v2.0` (`SCRUM-60`), the Use-Case Model (`SCRUM-49`: 10 features, 64 use cases) and the Sprint 03 Report; `Build v0.5` statements re-checked against `main` (Flyway `V001`–`V303` and `V401`–`V403`, in-process Mock LLM, CI steps, JaCoCo rule, health endpoint); Sprint 3 timeline task IDs aligned with the Jira due dates; TA feedback status recorded (none received, `SCRUM-47`). Finalised on 06/11, one day after the `SCRUM-67` due date of 05/11, inside the buffer (see `Changes.md`, section A). | Mai Văn Hiển (`MaiHien3507`); editor Nguyễn Đức Duy; reviewer Lê Quốc Hưng — approved 06/11/2026 |
 
 ---
 
@@ -54,7 +54,7 @@ The purpose of this Software Development Plan (Project Plan) is to establish the
 - **Course Instructors and Teaching Assistants (TAs)** use this plan to evaluate the realism of the team's schedule, workload fairness, and alignment with the live Jira Scrum board.
 
 ### 1.2. Scope
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed & Approved by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 This Project Plan governs all software engineering activities for the **WikiCook** project from initial conception (**Sprint 1 / PA1**) through final product release and live feature demonstration (**Sprint 5 / PA5**). It defines the project objectives, assumptions, constraints, deliverable baselines, five-member organizational structure, RACI accountability matrix, risk management protocols, five-Sprint Scrum schedule, incremental build plan, and quality assurance standards.
 
@@ -126,7 +126,7 @@ The functional and technical scope of **WikiCook** encompasses a responsive Sing
 - **Objective 4 — End-to-End Production Readiness by Sprint 5:** Deliver a fully containerized (`Docker Compose`), feature-complete release (`Build v1.0 RC`) ready for live demonstration during **PA5**.
 
 ### 2.2. Assumptions and Constraints
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed & Approved by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Category | ID | Description & Operational Impact |
 | :--- | :---: | :--- |
@@ -140,7 +140,7 @@ The functional and technical scope of **WikiCook** encompasses a responsive Sing
 | **Stakeholder Assumption** | **ASM-03** | Course Instructors and Teaching Assistants act as primary external stakeholders and provide timely feedback on **PA2** deliverables to guide revisions in **PA3**. *Status (06/11/2026): not met for PA2 — no TA feedback was received (`SCRUM-47`, Sprint 03 Report Sec 3.2); the PA3 revision follows an internal consistency audit instead.* |
 
 ### 2.3. Project Deliverables
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed & Approved by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 The table below catalogues all major engineering and management deliverables produced across the five Sprints (`PA1` through `PA5`), their repository paths, target delivery dates, and primary owners:
 
@@ -224,7 +224,7 @@ To prevent ambiguity and ensure multi-tier peer verification across every artifa
 ---
 
 ### 3.2. Risk Management Matrix & Mitigation Strategies
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed & Approved by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 To ensure predictable project execution across the 14-week semester, the team identifies, analyzes, and formulates mitigation protocols for **project-wide risks** (`RSK-01` to `RSK-05`), **Sprint 2 operational risks** (`RSK-S2-01` to `RSK-S2-04`, closed with Sprint 2), and **active Sprint 3 operational risks** (`RSK-S3-01` to `RSK-S3-03`).
 
@@ -263,7 +263,7 @@ To ensure predictable project execution across the 14-week semester, the team id
 As mandated by **PA2-2026**, WikiCook does **not** follow the traditional RUP lifecycle phases (*Inception, Elaboration, Construction, Transition*). Instead, the project is executed through **5 iterative Scrum Sprints**, each lasting 2–3 weeks and directly mapped to one course Project Assignment (`PA1` through `PA5`).
 
 ### 4.1. Five-Sprint Scrum Roadmap (PA1 – PA5)
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed & Approved by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 4.1.1. Scrum Governance Framework
 
@@ -392,7 +392,7 @@ gantt
 ---
 
 ### 4.3. Sprint 02 Schedule, Dependencies & Preliminary Plan for Sprints 03–05
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed & Approved by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 4.3.1. Sprint 02 Day-by-Day Execution Timeline
 
@@ -520,7 +520,7 @@ The team finishes **all** Sprint 3 work by the end of **05/11/2026** and treats 
 ---
 
 ### 4.4. Software Build and Release Plan
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed & Approved by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 In strict accordance with the **PA2-2026** instructions (*"specify how many builds you will produce for testing and when... note that the final sprint includes a demo of all project features"*), the team commits to **5 planned builds**, one per Sprint milestone: **2 documentation baselines** (`v0.1`, `v0.2`) and **3 executable software builds for testing** (`v0.5`, `v0.8 Beta`, `v1.0 RC`). Additional patch or release-candidate builds (e.g., `v0.8.0-beta.2`, `v1.0.0-rc.2`) are produced **only** to fix defects found while testing a planned build; they never add new scope.
 
@@ -673,7 +673,7 @@ All source code, Spec Kit templates, Markdown documentation, visual assets, and 
 3. **Submission Baseline Packaging:** At the end of each Sprint (48 hours prior to the Moodle deadline), the DevOps Lead and Project Manager freeze the `main` branch, export the full commit graph (`docs/management/git-log.txt`), compile all Markdown files to `.pdf`, and archive both `.md` and `.pdf` versions alongside `src/` into `PA[X]-Group05.zip`.
 
 ### 5.4. Quality Assurance & Definition of Done (DoD)
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed & Approved by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 No Jira task in Sprint 2 or subsequent sprints may be transitioned to the **DONE** column until it satisfies all applicable criteria in the team's **Definition of Done (DoD)**:
 
@@ -717,7 +717,7 @@ No Jira task in Sprint 2 or subsequent sprints may be transitioned to the **DONE
 > *Audit Note:* Confirmed that `SCRUM-31` is not present on the Jira board; total active Sprint 02 scope consists of exactly 18 tasks matching the live board order.
 
 ### Appendix B. Master Document Revision History
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Lê Quốc Hưng (LqHung06) — pending review | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed & Approved by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Revision | Date | Contributing Author(s) | Reviewer / Sign-off | Description of Modifications |
 | :---: | :---: | :--- | :--- | :--- |
@@ -729,5 +729,5 @@ No Jira task in Sprint 2 or subsequent sprints may be transitioned to the **DONE
 | **`v1.2`** | 19/10/2026 | Lê Quốc Hưng (`LqHung06`) | Nguyễn Thành Dự | Aligned ASM-02, RSK-02, and Sec 4.3.3 with Spec 031 and Constitution: removed obsolete deterministic/SQL fallback references; reaffirmed explicit AI error reporting with independent manual planning resilience. |
 | **`v1.3`** | 22/10/2026 | Trần Nguyễn Công Chung & Lê Quốc Hưng | Lê Quốc Hưng | Final Sprint 02 Audit & Close: Synchronized Appendix A task audit statuses and Table 2.2 deliverables to 100% Verified (DONE) across all 18 tasks matching the live Jira Board and Sprint 02 Report. |
 | **`v1.4`** | 24/10/2026 | Nguyễn Thành Dự (`ThanhDu14`) | Lê Quốc Hưng | Sprint 02 close-out: corrected group number to Group 05, synchronized statuses in Section 2.3, the Sprint 2 Gantt chart and Appendix A with the final Jira board, and translated Jira task titles into English. |
-| **`v2.0-draft`** | 04/11/2026 | Mai Văn Hiển (`MaiHien3507`) | Lê Quốc Hưng — pending review (editor: Nguyễn Đức Duy) | PA3 draft revision (`SCRUM-59`): Sprint 3 moved to the real milestones (done by 05/11/2026, Moodle deadline 00:00 on 08/11/2026, replacing 13/11); `Build v0.5` scope, date and gate aligned with the repository; risks `RSK-S3-01`–`RSK-S3-03`; new Sec 4.3.4; per-subsection attribution lines. Based on a consistency audit because no TA feedback was available; see `Changes.md`, section A. |
-| **`v2.0`** | 06/11/2026 | Mai Văn Hiển (`MaiHien3507`) | Lê Quốc Hưng — pending review (editor: Nguyễn Đức Duy) | PA3 final revision (`SCRUM-67`): cross-checked with Vision `v2.0`, the Use-Case Model (10 features, 64 use cases) and the Sprint 03 Report; `Build v0.5` scope, gate, integration roadmap and environments corrected against `main` (Flyway `V001`–`V303` and `V401`–`V403`, in-process Mock LLM, CI steps, JaCoCo rule, health endpoint); Sprint 3 timeline task IDs aligned with the Jira due dates; ASM-03 and Sec 1.2 record that no TA feedback was received; attribution lines added to every subsection revised in PA3. Finalised on 06/11, one day after the `SCRUM-67` due date; see `Changes.md`, section A. |
+| **`v2.0-draft`** | 04/11/2026 | Mai Văn Hiển (`MaiHien3507`) | Lê Quốc Hưng — approved 06/11/2026 (editor: Nguyễn Đức Duy) | PA3 draft revision (`SCRUM-59`): Sprint 3 moved to the real milestones (done by 05/11/2026, Moodle deadline 00:00 on 08/11/2026, replacing 13/11); `Build v0.5` scope, date and gate aligned with the repository; risks `RSK-S3-01`–`RSK-S3-03`; new Sec 4.3.4; per-subsection attribution lines. Based on a consistency audit because no TA feedback was available; see `Changes.md`, section A. |
+| **`v2.0`** | 06/11/2026 | Mai Văn Hiển (`MaiHien3507`) | Lê Quốc Hưng — approved 06/11/2026 (editor: Nguyễn Đức Duy) | PA3 final revision (`SCRUM-67`): cross-checked with Vision `v2.0`, the Use-Case Model (10 features, 64 use cases) and the Sprint 03 Report; `Build v0.5` scope, gate, integration roadmap and environments corrected against `main` (Flyway `V001`–`V303` and `V401`–`V403`, in-process Mock LLM, CI steps, JaCoCo rule, health endpoint); Sprint 3 timeline task IDs aligned with the Jira due dates; ASM-03 and Sec 1.2 record that no TA feedback was received; attribution lines added to every subsection revised in PA3. Finalised on 06/11, one day after the `SCRUM-67` due date; see `Changes.md`, section A. |
