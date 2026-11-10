@@ -18,72 +18,43 @@ export function HomePage() {
   const [loadingNewest, setLoadingNewest] = useState(true);
   const [errorNewest, setErrorNewest] = useState(false);
 
-  const loadFeatured = useCallback(() => {
-    setLoadingFeatured(true);
-    setErrorFeatured(false);
-    return searchApi
-      .getFeaturedRecipes()
-      .then((res) => {
-        setFeatured(res.items);
-        setLoadingFeatured(false);
-      })
-      .catch(() => {
-        setErrorFeatured(true);
-        setLoadingFeatured(false);
-      });
-  }, []);
+  // setState only after the response, so the effect below never sets state synchronously.
+  const fetchFeatured = useCallback(
+    () =>
+      searchApi
+        .getFeaturedRecipes()
+        .then((res) => setFeatured(res.items))
+        .catch(() => setErrorFeatured(true))
+        .finally(() => setLoadingFeatured(false)),
+    [],
+  );
 
-  const loadNewest = useCallback(() => {
-    setLoadingNewest(true);
-    setErrorNewest(false);
-    return searchApi
-      .searchRecipes({ sort: 'NEWEST' })
-      .then((res) => {
-        setNewest(res.items);
-        setLoadingNewest(false);
-      })
-      .catch(() => {
-        setErrorNewest(true);
-        setLoadingNewest(false);
-      });
-  }, []);
+  const fetchNewest = useCallback(
+    () =>
+      searchApi
+        .searchRecipes({ sort: 'NEWEST' })
+        .then((res) => setNewest(res.items))
+        .catch(() => setErrorNewest(true))
+        .finally(() => setLoadingNewest(false)),
+    [],
+  );
 
   useEffect(() => {
-    let cancelled = false;
-    searchApi
-      .getFeaturedRecipes()
-      .then((res) => {
-        if (!cancelled) {
-          setFeatured(res.items);
-          setLoadingFeatured(false);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setErrorFeatured(true);
-          setLoadingFeatured(false);
-        }
-      });
+    void fetchFeatured();
+    void fetchNewest();
+  }, [fetchFeatured, fetchNewest]);
 
-    searchApi
-      .searchRecipes({ sort: 'NEWEST' })
-      .then((res) => {
-        if (!cancelled) {
-          setNewest(res.items);
-          setLoadingNewest(false);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setErrorNewest(true);
-          setLoadingNewest(false);
-        }
-      });
+  const retryFeatured = () => {
+    setLoadingFeatured(true);
+    setErrorFeatured(false);
+    void fetchFeatured();
+  };
 
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const retryNewest = () => {
+    setLoadingNewest(true);
+    setErrorNewest(false);
+    void fetchNewest();
+  };
 
   const handleSearch = (keyword: string) => {
     const trimmed = keyword.trim();
@@ -124,7 +95,7 @@ export function HomePage() {
             <button
               type="button"
               className="wk-btn wk-btn--secondary wk-btn--sm"
-              onClick={() => void loadFeatured()}
+              onClick={retryFeatured}
             >
               {strings.errorState.retry}
             </button>
@@ -171,7 +142,7 @@ export function HomePage() {
               <button
                 type="button"
                 className="wk-btn wk-btn--secondary wk-btn--sm"
-                onClick={() => void loadNewest()}
+                onClick={retryNewest}
               >
                 {strings.errorState.retry}
               </button>
