@@ -193,7 +193,7 @@ describe('HomePage (T026, T027, T033, SR-01 / W-SR01)', () => {
   it('displays only the first recipe from GET /recipes/featured with badge "Nổi bật tuần này"', async () => {
     renderHomePage();
 
-    const hero = document.querySelector('section.wx-hero')!;
+    const hero = document.querySelector<HTMLElement>('section.wx-hero')!;
     expect(hero).not.toBeNull();
 
     expect(await within(hero).findByText('Gà kho gừng')).toBeInTheDocument();
@@ -267,7 +267,6 @@ describe('HomePage (T026, T027, T033, SR-01 / W-SR01)', () => {
     let featuredCalls = 0;
     let newestCalls = 0;
     let failFeatured = true;
-    let failNewest = false;
 
     server.use(
       http.get('/api/v1/recipes/featured', () => {
@@ -293,9 +292,6 @@ describe('HomePage (T026, T027, T033, SR-01 / W-SR01)', () => {
       }),
       http.get('/api/v1/recipes/search', () => {
         newestCalls += 1;
-        if (failNewest) {
-          return HttpResponse.json({ status: 500 }, { status: 500 });
-        }
         return HttpResponse.json(makeNewestResponse(sixNewestRecipes));
       }),
     );
