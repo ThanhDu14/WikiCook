@@ -32,6 +32,8 @@ describe('app shell', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Hôm nay nấu gì?' })).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: 'WikiCook' }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('navigation', { name: 'Điều hướng chính' })).toHaveLength(2); // header + mobile bar
+    const header = appHeader();
+    expect(within(header).getByRole('link', { name: 'Khám phá' })).toHaveAttribute('aria-current', 'page');
   });
 
   it('has the header of the screens: logo, main links, search and account (W-MP01)', async () => {
@@ -40,10 +42,11 @@ describe('app shell', () => {
 
     const header = appHeader();
     const nav = within(header).getByRole('navigation', { name: 'Điều hướng chính' });
+    expect(within(nav).getByRole('link', { name: 'Khám phá' })).toHaveAttribute('href', '/');
+    expect(within(nav).getByRole('link', { name: 'Khám phá' })).not.toHaveAttribute('aria-current', 'page');
     expect(within(nav).getByRole('link', { name: 'Thực đơn' })).toHaveAttribute('href', '/meal-planner');
     expect(within(nav).getByRole('link', { name: 'Đi chợ' })).toHaveAttribute('href', '/shopping-list');
     // modules that are not built yet are shown but not links
-    expect(within(nav).getByText('Khám phá').closest('a')).toBeNull();
     expect(within(nav).getByText('Đã lưu').closest('a')).toBeNull();
     expect(within(header).getByRole('textbox', { name: 'Tìm kiếm' })).toBeDisabled();
     expect(within(header).getByRole('button', { name: 'Thông báo' })).toBeDisabled();
