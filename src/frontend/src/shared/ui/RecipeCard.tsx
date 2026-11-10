@@ -1,40 +1,53 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { strings } from '@/features/search/strings.vi';
 import type { RecipeCard as RecipeCardType } from '@/features/search/types';
 
 export interface RecipeCardProps {
   recipe: RecipeCardType;
   horizontal?: boolean;
+  featured?: boolean;
+  badge?: string;
   className?: string;
 }
 
-export function RecipeCard({ recipe, horizontal = false, className = '' }: RecipeCardProps) {
+export function RecipeCard({
+  recipe,
+  horizontal = false,
+  featured = false,
+  badge,
+  className = '',
+}: RecipeCardProps) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   const showCoverImage = Boolean(recipe.coverImageUrl && failedUrl !== recipe.coverImageUrl);
   const hasRating = recipe.ratingAvg !== null && recipe.reviewCount > 0;
-  const formattedRating = recipe.ratingAvg !== null
-    ? new Intl.NumberFormat('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(recipe.ratingAvg)
-    : null;
+  const formattedRating =
+    recipe.ratingAvg !== null
+      ? new Intl.NumberFormat('vi-VN', {
+          minimumFractionDigits: 1,
+          maximumFractionDigits: 1,
+        }).format(recipe.ratingAvg)
+      : null;
+
+  const photoBaseClass = featured
+    ? 'wk-photo min-[901px]:!aspect-[16/10] max-[900px]:w-[38%] max-[900px]:!aspect-auto max-[900px]:min-h-[120px] max-[900px]:flex-none'
+    : 'wk-photo';
 
   return (
-    <Link
-      to={`/recipes/${recipe.id}`}
-      className={`wk-card ${horizontal ? 'wk-card--horizontal' : ''} ${className}`}
-      style={{ textDecoration: 'none', color: 'inherit' }}
+    <article
+      className={`wk-card ${horizontal ? 'wk-card--horizontal' : ''} ${featured ? 'max-[900px]:flex-row' : ''} ${className}`.trim()}
     >
       {showCoverImage && recipe.coverImageUrl ? (
-        <div className="wk-photo">
+        <div className={photoBaseClass}>
           <img
             src={recipe.coverImageUrl}
             alt={strings.recipeCard.imageAlt(recipe.title)}
             onError={() => setFailedUrl(recipe.coverImageUrl)}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            className="h-full w-full object-cover"
           />
         </div>
       ) : (
         <div
-          className="wk-photo wk-photo--warm"
+          className={`${photoBaseClass} wk-photo--warm`}
           role="img"
           aria-label={strings.recipeCard.defaultImageAlt}
         >
@@ -48,8 +61,19 @@ export function RecipeCard({ recipe, horizontal = false, className = '' }: Recip
         </div>
       )}
 
-      <div className="wk-card__body" style={{ flex: 1, minWidth: 0 }}>
-        <h3 className="wk-card__title" style={{ fontSize: '17px', lineHeight: '22px' }}>
+      <div className="wk-card__body flex-1 min-w-0">
+        {badge && (
+          <span className="wk-badge wk-badge--ai justify-self-start">
+            <svg className="wk-icon wk-icon--16" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 17v5" />
+              <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" />
+            </svg>
+            {badge}
+          </span>
+        )}
+        <h3
+          className={`wk-card__title ${featured ? 'min-[901px]:text-[26px] min-[901px]:leading-[32px] max-[900px]:text-[17px] max-[900px]:leading-[22px]' : ''}`.trim()}
+        >
           {recipe.title}
         </h3>
         <div className="wk-meta">
@@ -80,7 +104,7 @@ export function RecipeCard({ recipe, horizontal = false, className = '' }: Recip
           )}
         </div>
         {recipe.conflicts && recipe.conflicts.length > 0 && (
-          <div className="wk-chips" style={{ marginTop: '4px' }}>
+          <div className="wk-chips mt-ds-1">
             {recipe.conflicts.map((conflict) => (
               <span key={conflict.name} className="wk-chip wk-chip--allergen">
                 <svg className="wk-icon wk-icon--16" viewBox="0 0 24 24" aria-hidden="true">
@@ -94,6 +118,6 @@ export function RecipeCard({ recipe, horizontal = false, className = '' }: Recip
           </div>
         )}
       </div>
-    </Link>
+    </article>
   );
 }

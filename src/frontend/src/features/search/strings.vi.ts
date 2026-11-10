@@ -12,8 +12,12 @@ export const strings = {
     searchPlaceholder: 'Tìm món, nguyên liệu…',
     searchAriaLabel: 'Tìm kiếm',
     featuredTitle: 'Nổi bật tuần này',
+    featuredBadge: 'Nổi bật tuần này',
+    featuredError: 'Không tải được món nổi bật.',
     viewAll: 'Xem tất cả',
     newRecipesTitle: 'Mới đăng',
+    newestError: 'Không tải được món mới đăng.',
+    quickFiltersAriaLabel: 'Bộ lọc nhanh',
     quickFilters: {
       under30: 'Dưới 30 phút',
       vegetarian: 'Món chay',

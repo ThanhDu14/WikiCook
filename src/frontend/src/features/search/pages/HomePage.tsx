@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { RecipeCard } from '@/shared/ui/RecipeCard';
 import { searchApi } from '../api/searchApi';
@@ -9,13 +9,49 @@ import type { RecipeCard as RecipeCardType } from '../types';
 
 export function HomePage() {
   const navigate = useNavigate();
+
   const [featured, setFeatured] = useState<RecipeCardType[]>([]);
   const [loadingFeatured, setLoadingFeatured] = useState(true);
+  const [errorFeatured, setErrorFeatured] = useState(false);
+
+  const [newest, setNewest] = useState<RecipeCardType[]>([]);
+  const [loadingNewest, setLoadingNewest] = useState(true);
+  const [errorNewest, setErrorNewest] = useState(false);
+
+  const loadFeatured = useCallback(() => {
+    setLoadingFeatured(true);
+    setErrorFeatured(false);
+    return searchApi
+      .getFeaturedRecipes()
+      .then((res) => {
+        setFeatured(res.items);
+        setLoadingFeatured(false);
+      })
+      .catch(() => {
+        setErrorFeatured(true);
+        setLoadingFeatured(false);
+      });
+  }, []);
+
+  const loadNewest = useCallback(() => {
+    setLoadingNewest(true);
+    setErrorNewest(false);
+    return searchApi
+      .searchRecipes({ sort: 'NEWEST' })
+      .then((res) => {
+        setNewest(res.items);
+        setLoadingNewest(false);
+      })
+      .catch(() => {
+        setErrorNewest(true);
+        setLoadingNewest(false);
+      });
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
     searchApi
-      .getFeaturedRecipes(10)
+      .getFeaturedRecipes()
       .then((res) => {
         if (!cancelled) {
           setFeatured(res.items);
@@ -24,7 +60,23 @@ export function HomePage() {
       })
       .catch(() => {
         if (!cancelled) {
+          setErrorFeatured(true);
           setLoadingFeatured(false);
+        }
+      });
+
+    searchApi
+      .searchRecipes({ sort: 'NEWEST' })
+      .then((res) => {
+        if (!cancelled) {
+          setNewest(res.items);
+          setLoadingNewest(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setErrorNewest(true);
+          setLoadingNewest(false);
         }
       });
 
@@ -43,50 +95,98 @@ export function HomePage() {
     }
   };
 
+  const featuredRecipe = featured[0] ?? null;
+
   return (
-    <div className="sx-stack" style={{ gap: '24px', maxWidth: '1080px', margin: '0 auto' }}>
-      <header className="sx-stack" style={{ gap: '8px' }}>
-        <p className="wk-eyebrow" style={{ margin: 0 }}>
-          {strings.home.greeting}
-        </p>
-        <h1 className="wk-display" style={{ margin: 0 }}>
-          {strings.home.title}
-        </h1>
-      </header>
-
-      <div className="sx-stack" style={{ gap: '12px', maxWidth: '720px' }}>
-        <SearchBox onSearch={handleSearch} />
-        <QuickFilters />
-      </div>
-
-      {/* Featured recipes section (SR-01) */}
-      <section className="sx-stack" style={{ gap: '16px' }} aria-labelledby="featured-heading">
-        <div
-          className="sx-between"
-          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-        >
-          <h2 id="featured-heading" className="wk-h3" style={{ margin: 0 }}>
-            {strings.home.featuredTitle}
-          </h2>
-          <Link to="/search" className="wk-link wk-small">
-            {strings.home.viewAll}
-          </Link>
+    <div className="wk-desktop flex flex-col gap-ds-6">
+      <section className="wx-hero">
+        <div className="sx-stack gap-5">
+          <p className="wk-eyebrow">{strings.home.greeting}</p>
+          <h1 className="wk-display">{strings.home.title}</h1>
+          <SearchBox
+            onSearch={handleSearch}
+            inputClassName="min-h-[56px] min-[901px]:min-h-[60px] shadow-1"
+          />
+          <QuickFilters />
         </div>
 
-        {loadingFeatured ? (
+        {loadingFeatured && (
           <div
-            className="wk-skel"
-            style={{ height: '140px', borderRadius: '12px' }}
+            className="wk-skel min-h-[260px] rounded-md"
             aria-busy="true"
+            data-testid="featured-skeleton"
           />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-ds-4">
-            {featured.map((recipe) => (
-              <RecipeCard key={recipe.id} recipe={recipe} />
-            ))}
+        )}
+
+        {!loadingFeatured && errorFeatured && (
+          <div className="wk-state wk-state--error" role="alert">
+            <p>{strings.home.featuredError}</p>
+            <button
+              type="button"
+              className="wk-btn wk-btn--secondary wk-btn--sm"
+              onClick={() => void loadFeatured()}
+            >
+              {strings.errorState.retry}
+            </button>
           </div>
         )}
+
+        {!loadingFeatured && !errorFeatured && featuredRecipe && (
+          <RecipeCard
+            recipe={featuredRecipe}
+            featured
+            badge={strings.home.featuredBadge}
+          />
+        )}
       </section>
+
+      {(loadingNewest || errorNewest || newest.length > 0) && (
+        <section className="flex flex-col gap-ds-4" aria-labelledby="newest-heading">
+          <div className="wx-head">
+            <div>
+              <h2 id="newest-heading">{strings.home.newRecipesTitle}</h2>
+            </div>
+            <div className="sx-row flex-wrap">
+              <Link to="/search?sort=NEWEST" className="wk-link">
+                {strings.home.viewAll}
+              </Link>
+            </div>
+          </div>
+
+          {loadingNewest && (
+            <div
+              className="wx-cards wx-cards--4"
+              aria-busy="true"
+              data-testid="newest-skeleton"
+            >
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className="wk-skel min-h-[240px] rounded-md" />
+              ))}
+            </div>
+          )}
+
+          {!loadingNewest && errorNewest && (
+            <div className="wk-state wk-state--error" role="alert">
+              <p>{strings.home.newestError}</p>
+              <button
+                type="button"
+                className="wk-btn wk-btn--secondary wk-btn--sm"
+                onClick={() => void loadNewest()}
+              >
+                {strings.errorState.retry}
+              </button>
+            </div>
+          )}
+
+          {!loadingNewest && !errorNewest && newest.length > 0 && (
+            <div className="wx-cards wx-cards--4">
+              {newest.slice(0, 4).map((recipe) => (
+                <RecipeCard key={recipe.id} recipe={recipe} />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }

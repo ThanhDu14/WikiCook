@@ -95,10 +95,21 @@ describe('RecipeCard (T016)', () => {
     expect(screen.getByText('Có Ngò rí')).toBeInTheDocument();
   });
 
-  it('makes the whole card a link to /recipes/{id}', () => {
-    renderCard(baseRecipe);
+  it('does not render save button (080 not built) and is not a link until recipe detail route exists', () => {
+    const { container } = renderCard(baseRecipe);
 
-    const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', '/recipes/101');
+    expect(screen.getByRole('article')).toHaveClass('wk-card');
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    expect(container.querySelector('.wk-card__save')).toBeNull();
+  });
+
+  it('renders featured badge when badge prop is provided', () => {
+    render(
+      <MemoryRouter>
+        <RecipeCard recipe={baseRecipe} featured badge="Nổi bật tuần này" />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('Nổi bật tuần này')).toBeInTheDocument();
   });
 });

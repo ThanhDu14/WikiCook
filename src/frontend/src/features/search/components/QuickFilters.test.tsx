@@ -48,11 +48,12 @@ describe('QuickFilters (T033, US2, SR-01)', () => {
     expect(handleSelect).toHaveBeenCalledWith({ difficulty: ['EASY'] });
   });
 
-  it('ensures quick filter chips meet touch target size >= 44x44 px (NFR-002)', () => {
+  it('uses wk-chip design system class for touch target size >= 44x44 px (NFR-002)', () => {
     renderQuickFilters();
 
     const chip = screen.getByRole('button', { name: /Dưới 30 phút/i });
-    expect(chip).toHaveStyle({ minHeight: '44px' });
+    expect(chip).toHaveClass('wk-chip');
+    expect(chip).not.toHaveAttribute('style');
   });
 });
 

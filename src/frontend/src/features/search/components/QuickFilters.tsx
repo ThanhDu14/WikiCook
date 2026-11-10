@@ -22,16 +22,14 @@ export function QuickFilters({ onSelect, className = '' }: QuickFiltersProps) {
 
   return (
     <div
-      className={`wk-chips ${className}`}
-      style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}
+      className={`wk-chips ${className}`.trim()}
       role="toolbar"
-      aria-label="Bộ lọc nhanh"
+      aria-label={strings.home.quickFiltersAriaLabel}
     >
       <button
         className="wk-chip"
         type="button"
         onClick={() => handleFilterClick({ time: 'LE30' })}
-        style={{ minHeight: '44px' }}
       >
         <svg className="wk-icon wk-icon--16" viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="12" r="10" />
@@ -44,7 +42,6 @@ export function QuickFilters({ onSelect, className = '' }: QuickFiltersProps) {
         className="wk-chip"
         type="button"
         onClick={() => handleFilterClick({ diet: 'VEGETARIAN' })}
-        style={{ minHeight: '44px' }}
       >
         <svg className="wk-icon wk-icon--16" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M7 21h10" />
@@ -59,7 +56,6 @@ export function QuickFilters({ onSelect, className = '' }: QuickFiltersProps) {
         className="wk-chip"
         type="button"
         onClick={() => handleFilterClick({ difficulty: ['EASY'] })}
-        style={{ minHeight: '44px' }}
       >
         <svg className="wk-icon wk-icon--16" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M18 20V10" />
