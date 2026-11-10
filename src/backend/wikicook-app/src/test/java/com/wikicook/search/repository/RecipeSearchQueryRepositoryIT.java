@@ -231,9 +231,11 @@ class RecipeSearchQueryRepositoryIT extends AbstractPostgresIT {
 
     @Test
     void dietVegetarianExcludesMeatAndSeafoodKinds() {
-        long veg = fx.recipe("Rau xào").ingredients(fx.ingredient("Cải ngọt", "PLANT")).create();
-        fx.recipe("Bò xào").ingredients(fx.ingredient("Thịt bò", "MEAT")).create();
-        fx.recipe("Rau chấm mắm").ingredients(fx.ingredient("Nước mắm", "SEAFOOD")).create();
+        // Names only this test uses: the test database is shared, and other suites create "Thịt bò" or
+        // "Nước mắm" with kind OTHER, which fx.ingredient would reuse.
+        long veg = fx.recipe("Rau xào").ingredients(fx.ingredient("Cải ngọt (search diet)", "PLANT")).create();
+        fx.recipe("Bò xào").ingredients(fx.ingredient("Thịt bò (search diet)", "MEAT")).create();
+        fx.recipe("Rau chấm mắm").ingredients(fx.ingredient("Nước mắm (search diet)", "SEAFOOD")).create();
 
         SearchCriteria c = new SearchCriteria(Keyword.of(null), null, List.of(), List.of(), Set.of(), List.of(),
                 DietType.VEGETARIAN, SearchSort.NEWEST, 1, false);
