@@ -61,7 +61,7 @@ export function WeekHeader({ weekStart, currentWeek, onChange, aiAction, actions
         </div>
       </div>
       {(actions || aiAction) && (
-        <div className="sx-row" role="group" aria-label={vi.weekActions} style={{ flexWrap: 'wrap' }}>
+        <div className="sx-row" role="group" aria-label={vi.weekActions} style={{ display: 'flex', flexWrap: 'wrap' }} /* .wx-head>div is a grid */>
           {actions}
           {aiAction}
         </div>
