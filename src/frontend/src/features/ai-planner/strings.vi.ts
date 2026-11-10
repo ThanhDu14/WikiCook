@@ -1,0 +1,93 @@
+import type { AiErrorCode, DietType, RelaxSuggestion } from './types';
+
+/** Vietnamese strings of the AI planner (T027); words seen by the user, never technical terms. */
+export const strings = {
+  generateButton: 'Tạo bằng AI',
+  weekFull: 'Tuần này không còn ô trống',
+
+  dialogTitle: 'Tạo thực đơn bằng AI',
+  dialogIntro: 'AI chỉ chọn món có trong WikiCook. Kiểm tra lại các điều kiện cho lần tạo này.',
+  profileIncomplete: 'Hồ sơ ăn uống của bạn còn trống. Thực đơn sẽ không tránh được dị ứng nào cho tới khi bạn điền hồ sơ.',
+  alwaysApplied: 'Luôn áp dụng',
+  thisTime: 'Cho lần tạo này',
+  allergens: (n: number) => `${n} chất gây dị ứng`,
+  excluded: (n: number) => `${n} nguyên liệu loại trừ`,
+  noRestriction: 'Chưa có hạn chế ăn uống',
+  servingsLabel: 'Số người ăn',
+  servingsValue: (n: number) => `${n} người`,
+  fewer: 'Bớt',
+  more: 'Thêm',
+  byRecipe: 'Theo công thức',
+  dietLabel: 'Kiểu ăn',
+  diet: { NONE: 'Không giới hạn', VEGETARIAN: 'Ăn chay', VEGAN: 'Thuần chay', PESCATARIAN: 'Ăn cá' } satisfies Record<DietType, string>,
+  maxCookTime: 'Tối đa',
+  maxCookTimeSuffix: 'phút mỗi món',
+  maxCookTimeInput: 'Số phút tối đa',
+  preferCuisines: (n: number) => `Ưu tiên ẩm thực yêu thích (${n})`,
+  daysLabel: 'Ngày',
+  mealsLabel: 'Bữa',
+  remaining: (n: number) => `Còn ${n}/5 lượt tạo trong 60 phút.`,
+  aiOffToday: 'Hôm nay AI đã hết lượt, thực đơn sẽ được tạo tự động.',
+  cancel: 'Hủy',
+  close: 'Đóng',
+  create: 'Tạo thực đơn',
+
+  generatingTitle: 'Đang chọn món cho tuần',
+  generatingText: 'Kiểm tra dị ứng và thời gian nấu cho từng món. Thường mất dưới 20 giây.',
+
+  disclaimer: 'Thực đơn do AI tạo dựa trên hồ sơ của bạn, hãy tự kiểm tra dị ứng và cân bằng dinh dưỡng',
+  disclaimerShort: 'Gợi ý do AI tạo, hãy tự kiểm tra',
+  draftTitleAi: 'Bản nháp AI · chưa lưu',
+  autoNoAi: 'Tạo tự động, không dùng AI',
+  aiDailyCap: 'AI đã hết lượt hôm nay',
+  modeAi: 'AI',
+  modeAuto: 'Auto',
+  newDishes: (n: number) => `${n} món mới`,
+  chooseSlots: (n: number) => `${n} ô cần bạn chọn`,
+  chooseDish: 'Chọn món',
+
+  discard: 'Bỏ nháp',
+  regenerate: 'Tạo lại',
+  save: 'Lưu thực đơn',
+  saving: 'Đang lưu…',
+  saved: (saved: number, skipped: number) =>
+    `Đã lưu ${saved} món vào thực đơn tuần` + (skipped > 0 ? ` · ${skipped} món bị bỏ qua` : ''),
+  goShopping: 'Xem danh sách đi chợ',
+
+  leaveTitle: 'Bỏ bản nháp?',
+  leaveText: (n: number) => `${n} món AI gợi ý chưa được lưu vào thực đơn. Nếu rời trang, bản nháp sẽ mất.`,
+  stay: 'Ở lại',
+
+  notEnoughTitle: (n: number) => `Chỉ tìm được ${n} món phù hợp`,
+  notEnoughText: (slots: number) =>
+    `Với các điều kiện đã chọn, WikiCook chưa đủ món cho ${slots} ô. AI không lặp món để lấp chỗ trống.`,
+  suggestionsLabel: 'Gợi ý',
+  relaxConditions: 'Nới điều kiện',
+  relax: {
+    INCREASE_MAX_COOK_TIME: 'Tăng thời gian nấu tối đa',
+    REMOVE_PREFERRED_CUISINES: 'Bỏ ưu tiên ẩm thực',
+    SELECT_FEWER_SLOTS: 'Chọn ít ngày hoặc ít bữa hơn',
+  } satisfies Record<RelaxSuggestion, string>,
+
+  limitTitle: 'Bạn đã dùng hết 5 lượt tạo',
+  limitText: (at: string | null) =>
+    `Lượt tiếp theo mở lại ${at ? `lúc ${at}` : 'trong vòng 60 phút'}. Trong lúc chờ, bạn vẫn tự thêm món vào thực đơn được.`,
+  limitNote: '“Tạo lại” cũng tính là một lượt. Bản nháp dự phòng khi AI lỗi không tính.',
+  backToPlan: 'Về thực đơn',
+
+  errors: {
+    VALIDATION_ERROR: 'Điều kiện chưa hợp lệ, hãy kiểm tra lại.',
+    INVALID_WEEK_START: 'Tuần này không hợp lệ.',
+    UNAUTHENTICATED: 'Bạn cần đăng nhập lại để tạo thực đơn.',
+    PAST_WEEK: 'Tuần này đã qua, không tạo thực đơn được nữa.',
+    NO_EMPTY_SLOT: 'Các ngày đã chọn không còn ô trống.',
+    NOT_ENOUGH_RECIPES: 'Không đủ món phù hợp với các điều kiện này. Hãy nới bớt điều kiện hoặc chọn ít ô hơn.',
+    RATE_LIMITED: 'Bạn đã dùng hết 5 lượt tạo trong 60 phút. Hãy thử lại sau.',
+    GENERATION_IN_PROGRESS: 'Bạn đang có một lượt tạo khác chưa xong. Hãy chờ một chút rồi thử lại.',
+    BACKUP_UNAVAILABLE: 'Hiện chưa tạo được thực đơn. Bạn có thể tự chọn món hoặc thử lại sau.',
+    SUGGESTIONS_UNAVAILABLE: 'Chưa có gợi ý lúc này.',
+    NETWORK: 'Mất kết nối mạng. Hãy kiểm tra mạng rồi thử lại.',
+    ABORTED: 'Đã hủy.',
+    UNKNOWN: 'Có lỗi xảy ra, hãy thử lại.',
+  } satisfies Record<AiErrorCode, string>,
+};

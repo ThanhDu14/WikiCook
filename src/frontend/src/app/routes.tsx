@@ -20,9 +20,12 @@ export const routes: RouteObject[] = [
     element: <AppLayout />,
     children: [
       { index: true, element: <Navigate to="/shopping-list" replace /> },
-      { path: 'meal-planner', element: <MealPlannerPage />, handle: { wide: true } },
+      { path: 'meal-planner', element: <MealPlannerPage /> },
       { path: 'shopping-list', element: <ShoppingListPage /> },
       { path: 'shopping-list/history', element: <ShoppingHistoryPage /> },
+      // The import of a week (030 "Đi chợ", 031 "Lưu thực đơn") is D's page, not built yet (040 T041/T044/T045 in PA4):
+      // until then it opens the shopping list instead of the not-found page.
+      { path: 'shopping-list/import', element: <Navigate to="/shopping-list" replace /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
