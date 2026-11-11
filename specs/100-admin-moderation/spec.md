@@ -46,8 +46,13 @@ As WikiCook grows from an initial recipe catalog into a community-driven culinar
 - Q: Admin có thể trực tiếp chỉnh sửa nội dung công thức của người dùng không? → A: **Không.** Admin chỉ có thể duyệt/từ chối/yêu cầu chỉnh. Nếu cần sửa nội dung, Admin gửi `REVISION_REQUESTED` kèm ghi chú chi tiết để tác giả tự sửa. Điều này bảo vệ quyền sở hữu nội dung của tác giả.
 - Q: Khi một công thức bị từ chối (`REJECTED`), tác giả có thể gửi duyệt lại không? → A: Có. Tác giả có thể chỉnh sửa công thức đã bị từ chối và gửi duyệt lại, lúc đó trạng thái chuyển về `PENDING`. Lý do từ chối cũ vẫn được giữ trong `moderation_actions` để tham khảo.
 - Q: Moderator có thể đình chỉ hoặc cấm tài khoản không, hay chỉ Admin mới có quyền? → A: **Moderator** có thể đình chỉ tạm thời (tối đa 30 ngày). Chỉ **Administrator** mới có thể cấm vĩnh viễn (`BANNED`) hoặc thay đổi vai trò người dùng.
-- Q: Khi đình chỉ tài khoản, người dùng đang đăng nhập có bị đẩy ra ngay không? → A: Không đẩy ra ngay. Khi JWT hết hạn và refresh token bị gọi, hệ thống kiểm tra trạng thái tài khoản và từ chối cấp token mới, buộc đăng nhập lại → thấy thông báo bị đình chỉ. Thời gian tối đa trước khi hiệu lực = thời gian sống JWT (thường 15–30 phút).
+- Q: Khi đình chỉ tài khoản, người dùng đang đăng nhập có bị đẩy ra ngay không? → A: **Có, chậm nhất ở request kế tiếp** (010 FR-024, sửa 2026-11-07). Hệ thống kiểm tra trạng thái tài khoản ở mọi request, không chờ JWT hết hạn; người dùng thấy thông báo bị đình chỉ kèm lý do và ngày kết thúc.
 - Q: Audit log có thể bị xóa hoặc chỉnh sửa bởi Admin không? → A: **Không.** Bảng `audit_logs` là **chỉ ghi (append-only)**, không có endpoint nào cho phép UPDATE hoặc DELETE. Đây là yêu cầu bảo toàn tính toàn vẹn kiểm toán.
+
+### Session 2026-11-07 (căn chỉnh theo spec 010, chờ E xác nhận)
+- Q: Lệnh cấm có gỡ được không? → A: **Có.** Chỉ Administrator gỡ đình chỉ hoặc cấm sớm, qua API của 010 (010 FR-022, FR-024a). Spec này không còn ghi lệnh cấm là không thể hoàn tác.
+- Q: Người dùng khiếu nại thế nào? → A: **Không có quy trình khiếu nại trong hệ thống.** Email đình chỉ, cấm do 010 gửi, kèm địa chỉ liên hệ cấu hình sẵn; Administrator xem xét thủ công rồi gỡ án nếu cần (010 FR-024a).
+- Q: Tên cột của `user_suspensions`, `audit_logs` theo đâu? → A: Theo `docs/analysis-and-design/database/full-schema.md` mục 4.10 và migration `V102` của 010: `kind`, `starts_at`, `ends_at`, `created_by`, `lifted_at`, `lifted_by`; `audit_logs` dùng `details` và `created_at`. Hết hạn tự nhiên = có `lifted_at` và `lifted_by` NULL.
 
 ---
 
@@ -87,7 +92,7 @@ As a **Moderator or Administrator**, I want to view and resolve community-submit
 2. **Given** the moderator selects a report targeting a review, **When** they tap "Xem chi tiết" (View Details), **Then** the system displays the full reported review content, the original recipe context, the reporter's description, and the reported user's violation history (if any), alongside resolution action buttons.
 3. **Given** the moderator reviews a valid report, **When** they select a resolution action from: "Ẩn nội dung" (Hide Content), "Xóa nội dung" (Delete Content), "Cảnh cáo người dùng" (Warn User), "Đình chỉ tài khoản" (Suspend Account), or "Bỏ qua" (Dismiss — no violation found), **Then** the system executes the chosen action, updates the report `status` to `RESOLVED`, sets `resolved_by` and `resolved_at`, creates an `audit_logs` entry, and sends a notification to the reporter confirming the report has been reviewed.
 4. **Given** the moderator selects "Bỏ qua" (Dismiss), **When** they confirm, **Then** the report status changes to `DISMISSED`, no action is taken on the reported content, and a `moderation_actions` record with `action = 'REPORT_DISMISSED'` is created.
-5. **Given** a report targets a user account (e.g., systematic abuse), **When** the moderator selects "Đình chỉ tài khoản" and specifies a duration (1 day, 7 days, 30 days), **Then** the system creates a `user_suspensions` record with `suspended_until`, updates the user's effective status, and resolves the report.
+5. **Given** a report targets a user account (e.g., systematic abuse), **When** the moderator selects "Đình chỉ tài khoản" and specifies a duration (1 day, 7 days, 30 days), **Then** the system creates a `user_suspensions` record with `kind = 'SUSPENSION'` and `ends_at`, updates the user's effective status, and resolves the report.
 
 ---
 
@@ -104,10 +109,11 @@ As an **Administrator**, I want to view all registered user accounts, suspend or
 1. **Given** an Administrator navigates to the "Quản lý người dùng" (User Management) page, **When** the page loads, **Then** the system displays a searchable, paginated list of all registered users showing: display name, email (masked: `n***@gmail.com`), role (Member / Contributor / Moderator / Administrator), account status (Active / Suspended / Banned), registration date, and total recipes submitted.
 2. **Given** the administrator searches by display name or email prefix, **When** they type in the search box, **Then** the list filters in real-time (debounced, 300ms) showing only matching users.
 3. **Given** the administrator views a specific user's detail panel, **When** they tap "Xem chi tiết" on a user row, **Then** the system displays: full profile information, role history, suspension/ban history (from `user_suspensions`), total published recipes, total reviews, and pending reports against this user.
-4. **Given** the administrator selects "Đình chỉ" (Suspend) on a user, **When** they specify a reason (required, max 500 characters) and duration (1 day, 7 days, 14 days, 30 days), **Then** the system creates a `user_suspensions` record with `user_id`, `reason`, `suspended_by` (admin ID), `suspended_at`, `suspended_until`, and `status = 'ACTIVE'`, and creates an `audit_logs` entry.
-5. **Given** only an Administrator (not Moderator) selects "Cấm vĩnh viễn" (Permanent Ban) on a user, **When** they provide a reason and confirm via a double-confirmation dialog ("Hành động này không thể hoàn tác. Bạn có chắc chắn?"), **Then** the system creates a `user_suspensions` record with `suspended_until = NULL` (permanent), updates the user's effective status, revokes all active refresh tokens, and creates an `audit_logs` entry.
-6. **Given** only an Administrator selects "Đổi vai trò" (Change Role), **When** they select a new role from the dropdown (Member ↔ Contributor ↔ Moderator) and confirm, **Then** the system updates `users.role`, creates an `audit_logs` entry recording the role change with `old_value` and `new_value`.
+4. **Given** the administrator selects "Đình chỉ" (Suspend) on a user, **When** they specify a reason (required, max 500 characters) and duration (1 day, 7 days, 14 days, 30 days), **Then** the system creates a `user_suspensions` record with `user_id`, `kind = 'SUSPENSION'`, `reason`, `created_by` (admin ID), `starts_at` and `ends_at`, and creates an `audit_logs` entry.
+5. **Given** only an Administrator (not Moderator) selects "Cấm vĩnh viễn" (Permanent Ban) on a user, **When** they provide a reason and confirm via a double-confirmation dialog ("Tài khoản sẽ bị cấm cho tới khi Administrator gỡ lệnh. Bạn có chắc chắn?"), **Then** the system creates a `user_suspensions` record with `kind = 'BAN'` and `ends_at = NULL`, updates the user's effective status, revokes all active refresh tokens, and creates an `audit_logs` entry.
+6. **Given** only an Administrator selects "Đổi vai trò" (Change Role), **When** they select a new role from the dropdown (Member ↔ Contributor ↔ Moderator) and confirm, **Then** the system updates `users.role`, creates an `audit_logs` entry recording the old and new role in `details`.
 7. **Given** a Moderator attempts to ban a user or change roles, **When** they access the user management page, **Then** the "Cấm vĩnh viễn" and "Đổi vai trò" action buttons are not rendered (hidden, not just disabled), and API endpoints return HTTP 403 if called directly.
+8. **Given** an account is suspended or banned, **When** an Administrator chooses "Gỡ án" (Lift) and confirms, **Then** the system calls spec 010 to end the sanction early, the owner receives an email, and an `audit_logs` entry is created. Moderators do not see this action and the API returns HTTP 403 if called directly.
 
 ---
 
@@ -164,7 +170,7 @@ As an **Administrator**, I want to view a real-time dashboard of platform health
 3. **Given** an Administrator navigates to the "Nhật ký kiểm toán" (Audit Log) page, **When** the page loads, **Then** the system displays a chronologically sorted (newest first), paginated list of all `audit_logs` entries showing: timestamp, actor (admin/moderator display name), action type, target entity type, target ID, and summary description.
 4. **Given** the audit log page provides filter controls, **When** the administrator filters by actor name, action type (e.g., `RECIPE_APPROVED`, `USER_SUSPENDED`, `ROLE_CHANGED`), target type, or date range, **Then** the list updates to show only matching entries.
 5. **Given** the audit log is append-only, **When** any user (including Administrator) attempts to access a DELETE or UPDATE endpoint for `audit_logs`, **Then** the system returns HTTP 403 Forbidden. No audit log record can ever be modified or deleted via the application.
-6. **Given** any moderation or administrative action is performed anywhere in the admin panel, **When** the action completes, **Then** the system automatically creates an `audit_logs` entry with: `actor_id`, `action` (enum string), `target_type`, `target_id`, `old_value` (JSON, nullable), `new_value` (JSON, nullable), `ip_address`, and `performed_at`.
+6. **Given** any moderation or administrative action is performed anywhere in the admin panel, **When** the action completes, **Then** the system automatically creates an `audit_logs` entry with: `actor_id`, `action` (enum string), `target_type`, `target_id`, `details` (JSON, nullable, old and new values as `{old, new}`), `ip_address`, and `created_at`.
 
 ---
 
@@ -196,8 +202,8 @@ As an **Administrator**, I want to view a real-time dashboard of platform health
 - **FR-007**: System MUST detect and handle concurrent moderation conflicts when two moderators attempt to act on the same recipe.
 - **FR-008**: System MUST provide a "Xử lý báo cáo" (Reports) page displaying all reports with `status = 'PENDING'`, with filtering by `target_type` and `reason`.
 - **FR-009**: System MUST provide resolution actions for reports: Hide Content, Delete Content, Warn User, Suspend Account, and Dismiss.
-- **FR-010**: System MUST provide user account management with search, suspend (time-limited), permanent ban (Administrator only), and role change (Administrator only) capabilities.
-- **FR-011**: System MUST enforce role-based restrictions: Moderators can suspend users (max 30 days); only Administrators can ban permanently or change roles.
+- **FR-010**: System MUST provide user account management with search, suspend (time-limited), permanent ban (Administrator only), role change (Administrator only), and lifting a suspension or ban early (Administrator only) capabilities.
+- **FR-011**: System MUST enforce role-based restrictions: Moderators can suspend users (max 30 days); only Administrators can ban permanently, change roles, or lift a suspension or ban early.
 - **FR-012**: System MUST provide CRUD operations for categories, cuisines, tags, and ingredients with deactivation instead of deletion for items linked to published recipes.
 - **FR-013**: System MUST provide featured recipe curation with pin/unpin, display ordering, and optional auto-expiry date, limited to 10 concurrent featured recipes.
 - **FR-014**: System MUST maintain an append-only `audit_logs` table that records every administrative action with actor, action type, target, old/new values, IP address, and timestamp.
@@ -245,16 +251,16 @@ As an **Administrator**, I want to view a real-time dashboard of platform health
   - Indexes: `idx_mod_actions_recipe_id` (recipe history), `idx_mod_actions_moderator_id` (moderator activity log).
 
 - **`user_suspensions`**: Records account suspension and ban actions.
-  - Attributes: `id` (BIGINT PK), `user_id` (FK → users), `suspended_by` (FK → users), `reason` (TEXT, max 500 chars), `suspended_at` (TIMESTAMPTZ, DEFAULT now()), `suspended_until` (TIMESTAMPTZ, nullable — NULL = permanent ban), `lifted_at` (TIMESTAMPTZ, nullable), `status` (VARCHAR, CHECK IN ('ACTIVE', 'EXPIRED', 'LIFTED'), DEFAULT 'ACTIVE').
-  - Indexes: `idx_suspensions_user_id` (user lookup), `idx_suspensions_status` (active suspensions filter).
+  - Attributes: `id` (BIGINT PK), `user_id` (FK → users), `kind` (VARCHAR, CHECK IN ('SUSPENSION', 'BAN')), `reason` (VARCHAR(500), NOT NULL), `starts_at` (TIMESTAMPTZ), `ends_at` (TIMESTAMPTZ, nullable — NULL only for a ban), `created_by` (FK → users), `lifted_at` (TIMESTAMPTZ, nullable), `lifted_by` (FK → users, nullable). A row with `lifted_at` set and `lifted_by` NULL expired on its own. Table created by migration `V102` of spec 010.
+  - Indexes: `idx_suspensions_user_id` (user lookup), `UNIQUE (user_id) WHERE lifted_at IS NULL` (at most one running sanction).
 
 - **`featured_recipes`**: Tracks recipes pinned to the homepage featured section.
   - Attributes: `id` (BIGINT PK), `recipe_id` (FK → recipes, UNIQUE), `featured_by` (FK → users), `featured_at` (TIMESTAMPTZ, DEFAULT now()), `featured_until` (TIMESTAMPTZ, nullable — NULL = no expiry), `display_order` (INTEGER, DEFAULT 0).
   - Constraints: Maximum 10 concurrent records enforced at application level.
 
 - **`audit_logs`**: Append-only immutable record of all administrative actions.
-  - Attributes: `id` (BIGINT PK), `actor_id` (FK → users), `action` (VARCHAR, e.g., 'RECIPE_APPROVED', 'USER_SUSPENDED', 'ROLE_CHANGED', 'CATEGORY_CREATED', 'FEATURED_PINNED'), `target_type` (VARCHAR, e.g., 'RECIPE', 'USER', 'CATEGORY', 'REPORT'), `target_id` (BIGINT), `old_value` (JSONB, nullable), `new_value` (JSONB, nullable), `ip_address` (INET), `performed_at` (TIMESTAMPTZ, DEFAULT now()).
-  - Indexes: `idx_audit_actor_id` (actor filter), `idx_audit_action` (action type filter), `idx_audit_performed_at` (date range query), `idx_audit_target` (`target_type`, `target_id`).
+  - Attributes: `id` (BIGINT PK), `actor_id` (FK → users), `action` (VARCHAR, e.g., 'RECIPE_APPROVED', 'USER_SUSPENDED', 'ROLE_CHANGED', 'CATEGORY_CREATED', 'FEATURED_PINNED'), `target_type` (VARCHAR, e.g., 'RECIPE', 'USER', 'CATEGORY', 'REPORT'), `target_id` (BIGINT), `details` (JSONB, nullable; old and new values as `{old, new}`; never an email or display name), `ip_address` (INET), `created_at` (TIMESTAMPTZ, DEFAULT now()). Table created by migration `V102` of spec 010.
+  - Indexes: `idx_audit_actor_id` (actor filter), `idx_audit_action` (action type filter), `idx_audit_created_at` (date range query), `idx_audit_target` (`target_type`, `target_id`).
   - Security: No UPDATE or DELETE operations permitted.
 
 - **`reports`** (table schema defined in spec `070-review-cooksnap`): This spec defines the **processing workflow** for reports, not the table schema. The `reports` table is shared between spec 070 (creation) and spec 100 (processing).
