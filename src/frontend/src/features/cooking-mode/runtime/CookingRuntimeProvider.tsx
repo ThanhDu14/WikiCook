@@ -75,7 +75,12 @@ export function CookingRuntimeProvider({
     if (typeof window !== 'undefined') window.location.assign(`/cooking/${encodeURIComponent(recipeId)}`);
   };
 
-  useEffect(() => { setWidgetHidden(false); }, [backgroundSessions.map((item) => item.recipeId).join(',')]);
+  const backgroundRecipeIds = backgroundSessions.map((item) => item.recipeId).join(',');
+  useEffect(() => {
+    // A changed set of background sessions makes the dismissed widget visible again.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setWidgetHidden(false);
+  }, [backgroundRecipeIds]);
 
   const handleDismissBackground = () => {
     setWidgetHidden(true);

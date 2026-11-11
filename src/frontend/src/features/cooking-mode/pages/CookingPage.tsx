@@ -16,6 +16,8 @@ export function CookingPage(): React.ReactElement {
     let isCancelled = false;
 
     if (!recipeId) {
+      // Keep route-load state synchronized when no recipe id is supplied.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setError('Thiếu mã công thức.');
       setIsLoading(false);
       return;

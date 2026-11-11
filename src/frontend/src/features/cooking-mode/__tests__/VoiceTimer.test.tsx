@@ -26,11 +26,14 @@ describe('voice timer parsing', () => {
 
 describe('voice timer recognition integration', () => {
   let runtime: CookingRuntimeManager;
-  let recognition: { onresult: ((event: any) => void) | null };
+  type ResultEvent = { resultIndex: number; results: Array<{ isFinal: boolean; 0: { transcript: string; confidence: number } }> };
+  let recognition: { onresult: ((event: ResultEvent) => void) | null };
   beforeEach(() => {
     localStorage.clear();
     vi.stubGlobal('SpeechRecognition', class {
       onresult = null;
+      // The mock exposes the constructed instance so tests can dispatch recognition results.
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       constructor() { recognition = this; }
       start() {}
       stop() {}

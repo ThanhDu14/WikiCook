@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import { useCookingRuntime } from '../runtime/CookingRuntimeProvider';
 import { COOKING_VI } from '../i18n/vi';
 import { wakeLockAdapter, fullscreenAdapter, getAudioSynth } from '../adapters/browserCapabilities';
@@ -68,6 +68,8 @@ export function CookingView({
       }
       const check = runtime.checkResumableSession(initialSnapshot.recipeId);
       if (check.kind === 'RESUMABLE') {
+        // Hydration synchronizes the dialog with the externally persisted session.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setResumableEnvelope(check.value);
         setIsResumeDialogOpen(true);
       } else {
@@ -100,7 +102,7 @@ export function CookingView({
   };
 
   const sessionRef = useRef(session);
-  sessionRef.current = session;
+  useLayoutEffect(() => { sessionRef.current = session; }, [session]);
   const theme = session?.preferences.theme ?? 'LIGHT';
   const isHighContrast = theme === 'HIGH_CONTRAST_DARK';
 
@@ -175,6 +177,8 @@ export function CookingView({
   useEffect(() => {
     let isMounted = true;
     const supported = wakeLockAdapter.isSupported();
+    // Reflect the browser capability checked during wake-lock setup.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setWakeLockSupported(supported);
     const unsubscribeWakeLock = wakeLockAdapter.subscribe((active) => {
       if (isMounted) {

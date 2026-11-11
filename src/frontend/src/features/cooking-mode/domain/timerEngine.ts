@@ -46,6 +46,8 @@ export function resumeTimer(timer: KitchenTimer, now: EpochMs = Date.now()): Kit
 export function extendTimer(
   timer: KitchenTimer,
   extendSeconds: number,
+  // Retained for callers that provide a clock; extension uses the existing deadline.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _now: EpochMs = Date.now(),
 ): KitchenTimer {
   if (timer.status !== 'RUNNING') {

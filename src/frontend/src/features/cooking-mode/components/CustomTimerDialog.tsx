@@ -55,10 +55,11 @@ export function CustomTimerDialog({
         {notice && <p className="mt-2 text-sm">{notice}</p>}
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-stone-500 [.theme-high-contrast-dark_&]:text-stone-400">
+            <label htmlFor="custom-timer-label" className="block text-xs font-semibold uppercase tracking-wider text-stone-500 [.theme-high-contrast-dark_&]:text-stone-400">
               Nhãn bộ đếm
             </label>
             <input
+              id="custom-timer-label"
               type="text"
               value={label}
               onChange={(e) => setLabel(e.target.value)}

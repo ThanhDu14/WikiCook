@@ -14,6 +14,8 @@ export interface BackgroundTimerWidgetProps {
 export function BackgroundTimerWidget({
   visible,
   timers,
+  // The optional clock defaults to the current time on each runtime-driven render.
+  // eslint-disable-next-line react-hooks/purity
   now = Date.now(),
   onReturnToCooking,
   onDismiss,

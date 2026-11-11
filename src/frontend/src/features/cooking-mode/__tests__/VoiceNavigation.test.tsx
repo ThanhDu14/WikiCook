@@ -116,8 +116,8 @@ describe('VoiceNavigation UI Integration in CookingView (T039 & T040 - US4)', ()
   });
 
   it('handles NEXT_STEP voice command dispatch and advances step', () => {
-    let capturedCallbacks: any;
-    vi.spyOn(sharedSpeechAdapter, 'startListening').mockImplementation((cbs: any) => {
+    let capturedCallbacks: Parameters<typeof sharedSpeechAdapter.startListening>[0];
+    vi.spyOn(sharedSpeechAdapter, 'startListening').mockImplementation((cbs) => {
       capturedCallbacks = cbs;
       return true;
     });
@@ -138,7 +138,7 @@ describe('VoiceNavigation UI Integration in CookingView (T039 & T040 - US4)', ()
 
     // Simulate voice recognized "tiếp theo"
     act(() => {
-      capturedCallbacks.onCommand('NEXT_STEP', 'tiếp theo');
+      capturedCallbacks?.onCommand?.('NEXT_STEP', 'tiếp theo');
     });
 
     // Step should advance to 2
@@ -146,8 +146,8 @@ describe('VoiceNavigation UI Integration in CookingView (T039 & T040 - US4)', ()
   });
 
   it('displays "Không rõ khẩu lệnh" banner when command is UNKNOWN', () => {
-    let capturedCallbacks: any;
-    vi.spyOn(sharedSpeechAdapter, 'startListening').mockImplementation((cbs: any) => {
+    let capturedCallbacks: Parameters<typeof sharedSpeechAdapter.startListening>[0];
+    vi.spyOn(sharedSpeechAdapter, 'startListening').mockImplementation((cbs) => {
       capturedCallbacks = cbs;
       return true;
     });
@@ -162,7 +162,7 @@ describe('VoiceNavigation UI Integration in CookingView (T039 & T040 - US4)', ()
     fireEvent.click(micBtn);
 
     act(() => {
-      capturedCallbacks.onCommand('UNKNOWN', 'tiếng ồn');
+      capturedCallbacks?.onCommand?.('UNKNOWN', 'tiếng ồn');
     });
 
     expect(screen.getByText(COOKING_VI.unrecognizedCommand)).toBeDefined();
