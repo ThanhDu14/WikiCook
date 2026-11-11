@@ -78,7 +78,7 @@ export function StepNavigation({
         disabled={isFirstStep}
         onClick={onPrev}
         aria-label={COOKING_VI.prevStep}
-        className="flex min-h-[64px] min-w-[64px] items-center justify-center gap-1.5 rounded-2xl bg-stone-200 px-6 py-4 text-lg font-bold text-stone-800 shadow-sm transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 hover:bg-stone-300 dark:bg-stone-800 dark:text-stone-200 dark:hover:bg-stone-700"
+        className="flex min-h-[64px] min-w-[64px] items-center justify-center gap-1.5 rounded-2xl bg-stone-200 px-6 py-4 text-lg font-bold text-stone-800 shadow-sm transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 hover:bg-stone-300 [.theme-high-contrast-dark_&]:bg-stone-800 [.theme-high-contrast-dark_&]:text-stone-200 [.theme-high-contrast-dark_&]:hover:bg-stone-700"
       >
         <span>←</span>
         <span>{COOKING_VI.prevStep}</span>
@@ -92,7 +92,7 @@ export function StepNavigation({
             aria-label={COOKING_VI.jumpToStep}
             value={currentStepIndex}
             onChange={(e) => onSelectStep(parseInt(e.target.value, 10))}
-            className="min-h-[48px] rounded-xl border border-stone-300 bg-white px-3 py-2 text-base font-medium text-stone-800 shadow-sm dark:border-stone-700 dark:bg-stone-900 dark:text-white"
+            className="min-h-[48px] rounded-xl border border-stone-300 bg-white px-3 py-2 text-base font-medium text-stone-800 shadow-sm [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-white"
           >
             {Array.from({ length: totalSteps }, (_, idx) => (
               <option key={idx} value={idx}>
@@ -106,7 +106,7 @@ export function StepNavigation({
           <button
             type="button"
             onClick={onOpenIngredients}
-            className="flex min-h-[48px] items-center gap-1.5 rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-700 shadow-sm hover:bg-stone-50 active:scale-95 transition dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300"
+            className="flex min-h-[48px] items-center gap-1.5 rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-700 shadow-sm hover:bg-stone-50 active:scale-95 transition [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-yellow-200 [.theme-high-contrast-dark_&]:hover:bg-yellow-950"
           >
             🥕 {COOKING_VI.viewIngredients}
           </button>
@@ -119,7 +119,7 @@ export function StepNavigation({
           type="button"
           onClick={onFinish}
           aria-label={COOKING_VI.finishCooking}
-          className="flex min-h-[64px] min-w-[64px] items-center justify-center gap-1.5 rounded-2xl bg-emerald-600 px-6 py-4 text-lg font-bold text-white shadow-md transition active:scale-95 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600"
+          className="flex min-h-[64px] min-w-[64px] items-center justify-center gap-1.5 rounded-2xl bg-emerald-600 px-6 py-4 text-lg font-bold text-white shadow-md transition active:scale-95 hover:bg-emerald-700 [.theme-high-contrast-dark_&]:bg-emerald-700 [.theme-high-contrast-dark_&]:hover:bg-emerald-600"
         >
           <span>✓</span>
           <span>{COOKING_VI.finishCooking}</span>
@@ -129,7 +129,7 @@ export function StepNavigation({
           type="button"
           onClick={onNext}
           aria-label={COOKING_VI.nextStep}
-          className="flex min-h-[64px] min-w-[64px] items-center justify-center gap-1.5 rounded-2xl bg-orange-600 px-6 py-4 text-lg font-bold text-white shadow-md transition active:scale-95 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600"
+          className="flex min-h-[64px] min-w-[64px] items-center justify-center gap-1.5 rounded-2xl bg-orange-600 px-6 py-4 text-lg font-bold text-white shadow-md transition active:scale-95 hover:bg-orange-700 [.theme-high-contrast-dark_&]:bg-orange-700 [.theme-high-contrast-dark_&]:hover:bg-orange-600"
         >
           <span>{COOKING_VI.nextStep}</span>
           <span>→</span>

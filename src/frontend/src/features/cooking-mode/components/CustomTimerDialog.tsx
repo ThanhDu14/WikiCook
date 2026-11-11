@@ -42,14 +42,14 @@ export function CustomTimerDialog({
       aria-labelledby="custom-timer-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
     >
-      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl dark:bg-stone-900 dark:text-white">
-        <h2 id="custom-timer-title" className="text-xl font-bold text-stone-900 dark:text-white">
+      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-white">
+        <h2 id="custom-timer-title" className="text-xl font-bold text-stone-900 [.theme-high-contrast-dark_&]:text-white">
           {COOKING_VI.customTimerTitle}
         </h2>
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-stone-500 [.theme-high-contrast-dark_&]:text-stone-400">
               Nhãn bộ đếm
             </label>
             <input
@@ -57,13 +57,13 @@ export function CustomTimerDialog({
               value={label}
               onChange={(e) => setLabel(e.target.value)}
               placeholder={COOKING_VI.timerLabelPlaceholder}
-              className="mt-1 w-full rounded-xl border border-stone-300 px-3.5 py-2.5 text-sm text-stone-900 shadow-sm focus:border-orange-500 focus:outline-none dark:border-stone-700 dark:bg-stone-800 dark:text-white"
+              className="mt-1 w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-sm text-stone-900 shadow-sm focus:border-orange-500 focus:outline-none [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:bg-stone-800 [.theme-high-contrast-dark_&]:text-white"
             />
           </div>
 
           <div className="grid grid-cols-3 gap-2">
             <div>
-              <label className="block text-xs font-semibold text-stone-500 dark:text-stone-400">
+              <label className="block text-xs font-semibold text-stone-500 [.theme-high-contrast-dark_&]:text-stone-400">
                 {COOKING_VI.timerHours}
               </label>
               <input
@@ -73,12 +73,12 @@ export function CustomTimerDialog({
                 value={hours}
                 aria-label={COOKING_VI.timerHours}
                 onChange={(e) => setHours(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-stone-300 px-3 py-2 text-center text-lg font-bold text-stone-900 shadow-sm focus:border-orange-500 focus:outline-none dark:border-stone-700 dark:bg-stone-800 dark:text-white"
+                className="mt-1 w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-center text-lg font-bold text-stone-900 shadow-sm focus:border-orange-500 focus:outline-none [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:bg-stone-800 [.theme-high-contrast-dark_&]:text-white"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-stone-500 dark:text-stone-400">
+              <label className="block text-xs font-semibold text-stone-500 [.theme-high-contrast-dark_&]:text-stone-400">
                 {COOKING_VI.timerMinutes}
               </label>
               <input
@@ -88,12 +88,12 @@ export function CustomTimerDialog({
                 value={minutes}
                 aria-label={COOKING_VI.timerMinutes}
                 onChange={(e) => setMinutes(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-stone-300 px-3 py-2 text-center text-lg font-bold text-stone-900 shadow-sm focus:border-orange-500 focus:outline-none dark:border-stone-700 dark:bg-stone-800 dark:text-white"
+                className="mt-1 w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-center text-lg font-bold text-stone-900 shadow-sm focus:border-orange-500 focus:outline-none [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:bg-stone-800 [.theme-high-contrast-dark_&]:text-white"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-stone-500 dark:text-stone-400">
+              <label className="block text-xs font-semibold text-stone-500 [.theme-high-contrast-dark_&]:text-stone-400">
                 {COOKING_VI.timerSeconds}
               </label>
               <input
@@ -103,7 +103,7 @@ export function CustomTimerDialog({
                 value={seconds}
                 aria-label={COOKING_VI.timerSeconds}
                 onChange={(e) => setSeconds(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-stone-300 px-3 py-2 text-center text-lg font-bold text-stone-900 shadow-sm focus:border-orange-500 focus:outline-none dark:border-stone-700 dark:bg-stone-800 dark:text-white"
+                className="mt-1 w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-center text-lg font-bold text-stone-900 shadow-sm focus:border-orange-500 focus:outline-none [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:bg-stone-800 [.theme-high-contrast-dark_&]:text-white"
               />
             </div>
           </div>
@@ -118,7 +118,7 @@ export function CustomTimerDialog({
             <button
               type="button"
               onClick={onClose}
-              className="w-full rounded-xl border border-stone-300 bg-transparent px-4 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-100 active:scale-95 transition dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800"
+              className="w-full rounded-xl border border-stone-300 bg-transparent px-4 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-100 active:scale-95 transition [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:text-stone-400 [.theme-high-contrast-dark_&]:hover:bg-stone-800"
             >
               {COOKING_VI.cancel}
             </button>

@@ -54,6 +54,12 @@ describe('TimerControls & TimerDrawer (T030 - US3)', () => {
     const lowerBtn = screen.getByText('3 phút');
     expect(upperBtn).toBeDefined();
     expect(lowerBtn).toBeDefined();
+    for (const button of [upperBtn.closest('button')!, lowerBtn.closest('button')!]) {
+      expect(button.className).not.toMatch(/(?:^|\s)dark:/);
+      expect(button.className).toContain('hover:bg-');
+      expect(button.className).toContain('[.theme-high-contrast-dark_&]:text-yellow-200');
+      expect(button.className).toContain('[.theme-high-contrast-dark_&]:hover:bg-yellow-900');
+    }
 
     fireEvent.click(lowerBtn);
     expect(handleStartTimer).toHaveBeenCalledWith(180, expect.any(String));

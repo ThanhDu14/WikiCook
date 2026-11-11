@@ -35,15 +35,15 @@ export function IngredientDrawer({
       aria-label={drawerTitle}
       className="fixed inset-0 z-40 flex justify-end bg-black/50 backdrop-blur-sm"
     >
-      <div className="flex h-full w-full max-w-md flex-col bg-white shadow-2xl transition-transform dark:bg-stone-900 dark:text-white">
+      <div className="flex h-full w-full max-w-md flex-col bg-white shadow-2xl transition-transform [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-yellow-200">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-800">
-          <h2 className="text-lg font-bold text-stone-900 dark:text-white">{drawerTitle}</h2>
+        <div className="flex items-center justify-between border-b border-stone-200 p-4 [.theme-high-contrast-dark_&]:border-yellow-500">
+          <h2 className="text-lg font-bold text-stone-900 [.theme-high-contrast-dark_&]:text-yellow-200">{drawerTitle}</h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Đóng danh sách nguyên liệu"
-            className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800"
+            className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 [.theme-high-contrast-dark_&]:text-yellow-200 [.theme-high-contrast-dark_&]:hover:bg-yellow-950"
           >
             ✕
           </button>
@@ -52,7 +52,7 @@ export function IngredientDrawer({
         {/* Ingredient Checklist */}
         <div className="flex-1 overflow-y-auto p-4">
           {displayedIngredients.length === 0 ? (
-            <p className="text-center text-sm text-stone-500 dark:text-stone-400">
+            <p className="text-center text-sm text-stone-500 [.theme-high-contrast-dark_&]:text-yellow-200">
               {COOKING_VI.noStepIngredients}
             </p>
           ) : (
@@ -67,8 +67,8 @@ export function IngredientDrawer({
                     key={ing.rowId}
                     className={`flex items-start gap-3 rounded-xl border p-3 transition ${
                       isChecked
-                        ? 'border-emerald-200 bg-emerald-50/50 dark:border-emerald-900 dark:bg-emerald-950/20'
-                        : 'border-stone-200 bg-white hover:bg-stone-50 dark:border-stone-800 dark:bg-stone-900'
+                        ? 'border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100 [.theme-high-contrast-dark_&]:border-yellow-500 [.theme-high-contrast-dark_&]:bg-yellow-950 [.theme-high-contrast-dark_&]:hover:bg-yellow-900'
+                        : 'border-stone-200 bg-white hover:bg-stone-50 [.theme-high-contrast-dark_&]:border-yellow-500 [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:hover:bg-yellow-950'
                     }`}
                   >
                     <input
@@ -87,20 +87,20 @@ export function IngredientDrawer({
                         <span
                           className={`font-semibold ${
                             isChecked
-                              ? 'line-through text-stone-400 dark:text-stone-500'
-                              : 'text-stone-900 dark:text-white'
+                              ? 'line-through text-stone-600 [.theme-high-contrast-dark_&]:text-yellow-200'
+                              : 'text-stone-900 [.theme-high-contrast-dark_&]:text-yellow-200'
                           }`}
                         >
                           {ing.name}
                         </span>
                         {displayAmount && (
-                          <span className="font-medium text-stone-600 dark:text-stone-300">
+                          <span className="font-medium text-stone-600 [.theme-high-contrast-dark_&]:text-yellow-200">
                             {displayAmount}
                           </span>
                         )}
                       </div>
                       {ing.note && (
-                        <p className="mt-0.5 text-xs text-stone-500 dark:text-stone-400">
+                        <p className="mt-0.5 text-xs text-stone-500 [.theme-high-contrast-dark_&]:text-yellow-200">
                           {ing.note}
                         </p>
                       )}

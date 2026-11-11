@@ -69,6 +69,65 @@ describe('CookingView (T019 - US1)', () => {
     expect(viewContainer.className).toContain('theme-high-contrast-dark');
   });
 
+  it('keeps drawer and quick timer palettes tied to the cooking theme, including hover and checked states', () => {
+    render(<CookingRuntimeProvider customRuntime={runtime}><CookingView /></CookingRuntimeProvider>);
+    const view = screen.getByTestId('cooking-view-container');
+    const timer = screen.getByText('5 phút').closest('button')!;
+    fireEvent.click(screen.getByText(COOKING_VI.allIngredients));
+    const dialog = screen.getByRole('dialog');
+    const panel = dialog.firstElementChild as HTMLElement;
+    const checkbox = screen.getByRole('checkbox', { name: 'Xương ống bò' });
+    const row = checkbox.closest('li')!;
+    const name = screen.getByText('Xương ống bò', { selector: 'label span' });
+
+    for (const element of [panel, row, name, timer]) {
+      expect(element.className).not.toMatch(/(?:^|\s)dark:/);
+    }
+    expect(panel.className).toContain('bg-white');
+    expect(row.className).toContain('hover:bg-stone-50');
+    expect(row.className).toContain('[.theme-high-contrast-dark_&]:hover:bg-yellow-950');
+    expect(timer.className).toContain('text-orange-800');
+    expect(timer.className).toContain('[.theme-high-contrast-dark_&]:hover:bg-yellow-900');
+    fireEvent.click(checkbox);
+    expect(row.className).toContain('bg-emerald-50');
+    expect(row.className).toContain('[.theme-high-contrast-dark_&]:bg-yellow-950');
+    fireEvent.click(screen.getByLabelText('Đóng danh sách nguyên liệu'));
+    fireEvent.click(screen.getByLabelText(COOKING_VI.themeHighContrastDark));
+    expect(view.className).toContain('theme-high-contrast-dark');
+    fireEvent.click(screen.getByText(COOKING_VI.allIngredients));
+    expect(screen.getByRole('checkbox', { name: 'Xương ống bò' }).closest('li')!.className).toContain('[.theme-high-contrast-dark_&]:bg-yellow-950');
+    fireEvent.click(screen.getByLabelText('Đóng danh sách nguyên liệu'));
+    fireEvent.click(screen.getByLabelText(COOKING_VI.themeLight));
+    expect(view.className).not.toContain('theme-high-contrast-dark');
+  });
+
+  it('uses cooking theme selectors throughout timer, navigation and dialogs', () => {
+    runtime.addTimer('Test timer', 300, 1);
+    render(<CookingRuntimeProvider customRuntime={runtime}><CookingView /></CookingRuntimeProvider>);
+    const view = screen.getByTestId('cooking-view-container');
+    const assertNoSystemDark = () => {
+      for (const element of view.querySelectorAll('[class]')) {
+        expect(element.className).not.toMatch(/(?:^|\s)dark:/);
+      }
+    };
+    assertNoSystemDark();
+    const timerPanel = screen.getByText(/Bộ đếm giờ \(1\)/).parentElement!.parentElement!;
+    expect(timerPanel.className).toContain('[.theme-high-contrast-dark_&]:bg-black');
+    const ingredientButton = screen.getByText(new RegExp(COOKING_VI.viewIngredients)).closest('button')!;
+    expect(ingredientButton.className).toContain('[.theme-high-contrast-dark_&]:hover:bg-yellow-950');
+    fireEvent.click(screen.getByText(COOKING_VI.addCustomTimer));
+    assertNoSystemDark();
+    expect(screen.getByRole('dialog').firstElementChild!.className).toContain('[.theme-high-contrast-dark_&]:bg-black');
+    fireEvent.click(screen.getByText(COOKING_VI.cancel));
+    fireEvent.click(screen.getByLabelText(COOKING_VI.themeHighContrastDark));
+    fireEvent.click(screen.getByLabelText(COOKING_VI.exitCooking));
+    assertNoSystemDark();
+    expect(screen.getByRole('dialog').firstElementChild!.className).toContain('[.theme-high-contrast-dark_&]:bg-black');
+    fireEvent.click(screen.getByText(COOKING_VI.cancel));
+    fireEvent.click(screen.getByLabelText(COOKING_VI.themeLight));
+    assertNoSystemDark();
+  });
+
   it('opens ExitSessionDialog when exiting with active running timer', () => {
     runtime.addTimer('Hẹn giờ bước 1', 300, 1);
 

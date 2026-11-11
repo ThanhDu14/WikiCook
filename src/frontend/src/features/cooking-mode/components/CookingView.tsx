@@ -458,20 +458,20 @@ export function CookingView({
 
       {/* Voice Recognition Notification Banner */}
       {voiceNotice && (
-        <div className="bg-purple-100 px-4 py-2.5 text-center text-xs sm:text-sm font-semibold text-purple-900 dark:bg-purple-950 dark:text-purple-200">
+        <div className="bg-purple-100 px-4 py-2.5 text-center text-xs sm:text-sm font-semibold text-purple-900 [.theme-high-contrast-dark_&]:bg-purple-950 [.theme-high-contrast-dark_&]:text-purple-200">
           <span>🎙️</span> <span>{voiceNotice}</span>
         </div>
       )}
 
       {/* Status Warning Banners */}
       {!wakeLockSupported && (
-        <div className="bg-amber-100 px-4 py-2.5 text-center text-xs sm:text-sm font-medium text-amber-900 dark:bg-amber-950 dark:text-amber-200">
+        <div className="bg-amber-100 px-4 py-2.5 text-center text-xs sm:text-sm font-medium text-amber-900 [.theme-high-contrast-dark_&]:bg-amber-950 [.theme-high-contrast-dark_&]:text-amber-200">
           <span>⚠️</span> <span>{COOKING_VI.unsupportedWakeLockNotice}</span>
         </div>
       )}
 
       {hasStorageWarning && (
-        <div className="flex items-center justify-between bg-red-100 px-4 py-2 text-xs font-semibold text-red-900 dark:bg-red-950 dark:text-red-200">
+        <div className="flex items-center justify-between bg-red-100 px-4 py-2 text-xs font-semibold text-red-900 [.theme-high-contrast-dark_&]:bg-red-950 [.theme-high-contrast-dark_&]:text-red-200">
           <span>{COOKING_VI.storageQuotaWarning}</span>
           <button type="button" onClick={clearWarnings} className="underline ml-2">✕</button>
         </div>
@@ -485,7 +485,7 @@ export function CookingView({
       )}
 
       {hasClockJumpWarning && (
-        <div className="flex items-center justify-between bg-blue-100 px-4 py-2 text-xs font-medium text-blue-900 dark:bg-blue-950 dark:text-blue-200">
+        <div className="flex items-center justify-between bg-blue-100 px-4 py-2 text-xs font-medium text-blue-900 [.theme-high-contrast-dark_&]:bg-blue-950 [.theme-high-contrast-dark_&]:text-blue-200">
           <span>ℹ️ {COOKING_VI.clockJumpWarning}</span>
           <button type="button" onClick={clearWarnings} className="underline ml-2">✕</button>
         </div>
@@ -504,7 +504,7 @@ export function CookingView({
                       key={imgKey}
                       role="img"
                       aria-label={img.alt || COOKING_VI.stepImageAlt(currentStep.stepNumber)}
-                      className="flex h-40 w-60 items-center justify-center rounded-2xl border border-dashed border-stone-300 bg-stone-100 px-4 text-xs text-stone-500 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-400"
+                      className="flex h-40 w-60 items-center justify-center rounded-2xl border border-dashed border-stone-300 bg-stone-100 px-4 text-xs text-stone-500 [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:bg-stone-900 [.theme-high-contrast-dark_&]:text-stone-400"
                     >
                       🖼️ {img.alt || COOKING_VI.stepImageAlt(currentStep.stepNumber)}
                     </div>
@@ -571,7 +571,9 @@ export function CookingView({
                       onClick={() => runtime.toggleIngredient(ing.rowId)}
                       className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold transition ${
                         isChecked
-                          ? 'border-emerald-300 bg-emerald-50/70 line-through opacity-60 dark:border-emerald-800 dark:bg-emerald-950/40'
+                          ? isHighContrast
+                          ? 'border-yellow-400 bg-yellow-950 text-yellow-200 line-through'
+                          : 'border-emerald-300 bg-emerald-50 text-stone-700 line-through'
                           : isHighContrast
                           ? 'border-yellow-500/40 bg-black text-yellow-300'
                           : 'border-stone-200 bg-white text-stone-800 shadow-sm'
