@@ -159,10 +159,35 @@ export interface WakeLockAdapter {
   isSupported(): boolean;
   request(): Promise<WakeLockSentinelLike | null>;
   release(): Promise<void>;
+  subscribe(listener: (active: boolean) => void): () => void;
 }
 
 class BrowserWakeLock implements WakeLockAdapter {
   private sentinel: WakeLockSentinelLike | null = null;
+  private pending: Promise<WakeLockSentinelLike | null> | null = null;
+  private generation = 0;
+  private onRelease: (() => void) | null = null;
+  private listeners = new Set<(active: boolean) => void>();
+
+  subscribe(listener: (active: boolean) => void): () => void {
+    this.listeners.add(listener);
+    return () => { this.listeners.delete(listener); };
+  }
+
+  private notify(active: boolean): void {
+    this.listeners.forEach(listener => {
+      try { listener(active); } catch { /* A subscriber must not interrupt lock cleanup. */ }
+    });
+  }
+
+  private clearSentinel(): void {
+    const lock = this.sentinel;
+    if (!lock) return;
+    if (this.onRelease) lock.removeEventListener('release', this.onRelease);
+    this.onRelease = null;
+    this.sentinel = null;
+    this.notify(false);
+  }
 
   isSupported(): boolean {
     return typeof navigator !== 'undefined' && 'wakeLock' in navigator;
@@ -170,32 +195,52 @@ class BrowserWakeLock implements WakeLockAdapter {
 
   async request(): Promise<WakeLockSentinelLike | null> {
     if (!this.isSupported()) return null;
+    if (this.sentinel && !this.sentinel.released) return this.sentinel;
+    if (this.sentinel) this.clearSentinel();
+    if (this.pending) return this.pending;
+    const pending = this.acquire(this.generation);
+    this.pending = pending;
+    void pending.then(() => {
+      if (this.pending === pending) this.pending = null;
+    });
+    return pending;
+  }
+
+  private async acquire(generation: number): Promise<WakeLockSentinelLike | null> {
     try {
       const lock = await (navigator as unknown as {
         wakeLock: { request(type: 'screen'): Promise<WakeLockSentinelLike> };
       }).wakeLock.request('screen');
 
+      // release() also invalidates requests that have not resolved yet.
+      if (generation !== this.generation) {
+        if (!lock.released) await lock.release();
+        return null;
+      }
+      if (lock.released) return null;
       this.sentinel = lock;
-      lock.addEventListener('release', () => {
-        if (this.sentinel === lock) {
-          this.sentinel = null;
-        }
-      });
+      this.onRelease = () => {
+        if (this.sentinel === lock) this.clearSentinel();
+      };
+      lock.addEventListener('release', this.onRelease);
+      this.notify(true);
       return lock;
     } catch {
-      this.sentinel = null;
       return null;
     }
   }
 
   async release(): Promise<void> {
-    if (this.sentinel && !this.sentinel.released) {
+    this.generation++;
+    this.pending = null;
+    const lock = this.sentinel;
+    this.clearSentinel();
+    if (lock && !lock.released) {
       try {
-        await this.sentinel.release();
+        await lock.release();
       } catch {
         // ignore
       }
-      this.sentinel = null;
     }
   }
 }
