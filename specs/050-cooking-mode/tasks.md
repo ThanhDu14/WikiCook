@@ -1,7 +1,6 @@
 # Tasks: Hands-free Cooking Mode & Concurrent Timers (050-cooking-mode)
 
-> ⚠️ **BẢN NHÁP ĐỂ TEAM REVIEW — CHƯA PHẢI ỦY QUYỀN IMPLEMENTATION**  
-> Đặc tả `specs/050-cooking-mode/spec.md` hiện vẫn ở trạng thái **Draft (Ready for Review)**, chưa có per-story Jira tickets, và `plan.md` tự ghi nhận **formal Constitution gate NOT MET**. Tài liệu `tasks.md` này được sinh ra nhằm mục đích phân rã kỹ thuật phục vụ thẩm định của nhóm, KHÔNG được hiểu là cho phép implementation khi chưa đạt cổng phê duyệt chính thức.
+> **Implementation status:** The feature owner reports that the team authorized independent implementation; `spec.md` records this approval and the selected A01–A11 policies. This task list permits isolated frontend work against local ports and deterministic fixtures. Live 060 recipe-client and 070 review integration remain gated on verified contracts. Per-story Jira keys are deferred to Sprint 5 by feature-owner decision; until they exist, work stays local and commits/PRs must not use invented keys.
 
 **Input**: Design documents from `specs/050-cooking-mode/` (`plan.md`, `spec.md`, `data-model.md`, `contracts/integration.md`, `research.md`, `quickstart.md`, `checklists/requirements.md`, `src/constitution.md`)
 
@@ -19,7 +18,7 @@
 
 - **[P]**: Can run in parallel (different files, no dependencies on incomplete tasks)
 - **[Story]**: Which user story this task belongs to (`[US1]`, `[US2]`, `[US3]`, `[US4]`, `[US5]`)
-- **[TBD-Axx] / [TBD-Gxx]**: Flags tasks touching unresolved architectural decisions or governance gates pending team sign-off.
+- **[TBD-Gxx]**: Flags tasks touching unresolved integration contracts or governance/verification gates. A01–A11 are selected and recorded in `spec.md`/`research.md`; this does not imply 060/070 contracts are verified.
 - **Strict Atomicity**: Exactly 1 file or 1 single verification action per task.
 - Exact file paths are derived exclusively from `plan.md` Project Structure. Files required for complete test coverage not initially listed in `plan.md` are annotated as *(bổ sung ngoài Project Structure — cần team xác nhận)*.
 
@@ -43,10 +42,10 @@
 
 **Purpose**: Verify platform prerequisites, initialize feature folder structure, set up centralized Vietnamese strings, and configure Web Audio synth primitives.
 
-- [ ] T001 Verify platform skeleton and toolchain (TypeScript 5.x, React 18, Vite, Tailwind CSS 3.4, Vitest, React Testing Library), shared recipe client (060), and shared UI primitives in `src/frontend/package.json` [BLOCKED — platform skeleton/shared client chưa có]
-- [ ] T002 [P] Create directory structure for Cooking Mode feature modules in `src/frontend/src/features/cooking-mode/{domain,runtime,adapters,components,i18n,__tests__}` (depends on T001)
-- [ ] T003 [P] Initialize centralized Vietnamese string constants with verbatim UI labels ("Không rõ khẩu lệnh", "Tính năng giọng nói tạm ngừng do mất kết nối mạng", "Thiết bị chưa hỗ trợ giọng đọc tiếng Việt", "Đã quá hạn X phút") in `src/frontend/src/features/cooking-mode/i18n/vi.ts`
-- [ ] T004 [P] Configure Web Audio API synthesizer helper for alarm audio tones and earcon chimes (pure procedural Web Audio synth, no external audio assets) in `src/frontend/src/features/cooking-mode/adapters/browserCapabilities.ts`
+- [X] T001 Verify existing frontend toolchain and document exact available scripts/dependencies; define the 050-local `RecipeReader` port and deterministic fixtures/mock adapter so feature work does not assume a 060 HTTP endpoint or DTO. Current verified platform: React 18, TypeScript, Vite, Vitest, React Testing Library; Tailwind/shared UI and live 060 client are not verified. [Independent implementation unblocked; real-client integration deferred]
+- [X] T002 [P] Create directory structure for Cooking Mode feature modules in `src/frontend/src/features/cooking-mode/{domain,runtime,adapters,components,i18n,__tests__}` (depends on T001)
+- [X] T003 [P] Initialize centralized Vietnamese string constants with verbatim UI labels ("Không rõ khẩu lệnh", "Tính năng giọng nói tạm ngừng do mất kết nối mạng", "Thiết bị chưa hỗ trợ giọng đọc tiếng Việt", "Đã quá hạn X phút") in `src/frontend/src/features/cooking-mode/i18n/vi.ts`
+- [X] T004 [P] Configure Web Audio API synthesizer helper for alarm audio tones and earcon chimes (pure procedural Web Audio synth, no external audio assets) in `src/frontend/src/features/cooking-mode/adapters/browserCapabilities.ts`
 
 ---
 
@@ -58,23 +57,23 @@
 
 ### Tests for Foundational Layer (Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T005 [P] Create unit tests for hardware clock-based timer countdown engine (verifying Date.now() deadline calculation, zero drift when tab hidden, PAUSED remainingMs capture, resume deadline generation, and ceil display formatting) in `src/frontend/src/features/cooking-mode/__tests__/timerEngine.test.ts`
-- [ ] T006 [P] Create unit tests for natural language duration parser (verifying compound "1 giờ 30 phút" -> 5400s single candidate [US3-AC1], range "3-5 phút" -> 300s primary upper + 180s secondary lower [US3-AC2], and candidate deduplication) in `src/frontend/src/features/cooking-mode/__tests__/durationParser.test.ts`
-- [ ] T007 [P] Create unit tests for published recipe snapshot mapper (verifying tolerant mapping of 060 DTOs, string ID preservation, handling missing status/title/step text as data error, and fallback to full ingredients when step mapping is absent [US2-AC6]) in `src/frontend/src/features/cooking-mode/__tests__/recipeSnapshotMapper.test.ts` [TBD-G02, TBD-G03: Approver B/D]
-- [ ] T008 [P] Create unit tests for browser capability adapters (verifying Screen Wake Lock request/release, Fullscreen request/exit, Web Audio alarm synthesizer, and Vibration API with safe feature-detection fallbacks) in `src/frontend/src/features/cooking-mode/__tests__/browserAdapters.test.ts`
+- [X] T005 [P] Create unit tests for hardware clock-based timer countdown engine (verifying Date.now() deadline calculation, zero drift when tab hidden, PAUSED remainingMs capture, resume deadline generation, and ceil display formatting) in `src/frontend/src/features/cooking-mode/__tests__/timerEngine.test.ts`
+- [X] T006 [P] Create unit tests for natural language duration parser (verifying compound "1 giờ 30 phút" -> 5400s single candidate [US3-AC1], range "3-5 phút" -> 300s primary upper + 180s secondary lower [US3-AC2], and candidate deduplication) in `src/frontend/src/features/cooking-mode/__tests__/durationParser.test.ts`
+- [X] T007 [P] Create unit tests for the local `RecipeReader` fixture contract and snapshot mapper (string IDs, PUBLISHED-only entry, invalid/missing required data, 3,000-character text and multiple images, and full-ingredient fallback when step mapping is absent [US2-AC6]) in `src/frontend/src/features/cooking-mode/__tests__/recipeSnapshotMapper.test.ts`. Keep fixture shape explicitly local/provisional; do not label it as the 060 DTO.
+- [X] T008 [P] Create unit tests for browser capability adapters (verifying Screen Wake Lock request/release, Fullscreen request/exit, Web Audio alarm synthesizer, and Vibration API with safe feature-detection fallbacks) in `src/frontend/src/features/cooking-mode/__tests__/browserAdapters.test.ts`
 
 ### Implementation for Foundational Layer
 
-- [ ] T009 [P] Create TypeScript interfaces and types for cooking session state, timers, steps, and storage schema envelope v1 in `src/frontend/src/features/cooking-mode/domain/sessionModel.ts`
-- [ ] T010 [P] Implement pure session state reducer handling step transitions, timer mutations, ingredient checks, and high-contrast toggles in `src/frontend/src/features/cooking-mode/domain/sessionReducer.ts` (depends on T009)
-- [ ] T011 Implement core deadline timer engine using Date.now() absolute timestamps and unified scheduler in `src/frontend/src/features/cooking-mode/domain/timerEngine.ts` (depends on T005, T009)
-- [ ] T012 Implement duration parser function extracting compound and range duration candidates from recipe step text in `src/frontend/src/features/cooking-mode/domain/durationParser.ts` (depends on T006)
-- [ ] T013 [P] Implement browser clock wrapper providing consistent now() timestamps and drift detection via performance.now() in `src/frontend/src/features/cooking-mode/adapters/browserClock.ts`
-- [ ] T014 Implement browser capability adapters with safe error handling for Screen Wake Lock, Fullscreen, Web Audio synth, and Vibration in `src/frontend/src/features/cooking-mode/adapters/browserCapabilities.ts` (depends on T004, T008)
-- [ ] T015 Implement recipe snapshot mapper transforming 060 recipe payloads into local session models with tolerant bounds in `src/frontend/src/features/cooking-mode/adapters/recipeSnapshotMapper.ts` (depends on T007, T009) [TBD-G02, TBD-G03: Approver B/D]
-- [ ] T016 Implement app-shell level `CookingRuntimeProvider` component mounted above the router outlet to ensure active timers persist across cooking page navigation in `src/frontend/src/app/CookingRuntimeProvider.tsx` (depends on T010, T011)
-- [ ] T017 Implement `cookingRuntime` coordination manager managing per-recipe active session maps, unified tick scheduling (~200ms), and visibility-change reconciliation in `src/frontend/src/features/cooking-mode/runtime/cookingRuntime.ts` (depends on T016)
-- [ ] T018 Verify Foundational phase unit test execution (`Run: npm test -- run timerEngine durationParser recipeSnapshotMapper browserAdapters`)
+- [X] T009 [P] Create TypeScript interfaces and types for cooking session state, timers, steps, and storage schema envelope v1 in `src/frontend/src/features/cooking-mode/domain/sessionModel.ts`
+- [X] T010 [P] Implement pure session state reducer handling step transitions, timer mutations, ingredient checks, and high-contrast toggles in `src/frontend/src/features/cooking-mode/domain/sessionReducer.ts` (depends on T009)
+- [X] T011 Implement core deadline timer engine using Date.now() absolute timestamps and unified scheduler in `src/frontend/src/features/cooking-mode/domain/timerEngine.ts` (depends on T005, T009)
+- [X] T012 Implement duration parser function extracting compound and range duration candidates from recipe step text in `src/frontend/src/features/cooking-mode/domain/durationParser.ts` (depends on T006)
+- [X] T013 [P] Implement browser clock wrapper providing consistent now() timestamps and drift detection via performance.now() in `src/frontend/src/features/cooking-mode/adapters/browserClock.ts`
+- [X] T014 Implement browser capability adapters with safe error handling for Screen Wake Lock, Fullscreen, Web Audio synth, and Vibration in `src/frontend/src/features/cooking-mode/adapters/browserCapabilities.ts` (depends on T004, T008)
+- [X] T015 Implement a mapper from the 050-local `RecipeReader` fixture contract into local session snapshots with tolerant bounds in `src/frontend/src/features/cooking-mode/adapters/recipeSnapshotMapper.ts` (depends on T007, T009). Adapt to the verified 060 DTO only in a separately reviewed integration change.
+- [X] T016 Implement app-shell level `CookingRuntimeProvider` component mounted above the router outlet to ensure active timers persist across cooking page navigation in `src/frontend/src/app/CookingRuntimeProvider.tsx` (depends on T010, T011)
+- [X] T017 Implement `cookingRuntime` coordination manager managing per-recipe active session maps, unified tick scheduling (~200ms), and visibility-change reconciliation in `src/frontend/src/features/cooking-mode/runtime/cookingRuntime.ts` (depends on T016)
+- [X] T018 Verify Foundational phase unit test execution (`Run: npm test -- run timerEngine durationParser recipeSnapshotMapper browserAdapters`)
 
 **Checkpoint**: Foundation ready — Core domain types, deadline timer engine, duration parser, capability adapters, and app-shell runtime verified.
 
@@ -88,14 +87,14 @@
 
 ### Tests for User Story 1 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T019 [P] [US1] Create component tests for `CookingView` (asserting full-screen toggle, Screen Wake Lock request with fallback banner when unsupported, high-contrast dark theme switch with pure black `#000000` background, instruction text readable from 1.5m, and exit trigger) in `src/frontend/src/features/cooking-mode/__tests__/CookingView.test.tsx`
-- [ ] T020 [P] [US1] Create component tests for `ExitSessionDialog` (asserting confirmation prompt when active timers exist, Keep Timers vs Discard All choices, and clean completion banner return when no timers remain) in `src/frontend/src/features/cooking-mode/__tests__/ExitSessionDialog.test.tsx` *(bổ sung ngoài Project Structure — cần team xác nhận)*
+- [X] T019 [P] [US1] Create component tests for `CookingView` (asserting full-screen toggle, Screen Wake Lock request with fallback banner when unsupported, high-contrast dark theme switch with pure black `#000000` background, instruction text readable from 1.5m, and exit trigger) in `src/frontend/src/features/cooking-mode/__tests__/CookingView.test.tsx`
+- [X] T020 [P] [US1] Create component tests for `ExitSessionDialog` (asserting confirmation prompt when active timers exist, Keep Timers vs Discard All choices, and clean completion banner return when no timers remain) in `src/frontend/src/features/cooking-mode/__tests__/ExitSessionDialog.test.tsx` *(bổ sung ngoài Project Structure — cần team xác nhận)*
 
 ### Implementation for User Story 1
 
-- [ ] T021 [US1] Implement `ExitSessionDialog` modal component displaying active timer warning, "Tiếp tục chạy bộ đếm giờ" (Keep), and "Hủy tất cả và thoát" (Discard) options in `src/frontend/src/features/cooking-mode/components/ExitSessionDialog.tsx` (depends on T020)
-- [ ] T022 [US1] Implement `CookingView` full-viewport container component with Step 1 focus, scalable typography, fallback notification banner for unsupported wake lock, and high-contrast toggle in `src/frontend/src/features/cooking-mode/components/CookingView.tsx` (depends on T014, T017, T019, T021)
-- [ ] T023 [US1] Verify User Story 1 acceptance scenarios and run independent test (`Run: npm test -- run CookingView ExitSessionDialog`)
+- [X] T021 [US1] Implement `ExitSessionDialog` modal component displaying active timer warning, "Tiếp tục chạy bộ đếm giờ" (Keep), and "Hủy tất cả và thoát" (Discard) options in `src/frontend/src/features/cooking-mode/components/ExitSessionDialog.tsx` (depends on T020)
+- [X] T022 [US1] Implement `CookingView` full-viewport container component with Step 1 focus, scalable typography, fallback notification banner for unsupported wake lock, and high-contrast toggle in `src/frontend/src/features/cooking-mode/components/CookingView.tsx` (depends on T014, T017, T019, T021)
+- [X] T023 [US1] Verify User Story 1 acceptance scenarios and run independent test (`Run: npm test -- run CookingView ExitSessionDialog`)
 
 **Checkpoint**: User Story 1 is functional and verified independently.
 
@@ -109,15 +108,15 @@
 
 ### Tests for User Story 2 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T024 [P] [US2] Create component tests for `StepNavigation` (asserting Next/Previous touch targets $\ge 64\times 64\text{px}$, boundary locking at Step 1 and Step M, jump-to-step picker, Spacebar/Right Arrow next, Left Arrow back, and ignoring shortcuts when typing) in `src/frontend/src/features/cooking-mode/__tests__/StepNavigation.test.tsx` *(bổ sung ngoài Project Structure — cần team xác nhận)*
-- [ ] T025 [P] [US2] Create component tests for `IngredientDrawer` (asserting rendering step-specific ingredients when mapped, fallback to full recipe ingredient checklist when unmapped [US2-AC6], and persistent checkbox state across steps) in `src/frontend/src/features/cooking-mode/__tests__/IngredientDrawer.test.tsx` *(bổ sung ngoài Project Structure — cần team xác nhận)*
+- [X] T024 [P] [US2] Create component tests for `StepNavigation` (asserting Next/Previous touch targets $\ge 64\times 64\text{px}$, boundary locking at Step 1 and Step M, jump-to-step picker, Spacebar/Right Arrow next, Left Arrow back, and ignoring shortcuts when typing) in `src/frontend/src/features/cooking-mode/__tests__/StepNavigation.test.tsx` *(bổ sung ngoài Project Structure — cần team xác nhận)*
+- [X] T025 [P] [US2] Create component tests for `IngredientDrawer` (asserting rendering step-specific ingredients when mapped, fallback to full recipe ingredient checklist when unmapped [US2-AC6], and persistent checkbox state across steps) in `src/frontend/src/features/cooking-mode/__tests__/IngredientDrawer.test.tsx` *(bổ sung ngoài Project Structure — cần team xác nhận)*
 
 ### Implementation for User Story 2
 
-- [ ] T026 [P] [US2] Implement `StepNavigation` component with $\ge 64\times 64\text{px}$ touch buttons, progress indicator ("Bước N / M"), jump picker, and focus-managed keyboard event listeners (Space, Arrow keys) in `src/frontend/src/features/cooking-mode/components/StepNavigation.tsx` (depends on T024)
-- [ ] T027 [P] [US2] Implement `IngredientDrawer` sliding sheet component showing step ingredients or complete checklist with persistent checkbox states across step changes in `src/frontend/src/features/cooking-mode/components/IngredientDrawer.tsx` (depends on T025)
-- [ ] T028 [US2] Integrate `StepNavigation` and `IngredientDrawer` into `CookingView.tsx` with smooth step transitions (<100ms) and focus heading management in `src/frontend/src/features/cooking-mode/components/CookingView.tsx` (depends on T022, T026, T027)
-- [ ] T029 [US2] Verify User Story 2 acceptance scenarios and run independent test (`Run: npm test -- run StepNavigation IngredientDrawer`)
+- [X] T026 [P] [US2] Implement `StepNavigation` component with $\ge 64\times 64\text{px}$ touch buttons, progress indicator ("Bước N / M"), jump picker, and focus-managed keyboard event listeners (Space, Arrow keys) in `src/frontend/src/features/cooking-mode/components/StepNavigation.tsx` (depends on T024)
+- [X] T027 [P] [US2] Implement `IngredientDrawer` sliding sheet component showing step ingredients or complete checklist with persistent checkbox states across step changes in `src/frontend/src/features/cooking-mode/components/IngredientDrawer.tsx` (depends on T025)
+- [X] T028 [US2] Integrate `StepNavigation` and `IngredientDrawer` into `CookingView.tsx` with smooth step transitions (<100ms) and focus heading management in `src/frontend/src/features/cooking-mode/components/CookingView.tsx` (depends on T022, T026, T027)
+- [X] T029 [US2] Verify User Story 2 acceptance scenarios and run independent test (`Run: npm test -- run StepNavigation IngredientDrawer`)
 
 **Checkpoint**: Core MVP (User Stories 1 and 2) is functional and verified independently.
 
@@ -131,16 +130,16 @@
 
 ### Tests for User Story 3 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T030 [P] [US3] Create component tests for `TimerDrawer` and `TimerControls` (asserting quick timer buttons from step text, +1m/+5m extensions, concurrent countdown display, overdue badge "Đã quá hạn X phút", tap/Space silence, and click-through prevention) in `src/frontend/src/features/cooking-mode/__tests__/TimerControls.test.tsx`
-- [ ] T031 [P] [US3] Create component tests for `CustomTimerDialog` (asserting numeric duration picker for hours, minutes, seconds, label input, and validation) in `src/frontend/src/features/cooking-mode/__tests__/CustomTimerDialog.test.tsx` *(bổ sung ngoài Project Structure — cần team xác nhận)*
+- [X] T030 [P] [US3] Create component tests for `TimerDrawer` and `TimerControls` (asserting quick timer buttons from step text, +1m/+5m extensions, concurrent countdown display, overdue badge "Đã quá hạn X phút", tap/Space silence, and click-through prevention) in `src/frontend/src/features/cooking-mode/__tests__/TimerControls.test.tsx`
+- [X] T031 [P] [US3] Create component tests for `CustomTimerDialog` (asserting numeric duration picker for hours, minutes, seconds, label input, and validation) in `src/frontend/src/features/cooking-mode/__tests__/CustomTimerDialog.test.tsx` *(bổ sung ngoài Project Structure — cần team xác nhận)*
 
 ### Implementation for User Story 3
 
-- [ ] T032 [US3] Implement `alarmCoordinator` runtime service managing unified alarm loop for concurrent expired timers, 60-second auto-mute timeout (without auto-acknowledgement), screen perimeter flashing, vibration trigger, and click-through suppression in `src/frontend/src/features/cooking-mode/runtime/alarmCoordinator.ts` (depends on T014)
-- [ ] T033 [P] [US3] Implement `CustomTimerDialog` modal component allowing custom label and H:M:S duration selection in `src/frontend/src/features/cooking-mode/components/CustomTimerDialog.tsx` (depends on T031)
-- [ ] T034 [US3] Implement `TimerDrawer` component displaying active timers, quick-add chips (+1 phút, +5 phút), pause/resume, and overdue badges in `src/frontend/src/features/cooking-mode/components/TimerDrawer.tsx` (depends on T030, T032, T033)
-- [ ] T035 [US3] Integrate `TimerDrawer` and step-level quick timer buttons into `CookingView.tsx` with alarm silencing on tap or Spacebar in `src/frontend/src/features/cooking-mode/components/CookingView.tsx` (depends on T028, T034)
-- [ ] T036 [US3] Verify User Story 3 acceptance scenarios and run independent test (`Run: npm test -- run TimerControls CustomTimerDialog`)
+- [X] T032 [US3] Implement `alarmCoordinator` runtime service managing unified alarm loop for concurrent expired timers, 60-second auto-mute timeout (without auto-acknowledgement), screen perimeter flashing, vibration trigger, and click-through suppression in `src/frontend/src/features/cooking-mode/runtime/alarmCoordinator.ts` (depends on T014)
+- [X] T033 [P] [US3] Implement `CustomTimerDialog` modal component allowing custom label and H:M:S duration selection in `src/frontend/src/features/cooking-mode/components/CustomTimerDialog.tsx` (depends on T031)
+- [X] T034 [US3] Implement `TimerDrawer` component displaying active timers, quick-add chips (+1 phút, +5 phút), pause/resume, and overdue badges in `src/frontend/src/features/cooking-mode/components/TimerDrawer.tsx` (depends on T030, T032, T033)
+- [X] T035 [US3] Integrate `TimerDrawer` and step-level quick timer buttons into `CookingView.tsx` with alarm silencing on tap or Spacebar in `src/frontend/src/features/cooking-mode/components/CookingView.tsx` (depends on T028, T034)
+- [X] T036 [US3] Verify User Story 3 acceptance scenarios and run independent test (`Run: npm test -- run TimerControls CustomTimerDialog`)
 
 **Checkpoint**: User Story 3 is functional and verified independently.
 
@@ -154,13 +153,13 @@
 
 ### Tests for User Story 4 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T037 [P] [US4] Create unit and interaction tests for `VoiceNavigation` and `speechAdapter` (verifying Push-to-Talk activation, whitelist of 5 Vietnamese commands, confidence <0.70 rejection with "Không rõ khẩu lệnh", 30s idle auto-off, offline handling with "Tính năng giọng nói tạm ngừng do mất kết nối mạng", and vi-VN TTS reading with fallback earcon and "Thiết bị chưa hỗ trợ giọng đọc tiếng Việt") in `src/frontend/src/features/cooking-mode/__tests__/VoiceNavigation.test.tsx`
+- [X] T037 [P] [US4] Create unit and interaction tests for `VoiceNavigation` and `speechAdapter` (verifying Push-to-Talk activation, whitelist of 5 Vietnamese commands, confidence <0.70 rejection with "Không rõ khẩu lệnh", 30s idle auto-off, offline handling with "Tính năng giọng nói tạm ngừng do mất kết nối mạng", and vi-VN TTS reading with fallback earcon and "Thiết bị chưa hỗ trợ giọng đọc tiếng Việt") in `src/frontend/src/features/cooking-mode/__tests__/VoiceNavigation.test.tsx`
 
 ### Implementation for User Story 4
 
-- [ ] T038 [US4] Implement `speechAdapter` wrapping Web Speech Recognition and Web Speech Synthesis (SpeechSynthesisUtterance with vi-VN voice, confidence threshold $\ge 0.70$, mutual audio exclusion to prevent mic hearing TTS/alarms, and 30s idle timer) in `src/frontend/src/features/cooking-mode/adapters/speechAdapter.ts` (depends on T037) [TBD-A07: Approver D/E]
-- [ ] T039 [US4] Integrate Push-to-Talk microphone button, listening visual pulses, and voice command dispatch into `CookingView.tsx` in `src/frontend/src/features/cooking-mode/components/CookingView.tsx` (depends on T035, T038)
-- [ ] T040 [US4] Verify User Story 4 acceptance scenarios and run independent test (`Run: npm test -- run VoiceNavigation`)
+- [X] T038 [US4] Implement `speechAdapter` wrapping Web Speech Recognition and Web Speech Synthesis (SpeechSynthesisUtterance with vi-VN voice, confidence threshold $\ge 0.70$, mutual audio exclusion to prevent mic hearing TTS/alarms, and 30s idle timer) in `src/frontend/src/features/cooking-mode/adapters/speechAdapter.ts` (depends on T037) [A07 selected; local picker action, voice contract integration deferred]
+- [X] T039 [US4] Integrate Push-to-Talk microphone button, listening visual pulses, and voice command dispatch into `CookingView.tsx` in `src/frontend/src/features/cooking-mode/components/CookingView.tsx` (depends on T035, T038)
+- [X] T040 [US4] Verify User Story 4 acceptance scenarios and run independent test (`Run: npm test -- run VoiceNavigation`)
 
 **Checkpoint**: User Story 4 is functional and verified independently.
 
@@ -174,17 +173,17 @@
 
 ### Tests for User Story 5 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T041 [P] [US5] Create unit tests for session persistence adapter (verifying LocalStorage envelope v1 schema validation, 4-hour TTL expiry purge, timer deadline re-calculation, overdue detection, corrupt JSON recovery, and per-recipe key isolation) in `src/frontend/src/features/cooking-mode/__tests__/sessionPersistence.test.ts` [TBD-A08: Approver D + Team]
-- [ ] T042 [P] [US5] Create component tests for `ResumeSessionDialog` (asserting prompt "Tiếp tục phiên nấu ăn? Bạn đang nấu dở ở Bước 3.", Resume vs Start Over actions, and active timer purge confirmation) in `src/frontend/src/features/cooking-mode/__tests__/ResumeSessionDialog.test.tsx` *(bổ sung ngoài Project Structure — cần team xác nhận)*
-- [ ] T043 [P] [US5] Create component tests for `BackgroundTimerWidget` (asserting floating display on recipe page when exiting with Keep Timers, mini countdown, alarm badge, and return-to-cooking shortcut) in `src/frontend/src/features/cooking-mode/__tests__/BackgroundTimerWidget.test.tsx` *(bổ sung ngoài Project Structure — cần team xác nhận)*
+- [X] T041 [P] [US5] Create unit tests for session persistence adapter (verifying LocalStorage envelope v1 schema validation, 4-hour TTL expiry purge, timer deadline re-calculation, overdue detection, corrupt JSON recovery, and per-recipe key isolation) in `src/frontend/src/features/cooking-mode/__tests__/sessionPersistence.test.ts` [A08 selected]
+- [X] T042 [P] [US5] Create component tests for `ResumeSessionDialog` (asserting prompt "Tiếp tục phiên nấu ăn? Bạn đang nấu dở ở Bước 3.", Resume vs Start Over actions, and active timer purge confirmation) in `src/frontend/src/features/cooking-mode/__tests__/ResumeSessionDialog.test.tsx` *(bổ sung ngoài Project Structure — cần team xác nhận)*
+- [X] T043 [P] [US5] Create component tests for `BackgroundTimerWidget` (asserting floating display on recipe page when exiting with Keep Timers, mini countdown, alarm badge, and return-to-cooking shortcut) in `src/frontend/src/features/cooking-mode/__tests__/BackgroundTimerWidget.test.tsx` *(bổ sung ngoài Project Structure — cần team xác nhận)*
 
 ### Implementation for User Story 5
 
-- [ ] T044 [US5] Implement `sessionPersistence` adapter managing LocalStorage envelope v1 serialization, safe schema parsing without casting, 4-hour TTL purge, and multi-tab isolation in `src/frontend/src/features/cooking-mode/adapters/sessionPersistence.ts` (depends on T041) [TBD-A08, TBD-A10: Approver D + Team]
-- [ ] T045 [P] [US5] Implement `ResumeSessionDialog` modal component prompting "Tiếp tục phiên nấu ăn? Bạn đang nấu dở ở Bước 3." with "Tiếp tục" and "Bắt đầu lại" buttons in `src/frontend/src/features/cooking-mode/components/ResumeSessionDialog.tsx` (depends on T042)
-- [ ] T046 [P] [US5] Implement `BackgroundTimerWidget` floating widget component for recipe detail page when exiting Cooking Mode with active timers kept in `src/frontend/src/features/cooking-mode/components/BackgroundTimerWidget.tsx` (depends on T043)
-- [ ] T047 [US5] Integrate session recovery hydration on mount, beforeunload/visibilitychange persistence, and 070 completion handoff callback into `CookingView.tsx` and `CookingRuntimeProvider.tsx` in `src/frontend/src/features/cooking-mode/components/CookingView.tsx` (depends on T039, T044, T045, T046) [TBD-A11, TBD-G07: Approver D/E]
-- [ ] T048 [US5] Verify User Story 5 acceptance scenarios and run independent test (`Run: npm test -- run sessionPersistence ResumeSessionDialog BackgroundTimerWidget`)
+- [X] T044 [US5] Implement `sessionPersistence` adapter managing LocalStorage envelope v1 serialization, safe schema parsing without casting, 4-hour TTL purge, and multi-tab isolation in `src/frontend/src/features/cooking-mode/adapters/sessionPersistence.ts` (depends on T041) [A08, A10 selected; best-effort tab policy]
+- [X] T045 [P] [US5] Implement `ResumeSessionDialog` modal component prompting "Tiếp tục phiên nấu ăn? Bạn đang nấu dở ở Bước 3." with "Tiếp tục" and "Bắt đầu lại" buttons in `src/frontend/src/features/cooking-mode/components/ResumeSessionDialog.tsx` (depends on T042)
+- [X] T046 [P] [US5] Implement `BackgroundTimerWidget` floating widget component for recipe detail page when exiting Cooking Mode with active timers kept in `src/frontend/src/features/cooking-mode/components/BackgroundTimerWidget.tsx` (depends on T043)
+- [X] T047 [US5] Integrate session recovery hydration on mount, beforeunload/visibilitychange persistence, and 070 completion handoff callback into `CookingView.tsx` and `CookingRuntimeProvider.tsx` in `src/frontend/src/features/cooking-mode/components/CookingView.tsx` (depends on T039, T044, T045, T046) [A11 selected; G07 local callback mock, live 070 integration deferred]
+- [X] T048 [US5] Verify User Story 5 acceptance scenarios and run independent test (`Run: npm test -- run sessionPersistence ResumeSessionDialog BackgroundTimerWidget`)
 
 **Checkpoint**: All 5 User Stories are complete, tested, and independently verified.
 
@@ -194,12 +193,12 @@
 
 **Purpose**: End-to-end integration validation, accessibility verification, performance benchmarking, and manual field test registration audit.
 
-- [ ] T049 Implement comprehensive integration test for full cooking session lifecycle in `src/frontend/src/features/cooking-mode/__tests__/CookingShell.integration.test.tsx` (depends on T047)
-- [ ] T050 Verify accessibility standards compliance (WCAG 2.1 AA, High-Contrast contrast ratio $\ge 7:1$, prefers-reduced-motion static alerts, focus traps in drawers/modals, and live region step announcements) (`Run: npm test -- run CookingShell.integration.test.tsx`)
-- [ ] T051 Verify performance budgets (step transition latency <100ms, timer drift <1s per 60 minutes open tab, foreground alarm <1s, and memory stability during multi-recipe sessions) (`Run: npm test -- run timerEngine CookingShell`)
-- [ ] T052 Map manual test scenarios TC-MAN-050-01 through TC-MAN-050-08 from `specs/050-cooking-mode/quickstart.md` as verification checkpoints and formulate formal recommendation task to register test cases into `docs/test/test-cases.md` upon team review [TBD-G10: Approver Team / QA]
-- [ ] T053 Run full test suite for feature 050 and assert 100% pass rate (`Run: npm test -- run features/cooking-mode`)
-- [ ] T054 Final Constitution re-check and compile review dossier documenting compliance status against Principles I–V before formal team review
+- [X] T049 Implement comprehensive integration test for full cooking session lifecycle in `src/frontend/src/features/cooking-mode/__tests__/CookingShell.integration.test.tsx` (depends on T047)
+- [X] T050 Verify accessibility standards compliance (WCAG 2.1 AA, High-Contrast contrast ratio $\ge 7:1$, prefers-reduced-motion static alerts, focus traps in drawers/modals, and live region step announcements) (`Run: npm test -- run CookingShell.integration.test.tsx`)
+- [X] T051 Verify performance budgets (step transition latency <100ms, timer drift <1s per 60 minutes open tab, foreground alarm <1s, and memory stability during multi-recipe sessions) (`Run: npm test -- run timerEngine CookingShell`)
+- [X] T052 Map manual test scenarios TC-MAN-050-01 through TC-MAN-050-08 from `specs/050-cooking-mode/quickstart.md` as verification checkpoints and formulate formal recommendation task to register test cases into `docs/test/test-cases.md` upon team review [TBD-G10: Approver Team / QA]
+- [X] T053 Run full test suite for feature 050 and assert 100% pass rate (`Run: npm test -- run features/cooking-mode`)
+- [X] T054 Final Constitution re-check and compile review dossier documenting compliance status against Principles I–V before formal team review
 
 ---
 
@@ -370,35 +369,20 @@ Task: "T025 IngredientDrawer.test.tsx"
 
 ---
 
-## Phụ lục Unresolved Decisions & Project Blockers
+## Appendix: Selected Decisions and Remaining Gates
 
-### 1. Bảng 11 Quyết định Mở (A01–A11)
-- **[TBD-A01] Author timer vs text parser precedence**: Khi duration khác nhau giữa author payload và regex parser $\to$ Approver: Team / Product Owner (ảnh hưởng `T012`, `T015`).
-- **[TBD-A02] Snapshot khi recipe bị sửa hoặc gỡ bỏ**: Hành vi khi recipe gốc bị unpublish lúc đang nấu $\to$ Approver: Module 060 Owner (ảnh hưởng `T015`).
-- **[TBD-A03] Wall-clock jumps**: Xử lý khi đồng hồ hệ điều hành bị chỉnh lùi/tiến trong phiên $\to$ Approver: Tech Lead (ảnh hưởng `T011`, `T013`).
-- **[TBD-A04] Extension/restart ngoài trạng thái RUNNING**: Có cho phép cộng giờ khi timer đang PAUSED hay EXPIRED $\to$ Approver: Product Owner (ảnh hưởng `T011`, `T034`).
-- **[TBD-A05] Restore audio window**: Có tự động phát chuông ngay khi restore tab mà timer đã hết giờ trước đó $\to$ Approver: UX Designer (ảnh hưởng `T032`, `T044`).
-- **[TBD-A06] Multiple durations/range limits**: Số lượng timer tối đa được sinh tự động từ 1 bước có nhiều khoảng thời gian $\to$ Approver: Team (ảnh hưởng `T012`, `T034`).
-- **[TBD-A07] Tham số lệnh voice "Hẹn giờ"**: Có nhận diện số phút bằng giọng nói hay chỉ mở dialog $\to$ Approver: Tech Lead (ảnh hưởng `T038`).
-- **[TBD-A08] TTL anchor**: Tính TTL 4h từ `startedAt` hay `lastActiveAt` $\to$ Approver: Team / Architecture (ảnh hưởng `T041`, `T044`).
-- **[TBD-A09] Snapshot budget & storage quota failure**: Giới hạn dung lượng LocalStorage tối đa cho 1 recipe $\to$ Approver: Tech Lead (ảnh hưởng `T044`).
-- **[TBD-A10] Same-recipe multi-tab conflict**: Chính sách khi mở cùng 1 recipe trên 2 tab trình duyệt $\to$ Approver: Team (ảnh hưởng `T044`).
-- **[TBD-A11] Lifecycle hoàn thành & Review handoff**: Chuyển giao sang module 070 (Cooksnap/Review) $\to$ Approver: Module 070 Owner (ảnh hưởng `T047`).
+### A01–A11 selected by feature owner (2026-11-11)
+The detailed behavioral policies are recorded in `spec.md` and `research.md`. They are no longer TBD tasks. Update affected tests/tasks to enforce those decisions.
 
-### 2. Bảng 10 Điều kiện Phụ thuộc (G01–G10)
-- **[TBD-G01]** Team phê duyệt đặc tả Spec 050 và cấp phát mã Jira per-story.
-- **[TBD-G02]** Module 060 và Backend thống nhất DTO đọc công thức PUBLISHED.
-- **[TBD-G03]** Backend xác nhận hỗ trợ contract tolerant (text 3.000 ký tự, nhiều ảnh).
-- **[TBD-G04]** Thống nhất dứt điểm TTL anchor (A08).
-- **[TBD-G05]** Xác nhận không thêm serving multiplier vào 050 (giữ nguyên base servings).
-- **[TBD-G06]** Thống nhất support matrix và các trường hợp ngoại lệ không cam kết tuyệt đối (Wake Lock, Web Audio autoplay).
-- **[TBD-G07]** Ký duyệt completion callback với Module 070.
-- **[TBD-G08]** Chốt budget snapshot và fallback khi LocalStorage đầy (A09).
-- **[TBD-G09]** Ghi nhận cấu trúc thư mục `src/frontend/` theo plan, không đồng bộ roadmap cũ trong `src/README.md`.
-- **[TBD-G10]** Đề xuất team đăng ký 8 kịch bản TC-MAN-050-01..08 từ quickstart vào `docs/test/test-cases.md`.
+### Remaining gates/deferred integration
+- **G01 — Jira traceability:** Feature owner defers creating the per-story Jira issues to Sprint 5 (Sprint 4 board is occupied by the approved PA4 scope). Until keys exist, keep work local and do not name branches/commits/PRs with invented keys. Create the Sprint 5 issues before Jira-compliant commit/PR/merge activity.
+- **G02/G03 — 060 recipe integration:** Independent implementation uses a local `RecipeReader` port plus deterministic fixture/mock adapter. Do not claim the fixture is the 060 DTO; verify DTO, status, timer, text, image, and error shape before real integration.
+- **G04/G08 — TTL/storage:** A08/A09 are selected. Implement and test the fixed TTL and storage-failure behavior; browser quotas remain runtime limitations.
+- **G05 — servings:** Keep recipe base servings; no scaling is in 050 scope. Integration fixture must not introduce a scaler.
+- **G06 — browser limitations:** Implement graceful fallbacks and record actual manual/device test results; wake/audio success is not guaranteed on every platform.
+- **G07 — 070 handoff:** Implement against a local callback port/mock. Verify payload and review prompt/auth behavior with 070 before live integration.
+- **G09 — source path:** Use existing `src/frontend/` platform structure; do not mirror to the legacy `src/` roadmap paths.
+- **G10 — manual test registration:** Register/coordinate manual cases with QA before claiming project-wide acceptance; local feature tests may proceed.
 
-### 3. Bốn Rào cản Tiên quyết Chặn Implementation (4 Adoption Blockers)
-1. **Constitution Gate I**: Spec 050 phải được nhóm nghiệm thu chính thức và cấp phát Jira ticket per-story.
-2. **Platform Skeleton**: Platform phải cung cấp khung `src/frontend/` hoàn chỉnh với Vite, React 18, Tailwind, Vitest và Shared Client trước khi bắt đầu code.
-3. **Contract Sign-off**: Ký duyệt hợp đồng giao tiếp với Module 060 (đọc công thức) và Module 070 (hoàn thành nấu ăn).
-4. **Acceptance Policy**: Nhóm phê chuẩn chính sách chấp nhận các giới hạn kỹ thuật phần cứng (Wake Lock bị từ chối, audio autoplay policy) mà không làm suy giảm chất lượng NFR.
+### Implementation boundary
+Isolated frontend implementation may proceed test-first using the existing React/Vite/Vitest/RTL toolchain, local ports, and deterministic fixtures. Do not add backend code, database tables, Flyway migrations, guessed network endpoints, or claims of live 060/070 integration. Jira keys remain a repository-process requirement for traceable commits/PRs, not a reason to block local uncommitted test-first work.

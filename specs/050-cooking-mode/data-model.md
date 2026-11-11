@@ -53,7 +53,7 @@ type DurationCandidate = {
 
 Do not store authors, tokens, dietary profiles, reviews, microphone audio, transcripts, or image binaries. Media URLs do not guarantee offline image availability; all instructions/ingredients remain complete as text. Do not persist temporary object URLs as durable images. Optional metadata such as recipe version is added only after upstream agreement, not assumed to exist.
 
-Input validation: recipeId matches the requested ID; status is PUBLISHED for new sessions; title is nonempty; at least one step has text, positions are unique and sorted ascending; missing/duplicate step IDs or missing text → report insufficient data with retry/return, never silently omit steps. Tolerate text up to 3,000 characters/step and multiple images per the draft schema (G03), without changing 060 author validation. Null servings do not block cooking; do not guess servings. Names/units must be resolved from the catalogue; null quantity uses amountText/qualitative amounts, not 0. Failed media/invalid URLs → image placeholder without blocking the step. URLs must be http(s) or same-origin media paths resolved by the shared client; do not render `javascript:`/HTML.
+Input validation: recipeId matches the requested ID; status is PUBLISHED for new sessions; title is nonempty; at least one step has text, positions are unique and sorted ascending; missing/duplicate step IDs or missing text → report insufficient data with retry/return, never silently omit steps. The local fixture mapper tolerates text up to 3,000 characters/step and multiple images, but this is provisional and not a verified 060 DTO contract. Null servings do not block cooking; do not guess servings. Names/units must be resolved from the provided recipe snapshot; null quantity uses amountText/qualitative amounts, not 0. Failed media/invalid URLs → image placeholder without blocking the step. URLs must be http(s) or same-origin media paths resolved by the eventual shared client; do not render `javascript:`/HTML.
 
 ## 2. Persisted Timer and Runtime
 
@@ -102,7 +102,7 @@ interface Clock {
 | Any card | delete | DISMISSED, then removed from list; stop output if no sounding timers remain |
 | EXPIRED | restart (if team-approved) | Explicit action, not extension chips; RUNNING with a new deadline |
 
-Pause/resume/delete timers independently. The spec does not define extensions for expired/paused timers: no chips by default, pending A04 approval. Reconcile multiple expirations against the same `now`, with one coordinator and audio constrained to each timer's window (A05). Other timers do not pause during step changes/modals/connectivity loss.
+Pause/resume/delete timers independently. Per selected A04, +1/+5 chips apply only to RUNNING; PAUSED timers must resume first and EXPIRED timers require a new timer. Reconcile multiple expirations against the same `now`, with one coordinator and audio constrained to each timer's 60-second window per selected A05. Other timers do not pause during step changes/modals/connectivity loss.
 
 ## 3. Session and localStorage Envelope v1
 
@@ -135,7 +135,7 @@ type LoadResult =
   | { kind: 'RESUMABLE'; value: StorageEnvelopeV1 };
 ```
 
-The exact **key** is `cooking_session_${recipeId}`. Derive `totalSteps` from snapshot.steps.length rather than persisting a potentially inconsistent count. `isCompleted` is true only in phase COMPLETED, not when keeping background timers. Proposed A08 TTL starts at startedAt, not ticks/savedAt. Expiration occurs at `now>=expiresAt`; opening the recipe purges expired keys even if timer deadlines are later, per US5-AC5. Live runtime is not automatically killed at TTL, but persistence/recovery does not extend the window.
+The exact **key** is `cooking_session_${recipeId}`. Derive `totalSteps` from snapshot.steps.length rather than persisting a potentially inconsistent count. `isCompleted` is true only in phase COMPLETED, not when keeping background timers. Per selected A08, TTL starts at startedAt; expiration occurs at `now>=expiresAt`; opening the recipe purges expired keys even if timer deadlines are later, per US5-AC5. Live runtime is not automatically killed at TTL, but persistence/recovery does not extend the window.
 
 ### Session state machine
 
@@ -155,7 +155,7 @@ LOADING/READY/RESUME_PROMPT/EXIT_DIALOG/CANCELLED are UI/runtime states, not per
 
 ### Validation and Storage Errors
 
-1. Guard access to `window.localStorage` itself and get/set/remove against SecurityError; parse within try/catch. Check size before parsing/writing (A09); do not trust localStorage as safe input.
+1. Guard access to `window.localStorage` itself and get/set/remove against SecurityError; parse within try/catch. Check size before parsing/writing; on quota/budget failure preserve in-memory cooking and warn per selected A09, without truncation. Do not trust localStorage as safe input.
 2. Support v1 only; report unknown future versions as unsupported without hydrating. No legacy format is implemented, so do not invent a v0 migration; future version bumps require pure migrations + fixtures.
 3. Check objects/arrays, nonempty IDs, and key.recipeId=session.recipeId=snapshot.recipeId; correct timer.sessionId; unique IDs; enum allowlists; never merge unknown properties into object prototypes.
 4. Timestamps are nonnegative finite safe integers, startedAt≤lastActiveAt≤savedAt (handle/report clock jumps explicitly, without silent clamping); expiresAt=startedAt+4h under A08; index within [0,steps.length−1]. Arbitrary timestamps are not permissions or authentication.
@@ -194,4 +194,4 @@ Do not persist microphone permissions, wake sentinels, audio-unlocked flags, or 
 
 ## 5. Multiple Tabs and Ownership
 
-Different recipes → separate keys and sessions/runtimes; never call localStorage.clear(). For the same recipe, revision/writer/sessionId + storage events provide **best-effort detection**, not mutual exclusion. On conflict, stop that tab's writes/audio and ask the user to choose one tab (A10). Re-reading before semantic writes reduces races but does not guarantee atomicity. Do not automatically merge deadlines/checklists from two writers. App-shell disposal occurs only when actually stopping runtime, not when the cooking page unmounts; clean up listeners/scheduler/recognition/TTS/wake/audio at the correct owner. Cleanup is idempotent to prevent duplicate schedulers in React Strict Mode.
+Different recipes → separate keys and sessions/runtimes; never call localStorage.clear(). For the same recipe, revision/writer/sessionId + storage events provide **best-effort detection**, not mutual exclusion. Per selected A10, on conflict stop that tab's mutations/writes/audio and ask the user to choose one tab. Re-reading before semantic writes reduces races but does not guarantee atomicity. Do not automatically merge deadlines/checklists from two writers. App-shell disposal occurs only when actually stopping runtime, not when the cooking page unmounts; clean up listeners/scheduler/recognition/TTS/wake/audio at the correct owner. Cleanup is idempotent to prevent duplicate schedulers in React Strict Mode.
