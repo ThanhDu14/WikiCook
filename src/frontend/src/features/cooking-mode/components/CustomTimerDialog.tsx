@@ -3,19 +3,24 @@ import { COOKING_VI } from '../i18n/vi';
 
 export interface CustomTimerDialogProps {
   isOpen: boolean;
+  initialValue?: { label: string; durationSeconds: number } | null;
+  notice?: string | null;
   onClose: () => void;
   onStartTimer: (data: { label: string; durationSeconds: number }) => void;
 }
 
 export function CustomTimerDialog({
   isOpen,
+  initialValue,
+  notice,
   onClose,
   onStartTimer,
 }: CustomTimerDialogProps): React.ReactElement | null {
-  const [label, setLabel] = useState('');
-  const [hours, setHours] = useState('0');
-  const [minutes, setMinutes] = useState('0');
-  const [seconds, setSeconds] = useState('0');
+  const duration = initialValue?.durationSeconds ?? 0;
+  const [label, setLabel] = useState(initialValue?.label ?? '');
+  const [hours, setHours] = useState(String(Math.floor(duration / 3600)));
+  const [minutes, setMinutes] = useState(String(Math.floor(duration % 3600 / 60)));
+  const [seconds, setSeconds] = useState(String(duration % 60));
 
   if (!isOpen) return null;
 
@@ -47,6 +52,7 @@ export function CustomTimerDialog({
           {COOKING_VI.customTimerTitle}
         </h2>
 
+        {notice && <p className="mt-2 text-sm">{notice}</p>}
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-stone-500 [.theme-high-contrast-dark_&]:text-stone-400">

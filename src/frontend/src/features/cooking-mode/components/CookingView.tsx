@@ -10,6 +10,7 @@ import { IngredientDrawer } from './IngredientDrawer';
 import { StepQuickTimers } from './StepQuickTimers';
 import { TimerDrawer } from './TimerDrawer';
 import { CustomTimerDialog } from './CustomTimerDialog';
+import { parseVoiceTimer } from '../domain/voiceTimerParser';
 import { ResumeSessionDialog } from './ResumeSessionDialog';
 import type { RecipeSnapshot, StorageEnvelopeV1 } from '../domain/sessionModel';
 
@@ -42,12 +43,15 @@ export function CookingView({
   const [isExitDialogOpen, setIsExitDialogOpen] = useState<boolean>(false);
   const [isIngredientDrawerOpen, setIsIngredientDrawerOpen] = useState<boolean>(false);
   const [isCustomTimerDialogOpen, setIsCustomTimerDialogOpen] = useState<boolean>(false);
+  const [voiceTimer, setVoiceTimer] = useState<{ durationSeconds: number; label: string } | null>(null);
+  const [voiceTimerNotice, setVoiceTimerNotice] = useState<string | null>(null);
   const [showCompletionBanner, setShowCompletionBanner] = useState<boolean>(false);
   const [isListening, setIsListening] = useState<boolean>(false);
   const [voiceNotice, setVoiceNotice] = useState<string | null>(null);
   const [resumableEnvelope, setResumableEnvelope] = useState<StorageEnvelopeV1 | null>(null);
   const [isResumeDialogOpen, setIsResumeDialogOpen] = useState<boolean>(false);
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
+  const voiceDialogGuard = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
@@ -100,7 +104,8 @@ export function CookingView({
   const theme = session?.preferences.theme ?? 'LIGHT';
   const isHighContrast = theme === 'HIGH_CONTRAST_DARK';
 
-  const handleVoiceCommand = (cmd: VoiceCommand) => {
+  const handleVoiceCommand = (cmd: VoiceCommand, transcript: string) => {
+    if (cmd !== 'SILENCE_ALARM' && (voiceDialogGuard.current || document.querySelector('[role="dialog"]') || isIngredientDrawerOpen)) return;
     switch (cmd) {
       case 'NEXT_STEP':
         runtime.nextStep();
@@ -116,9 +121,17 @@ export function CookingView({
         }
         break;
       }
-      case 'OPEN_TIMER':
+      case 'OPEN_TIMER': {
+        voiceDialogGuard.current = true;
+        sharedSpeechAdapter.stopListening();
+        setIsListening(false);
+        const parsed = parseVoiceTimer(transcript);
+        setVoiceTimer(parsed);
+        const bare = /^(?:(?:đặt|bật)\s+)?hẹn giờ\s*$/i.test(transcript.trim());
+        setVoiceTimerNotice(parsed ? 'Kiểm tra thời gian và nhãn, sau đó nhấn Bắt đầu để xác nhận.' : bare ? null : 'Không xác định được thời gian. Vui lòng nhập thủ công.');
         setIsCustomTimerDialogOpen(true);
         break;
+      }
       case 'SILENCE_ALARM': {
         sessionRef.current?.timers.forEach((t) => {
           if (t.status === 'EXPIRED' && t.acknowledgedAt === null) {
@@ -141,7 +154,7 @@ export function CookingView({
       setIsListening(false);
     } else {
       const ok = sharedSpeechAdapter.startListening({
-        onCommand: (cmd) => handleVoiceCommand(cmd),
+        onCommand: (cmd, transcript) => handleVoiceCommand(cmd, transcript),
         onOffline: (msg) => {
           setVoiceNotice(msg);
           setTimeout(() => setVoiceNotice(null), 4000);
@@ -608,7 +621,7 @@ export function CookingView({
             onExtendTimer={(id, sec) => runtime.extendTimer(id, sec)}
             onAcknowledgeTimer={(id) => runtime.acknowledgeTimer(id)}
             onDeleteTimer={(id) => runtime.deleteTimer(id)}
-            onOpenCustomTimer={() => setIsCustomTimerDialogOpen(true)}
+            onOpenCustomTimer={() => { setVoiceTimer(null); setVoiceTimerNotice(null); setIsCustomTimerDialogOpen(true); }}
           />
         </div>
 
@@ -647,8 +660,11 @@ export function CookingView({
 
       {/* Custom Timer Dialog */}
       <CustomTimerDialog
+        key={`${isCustomTimerDialogOpen}-${voiceTimer?.durationSeconds ?? 0}-${voiceTimer?.label ?? ''}`}
         isOpen={isCustomTimerDialogOpen}
-        onClose={() => setIsCustomTimerDialogOpen(false)}
+        initialValue={voiceTimer}
+        notice={voiceTimerNotice}
+        onClose={() => { voiceDialogGuard.current = false; setIsCustomTimerDialogOpen(false); }}
         onStartTimer={({ label, durationSeconds }) => {
           primeAudio();
           runtime.addTimer(label, durationSeconds, currentStep.stepNumber);

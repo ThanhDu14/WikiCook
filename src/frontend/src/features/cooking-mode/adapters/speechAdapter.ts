@@ -74,6 +74,9 @@ export class SpeechAdapter {
 
     const normalized = transcript.trim().toLowerCase();
 
+    // A timer request may contain words used by other commands in its activity label.
+    if (/^(?:(?:đặt|bật) )?hẹn giờ(?:\s|$)/.test(normalized)) return 'OPEN_TIMER';
+
     // Whitelist matching of the 5 standard Vietnamese commands
     if (
       normalized.includes('tiếp theo') ||
