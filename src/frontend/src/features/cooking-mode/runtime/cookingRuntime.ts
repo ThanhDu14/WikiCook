@@ -8,8 +8,8 @@ import type {
   CookingPreferences,
 } from '../domain/sessionModel';
 import { createInitialSession, sessionReducer } from '../domain/sessionReducer';
-import { shouldPlayAlarmAudio, tickTimers } from '../domain/timerEngine';
-import { getAudioSynth, vibrationAdapter } from '../adapters/browserCapabilities';
+import { tickTimers } from '../domain/timerEngine';
+import { sharedAlarmCoordinator } from './alarmCoordinator';
 import { browserClock } from '../adapters/browserClock';
 import {
   loadSessionFromStorage,
@@ -21,6 +21,7 @@ export type CookingRuntimeListener = (session: CookingSession | null) => void;
 
 export class CookingRuntimeManager {
   private sessions: Map<RecipeId, CookingSession> = new Map();
+  private readOnlyRecipes = new Set<RecipeId>();
   private activeRecipeId: RecipeId | null = null;
   private writerId: string;
   private revision: number = 0;
@@ -47,27 +48,29 @@ export class CookingRuntimeManager {
     if (!e.key || !e.key.startsWith('cooking_session_')) return;
     const recipeId = e.key.replace('cooking_session_', '');
 
+    if (!this.sessions.has(recipeId) || this.readOnlyRecipes.has(recipeId)) return;
+
     if (!e.newValue) {
-      // Key was removed by another tab
-      if (this.activeRecipeId === recipeId) {
-        this.sessions.delete(recipeId);
-        this.notifyListeners();
-      }
+      this.loseOwnership(recipeId);
       return;
     }
 
     try {
       const envelope: StorageEnvelopeV1 = JSON.parse(e.newValue);
       if (envelope.writerId !== this.writerId) {
-        // Competing writer detected per A10 policy
-        if (this.onTabConflict) {
-          this.onTabConflict();
-        }
+        this.loseOwnership(recipeId);
       }
     } catch {
       // Ignore parse failure
     }
   };
+
+  private loseOwnership(recipeId: RecipeId): void {
+    this.readOnlyRecipes.add(recipeId);
+    sharedAlarmCoordinator.evaluateAlarms(this.getSessions().flatMap((session) => session.timers));
+    this.notifyListeners();
+    this.onTabConflict?.();
+  }
 
   private handleVisibilityChange = (): void => {
     if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
@@ -102,25 +105,15 @@ export class CookingRuntimeManager {
     let changed = false;
 
     for (const [recipeId, session] of this.sessions.entries()) {
-      if (session.timers.length === 0) continue;
+      if (this.readOnlyRecipes.has(recipeId) || session.timers.length === 0) continue;
 
-      const previousTimers = session.timers;
       const updatedSession = sessionReducer(session, { type: 'TICK_TIMERS', now });
 
       if (updatedSession !== session) {
         this.sessions.set(recipeId, updatedSession);
         changed = true;
 
-        // Check if any timer became newly expired to sound alarm & vibrate
-        for (const t of updatedSession.timers) {
-          const prev = previousTimers.find((p) => p.timerId === t.timerId);
-          if (t.status === 'EXPIRED' && prev?.status === 'RUNNING') {
-            if (shouldPlayAlarmAudio(t, now)) {
-              getAudioSynth().playAlarmPulse();
-              vibrationAdapter.vibrate([300, 150, 300]);
-            }
-          }
-        }
+
       }
     }
 
@@ -147,7 +140,25 @@ export class CookingRuntimeManager {
     return this.sessions.get(this.activeRecipeId) ?? null;
   }
 
+  /** Owned sessions eligible for ticking and alarm aggregation, including background sessions. */
+  public getSessions(): CookingSession[] {
+    return [...this.sessions.values()].filter((session) => !this.readOnlyRecipes.has(session.recipeId));
+  }
+
+  public selectSession(recipeId: RecipeId): boolean {
+    if (!this.sessions.has(recipeId)) return false;
+    this.activeRecipeId = recipeId;
+    this.notifyListeners();
+    return true;
+  }
+
+  public deactivateSession(): void {
+    this.activeRecipeId = null;
+    this.notifyListeners();
+  }
+
   public checkResumableSession(recipeId: RecipeId, now: EpochMs = Date.now()): StorageLoadResult {
+    if (this.readOnlyRecipes.has(recipeId)) return { kind: 'NONE' };
     return loadSessionFromStorage(recipeId, now);
   }
 
@@ -156,6 +167,7 @@ export class CookingRuntimeManager {
     now: EpochMs = Date.now(),
     existingSessionId?: string,
   ): CookingSession {
+    if (this.readOnlyRecipes.has(snapshot.recipeId)) return this.sessions.get(snapshot.recipeId)!;
     const session = createInitialSession(snapshot, existingSessionId, now);
     this.sessions.set(snapshot.recipeId, session);
     this.activeRecipeId = snapshot.recipeId;
@@ -165,6 +177,7 @@ export class CookingRuntimeManager {
   }
 
   public resumeSession(envelope: StorageEnvelopeV1, now: EpochMs = Date.now()): CookingSession {
+    if (this.readOnlyRecipes.has(envelope.session.recipeId)) return this.sessions.get(envelope.session.recipeId)!;
     const reconciledTimers = Array.isArray(envelope.session.timers)
       ? tickTimers(envelope.session.timers, now)
       : [];
@@ -184,7 +197,7 @@ export class CookingRuntimeManager {
   }
 
   public saveSession(session: CookingSession, now: EpochMs = Date.now()): void {
-    if (typeof localStorage === 'undefined') return;
+    if (this.readOnlyRecipes.has(session.recipeId) || typeof localStorage === 'undefined') return;
 
     this.revision += 1;
 
@@ -200,7 +213,7 @@ export class CookingRuntimeManager {
 
   public exitSession(keepTimers: boolean, now: EpochMs = Date.now()): void {
     const session = this.getActiveSession();
-    if (!session) return;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return;
 
     if (keepTimers) {
       const updated = sessionReducer(session, { type: 'SET_PHASE', phase: 'BACKGROUND', now });
@@ -217,7 +230,7 @@ export class CookingRuntimeManager {
 
   public completeSession(onCompleted?: (recipeId: string) => void, now: EpochMs = Date.now()): boolean {
     const session = this.getActiveSession();
-    if (!session) return false;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return false;
 
     // A11: Emit completion at most once
     if (session.isCompleted || session.phase === 'COMPLETED') {
@@ -249,7 +262,7 @@ export class CookingRuntimeManager {
   // Timer actions
   public addTimer(label: string, durationSeconds: number, stepNumber?: number | null, now?: EpochMs): void {
     const session = this.getActiveSession();
-    if (!session) return;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return;
 
     const updated = sessionReducer(session, { type: 'ADD_TIMER', label, durationSeconds, stepNumber, now });
     this.sessions.set(session.recipeId, updated);
@@ -259,7 +272,7 @@ export class CookingRuntimeManager {
 
   public pauseTimer(timerId: string, now?: EpochMs): void {
     const session = this.getActiveSession();
-    if (!session) return;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return;
 
     const updated = sessionReducer(session, { type: 'PAUSE_TIMER', timerId, now });
     this.sessions.set(session.recipeId, updated);
@@ -269,7 +282,7 @@ export class CookingRuntimeManager {
 
   public resumeTimer(timerId: string, now?: EpochMs): void {
     const session = this.getActiveSession();
-    if (!session) return;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return;
 
     const updated = sessionReducer(session, { type: 'RESUME_TIMER', timerId, now });
     this.sessions.set(session.recipeId, updated);
@@ -279,7 +292,7 @@ export class CookingRuntimeManager {
 
   public extendTimer(timerId: string, seconds: number, now?: EpochMs): void {
     const session = this.getActiveSession();
-    if (!session) return;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return;
 
     const updated = sessionReducer(session, { type: 'EXTEND_TIMER', timerId, seconds, now });
     this.sessions.set(session.recipeId, updated);
@@ -289,7 +302,7 @@ export class CookingRuntimeManager {
 
   public acknowledgeTimer(timerId: string, now?: EpochMs): void {
     const session = this.getActiveSession();
-    if (!session) return;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return;
 
     const updated = sessionReducer(session, { type: 'ACKNOWLEDGE_TIMER', timerId, now });
     this.sessions.set(session.recipeId, updated);
@@ -299,7 +312,7 @@ export class CookingRuntimeManager {
 
   public deleteTimer(timerId: string, now?: EpochMs): void {
     const session = this.getActiveSession();
-    if (!session) return;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return;
 
     const updated = sessionReducer(session, { type: 'DELETE_TIMER', timerId, now });
     this.sessions.set(session.recipeId, updated);
@@ -310,7 +323,7 @@ export class CookingRuntimeManager {
   // Step navigation actions
   public setStep(stepIndex: number, now?: EpochMs): void {
     const session = this.getActiveSession();
-    if (!session) return;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return;
 
     const updated = sessionReducer(session, { type: 'SET_STEP', stepIndex, now });
     this.sessions.set(session.recipeId, updated);
@@ -320,7 +333,7 @@ export class CookingRuntimeManager {
 
   public nextStep(now?: EpochMs): void {
     const session = this.getActiveSession();
-    if (!session) return;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return;
 
     const updated = sessionReducer(session, { type: 'NEXT_STEP', now });
     this.sessions.set(session.recipeId, updated);
@@ -330,7 +343,7 @@ export class CookingRuntimeManager {
 
   public prevStep(now?: EpochMs): void {
     const session = this.getActiveSession();
-    if (!session) return;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return;
 
     const updated = sessionReducer(session, { type: 'PREV_STEP', now });
     this.sessions.set(session.recipeId, updated);
@@ -340,7 +353,7 @@ export class CookingRuntimeManager {
 
   public toggleIngredient(rowId: string, now?: EpochMs): void {
     const session = this.getActiveSession();
-    if (!session) return;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return;
 
     const updated = sessionReducer(session, { type: 'TOGGLE_INGREDIENT', rowId, now });
     this.sessions.set(session.recipeId, updated);
@@ -350,7 +363,7 @@ export class CookingRuntimeManager {
 
   public setTheme(theme: CookingPreferences['theme'], now?: EpochMs): void {
     const session = this.getActiveSession();
-    if (!session) return;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return;
 
     const updated = sessionReducer(session, { type: 'SET_THEME', theme, now });
     this.sessions.set(session.recipeId, updated);
@@ -360,7 +373,7 @@ export class CookingRuntimeManager {
 
   public setFontScale(fontScale: number, now?: EpochMs): void {
     const session = this.getActiveSession();
-    if (!session) return;
+    if (!session || this.readOnlyRecipes.has(session.recipeId)) return;
 
     const updated = sessionReducer(session, { type: 'SET_FONT_SCALE', fontScale, now });
     this.sessions.set(session.recipeId, updated);
@@ -386,6 +399,7 @@ export class CookingRuntimeManager {
     }
     this.listeners.clear();
     this.sessions.clear();
+    this.readOnlyRecipes.clear();
     this.activeRecipeId = null;
   }
 }
