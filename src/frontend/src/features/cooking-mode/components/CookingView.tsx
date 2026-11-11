@@ -147,6 +147,8 @@ export function CookingView({
           setTimeout(() => setVoiceNotice(null), 4000);
         },
         onIdleTimeout: () => setIsListening(false),
+        onStopped: () => setIsListening(false),
+        onError: (message) => { setVoiceNotice(message); setIsListening(false); },
         onUnsupportedTts: (msg) => {
           setVoiceNotice(msg);
           setTimeout(() => setVoiceNotice(null), 4000);
@@ -203,7 +205,7 @@ export function CookingView({
   }, []);
 
   // Recognition must not retain microphone ownership after leaving the cooking view.
-  useEffect(() => () => { sharedSpeechAdapter.stopListening(); }, []);
+  useEffect(() => () => { sharedSpeechAdapter.cleanup(); }, []);
 
   // Focus management on step change
   useEffect(() => {

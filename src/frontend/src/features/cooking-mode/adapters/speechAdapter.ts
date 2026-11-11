@@ -14,6 +14,7 @@ export interface SpeechAdapterCallbacks {
   onError?: (errorMessage: string) => void;
   onOffline?: (message: string) => void;
   onIdleTimeout?: () => void;
+  onStopped?: () => void;
   onUnsupportedTts?: (message: string) => void;
 }
 
@@ -175,7 +176,9 @@ export class SpeechAdapter {
   }
 
   public stopListening(): void {
+    const wasListening = this.listening;
     this.listening = false;
+    if (wasListening) this.callbacks.onStopped?.();
     this.clearIdleTimer();
     if (typeof window !== 'undefined') window.removeEventListener('offline', this.onOffline);
     const recognition = this.recognition;
