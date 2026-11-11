@@ -122,3 +122,57 @@ describe('StepNavigation (T024 - US2)', () => {
     expect(handleNext).not.toHaveBeenCalled();
   });
 });
+
+describe('shortcut safety', () => {
+  const setup = () => {
+    const callbacks = { onNext: vi.fn(), onPrev: vi.fn(), onFinish: vi.fn(), onSilenceAlarm: vi.fn() };
+    render(<StepNavigation currentStepIndex={1} totalSteps={3} onSelectStep={vi.fn()} hasActiveAlarm {...callbacks} />);
+    return callbacks;
+  };
+
+  it.each(['button', 'a', 'input', 'textarea', 'select', 'summary', 'audio', 'video', '[role="button"]', '[role="slider"]', '[tabindex]', '[contenteditable]'])('ignores interactive target %s and its descendants', (selector) => {
+    const callbacks = setup();
+    const target = document.createElement(selector.startsWith('[') ? 'div' : selector);
+    if (selector === 'a') target.setAttribute('href', '#');
+    if (selector === 'audio' || selector === 'video') target.setAttribute('controls', '');
+    if (selector.startsWith('[role=')) target.setAttribute('role', selector.includes('slider') ? 'slider' : 'button');
+    if (selector === '[tabindex]') target.setAttribute('tabindex', '0');
+    if (selector === '[contenteditable]') target.setAttribute('contenteditable', 'true');
+    const child = document.createElement('span');
+    target.append(child);
+    document.body.append(target);
+    for (const key of [' ', 'ArrowRight', 'ArrowLeft']) fireEvent.keyDown(child, { key });
+    target.remove();
+    Object.values(callbacks).forEach((callback) => expect(callback).not.toHaveBeenCalled());
+  });
+
+  it('ignores window events when a button is focused', () => {
+    const callbacks = setup();
+    screen.getByLabelText(COOKING_VI.nextStep).focus();
+    for (const key of [' ', 'ArrowRight', 'ArrowLeft']) fireEvent.keyDown(window, { key });
+    Object.values(callbacks).forEach((callback) => expect(callback).not.toHaveBeenCalled());
+  });
+
+  it.each(['role', 'native'])('ignores shortcuts while a %s modal is present', (kind) => {
+    const callbacks = setup();
+    const modal = document.createElement(kind === 'native' ? 'dialog' : 'div');
+    if (kind === 'native') modal.setAttribute('open', '');
+    else { modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true'); }
+    document.body.append(modal);
+    for (const key of [' ', 'ArrowRight', 'ArrowLeft']) fireEvent.keyDown(window, { key });
+    modal.remove();
+    Object.values(callbacks).forEach((callback) => expect(callback).not.toHaveBeenCalled());
+  });
+
+  it('requires explicit finish activation on the last step', () => {
+    const onFinish = vi.fn();
+    const onNext = vi.fn();
+    render(<StepNavigation currentStepIndex={2} totalSteps={3} onNext={onNext} onPrev={vi.fn()} onSelectStep={vi.fn()} onFinish={onFinish} />);
+    fireEvent.keyDown(window, { key: 'ArrowRight' });
+    fireEvent.keyDown(window, { key: ' ' });
+    expect(onFinish).not.toHaveBeenCalled();
+    expect(onNext).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByLabelText(COOKING_VI.finishCooking));
+    expect(onFinish).toHaveBeenCalledOnce();
+  });
+});

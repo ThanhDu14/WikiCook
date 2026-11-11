@@ -35,7 +35,8 @@ export function BackgroundTimerWidget({
     }
   }
 
-  const primaryTimer = nearestTimer || expiredTimers[0] || timers[0];
+  const unacknowledgedTimer = expiredTimers.find((timer) => timer.acknowledgedAt === null);
+  const primaryTimer = unacknowledgedTimer || nearestTimer || expiredTimers[0] || timers[0];
   const isExpired = primaryTimer.status === 'EXPIRED';
   const remainingSec = calculateRemainingSeconds(primaryTimer, now);
 
@@ -55,7 +56,7 @@ export function BackgroundTimerWidget({
         <button
           type="button"
           onClick={onDismiss}
-          aria-label="Đóng tiện ích"
+          aria-label="Ẩn tiện ích"
           className="rounded p-1 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
         >
           ✕

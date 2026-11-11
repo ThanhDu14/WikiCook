@@ -54,9 +54,9 @@ export function TimerDrawer({
             const isAcknowledgedExpired =
               timer.status === 'EXPIRED' && timer.acknowledgedAt !== null;
 
-            const overdueMinutes =
+            const overdueSeconds =
               timer.status === 'EXPIRED'
-                ? Math.max(1, Math.floor((now - timer.expiredAt) / 60000))
+                ? Math.max(0, Math.floor((now - timer.expiredAt) / 1000))
                 : 0;
 
             return (
@@ -94,7 +94,7 @@ export function TimerDrawer({
 
                     {isUnacknowledgedExpired && (
                       <span className="rounded-md bg-red-100 px-2 py-0.5 text-xs font-bold text-red-700 dark:bg-red-900 dark:text-red-200">
-                        {COOKING_VI.overdueMinutes(overdueMinutes)}
+                        Quá giờ {formatTimerDisplay(overdueSeconds)}
                       </span>
                     )}
 

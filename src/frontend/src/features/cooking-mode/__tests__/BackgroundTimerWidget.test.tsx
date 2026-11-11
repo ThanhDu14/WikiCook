@@ -93,3 +93,19 @@ describe('BackgroundTimerWidget (T043 - US5)', () => {
     expect(screen.getByText(/Đã hoàn thành!/)).toBeDefined();
   });
 });
+
+it('prioritizes unacknowledged expiration over running and acknowledged timers; dismiss only hides', () => {
+  const now = 1000000;
+  const base = { sessionId: 's', totalDurationSeconds: 60, stepNumber: 1, createdAt: 0 };
+  const timers: KitchenTimer[] = [
+    { ...base, timerId: 'ack', label: 'Acknowledged', status: 'EXPIRED', expiredAt: 100, acknowledgedAt: 200 },
+    { ...base, timerId: 'running', label: 'Running', status: 'RUNNING', targetEndTimestamp: now + 60000 },
+    { ...base, timerId: 'alarm', label: 'Alarm', status: 'EXPIRED', expiredAt: now - 1000, acknowledgedAt: null },
+  ];
+  const onDismiss = vi.fn();
+  render(<BackgroundTimerWidget visible timers={timers} now={now} onReturnToCooking={vi.fn()} onDismiss={onDismiss} />);
+  expect(screen.getByText('Alarm')).toBeDefined();
+  fireEvent.click(screen.getByRole('button', { name: 'Ẩn tiện ích' }));
+  expect(onDismiss).toHaveBeenCalledOnce();
+  expect(timers[2].status).toBe('EXPIRED');
+});

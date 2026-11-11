@@ -29,15 +29,17 @@ export function StepNavigation({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const target = (e.target || document.activeElement) as HTMLElement | null;
-      const isInput =
-        target &&
-        (target.tagName === 'INPUT' ||
-          target.tagName === 'TEXTAREA' ||
-          target.tagName === 'SELECT' ||
-          target.isContentEditable);
+      const interactiveSelector =
+        'button, a[href], area[href], input, textarea, select, summary, audio[controls], video[controls], [contenteditable]:not([contenteditable="false"]), [tabindex], [role]:not([role="presentation"]):not([role="none"])';
+      const isInteractive = (target: EventTarget | null) =>
+        target instanceof Element && Boolean(target.closest(interactiveSelector));
 
-      if (isInput) return;
+      if (
+        e.defaultPrevented ||
+        document.querySelector('dialog[open], [aria-modal="true"]') ||
+        isInteractive(e.target) ||
+        isInteractive(document.activeElement)
+      ) return;
 
       // FR-008 & FR-014: Spacebar priority silences active alarm without advancing step
       if (e.key === ' ' && hasActiveAlarm && onSilenceAlarm) {
@@ -48,9 +50,7 @@ export function StepNavigation({
 
       if (e.key === ' ' || e.key === 'ArrowRight') {
         e.preventDefault();
-        if (isLastStep) {
-          onFinish?.();
-        } else {
+        if (!isLastStep) {
           onNext();
         }
       } else if (e.key === 'ArrowLeft') {
