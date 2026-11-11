@@ -1,10 +1,11 @@
 # Feature Specification: User Authentication & Roles
 
-**Feature Branch**: `feature/SCRUM-xx-user-authentication-roles` *(Jira key pending)*
+**Feature Branch**: `feature/SCRUM-74-auth-backend` (backend), `feature/SCRUM-76-auth-profile-frontend`
+(frontend, shared with 011); Spec Kit artifacts: `feature/SCRUM-72-spec-kit-010-011`
 
 **Created**: 2026-10-02
 
-**Status**: Ready for Implementation (Sprint 02)
+**Status**: In Review (revised 2026-11-09; needs Duy's approval by PR before implementation)
 
 **Input**: User description: "Describe the login feature: user stories, acceptance criteria and edge
 cases. A good spec has a summary + user stories + acceptance criteria + functional and
@@ -46,6 +47,44 @@ authentication, the admin dashboard UI itself (Module 3.10).
 - Q: Can an Administrator be suspended, banned or demoted by another Administrator? → A: Yes, but never by themselves, and at least one active Administrator (not suspended, banned or deleted) must always remain; same rule as spec 011 self-deletion. A Moderator cannot act on a Moderator or Administrator (only a higher role acts on a lower one). Actions on another Administrator require re-authentication and are always audited (FR-022a, FR-023).
 
 - Session 2026-10-19: Concurrent-user load condition changed from 200 to 100 to match the RC acceptance gate in docs/management/project-plan.md §4.4.2 and Vision Document §7 (SCRUM-36).
+
+### Session 2026-11-06
+
+- Q: (Maintainer instruction) May a Moderator suspend accounts? (spec 100 FR-011 allowed it, this spec did not) → A: Yes. A Moderator may suspend an active Member or Contributor for at most 30 days. Only an Administrator bans, changes roles or lifts a suspension or ban early (FR-022, FR-022a, permission matrix, US3 scenario 6).
+- Q: (Maintainer instruction) When does a suspension take effect? (spec 100 Clarifications waited for the access token to expire) → A: FR-024 stands: no later than the user's next request. Spec 100 must change, not this spec.
+- Q: (Maintainer instruction) How does a suspension end? → A: This spec ends expired suspensions on schedule; spec 100 calls this spec only to lift one early (Integration Points).
+- Q: (OQ-010-02) How does the lock treat unregistered emails? → A: Failures are counted per normalized email including unregistered ones, with the same lock screen and a neutral note; the email notice goes out only when an account exists; attempts are also limited per IP address; audit entries never store an unknown email in readable form (FR-012, FR-025).
+- Q: (OQ-010-02, OQ-010-10) Does a password reset end a lock, and does a lock stop Google sign-in? → A: The lock ends only with time, a successful reset does not end it. It does not stop Google sign-in (FR-012).
+- Q: (OQ-010-03) Do older verification links stay valid after a resend? → A: No, a new link invalidates earlier ones (FR-005).
+- Q: (OQ-010-04) How does a banned user reach account closure? → A: After proving their identity they receive a single-use link, valid for 10 minutes, that opens only the closure page of spec 011. It creates no session (FR-013).
+- Q: (OQ-010-05) What does a refused blocked email see? → A: A neutral message with no reason (FR-026).
+- Q: (OQ-010-06) What does the user see above the email limit? → A: "Try again in X minutes", the same whether or not the email is registered. Each email type is counted separately and the first email counts (FR-017).
+- Q: (OQ-010-07) What if one receiving spec fails during the Google reset? → A: The reset is all-or-nothing: nothing changes and the sign-in is not completed (FR-019).
+- Q: (OQ-010-08) Which name and session does a Google sign-in use? → A: The Google name follows the 1–50 character rule, and the session follows the lifetime without "Remember me" (FR-018).
+- Q: (OQ-010-10) Who receives a reset link, and does registering or verifying sign the user in? → A: Google-only, suspended and banned accounts receive no link but see the same answer (FR-014). Registering and verifying do not sign the user in (FR-005).
+- Q: (Maintainer instruction) What happens to a banned account that is still unverified after 7 days? → A: It is deleted as usual, but its email hash goes on the block list, otherwise the deletion would undo the ban (FR-005, FR-026).
+- Q: (Maintainer instruction) What happens to a suspended account that is still unverified after 7 days? → A: Deletion waits until the suspension ends; if the account is still unverified then, it is deleted. Otherwise the deletion would free the email and let the user escape the suspension by registering again (FR-005).
+- Q: (Maintainer instruction) What is the "reason category" of FR-013? → A: There is no category list; the reason text given by the person who acted is shown.
+- Q: (Maintainer instruction) May an Administrator promote someone to Administrator? → A: Yes, with re-authentication and an audit entry (FR-022a).
+- Q: (Maintainer instruction) Personal data levels (requested by spec 011)? → A: Two levels (NFR-009).
+- Q: (Maintainer instruction) Language of messages? → A: Messages quoted in this spec give the meaning; the interface shows them in Vietnamese (NFR-006).
+- Q: (OQ-011-05) Are wrong passwords limited during re-authentication? → A: Yes, with one counter per user shared with the password change of spec 011, separate from sign-in (FR-022b).
+- Q: (Maintainer instruction) What happens when Google re-authentication is cancelled, fails or uses another Google account? → A: The user returns to the page that asked, still signed in (FR-022b).
+
+### Session 2026-11-07
+
+- Q: (Analysis I2) What happens when Google sign-in matches an unverified account that is suspended or banned? → A: The account is not reset. Sign-in is refused as in FR-013 and the account, its sanction and its data stay unchanged; otherwise the reset would erase the sanction, the same escape that FR-005 closes (FR-019).
+- Q: (Analysis I3) How does a user appeal? → A: Spec 100 has no appeal workflow, and none is added. The email gives a support contact set in configuration; an Administrator reviews the appeal by hand and lifts the sanction under FR-022. This replaces the 2026-10-18 answer that appeals belong to spec 100 (FR-024a).
+- Q: (Analysis I4) Can a ban be lifted? → A: Yes, by an Administrator (FR-022, FR-024a). Spec 100 no longer calls a ban irreversible.
+- Q: (Analysis U1) How does a signed-in user see a role change without reloading? → A: Every response to a signed-in request signals a pending notice; the app reloads the account and shows the notice (FR-024a).
+- Q: (Analysis I1) What happens when the app opens without a connection? → A: The person is not treated as signed out and is not sent to the sign-in page; the session is checked when the connection returns (Edge Cases).
+- Q: (Analysis I6) Does the 30-day limit also apply to Administrators? → A: Yes. Every suspension lasts at most 30 days, as in spec 100; an Administrator who needs longer bans the account (FR-022).
+- Q: (Analysis U5) Can the email limit refuse a registration? → A: No. The account is created so the email stays free to register (FR-002), but above the limit no email goes out and the user requests the link after the wait (FR-017).
+
+### Session 2026-11-09
+
+- Q: (Analysis I11) What happens on a page that is not offline-first when the session ends while the person is signed in? → A: The person stays on the page. A dialog asks them to sign in again, unsaved form content is kept, and leaving the page warns first (Edge Cases).
+- Q: (Analysis U12) Must the app itself open without a connection? → A: Not in this spec. The "No connection when the app opens" edge case applies once the app has loaded: an open tab, or a page served while the backend is unreachable. Loading the app with no connection at all needs an offline app shell, which belongs to the offline features (specs 040, 050) (Assumptions).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -136,6 +175,10 @@ each role; confirm allowed actions succeed and disallowed ones are refused.
    no later than that user's next request, and the change is recorded in the audit log.
 5. **Given** a user whose role was lowered while signed in, **When** they next try a privileged
    action, **Then** it is refused.
+6. **Given** a Moderator, **When** they suspend an active Member or Contributor for at most 30 days,
+   **Then** the suspension takes effect no later than that user's next request and is audited;
+   **When** they ask for more than 30 days, lift a suspension, ban a user, or target a Moderator or
+   an Administrator, **Then** access is refused.
 
 ---
 
@@ -190,15 +233,17 @@ is reused.
 
 ### Edge Cases
 
-- **Brute force**: after 5 consecutive failed sign-in attempts on one account within 15 minutes,
-  the account is temporarily locked for 15 minutes; the user sees a message stating when they can
-  retry and receives an email notification. A successful sign-in resets the counter.
+- **Brute force**: after 5 consecutive failed sign-in attempts for one email within 15 minutes,
+  sign-in for that email is locked for 15 minutes, whether or not it is registered; the user sees
+  a message stating when they can retry, and the owner of a registered account receives an email
+  notification. A successful sign-in resets the counter.
 - **Suspended / banned account**: correct credentials still do not sign the user in; they see a
   message that the account is suspended (with end date if temporary) or banned. Active sessions
   of a user who gets suspended end on their next request.
 - **Already signed in** user opens the sign-in or sign-up page → redirected to the home page.
-- **Session expires while filling a form** (e.g. writing a recipe) → user is asked to sign in again
-  and the unsaved form content is not silently lost (user is warned before leaving).
+- **Session expires while filling a form** (e.g. writing a recipe) → the user stays on the page and
+  a dialog asks them to sign in again; the unsaved form content is not silently lost (user is warned
+  before leaving).
 - **Redirect after sign-in** only goes to pages inside WikiCook; links pointing to external sites
   are ignored and the user goes to the home page.
 - **Email with leading/trailing spaces or mixed case** is normalized for both sign-up and sign-in.
@@ -212,17 +257,26 @@ is reused.
   administrators (FR-022a, FR-023).
 - **Email delivery failure** (verification or reset) → user can request the email again, limited
   to 3 requests per 15 minutes per email address.
-- **Unverified account reaches 7 days** → deleted automatically with all its data (FR-005); if the
-  user is signed in at that moment, their next request ends the session. The same data-deletion
-  event as the Google reset (Integration Points) is sent to specs 011, 060 and 080.
+- **Unverified account reaches 7 days** → deleted automatically with all its data (FR-005), or when
+  its suspension ends if it is suspended at that moment; if the user is signed in at that moment,
+  their next request ends the session. A data-deletion event handled
+  like the Google reset (Integration Points) is sent to specs 011, 060 and 080.
 - **Google sign-in matches an unverified email/password account** → the old account is reset to a
   brand-new one: everything created before verification (display name, dietary profile, recipe
   drafts, collections, any other data) is deleted, the old password is disabled, all earlier
   sessions are ended, the display name is taken from the Google account, and the account becomes
   verified (FR-019). This stops a third party from pre-loading an email owner's account with
   data (e.g. an allergy profile) or a password.
+  A suspended or banned account is not reset (FR-019).
 - **Simultaneous sessions** on multiple devices are allowed; signing out on one device does not
   sign out the others (except after a password reset, see US4-2).
+- **No connection when the app opens** → a person with a session is not treated as signed out and
+  is not sent to the sign-in page. Pages that work offline (specs 040, 050) keep working and the
+  meal planner shows its offline notice (spec 030 FR-028). The session is checked again when the
+  connection returns; if it has ended, an offline-first page keeps its local data and shows a
+  non-blocking notice (spec 040 FR-020), and any other page asks the person to sign in without
+  leaving the page. This applies once the app has loaded; opening the app itself with no connection
+  is not part of this spec (Assumptions).
 
 ## Requirements *(mandatory)*
 
@@ -239,10 +293,14 @@ is reused.
 - **FR-004**: Passwords MUST be 8–128 characters and contain at least one letter and one digit;
   the system MUST reject passwords that equal the user's email.
 - **FR-005**: System MUST send a verification email whose link is single-use and expires after
-  24 hours, and MUST let the user request a new link. An account that is still unverified 7 days
-  after registration MUST be deleted automatically and completely (account and all its data); the
-  7 days are counted from registration and requesting a new link does not extend them. The email is
-  then free to register again immediately and is NOT added to the Blocked Email list.
+  24 hours, and MUST let the user request a new link, which invalidates earlier unused verification
+  links. Neither registering nor verifying signs the user in. An account that is still unverified
+  7 days after registration MUST be deleted automatically and completely (account and all its data);
+  the 7 days are counted from registration and requesting a new link does not extend them. The email
+  is then free to register again immediately and is NOT added to the Blocked Email list, except when
+  the account is banned at that moment: its email hash is then added to the list (FR-026). A
+  suspended account MUST NOT be deleted while the suspension runs; if it is still unverified when the
+  suspension ends, it is deleted then.
 - **FR-006**: Unverified accounts MUST be able to sign in but MUST NOT be able to publish content
   (recipes, reviews, cooksnaps, comments).
 
@@ -255,29 +313,45 @@ is reused.
 - **FR-010**: Users MUST be able to sign out; signing out MUST end the session immediately.
 - **FR-011**: After sign-in, the system MUST return the user to the originally requested internal
   page, or to the home page.
-- **FR-012**: System MUST lock an account for 15 minutes after 5 consecutive failed sign-in
-  attempts within 15 minutes and notify the account owner by email.
-- **FR-013**: System MUST refuse sign-in for suspended or banned accounts and display the reason
-  category and, for suspensions, the end date.
+- **FR-012**: System MUST lock email-and-password sign-in for 15 minutes after 5 consecutive failed
+  attempts within 15 minutes, counted per normalized email whether or not it is registered. The lock
+  screen MUST be the same in both cases (retry time and a neutral note). Only the owner of a
+  registered account is notified by email. The lock ends only with time: a successful password reset
+  does not end it, and it does not block Google sign-in. Sign-in attempts MUST also be limited per IP
+  address.
+- **FR-013**: System MUST refuse sign-in for suspended or banned accounts and, only after the user
+  has proved their identity, display the reason and, for suspensions, the end date. A banned user
+  who proved their identity MUST receive a single-use link, valid for 10 minutes, that opens only the
+  account-closure page of spec 011; it MUST NOT create a session.
 
 **Password reset**
 
 - **FR-014**: Users MUST be able to request a password reset by email; the response MUST be the
-  same whether or not the email is registered.
+  same whether or not the email is registered. Accounts without a password (Google only), suspended
+  accounts and banned accounts MUST receive no link, with the same response.
 - **FR-015**: Reset links MUST be single-use, expire after 30 minutes, and be invalidated when a
   newer link is issued.
 - **FR-016**: A successful password reset MUST sign the user out of all other sessions.
 - **FR-017**: System MUST limit verification and reset email requests to 3 per 15 minutes per
-  email address.
+  email address, counting each of the two types separately and including the first email sent at
+  registration and requests for unregistered addresses. Above the limit the user MUST be told to try
+  again in X minutes, with the same answer whether or not the email is registered.
+  Registration itself is never refused by this limit: above it the account is created without an
+  email, and the user requests the link after the wait.
 
 **Google sign-in**
 
-- **FR-018**: Users MUST be able to sign in with a Google account that has a verified email.
+- **FR-018**: Users MUST be able to sign in with a Google account that has a verified email. The
+  display name from Google MUST follow the 1–50 character rule of registration, and the session MUST
+  follow the lifetime without "Remember me" (FR-009).
 - **FR-019**: If the Google email matches an existing **verified** account, the system MUST link and
   sign in to that account rather than create a duplicate. If it matches an **unverified** account,
   the system MUST treat it as a new account: delete all data created before verification, disable
   the old password, end all earlier sessions, take the display name from the Google account and mark
-  the account verified.
+  the account verified. This reset MUST be all-or-nothing: if any receiving spec fails to delete its
+  data, nothing changes and the sign-in is not completed.
+  A suspended or banned account MUST NOT be reset: sign-in is refused as in FR-013 and the account,
+  its sanction and its data stay unchanged.
 
 **Roles & access control**
 
@@ -285,12 +359,20 @@ is reused.
   Administrator. Guests are visitors without an account.
 - **FR-021**: System MUST enforce the permission matrix below for every protected action, on every
   request (not only by hiding buttons).
-- **FR-022**: Only Administrators MUST be able to change a user's role or suspend/ban an account.
-- **FR-022a**: Only a higher role may act on a lower role. A Moderator MUST NOT suspend, ban or
-  change the role of another Moderator or of an Administrator. An Administrator MAY act on another
-  Administrator, but MUST NOT suspend, ban, demote or delete themselves. Any action on another
-  Administrator MUST require the acting Administrator to re-authenticate and MUST always be
+- **FR-022**: Only Administrators MUST be able to change a user's role, ban an account, or lift a
+  suspension or ban early. Moderators and Administrators MAY suspend an active account;
+  a suspension lasts at most 30 days.
+- **FR-022a**: Only a higher role may act on a lower role. A Moderator MUST NOT suspend another
+  Moderator or an Administrator. An Administrator MAY act on another Administrator, but MUST NOT
+  suspend, ban, demote or delete themselves. Any action on another Administrator, and any promotion
+  to Administrator, MUST require the acting Administrator to re-authenticate and MUST always be
   audited (FR-025).
+- **FR-022b**: Wrong passwords during re-authentication MUST share one counter per user with the
+  password change of spec 011: after 5 wrong passwords within 15 minutes both MUST be refused for 15
+  minutes, stating when to retry. This counter is separate from FR-012 and MUST NOT lock signing in.
+  Re-authentication with Google MUST be done with the Google account of the signed-in user; when it is
+  cancelled, fails or uses another account, the user MUST return to the page that asked, still signed
+  in, and be told why.
 - **FR-023**: System MUST prevent removing the Administrator role from, suspending, banning or
   deleting the last remaining **active** Administrator. "Active Administrator" means an
   Administrator account that is not suspended, banned or deleted; the system MUST always keep at
@@ -298,21 +380,26 @@ is reused.
 - **FR-024**: Role changes, suspensions and bans MUST take effect no later than the affected
   user's next request.
 - **FR-024a**: System MUST email the account owner when the account is suspended or banned, stating
-  the reason, the end date (for suspensions) and how to appeal; it MUST also email them when a
+  the reason, the end date (for suspensions) and the contact for appeals; it MUST also email them when a
   suspension ends or a ban is lifted. A role change MUST NOT send an email; instead, at the user's
-  next sign-in (or next request if already signed in) the app MUST show a notice naming the new
+  next sign-in (or next request if already signed in, without reloading the page) the app MUST show a notice naming the new
   role and the permissions that changed, stressing any permissions lost on a demotion. The notice
   is shown once and then dismissed.
+  Appeals have no workflow of their own: the contact is a support address set in configuration, and
+  an Administrator reviews the appeal by hand and lifts the sanction under FR-022.
 - **FR-025**: System MUST record an audit entry (who, what, when, target account) for sign-in
   successes and failures, lockouts, password resets, role changes, suspensions and bans. When the
   target account is deleted, its audit entries MUST be kept for the full retention period (NFR-008)
-  in anonymised form (no email or display name).
+  in anonymised form (no email or display name). Audit entries MUST NOT store an unregistered email
+  in readable form, and MUST NOT contain dietary data.
 
 **Account deletion rules** *(deletion itself is specified in spec 011)*
 
 - **FR-026**: A user whose account is **banned** MAY still delete their account, but the system
   MUST then store only a hash of the email on a block list (never the plain email) and MUST refuse
-  registration and Google sign-in creation with any email matching it. A user who is **temporarily
+  registration and Google sign-in creation with any email matching it, using a neutral message that
+  gives no reason. A banned account deleted under FR-005 is handled the same way. A user who is
+  **temporarily
   suspended** MUST NOT be able to delete their account until the suspension ends. For all other
   deleted accounts nothing is kept on the block list.
 
@@ -327,7 +414,8 @@ is reused.
 | "Verified Contributor" badge on own recipes         |       |        |      ✓      |           |               |
 | Moderate recipes, reviews and user reports          |       |        |             |     ✓     |       ✓       |
 | Manage categories and taxonomies                    |       |        |             |           |       ✓       |
-| Change roles, suspend or ban users                  |       |        |             |           |       ✓       |
+| Suspend users *(Moderator: FR-022, FR-022a)*        |       |        |             |     ✓     |       ✓       |
+| Change roles, ban users, lift suspensions or bans   |       |        |             |           |       ✓       |
 
 ### Non-Functional Requirements
 
@@ -347,8 +435,9 @@ is reused.
   visible label, and error messages MUST be announced next to the related field.
 - **NFR-008 (Auditability)**: Audit entries (FR-025) MUST be retained for at least 90 days and be
   viewable by Administrators.
-- **NFR-009 (Data protection)**: A user's email MUST be visible only to the account owner and
-  Administrators. Display name and avatar are public (as defined in spec 011).
+- **NFR-009 (Data protection)**: A user's email and account information MUST be visible only to the
+  account owner and Administrators. The dietary profile and household size MUST be visible only to
+  the owner, Administrators excluded. Display name, avatar and bio are public (as defined in spec 011).
 
 ### Key Entities
 
@@ -399,9 +488,11 @@ account is simply absent (its public content shows "Người dùng đã xóa").*
 - An email-sending service is available for verification, reset and lockout notification emails.
 - Dietary profile, avatar, household size, display-name editing, password change/set and account
   deletion are covered by `specs/011-user-profile-dietary`, which depends on this one.
-- SCRUM-27 is the Sprint Planning task on Jira, not this feature. A new Jira key for this feature
-  is not yet assigned; once created, replace `SCRUM-xx` in the branch name per the constitution
-  (Principle I).
+- Serving the app with no connection at all (an offline app shell) is owned by the offline features
+  (specs 040, 050); this spec only decides what a loaded app does about the session when offline.
+- SCRUM-27 is the Sprint Planning task on Jira, not this feature. Sprint 04 (`pa4-guide.md`) assigns
+  SCRUM-72 to these Spec Kit artifacts, SCRUM-74 to the 010 backend and SCRUM-76 to the 010 + 011
+  frontend; branch names and commits carry these keys (constitution Principle I).
 
 ## Integration Points
 
@@ -409,21 +500,26 @@ account is simply absent (its public content shows "Người dùng đã xóa").*
   `DELETE`, anonymising content). 010 adds: (1) a banned user may delete, and 011 MUST call 010 to
   store the email hash on the Blocked Email list; (2) a temporarily suspended user is refused until
   the suspension ends; (3) the email is freed immediately otherwise; (4) audit entries are
-  anonymised, not deleted (FR-025/FR-026).
+  anonymised, not deleted (FR-025/FR-026); (5) a banned user reaches deletion with the closure link
+  of FR-013, which 011 MUST accept in place of a session.
 - **Specs 011, 060, 080 – reset of an unverified account on Google sign-in (FR-019)**: 010 emits
   an "account reset" event when Google sign-in takes over an unverified account. 011 MUST delete
   the dietary profile (and bio/avatar), 060 MUST delete the user's recipe drafts and any other
   recipes, and 080 MUST delete the user's collections and bookmarks; none of them may keep data
-  created before verification. Data created after verification is never affected.
+  created before verification. A failure in any of them rolls the whole reset back. Data created
+  after verification is never affected.
+- **Spec 011 – wrong-password counter (FR-022b)**: 010 keeps the counter; the password change of 011
+  and re-authentication both go through it.
 - **Specs 011 and 100 – active Administrator rule (FR-022a, FR-023)**: "Active Administrator" =
   not suspended, banned or deleted. 011 MUST refuse self-deletion of the last active Administrator
   using this rule. 100 MUST enforce the role hierarchy (Moderator cannot act on Moderator or
   Administrator; Administrator may act on Administrator but never on themselves), require
   re-authentication before any action on another Administrator, refuse any action that would leave
   zero active Administrators, and always write an audit entry.
-- **Spec 100 – ban / suspension and appeals**: 100 owns the moderation actions and the appeal
-  process; 010 owns the account status, the Blocked Email list and sending the suspension/ban,
-  end-of-suspension and ban-lifted emails (FR-024a). 100 MUST supply the reason, the end date and
-  the appeal link/instructions for each email, and MUST notify 010 when a suspension expires or a
-  ban is lifted. Role-change notices are in-app only. Ban and suspend actions MUST use FR-022/FR-024, and 100 reads the
+- **Spec 100 – ban / suspension and appeals**: 100 owns the moderation actions; appeals have no workflow (FR-024a).
+  010 owns the account status, the Blocked Email list and sending the suspension/ban,
+  end-of-suspension and ban-lifted emails (FR-024a). 100 MUST supply the reason and the end date
+  for each email, and MUST call 010 to lift a suspension or ban early;
+  010 ends expired suspensions itself on schedule. Suspensions take effect by the user's next
+  request (FR-024). Role-change notices are in-app only. Ban and suspend actions MUST use FR-022/FR-024, and 100 reads the
   block list only through 010 (registration refusal), never the plain email.
