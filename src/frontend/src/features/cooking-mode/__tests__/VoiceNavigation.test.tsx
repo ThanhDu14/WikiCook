@@ -7,6 +7,15 @@ import { CookingRuntimeProvider } from '../runtime/CookingRuntimeProvider';
 import { CookingRuntimeManager } from '../runtime/cookingRuntime';
 import { mockPhoBoSnapshot } from './fixtures/recipeFixtures';
 
+beforeEach(() => {
+  vi.stubGlobal('SpeechRecognition', class {
+    start() {}
+    stop() {}
+    abort() {}
+  });
+});
+afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); vi.useRealTimers(); });
+
 describe('VoiceNavigation & speechAdapter (T037 - US4)', () => {
   let adapter: SpeechAdapter;
 

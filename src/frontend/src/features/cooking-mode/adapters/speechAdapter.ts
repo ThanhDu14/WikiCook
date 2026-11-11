@@ -17,17 +17,49 @@ export interface SpeechAdapterCallbacks {
   onUnsupportedTts?: (message: string) => void;
 }
 
+interface RecognitionResult {
+  isFinal: boolean;
+  readonly [index: number]: { transcript: string; confidence: number };
+}
+
+interface BrowserRecognition {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: { resultIndex: number; results: ArrayLike<RecognitionResult> }) => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+  onend: (() => void) | null;
+  start(): void;
+  stop(): void;
+}
+
+type RecognitionConstructor = new () => BrowserRecognition;
+
+function getRecognitionConstructor(): RecognitionConstructor | undefined {
+  if (typeof window === 'undefined') return undefined;
+  const browser = window as unknown as {
+    SpeechRecognition?: RecognitionConstructor;
+    webkitSpeechRecognition?: RecognitionConstructor;
+  };
+  return browser.SpeechRecognition || browser.webkitSpeechRecognition;
+}
+
 export class SpeechAdapter {
   private listening: boolean = false;
   private idleTimeoutId: number | null = null;
   private callbacks: SpeechAdapterCallbacks = {};
 
+  private recognition: BrowserRecognition | null = null;
+  private permissionDenied = false;
+  private clearPendingSpeech: (() => void) | null = null;
+  private activeSynth: SpeechSynthesis | null = null;
+  private readonly onOffline = (): void => {
+    this.stopListening();
+    this.callbacks.onOffline?.(COOKING_VI.voiceOfflineNotice);
+  };
+
   public isSupported(): boolean {
-    if (typeof window === 'undefined') return false;
-    return !!(
-      (window as unknown as { SpeechRecognition?: unknown }).SpeechRecognition ||
-      (window as unknown as { webkitSpeechRecognition?: unknown }).webkitSpeechRecognition
-    );
+    return !!getRecognitionConstructor();
   }
 
   public isListening(): boolean {
@@ -35,7 +67,7 @@ export class SpeechAdapter {
   }
 
   public classifyCommand(transcript: string, confidence: number): VoiceCommand {
-    if (confidence < 0.7) {
+    if (!Number.isFinite(confidence) || confidence < 0.7) {
       return 'UNKNOWN';
     }
 
@@ -89,19 +121,71 @@ export class SpeechAdapter {
     this.callbacks = callbacks;
 
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      this.stopListening();
       this.callbacks.onOffline?.(COOKING_VI.voiceOfflineNotice);
       return false;
     }
 
-    this.listening = true;
-    this.resetIdleTimer();
+    const Constructor = getRecognitionConstructor();
+    if (!Constructor || this.permissionDenied) return false;
+    if (this.listening) return true;
 
-    return true;
+    try {
+      const recognition = new Constructor();
+      this.recognition = recognition;
+      recognition.lang = 'vi-VN';
+      recognition.continuous = true;
+      recognition.interimResults = false;
+      recognition.onresult = (event) => {
+        if (this.recognition !== recognition || !this.listening) return;
+        for (let index = event.resultIndex; index < event.results.length; index++) {
+          const result = event.results[index];
+          if (!result.isFinal || !result[0]) continue;
+          this.resetIdleTimer();
+          const { transcript, confidence } = result[0];
+          this.callbacks.onCommand?.(this.classifyCommand(transcript, confidence), transcript);
+          if (this.recognition !== recognition) break;
+        }
+      };
+      recognition.onerror = ({ error }) => {
+        if (this.recognition !== recognition) return;
+        if (error === 'not-allowed' || error === 'service-not-allowed') {
+          this.permissionDenied = true;
+        }
+        this.stopListening();
+        if (error === 'network') this.callbacks.onOffline?.(COOKING_VI.voiceOfflineNotice);
+        else this.callbacks.onError?.(error);
+      };
+      recognition.onend = () => {
+        if (this.recognition === recognition) this.stopListening();
+      };
+      this.listening = true;
+      window.addEventListener('offline', this.onOffline);
+      this.resetIdleTimer();
+      recognition.start();
+      return this.listening;
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'NotAllowedError') {
+        this.permissionDenied = true;
+      }
+      this.stopListening();
+      this.callbacks.onError?.(error instanceof Error ? error.message : String(error));
+      return false;
+    }
   }
 
   public stopListening(): void {
     this.listening = false;
     this.clearIdleTimer();
+    if (typeof window !== 'undefined') window.removeEventListener('offline', this.onOffline);
+    const recognition = this.recognition;
+    this.recognition = null;
+    if (recognition) {
+      recognition.onresult = null;
+      recognition.onerror = null;
+      recognition.onend = null;
+      try { recognition.stop(); } catch { /* Already ended by the browser. */ }
+    }
   }
 
   private resetIdleTimer(): void {
@@ -122,40 +206,63 @@ export class SpeechAdapter {
   }
 
   public speakStep(text: string, onFallback?: () => void): void {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+    this.clearPendingSpeech?.();
+    this.activeSynth?.cancel();
+    const fallback = (): void => {
       getAudioSynth().playEarcon();
       this.callbacks.onUnsupportedTts?.(COOKING_VI.unsupportedTtsNotice);
       onFallback?.();
+    };
+    if (typeof window === 'undefined' || !window.speechSynthesis) {
+      fallback();
       return;
     }
 
+    const synth = window.speechSynthesis;
+    this.activeSynth = synth;
     try {
-      const synth = window.speechSynthesis;
-      const voices = synth.getVoices ? synth.getVoices() : [];
-      const viVoice = voices.find((v) => v.lang.toLowerCase().startsWith('vi'));
-
-      if (!viVoice) {
-        // Fallback earcon chime per FR-017
-        getAudioSynth().playEarcon();
-        this.callbacks.onUnsupportedTts?.(COOKING_VI.unsupportedTtsNotice);
-        onFallback?.();
+      const speak = (): boolean => {
+        const voice = synth.getVoices().find((v) => v.lang.toLowerCase().startsWith('vi'));
+        if (!voice) return false;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.voice = voice;
+        utterance.lang = 'vi-VN';
+        utterance.rate = 1.0;
+        synth.speak(utterance);
+        return true;
+      };
+      if (speak()) return;
+      if (synth.getVoices().length > 0) {
+        fallback();
         return;
       }
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.voice = viVoice;
-      utterance.lang = 'vi-VN';
-      utterance.rate = 1.0;
-
-      synth.speak(utterance);
+      // Some browsers populate voices asynchronously after the first request.
+      const clear = (): void => {
+        window.clearTimeout(timeout);
+        synth.removeEventListener('voiceschanged', onVoicesChanged);
+        this.clearPendingSpeech = null;
+      };
+      const onVoicesChanged = (): void => {
+        clear();
+        try { if (!speak()) fallback(); } catch { fallback(); }
+      };
+      const timeout = window.setTimeout(() => {
+        clear();
+        fallback();
+      }, 1000);
+      this.clearPendingSpeech = clear;
+      synth.addEventListener('voiceschanged', onVoicesChanged);
     } catch {
-      getAudioSynth().playEarcon();
-      onFallback?.();
+      this.clearPendingSpeech?.();
+      fallback();
     }
   }
 
   public cleanup(): void {
     this.stopListening();
+    this.clearPendingSpeech?.();
+    this.activeSynth?.cancel();
+    this.activeSynth = null;
     this.callbacks = {};
   }
 }
