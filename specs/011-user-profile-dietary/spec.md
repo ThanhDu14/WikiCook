@@ -1,10 +1,11 @@
 # Feature Specification: User Profile & Dietary Profile
 
-**Feature Branch**: `feature/SCRUM-xx-user-profile-dietary` *(Jira key pending)*
+**Feature Branch**: `feature/SCRUM-75-profile-backend` (backend), `feature/SCRUM-76-auth-profile-frontend`
+(frontend, shared with 010); Spec Kit artifacts: `feature/SCRUM-72-spec-kit-010-011`
 
 **Created**: 2026-10-18
 
-**Status**: Draft
+**Status**: In Review (2026-11-11; needs approval of the SCRUM-72 PR before implementation)
 
 **Input**: User description: "Signed-in users (Member and above, spec 010) manage their personal profile
 and dietary profile: display name (max 50 characters), bio, avatar (JPEG/PNG/WebP up to 5 MB, refused on
@@ -52,10 +53,25 @@ moderation); changing the email address; two-factor authentication; data export;
 
 - Q: Besides allergens and excluded ingredients, are diet type and maximum cooking time hard rules for search (020) and the AI planner (031)? → A: No. Only allergens and excluded ingredients are hard rules; diet type, maximum cooking time and preferred cuisines are preferences (ranking / pre-fill). In the AI planner dialog (031) the user may confirm diet type and maximum cooking time as hard rules for that one generation only.
 - Q: What is the default number of servings when the user has not entered a household size? → A: 2 in every spec. Household size stays optional (whole number 1–20); when empty, specs 030, 031 and 040 all use 2, never the recipe's own servings.
-- Q: What happens to the user's recipes, reviews, cooksnaps and personal data when they delete their account? → A: After re-authentication (password or Google) and typing `DELETE`, the account is deleted immediately. PUBLISHED recipes stay, author shown as "Người dùng đã xóa"; all other recipes (draft, pending, revision requested, rejected, archived) are deleted; reviews stay anonymously and the recipe's stored average rating and review count stay unchanged; cooksnaps (personal photos) are deleted; dietary profile, meal plans, shopping lists and collections are deleted; the last Administrator cannot delete their own account. (Archived recipes being deleted was our reading of "non-published" — say so if you want them kept.)
+- Q: What happens to the user's recipes, reviews, cooksnaps and personal data when they delete their account? → A: After re-authentication (password or Google) and typing `DELETE`, the account is deleted immediately. PUBLISHED recipes stay, author shown as "Người dùng đã xóa"; ARCHIVED recipes stay hidden with no author (changed 2026-11-06, see below); recipes in draft, pending, revision requested or rejected are deleted; reviews stay anonymously and the recipe's stored average rating and review count stay unchanged; cooksnaps (personal photos) are deleted; dietary profile, meal plans, shopping lists and collections are deleted; the last Administrator cannot delete their own account.
 - Q: Do the Assumptions defaults stand (bio 300 characters, 50 excluded ingredients, no email change, fixed allergen / diet lists changed only by migration), and who may see what? → A: Defaults stand except: excluded ingredients are limited to **50** per user (a longer list leaves 020 and 031 with almost no results). Administrators see only email and account information — NOT the dietary profile or household size (least privilege, health information) — and cannot edit another user's profile, dietary profile or password. Account deletion requires re-authentication AND typing `DELETE`, on a screen that lists the data deleted and the data kept anonymously.
 - Q: What happens to a user's excluded ingredient when it is merged into another ingredient or deleted from the catalogue? → A: Merge: the exclusion moves to the target ingredient, keeping a single entry if the target was already excluded. Delete: removed from the profile; the catalogue only allows deleting an ingredient that no recipe uses, so nothing unsafe slips through. The owner is told at the next visit, and the merge operation of spec 100 triggers the move.
 - Q: How do suspended and banned accounts behave when deleting, and who owns the account rules? → A: Spec 011 owns editing the display name, changing / setting a password, deleting the account and the dietary profile (matches spec 010 Clarifications 2026-10-18). A temporarily suspended account cannot delete itself until the suspension ends. A banned account may delete itself, and only a one-way hash of its email goes on the block list (spec 010 Blocked Email), so the same email cannot register again; for every other deleted account nothing is kept and the email is free at once.
+
+### Session 2026-11-06
+
+- Q: (Maintainer instruction) Which diet types exist, and where is the dietary profile stored? → A: None, Vegetarian, Vegan and Pescatarian, the values spec 031 can derive from ingredient kinds; Keto is left for a later release. The profile is columns of `users` plus the link tables of `full-schema.md`; there is no `dietary_profiles` or `diet_types` table (FR-012, Key Entities).
+- Q: (Maintainer instruction) Are archived recipes deleted with the account? → A: No. They stay hidden with no author, because deleting them would remove other users' reviews and saved references, and let a banned user erase recipes archived by moderation. Recipes in draft, pending, revision requested or rejected and open revisions are deleted (FR-033, FR-034).
+- Q: (OQ-011-01) What if a module cannot read the dietary profile? → A: It does not choose recipes automatically and shows the reason; an expired session is treated as a guest (FR-026a).
+- Q: (OQ-011-02) What does a visitor see on a public profile with no recipes, or one that does not exist? → A: An empty state; the generic 404 (FR-039).
+- Q: (OQ-011-03) What about the public profile of a suspended or banned user? → A: A suspended user's stays viewable; a banned user's is the generic 404 (FR-005).
+- Q: (OQ-011-04) Details of password-change failures? → A: A separate counter that does not lock sign-in; setting a password also signs out other sessions; password fields are cleared after a failure, a deliberate exception to keeping typed values (FR-028, FR-030, FR-039).
+- Q: (OQ-011-05) Are wrong passwords limited on account deletion? → A: Yes. Password changes and deletion re-authentication share one counter per user: 5 wrong passwords within 15 minutes refuse both for 15 minutes (FR-030, spec 010 FR-022b).
+- Q: (OQ-011-06) How does a banned user reach deletion? → A: Through the single-use closure link of spec 010 FR-013 (FR-037b).
+
+### Session 2026-11-07
+
+- Q: (Analysis G1) What can the user rely on while the ingredient ↔ allergen links are incomplete? → A: Allergen protection is only as complete as those links, so the allergen field always says so (FR-010a) and the system never claims a recipe is safe. SC-002 is measured on a data set whose links are complete; scraped data counts only after its links are filled and approved.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -83,7 +99,7 @@ maximum time 45; save, reload the page and confirm everything is shown as saved.
    ingredients of the shared catalogue are suggested regardless of diacritics and letter case, and only
    catalogue ingredients can be added.
 4. **Given** the diet type field, **When** the user opens it, **Then** they can pick at most one value
-   (e.g. Vegetarian, Vegan, Keto) or none; cuisines allow any number of values.
+   (Vegetarian, Vegan, Pescatarian) or none; cuisines allow any number of values.
 5. **Given** household size and maximum cooking time, **When** the user enters 0, 21, a decimal, or a
    time of 5 or 241 minutes, **Then** the form refuses the value with a clear message; household size
    1–20 and time 10–240 (or empty) are accepted.
@@ -148,15 +164,16 @@ in; with a Google-only account confirm the screen offers "Set password".
 
 1. **Given** an account with a password, **When** the user opens security settings, **Then** they see
    "Change password" requiring the current password, a new password and its confirmation.
-2. **Given** a wrong current password, **When** the user submits, **Then** the change is refused with a
-   generic message, and repeated failures are limited as for sign-in (spec 010).
+2. **Given** a wrong current password, **When** the user submits, **Then** the change is refused with a generic message; after 5 wrong passwords within 15 minutes
+   further attempts are refused for 15 minutes with the time to retry (FR-030), and signing in is not
+   affected.
 3. **Given** a new password that breaks the password rules of spec 010 or equals the current one,
    **When** the user submits, **Then** it is refused with the rule that failed.
 4. **Given** a successful change, **When** it completes, **Then** every other session of the user is
    signed out, the current session stays active, and a confirmation is shown.
 5. **Given** an account that signs in only with Google and has no password, **When** the user opens
-   security settings, **Then** they see "Set password" (no current-password field); after setting it
-   the account can sign in with email and password and the screen shows "Change password" from then on.
+   security settings, **Then** they see "Set password" (no current-password field); after setting it every other session is signed out, the account can sign in with email and
+   password and the screen shows "Change password" from then on.
 6. **Given** a Google-only account, **When** the user chooses "Set password", **Then** they must first
    re-authenticate with Google (recent sign-in) before the password is accepted.
 
@@ -177,8 +194,7 @@ sign in.
 **Acceptance Scenarios**:
 
 1. **Given** the account section, **When** the user chooses "Delete account", **Then** a confirmation
-   screen lists the data that will be deleted and the data kept in anonymous form (published recipes,
-   reviews and ratings), and asks the user to re-authenticate (password, or Google for Google-only
+   screen lists the data that will be deleted and the data kept in anonymous form (published and archived recipes, reviews and ratings), and asks the user to re-authenticate (password, or Google for Google-only
    accounts) and to type `DELETE`; the delete button stays disabled until `DELETE` is typed exactly.
 2. **Given** wrong credentials, a cancelled Google sign-in or a confirmation word other than `DELETE`,
    **When** the user confirms, **Then** nothing is deleted and the user is told why.
@@ -188,8 +204,9 @@ sign in.
 4. **Given** the deleted user had published recipes, **When** anyone views them, **Then** the recipes
    remain published and the author is shown as "Người dùng đã xóa" without name, avatar or profile
    link.
-5. **Given** the deleted user had recipes in any status other than PUBLISHED (draft, pending, revision requested, rejected or archived), **When** the deletion runs,
-   **Then** all of those recipes are deleted.
+5. **Given** the deleted user had recipes in draft, pending, revision requested or rejected, **When** the
+   deletion runs, **Then** those recipes are deleted, as are open revisions of the recipes that stay;
+   archived recipes stay hidden, with no author.
 6. **Given** the deleted user had written reviews, **When** the deletion runs, **Then** the reviews stay
    and the rating totals do not change, shown anonymously ("Người dùng đã xóa"); **Given** they had
    posted cooksnaps, **Then** the cooksnaps are deleted.
@@ -206,6 +223,9 @@ sign in.
     with that email is refused.
 12. **Given** an account that was not banned, **When** it has been deleted, **Then** the same email can
     register again at once as a brand-new account, and no hash of it is kept.
+13. **Given** 5 wrong passwords within 15 minutes, counting "Change password" and this screen together,
+    **When** the user tries again, **Then** the attempt is refused for 15 minutes with the time to retry,
+    nothing is deleted and signing in is not affected.
 
 ---
 
@@ -248,7 +268,7 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
 - **Unsaved changes**: leaving the page with edited fields asks for confirmation; nothing is saved
   silently.
 - **Network loss while saving** → error message with "Try again"; everything the user typed stays in the
-  form.
+  form, except password fields, which are cleared after any failure.
 - **Session expired while editing** → the user is asked to sign in again and, after signing in, returns
   to the profile page with the typed values still in the form where the browser allows; the save is
   never silently dropped or applied to another account.
@@ -269,12 +289,13 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
 - **Deleting while another session is open** → the other session is ended at once and its next request
   asks for sign-in.
 - **Repeated clicks on Save or Delete** → only one request is processed; no duplicate effects.
-- **Suspended or banned account** (spec 010) cannot edit the profile or change its password; the public
-  profile of a banned user follows the rules of spec 010.
+- **Suspended or banned account** (spec 010) cannot edit the profile or change its password. The public
+  profile of a suspended user stays viewable; the public profile of a banned user shows the generic
+  404 (FR-005).
 - **Suspended account tries to delete itself** (temporary suspension still running) → refused with a
   message giving the end date of the suspension; nothing is deleted. After the suspension ends the
   account may delete itself normally.
-- **Banned user deletes the account** → allowed; only a one-way hash of the email is kept on the block
+- **Banned user deletes the account** → allowed through the closure link of spec 010 FR-013; only a one-way hash of the email is kept on the block
   list, so the same email cannot register again, while all other personal data is deleted as usual.
 
 ## Requirements *(mandatory)*
@@ -292,7 +313,8 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
   files MUST be refused on the form before upload and again by the server. Users MUST be able to remove
   their avatar, after which a neutral default is shown.
 - **FR-005**: The public profile MUST show only display name, avatar, bio and the user's published
-  recipes (paged), and MUST be viewable by guests.
+  recipes (paged), and MUST be viewable by guests. The profile of a suspended user MUST stay viewable;
+  the profile of a banned user MUST answer exactly like one that does not exist (FR-039).
 - **FR-006**: The private part has two levels, enforced by the server on every request: (a) email and
   account information MUST be readable only by the account owner and Administrators; (b) the whole
   dietary profile, including household size, MUST be readable only by the account owner —
@@ -313,10 +335,15 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
   alone: that knowledge comes only from the ingredient ↔ allergen links of the ingredient catalogue,
   maintained by moderators/Administrators and owned by B (`ingredient_allergens`). AI-estimated allergen
   labels (spec 090) MUST NOT be used for filtering (spec 020 Clarifications).
+- **FR-010a**: The allergen field MUST always show a notice that allergen protection depends on the
+  ingredient data of the catalogue, may be incomplete and does not replace checking the ingredients.
+  No screen of this spec may state that a recipe is safe for an allergy.
 - **FR-011**: Excluded ingredients MUST be chosen from the shared ingredient catalogue (approved
   ingredients only), with suggestions while typing that ignore diacritics and letter case; free text
   that is not a catalogue ingredient MUST NOT be accepted. Maximum 50 per user.
-- **FR-012**: Diet type MUST be a single choice from a fixed list (e.g. Vegetarian, Vegan, Keto) or empty.
+- **FR-012**: Diet type MUST be a single choice from the fixed list Vegetarian, Vegan, Pescatarian, or
+  empty. Keto is not offered in this release: it cannot be derived from ingredient kinds (spec 031
+  FR-009a).
 - **FR-013**: Preferred cuisines MUST allow multiple choices from the cuisines managed by
   Administrators (spec 100); the form MUST NOT hard-code the list.
 - **FR-014**: Household size MUST be a whole number from 1 to 20, or empty.
@@ -326,7 +353,7 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
   field-level messages and leave the stored profile unchanged.
 - **FR-017**: Saving MUST replace the whole dietary profile atomically (all fields or none) and clearing
   every field MUST be allowed.
-- **FR-018**: Only the owner MUST be able to read or change the dietary profile; Administrators and
+- **FR-018**: The rule of FR-006(b) also covers writes: only the owner MUST be able to change the dietary profile; Administrators and
   other users MUST be refused by the server.
 - **FR-019**: When an excluded ingredient is merged into another, the system MUST move the user's exclusion to the merge target without creating a duplicate; when an ingredient or allergen is deleted, the system MUST remove it from the profile; in both cases the owner MUST be told at the next visit. This is triggered by the merge or delete operation of the catalogue, not left to the user.
 
@@ -352,34 +379,41 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
   owner; they MUST NOT copy it into their own tables.
 - **FR-026**: A user with no dietary profile MUST be treated as having no hard rules and no preferences;
   consuming specs MUST still work and MAY invite the user to complete the profile.
+- **FR-026a**: A module that cannot read the dietary profile (for example a server fault) MUST NOT
+  choose recipes automatically and MUST show the reason; it MUST NOT continue as if the user had no
+  profile. An expired session is not this case: the user is treated as a guest.
 
 **Password**
 
 - **FR-027**: A user who has a password MUST be able to change it by supplying the current password, a
   new password that satisfies the rules of spec 010 and differs from the current one, and its
   confirmation.
-- **FR-028**: A successful password change MUST sign out all the user's other sessions and keep the
-  current one.
+- **FR-028**: A successful password change or first-time set MUST sign out all the user's other
+  sessions and keep the current one.
 - **FR-029**: A user who signs in only with Google (no password) MUST see "Set password" instead of
   "Change password"; setting a password MUST require a recent Google re-authentication, and afterwards
   the account behaves as a password account.
-- **FR-030**: Wrong current passwords MUST be rate-limited as sign-in failures are in spec 010 and MUST
-  NOT reveal anything beyond "incorrect".
+- **FR-030**: Wrong passwords on "Change password" and on the re-authentication of account deletion
+  MUST share one counter per user: after 5 wrong passwords within 15 minutes both actions MUST be
+  refused for 15 minutes, stating when to retry. The counter is separate from the sign-in counter of
+  spec 010 and MUST NOT lock signing in. Messages MUST NOT reveal anything beyond "incorrect".
+  Google-only accounts have no password and re-authenticate with Google.
 
 **Account deletion**
 
 - **FR-031**: A user MUST be able to delete their own account only after BOTH re-authenticating
   (password, or Google for Google-only accounts) AND typing the confirmation word `DELETE` in a
   confirmation screen. That screen MUST list the data that will be deleted (dietary profile, meal plans,
-  shopping lists, collections, cooksnaps, drafts and unpublished recipes) and the data that will be
-  kept in anonymous form (published recipes, reviews and ratings), and the delete button MUST stay
+  shopping lists, collections, cooksnaps, drafts and recipes in review or rejected) and the data
+  that will be kept in anonymous form (published and archived recipes, reviews and ratings), and the delete button MUST stay
   disabled until `DELETE` is typed exactly.
 - **FR-032**: Deletion MUST happen immediately and atomically; all sessions of the user end, and the
   credentials no longer work.
 - **FR-033**: Published recipes MUST remain; their author is shown as "Người dùng đã xóa" with no name,
-  avatar or link.
-- **FR-034**: Every recipe of the user that is not PUBLISHED (DRAFT, PENDING, REVISION_REQUESTED, REJECTED, ARCHIVED)
-  MUST be deleted with the account.
+  avatar or link. Archived recipes MUST also remain, hidden as before, with no author, so that other
+  users' reviews and saved references are not lost.
+- **FR-034**: Every recipe of the user in DRAFT, PENDING, REVISION_REQUESTED or REJECTED MUST be deleted
+  with the account, as MUST every open revision of a recipe that stays.
 - **FR-035**: Reviews and ratings MUST remain, shown anonymously, and a recipe's stored average rating and review count MUST NOT change;
   cooksnaps MUST be deleted. *(Ownership to be confirmed by E, see Integration Points.)*
 - **FR-036**: Dietary profile, meal plans, shopping lists and collections of the user MUST be deleted.
@@ -389,7 +423,9 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
   until the suspension ends; the server MUST refuse and state the end date.
 - **FR-037b**: An account that is **banned** MAY delete itself. In the same all-or-nothing operation the
   system MUST store a one-way hash of the email (never the plain email) on spec 010's Blocked Email
-  list, so that registration or Google sign-in creation with that email is refused afterwards.
+  list, so that registration or Google sign-in creation with that email is refused afterwards. A banned
+  account reaches this deletion through the single-use closure link of spec 010 FR-013, which replaces
+  the session and the re-authentication of FR-031.
 - **FR-038**: Except for banned accounts (FR-037b), the email address of a deleted account MUST become
   available for a new registration immediately; the new account has no relation to the old data and
   nothing about the old account is kept on any block list.
@@ -398,7 +434,9 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
 
 - **FR-039**: The profile page MUST provide four distinct states: loading (skeleton within 300 ms);
   empty (no dietary profile, with an invitation to complete it); error (offline, expired session,
-  invalid data returned — each with a clear message and without losing what the user typed); and data.
+  invalid data returned — each with a clear message and without losing what the user typed, password
+  fields excepted); and data. On the public profile, no published recipes shows an empty state; a
+  missing, deleted or banned profile shows the generic 404.
 - **FR-040**: Every permission check and every validation MUST be done on the server; client checks are
   convenience only (constitution, Principle IV).
 - **FR-041**: Repeated clicks on Save, Change password or Delete MUST NOT cause duplicate effects.
@@ -425,8 +463,8 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
 - **NFR-006 (Accessibility)**: All fields, the multi-selects, the avatar picker and dialogs MUST be
   operable by keyboard only, have visible labels, and announce errors next to the related field.
 - **NFR-007 (Data integrity)**: Profile saving and account deletion MUST be all-or-nothing.
-- **NFR-008 (Abuse protection)**: Avatar uploads and profile saves are limited to a reasonable rate
-  (default 20 per hour per user) with a friendly message.
+- **NFR-008 (Abuse protection)**: Avatar uploads and profile saves are each limited to
+  20 per hour per user by default, counted separately, with a friendly message.
 
 ### Key Entities
 
@@ -434,15 +472,15 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
   only), role, status. This spec adds bio, avatar and the right to delete.
 - **Profile (public part)**: display name, avatar, bio — visible to everyone, together with the user's
   published recipes.
-- **Dietary Profile** (`dietary_profiles`): one per user, owned by this spec — diet type (optional),
-  household size (optional), maximum total cooking time (optional); links to the allergens, excluded
+- **Dietary Profile**: one per user, owned by this spec, stored as columns of `users` (`diet_type`,
+  `household_size`, `max_cook_time_minutes`), all optional, plus the links to the allergens, excluded
   ingredients and preferred cuisines below.
 - **Allergen** (`allergens`): fixed list of named allergens (e.g. peanut, shellfish, gluten), maintained
   by this spec; linked to ingredients through the ingredient ↔ allergen link owned by B.
 - **User Allergen** (`user_allergens`): which allergens a user avoids.
 - **User Excluded Ingredient** (`user_excluded_ingredients`): which catalogue ingredients a user avoids.
-- **Diet Type** (`diet_types`): fixed list of diets (e.g. Vegetarian, Vegan, Keto).
-- **User Preferred Cuisine** *(proposed table, e.g. `user_preferred_cuisines`)*: which cuisines a user
+- **Diet Type**: fixed list of values on `users.diet_type` (none, Vegetarian, Vegan, Pescatarian).
+- **User Preferred Cuisine** (`user_preferred_cuisines`): which cuisines a user
   prefers; refers to the cuisines managed in spec 100.
 - **Ingredient** *(owned by B)*: entry of the shared catalogue used for exclusions.
 - **Blocked Email** *(owned by spec 010)*: one-way hash of the email of a banned account that deleted
@@ -450,27 +488,29 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
 - **Deleted-user marker**: how content that survives deletion refers to its former author ("Người dùng
   đã xóa").
 
-### Integration Points (to agree with the team before `/speckit-plan`)
+### Integration Points
 
 | Point | With | What must be agreed |
 |---|---|---|
 | Hard rules and preferences | 020, 030, 031 | Definitions FR-020–FR-026 are authoritative. 020 already agrees (hide + override). 030 and 031 must be aligned as in the next three rows. |
-| Default servings — **030 FR-012** | C (030) | Change to: default servings = household size, or **2** when empty (today: the recipe's own servings). The acceptance scenario "profile has no household size" (030 line 98) must change too. |
+| Default servings — **030 FR-012** | C (030) | Change to: default servings = household size, or **2** when empty (today: the recipe's own servings). The acceptance scenario "profile has no household size" (030 US1 AS6) must change too. |
 | Hard vs preference — **031 FR-009** | C (031) | Today diet type and maximum cooking time are hard rules. Change to: only allergens and excluded ingredients are hard; diet type and maximum time are preferences, which the user can confirm as hard rules in the dialog for that generation (FR-022). FR-010 gains diet type and maximum time as ranking preferences. |
 | Picker ordering — 030 Clarifications | C (030) | The recipe picker lists recipes breaking *diet type* last; under this spec only allergens/excluded ingredients are hard, diet type only ranks. Align wording. |
-| Personal data wording — **010 NFR-009** | A (010) | Change to two levels: email and account information are visible only to the owner and Administrators; the dietary profile and household size are visible **only to the owner** (Administrators excluded); display name, avatar and bio are public. Audit entries (010 FR-025) must not contain dietary data. |
+| Personal data wording — **010 NFR-009** | A (010) | Already done in 010 (NFR-009, FR-025): two levels; the dietary profile and household size are visible **only to the owner**, Administrators excluded. |
 | Scope wording — **010 Out of scope** | A (010) | Already done in 010 (Clarifications 2026-10-18): editing the display name, changing / setting a password, deleting the account and the dietary profile are owned by 011. 011 only needs the 010 wording to stay consistent with this spec. |
-| Sessions on password change | A (010) | 011 needs 010's ability to end all other sessions (as in 010 FR-016) and its sign-in rate limiting and password rules. |
+| Sessions on password change | A (010) | 011 needs 010's ability to end all other sessions (as in 010 FR-016) and its password rules. |
+| Wrong-password counter | A (010) | One counter per user for "Change password" and re-authentication (FR-030, 010 FR-022b), separate from sign-in. |
+| Profile cannot be read | B (020), C (030, 031) | When the dietary profile cannot be read, these modules do not choose recipes automatically and show the reason (FR-026a); an expired session is treated as a guest. |
 | Last Administrator | A (010) | 011 reuses 010's rule that the last Administrator cannot be removed; same check for deletion. |
-| Banned and suspended accounts on deletion | A (010) | Per 010 FR-026: a temporarily suspended user is refused deletion until the suspension ends; a banned user may delete, and 011 MUST call 010 to store a one-way hash of the email (never the plain email) on the Blocked Email list before the account is removed, in the same all-or-nothing operation. 010 refuses registration and Google sign-in creation for any email matching the list. Also confirm how a banned user (who cannot sign in) reaches the deletion screen. |
-| Allergen ↔ ingredient link | B (060/ingredients), moderation | B owns `ingredient_allergens` and its data entry by moderators/Administrators; 011 owns `allergens`. Confirm who seeds the first allergen list and ingredient links. |
+| Banned and suspended accounts on deletion | A (010) | Per 010 FR-026: a temporarily suspended user is refused deletion until the suspension ends; a banned user may delete, and 011 MUST call 010 to store a one-way hash of the email (never the plain email) on the Blocked Email list before the account is removed, in the same all-or-nothing operation. 010 refuses registration and Google sign-in creation for any email matching the list. A banned user reaches the deletion screen through the single-use closure link of 010 FR-013, which 011 accepts in place of a session. |
+| Allergen ↔ ingredient link | B (060/ingredients), moderation | B owns `ingredient_allergens` and its data entry by moderators/Administrators; 011 owns `allergens`. 011 seeds the allergen list; B and C fill the ingredient links and moderators approve them (still needs an owner and a deadline). |
 | Ingredient catalogue — merge / delete | B (060 / ingredient catalogue), E (100 admin screen) | 011 reads approved ingredients with accent-insensitive search. An ingredient may be deleted outright only when no recipe uses it (rule of the catalogue, B/060, and the admin screen, E/100), so dropping it from a profile never lets a dangerous recipe through. The **merge** operation of spec 100 MUST trigger the move of users' exclusions to the target ingredient in 011 (FR-019), keeping one entry when the target is already excluded. |
-| Diet type on recipes | B (060), C (090) | Recipes need a matching diet label (shared `diet_types`) so that diet type can rank results; who stores it (author tag vs 090 estimate) is open. Not part of 011. |
+| Diet type on recipes | B (060), C (090) | Closed: a recipe's diet is derived from its ingredient kinds (031 FR-009a); no label is stored and there is no `diet_types` table. Not part of 011. |
 | Reviews on account deletion | E (070) | Confirm reviews stay anonymised with unchanged rating totals (FR-035) and how the author reference is cleared. |
 | Cooksnaps on account deletion | E | Confirm cooksnaps are deleted with the account (FR-035), including their images and counters. |
 | Meal plans, shopping lists, collections | C (030), D (040), 080 | Confirm each deletes the user's data on account deletion (FR-036) and which spec runs the delete. |
-| Published recipes after deletion | B (060) | Confirm the recipe keeps its content with a "deleted user" author and that the user's all non-PUBLISHED recipes (including archived ones) are deleted (FR-033, FR-034). |
-| Preferred cuisines | E (100) | Cuisine list is maintained in the admin area; behaviour of preferences when a cuisine is removed. |
+| Published recipes after deletion | B (060) | Confirm the recipe keeps its content with a "deleted user" author, that archived recipes stay with no author, and that the user's recipes in other statuses and open revisions are deleted (FR-033, FR-034). |
+| Preferred cuisines | E (100) | Cuisine list is maintained in the admin area. A deactivated cuisine stays on saved profiles, is not offered on the form and drops at the next save; a cuisine on any profile is deactivated rather than deleted. |
 
 ## Success Criteria *(mandatory)*
 
@@ -479,7 +519,8 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
 - **SC-001**: A new user can complete a dietary profile with at least one allergen, one excluded
   ingredient and household size in under 2 minutes in usability testing (90% of participants).
 - **SC-002**: With any saved profile, 0 recipes breaking a hard rule are chosen automatically by specs
-  020, 030 and 031 in acceptance tests.
+  020, 030 and 031 in acceptance tests, on a data set whose ingredient ↔ allergen links are complete
+  (Clarifications 2026-11-07).
 - **SC-003**: 100% of avatar files with a wrong type or over 5 MB are refused on the form before upload,
   and 100% of non-image files sent directly to the server are refused.
 - **SC-004**: 0 pages, responses or logs available to guests or other users contain the email or any
@@ -504,24 +545,25 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
 - Household size is treated as part of the dietary profile, so it is hidden from Administrators too.
 - Avatar is stored as one image per user, resized by the system; no cropping tool is required beyond a
   square preview.
-- The fixed lists of allergens and diet types are seeded by the team (allergens following the common
-  major groups such as peanuts, tree nuts, milk, eggs, fish, shellfish, soy, wheat/gluten, sesame) and
-  changed only by a database migration in this release; no admin screen.
-- Preferred cuisines reuse the cuisines of spec 100; storing them needs one extra link table, proposed as
-  `user_preferred_cuisines` and subject to team agreement.
+- The fixed list of allergens is seeded by a migration (the common major groups such as peanuts, tree
+  nuts, milk, eggs, fish, shellfish, soy, wheat/gluten, sesame); it and the diet types change only by a
+  database migration in this release; no admin screen.
+- Preferred cuisines reuse the cuisines of spec 100, stored in `user_preferred_cuisines`.
 - "Total cooking time" matches the `total_time_minutes` of recipes defined with spec 060 (preparation +
   cooking).
 - Deleting an account is permanent: there is no grace period or undo, as requested.
-- Deleting while **banned** is possible because a banned user may open a restricted account-closure
-  page after authenticating (password or Google) even though normal sign-in is refused (spec 010
-  FR-013, FR-026); how that page is reached is for 010 and the plan to settle. Deleting while
-  **temporarily suspended** is refused until the suspension ends.
+- Deleting while **banned** is possible because, after proving their identity (password or Google), a
+  banned user receives a single-use link valid for 10 minutes that opens only the account-closure page,
+  with no session (spec 010 FR-013, FR-026). Deleting while **temporarily suspended** is refused until
+  the suspension ends.
 - Reviews are kept anonymously rather than deleted so that the ratings of recipes stay stable; this is
   to be confirmed by E.
-- The database specification `docs/analysis-and-design/database/README.md` does not exist yet; the
-  tables named in the input (`users`, `dietary_profiles`, `diet_types`, `allergens`, `user_allergens`,
-  `user_excluded_ingredients`) and `docs/analysis-and-design/database/draft-recipes-ingredients.md`
-  (sections on `ingredients` and `ingredient_allergens`) are the reference for `/speckit-plan`.
+- The database reference is `docs/analysis-and-design/database/full-schema.md`; the input's
+  `dietary_profiles` and `diet_types` were merged into columns of `users` there.
 - Data export and a grace period before deletion are not offered in this release.
-- Jira key for this feature is not yet assigned; it must be added to the branch name per the
-  constitution (Principle I).
+- Sprint 04 (`pa4-guide.md`) assigns SCRUM-72 to these Spec Kit artifacts, SCRUM-75 to the 011 backend
+  and SCRUM-76 to the 010 + 011 frontend; branch names and commits carry these keys (constitution
+  Principle I).
+- Google re-authentication (US3 AS6, FR-029, FR-031 for Google-only accounts) depends on spec 010's
+  Google re-authentication, which is not yet verified against a real Google client (010 research,
+  "Điểm cần chốt với nhóm" item 40).

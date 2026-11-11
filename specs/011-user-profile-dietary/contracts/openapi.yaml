@@ -1,0 +1,657 @@
+openapi: 3.0.3
+info:
+  title: WikiCook – User Profile & Dietary Profile API (spec 011)
+  version: 0.1.0
+  description: |
+    API hồ sơ công khai, hồ sơ ăn uống, mật khẩu và xóa tài khoản. Lỗi trả về dạng ProblemDetail
+    (RFC 9457) có trường `code`; lỗi theo trường nằm ở `errors`.
+    Dữ liệu chia ba mức, do cấu trúc API thực thi (research R3): `/me/**` là của người gọi, URL không
+    có user id, nên Administrator cũng chỉ đọc được của chính mình; `/profiles/**` công khai và không
+    có trường riêng tư; email của người khác chỉ có ở `GET /admin/users/{id}` của spec 010.
+    401 luôn là `UNAUTHENTICATED` (hết phiên). Mật khẩu sai trả 422, không phải 401, vì client tự
+    refresh và gửi lại mọi 401 ngoài `/auth/*` (research R10).
+servers:
+  - url: /api/v1
+security:
+  - bearerAuth: []
+tags:
+  - name: my-profile
+  - name: dietary-profile
+  - name: public-profile
+  - name: password
+  - name: account-deletion
+
+paths:
+  /me/profile:
+    get:
+      tags: [my-profile]
+      summary: Hồ sơ của chính mình, gồm email và thông tin tài khoản (FR-001, FR-006)
+      operationId: getMyProfile
+      responses:
+        '200':
+          description: Hồ sơ
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MyProfile' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/AccountRestricted' }
+    post:
+      tags: [my-profile]
+      summary: Lưu tên hiển thị, bio, avatar trong một lần (FR-002 – FR-004, NFR-007)
+      description: |
+        `multipart/form-data`: phần `profile` là JSON, phần `avatar` tùy chọn. `removeAvatar = true` gỡ
+        ảnh. Server xác minh ảnh bằng magic bytes và giải mã thật, rồi cắt vuông 512 px, mã hóa lại JPEG
+        nên EXIF bị loại bỏ (research R7). Nội dung không đổi và không có ảnh mới → 200, không ghi.
+      operationId: saveMyProfile
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [profile]
+              properties:
+                profile: { $ref: '#/components/schemas/ProfileUpdateRequest' }
+                avatar:
+                  type: string
+                  format: binary
+                  description: JPEG, PNG hoặc WebP, tối đa 5 MB
+            encoding:
+              profile:
+                contentType: application/json
+      responses:
+        '200':
+          description: Hồ sơ đã lưu
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MyProfile' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/AccountRestricted' }
+        '409': { $ref: '#/components/responses/ProfileChanged' }
+        '413':
+          description: AVATAR_TOO_LARGE
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '415':
+          description: AVATAR_TYPE_NOT_ALLOWED – không phải JPEG, PNG, WebP theo magic bytes
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '422':
+          description: AVATAR_NOT_AN_IMAGE, AVATAR_DIMENSIONS_TOO_LARGE (NFR-004, SC-003)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '429': { $ref: '#/components/responses/ProfileRateLimited' }
+
+  /me/dietary-profile:
+    get:
+      tags: [dietary-profile]
+      summary: Hồ sơ ăn uống của chính mình, kèm thông báo chưa đọc (FR-008, FR-018, FR-019)
+      description: Hồ sơ trống vẫn trả 200 với `empty = true` (FR-008, FR-039).
+      operationId: getDietaryProfile
+      responses:
+        '200':
+          description: Hồ sơ ăn uống
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DietaryProfile' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/AccountRestricted' }
+        '503': { $ref: '#/components/responses/ProfileUnavailable' }
+    put:
+      tags: [dietary-profile]
+      summary: Thay toàn bộ hồ sơ ăn uống, được hoặc mất cả (FR-016, FR-017)
+      description: |
+        Xóa hết mọi giá trị là hợp lệ (US1 AS7). Nội dung giống hệt giá trị đang lưu → 200, không ghi, kể
+        cả khi `version` cũ, nên bấm hai lần không có hiệu ứng trùng (FR-041). Nội dung khác và `version`
+        cũ → 409 `PROFILE_CHANGED`; client đọc `version` mới rồi gửi lại nếu người dùng chọn lưu đè.
+      operationId: saveDietaryProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DietaryProfileUpdateRequest' }
+      responses:
+        '200':
+          description: Hồ sơ đã lưu
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DietaryProfile' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/AccountRestricted' }
+        '409': { $ref: '#/components/responses/ProfileChanged' }
+        '429': { $ref: '#/components/responses/ProfileRateLimited' }
+        '503': { $ref: '#/components/responses/ProfileUnavailable' }
+
+  /me/dietary-profile/notices/ack:
+    post:
+      tags: [dietary-profile]
+      summary: Đóng thông báo thay đổi catalogue (FR-019)
+      operationId: ackDietaryNotices
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AckNoticesRequest' }
+      responses:
+        '204': { description: Đã đóng; id không thuộc người gọi bị bỏ qua }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/AccountRestricted' }
+
+  /me/dietary-options:
+    get:
+      tags: [dietary-profile]
+      summary: Danh sách cho form, không hard-code ở client (FR-009, FR-012, FR-013)
+      operationId: getDietaryOptions
+      responses:
+        '200':
+          description: Dị ứng, kiểu ăn, ẩm thực đang hoạt động
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DietaryOptions' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/AccountRestricted' }
+
+  /ingredients/suggestions:
+    get:
+      tags: [dietary-profile]
+      summary: Gợi ý nguyên liệu, bỏ dấu và không phân biệt hoa thường (FR-011, NFR-001)
+      description: Chỉ nguyên liệu `APPROVED`. `q` dưới 2 ký tự trả danh sách rỗng, không chạm DB.
+      operationId: suggestIngredients
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, maxLength: 50 }, example: ngo }
+      responses:
+        '200':
+          description: Tối đa 10 gợi ý, khớp đúng và khớp đầu tên trước
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 10
+                items: { $ref: '#/components/schemas/NamedItem' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/AccountRestricted' }
+
+  /profiles/{id}:
+    get:
+      tags: [public-profile]
+      summary: Hồ sơ công khai, khách xem được (FR-005)
+      description: |
+        Chỉ có tên hiển thị, avatar, bio, số công thức đã xuất bản. Không tồn tại, đã xóa, tài khoản bị
+        cấm đều trả 404 giống nhau (`OQ-011-02`, `OQ-011-03`); tài khoản bị đình chỉ vẫn xem được.
+      operationId: getPublicProfile
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Hồ sơ công khai
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PublicProfile' }
+        '404': { $ref: '#/components/responses/UserNotFound' }
+
+  /profiles/{id}/recipes:
+    get:
+      tags: [public-profile]
+      summary: Công thức đã xuất bản của người dùng, phân trang (FR-005)
+      operationId: listPublicRecipes
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - { name: page, in: query, required: false, schema: { type: integer, minimum: 0, default: 0 } }
+        - { name: size, in: query, required: false, schema: { type: integer, minimum: 1, maximum: 24, default: 12 } }
+      responses:
+        '200':
+          description: Một trang; không có công thức thì `items` rỗng
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PublicRecipePage' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/UserNotFound' }
+
+  /media/avatars/{file}:
+    get:
+      tags: [public-profile]
+      summary: Ảnh avatar đã xử lý (NFR-004)
+      description: |
+        Luôn `Content-Type: image/jpeg`, `X-Content-Type-Options: nosniff`, `Content-Disposition: inline`,
+        `Cache-Control: public, max-age=31536000, immutable`. Đổi ảnh là đổi tên file.
+      operationId: getAvatar
+      security: []
+      parameters:
+        - name: file
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[0-9a-f-]{36}\.jpg$' }
+      responses:
+        '200':
+          description: Ảnh JPEG
+          content:
+            image/jpeg:
+              schema: { type: string, format: binary }
+        '404': { description: Không có ảnh }
+
+  /me/password:
+    post:
+      tags: [password]
+      summary: Đổi mật khẩu, giữ phiên hiện tại, đăng xuất phiên khác (FR-027, FR-028)
+      operationId: changePassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ChangePasswordRequest' }
+      responses:
+        '204': { description: Đã đổi }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/AccountRestricted' }
+        '409':
+          description: PASSWORD_NOT_SET – tài khoản chỉ Google, trang chuyển sang "Đặt mật khẩu"
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '422':
+          description: INVALID_CURRENT_PASSWORD, PASSWORD_SAME_AS_CURRENT (FR-027, FR-030)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '429':
+          description: PASSWORD_CHECK_LIMITED – quá nhiều lần sai; không khóa đăng nhập (`OQ-011-05`)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/RateLimitedProblem' }
+
+  /me/password/initial:
+    post:
+      tags: [password]
+      summary: Đặt mật khẩu cho tài khoản chỉ Google (FR-029)
+      description: |
+        Cần xác thực lại với Google trong 5 phút; thiếu thì 403 `REAUTH_REQUIRED` và client chuyển tới `GET
+        /auth/oauth2/google?intent=reauth`. Cũng đăng xuất phiên khác (`OQ-011-04`).
+      operationId: setInitialPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SetPasswordRequest' }
+      responses:
+        '204': { description: Đã đặt }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: REAUTH_REQUIRED; ACCOUNT_SUSPENDED kèm `endsAt`; ACCOUNT_BANNED
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/AccountRestrictedProblem' }
+        '409':
+          description: PASSWORD_ALREADY_SET
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+
+  /me/deletion:
+    post:
+      tags: [account-deletion]
+      summary: Xóa tài khoản của chính mình, ngay lập tức, được hoặc mất cả (FR-031 – FR-038)
+      description: |
+        Cần xác thực lại trong 5 phút: `POST /auth/reauthenticate`, hoặc Google với tài khoản chỉ Google.
+        Công thức đã xuất bản, đã lưu trữ và đánh giá được giữ ẩn danh; dữ liệu còn lại bị xóa. Tài khoản bị đình chỉ
+        bị từ chối kèm `endsAt` (FR-037a). Administrator đang hoạt động cuối cùng bị từ chối (FR-037).
+      operationId: deleteMyAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DeleteAccountRequest' }
+      responses:
+        '204': { description: Đã xóa, mọi phiên kết thúc }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: REAUTH_REQUIRED; ACCOUNT_SUSPENDED kèm `endsAt`
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/AccountRestrictedProblem' }
+        '404': { $ref: '#/components/responses/UserNotFound' }
+        '409':
+          description: LAST_ADMINISTRATOR, ACCOUNT_STATE_CHANGED
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '422': { $ref: '#/components/responses/ConfirmationMismatch' }
+
+  /account-closure:
+    post:
+      tags: [account-deletion]
+      summary: Tài khoản bị cấm tự xóa bằng closureToken, không cần phiên (FR-037b, 010 R16)
+      description: |
+        `closureToken` do `POST /auth/login` hoặc Google trả về cùng 403 `ACCOUNT_BANNED`, dùng một lần, 10
+        phút. Xóa như `/me/deletion`, và lưu hash email vào block list trong cùng transaction. Lỗi giữa chừng
+        không tiêu thụ token (US4 AS9). Được gỡ cấm trong lúc token còn hạn → 409 `ACCOUNT_STATE_CHANGED`.
+      operationId: closeBannedAccount
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AccountClosureRequest' }
+      responses:
+        '204': { description: Đã xóa }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403':
+          description: ACCOUNT_SUSPENDED kèm `endsAt` – bị đình chỉ khi token còn hạn
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/AccountRestrictedProblem' }
+        '404': { $ref: '#/components/responses/UserNotFound' }
+        '409':
+          description: ACCOUNT_STATE_CHANGED
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '410':
+          description: TOKEN_INVALID – sai, hết hạn hoặc đã dùng
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '422': { $ref: '#/components/responses/ConfirmationMismatch' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    UserId:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, format: int64 }
+
+  schemas:
+    DietType:
+      type: string
+      enum: [NONE, VEGETARIAN, VEGAN, PESCATARIAN]
+      description: Đúng CHECK của `users.diet_type`; Keto chưa có (research, bảng cuối, mục 3)
+    NamedItem:
+      type: object
+      required: [id, name]
+      properties:
+        id: { type: integer, format: int64 }
+        name: { type: string }
+    Allergen:
+      type: object
+      required: [id, code, nameVi]
+      properties:
+        id: { type: integer, format: int64 }
+        code: { type: string, example: PEANUT }
+        nameVi: { type: string, example: Đậu phộng }
+    AccountInfo:
+      type: object
+      description: Mức 2, chỉ chủ tài khoản ở API này. Không có mật khẩu hay `google_sub`
+      required: [email, role, status, emailVerified, hasPassword, googleLinked, createdAt]
+      properties:
+        email: { type: string, format: email, readOnly: true, description: 'Chỉ đọc (spec Assumptions)' }
+        role: { type: string, enum: [MEMBER, CONTRIBUTOR, MODERATOR, ADMINISTRATOR] }
+        status: { type: string, enum: [ACTIVE, SUSPENDED, BANNED] }
+        emailVerified: { type: boolean }
+        hasPassword: { type: boolean, description: 'false → hiện "Đặt mật khẩu" (FR-029)' }
+        googleLinked: { type: boolean }
+        createdAt: { type: string, format: date-time }
+    MyProfile:
+      type: object
+      required: [id, displayName, version, account]
+      properties:
+        id: { type: integer, format: int64 }
+        displayName: { type: string, maxLength: 50 }
+        bio: { type: string, nullable: true, maxLength: 300 }
+        avatarUrl: { type: string, nullable: true, example: /api/v1/media/avatars/0d6f….jpg }
+        version: { type: integer, description: 'Gửi lại khi lưu' }
+        account: { $ref: '#/components/schemas/AccountInfo' }
+    ProfileUpdateRequest:
+      type: object
+      required: [displayName, version]
+      properties:
+        displayName: { type: string, minLength: 1, maxLength: 50, description: 'Đếm theo code point, sau khi strip' }
+        bio: { type: string, nullable: true, maxLength: 300 }
+        removeAvatar: { type: boolean, default: false }
+        version: { type: integer }
+    PublicProfile:
+      type: object
+      description: Mức 1. Không có email, hồ sơ ăn uống, household size (FR-005, NFR-005)
+      required: [id, displayName, publishedRecipeCount]
+      properties:
+        id: { type: integer, format: int64 }
+        displayName: { type: string }
+        avatarUrl: { type: string, nullable: true }
+        bio: { type: string, nullable: true }
+        publishedRecipeCount: { type: integer, format: int64 }
+    PublicRecipeCard:
+      type: object
+      required: [id, title]
+      properties:
+        id: { type: integer, format: int64 }
+        title: { type: string }
+        coverImageUrl: { type: string, nullable: true }
+        totalTimeMinutes: { type: integer, nullable: true }
+        ratingAvg: { type: number, format: double, nullable: true }
+        reviewCount: { type: integer }
+    PublicRecipePage:
+      type: object
+      required: [items, page, size, totalItems]
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/PublicRecipeCard' }
+        page: { type: integer }
+        size: { type: integer }
+        totalItems: { type: integer, format: int64 }
+    DietaryNotice:
+      type: object
+      required: [id, kind, subjectName, createdAt]
+      properties:
+        id: { type: integer, format: int64 }
+        kind: { type: string, enum: [INGREDIENT_MERGED, INGREDIENT_REMOVED, ALLERGEN_REMOVED] }
+        subjectName: { type: string }
+        replacementName: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+    DietaryProfile:
+      type: object
+      description: Mức 3, chỉ chủ tài khoản (FR-006, FR-018)
+      required: [allergens, excludedIngredients, dietType, preferredCuisines, empty, version, notices]
+      properties:
+        allergens:
+          type: array
+          items: { $ref: '#/components/schemas/Allergen' }
+        excludedIngredients:
+          type: array
+          maxItems: 50
+          items: { $ref: '#/components/schemas/NamedItem' }
+        dietType: { $ref: '#/components/schemas/DietType' }
+        preferredCuisines:
+          type: array
+          items: { $ref: '#/components/schemas/NamedItem' }
+        householdSize: { type: integer, nullable: true, minimum: 1, maximum: 20 }
+        maxCookTimeMinutes: { type: integer, nullable: true, minimum: 10, maximum: 240 }
+        empty: { type: boolean, description: 'true → hiện lời mời hoàn thiện hồ sơ (FR-039)' }
+        version: { type: integer }
+        notices:
+          type: array
+          items: { $ref: '#/components/schemas/DietaryNotice' }
+    DietaryProfileUpdateRequest:
+      type: object
+      required: [allergenIds, excludedIngredientIds, dietType, preferredCuisineIds, version]
+      properties:
+        allergenIds:
+          type: array
+          uniqueItems: true
+          items: { type: integer, format: int64 }
+        excludedIngredientIds:
+          type: array
+          uniqueItems: true
+          maxItems: 50
+          items: { type: integer, format: int64 }
+        dietType: { $ref: '#/components/schemas/DietType' }
+        preferredCuisineIds:
+          type: array
+          uniqueItems: true
+          items: { type: integer, format: int64 }
+        householdSize: { type: integer, nullable: true, minimum: 1, maximum: 20 }
+        maxCookTimeMinutes: { type: integer, nullable: true, minimum: 10, maximum: 240 }
+        version: { type: integer }
+    DietaryOptions:
+      type: object
+      required: [allergens, dietTypes, cuisines]
+      properties:
+        allergens:
+          type: array
+          items: { $ref: '#/components/schemas/Allergen' }
+        dietTypes:
+          type: array
+          items: { $ref: '#/components/schemas/DietType' }
+        cuisines:
+          type: array
+          items: { $ref: '#/components/schemas/NamedItem' }
+    AckNoticesRequest:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          items: { type: integer, format: int64 }
+    ChangePasswordRequest:
+      type: object
+      required: [currentPassword, newPassword, confirmPassword]
+      properties:
+        currentPassword: { type: string, format: password }
+        newPassword: { type: string, format: password, description: 'Quy tắc 010 FR-004, khác mật khẩu hiện tại' }
+        confirmPassword: { type: string, format: password }
+    SetPasswordRequest:
+      type: object
+      required: [newPassword, confirmPassword]
+      properties:
+        newPassword: { type: string, format: password }
+        confirmPassword: { type: string, format: password }
+    DeleteAccountRequest:
+      type: object
+      required: [confirmation]
+      properties:
+        confirmation: { type: string, description: 'Phải đúng DELETE, phân biệt hoa thường; sai → 422 (FR-031)' }
+    AccountClosureRequest:
+      type: object
+      required: [closureToken, confirmation]
+      properties:
+        closureToken: { type: string }
+        confirmation: { type: string, description: 'Phải đúng DELETE; sai → 422' }
+    Problem:
+      type: object
+      required: [type, title, status, code]
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        code:
+          type: string
+          enum:
+            - VALIDATION_ERROR
+            - UNAUTHENTICATED
+            - ACCOUNT_SUSPENDED
+            - ACCOUNT_BANNED
+            - ACCESS_DENIED
+            - REAUTH_REQUIRED
+            - USER_NOT_FOUND
+            - LAST_ADMINISTRATOR
+            - TOKEN_INVALID
+            - PROFILE_CHANGED
+            - PROFILE_RATE_LIMITED
+            - PROFILE_UNAVAILABLE
+            - AVATAR_TOO_LARGE
+            - AVATAR_TYPE_NOT_ALLOWED
+            - AVATAR_NOT_AN_IMAGE
+            - AVATAR_DIMENSIONS_TOO_LARGE
+            - INVALID_CURRENT_PASSWORD
+            - PASSWORD_SAME_AS_CURRENT
+            - PASSWORD_NOT_SET
+            - PASSWORD_ALREADY_SET
+            - PASSWORD_CHECK_LIMITED
+            - CONFIRMATION_MISMATCH
+            - ACCOUNT_STATE_CHANGED
+        errors:
+          type: array
+          description: Lỗi theo trường, chỉ có với VALIDATION_ERROR (FR-016, NFR-006)
+          items:
+            type: object
+            required: [field, code]
+            properties:
+              field: { type: string, example: householdSize }
+              code: { type: string, example: OUT_OF_RANGE }
+    RateLimitedProblem:
+      allOf:
+        - $ref: '#/components/schemas/Problem'
+        - type: object
+          required: [retryAfterSeconds]
+          properties:
+            retryAfterSeconds: { type: integer, description: 'Dùng cho thông báo "thử lại sau X phút"' }
+    AccountRestrictedProblem:
+      allOf:
+        - $ref: '#/components/schemas/Problem'
+        - type: object
+          properties:
+            reason: { type: string, description: 'Lý do (010 FR-013)' }
+            endsAt: { type: string, format: date-time, nullable: true, description: 'Có với ACCOUNT_SUSPENDED (FR-037a)' }
+
+  responses:
+    BadRequest:
+      description: Dữ liệu không hợp lệ (VALIDATION_ERROR), giá trị đang lưu không đổi (FR-016)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Unauthorized:
+      description: UNAUTHENTICATED – chưa đăng nhập, phiên hết hạn hoặc đã thu hồi
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    AccountRestricted:
+      description: ACCOUNT_SUSPENDED (kèm ngày kết thúc) hoặc ACCOUNT_BANNED; không sửa được hồ sơ (Edge Cases)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/AccountRestrictedProblem' }
+    UserNotFound:
+      description: USER_NOT_FOUND – không tồn tại, đã xóa hoặc bị cấm, không phân biệt
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    ProfileChanged:
+      description: PROFILE_CHANGED – hồ sơ đã đổi ở tab hoặc thiết bị khác (Edge Cases)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    ProfileRateLimited:
+      description: PROFILE_RATE_LIMITED – mặc định 20 lần mỗi giờ, theo từng loại (NFR-008)
+      headers:
+        Retry-After:
+          schema: { type: integer }
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/RateLimitedProblem' }
+    ProfileUnavailable:
+      description: PROFILE_UNAVAILABLE – không đọc được hồ sơ ăn uống, không trả hồ sơ trống (FR-026a)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    ConfirmationMismatch:
+      description: CONFIRMATION_MISMATCH – không gõ đúng chữ DELETE, không có gì bị xóa (US4 AS2)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
