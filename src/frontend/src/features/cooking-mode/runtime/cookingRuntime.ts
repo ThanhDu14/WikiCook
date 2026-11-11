@@ -146,7 +146,11 @@ export class CookingRuntimeManager {
   }
 
   public selectSession(recipeId: RecipeId): boolean {
-    if (!this.sessions.has(recipeId)) return false;
+    const selected = this.sessions.get(recipeId);
+    if (!selected || this.readOnlyRecipes.has(recipeId)) return false;
+    if (selected.phase === 'BACKGROUND') {
+      this.sessions.set(recipeId, sessionReducer(selected, { type: 'SET_PHASE', phase: 'COOKING' }));
+    }
     this.activeRecipeId = recipeId;
     this.notifyListeners();
     return true;
@@ -168,6 +172,10 @@ export class CookingRuntimeManager {
     existingSessionId?: string,
   ): CookingSession {
     if (this.readOnlyRecipes.has(snapshot.recipeId)) return this.sessions.get(snapshot.recipeId)!;
+    const previous = this.getActiveSession();
+    if (previous && previous.recipeId !== snapshot.recipeId && !previous.isCompleted) {
+      this.sessions.set(previous.recipeId, sessionReducer(previous, { type: 'SET_PHASE', phase: 'BACKGROUND', now }));
+    }
     const session = createInitialSession(snapshot, existingSessionId, now);
     this.sessions.set(snapshot.recipeId, session);
     this.activeRecipeId = snapshot.recipeId;
@@ -197,7 +205,7 @@ export class CookingRuntimeManager {
   }
 
   public saveSession(session: CookingSession, now: EpochMs = Date.now()): void {
-    if (this.readOnlyRecipes.has(session.recipeId) || typeof localStorage === 'undefined') return;
+    if (this.readOnlyRecipes.has(session.recipeId)) return;
 
     this.revision += 1;
 

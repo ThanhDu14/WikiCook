@@ -34,6 +34,8 @@ export function CookingRuntimeProvider({
   const [hasTabConflict, setHasTabConflict] = useState(false);
   const [hasStorageWarning, setHasStorageWarning] = useState(false);
   const [hasClockJumpWarning, setHasClockJumpWarning] = useState(false);
+  const [widgetHidden, setWidgetHidden] = useState(false);
+  const [backgroundSessions, setBackgroundSessions] = useState<CookingSession[]>([]);
 
   useEffect(() => {
     runtime.setCallbacks({
@@ -44,11 +46,9 @@ export function CookingRuntimeProvider({
 
     const unsubscribe = runtime.subscribe((updatedSession) => {
       setSession(updatedSession);
-      if (updatedSession?.timers) {
-        sharedAlarmCoordinator.evaluateAlarms(updatedSession.timers);
-      } else {
-        sharedAlarmCoordinator.cleanup();
-      }
+      const owned = runtime.getSessions();
+      setBackgroundSessions(owned.filter((item) => item.phase === 'BACKGROUND'));
+      sharedAlarmCoordinator.evaluateAlarms(owned.flatMap((item) => item.timers));
     });
 
     const handleBeforeUnload = () => {
@@ -71,21 +71,14 @@ export function CookingRuntimeProvider({
     };
   }, [runtime]);
 
-  const handleReturnFromBackground = () => {
-    if (session) {
-      const check = runtime.checkResumableSession(session.recipeId);
-      if (check.kind === 'RESUMABLE') {
-        runtime.resumeSession(check.value);
-      }
-      if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/cooking/')) {
-        window.location.assign(`/cooking/${session.recipeId}`);
-      }
-    }
+  const handleReturnFromBackground = (recipeId: string) => {
+    if (typeof window !== 'undefined') window.location.assign(`/cooking/${encodeURIComponent(recipeId)}`);
   };
 
+  useEffect(() => { setWidgetHidden(false); }, [backgroundSessions.map((item) => item.recipeId).join(',')]);
+
   const handleDismissBackground = () => {
-    runtime.exitSession(false);
-    sharedAlarmCoordinator.cleanup();
+    setWidgetHidden(true);
   };
 
   const value: CookingRuntimeContextValue = {
@@ -114,11 +107,11 @@ export function CookingRuntimeProvider({
   return (
     <CookingRuntimeContext.Provider value={value}>
       {children}
-      {session?.phase === 'BACKGROUND' && session.timers.length > 0 && (
+      {!widgetHidden && backgroundSessions.some((item) => item.timers.length > 0) && (
         <BackgroundTimerWidget
           visible={true}
-          timers={session.timers}
-          onReturnToCooking={handleReturnFromBackground}
+          timers={backgroundSessions.flatMap((item) => item.timers)}
+          onReturnToCooking={() => handleReturnFromBackground(backgroundSessions[0].recipeId)}
           onDismiss={handleDismissBackground}
         />
       )}

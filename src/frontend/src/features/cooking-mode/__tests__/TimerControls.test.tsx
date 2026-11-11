@@ -134,7 +134,7 @@ describe('TimerControls & TimerDrawer (T030 - US3)', () => {
       />,
     );
 
-    expect(screen.getByText(COOKING_VI.overdueMinutes(2))).toBeDefined();
+    expect(screen.getByText('Quá giờ 02:00')).toBeDefined();
 
     const ackBtn = screen.getByText(COOKING_VI.timerCompleted);
     fireEvent.click(ackBtn);

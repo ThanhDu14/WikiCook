@@ -30,7 +30,7 @@ export function StepNavigation({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const interactiveSelector =
-        'button, a[href], area[href], input, textarea, select, summary, audio[controls], video[controls], [contenteditable]:not([contenteditable="false"]), [tabindex], [role]:not([role="presentation"]):not([role="none"])';
+        'button, a[href], area[href], input, textarea, select, summary, audio[controls], video[controls], [contenteditable]:not([contenteditable="false"]), [tabindex]:not([tabindex="-1"]), [role]:not([role="presentation"]):not([role="none"])';
       const isInteractive = (target: EventTarget | null) =>
         target instanceof Element && Boolean(target.closest(interactiveSelector));
 

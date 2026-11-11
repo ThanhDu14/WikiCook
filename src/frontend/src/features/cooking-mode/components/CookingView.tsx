@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useCookingRuntime } from '../runtime/CookingRuntimeProvider';
 import { COOKING_VI } from '../i18n/vi';
-import { wakeLockAdapter, fullscreenAdapter } from '../adapters/browserCapabilities';
+import { wakeLockAdapter, fullscreenAdapter, getAudioSynth } from '../adapters/browserCapabilities';
 import { sharedAlarmCoordinator } from '../runtime/alarmCoordinator';
 import { sharedSpeechAdapter, type VoiceCommand } from '../adapters/speechAdapter';
 import { ExitSessionDialog } from './ExitSessionDialog';
@@ -51,9 +51,17 @@ export function CookingView({
   const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
-  // Hydration / Resume check on mount when initialSnapshot is provided
+  const hydratedRecipeRef = useRef<string | null>(null);
+  // Hydration is scoped to each route entry, not the previous active recipe.
   useEffect(() => {
-    if (initialSnapshot && !session) {
+    if (initialSnapshot && hydratedRecipeRef.current !== initialSnapshot.recipeId) {
+      hydratedRecipeRef.current = initialSnapshot.recipeId;
+      setShowCompletionBanner(false);
+      const existing = runtime.getSessions().find((item) => item.recipeId === initialSnapshot.recipeId && !item.isCompleted);
+      if (existing) {
+        runtime.selectSession(initialSnapshot.recipeId);
+        return;
+      }
       const check = runtime.checkResumableSession(initialSnapshot.recipeId);
       if (check.kind === 'RESUMABLE') {
         setResumableEnvelope(check.value);
@@ -64,7 +72,14 @@ export function CookingView({
     }
   }, [initialSnapshot, runtime, session]);
 
+  const primeAudio = () => {
+    void getAudioSynth().unlock().then((ok) => {
+      if (!ok) setVoiceNotice('Âm thanh chưa được bật. Chạm nút hẹn giờ để thử lại; cảnh báo trực quan vẫn hoạt động.');
+    });
+  };
+
   const handleResumeConfirmed = () => {
+    primeAudio();
     if (resumableEnvelope) {
       runtime.resumeSession(resumableEnvelope);
       setIsResumeDialogOpen(false);
@@ -80,6 +95,8 @@ export function CookingView({
     }
   };
 
+  const sessionRef = useRef(session);
+  sessionRef.current = session;
   const theme = session?.preferences.theme ?? 'LIGHT';
   const isHighContrast = theme === 'HIGH_CONTRAST_DARK';
 
@@ -92,7 +109,8 @@ export function CookingView({
         runtime.prevStep();
         break;
       case 'READ_STEP': {
-        const step = session?.snapshot.steps[session.currentStepIndex];
+        const active = sessionRef.current;
+        const step = active?.snapshot.steps[active.currentStepIndex];
         if (step) {
           sharedSpeechAdapter.speakStep(step.instructionText);
         }
@@ -102,7 +120,7 @@ export function CookingView({
         setIsCustomTimerDialogOpen(true);
         break;
       case 'SILENCE_ALARM': {
-        session?.timers.forEach((t) => {
+        sessionRef.current?.timers.forEach((t) => {
           if (t.status === 'EXPIRED' && t.acknowledgedAt === null) {
             runtime.acknowledgeTimer(t.timerId);
           }
@@ -143,15 +161,19 @@ export function CookingView({
     let isMounted = true;
     const supported = wakeLockAdapter.isSupported();
     setWakeLockSupported(supported);
+    const unsubscribeWakeLock = wakeLockAdapter.subscribe((active) => {
+      if (isMounted) {
+        setWakeLockActive(active);
+        if (!active) setWakeLockSupported(false);
+      }
+    });
 
     const acquireWakeLock = () => {
       if (!wakeLockAdapter.isSupported()) return;
       wakeLockAdapter.request().then((lock) => {
         if (isMounted) {
           setWakeLockActive(!!lock);
-          if (!lock) {
-            setWakeLockSupported(false);
-          }
+          setWakeLockSupported(!!lock);
         }
       });
     };
@@ -172,6 +194,7 @@ export function CookingView({
 
     return () => {
       isMounted = false;
+      unsubscribeWakeLock();
       if (typeof document !== 'undefined') {
         document.removeEventListener('visibilitychange', handleVisibilityChange);
       }
@@ -179,19 +202,15 @@ export function CookingView({
     };
   }, []);
 
-  // Evaluate alarms whenever timers change
-  useEffect(() => {
-    if (session?.timers) {
-      sharedAlarmCoordinator.evaluateAlarms(session.timers);
-    }
-  }, [session?.timers]);
+  // Recognition must not retain microphone ownership after leaving the cooking view.
+  useEffect(() => () => { sharedSpeechAdapter.stopListening(); }, []);
 
   // Focus management on step change
   useEffect(() => {
     headingRef.current?.focus();
   }, [session?.currentStepIndex]);
 
-  if (!session) {
+  if (!session || (initialSnapshot && session.recipeId !== initialSnapshot.recipeId) || isResumeDialogOpen) {
     return (
       <div className="flex min-h-screen items-center justify-center p-6 text-center">
         <p className="text-lg text-stone-500">Chưa có phiên nấu ăn nào được khởi tạo.</p>
@@ -289,6 +308,13 @@ export function CookingView({
   return (
     <div
       ref={containerRef}
+      onClickCapture={(event) => {
+        if (expiredCount > 0) {
+          event.preventDefault();
+          event.stopPropagation();
+          handleSilenceAllAlarms();
+        }
+      }}
       data-testid="cooking-view-container"
       className={`relative flex min-h-screen flex-col font-sans transition-colors duration-200 ${
         isHighContrast
@@ -562,9 +588,10 @@ export function CookingView({
           {/* Step Quick Timers */}
           <StepQuickTimers
             step={currentStep}
-            onStartQuickTimer={(seconds, label) =>
-              runtime.addTimer(label, seconds, currentStep.stepNumber)
-            }
+            onStartQuickTimer={(seconds, label) => {
+              primeAudio();
+              runtime.addTimer(label, seconds, currentStep.stepNumber);
+            }}
           />
         </div>
 
@@ -618,9 +645,10 @@ export function CookingView({
       <CustomTimerDialog
         isOpen={isCustomTimerDialogOpen}
         onClose={() => setIsCustomTimerDialogOpen(false)}
-        onStartTimer={({ label, durationSeconds }) =>
-          runtime.addTimer(label, durationSeconds, currentStep.stepNumber)
-        }
+        onStartTimer={({ label, durationSeconds }) => {
+          primeAudio();
+          runtime.addTimer(label, durationSeconds, currentStep.stepNumber);
+        }}
       />
 
       {/* Exit Session Confirmation Dialog */}
