@@ -5,7 +5,7 @@ import { CookingRuntimeProvider } from '../runtime/CookingRuntimeProvider';
 import { CookingRuntimeManager } from '../runtime/cookingRuntime';
 import { mockPhoBoSnapshot } from './fixtures/recipeFixtures';
 import { COOKING_VI } from '../i18n/vi';
-import { wakeLockAdapter } from '../adapters/browserCapabilities';
+import { fullscreenAdapter, wakeLockAdapter } from '../adapters/browserCapabilities';
 
 describe('CookingView (T019 - US1)', () => {
   let runtime: CookingRuntimeManager;
@@ -25,6 +25,20 @@ describe('CookingView (T019 - US1)', () => {
 
     expect(screen.getByRole('heading', { name: 'Bước 1 / 5' })).toBeDefined();
     expect(screen.getByText(mockPhoBoSnapshot.steps[0].instructionText)).toBeDefined();
+  });
+
+  it('requests fullscreen on a vertically scrollable container containing timer and navigation controls', () => {
+    const request = vi.spyOn(fullscreenAdapter, 'request').mockResolvedValue(true);
+    vi.spyOn(fullscreenAdapter, 'isFullscreen').mockReturnValue(false);
+    render(<CookingRuntimeProvider customRuntime={runtime}><CookingView /></CookingRuntimeProvider>);
+
+    const container = screen.getByTestId('cooking-view-container');
+    fireEvent.click(screen.getByLabelText('Toàn màn hình'));
+    expect(request).toHaveBeenCalledWith(container);
+    expect(container.className).toContain('overflow-y-auto');
+    expect(container.contains(screen.getByLabelText(COOKING_VI.nextStep))).toBe(true);
+    expect(container.contains(screen.getByText('5 phút'))).toBe(true);
+    vi.restoreAllMocks();
   });
 
   it('displays fallback banner when Wake Lock is unsupported', () => {

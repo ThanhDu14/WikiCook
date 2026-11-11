@@ -318,7 +318,7 @@ export function CookingView({
         }
       }}
       data-testid="cooking-view-container"
-      className={`relative flex min-h-screen flex-col font-sans transition-colors duration-200 ${
+      className={`relative flex min-h-screen flex-col overflow-y-auto font-sans transition-colors duration-200 ${
         isHighContrast
           ? 'theme-high-contrast-dark bg-black text-yellow-300'
           : 'bg-stone-50 text-stone-900'
@@ -492,7 +492,7 @@ export function CookingView({
       )}
 
       {/* Main Instruction Display */}
-      <main className="flex flex-1 flex-col justify-center px-6 py-6 sm:px-12 md:py-10">
+      <main className="flex flex-1 shrink-0 flex-col justify-center px-6 py-6 sm:px-12 md:py-10">
         <div className="mx-auto w-full max-w-4xl text-center">
           {currentStep.images && currentStep.images.length > 0 && (
             <div className="mb-6 flex flex-wrap justify-center gap-4">
