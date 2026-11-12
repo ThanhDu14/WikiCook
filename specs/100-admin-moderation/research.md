@@ -67,7 +67,7 @@ This document records all technical research decisions (Phase 0 Research) for th
        ```sql
        CREATE TABLE audit_logs (
            id BIGSERIAL PRIMARY KEY,
-           actor_id BIGINT NULL REFERENCES users(id) ON DELETE SET NULL,
+           actor_id BIGINT NULL,  -- deliberately no FK (see below)
            action VARCHAR(50) NOT NULL,
            target_type VARCHAR(30) NULL,
            target_id BIGINT NULL,
@@ -80,7 +80,7 @@ This document records all technical research decisions (Phase 0 Research) for th
        CREATE INDEX idx_audit_created ON audit_logs(created_at DESC);
        CREATE INDEX idx_audit_target ON audit_logs(target_type, target_id);
        ```
-     - **Automated System Actions**: For automated system triggers (such as auto-quarantining content upon reaching 10 reports), `actor_id` MUST be `NULL` (never `0`, which would violate the foreign key constraint to `users`).
+     - **Automated System Actions**: For automated system triggers (such as auto-quarantining content upon reaching 10 reports), `actor_id` MUST be `NULL` (never `0`). `actor_id` has **no foreign key**: an `ON DELETE SET NULL` key would run an `UPDATE` on this table whenever a user is deleted (spec 011, 7-day purge, Google takeover of spec 010), and the trigger below would reject it. A plain number that no longer resolves is exactly what the audit trail needs after a deletion. Spec 010 task T028 creates the table and the trigger in `V102`.
      - **Database-Level Immutability Enforcement**: PostgreSQL trigger raising an explicit exception on any UPDATE or DELETE:
        ```sql
        CREATE OR REPLACE FUNCTION trg_audit_logs_immutable()
@@ -109,8 +109,8 @@ This document records all technical research decisions (Phase 0 Research) for th
      - For role changes:
        ```json
        {
-         "old_role": "MEMBER",
-         "new_role": "CONTRIBUTOR"
+         "old": "MEMBER",
+         "new": "CONTRIBUTOR"
        }
        ```
      - For featured recipe curation:
@@ -123,9 +123,9 @@ This document records all technical research decisions (Phase 0 Research) for th
        ```
   3. **GDPR Right-to-be-Forgotten (`UC-011-04`) vs Legal Forensic Retention**:
      - When an authenticated user requests account deletion under GDPR / privacy regulations:
-       * **Personal Identifiable Information (PII)**: In the `users` table, display name, email, avatar URL, and credentials are scrubbed or replaced with an anonymous placeholder: `[DELETED_USER_xxxxx]`.
+       * **Account row**: spec 011 removes the `users` row completely (spec 010: there is no "deleted" status and no placeholder row). `audit_logs.details` never holds an email or display name (spec 010 FR-025), so nothing needs scrubbing.
        * **Forensic Audit Integrity**: Historical records in `audit_logs` are **strictly retained (Append-Only)** with original integer `actor_id` or `target_id` and timestamps.
-       * **Audit Viewer Presentation**: When the audit log viewer displays historical actions involving a deleted user, the UI resolves the user ID to the anonymized string `Người dùng đã xóa [DELETED_USER_xxxxx]`. This ensures compliance with EU GDPR Article 17(3)(b) (retention for compliance with a legal obligation) and judicial audit standards without leaking deleted personal data.
+       * **Audit Viewer Presentation**: When the audit log viewer displays historical actions involving a deleted user, the UI shows `Người dùng đã xóa` for a user ID that no longer resolves. This ensures compliance with EU GDPR Article 17(3)(b) (retention for compliance with a legal obligation) and judicial audit standards without leaking deleted personal data.
 - **Rationale**: Completely resolves `[OQ-100-02]`, satisfying FR-014, FR-019, NFR-004, SC-003, and Constitution Principle IV.
 - **Alternatives considered**:
   - Hard-deleting audit rows matching the deleted user: Rejected because it destroys audit continuity and would allow a malicious actor to perform unauthorized operations, delete their account, and completely wipe the forensic paper trail.
@@ -184,8 +184,9 @@ This document records all technical research decisions (Phase 0 Research) for th
        * `created_by BIGINT NULL FK -> users SET NULL`
        * `lifted_at TIMESTAMPTZ NULL`
        * `lifted_by BIGINT NULL FK -> users SET NULL`
+       * `lift_reason VARCHAR(20) NULL CHECK IN ('EXPIRED','LIFTED','REPLACED_BY_BAN')`, with `CHECK ((lifted_at IS NULL) = (lift_reason IS NULL))`, so how a sanction ended is not inferred from `lifted_by` (an SET NULL key loses the lifter when their account is deleted)
      - **Moderator Authority**:
-       * Can issue temporary suspensions only: `kind = 'SUSPENSION'`, `ends_at` up to 30 days from `starts_at`.
+       * Can issue temporary suspensions only: `kind = 'SUSPENSION'`, `ends_at` up to 30 days from `starts_at`. The 30-day limit applies to every role, Administrators included (spec 010 FR-022); a longer sanction is a ban.
        * Enforced at service layer:
          ```java
          if (currentUser.hasRole("MODERATOR")) {
@@ -196,7 +197,7 @@ This document records all technical research decisions (Phase 0 Research) for th
          ```
      - **Administrator Authority**:
        * Can issue permanent bans: `kind = 'BAN'`, `ends_at = NULL`.
-       * Can lift penalties (Unsuspend / Unban): Sets `lifted_at = NOW()`, `lifted_by = adminId`, restores `users.status = 'ACTIVE'`, and logs to `audit_logs` (`action = 'USER_SUSPENSION_LIFTED'` or `'USER_BAN_LIFTED'`).
+       * Can lift penalties (Unsuspend / Unban) through spec 010's API (`POST /api/v1/admin/users/{id}/reinstatement`, `AccountAdminFacade.reinstate`): 010 sets `lifted_at = NOW()`, `lifted_by = adminId`, `lift_reason = 'LIFTED'`, restores `users.status = 'ACTIVE'`, emails the owner and logs to `audit_logs` (`action = 'ACCOUNT_REINSTATED'`) in one transaction. Spec 100 does not write these tables directly. Suspensions and bans likewise go through `AccountAdminFacade.suspend` and `ban` (`ACCOUNT_SUSPENDED`, `ACCOUNT_BANNED`), which take effect no later than the user's next request (spec 010 FR-024).
        * Can change user roles (Member ↔ Contributor ↔ Moderator).
   2. **Featured Recipe Curation via `recipes.featured_position` (full-schema §4.5)**:
      - No separate `featured_recipes` table is created (eliminating redundancy).
@@ -312,6 +313,6 @@ This document records all technical research decisions (Phase 0 Research) for th
 
 1. **Optimistic Locking**: Đề xuất sử dụng JPA `@Version` trên `recipes.version` và xử lý xung đột hàng đợi báo cáo theo đối tượng mục tiêu, trả về mã RFC 7807 HTTP 409 Conflict thay vì duy trì hạ tầng WebSocket/Redis phức tạp ở giai đoạn MVP.
 2. **Phân quyền Kỷ luật & Quản trị**: Đề xuất giới hạn Moderator chỉ được đình chỉ tối đa 30 ngày (`kind = 'SUSPENSION'`); các quyền cấm vĩnh viễn (`kind = 'BAN'`), gỡ phạt và thay đổi vai trò bắt buộc do Administrator thực hiện.
-3. **Tính Bất biến của Nhật ký Kiểm toán & GDPR**: Đề xuất lưu `audit_logs` với trigger PostgreSQL phát sinh ngoại lệ `RAISE EXCEPTION` khi sửa/xóa; khi người dùng xóa tài khoản theo GDPR, dữ liệu cá nhân trong `users` được ẩn danh thành `[DELETED_USER_xxxxx]` trong khi bản ghi kiểm toán được giữ nguyên vẹn (`actor_id = NULL` đối với thao tác tự động).
+3. **Tính Bất biến của Nhật ký Kiểm toán & GDPR**: Đề xuất lưu `audit_logs` với trigger PostgreSQL phát sinh ngoại lệ `RAISE EXCEPTION` khi sửa/xóa; khi người dùng xóa tài khoản, spec 011 xóa hẳn dòng trong `users`, còn bản ghi kiểm toán được giữ nguyên vẹn (`actor_id` không có khóa ngoại) (`actor_id = NULL` đối với thao tác tự động).
 4. **Món Nổi bật Tinh gọn**: Đề xuất quản lý công thức nổi bật trực tiếp qua cột `recipes.featured_position SMALLINT NULL UK (khi khác NULL)` (tối đa 10 vị trí) thay vì duy trì bảng riêng `featured_recipes`.
 5. **Xử lý Bất đồng bộ Tích hợp AI**: Đề xuất bắn sự kiện `RecipePublishedEvent` sau khi commit transaction (`@TransactionalEventListener`), bàn giao tạo vector và tính dinh dưỡng sang thread pool riêng biệt để thời gian phản hồi kiểm duyệt luôn đạt $< 800\text{ms}$.

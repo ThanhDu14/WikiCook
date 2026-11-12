@@ -29,6 +29,8 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Vă
 | 23 | 2026-10-30 | Task SCRUM-50 – nhận xét AI log, hướng dẫn chuyển nhánh, chuẩn bị push và mô tả PR | `ai_log_hien.md`, `use-case-specification.md` §9–§11 |
 | 24 | 2026-11-04 → 2026-11-06 | Task SCRUM-59 – sửa Project Plan lần 2 (bản nháp phần A) và lập `Changes.md` section A | `project-plan.md`, `Changes.md` |
 | 25 | 2026-11-06 | Task SCRUM-67 – chốt Project Plan `v2.0` (phần A), đối chiếu Vision, Use-Case Model, Sprint 03 report và code, viết lại `Changes.md` section A | `project-plan.md`, `Changes.md` |
+| 26 | 2026-11-07 → 2026-11-11 | Task SCRUM-72 – `/speckit-analyze` spec 010 ba lượt, sửa các lỗi tìm được, rà chéo 011 với 010, gắn mã Jira, tạo nhánh tài liệu | 010, 011 (spec, plan, research, data-model, contracts, quickstart, tasks) |
+| 27 | 2026-11-12 | Task SCRUM-72 – đọc review PR #84, sửa theo 8 góp ý của Duy, gộp `origin/main` và giải quyết xung đột ở spec 100 | 010, 011, 100, `ai_log_hien.md` |
 
 ---
 
@@ -1723,3 +1725,188 @@ Tóm lược (nguyên văn nằm trong hội thoại):
 - Version Claude Code: 2.1.296; model theo từng lượt lấy từ transcript phiên.
 - Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
 - Hiển cần tự đối chiếu trước khi nộp: (1) sửa "all remote branches" ở `Changes.md` A.1; (2) sửa dòng lỗi và thêm `45b1d07` vào mô tả PR #72, đổi tiêu đề PR; (3) từng thay đổi trong bảng A.2 với `project-plan.md`; (4) các nhãn pending review sau khi Hưng duyệt, gồm cả dòng 7 của `Changes.md`; (5) chạy thật gate `Build v0.5`; (6) các mục cần xem trên Jira ở A.5 mục 4.
+
+---
+
+## Mục 26: Task SCRUM-72 – phân tích, sửa và gắn mã Jira cho tài liệu Spec Kit 010, 011
+
+**Task: SCRUM-72**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-07 (phân tích lượt 1), 2026-11-09 (sửa lỗi, phân tích lượt 2 và 3), 2026-11-11 (đối chiếu `pa4-guide.md`, rà 011, gắn mã Jira, tạo nhánh) |
+| Giờ truy cập | Phiên bắt đầu 09:12 ngày 07/11 (timestamp đầu của transcript: `2026-11-07T02:12:45Z`); cùng một phiên kéo dài tới 11/11, mục này ghi ngày 11/11 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/010-user-authentication-roles/` (spec, plan, research, data-model, `contracts/openapi.yaml`, `contracts/integration.md`, quickstart, tasks, checklists), `specs/011-user-profile-dietary/` (cùng bộ file), `.specify/memory/constitution.md`, `pa4-guide.md`, `docs/requirements/use-case-specification.md` (UC-010-01 – UC-010-04), `docs/analysis-and-design/database/full-schema.md`, specs 030, 040, 050, 100; để đối chiếu code: migration `V101`–`V403`, `docker-compose.yml`, `src/backend/docker-compose.yml`, `application.yml`, `application-local.yml`, `nginx.conf`, `GlobalExceptionHandler`, các advice của 030, 031, 040, `AiAsyncConfig`, `StubCurrentUser`, các test đang gọi HTTP, `routes.tsx`, `client.ts`, `MealPlannerPage.tsx` |
+| Công cụ AI | Claude Code (tiện ích mở rộng VS Code, Windows 11), phiên bản 2.1.296 (trường `version` trong transcript). Mọi lượt dùng Opus 5.5 (`claude-opus-5-5`). Skill `speckit-analyze` chạy ba lần. Một subagent `web-fetch` đọc tài liệu OpenID Connect và discovery document của Google |
+| Mục đích | Chạy `/speckit-analyze` cho 010 sau các bản sửa ngày 07/11; sửa các lỗi tìm được; kiểm tra SCRUM-72 theo `pa4-guide.md`; rà chéo 011 với các thay đổi của 010; gắn mã Jira SCRUM-72, 74, 75, 76; tạo nhánh tài liệu, đề xuất file cần add và thông điệp commit |
+| Nhánh Git | Sửa trong thư mục làm việc chính (đang ở `feature/030-040-meal-plan-import`, có một lần merge `origin/main` chưa commit). Nhánh tài liệu `feature/SCRUM-72-spec-kit-010-011` tạo từ `origin/main` (`544bb37`) trong worktree `../WikiCook-SCRUM-72`, đã chép thư mục 010, 011 sang. Chưa commit, chưa push |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Opus 5.5 (claude-opus-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập ngày 07/11, 09/11 và 11/11/2026 (phiên bắt đầu 09:12 ngày 07/11), prompt: xem phần "Prompt đã dùng" bên dưới, dùng để phân tích chéo và sửa tài liệu Spec Kit của 010, 011 cho SCRUM-72; AI đối chiếu tài liệu với nhau và với migration, cấu hình, code, sửa 9 file của 010 và 6 file của 011, gắn mã Jira, tạo nhánh tài liệu trong một worktree riêng.
+
+### Prompt đã dùng
+
+Tóm lược (nguyên văn nằm trong hội thoại):
+
+1. (07/11) `/speckit-analyze` cho `specs/010-user-authentication-roles`, kèm yêu cầu: không sửa file; đọc lại bản trên đĩa; phạm vi đối chiếu (tài liệu 010, constitution, migration, full-schema, specs 011, 030, 040, 050, 100, UC-010-01 – UC-010-04, `routes.tsx`, `client.ts`, Compose, `application.yml`, test gọi HTTP); 5 trọng tâm (FR/NFR/SC/scenario/edge case thiếu task; endpoint, header, mã lỗi, DTO lệch openapi; cột chưa có migration và map được với `ddl-auto: validate`; mâu thuẫn giữa các spec và với use case; thứ tự task, ID, đường dẫn); kiểm chứng từng bản sửa ngày 07/11 (lần 1 HIGH, lần 2 MEDIUM và LOW); danh sách điểm đã biết không báo lại; báo cáo tiếng Việt, có bảng trạng thái các lỗi cũ C1, I1–I10, U1–U8, G1–G3, L1–L5, phân biệt điều đã xác minh bằng code với điều suy luận, kết luận có chạy `/speckit-implement` được chưa.
+2. (09/11) ```text
+   hãy đề xuất nội dung sửa cho các lỗi. Hãy sửa cho tôi
+   ```
+3. (09/11) `/speckit-analyze` (không kèm nội dung).
+4. (09/11) ```text
+   hãy tiếp tục sửa. Tôi cần tạo nhánh khác không
+   ```
+5. (09/11) ```text
+   nếu tôi implement liền thì có được không
+   ```
+6. (11/11) ```text
+   @pa4-guide.md hãy xem Scrum 72 và kiểm tra xem tôi đã hoàn thành chưa
+   ```
+7. (11/11) ```text
+   hãy làm bước 1 và 2 rồi tạo nhánh cho tôi. Chỉ đề xuất nên add file nào, commit như nào và chưa push, tôi sẽ tự add và commit
+   ```
+8. (11/11) ```text
+   hãy viết AI log cho tôi và tôi cần tạo branch mới không
+   ```
+   Hiển từ chối lệnh AI định chạy (đọc và so sánh `ai_log_hien.md` giữa thư mục chính và worktree), rồi gửi lại:
+   ```text
+   hãy viết AI log cho tôi
+   ```
+
+### Tóm tắt phản hồi của AI
+
+- **Phân tích lượt 1 (07/11)**: 28 phát hiện, gồm 1 CRITICAL (C1: chưa có mã Jira, spec chưa được duyệt), 6 HIGH, 14 MEDIUM, 7 LOW, kèm bảng kiểm chứng 19 bản sửa ngày 07/11 và bảng trạng thái 27 lỗi cũ. Các phát hiện HIGH:
+  - I11: T026 chuyển `/login` khi hết phiên, mâu thuẫn với T065 (giữ form, hiện hộp thoại);
+  - U9: client gắn JWT hết hạn vào `/auth/refresh` thì Spring Security trả 401, mọi phiên chết sau 15 phút;
+  - U10: `GlobalExceptionHandler` bắt `Exception.class`, lỗi thiếu quyền ở module khác thành 500;
+  - U11: tài liệu Google không có `max_age`, `prompt=login`; `auth_time` phải xin riêng;
+  - U12: repo không có service worker, nên "mở app khi mất mạng" và Q44 không kiểm được;
+  - I12: giới hạn 100 lần đăng nhập mỗi IP làm T061 và k6 (T173) không chạy đúng.
+- **Sửa (09/11)**: AI sửa spec, plan, research, data-model, hai file contracts, quickstart và tasks của 010 theo từng phát hiện. Ví dụ:
+  - `expired` không chuyển trang, `SessionExpiredDialog` gắn ở `AppLayout`;
+  - `PublicRouteBearerTokenResolver` và client không gắn bearer cho `/auth/*` công khai;
+  - giới hạn IP thành cấu hình `wikicook.auth.sign-in.ip-limit`;
+  - `@MaxCodePoints`, `RegisterResponse.retryAfterSeconds`, fragment cho trang trạng thái tài khoản sau Google;
+  - `management.health.mail.enabled: false`, cờ job kiểm tra trong phương thức `@Scheduled`;
+  - nginx lặp header ở từng `location`;
+  - thêm task chặn T149b.
+  Bốn điểm cần nhóm chốt được ghi thành mục 40–43 ở research (Google, app shell offline, tên `action` của 100, sửa use case).
+- **Phân tích lượt 2 (09/11)**: bản sửa sinh 3 lỗi mới:
+  - I15: `MealPlannerPage` của 030 tự chuyển `/login`, trái với hộp thoại mới;
+  - I16: advice toàn cục cùng mức ưu tiên tranh lỗi validation với 030, 031;
+  - L13: T141 kiểm `finishExpired` trước khi có T164.
+  AI sửa cả ba (thêm T026a, T054a ⛓ C; tách `SecurityExceptionAdvice` chỉ bắt lỗi thiếu quyền; chuyển ca kiểm sang T155).
+- **Tư vấn**: cần nhánh mới theo constitution, nhưng phải có mã Jira trước; khuyên không implement ngay vì vi phạm Nguyên tắc I, có thể phải làm lại, và đụng code của 030, 031, 040.
+- **SCRUM-72 (11/11)**: đối chiếu `pa4-guide.md` và kết luận chưa xong (011 chưa rà, chưa gắn mã Jira, chưa commit, chưa có PR).
+  - Rà 011 với 010, sửa 5 chỗ: 011 không tự gắn thêm `SessionExpiredDialog`, dùng `useUnsavedChangesBlocker()`; mục chờ chốt #20 cho xác thực lại bằng Google; `api.postForm` đi qua `fetchJson`; `@MaxCodePoints` cho mật khẩu hiện tại; Status 011 đổi thành In Review.
+  - Thêm mục "Mã Jira" vào tasks của cả hai spec; thay `SCRUM-xx` ở spec, plan, tasks, checklists; đánh dấu T001 của 010 đã xong.
+  - Ghi hai đề xuất cần nhóm chốt: người duyệt (Hưng theo guide, Duy cho các quyết định) và phạm vi PA4 (010 Phase 1–5; 011 Phase 1–4 và 7).
+  - Tạo nhánh trong worktree vì thư mục chính đang dở merge, chép 010, 011 sang, đề xuất hai commit.
+- Sai sót và hạn chế của AI cần ghi nhận:
+  1. Bản sửa lượt đầu sinh thêm 3 lỗi (I15, I16, L13), chỉ lộ ra khi phân tích lại.
+  2. Mọi kết luận về hành vi Spring Security, Spring Boot, nginx, Compose là suy luận từ hiểu biết về framework và từ đọc file. AI không chạy `mvn verify`, `npm test`, `docker compose` hay thử Google thật. Báo cáo có gắn nhãn [CODE], [HV], [TL], [GOOGLE] để phân biệt.
+  3. Đã đọc tài liệu Google ngày 07/11. Lời khuyên dùng tham số `claims` để xin `auth_time` chưa được thử.
+  4. Prompt 1 yêu cầu không dùng kết quả phân tích trước. AI chỉ đọc transcript phiên cũ để lấy **định nghĩa** các mã C1, I1–L5 cho bảng trạng thái; mọi trạng thái đều kiểm lại trên bản hiện tại.
+  5. Rà 011 là rà chéo với 010 và kiểm độ phủ, không phải một lượt `/speckit-analyze` đầy đủ cho 011.
+  6. Khi sửa, `tasks.md` của 010 báo đã thay đổi trên đĩa so với lần AI đọc. AI kiểm lại số dòng và mã task, không thấy thay đổi lạ. Mô tả `ClosureTokens.consume` "chạy trong transaction của bên gọi" vốn đã có từ 07/11; AI thêm một ý trùng vào T157.
+  7. Lệnh `git switch -c` thất bại vì thư mục chính đang dở merge; AI dùng `git worktree add` thay vì nhánh thường mà không hỏi trước.
+  8. Hai dòng `checklists/requirements.md` được sửa bằng `sed -i`; git báo các file này đang dùng LF.
+  9. Đề xuất phạm vi PA4 (010 Phase 1–5; 011 Phase 1–4 và 7) là ý của AI, chưa được nhóm chốt.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Báo cáo phân tích lượt 1, 2, 3 | Dùng làm căn cứ sửa | Hiển yêu cầu sửa sau mỗi lượt |
+| Sửa 9 file của 010: spec, plan, research, data-model, hai file contracts, quickstart, tasks, checklists (09/11, 11/11) | Dùng, chưa commit | Chờ Hiển tự add và commit ở nhánh `feature/SCRUM-72-spec-kit-010-011` |
+| Sửa 011: spec, plan, research, tasks, `contracts/integration.md`, checklists (11/11) | Dùng, chưa commit | Như trên |
+| Mục "Mã Jira", phân chia SCRUM-74, 75, 76 | Dùng; phần phạm vi PA4 và người duyệt ghi là đề xuất | Theo `pa4-guide.md`; nhóm phải chốt |
+| Lời khuyên không implement ngay | Theo | Constitution Nguyên tắc I |
+| Nhánh trong worktree `../WikiCook-SCRUM-72` | Dùng | Thư mục chính đang dở merge `origin/main` |
+| Hai thông điệp commit đề xuất | Chờ Hiển dùng | Hiển tự commit |
+| Sửa spec 100 (`specs/100-admin-moderation/spec.md`: Clarifications 07/11, FR-010, FR-011, bảng `user_suspensions`, `audit_logs`) | Dùng; Hiển thêm vào PR #84 ở bước 4. Mục 27 ghi tiếp việc gộp với `main` ở ngày 12/11 | Khớp với 010; chờ E xác nhận |
+| Sửa use case, spec 030 | Bỏ (không làm) | Thuộc người khác hoặc chờ duyệt; ghi thành mục 42, 43 ở research 010 và task ⛓ |
+| Dòng Co-Authored-By và "Generated with Claude Code" | Bỏ | Hiển yêu cầu không thêm |
+
+### Cách kiểm chứng
+
+- Hai file `contracts/openapi.yaml` (010, 011) parse được bằng PyYAML; openapi của 010 có 20 path.
+- `grep -rn "SCRUM-xx"` trong `specs/010-…` và `specs/011-…`: chỉ còn trong Clarification lịch sử của spec 010 và trong mô tả T001 đã xong.
+- Danh sách mã task trong `tasks.md` của 010: T001–T189 cùng các task hậu tố `a`, `b`; không trùng mã, thứ tự đúng.
+- `git status --short` trong worktree: 4 file đã có trên `main` bị sửa (hai file checklists, `spec.md` của 010 và của 011), 12 mục mới chưa theo dõi của 010 và 011. Sau khi Hiển chép thêm spec 100 và AI log, PR #84 có 6 file đã có trên `main` bị sửa: `ai_log_hien.md`, hai file checklists, spec 010, spec 011 và spec 100 (góp ý của Duy trên PR).
+- Chưa chạy `mvn verify`, `npm test`, chưa render Markdown sang PDF.
+- Version Claude Code: 2.1.296; model theo từng lượt lấy từ transcript phiên.
+- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+- Hiển cần tự làm trước khi đóng SCRUM-72:
+  1. Commit trong worktree theo hai thông điệp đề xuất, push, mở PR vào `main`.
+  2. Chốt người duyệt (Hưng, Duy) và phạm vi PA4.
+  3. Quyết định có đưa spec 100 vào cùng PR không.
+  4. Chạy lại `/speckit-analyze` cho 011 nếu muốn có báo cáo đầy đủ.
+  5. Xóa bản copy chưa commit ở thư mục chính sau khi PR đã có các file đó.
+
+---
+
+## Mục 27: Task SCRUM-72 – xử lý review PR #84 và xung đột với `main`
+
+**Task: SCRUM-72**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-12 |
+| Giờ truy cập | Cùng phiên Claude Code của Mục 26 (bắt đầu 09:12 ngày 07/11); phần này sau khi Hiển chạy `/model sonnet` |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/010-user-authentication-roles/`, `specs/011-user-profile-dietary/`, `specs/100-admin-moderation/spec.md` và `research.md`, PR #84 (review của Hưng và Duy) |
+| Công cụ AI | Claude Code (VS Code, Windows 11), Sonnet 5.5 (`claude-sonnet-5-5`) cho toàn bộ mục này |
+| Mục đích | Đọc review PR #84; sửa theo góp ý; gộp `origin/main` vào nhánh `feature/SCRUM-72-spec-kit-010-011` và giải quyết xung đột |
+| Nhánh Git | `feature/SCRUM-72-spec-kit-010-011` trong worktree `../WikiCook-SCRUM-72`; đang dở một lần merge `origin/main`, chưa commit |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập ngày 12/11/2026, prompt: "hãy lên xem review PR #84. Kiểm tra lại cần sửa điều gì, và giải quyết conflic cho tôi", dùng để xử lý review và xung đột của PR #84; AI đọc review bằng `gh`, gộp `origin/main` thử trong worktree, giải quyết 7 vùng xung đột ở `specs/100-admin-moderation/spec.md` và sửa 8 góp ý của Duy.
+
+### Prompt đã dùng
+
+```text
+hãy lên xem review PR #84. Kiểm tra lại cần sửa điều gì, và giải quyết conflic cho tôi
+```
+
+### Tóm tắt phản hồi của AI
+
+- Review: Hưng APPROVED ("Ok!!"); Duy để lại 8 góp ý. PR không merge được (`CONFLICTING`).
+- Xung đột: chỉ `specs/100-admin-moderation/spec.md`, 7 vùng. `main` đã có bản spec 100 viết lại (Duy). AI lấy bản của `main` làm nền, rồi áp lại các điểm cần khớp với 010: hiệu lực đình chỉ ở request kế tiếp (bản của `main` ghi chờ JWT hết hạn), giới hạn 30 ngày cho mọi vai trò, tên `action` theo 010, thao tác đình chỉ, cấm, gỡ đi qua API của 010, xóa tài khoản là xóa hẳn dòng `users` (không dùng `[DELETED_USER_xxxxx]`). Sửa cả `specs/100-admin-moderation/research.md` (không xung đột nhưng mâu thuẫn).
+- 8 góp ý của Duy đều được sửa:
+  1. `audit_logs.actor_id` bỏ khóa ngoại `SET NULL` (khóa này chạy UPDATE khi xóa người dùng, trigger của 100 sẽ từ chối); thêm trigger vào `V102` (T028, T012).
+  2. Thêm cột `lift_reason` (`EXPIRED`, `LIFTED`, `REPLACED_BY_BAN`) thay cho suy từ `lifted_by NULL`.
+  3. `AccountAdminService` gọi `finishExpired` trong cùng transaction trước khi đọc `users.status` (T118, T105).
+  4. Đổi `USER_SUSPENDED` thành `ACCOUNT_SUSPENDED` ở spec 100.
+  5. Thêm dòng `created_at` vào bảng `audit_logs` của data-model.
+  6. `/reinstatement` thêm 400; gỡ tài khoản đang `ACTIVE` trả 409 `ACCOUNT_NOT_SANCTIONED` (chọn phương án 409 trong hai phương án Duy nêu).
+  7. FR-030 của 011 tính mọi lần xác thực lại theo 010 FR-022b; FR-022b của 010 ghi rõ "any re-authentication".
+  8. AI log cập nhật dòng về spec 100 và số file.
+- Sai sót và hạn chế của AI cần ghi nhận:
+  1. Bản gộp là quyết định ngữ nghĩa, không phải chọn một bên: AI chọn bản của `main` làm nền và đổi các câu mâu thuẫn với 010. Những chỗ đó thuộc Duy và E, cần họ xác nhận, đặc biệt: `details` của `ROLE_CHANGED` là `{old, new}` (bản của `main` ghi `{old_role, new_role}`) và bỏ chuỗi `[DELETED_USER_xxxxx]`.
+  2. Bỏ khóa ngoại `actor_id` làm bảng `audit_logs` trong `full-schema.md` (mục 4.10) và trong `V503` lệch; chưa sửa các file đó (của Dự và E), chỉ ghi trong research.
+  3. AI không chạy `mvn`, `npm`, hay kiểm thử trigger trên PostgreSQL; kết luận về `UPDATE` do khóa ngoại `SET NULL` là hiểu biết về PostgreSQL, chưa kiểm chứng bằng DB.
+  4. Lần gộp kéo thêm nhiều thay đổi của người khác (spec 050, 070, code tìm kiếm và chế độ nấu) vào PR; AI không đọc những phần này.
+  5. Hai lệnh heredoc bị shell báo lỗi; AI chuyển sang ghi file script rồi chạy.
+  6. AI chưa chạy lại `/speckit-analyze` sau các sửa đổi này.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Gộp `origin/main`, giải quyết xung đột spec 100 | Dùng, chưa commit | Hiển tự `git add` và commit |
+| Sửa theo 8 góp ý của Duy | Dùng, chưa commit | Chờ Duy xem lại |
+| Sửa `specs/100-admin-moderation/research.md` | Dùng | Cùng chủ đề với spec 100, tránh mâu thuẫn trong một thư mục |
+| Sửa `full-schema.md`, `V503` | Bỏ (không làm) | Thuộc Dự và E |
+| Dòng Co-Authored-By và "Generated with Claude Code" | Bỏ | Hiển yêu cầu không thêm |
+
+### Cách kiểm chứng
+
+- `git diff --name-only --diff-filter=U`: chỉ còn `specs/100-admin-moderation/spec.md` (chưa `git add`); không còn dấu `<<<<<<<`, `>>>>>>>` trong `specs/` và `docs/ai_log/`.
+- Hai file `openapi.yaml` (010, 011) parse được bằng PyYAML; `/admin/users/{id}/reinstatement` có phản hồi 200, 400, 401, 403, 404, 409.
+- `grep` không còn `USER_SUSPENDED` (trừ ghi chú), `DELETED_USER`, `old_role` trong 010, 011, 100.
+- Chưa chạy `/speckit-analyze` lại, chưa render PDF.
+- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).

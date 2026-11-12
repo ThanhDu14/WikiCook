@@ -37,4 +37,4 @@
 - Open decisions were resolved with documented defaults (see spec "Assumptions"): Apple sign-in
   deferred, unverified users may sign in but cannot publish, lockout 5 attempts / 15 minutes,
   "remember me" 30 days. Review these with the team; use `/speckit-clarify` to revisit any of them.
-- Jira key (SCRUM-xx) still to be assigned per constitution Principle I.
+- Jira keys assigned in Sprint 04 (`pa4-guide.md`): SCRUM-72 (Spec Kit artifacts), SCRUM-74 (010 backend), SCRUM-75 (011 backend), SCRUM-76 (frontend).

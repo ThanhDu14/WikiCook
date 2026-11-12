@@ -1,0 +1,796 @@
+openapi: 3.0.3
+info:
+  title: WikiCook – Authentication & Roles API (spec 010)
+  version: 0.1.0
+  description: |
+    API đăng ký, đăng nhập, phiên, đặt lại mật khẩu, Google sign-in và thao tác quản trị tài khoản.
+    Lỗi trả về dạng ProblemDetail (RFC 9457) có trường `code`. Access token là JWT 15 phút gửi qua
+    `Authorization: Bearer`; refresh token nằm trong cookie `wc_rt` (HttpOnly, SameSite=Strict,
+    Path=/api/v1/auth). Endpoint đọc cookie cần thêm header `X-WikiCook-Client: web`.
+    Mọi request có bearer đều đối chiếu `user_sessions` và `users` (research R1), nên đình chỉ, đổi
+    vai trò và đăng xuất có hiệu lực ở request kế tiếp (FR-010, FR-016, FR-024).
+    Khi tài khoản có thông báo đổi vai trò chưa xem, mọi phản hồi cho request có bearer kèm header
+    `X-WikiCook-Role-Notice: 1`, trừ phản hồi của `GET /auth/me` và `POST /auth/role-notice/ack`;
+    client tải lại `GET /auth/me` (FR-024a).
+    Header `Authorization` bị bỏ qua ở route công khai (`security: []`), nên JWT hết hạn gửi kèm không
+    làm hỏng `/auth/refresh` hay `/auth/login`; client không gắn bearer ở các route đó (research R10, R12).
+    Với API của module khác, 401 luôn là `UNAUTHENTICATED` và 403 có thể là `ACCOUNT_SUSPENDED`,
+    `ACCOUNT_BANNED`, `ACCESS_DENIED`, `EMAIL_NOT_VERIFIED`.
+servers:
+  - url: /api/v1
+security:
+  - bearerAuth: []
+tags:
+  - name: auth
+  - name: verification
+  - name: password
+  - name: google
+  - name: admin
+
+paths:
+  /auth/register:
+    post:
+      tags: [auth]
+      summary: Đăng ký bằng email và mật khẩu (FR-001 – FR-005, FR-026)
+      description: |
+        Tạo tài khoản Member chưa xác minh và gửi link xác minh 24 giờ. Không tạo phiên. Email được
+        trim và chuyển chữ thường; mật khẩu giữ nguyên, không trim. Gửi hai lần liên tiếp chỉ tạo một
+        tài khoản và một email (lần sau nhận 409). Quá giới hạn FR-017 vẫn tạo tài khoản, không cấp link,
+        không gửi mail: `verificationEmailSent = false`, `verificationExpiresAt = null`, có `retryAfterSeconds`.
+      operationId: register
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegisterRequest' }
+      responses:
+        '201':
+          description: Đã tạo tài khoản, chờ xác minh
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RegisterResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409':
+          description: EMAIL_TAKEN – gợi ý đăng nhập hoặc đặt lại mật khẩu (US2 AS2)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '422':
+          description: REGISTRATION_REFUSED – email trong Blocked Email; thông báo trung tính (FR-026)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+
+  /auth/login:
+    post:
+      tags: [auth]
+      summary: Đăng nhập bằng email và mật khẩu (FR-007 – FR-009, FR-012, FR-013)
+      description: |
+        Đúng thì trả access token và đặt cookie `wc_rt`. Sai email hoặc sai mật khẩu đều là 401
+        `INVALID_CREDENTIALS`, cùng nội dung, cùng thời gian (NFR-003). Khóa theo email kể cả email
+        chưa đăng ký. Trạng thái đình chỉ, cấm chỉ lộ khi mật khẩu đúng. Dữ liệu không hợp lệ không
+        tính là một lần thử.
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        '200':
+          description: Đăng nhập thành công
+          headers:
+            Set-Cookie:
+              description: Refresh token `wc_rt`; có Max-Age khi rememberMe = true
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401':
+          description: INVALID_CREDENTIALS – thông báo chung (FR-008)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '403': { $ref: '#/components/responses/AccountRestricted' }
+        '423':
+          description: ACCOUNT_LOCKED – có `retryAt`; giống nhau với mọi email (FR-012, NFR-003)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/LockedProblem' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
+  /auth/refresh:
+    post:
+      tags: [auth]
+      summary: Đổi refresh token lấy access token mới, xoay vòng token (FR-009)
+      description: |
+        Đọc cookie `wc_rt`. Gửi lại token vừa được xoay trong 10 giây vẫn nhận access token mới và
+        không đổi cookie; sau 10 giây là dùng lại token, phiên bị thu hồi (research R2).
+      operationId: refresh
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      responses:
+        '200':
+          description: Access token mới
+          headers:
+            Set-Cookie:
+              description: Refresh token mới
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: INVALID_CLIENT (thiếu header X-WikiCook-Client), hoặc ACCOUNT_SUSPENDED, ACCOUNT_BANNED (FR-013, FR-024)
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Problem'
+                  - $ref: '#/components/schemas/AccountRestrictedProblem'
+
+  /auth/logout:
+    post:
+      tags: [auth]
+      summary: Đăng xuất thiết bị này, có hiệu lực ngay (FR-010)
+      description: Thu hồi đúng phiên của cookie, xóa cookie. Phiên ở thiết bị khác giữ nguyên. Idempotent.
+      operationId: logout
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      responses:
+        '204': { description: Đã đăng xuất }
+        '403':
+          description: INVALID_CLIENT – thiếu header X-WikiCook-Client
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+
+  /auth/me:
+    get:
+      tags: [auth]
+      summary: Tài khoản đang đăng nhập, kèm thông báo đổi vai trò nếu có (FR-024a, NFR-009)
+      operationId: getCurrentAccount
+      responses:
+        '200':
+          description: Tài khoản hiện tại
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CurrentAccount' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/AccountRestricted' }
+
+  /auth/role-notice/ack:
+    post:
+      tags: [auth]
+      summary: Đánh dấu đã xem thông báo đổi vai trò, thông báo chỉ hiện một lần (FR-024a)
+      operationId: acknowledgeRoleNotice
+      responses:
+        '204': { description: Đã xóa thông báo; không lỗi nếu không có thông báo. Phản hồi không kèm X-WikiCook-Role-Notice }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/AccountRestricted' }
+
+  /auth/reauthenticate:
+    post:
+      tags: [auth]
+      summary: Xác thực lại bằng mật khẩu, hiệu lực 5 phút (FR-022a; 011 FR-031)
+      description: |
+        Tài khoản chỉ Google dùng `GET /auth/oauth2/google?intent=reauth`. Mật khẩu sai dùng chung bộ đếm
+        với đổi mật khẩu của spec 011, tách khỏi đăng nhập (FR-022b).
+      operationId: reauthenticate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReauthenticateRequest' }
+      responses:
+        '204': { description: Đã xác thực lại }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401':
+          description: INVALID_CREDENTIALS hoặc UNAUTHENTICATED
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '403': { $ref: '#/components/responses/AccountRestricted' }
+        '429':
+          description: PASSWORD_CHECK_LIMITED – 5 lần sai trong 15 phút; không khóa đăng nhập (FR-022b)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/RateLimitedProblem' }
+
+  /auth/verification/confirm:
+    post:
+      tags: [verification]
+      summary: Xác nhận email từ link (FR-005)
+      description: Link dạng `/verify-email#token=…`; token dùng một lần, hết hạn sau 24 giờ. Không tạo phiên.
+      operationId: confirmVerification
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ConfirmTokenRequest' }
+      responses:
+        '200':
+          description: VERIFIED, hoặc ALREADY_VERIFIED nếu link đã dùng (AF 1.12)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VerificationResult' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '410': { $ref: '#/components/responses/TokenGone' }
+
+  /auth/verification/resend:
+    post:
+      tags: [verification]
+      summary: Gửi lại link xác minh, vô hiệu link cũ (FR-005, FR-017)
+      description: |
+        Gửi `email` (AU03) hoặc `token` của link hết hạn (AU04). Tối đa 3 lần trong 15 phút mỗi địa
+        chỉ. Không gia hạn mốc 7 ngày. Luôn 202 kể cả email lạ hoặc đã xác minh; không gửi gì trong
+        các trường hợp đó.
+      operationId: resendVerification
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ResendVerificationRequest' }
+      responses:
+        '202': { description: Đã nhận yêu cầu }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '429': { $ref: '#/components/responses/EmailRateLimited' }
+
+  /auth/password/forgot:
+    post:
+      tags: [password]
+      summary: Yêu cầu link đặt lại mật khẩu (FR-014, FR-015, FR-017)
+      description: |
+        Phản hồi và thời gian giống nhau dù email có đăng ký hay không (NFR-003): việc gửi chạy nền.
+        Giới hạn đếm theo địa chỉ, kể cả email lạ. Vô hiệu các link cũ. Tài khoản chỉ Google, bị
+        đình chỉ hoặc bị cấm không nhận link nhưng phản hồi vẫn như nhau.
+      operationId: forgotPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ForgotPasswordRequest' }
+      responses:
+        '202': { description: Nếu email đã đăng ký, link đã được gửi }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '429': { $ref: '#/components/responses/EmailRateLimited' }
+
+  /auth/password/reset/validate:
+    post:
+      tags: [password]
+      summary: Kiểm tra link đặt lại trước khi hiện form (AU06), không tiêu thụ token
+      operationId: validateResetToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ConfirmTokenRequest' }
+      responses:
+        '200':
+          description: Link hợp lệ
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ResetTokenInfo' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '410': { $ref: '#/components/responses/TokenGone' }
+
+  /auth/password/reset:
+    post:
+      tags: [password]
+      summary: Đặt mật khẩu mới, thu hồi mọi phiên (FR-015, FR-016)
+      description: Mật khẩu vi phạm FR-004 không tiêu thụ token (AF 3.5). Thành công thì đăng nhập lại.
+      operationId: resetPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ResetPasswordRequest' }
+      responses:
+        '204': { description: Đã đổi mật khẩu }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '410': { $ref: '#/components/responses/TokenGone' }
+
+  /auth/oauth2/google:
+    get:
+      tags: [google]
+      summary: Bắt đầu Google sign-in, là điều hướng của trình duyệt (FR-018, NFR-005)
+      description: |
+        Chuyển tới màn đồng ý của Google. Không phải XHR. Khi chưa cấu hình Google hoặc Google lỗi,
+        chuyển về `/login?error=google_unavailable`; email và mật khẩu không bị ảnh hưởng. Luôn dùng PKCE
+        (`code_challenge_method=S256`). Với `intent=reauth`: gửi `prompt=login` và tham số `claims` xin
+        `auth_time`; callback bắt buộc có `auth_time` mới hơn lúc bắt đầu (research R7, chưa kiểm chứng
+        với Google thật, mục 40).
+      operationId: startGoogleSignIn
+      security: []
+      parameters:
+        - { name: redirect, in: query, required: false, schema: { type: string, maxLength: 2048 }, description: 'Đường dẫn nội bộ sau đăng nhập; ngoài WikiCook thì bỏ qua (FR-011)' }
+        - { name: intent, in: query, required: false, schema: { type: string, enum: [sign_in, reauth], default: sign_in } }
+      responses:
+        '302': { description: 'Chuyển tới Google, hoặc về `/login?error=google_unavailable`' }
+
+  /auth/oauth2/callback/google:
+    get:
+      tags: [google]
+      summary: Google quay lại; backend hoàn tất và chuyển về SPA (FR-018, FR-019, FR-026)
+      description: |
+        Thành công: đặt cookie `wc_rt`, chuyển tới `/auth/callback?redirect=…`. Thất bại: chuyển tới
+        `/login?error=` với `google_cancelled`, `google_no_verified_email`, `google_unavailable`,
+        `registration_refused`, hoặc `/account-status#code=…&reason=…&endsAt=…` nếu tài khoản bị đình chỉ,
+        cấm (bị cấm thì thêm `closureToken`); trang đọc fragment rồi xóa khỏi URL (FR-013, research R7, R16).
+        Email khớp tài khoản chưa xác minh đang `ACTIVE`: tài khoản cũ bị xóa và tạo lại, được hoặc mất cả.
+        Tài khoản đang đình chỉ, cấm, kể cả chưa xác minh: không tiếp quản, không đổi gì (FR-019).
+        Với `intent=reauth`: không tạo phiên; thành công chuyển về `redirect`; hủy, lỗi hoặc tài khoản Google
+        khác với phiên chuyển về `redirect` có thêm `?reauth=cancelled` (FR-022b, research R7).
+      operationId: googleCallback
+      security: []
+      parameters:
+        - { name: code, in: query, required: false, schema: { type: string } }
+        - { name: state, in: query, required: false, schema: { type: string } }
+        - { name: error, in: query, required: false, schema: { type: string } }
+      responses:
+        '302': { description: Chuyển về SPA }
+
+  /admin/users/{id}:
+    get:
+      tags: [admin]
+      summary: Xem tài khoản, Administrator (FR-022, NFR-009)
+      operationId: getAccountAdmin
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Tài khoản, gồm email và án đang chạy
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AccountAdmin' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/UserNotFound' }
+
+  /admin/users/{id}/role:
+    patch:
+      tags: [admin]
+      summary: Đổi vai trò (FR-022, FR-022a, FR-023, FR-024, FR-024a)
+      description: |
+        Có hiệu lực ở request kế tiếp của người bị đổi, không gửi email, có thông báo trong app, luôn
+        audit. Tác động lên Administrator khác hoặc thăng lên Administrator cần xác thực lại trong 5
+        phút (`REAUTH_REQUIRED`). Không tự đổi mình.
+      operationId: changeRole
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ChangeRoleRequest' }
+      responses:
+        '200':
+          description: Tài khoản sau khi đổi
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AccountAdmin' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/UserNotFound' }
+        '409': { $ref: '#/components/responses/LastAdministrator' }
+
+  /admin/users/{id}/suspension:
+    post:
+      tags: [admin]
+      summary: Đình chỉ có thời hạn (FR-022, FR-022a, FR-023, FR-024, FR-024a)
+      description: |
+        Moderator trở lên. Mọi kỳ đình chỉ tối đa 30 ngày (403 `SUSPENSION_LIMIT_EXCEEDED`). Moderator chỉ
+        đình chỉ Member, Contributor (403 `ACCESS_DENIED`). Tài khoản không ở `ACTIVE` → 409
+        `ACCOUNT_NOT_ACTIVE`. Thu hồi mọi phiên, gửi email kèm lý do, ngày kết thúc, địa chỉ khiếu nại,
+        audit.
+      operationId: suspendAccount
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SuspendRequest' }
+      responses:
+        '200':
+          description: Tài khoản sau khi đình chỉ
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AccountAdmin' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/UserNotFound' }
+        '409': { $ref: '#/components/responses/LastAdministrator' }
+
+  /admin/users/{id}/ban:
+    post:
+      tags: [admin]
+      summary: Cấm vĩnh viễn (FR-022, FR-023, FR-024, FR-024a)
+      operationId: banAccount
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BanRequest' }
+      responses:
+        '200':
+          description: Tài khoản sau khi cấm
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AccountAdmin' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/UserNotFound' }
+        '409': { $ref: '#/components/responses/LastAdministrator' }
+
+  /admin/users/{id}/reinstatement:
+    post:
+      tags: [admin]
+      summary: Gỡ đình chỉ hoặc gỡ cấm sớm, Administrator, gửi email (FR-022, FR-024a)
+      operationId: reinstateAccount
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReinstateRequest' }
+      responses:
+        '200':
+          description: Tài khoản sau khi gỡ; đặt `lift_reason = LIFTED`, gửi email
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AccountAdmin' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/UserNotFound' }
+        '409': { $ref: '#/components/responses/LastAdministrator' }
+
+  /admin/audit-logs:
+    get:
+      tags: [admin]
+      summary: Xem nhật ký kiểm toán, Administrator (FR-025, NFR-008)
+      description: Tối thiểu cho 010; bộ lọc và màn AD10 do spec 100 mở rộng. Chỉ đọc, không có UPDATE, DELETE.
+      operationId: listAuditLogs
+      parameters:
+        - { name: action, in: query, required: false, schema: { type: string, maxLength: 50 } }
+        - { name: targetId, in: query, required: false, schema: { type: integer, format: int64 } }
+        - { name: from, in: query, required: false, schema: { type: string, format: date-time } }
+        - { name: to, in: query, required: false, schema: { type: string, format: date-time } }
+        - { name: page, in: query, required: false, schema: { type: integer, minimum: 0, default: 0 } }
+        - { name: size, in: query, required: false, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+      responses:
+        '200':
+          description: Trang nhật ký, mới nhất trước
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuditLogPage' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    ClientHeader:
+      name: X-WikiCook-Client
+      in: header
+      required: true
+      description: Chống CSRF cho endpoint đọc cookie (research R2)
+      schema: { type: string, enum: [web] }
+    UserId:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, format: int64 }
+
+  schemas:
+    Role:
+      type: string
+      enum: [MEMBER, CONTRIBUTOR, MODERATOR, ADMINISTRATOR]
+    AccountStatus:
+      type: string
+      enum: [ACTIVE, SUSPENDED, BANNED]
+
+    RegisterRequest:
+      type: object
+      required: [displayName, email, password, confirmPassword]
+      properties:
+        displayName: { type: string, minLength: 1, maxLength: 50 }
+        email: { type: string, format: email, maxLength: 254, description: 'Trim, không phân biệt hoa thường (FR-002)' }
+        password: { type: string, format: password, description: '8–128 ký tự, có chữ cái và chữ số, khác email (FR-004); không trim' }
+        confirmPassword: { type: string, format: password }
+    RegisterResponse:
+      type: object
+      required: [email, verificationEmailSent]
+      properties:
+        email: { type: string }
+        verificationEmailSent: { type: boolean, description: 'false khi quá giới hạn FR-017; người dùng gửi lại sau thời gian chờ' }
+        verificationExpiresAt: { type: string, format: date-time, nullable: true, description: 'null khi chưa cấp link (verificationEmailSent = false)' }
+        retryAfterSeconds: { type: integer, nullable: true, description: 'Chỉ có khi verificationEmailSent = false; dùng cho "thử lại sau X phút"' }
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, maxLength: 254 }
+        password: { type: string, format: password, maxLength: 128, description: 'Tối đa 128 code point, không phải đơn vị UTF-16 (research R3)' }
+        rememberMe: { type: boolean, default: false, description: 'Ghi nhớ 30 ngày (FR-009)' }
+    AuthResponse:
+      type: object
+      required: [accessToken, expiresIn, account]
+      properties:
+        accessToken: { type: string }
+        expiresIn: { type: integer, description: 'Giây, 900', example: 900 }
+        account: { $ref: '#/components/schemas/CurrentAccount' }
+    CurrentAccount:
+      type: object
+      required: [id, displayName, email, role, emailVerified]
+      properties:
+        id: { type: integer, format: int64 }
+        displayName: { type: string }
+        email: { type: string }
+        role: { $ref: '#/components/schemas/Role' }
+        emailVerified: { type: boolean }
+        roleNotice:
+          type: object
+          nullable: true
+          description: Có khi vai trò vừa đổi và chưa xem (FR-024a)
+          required: [previousRole, newRole]
+          properties:
+            previousRole: { $ref: '#/components/schemas/Role' }
+            newRole: { $ref: '#/components/schemas/Role' }
+
+    ReauthenticateRequest:
+      type: object
+      required: [password]
+      properties:
+        password: { type: string, format: password, maxLength: 128, description: 'Tối đa 128 code point (research R3)' }
+
+    ConfirmTokenRequest:
+      type: object
+      required: [token]
+      properties:
+        token: { type: string, maxLength: 128 }
+    VerificationResult:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [VERIFIED, ALREADY_VERIFIED] }
+    ResendVerificationRequest:
+      type: object
+      description: Đúng một trong hai trường
+      properties:
+        email: { type: string, maxLength: 254 }
+        token: { type: string, maxLength: 128 }
+    ForgotPasswordRequest:
+      type: object
+      required: [email]
+      properties:
+        email: { type: string, maxLength: 254 }
+    ResetTokenInfo:
+      type: object
+      required: [email, expiresAt]
+      properties:
+        email: { type: string }
+        expiresAt: { type: string, format: date-time }
+    ResetPasswordRequest:
+      type: object
+      required: [token, newPassword, confirmPassword]
+      properties:
+        token: { type: string, maxLength: 128 }
+        newPassword: { type: string, format: password }
+        confirmPassword: { type: string, format: password }
+
+    ChangeRoleRequest:
+      type: object
+      required: [role]
+      properties:
+        role: { $ref: '#/components/schemas/Role' }
+    SuspendRequest:
+      type: object
+      required: [reason, endsAt]
+      properties:
+        reason: { type: string, minLength: 1, maxLength: 500 }
+        endsAt: { type: string, format: date-time }
+    BanRequest:
+      type: object
+      required: [reason]
+      properties:
+        reason: { type: string, minLength: 1, maxLength: 500 }
+    ReinstateRequest:
+      type: object
+      properties:
+        reason: { type: string, maxLength: 500 }
+    AccountAdmin:
+      type: object
+      required: [id, displayName, email, role, status, emailVerified]
+      properties:
+        id: { type: integer, format: int64 }
+        displayName: { type: string }
+        email: { type: string }
+        role: { $ref: '#/components/schemas/Role' }
+        status: { $ref: '#/components/schemas/AccountStatus' }
+        emailVerified: { type: boolean }
+        activeSanction:
+          type: object
+          nullable: true
+          required: [kind, reason, startsAt]
+          properties:
+            kind: { type: string, enum: [SUSPENSION, BAN] }
+            reason: { type: string }
+            startsAt: { type: string, format: date-time }
+            endsAt: { type: string, format: date-time, nullable: true }
+
+    AuditLog:
+      type: object
+      required: [id, action, createdAt]
+      properties:
+        id: { type: integer, format: int64 }
+        actorId: { type: integer, format: int64, nullable: true }
+        action: { type: string, example: ROLE_CHANGED }
+        targetType: { type: string, nullable: true, example: USER }
+        targetId: { type: integer, format: int64, nullable: true }
+        details: { type: object, nullable: true, description: 'Không bao giờ có email, tên hiển thị (FR-025)' }
+        ipAddress: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+    AuditLogPage:
+      type: object
+      required: [content, page, size, hasNext]
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/AuditLog' }
+        page: { type: integer }
+        size: { type: integer }
+        hasNext: { type: boolean }
+
+    Problem:
+      type: object
+      description: ProblemDetail (RFC 9457) + code
+      required: [type, title, status, code]
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        code:
+          type: string
+          enum:
+            - VALIDATION_ERROR
+            - UNAUTHENTICATED
+            - INVALID_CLIENT
+            - INVALID_CREDENTIALS
+            - ACCOUNT_LOCKED
+            - ACCOUNT_SUSPENDED
+            - ACCOUNT_BANNED
+            - EMAIL_TAKEN
+            - REGISTRATION_REFUSED
+            - EMAIL_RATE_LIMITED
+            - TOO_MANY_REQUESTS
+            - TOKEN_EXPIRED
+            - TOKEN_INVALID
+            - EMAIL_NOT_VERIFIED
+            - ACCESS_DENIED
+            - REAUTH_REQUIRED
+            - SELF_ACTION_FORBIDDEN
+            - LAST_ADMINISTRATOR
+            - ACCOUNT_NOT_ACTIVE
+            - ACCOUNT_NOT_SANCTIONED
+            - SUSPENSION_LIMIT_EXCEEDED
+            - USER_NOT_FOUND
+            - PASSWORD_CHECK_LIMITED
+        errors:
+          type: array
+          description: Lỗi theo trường, chỉ có với VALIDATION_ERROR (NFR-007)
+          items:
+            type: object
+            required: [field, code]
+            properties:
+              field: { type: string, example: password }
+              code:
+                type: string
+                example: PASSWORD_NO_DIGIT
+                description: |
+                  Mật khẩu (FR-004): PASSWORD_TOO_SHORT, PASSWORD_TOO_LONG, PASSWORD_NO_LETTER, PASSWORD_NO_DIGIT,
+                  PASSWORD_EQUALS_EMAIL, PASSWORD_MISMATCH (xác nhận không khớp). Trường khác dùng mã của
+                  Bean Validation viết hoa: REQUIRED, TOO_LONG, INVALID_EMAIL, INVALID_FORMAT.
+    LockedProblem:
+      allOf:
+        - $ref: '#/components/schemas/Problem'
+        - type: object
+          required: [retryAt]
+          properties:
+            retryAt: { type: string, format: date-time, description: 'Thời điểm đăng nhập lại được' }
+    RateLimitedProblem:
+      allOf:
+        - $ref: '#/components/schemas/Problem'
+        - type: object
+          required: [retryAfterSeconds]
+          properties:
+            retryAfterSeconds: { type: integer, description: 'Dùng cho thông báo "thử lại sau X phút"' }
+    AccountRestrictedProblem:
+      allOf:
+        - $ref: '#/components/schemas/Problem'
+        - type: object
+          required: [reason]
+          properties:
+            reason: { type: string, description: 'Lý do (FR-013)' }
+            endsAt: { type: string, format: date-time, nullable: true, description: 'Chỉ có với ACCOUNT_SUSPENDED' }
+            closureToken:
+              type: string
+              nullable: true
+              description: Chỉ có với ACCOUNT_BANNED sau khi mật khẩu đúng; AU07 dẫn tới `/account-closure#token=…` của 011 (research R16)
+
+  responses:
+    BadRequest:
+      description: Dữ liệu không hợp lệ (VALIDATION_ERROR)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Unauthorized:
+      description: UNAUTHENTICATED – chưa đăng nhập, phiên hết hạn hoặc đã thu hồi
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    AccountRestricted:
+      description: ACCOUNT_SUSPENDED (kèm ngày kết thúc) hoặc ACCOUNT_BANNED (FR-013, FR-024)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/AccountRestrictedProblem' }
+    Forbidden:
+      description: ACCESS_DENIED, REAUTH_REQUIRED, SELF_ACTION_FORBIDDEN, SUSPENSION_LIMIT_EXCEEDED (FR-021, FR-022, FR-022a)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    UserNotFound:
+      description: USER_NOT_FOUND
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    LastAdministrator:
+      description: LAST_ADMINISTRATOR – phải còn ít nhất một Administrator đang hoạt động (FR-023); ACCOUNT_NOT_ACTIVE – đình chỉ tài khoản không ở ACTIVE, hoặc cấm tài khoản đã BANNED; ACCOUNT_NOT_SANCTIONED – gỡ án tài khoản đang ACTIVE (kể cả án vừa hết hạn)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    TokenGone:
+      description: TOKEN_EXPIRED hoặc TOKEN_INVALID (FR-005, FR-015)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    TooManyRequests:
+      description: TOO_MANY_REQUESTS – vượt giới hạn theo IP (OQ-010-02)
+      headers:
+        Retry-After:
+          schema: { type: integer }
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/RateLimitedProblem' }
+    EmailRateLimited:
+      description: EMAIL_RATE_LIMITED – quá 3 lần trong 15 phút; đếm cả email lạ nên không lộ tài khoản (FR-017)
+      headers:
+        Retry-After:
+          schema: { type: integer }
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/RateLimitedProblem' }

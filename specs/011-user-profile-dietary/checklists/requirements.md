@@ -31,7 +31,10 @@
 
 ## Notes
 
-- Table names (`allergens`, `dietary_profiles`, …) appear only because the input names them as the data
+- Table names (`allergens`, `user_allergens`, …) appear only because the input names them as the data
   contract with other specs, matching the style of spec 020.
-- Unclear points were resolved with defaults recorded in Assumptions (bio 300, 200 exclusions, no email
+- Unclear points were resolved with defaults recorded in Assumptions (bio 300, 50 exclusions, no email
   change, no grace period, reviews anonymised pending E's confirmation).
+- The spec changed in sessions 2026-11-06 and 2026-11-07 (FR-010a, FR-026a, SC-002), so this checklist
+  must be reviewed again when the spec is approved.
+- Jira keys assigned in Sprint 04 (`pa4-guide.md`): SCRUM-72 (Spec Kit artifacts), SCRUM-74 (010 backend), SCRUM-75 (011 backend), SCRUM-76 (frontend).
