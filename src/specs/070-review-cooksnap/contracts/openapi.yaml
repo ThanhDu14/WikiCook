@@ -1,0 +1,768 @@
+openapi: 3.0.3
+info:
+  title: WikiCook Community Reviews, Cooksnaps & Interactive Ratings API
+  description: RESTful API contracts for Module 070 (Community Reviews, Cooksnaps & Interactive Ratings).
+  version: 1.0.0
+servers:
+  - url: /api/v1
+    description: Production & Local Gateway Base Path
+
+security:
+  - bearerAuth: []
+
+paths:
+  /recipes/{recipeId}/reviews:
+    post:
+      summary: Tạo đánh giá mới kèm ảnh Cooksnap
+      description: |
+        Tạo đánh giá mới cho công thức nấu ăn đã xuất bản (`PUBLISHED`).
+        Người dùng chọn từ 1 đến 5 sao, viết nhận xét từ 10 đến 2000 ký tự, có thể đính kèm mẹo thay thế nguyên liệu (`substitutionTip`) và tối đa 3 ảnh Cooksnap minh chứng nấu thành công.
+        Tác giả công thức không được phép tự đánh giá công thức của mình (HTTP 403 `SELF_REVIEW_FORBIDDEN`).
+        Mỗi người dùng chỉ được gửi 1 đánh giá cho mỗi công thức (HTTP 409 `REVIEW_ALREADY_EXISTS`).
+        Giới hạn tần suất 5 đánh giá trong 10 phút (HTTP 429 `RATE_LIMIT_EXCEEDED`).
+      operationId: createRecipeReview
+      tags:
+        - Reviews
+      parameters:
+        - name: recipeId
+          in: path
+          required: true
+          description: ID công thức cần đánh giá
+          schema:
+            type: integer
+            format: int64
+            example: 105
+      requestBody:
+        required: true
+        description: Dữ liệu đánh giá dạng multipart/form-data bao gồm thông tin đánh giá và tối đa 3 ảnh Cooksnap
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - rating
+                - comment
+              properties:
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  description: Điểm đánh giá sao từ 1 đến 5
+                  example: 5
+                comment:
+                  type: string
+                  minLength: 10
+                  maxLength: 2000
+                  description: Nội dung nhận xét trải nghiệm nấu ăn (tối thiểu 10 ký tự, tối đa 2000 ký tự)
+                  example: "Món phở bò này nấu theo công thức nước dùng rất thanh và thơm mùi quế hồi! Cả nhà đều khen ngon."
+                substitutionTip:
+                  type: string
+                  maxLength: 500
+                  nullable: true
+                  description: Mẹo nấu ăn hoặc thay thế nguyên liệu thực tế (tối đa 500 ký tự)
+                  example: "Nếu không có sá sùng, có thể nướng thêm 1 củ hành tây và chút mực khô để ngọt nước dùng."
+                cooksnapFiles:
+                  type: array
+                  maxItems: 3
+                  description: Danh sách tối đa 3 file ảnh Cooksnap (JPEG, PNG, WebP; tối đa 5MB/ảnh)
+                  items:
+                    type: string
+                    format: binary
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReviewRequest'
+      responses:
+        '201':
+          description: Đánh giá và ảnh Cooksnap được tạo thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+    get:
+      summary: Lấy danh sách đánh giá của công thức kèm thống kê tóm tắt
+      description: |
+        Truy xuất danh sách đánh giá đang hiển thị (`status = 'VISIBLE'`) của công thức theo các tiêu chí phân trang, sắp xếp và lọc.
+        Cung cấp dữ liệu tóm tắt phân bổ điểm sao (`ratingSummary`) để hiển thị biểu đồ phân bổ rating trên giao diện.
+        Endpoint công khai, cho phép cả khách vãng lai (Guest) và thành viên đã đăng nhập truy cập.
+      operationId: getRecipeReviews
+      tags:
+        - Reviews
+      security: []
+      parameters:
+        - name: recipeId
+          in: path
+          required: true
+          description: ID công thức cần xem đánh giá
+          schema:
+            type: integer
+            format: int64
+            example: 105
+        - name: page
+          in: query
+          required: false
+          description: Số thứ tự trang (bắt đầu từ 0)
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+            example: 0
+        - name: size
+          in: query
+          required: false
+          description: Số lượng đánh giá mỗi trang (tối đa 50)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+            example: 10
+        - name: sort
+          in: query
+          required: false
+          description: Tiêu chí sắp xếp danh sách đánh giá
+          schema:
+            type: string
+            enum:
+              - NEWEST
+              - RATING_DESC
+              - RATING_ASC
+              - HELPFUL_DESC
+              - WITH_COOKSNAP
+            default: NEWEST
+            example: NEWEST
+        - name: hasCooksnapOnly
+          in: query
+          required: false
+          description: Chỉ lấy các đánh giá có đính kèm ảnh Cooksnap
+          schema:
+            type: boolean
+            default: false
+            example: false
+        - name: rating
+          in: query
+          required: false
+          description: Lọc theo số sao đánh giá cụ thể (1 đến 5)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+            example: 5
+      responses:
+        '200':
+          description: Lấy danh sách đánh giá thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewListResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /reviews/{reviewId}:
+    put:
+      summary: Chỉnh sửa đánh giá của chính mình
+      description: |
+        Cho phép người dùng cập nhật điểm đánh giá, nội dung nhận xét và mẹo thay thế nguyên liệu của bài đánh giá do chính mình tạo ra.
+        Không cho phép sửa đánh giá của người dùng khác (HTTP 403).
+        Hệ thống tự động tính toán lại điểm trung bình của công thức sau khi cập nhật thành công.
+      operationId: updateReview
+      tags:
+        - Reviews
+      parameters:
+        - name: reviewId
+          in: path
+          required: true
+          description: ID bài đánh giá cần chỉnh sửa
+          schema:
+            type: integer
+            format: int64
+            example: 789
+      requestBody:
+        required: true
+        description: Dữ liệu cập nhật đánh giá
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReviewRequest'
+      responses:
+        '200':
+          description: Cập nhật đánh giá thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      summary: Xóa đánh giá của chính mình
+      description: |
+        Cho phép người dùng gỡ bỏ đánh giá do chính mình tạo ra.
+        Hệ thống đánh dấu `status = 'HIDDEN'`, ẩn toàn bộ Cooksnap đi kèm và tự động tính toán lại `rating_avg` và `review_count` của công thức tương ứng.
+        Chỉ chủ sở hữu hoặc quản trị viên mới có quyền thực hiện.
+      operationId: deleteReview
+      tags:
+        - Reviews
+      parameters:
+        - name: reviewId
+          in: path
+          required: true
+          description: ID bài đánh giá cần xóa
+          schema:
+            type: integer
+            format: int64
+            example: 789
+      responses:
+        '204':
+          description: Xóa đánh giá thành công (No Content).
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /reviews/{reviewId}/helpful:
+    post:
+      summary: Bình chọn hoặc hủy bình chọn "Hữu ích" (Toggle Helpful Vote)
+      description: |
+        Chuyển đổi trạng thái bình chọn "Hữu ích" cho một đánh giá.
+        Nếu người dùng chưa vote, hệ thống ghi nhận vote và tăng `helpful_count` lên 1.
+        Nếu người dùng đã vote trước đó, hệ thống hủy vote và giảm `helpful_count` đi 1.
+        Yêu cầu đăng nhập tài khoản (Member trở lên). Tác giả đánh giá không được tự vote cho chính mình.
+      operationId: toggleHelpfulVote
+      tags:
+        - Reviews
+      parameters:
+        - name: reviewId
+          in: path
+          required: true
+          description: ID bài đánh giá cần bình chọn hữu ích
+          schema:
+            type: integer
+            format: int64
+            example: 789
+      responses:
+        '200':
+          description: Cập nhật trạng thái bình chọn thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HelpfulVoteResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /media/cooksnaps/{storageKey}:
+    get:
+      summary: Truy xuất file ảnh Cooksnap hoặc thumbnail
+      description: |
+        Tải trực tiếp luồng dữ liệu nhị phân của ảnh Cooksnap chất lượng cao hoặc thumbnail nén kích thước 400x400.
+        Ảnh đã được loại bỏ 100% dữ liệu EXIF/GPS nhằm bảo vệ quyền riêng tư người dùng (Hiến pháp IV).
+        Header Cache-Control được cấu hình lưu cache 1 năm (immutable) cho các ảnh tĩnh.
+      operationId: getCooksnapMedia
+      tags:
+        - Media
+      security: []
+      parameters:
+        - name: storageKey
+          in: path
+          required: true
+          description: Khóa lưu trữ của ảnh Cooksnap
+          schema:
+            type: string
+            example: "cs_105_789_a1b2c3d4e5f6.webp"
+        - name: thumbnail
+          in: query
+          required: false
+          description: Nếu true, trả về phiên bản thumbnail nén 400x400; nếu false, trả về ảnh gốc (tối đa 1920x1080)
+          schema:
+            type: boolean
+            default: false
+            example: false
+      responses:
+        '200':
+          description: Dữ liệu nhị phân của ảnh Cooksnap (image/webp hoặc image/jpeg).
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                example: "public, max-age=31536000, immutable"
+              description: Header chỉ thị lưu bộ nhớ đệm trình duyệt 1 năm.
+            Content-Type:
+              schema:
+                type: string
+                example: "image/webp"
+              description: Định dạng MIME của ảnh trả về.
+          content:
+            image/webp:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "JWT Token xác thực theo chuẩn RFC 7519, truyền trong header 'Authorization: Bearer <token>'."
+
+  schemas:
+    CreateReviewRequest:
+      type: object
+      required:
+        - rating
+        - comment
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: Điểm đánh giá sao từ 1 đến 5
+          example: 5
+        comment:
+          type: string
+          minLength: 10
+          maxLength: 2000
+          description: Nhận xét đánh giá chi tiết
+          example: "Công thức rất rõ ràng, các bước canh lửa chuẩn xác giúp thịt bò mềm ngọt."
+        substitutionTip:
+          type: string
+          maxLength: 500
+          nullable: true
+          description: Mẹo nấu hoặc gợi ý thay thế nguyên liệu
+          example: "Có thể thay bằng gầu bò nếu thích ăn béo ngậy hơn."
+
+    UpdateReviewRequest:
+      type: object
+      required:
+        - rating
+        - comment
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: Điểm đánh giá sao từ 1 đến 5
+          example: 4
+        comment:
+          type: string
+          minLength: 10
+          maxLength: 2000
+          description: Nội dung nhận xét sau khi chỉnh sửa
+          example: "Nấu lần 2 giảm bớt chút gừng thì vị nước dùng thanh hơn hẳn. Rất khuyến khích thử!"
+        substitutionTip:
+          type: string
+          maxLength: 500
+          nullable: true
+          description: Mẹo nấu ăn cập nhật
+          example: "Dùng hành tây nướng thay cho hành tím cũng rất dậy mùi."
+
+    ReviewAuthorDto:
+      type: object
+      required:
+        - displayName
+        - isDeleted
+      properties:
+        id:
+          type: integer
+          format: int64
+          nullable: true
+          description: ID người dùng (NULL nếu tài khoản đã xóa theo chính sách GDPR)
+          example: 42
+        displayName:
+          type: string
+          description: Tên hiển thị của tác giả đánh giá (hoặc 'Người dùng đã xóa')
+          example: "Bếp Trưởng Hoàng"
+        avatarUrl:
+          type: string
+          nullable: true
+          format: uri
+          description: Đường dẫn ảnh đại diện
+          example: "https://images.wikicook.com/avatars/42.jpg"
+        role:
+          type: string
+          nullable: true
+          description: Vai trò người dùng (MEMBER, CONTRIBUTOR, MODERATOR, ADMINISTRATOR)
+          example: "CONTRIBUTOR"
+        isDeleted:
+          type: boolean
+          description: Cờ đánh dấu người dùng đã xóa tài khoản hay chưa
+          example: false
+
+    CooksnapDto:
+      type: object
+      required:
+        - id
+        - storageKey
+        - url
+        - thumbnailUrl
+        - sizeBytes
+        - contentType
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1201
+        storageKey:
+          type: string
+          description: Khóa lưu trữ nội bộ
+          example: "cs_105_789_a1b2c3d4e5f6.webp"
+        url:
+          type: string
+          format: uri
+          description: Đường dẫn truy cập ảnh kích thước đầy đủ (đã strip EXIF)
+          example: "/api/v1/media/cooksnaps/cs_105_789_a1b2c3d4e5f6.webp"
+        thumbnailUrl:
+          type: string
+          format: uri
+          description: Đường dẫn truy cập ảnh thu nhỏ (thumbnail 400x400)
+          example: "/api/v1/media/cooksnaps/cs_105_789_a1b2c3d4e5f6.webp?thumbnail=true"
+        caption:
+          type: string
+          maxLength: 300
+          nullable: true
+          description: Chú thích ảnh do người dùng nhập
+          example: "Thành quả sau 2 tiếng ninh xương nước trong veo"
+        sizeBytes:
+          type: integer
+          description: Dung lượng file ảnh tính theo bytes
+          example: 345678
+        contentType:
+          type: string
+          description: Định dạng MIME của ảnh
+          example: "image/webp"
+
+    ReviewResponse:
+      type: object
+      required:
+        - id
+        - recipeId
+        - author
+        - rating
+        - cooksnaps
+        - helpfulCount
+        - hasVotedHelpful
+        - createdAt
+        - updatedAt
+        - isOwner
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: ID định danh duy nhất của đánh giá
+          example: 789
+        recipeId:
+          type: integer
+          format: int64
+          description: ID công thức được đánh giá
+          example: 105
+        author:
+          $ref: '#/components/schemas/ReviewAuthorDto'
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: Điểm sao đánh giá (1 đến 5)
+          example: 5
+        comment:
+          type: string
+          nullable: true
+          description: Nội dung bài nhận xét
+          example: "Món phở bò này nấu theo công thức nước dùng rất thanh và thơm mùi quế hồi!"
+        substitutionTip:
+          type: string
+          nullable: true
+          description: Mẹo nấu ăn hoặc thay thế nguyên liệu
+          example: "Nếu không có sá sùng, có thể nướng thêm 1 củ hành tây để ngọt nước dùng."
+        cooksnaps:
+          type: array
+          description: Danh sách các ảnh Cooksnap đính kèm bài đánh giá này
+          items:
+            $ref: '#/components/schemas/CooksnapDto'
+        helpfulCount:
+          type: integer
+          minimum: 0
+          description: Tổng số lượt cộng đồng bình chọn hữu ích
+          example: 14
+        hasVotedHelpful:
+          type: boolean
+          description: Người dùng hiện tại đã bấm hữu ích cho review này chưa
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+          description: Thời điểm gửi đánh giá
+          example: "2026-11-08T09:30:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Thời điểm cập nhật đánh giá gần nhất
+          example: "2026-11-08T09:30:00Z"
+        isOwner:
+          type: boolean
+          description: Người dùng hiện tại có phải chủ sở hữu đánh giá này không
+          example: true
+
+    HelpfulVoteResponse:
+      type: object
+      required:
+        - reviewId
+        - helpfulCount
+        - hasVoted
+      properties:
+        reviewId:
+          type: integer
+          format: int64
+          description: ID đánh giá được bình chọn
+          example: 789
+        helpfulCount:
+          type: integer
+          minimum: 0
+          description: Số lượng bình chọn hữu ích sau khi cập nhật
+          example: 15
+        hasVoted:
+          type: boolean
+          description: Trạng thái bình chọn của người dùng hiện tại sau thao tác (true = đã vote, false = đã hủy vote)
+          example: true
+
+    RatingDistribution:
+      type: object
+      required:
+        - "1"
+        - "2"
+        - "3"
+        - "4"
+        - "5"
+      properties:
+        "1":
+          type: integer
+          description: Số lượng đánh giá 1 sao
+          example: 1
+        "2":
+          type: integer
+          description: Số lượng đánh giá 2 sao
+          example: 2
+        "3":
+          type: integer
+          description: Số lượng đánh giá 3 sao
+          example: 5
+        "4":
+          type: integer
+          description: Số lượng đánh giá 4 sao
+          example: 20
+        "5":
+          type: integer
+          description: Số lượng đánh giá 5 sao
+          example: 52
+
+    RatingSummaryDto:
+      type: object
+      required:
+        - averageRating
+        - totalReviews
+        - ratingDistribution
+      properties:
+        averageRating:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 5.0
+          description: Điểm trung bình cộng của tất cả đánh giá hiển thị (làm tròn 2 chữ số thập phân)
+          example: 4.50
+        totalReviews:
+          type: integer
+          minimum: 0
+          description: Tổng số lượng đánh giá hợp lệ
+          example: 80
+        ratingDistribution:
+          $ref: '#/components/schemas/RatingDistribution'
+
+    ReviewListResponse:
+      type: object
+      required:
+        - items
+        - totalElements
+        - totalPages
+        - currentPage
+        - pageSize
+        - ratingSummary
+      properties:
+        items:
+          type: array
+          description: Danh sách các bài đánh giá trên trang hiện tại
+          items:
+            $ref: '#/components/schemas/ReviewResponse'
+        totalElements:
+          type: integer
+          format: int64
+          description: Tổng số bài đánh giá phù hợp tiêu chí lọc
+          example: 80
+        totalPages:
+          type: integer
+          description: Tổng số trang
+          example: 8
+        currentPage:
+          type: integer
+          description: Số thứ tự trang hiện tại (bắt đầu từ 0)
+          example: 0
+        pageSize:
+          type: integer
+          description: Số lượng bản ghi trên mỗi trang
+          example: 10
+        ratingSummary:
+          $ref: '#/components/schemas/RatingSummaryDto'
+
+    ProblemDetail:
+      type: object
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI định danh mã lỗi chuẩn hóa RFC 7807
+          example: "https://wikicook.com/errors/self-review-forbidden"
+        title:
+          type: string
+          description: Tiêu đề ngắn gọn mô tả loại lỗi HTTP
+          example: "Forbidden"
+        status:
+          type: integer
+          description: Mã trạng thái HTTP
+          example: 403
+        detail:
+          type: string
+          description: Giải thích chi tiết nguyên nhân lỗi thân thiện với người dùng
+          example: "Bạn là tác giả công thức này — bạn có thể xem đánh giá, nhưng không thể tự chấm điểm."
+        instance:
+          type: string
+          description: Đường dẫn endpoint phát sinh lỗi
+          example: "/api/v1/recipes/105/reviews"
+        invalidParams:
+          type: array
+          description: Danh sách chi tiết các trường dữ liệu không hợp lệ (nếu có)
+          items:
+            type: object
+            required:
+              - name
+              - reason
+            properties:
+              name:
+                type: string
+                example: "rating"
+              reason:
+                type: string
+                example: "Điểm đánh giá phải từ 1 đến 5 sao"
+
+  responses:
+    BadRequest:
+      description: Dữ liệu gửi lên không hợp lệ (Validation Failure).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: "https://wikicook.com/errors/validation-error"
+            title: "Bad Request"
+            status: 400
+            detail: "Dữ liệu đánh giá không hợp lệ. Vui lòng kiểm tra lại các trường thông tin."
+            instance: "/api/v1/recipes/105/reviews"
+            invalidParams:
+              - name: "comment"
+                reason: "Nhận xét phải có ít nhất 10 ký tự"
+
+    Unauthorized:
+      description: Chưa xác thực JWT hoặc token đã hết hạn / không hợp lệ.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: "https://wikicook.com/errors/unauthorized"
+            title: "Unauthorized"
+            status: 401
+            detail: "Yêu cầu đăng nhập tài khoản để thực hiện thao tác này."
+            instance: "/api/v1/recipes/105/reviews"
+
+    Forbidden:
+      description: Bị cấm truy cập (Tác giả tự đánh giá, tự vote hữu ích, hoặc sửa xóa review người khác).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: "https://wikicook.com/errors/self-review-forbidden"
+            title: "Forbidden"
+            status: 403
+            detail: "Bạn là tác giả công thức này — bạn có thể xem đánh giá, nhưng không thể tự chấm điểm."
+            instance: "/api/v1/recipes/105/reviews"
+
+    NotFound:
+      description: Tài nguyên không tồn tại (Không tìm thấy công thức, bài đánh giá hoặc ảnh Cooksnap).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: "https://wikicook.com/errors/recipe-not-found"
+            title: "Not Found"
+            status: 404
+            detail: "Công thức nấu ăn không tồn tại hoặc chưa được xuất bản."
+            instance: "/api/v1/recipes/9999/reviews"
+
+    Conflict:
+      description: Xung đột tài nguyên (Người dùng đã đánh giá công thức này rồi).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: "https://wikicook.com/errors/review-already-exists"
+            title: "Conflict"
+            status: 409
+            detail: "Bạn đã đánh giá công thức này rồi. Vui lòng chỉnh sửa đánh giá hiện có."
+            instance: "/api/v1/recipes/105/reviews"
+
+    TooManyRequests:
+      description: Vượt quá giới hạn tần suất gửi đánh giá (Rate limit 5 reviews / 10 phút).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: "https://wikicook.com/errors/rate-limit-exceeded"
+            title: "Too Many Requests"
+            status: 429
+            detail: "Bạn gửi đánh giá quá nhanh. Vui lòng thử lại sau 10 phút."
+            instance: "/api/v1/recipes/105/reviews"
