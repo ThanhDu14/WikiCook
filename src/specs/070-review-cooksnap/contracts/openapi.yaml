@@ -19,6 +19,8 @@ paths:
         Người dùng chọn từ 1 đến 5 sao, viết nhận xét từ 10 đến 2000 ký tự, có thể đính kèm mẹo thay thế nguyên liệu (`substitutionTip`) và tối đa 3 ảnh Cooksnap minh chứng nấu thành công.
         Tác giả công thức không được phép tự đánh giá công thức của mình (HTTP 403 `SELF_REVIEW_FORBIDDEN`).
         Mỗi người dùng chỉ được gửi 1 đánh giá cho mỗi công thức (HTTP 409 `REVIEW_ALREADY_EXISTS`).
+        Nếu đánh giá cũ của người dùng đang bị ẩn do kiểm duyệt, trả HTTP 409 `REVIEW_UNDER_MODERATION`.
+        Nếu người dùng đã tự xóa đánh giá trước đó (hard delete) thì được phép đánh giá lại.
         Giới hạn tần suất 5 đánh giá trong 10 phút (HTTP 429 `RATE_LIMIT_EXCEEDED`).
       operationId: createRecipeReview
       tags:
@@ -132,21 +134,27 @@ paths:
         - name: sort
           in: query
           required: false
-          description: Tiêu chí sắp xếp danh sách đánh giá
+          description: |
+            Tiêu chí sắp xếp danh sách đánh giá (FR-012):
+            `NEWEST` Mới nhất (mặc định), `OLDEST` Cũ nhất, `HIGHEST_RATED` Điểm cao nhất,
+            `LOWEST_RATED` Điểm thấp nhất, `MOST_HELPFUL` Hữu ích nhất.
+            Lọc "chỉ có ảnh" dùng tham số `hasCooksnapOnly`, không phải tiêu chí sắp xếp.
           schema:
             type: string
             enum:
               - NEWEST
-              - RATING_DESC
-              - RATING_ASC
-              - HELPFUL_DESC
-              - WITH_COOKSNAP
+              - OLDEST
+              - HIGHEST_RATED
+              - LOWEST_RATED
+              - MOST_HELPFUL
             default: NEWEST
             example: NEWEST
         - name: hasCooksnapOnly
           in: query
           required: false
-          description: Chỉ lấy các đánh giá có đính kèm ảnh Cooksnap
+          description: |
+            Chỉ lấy các đánh giá có ít nhất 1 ảnh Cooksnap đang hiển thị
+            (`EXISTS (SELECT 1 FROM cooksnaps c WHERE c.review_id = r.id AND c.status = 'VISIBLE')`).
           schema:
             type: boolean
             default: false
@@ -174,8 +182,10 @@ paths:
     put:
       summary: Chỉnh sửa đánh giá của chính mình
       description: |
-        Cho phép người dùng cập nhật điểm đánh giá, nội dung nhận xét và mẹo thay thế nguyên liệu của bài đánh giá do chính mình tạo ra.
-        Không cho phép sửa đánh giá của người dùng khác (HTTP 403).
+        Cho phép người dùng cập nhật điểm đánh giá, nội dung nhận xét, mẹo thay thế nguyên liệu và ảnh Cooksnap (FR-010) của bài đánh giá do chính mình tạo ra.
+        Ảnh: gửi `removeCooksnapIds` để gỡ ảnh cũ và `cooksnapFiles` để thêm ảnh mới; tổng số ảnh sau khi sửa (cũ - gỡ + mới) tối đa 3, vượt quá trả HTTP 400.
+        Không cho phép sửa đánh giá của người dùng khác (HTTP 403). Đánh giá đang bị ẩn do kiểm duyệt không sửa được (HTTP 409 `REVIEW_UNDER_MODERATION`).
+        Chỉ thao tác sửa của tác giả mới cập nhật `updatedAt`.
         Hệ thống tự động tính toán lại điểm trung bình của công thức sau khi cập nhật thành công.
       operationId: updateReview
       tags:
@@ -191,8 +201,44 @@ paths:
             example: 789
       requestBody:
         required: true
-        description: Dữ liệu cập nhật đánh giá
+        description: Dữ liệu cập nhật đánh giá. Dùng multipart/form-data khi có thêm ảnh mới; application/json khi chỉ sửa nội dung hoặc gỡ ảnh.
         content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - rating
+                - comment
+              properties:
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  example: 4
+                comment:
+                  type: string
+                  minLength: 10
+                  maxLength: 2000
+                  example: "Nấu lần 2 giảm bớt chút gừng thì vị nước dùng thanh hơn hẳn. Rất khuyến khích thử!"
+                substitutionTip:
+                  type: string
+                  maxLength: 500
+                  nullable: true
+                removeCooksnapIds:
+                  type: array
+                  maxItems: 3
+                  description: ID các ảnh Cooksnap hiện có của đánh giá này cần gỡ bỏ
+                  items:
+                    type: integer
+                    format: int64
+                  example: [1201]
+                cooksnapFiles:
+                  type: array
+                  maxItems: 3
+                  description: Ảnh Cooksnap mới (JPEG, PNG, WebP; tối đa 5MB/ảnh). Tổng ảnh sau khi sửa tối đa 3.
+                  items:
+                    type: string
+                    format: binary
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateReviewRequest'
@@ -211,13 +257,17 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/ReviewUnderModeration'
 
     delete:
       summary: Xóa đánh giá của chính mình
       description: |
         Cho phép người dùng gỡ bỏ đánh giá do chính mình tạo ra.
-        Hệ thống đánh dấu `status = 'HIDDEN'`, ẩn toàn bộ Cooksnap đi kèm và tự động tính toán lại `rating_avg` và `review_count` của công thức tương ứng.
-        Chỉ chủ sở hữu hoặc quản trị viên mới có quyền thực hiện.
+        Chủ sở hữu xóa = **xóa hẳn** (hard delete) dòng `reviews`, kéo theo Cooksnap, lượt bình chọn hữu ích và báo cáo liên quan (FK `CASCADE`); file ảnh được xóa sau khi transaction commit.
+        Nhờ vậy người dùng có thể đánh giá lại công thức này sau đó. Trạng thái `HIDDEN` chỉ dành cho kiểm duyệt (spec 100).
+        Hệ thống tự động tính toán lại `rating_avg` và `review_count` của công thức tương ứng.
+        Chỉ chủ sở hữu mới có quyền thực hiện (Moderator/Admin ẩn nội dung qua API kiểm duyệt của spec 100).
       operationId: deleteReview
       tags:
         - Reviews
@@ -245,8 +295,9 @@ paths:
       summary: Bình chọn hoặc hủy bình chọn "Hữu ích" (Toggle Helpful Vote)
       description: |
         Chuyển đổi trạng thái bình chọn "Hữu ích" cho một đánh giá.
-        Nếu người dùng chưa vote, hệ thống ghi nhận vote và tăng `helpful_count` lên 1.
-        Nếu người dùng đã vote trước đó, hệ thống hủy vote và giảm `helpful_count` đi 1.
+        Nếu người dùng chưa vote, hệ thống ghi nhận vote; nếu đã vote trước đó, hệ thống hủy vote.
+        Dòng `reviews` được khóa `SELECT ... FOR UPDATE` trong transaction nên các request đồng thời (double-click) được xử lý tuần tự, không lỗi 500 và không đếm trùng.
+        Sau mỗi thao tác, `helpful_count` được tính lại bằng `COUNT(*)` từ bảng `review_helpful_votes` (không cộng/trừ 1), không thay đổi `updatedAt`.
         Yêu cầu đăng nhập tài khoản (Member trở lên). Tác giả đánh giá không được tự vote cho chính mình.
       operationId: toggleHelpfulVote
       tags:
@@ -274,13 +325,100 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /reviews/{reviewId}/reports:
+    post:
+      summary: Báo cáo vi phạm một đánh giá
+      description: |
+        Thành viên đã đăng nhập báo cáo một đánh giá không phải của mình (FR-015).
+        Tạo bản ghi trong bảng dùng chung `reports` (full-schema §4.10, spec 100) với `review_id`, `reason`, `details`, `status = 'OPEN'`.
+        Mỗi người chỉ báo cáo một đánh giá một lần (FR-016, HTTP 409 `REPORT_ALREADY_EXISTS`).
+        Khi đánh giá đạt từ 10 báo cáo `OPEN` trở lên, hệ thống tự động ẩn đánh giá và các Cooksnap của nó (`status = 'HIDDEN'`) và tính lại `rating_avg`, `review_count` trong cùng transaction (FR-024).
+      operationId: reportReview
+      tags:
+        - Reports
+      parameters:
+        - name: reviewId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 789
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReportRequest'
+      responses:
+        '201':
+          description: Đã ghi nhận báo cáo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/SelfReportForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/ReportAlreadyExists'
+
+  /cooksnaps/{cooksnapId}/reports:
+    post:
+      summary: Báo cáo vi phạm một ảnh Cooksnap
+      description: |
+        Giống `POST /reviews/{reviewId}/reports` nhưng đối tượng là một ảnh Cooksnap (`reports.cooksnap_id`).
+        Khi ảnh đạt từ 10 báo cáo `OPEN` trở lên, hệ thống tự động ẩn ảnh (`cooksnaps.status = 'HIDDEN'`) và endpoint media trả 404 cho ảnh đó (FR-024).
+      operationId: reportCooksnap
+      tags:
+        - Reports
+      parameters:
+        - name: cooksnapId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1201
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReportRequest'
+      responses:
+        '201':
+          description: Đã ghi nhận báo cáo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/SelfReportForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/ReportAlreadyExists'
+
   /media/cooksnaps/{storageKey}:
     get:
       summary: Truy xuất file ảnh Cooksnap hoặc thumbnail
       description: |
         Tải trực tiếp luồng dữ liệu nhị phân của ảnh Cooksnap chất lượng cao hoặc thumbnail nén kích thước 400x400.
         Ảnh đã được loại bỏ 100% dữ liệu EXIF/GPS nhằm bảo vệ quyền riêng tư người dùng (Hiến pháp IV).
-        Header Cache-Control được cấu hình lưu cache 1 năm (immutable) cho các ảnh tĩnh.
+        Server tra `storage_key` trong bảng `cooksnaps` và chỉ trả ảnh khi Cooksnap **và** đánh giá cha đều `VISIBLE`;
+        ảnh bị ẩn do kiểm duyệt/quarantine, đã bị gỡ hoặc đánh giá đã bị xóa đều trả 404 (không tiết lộ file còn tồn tại).
+        Cache ngắn hạn có revalidate (`public, max-age=3600, must-revalidate` + `ETag`), không dùng `immutable`,
+        để ảnh bị ẩn/xóa biến mất khỏi cache trình duyệt/CDN trong tối đa 1 giờ.
       operationId: getCooksnapMedia
       tags:
         - Media
@@ -308,8 +446,13 @@ paths:
             Cache-Control:
               schema:
                 type: string
-                example: "public, max-age=31536000, immutable"
-              description: Header chỉ thị lưu bộ nhớ đệm trình duyệt 1 năm.
+                example: "public, max-age=3600, must-revalidate"
+              description: Cache tối đa 1 giờ, bắt buộc revalidate với ETag.
+            ETag:
+              schema:
+                type: string
+                example: '"cs_105_789_a1b2c3d4e5f6-thumb"'
+              description: ETag mạnh dùng cho `If-None-Match` (trả 304 nếu ảnh vẫn hiển thị và không đổi).
             Content-Type:
               schema:
                 type: string
@@ -324,6 +467,8 @@ paths:
               schema:
                 type: string
                 format: binary
+        '304':
+          description: Not Modified (ETag khớp và ảnh vẫn đang hiển thị).
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -385,6 +530,66 @@ components:
           nullable: true
           description: Mẹo nấu ăn cập nhật
           example: "Dùng hành tây nướng thay cho hành tím cũng rất dậy mùi."
+        removeCooksnapIds:
+          type: array
+          maxItems: 3
+          description: ID các ảnh Cooksnap hiện có cần gỡ bỏ (thêm ảnh mới thì dùng multipart/form-data)
+          items:
+            type: integer
+            format: int64
+
+    CreateReportRequest:
+      type: object
+      required:
+        - reason
+      properties:
+        reason:
+          type: string
+          enum:
+            - SPAM
+            - OFFENSIVE
+            - COPYRIGHT
+            - UNSAFE
+            - OTHER
+          example: OFFENSIVE
+        details:
+          type: string
+          maxLength: 1000
+          nullable: true
+          example: "Bình luận có ngôn từ xúc phạm tác giả."
+
+    ReportResponse:
+      type: object
+      required:
+        - reportId
+        - targetType
+        - targetId
+        - status
+        - createdAt
+      properties:
+        reportId:
+          type: integer
+          format: int64
+          example: 3001
+        targetType:
+          type: string
+          enum:
+            - REVIEW
+            - COOKSNAP
+          example: REVIEW
+        targetId:
+          type: integer
+          format: int64
+          example: 789
+        status:
+          type: string
+          enum:
+            - OPEN
+          example: OPEN
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-11-12T10:15:00Z"
 
     ReviewAuthorDto:
       type: object
@@ -525,7 +730,7 @@ components:
         updatedAt:
           type: string
           format: date-time
-          description: Thời điểm cập nhật đánh giá gần nhất
+          description: Thời điểm tác giả chỉnh sửa đánh giá gần nhất (không đổi khi có lượt vote hữu ích hoặc thay đổi trạng thái kiểm duyệt)
           example: "2026-11-08T09:30:00Z"
         isOwner:
           type: boolean
@@ -596,8 +801,8 @@ components:
           format: float
           minimum: 0.0
           maximum: 5.0
-          description: Điểm trung bình cộng của tất cả đánh giá hiển thị (làm tròn 2 chữ số thập phân)
-          example: 4.50
+          description: Điểm trung bình cộng của tất cả đánh giá hiển thị (làm tròn 1 chữ số thập phân, FR-009)
+          example: 4.5
         totalReviews:
           type: integer
           minimum: 0
@@ -742,7 +947,7 @@ components:
             instance: "/api/v1/recipes/9999/reviews"
 
     Conflict:
-      description: Xung đột tài nguyên (Người dùng đã đánh giá công thức này rồi).
+      description: Xung đột tài nguyên (Người dùng đã đánh giá công thức này rồi; nếu đánh giá cũ đang bị ẩn do kiểm duyệt thì type là `review-under-moderation`).
       content:
         application/json:
           schema:
@@ -753,6 +958,45 @@ components:
             status: 409
             detail: "Bạn đã đánh giá công thức này rồi. Vui lòng chỉnh sửa đánh giá hiện có."
             instance: "/api/v1/recipes/105/reviews"
+
+    ReviewUnderModeration:
+      description: Đánh giá đang bị ẩn do kiểm duyệt nên không thể sửa hoặc gửi đánh giá mới.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: "https://wikicook.com/errors/review-under-moderation"
+            title: "Conflict"
+            status: 409
+            detail: "Đánh giá của bạn đang bị ẩn để chờ kiểm duyệt nên chưa thể chỉnh sửa hoặc gửi đánh giá mới."
+            instance: "/api/v1/reviews/789"
+
+    ReportAlreadyExists:
+      description: Người dùng đã báo cáo nội dung này rồi (FR-016).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: "https://wikicook.com/errors/report-already-exists"
+            title: "Conflict"
+            status: 409
+            detail: "Bạn đã báo cáo nội dung này rồi. Chúng tôi đang xem xét."
+            instance: "/api/v1/reviews/789/reports"
+
+    SelfReportForbidden:
+      description: Không thể báo cáo nội dung của chính mình.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          example:
+            type: "https://wikicook.com/errors/self-report-forbidden"
+            title: "Forbidden"
+            status: 403
+            detail: "Bạn không thể báo cáo nội dung của chính mình."
+            instance: "/api/v1/reviews/789/reports"
 
     TooManyRequests:
       description: Vượt quá giới hạn tần suất gửi đánh giá (Rate limit 5 reviews / 10 phút).

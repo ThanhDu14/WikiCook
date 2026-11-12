@@ -23,7 +23,7 @@ Ensure the following tools are installed on your workstation:
 
 ## 2. Start the Local Database & Flyway Migration
 
-The database infrastructure uses PostgreSQL 16 managed via `src/backend/docker-compose.yml`. Flyway automatically executes migrations from `wikicook-db`, including `V501__create_reviews_and_cooksnaps_schema.sql`.
+The database infrastructure uses PostgreSQL 16 managed via `src/backend/docker-compose.yml`. Flyway automatically executes migrations from `wikicook-db`, including `V501__community.sql`.
 
 ```bash
 # Navigate to the backend directory
@@ -249,14 +249,17 @@ curl -I "$BASE_URL/media/cooksnaps/$STORAGE_KEY?thumbnail=true"
 ```text
 HTTP/1.1 200 OK
 Content-Type: image/webp
-Cache-Control: public, max-age=31536000, immutable
+Cache-Control: public, max-age=3600, must-revalidate
+ETag: "cs_105_789_a1b2c3d4e5f6"
 Content-Length: 125430
 ```
 
+> The image is served only while the Cooksnap and its review are `VISIBLE`. Once hidden by moderation or deleted by the owner, the same URL returns `404 Not Found`.
+
 ---
 
-#### Step 4: Edit Own Review (Update Rating & Comment)
-As User A, update your review rating from 5 to 4 stars:
+#### Step 4: Edit Own Review (Update Rating, Comment & Photos)
+As User A, update your review rating from 5 to 4 stars (JSON, content only):
 
 ```bash
 REVIEW_ID="789"
@@ -271,7 +274,20 @@ curl -i -X PUT "$BASE_URL/reviews/$REVIEW_ID" \
   }'
 ```
 
-**Expected Response**: `HTTP/1.1 200 OK` (with `rating: 4` and updated timestamp).
+**Expected Response**: `HTTP/1.1 200 OK` (with `rating: 4` and a new `updatedAt`).
+
+Replace a photo in the same review (multipart: remove Cooksnap 1201, add one new file; total stays ≤ 3):
+
+```bash
+curl -i -X PUT "$BASE_URL/reviews/$REVIEW_ID" \
+  -H "Authorization: Bearer $TOKEN_MEMBER_A" \
+  -F "rating=4" \
+  -F "comment=Nấu lần 2 giảm bớt chút gừng thì vị nước dùng thanh hơn hẳn. Rất khuyến khích thử!" \
+  -F "removeCooksnapIds=1201" \
+  -F "cooksnapFiles=@./fixtures/pho-bo-2.jpg"
+```
+
+**Expected Response**: `HTTP/1.1 200 OK`; `cooksnaps` no longer contains id `1201`, the old file URL now returns 404.
 
 ---
 
@@ -294,9 +310,11 @@ curl -s -X POST "$BASE_URL/reviews/$REVIEW_ID/helpful" \
 # { "reviewId": 789, "helpfulCount": 0, "hasVoted": false }
 ```
 
+`updatedAt` of the review does **not** change after voting (it only tracks edits by the author).
+
 ---
 
-#### Step 6: Delete Own Review (Soft-Delete)
+#### Step 6: Delete Own Review (Hard Delete)
 As User A, delete your review:
 
 ```bash
@@ -305,9 +323,27 @@ curl -i -X DELETE "$BASE_URL/reviews/$REVIEW_ID" \
 ```
 
 **Expected Response**: `HTTP/1.1 204 No Content`
-- Review row is marked `status = 'HIDDEN'`.
-- Associated Cooksnaps are marked `status = 'HIDDEN'`.
+- The review row is deleted, together with its Cooksnaps, helpful votes and reports (FK `CASCADE`); image files are removed after commit.
 - Recipe's `rating_avg` and `review_count` are recalculated synchronously.
+- User A can now submit a new review for Recipe #105 (`POST` returns `201`).
+
+---
+
+#### Step 7: Report a Review (FR-015, FR-016)
+As User B, report User A's review:
+
+```bash
+curl -s -X POST "$BASE_URL/reviews/$REVIEW_ID/reports" \
+  -H "Authorization: Bearer $TOKEN_MEMBER_B" \
+  -H "Content-Type: application/json" \
+  -d '{ "reason": "OFFENSIVE", "details": "Bình luận có ngôn từ xúc phạm." }' | jq .
+
+# Expected: 201 { "reportId": 3001, "targetType": "REVIEW", "targetId": 789, "status": "OPEN", ... }
+# Sending the same request again → 409 report-already-exists
+# User A reporting their own review → 403 self-report-forbidden
+```
+
+When a review reaches 10 `OPEN` reports from different users, it and its Cooksnaps become `HIDDEN`, the recipe stats are recalculated, and User A gets `409 review-under-moderation` when trying to edit it or post a new review.
 
 ---
 
@@ -340,7 +376,7 @@ curl -i -X POST "$BASE_URL/recipes/$RECIPE_ID/reviews" \
 ---
 
 #### Test 2: Duplicate Review Guard (HTTP 409 Conflict)
-User A attempts to submit a second active review on Recipe #105 without deleting the first:
+User A attempts to submit a second review on Recipe #105 while the first one still exists (run before Step 6):
 
 ```bash
 curl -i -X POST "$BASE_URL/recipes/$RECIPE_ID/reviews" \
