@@ -12,8 +12,8 @@
 
 The **070-review-cooksnap** module delivers a community-driven feedback, verification, and rating ecosystem for WikiCook recipes:
 1. **Interactive 5-Star Rating & Cooking Experience**: Authenticated members submit structured reviews with star ratings (1 to 5), detailed cooking feedback (10 to 2000 characters), and practical ingredient substitution tips (`substitution_tip`, maximum 500 characters).
-2. **Cooksnap Visual Proof of Cooking (Privacy Guard Pipeline)**: Users can attach up to 3 proof-of-cooking photos per review. The backend pipeline verifies binary magic bytes, strips 100% of EXIF/GPS metadata to safeguard user home privacy (**Constitution Principle IV**), compresses images to WebP format ($\le 1920\times 1080$, $\le 5\text{MB}$), generates $400\times 400$ thumbnail variants, and serves them via `/api/v1/media/cooksnaps/{storageKey}` with a 1-year immutable cache header.
-3. **Synchronous Rating Aggregation (Lock-Free Invariant)**: Recipe metrics (`recipes.rating_avg` and `recipes.review_count`) are recalculated atomically in the same database transaction whenever reviews are created, updated, or soft-deleted (`status = 'HIDDEN'`). Critically, the update query **STRICTLY EXCLUDES `version = r.version + 1`**, preventing false `409 Conflict` errors for recipe authors or moderators.
+2. **Cooksnap Visual Proof of Cooking (Privacy Guard Pipeline)**: Users can attach up to 3 proof-of-cooking photos per review. The backend pipeline verifies binary magic bytes, strips 100% of EXIF/GPS metadata to safeguard user home privacy (**Constitution Principle IV**), compresses images to WebP format ($\le 1920\times 1080$, $\le 5\text{MB}$), generates $400\times 400$ thumbnail variants, and serves them via `/api/v1/media/cooksnaps/{storageKey}` only while the Cooksnap and its review are `VISIBLE` (otherwise 404), with a short revalidated cache (`max-age=3600, must-revalidate` + `ETag`).
+3. **Synchronous Rating Aggregation (Lock-Free Invariant)**: Recipe metrics (`recipes.rating_avg` and `recipes.review_count`) are recalculated atomically in the same database transaction whenever reviews are created, updated, deleted by their owner (hard delete) or hidden/restored by moderation. The transaction locks the recipe row first (`SELECT ... FOR UPDATE`) so concurrent reviews cannot persist a stale aggregate. Critically, the update query **STRICTLY EXCLUDES `version = r.version + 1`**, preventing false `409 Conflict` errors for recipe authors or moderators, and the `Recipe` entity maps both columns read-only.
 4. **Anti-Abuse & Community Governance**:
    - Partial unique index `UNIQUE (recipe_id, user_id) WHERE user_id IS NOT NULL` enforces one active review per user per recipe.
    - Author self-review guard (`recipe.author_id != current_user_id`) returns HTTP 403 `SELF_REVIEW_FORBIDDEN`.
@@ -33,7 +33,7 @@ The **070-review-cooksnap** module delivers a community-driven feedback, verific
 - *Frontend*: Vite, Tailwind CSS 3.4, Lucide React icons, Axios, React Context API.
 
 **Storage**:
-- *PostgreSQL 16*: Relational database managed through Flyway migration `V501__create_reviews_and_cooksnaps_schema.sql`. Uses tables:
+- *PostgreSQL 16*: Relational database managed through Flyway migration `V501__community.sql`. Uses tables:
   * `reviews`: Primary key `id`, `recipe_id` (FK), `user_id` (FK), `rating`, `comment`, `substitution_tip`, `status`, `helpful_count`, `created_at`, `updated_at`.
   * `cooksnaps`: Primary key `id`, `recipe_id` (FK), `review_id` (FK), `user_id` (FK), `storage_key`, `content_type`, `size_bytes`, `caption`, `status`, `created_at`.
   * `review_helpful_votes`: Primary key `id`, `review_id` (FK), `user_id` (FK), `created_at`. Unique constraint on `(review_id, user_id)`.
@@ -52,7 +52,7 @@ The **070-review-cooksnap** module delivers a community-driven feedback, verific
 - GET `/recipes/{recipeId}/reviews` p95 response time: $< 100\text{ms}$ (SC-001).
 - POST Toggle Helpful Vote response time: $< 300\text{ms}$ (SC-005).
 - Review creation with up to 3 image uploads (validation, stripping, WebP compression, disk write): $< 1500\text{ms}$ (SC-002).
-- Static media serving `/media/cooksnaps/{storageKey}`: Cached on browser for 1 year (`Cache-Control: public, max-age=31536000, immutable`).
+- Static media serving `/media/cooksnaps/{storageKey}`: visibility-checked, cached 1 hour with revalidation (`Cache-Control: public, max-age=3600, must-revalidate` + `ETag`).
 
 **Constraints**:
 - Star ratings strictly bounded between 1 and 5.
@@ -106,7 +106,7 @@ specs/070-review-cooksnap/
 src/
 ├── backend/
 │   ├── wikicook-db/src/main/resources/db/migration/
-│   │   └── V501__create_reviews_and_cooksnaps_schema.sql
+│   │   └── V501__community.sql
 │   └── wikicook-app/
 │       ├── pom.xml
 │       └── src/
@@ -192,7 +192,7 @@ src/
 ### Phase 1: Database Migration & Entities (TDD Foundation)
 - **Goal**: Establish schema in PostgreSQL 16 and verify JPA mapping.
 - **Tasks**:
-  1. Create Flyway migration script `V501__create_reviews_and_cooksnaps_schema.sql` in `wikicook-db`.
+  1. Create Flyway migration script `V501__community.sql` in `wikicook-db`.
   2. Implement JPA entities: `Review`, `Cooksnap`, `ReviewHelpfulVote`, and enum `ReviewStatus` in `com.wikicook.review.domain`.
   3. Create repositories: `ReviewRepository`, `CooksnapRepository`, `ReviewHelpfulVoteRepository`.
   4. Write `ReviewRepositoryIT` using Testcontainers PostgreSQL 16:
@@ -221,8 +221,9 @@ src/
      * Create review entity and associate processed Cooksnap entities in a single transaction.
      * Execute atomic recalculation of `recipes.rating_avg` and `review_count` **WITHOUT updating `recipes.version`**.
      * Handle review edit: allow updating rating, comment, substitution tip; recalculate rating.
-     * Handle review delete: set `status = 'HIDDEN'`, set Cooksnaps `status = 'HIDDEN'`, recalculate rating.
-     * Handle helpful vote toggle: check self-upvote guard; insert vote or delete vote; atomically increment/decrement `helpful_count`.
+     * Handle owner review delete: hard delete (cascade Cooksnaps, votes, reports), delete files after commit, recalculate rating.
+     * Handle helpful vote toggle: lock review row `FOR UPDATE`; check self-upvote guard; delete vote or insert vote; recompute `helpful_count = COUNT(*)`.
+     * Handle reports: insert into `reports`, 409 on duplicate, auto-quarantine at ≥ 10 `OPEN` reports and recalculate rating.
      * Write comprehensive unit tests in `ReviewServiceTest` covering all scenarios. Ensure JaCoCo coverage $\ge 70\%$.
 
 ### Phase 3: Web Layer, Security & Integration Tests
@@ -233,11 +234,12 @@ src/
   3. Implement `ReviewController`:
      * `POST /recipes/{recipeId}/reviews` (`multipart/form-data` and `application/json`)
      * `GET /recipes/{recipeId}/reviews` (public, paginated, sorted, filtered)
-     * `PUT /reviews/{reviewId}` (authenticated owner only)
+     * `PUT /reviews/{reviewId}` (authenticated owner only; multipart with `removeCooksnapIds` + `cooksnapFiles`)
+     * `POST /reviews/{reviewId}/reports`, `POST /cooksnaps/{cooksnapId}/reports` (authenticated, not own content)
      * `DELETE /reviews/{reviewId}` (authenticated owner or admin)
      * `POST /reviews/{reviewId}/helpful` (authenticated member, non-author)
   4. Implement `CooksnapMediaController`:
-     * `GET /media/cooksnaps/{storageKey}` (public binary streaming with `thumbnail=true` query support and `Cache-Control` header).
+     * `GET /media/cooksnaps/{storageKey}` (public binary streaming with `thumbnail=true` query support; 404 unless Cooksnap and review are `VISIBLE`; `Cache-Control: public, max-age=3600, must-revalidate` + `ETag`).
   5. Write full integration tests with Testcontainers:
      * `ReviewControllerIT`: End-to-end test of review lifecycle, author self-review blocking (403), duplicate review blocking (409), rate limit enforcement (429), and helpful vote toggling.
      * `CooksnapMediaControllerIT`: Verify file streaming and 404 handling.
@@ -302,7 +304,7 @@ Mapping between **Functional Requirements (FR)**, **Success Criteria (SC)**, imp
 | **FR-011** | Prevent author self-review (HTTP 403) | `ReviewService.checkAuthorGuard()` | `Integration`: `ReviewControllerIT.testAuthorCannotReviewOwnRecipe403()` |
 | **FR-012** | Rate limit: 5 reviews / 10 min (HTTP 429) | `RateLimitingService.java` | `Integration`: `ReviewControllerIT.testRateLimitExceededReturns429()` |
 | **FR-013** | Edit own review (rating, comment, tip) | `PUT /reviews/{reviewId}` + `ReviewService` | `Integration`: `ReviewControllerIT.testUpdateOwnReviewSuccess()` |
-| **FR-014** | Delete own review (sets `status = 'HIDDEN'`) | `DELETE /reviews/{reviewId}` | `Integration`: `ReviewControllerIT.testDeleteReviewSetsHidden()` |
+| **FR-014** | Delete own review (hard delete, user can review again) | `DELETE /reviews/{reviewId}` | `Integration`: `ReviewControllerIT.testDeleteReviewThenReviewAgain()` |
 | **FR-015** | Atomic rating update without `recipes.version`| `ReviewService.recalculateRating()` | `Integration`: `ReviewServiceIT.testRatingRecalculationDoesNotBumpVersion()` |
 | **FR-016** | Helpful vote toggle (upvote / cancel) | `POST /reviews/{reviewId}/helpful` | `Integration`: `ReviewControllerIT.testToggleHelpfulVoteIncrementAndDecrement()` |
 | **FR-017** | Prevent self-upvoting (HTTP 403) | `ReviewService.voteHelpful()` | `Integration`: `ReviewControllerIT.testAuthorCannotUpvoteOwnReview403()` |

@@ -29,8 +29,10 @@ This document records all technical research decisions (Phase 0 Research) for th
        ```
      - In accordance with `docs/analysis-and-design/database/full-schema.md` §4.9, the database stores **only** the `storage_key VARCHAR(255) NOT NULL` (e.g. `cs_789_uuid.webp`), along with `content_type`, `size_bytes`, `caption`, and `status`. All legacy column names (`image_url`, `photo_url`, `thumbnail_url`) are completely eliminated from the database schema.
      - **Serving Media**:
-       - Served via internal Spring MVC controller `GET /api/v1/media/cooksnaps/{storage_key}` (with optional query parameter `?thumb=true` for the thumbnail variant) or direct CDN reverse proxy.
-       - HTTP response headers enforce immutable caching: `Cache-Control: public, max-age=31536000, immutable`.
+       - Served via internal Spring MVC controller `GET /api/v1/media/cooksnaps/{storage_key}` (with optional query parameter `?thumbnail=true` for the thumbnail variant) or a CDN reverse proxy in front of it.
+       - **Visibility gate**: the controller resolves the row by `storage_key` (unique) and streams the file only when the Cooksnap and its parent review are both `VISIBLE`; otherwise `404`. Hidden, quarantined or deleted photos are therefore not reachable by URL.
+       - Caching: `Cache-Control: public, max-age=3600, must-revalidate` + strong `ETag` (`304` on `If-None-Match`). `immutable`/1-year caching is rejected because moderation and owner deletion must take a photo down within a bounded time.
+       - File lifecycle: files are written before the DB commit; a `TransactionSynchronization` deletes them on rollback, and deletes removed files after a successful commit (owner delete, photo removed during edit).
 - **Rationale**: Complies with WikiCook Constitution Principle IV (Data Security & Personal Privacy Guard — protecting user home kitchen coordinates from geolocation leakage), full-schema §4.9, FR-006, FR-007, FR-008, NFR-001, NFR-002, and NFR-004.
 - **Alternatives considered**:
   - ImageMagick or GraphicsMagick CLI wrappers: Rejected due to external OS process dependency, platform divergence, and historical security vulnerabilities (e.g., ImageTragick RCE exploits).
@@ -44,17 +46,20 @@ This document records all technical research decisions (Phase 0 Research) for th
 - **Decision**:
   1. **Application-Level Synchronous Event-Driven Recalculation**:
      - Maintain cached summary fields directly on the `recipes` table (full-schema §4.5):
-       * `rating_avg NUMERIC(3,2) NOT NULL DEFAULT 0`
+       * `rating_avg NUMERIC(3,2) NOT NULL DEFAULT 0` (value rounded to 1 decimal place, FR-009)
        * `review_count INTEGER NOT NULL DEFAULT 0`
-     - Recalculation is triggered synchronously within the boundary of the `ReviewService` write transaction:
+     - Recalculation is triggered synchronously within the boundary of the `ReviewService` write transaction, **after locking the recipe row**:
        ```java
        @Transactional
        public ReviewResponse createReview(Long recipeId, Long userId, CreateReviewRequest req) {
+           recipeRepository.lockById(recipeId);          // SELECT id FROM recipes WHERE id = ? FOR UPDATE
+           // author guard, duplicate check, rate limit check ...
            Review review = reviewRepository.save(newReview);
-           recalculateAndPersistRecipeStats(recipeId);
+           recalculateAndPersistRecipeStats(recipeId);   // native UPDATE below
            return reviewMapper.toResponse(review);
        }
        ```
+     - **Why the lock**: under PostgreSQL `READ COMMITTED`, two concurrent transactions inserting reviews for the same recipe would each run `AVG/COUNT` without seeing the other's uncommitted row, and the last `UPDATE` would persist a stale aggregate. Locking the recipe row serializes review writes per recipe only; the waiting transaction's aggregate statement then sees the committed row.
   2. **Atomic Recalculation Query (CRITICAL: Do NOT Bump `recipes.version`)**:
      - The recalculation query computes values exclusively over active, visible reviews (`status = 'VISIBLE'`):
        ```sql
@@ -72,7 +77,8 @@ This document records all technical research decisions (Phase 0 Research) for th
        WHERE r.id = :recipeId;
        ```
      - **Architectural Rule**: The `UPDATE recipes` statement above **MUST NOT increment `recipes.version`** (`version = r.version + 1` is strictly excluded). The `version` column in `recipes` is reserved for Optimistic Concurrency Control governing recipe content edits and moderator lifecycle transitions. Bumping `version` upon community reviews would cause spurious `HTTP 409 Conflict` errors for recipe authors or moderators editing the recipe concurrently.
-     - Triggers identical recalculation on review creation, review rating edit, review status change to `HIDDEN`, and when a review is auto-quarantined or restored by moderation.
+     - Triggers identical recalculation on review creation, review rating edit, owner deletion (hard delete), and when a review is hidden, auto-quarantined or restored by moderation.
+     - **`Recipe` entity mapping (module 060)**: `rating_avg` and `review_count` MUST be mapped `@Column(insertable = false, updatable = false)`. Since the native update does not bump `version`, a stale `Recipe` saved by an author would otherwise overwrite fresh stats while still passing the optimistic-lock check.
   3. **High-Performance Search & Sort Support**:
      - Search and catalog filtering queries (`020-recipe-search-filter`) order by `recipes.rating_avg DESC` and `recipes.review_count DESC` directly using the index on `recipes(rating_avg, review_count)` without joining or aggregating the `reviews` table, guaranteeing query execution times $< 500\text{ms}$ under load (NFR-001).
 - **Rationale**: Satisfies FR-009, NFR-001, NFR-003 (data integrity under concurrency), SC-003, and Use-Case `UC-070-01`. Guarantees immediate consistency without false optimistic locking conflicts.
@@ -89,11 +95,12 @@ This document records all technical research decisions (Phase 0 Research) for th
   1. **Unique Constraint Guarding Duplicate Reviews**:
      - Enforce a strict one-review-per-recipe-per-user constraint at the database storage level per full-schema §4.9:
        ```sql
-       CREATE UNIQUE INDEX uq_reviews_recipe_user_active 
-       ON reviews(recipe_id, user_id) 
+       CREATE UNIQUE INDEX uq_reviews_recipe_user
+       ON reviews(recipe_id, user_id)
        WHERE user_id IS NOT NULL;
        ```
-     - If a user submits another review for the same recipe, the application intercepts the unique constraint violation and returns `HTTP 409 Conflict` with error code `REVIEW_ALREADY_EXISTS`.
+     - The index covers rows of every `status`. Therefore an **owner deleting their review hard-deletes the row** (cascading to Cooksnaps, votes and reports) so they can review the recipe again later; `HIDDEN` is reserved for moderation.
+     - If a user submits another review for the same recipe, the application returns `HTTP 409 Conflict` with `REVIEW_ALREADY_EXISTS` (existing review visible) or `REVIEW_UNDER_MODERATION` (existing review hidden by moderation, so a quarantine cannot be bypassed by re-posting).
   2. **Author Self-Review Guard**:
      - **UI Layer**: When the viewing user is identified as the author (`recipe.author_id == auth.user_id`), the "Viết đánh giá" button is hidden and replaced with an informational callout: *"Bạn là tác giả công thức này — bạn có thể xem đánh giá, nhưng không thể tự chấm điểm."*.
      - **Backend Service Layer**:
@@ -128,7 +135,7 @@ This document records all technical research decisions (Phase 0 Research) for th
 
 - **Decision**:
   1. **Pagination Strategy (Offset-Based with Spring Data `Pageable`)**:
-     - Use Spring Data's `Pageable` with standard parameterization: `?page=0&size=10&sort=createdAt,desc`.
+     - Query parameters: `?page=0&size=10&sort=NEWEST&rating=5&hasCooksnapOnly=true` (the `sort` enum below is mapped to a Spring Data `Sort` on the server; raw column names are not accepted).
      - Standard page size is fixed to 10 reviews per page (FR-012).
      - Filter strictly by `status = 'VISIBLE'`.
   2. **Multi-Criteria Sorting Implementations & Indexes**:
@@ -140,7 +147,7 @@ This document records all technical research decisions (Phase 0 Research) for th
        * `MOST_HELPFUL`: `ORDER BY r.helpful_count DESC, r.created_at DESC`
      - Database composite indexes defined in migration `V501`:
        ```sql
-       CREATE INDEX idx_reviews_recipe_created ON reviews(recipe_id, created_at DESC) 
+       CREATE INDEX idx_reviews_recipe_lookup ON reviews(recipe_id, created_at DESC) 
            WHERE status = 'VISIBLE';
        CREATE INDEX idx_reviews_recipe_rating ON reviews(recipe_id, rating DESC, created_at DESC) 
            WHERE status = 'VISIBLE';
@@ -148,8 +155,8 @@ This document records all technical research decisions (Phase 0 Research) for th
            WHERE status = 'VISIBLE';
        ```
   3. **"Photos Only" Filter**:
-     - When `hasPhotos=true`, append filter predicate:
-       `AND EXISTS (SELECT 1 FROM cooksnaps c WHERE c.recipe_id = r.recipe_id AND c.user_id = r.user_id AND c.status = 'VISIBLE')`.
+     - When `hasCooksnapOnly=true`, append filter predicate (joined through the `cooksnaps.review_id` FK, so reviews of deleted users with `user_id = NULL` still match, FR-019):
+       `AND EXISTS (SELECT 1 FROM cooksnaps c WHERE c.review_id = r.id AND c.status = 'VISIBLE')`.
   4. **Vision Document §5.7 "Top Rated" Ranking Threshold**:
      - When querying platform-wide top-rated recipes (`020-recipe-search-filter`), enforce minimum rating count:
        `WHERE r.status = 'PUBLISHED' AND r.review_count >= 3 ORDER BY r.rating_avg DESC, r.review_count DESC`.
@@ -169,7 +176,7 @@ This document records all technical research decisions (Phase 0 Research) for th
        CREATE TABLE review_helpful_votes (
            id BIGSERIAL PRIMARY KEY,
            review_id BIGINT NOT NULL REFERENCES reviews(id) ON DELETE CASCADE,
-           user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+           user_id BIGINT NULL REFERENCES users(id) ON DELETE SET NULL,  -- keep vote when voter deletes account
            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
            CONSTRAINT uq_review_helpful_vote UNIQUE(review_id, user_id)
        );
@@ -179,11 +186,12 @@ This document records all technical research decisions (Phase 0 Research) for th
   2. **Toggle Voting Transaction Logic**:
      - Endpoint: `POST /api/v1/reviews/{reviewId}/helpful` (authenticated `Member` or higher required).
      - **Self-Vote Guard**: Users cannot vote their own reviews (`review.user_id != auth.user_id`).
-     - **Toggle Execution**:
-       * If record does not exist: Insert into `review_helpful_votes` and atomic increment:
-         `UPDATE reviews SET helpful_count = helpful_count + 1 WHERE id = :reviewId`.
-       * If record already exists: Delete from `review_helpful_votes` and atomic decrement:
-         `UPDATE reviews SET helpful_count = GREATEST(helpful_count - 1, 0) WHERE id = :reviewId`.
+     - **Toggle Execution** (one transaction):
+       * Lock the review row: `SELECT ... FROM reviews WHERE id = :reviewId FOR UPDATE` – concurrent toggles from a double-click are serialized instead of racing on the unique constraint.
+       * `DELETE FROM review_helpful_votes WHERE review_id = :reviewId AND user_id = :userId`; if 0 rows were deleted, `INSERT` the vote.
+       * Recompute from the source of truth: `UPDATE reviews SET helpful_count = (SELECT COUNT(*) FROM review_helpful_votes WHERE review_id = :reviewId) WHERE id = :reviewId`. No `+1`/`-1` arithmetic, so the counter cannot drift.
+     - **Account deletion**: `review_helpful_votes.user_id` uses `ON DELETE SET NULL` (not `CASCADE`): the vote row stays, so `helpful_count` keeps matching `COUNT(*)` without any extra job.
+     - **`updated_at`**: the counter update is a native query and there is no `updated_at` trigger, so votes never mark a review as "edited".
      - Returns `HelpfulVoteResponse`: `{ "reviewId": 123, "helpfulCount": 15, "hasVoted": true }`.
   3. **Guest Interaction (Clarification `[OQ-070-01]`)**:
      - Unauthenticated guests can view the helpful count and open full-screen Cooksnap Lightboxes (Read-only).
@@ -203,7 +211,7 @@ This document records all technical research decisions (Phase 0 Research) for th
        * `service/`: `ReviewService`, `CooksnapStorageService`, `ImageProcessingService`, `ReviewHelpfulVoteService`, `ReviewReportService`
        * `repository/`: `ReviewRepository`, `CooksnapRepository`, `ReviewHelpfulVoteRepository`, `ReportRepository`
        * `domain/`: `Review`, `Cooksnap`, `ReviewHelpfulVote`, `Report` (JPA entities with `@Table`, `@Entity`)
-       * `dto/`: Immutable Java Records (`CreateReviewRequest`, `UpdateReviewRequest`, `ReviewResponse`, `CooksnapDto`, `ReviewSummaryDto`, `ReportRequest`, `HelpfulVoteResponse`)
+       * `dto/`: Immutable Java Records (`CreateReviewRequest`, `UpdateReviewRequest`, `ReviewResponse`, `CooksnapDto`, `RatingSummaryDto`, `CreateReportRequest`, `ReportResponse`, `HelpfulVoteResponse`)
        * `event/`: Domain events (`ReviewCreatedEvent`, `ReviewDeletedEvent`)
   2. **Frontend Component Architecture (`src/features/reviews/`)**:
      - `components/`:
@@ -231,7 +239,7 @@ This document records all technical research decisions (Phase 0 Research) for th
        * `ReviewHelpfulVoteServiceTest`: Verify atomic vote toggling and self-vote rejection.
        * JaCoCo test coverage committed to $\ge 70\%$ for the `com.wikicook.review.service` package (Constitution Principle II).
      - **Integration Tests**:
-       * `ReviewControllerIT` & `ReviewRepositoryIT`: Run using `@SpringBootTest` with **real PostgreSQL 16 via Testcontainers**. Test unique index constraints (`uq_reviews_recipe_user_active`) and ensure HTTP status codes match contracts (201, 400, 403, 404, 409, 429).
+       * `ReviewControllerIT` & `ReviewRepositoryIT`: Run using `@SpringBootTest` with **real PostgreSQL 16 via Testcontainers**. Test unique index constraints (`uq_reviews_recipe_user`) and ensure HTTP status codes match contracts (201, 400, 403, 404, 409, 429).
   2. **Frontend Test Automation (Vitest + React Testing Library)**:
      - Unit and component tests for `WriteReviewModal`, `ReviewList`, and `CooksnapLightbox`.
      - Test accessibility: keyboard navigation on star rating buttons and ARIA attributes (NFR-005).
@@ -245,3 +253,6 @@ This document records all technical research decisions (Phase 0 Research) for th
 2. ❓ **Không tăng Version công thức khi tính điểm rating**: Xác nhận không thêm `version = r.version + 1` vào lệnh cập nhật `rating_avg` để tránh gây lỗi 409 Conflict sai cho tác giả công thức.
 3. ❓ **Bảng `review_helpful_votes`**: Đề xuất đưa bảng `review_helpful_votes` vào Flyway `V501` để hiện thực hóa tính năng bình chọn Hữu ích giải quyết `[OQ-070-01]` và `[OQ-070-04]`.
 4. ❓ **Cơ chế Rate Limiting hai tầng**: Cơ chế tính toán qua database query là căn cứ pháp lý chính, cache in-memory đóng vai trò bảo vệ hạ tầng và bắt buộc có TTL 15 phút.
+5. ❓ **Bổ sung `cooksnaps.review_id` vào full-schema §4.9**: `full-schema.md` hiện chưa có cột này. Đề xuất thêm `review_id BIGINT NOT NULL FK → reviews CASCADE` để gắn ảnh với đúng đánh giá (lọc "chỉ có ảnh", xóa đánh giá kéo theo ảnh, sửa ảnh trong đánh giá) và `UNIQUE (storage_key)` cho endpoint media. Cần cập nhật `full-schema.md` khi nhóm đồng ý.
+6. ❓ **`review_helpful_votes.user_id` dùng `ON DELETE SET NULL`**: giữ lượt vote ẩn danh khi người vote xóa tài khoản để `helpful_count` luôn bằng số dòng vote (cùng chính sách với `reviews.user_id`).
+7. ❓ **Chủ sở hữu xóa đánh giá = hard delete**: `HIDDEN` chỉ dành cho kiểm duyệt; nhờ vậy unique index `(recipe_id, user_id)` không chặn người dùng đánh giá lại sau khi tự xóa (FR-011).
