@@ -57,7 +57,7 @@ nào chưa vào spec thì ghi rõ ở bảng cuối.
 ## R2. Lưu token ở trình duyệt, CSRF/XSS, xoay vòng và FR-009
 
 - **Decision**:
-  - **Access token** chỉ nằm trong bộ nhớ JS (module `shared/api/authToken.ts`), mất khi tải lại
+  - **Access token** chỉ nằm trong bộ nhớ JS (module `shared/api/session.ts`, thay chỗ lưu `localStorage` đang có ở `main`), mất khi tải lại
     trang; lúc khởi động `AuthProvider` gọi `POST /auth/refresh` để lấy lại.
   - **Refresh token** nằm trong cookie `wc_rt`: `HttpOnly`, `Secure` (tắt được ở local bằng
     `WIKICOOK_AUTH_COOKIE_SECURE=false`), `SameSite=Strict`, `Path=/api/v1/auth`.
@@ -354,9 +354,9 @@ nào chưa vào spec thì ghi rõ ở bảng cuối.
   | `OutboxDispatcher` | 15 giây | R8 | FR-012, FR-024a |
 
   - **Thao tác quản trị trong khoảng trống 5 phút**: job chỉ chạy 5 phút một lần, nên `AccountAdminService` cũng gọi
-    `finishExpired(userId)` trong cùng transaction **trước khi** đọc `users.status`, cho mọi thao tác (đổi vai trò,
+    `finishExpired(userId)` (giao dịch riêng `REQUIRES_NEW`, commit ngay) **trước khi** đọc `users.status`, cho mọi thao tác (đổi vai trò,
     đình chỉ, cấm, gỡ). Nếu không: đình chỉ lại một án vừa hết nhận 409 sai, cấm ghi nhầm án tự hết thành "gỡ sớm"
-    và mất email `SUSPENSION_ENDED`, gỡ ghi `ACCOUNT_REINSTATED` cho án đã hết (góp ý của Duy).
+    và mất email `SUSPENSION_ENDED`, gỡ ghi `ACCOUNT_REINSTATED` cho án đã hết (góp ý của Duy). Phải là giao dịch riêng: gỡ án tài khoản vừa hết hạn trả 409 `ACCOUNT_NOT_SANCTIONED`, và nếu `finishExpired` nằm chung giao dịch với thao tác thì ngoại lệ rollback cả `status = ACTIVE` lẫn outbox `SUSPENSION_ENDED`.
   - **Đăng nhập ngay sau `ends_at`**: `SignInService` và `GoogleSignInService` không chờ job: nếu kỳ đình chỉ đã hết thì gọi cùng
     hàm `finishExpired(userId)` của job, hàm này idempotent nhờ `UPDATE … WHERE lifted_at IS NULL`,
     nên email chỉ gửi một lần.
@@ -372,7 +372,7 @@ nào chưa vào spec thì ghi rõ ở bảng cuối.
 
 - **Decision**: Hai lớp, mặc định từ chối.
   - **Lớp URL** (`SecurityFilterChain`, stateless): chỉ các route khai báo công khai mới mở
-    (`/api/v1/auth/**` trừ `me`, `role-notice`, `reauthenticate`; `GET` đọc công thức khi 020, 060 có;
+    (`/api/v1/auth/**` trừ `me`, `role-notice`, `reauthenticate`; `GET` `GET /api/v1/recipes/search`, `/api/v1/recipes/search/options`, `/api/v1/recipes/featured` của 020 (đã có ở `main`: khách tìm kiếm, 020 AS 3.4), `GET` đọc công thức khi 060 có;
     `/actuator/health`, tài liệu OpenAPI). Phần còn lại của `/api/**` cần xác thực; mọi thứ khác
     `denyAll`. `BearerTokenAuthenticationFilter` trả 401 với bearer hỏng hoặc hết hạn **kể cả ở route
     `permitAll`**, nên `SecurityConfig` dùng một `BearerTokenResolver` riêng bỏ qua header
@@ -385,7 +385,7 @@ nào chưa vào spec thì ghi rõ ở bảng cuối.
 
   | Dòng ma trận | Kiểm tra server | Bên áp dụng |
   |---|---|---|
-  | Đọc công thức đã xuất bản | Route công khai | 020, 060 |
+  | Đọc công thức đã xuất bản | Route công khai: tìm kiếm của 020 đã khai báo ở `PublicRoutes`; chi tiết công thức do 060 thêm | 020, 060 |
   | Bookmark, meal plan, shopping list | Xác thực (URL) | Đã có 030, 040; 080 |
   | Review, rate, cooksnap | `@VerifiedEmailRequired` | 070 |
   | Submit recipe | `@VerifiedEmailRequired` (FR-006); lưu nháp chỉ cần xác thực (060 FR) | 060 |
@@ -501,7 +501,7 @@ nào chưa vào spec thì ghi rõ ở bảng cuối.
     `loading | guest | authenticated | offline | expired`, giữ `CurrentAccount`. Lúc khởi động gọi `/auth/refresh` rồi
     `/auth/me`. Không thêm thư viện. Trong `loading` hiện khung trang, chưa render route cần đăng nhập.
   - **Client dùng chung** (`shared/api/client.ts`): bỏ `X-User-Id`, gắn `Authorization` từ
-    `authToken.ts`, gửi `credentials: 'same-origin'`. **Không** gắn `Authorization` cho `/auth/*`, trừ
+    `session.ts`, gửi `credentials: 'same-origin'`. **Không** gắn `Authorization` cho `/auth/*`, trừ
     `/auth/me`, `/auth/role-notice/ack`, `/auth/reauthenticate` (R10). Gặp 401 ở request không thuộc
     `/auth/*`: chờ một lần refresh rồi gửi lại đúng một lần; refresh lỗi → ném lại 401 gốc (code
     `UNAUTHENTICATED`) để `useWeekPlan`, `AddToPlanDialog` của 030 chạy như cũ. Refresh thành công
@@ -572,6 +572,9 @@ nào chưa vào spec thì ghi rõ ở bảng cuối.
   | `ShoppingListControllerTest`, 2 `*ExceptionHandlerTest` (`@WebMvcTest`) | Tắt filter (`addFilters = false`), mock `CurrentUser` |
   | `src/test/server.ts`, `e2e/fakeApi.ts` | Mặc định trả `POST /auth/refresh` (401 hoặc tài khoản giả), vì msw đang `onUnhandledRequest: 'error'` |
   | `perf/meal-planner.k6.js` | `setup()` đăng nhập tài khoản test, bỏ `X-Dev-User-Id` |
+  | `search/port/DevHeaderSearchViewer`, `SearchPortsConfig` (020, đã có ở `main`) | Thêm `AuthSearchViewer` (id của người đăng nhập, rỗng với khách) thắng nhờ `@ConditionalOnMissingBean`; xóa `DevHeaderSearchViewer`, giữ `guestSearchViewer` |
+  | `RecipeSearchControllerIT`, `AiPlannerControllerUS2IT`, `DraftSafetyIT`, `NotEnoughRecipesIT`, `RateLimitIT` | Cùng cách với `AiPlannerControllerUS1IT`: bỏ `dev-stubs.enabled`, `X-Dev-User-Id` |
+  | `src/frontend/src/shared/api/session.ts`, `client.ts` (ACT-01, đã có ở `main`) | Bỏ danh tính dev (`getDevUserId`, `X-User-Id`, `X-Dev-User-Id`); token chỉ ở bộ nhớ, thay chỗ lưu `localStorage` hiện có |
   | `docker-compose.yml`, `.env.example` | Bỏ `WIKICOOK_DEV_STUBS_USER_ID`, thêm biến của 010. `WIKICOOK_JWT_SECRET`, `WIKICOOK_EMAIL_HASH_KEY` không có mặc định (constitution IV), dùng `${VAR:?…}` để báo lỗi rõ; `WIKICOOK_PUBLIC_BASE_URL` mặc định `http://localhost:3000`, `WIKICOOK_AUTH_COOKIE_SECURE` mặc định `false` vì Compose là môi trường local |
 
   Thêm `SecuredRoutesIT` **không** dùng filter giả: với JWT thật, kiểm tra 401 và cách ly người dùng trên
@@ -756,7 +759,7 @@ Hiển chốt ngày 2026-11-06. Các dòng "đã vào spec" có hiệu lực khi
 | 17 | E, Duy | **Thăng lên Administrator**: dropdown của 100 chỉ có Member ↔ Contributor ↔ Moderator; 010 không cấm và chỉ yêu cầu xác thực lại khi tác động Administrator khác | Cho phép, cần xác thực lại và luôn audit (FR-022a) | Đã vào spec; chờ E bổ sung vào 100 |
 | 18 | B (060), A (011, 080) | **Listener xóa dữ liệu** (`OQ-010-07`): `recipes.author_id` là `SET NULL` nên 060 **bắt buộc** xóa công thức trong `AccountResetEvent`, `AccountPurgedEvent` | Listener của 060 là bắt buộc; lỗi thì rollback cả thao tác (FR-019) | Chờ B và Duy xác nhận 060 có handler (`OQ-010-07`) |
 | 19 | C, D | **Sửa test và client**: 030, 031, 040 đổi theo R13; 040 cần gắn `userId` cho hàng đợi IndexedDB, vì research 040 giữ hàng đợi khi hết phiên và người đăng nhập tiếp theo có thể đồng bộ nhầm vào tài khoản của mình | Sửa test và client cùng nhánh 010 (R13); D gắn `userId` cho hàng đợi trước khi nối đăng nhập thật | Chờ C, D nhận việc |
-| 20 | Dự | **`full-schema.md` cần cập nhật** sau khi duyệt: `V102`–`V104`, cột mới, 4 bảng mới, `login_attempts`, retention; bỏ hai bảng khỏi `V503`; mục 7 còn ghi `V302__ai.sql` và thiếu `V303`, `V304`, `V402`, `V403` | Cập nhật sau khi PR spec được duyệt | Chờ Dự |
+| 20 | Dự | **`full-schema.md` cần cập nhật** sau khi duyệt: `V102`–`V104`, cột mới, `audit_logs.actor_id` không khóa ngoại và trigger cấm UPDATE, DELETE, `user_suspensions.lift_reason`, 4 bảng mới, `login_attempts`, retention; bỏ hai bảng khỏi `V503`; mục 7 còn ghi `V302__ai.sql` và thiếu `V303`, `V304`, `V402`, `V403` | Cập nhật sau khi PR spec được duyệt | Chờ Dự |
 | 21 | Hiển, Dự | **`TODO(HOSTING)`**: TLS cho NFR-002, nhà cung cấp SMTP thật, Google OAuth client và redirect URI theo `WIKICOOK_PUBLIC_BASE_URL` | Local dùng Mailpit; hosting chưa chốt | **Mở**, không chặn tasks; chốt trước demo |
 | 22 | Chung | **UI**: 14 Gap 010-A…N chưa có màn; `OQ-010-09` bỏ "Đổi địa chỉ email" khỏi AU03; AU07 ghi "Tài khoản tạm khóa… đã gửi email", lộ tài khoản; chữ lỗi spec tiếng Anh trong khi NFR-006 mặc định tiếng Việt | Theo đề xuất; bỏ "Đổi địa chỉ email" khỏi AU03; thông báo hiển thị tiếng Việt (Clarifications 2026-11-06) | Chờ Chung |
 | 23 | A (011), Duy | **NFR-009**: 011 Integration Points yêu cầu đổi thành hai mức (hồ sơ ăn uống chỉ chủ tài khoản xem, Administrator cũng không), spec 010 chưa đổi | Hai mức theo 011; audit không chứa dữ liệu ăn uống (NFR-009, FR-025) | Đã vào spec, chờ Duy duyệt PR |

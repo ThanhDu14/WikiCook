@@ -59,7 +59,7 @@ public interface CurrentAccount extends CurrentUser {
 Quy ước mới cho mọi controller: không đọc user id từ header, query hay body; route `/api/**` mặc định
 cần đăng nhập. Lỗi thiếu quyền ở tầng method đi qua `SecurityExceptionAdvice` toàn cục (403
 `ACCESS_DENIED` hoặc `EMAIL_NOT_VERIFIED`, research R15); advice riêng của module không được bắt
-`AccessDeniedException` hay `Exception`. Module nào có route công khai (020, 060) thêm vào `PublicRoutes` và `RouteProtectionIT`
+`AccessDeniedException` hay `Exception`. 020 đã có route công khai (`GET /api/v1/recipes/search`, `/search/options`, `/featured`), 010 khai báo sẵn ở `PublicRoutes`; module nào có thêm route công khai (060, ...) thêm vào `PublicRoutes` và `RouteProtectionIT`
 sẽ kiểm tra phần còn lại.
 
 ### 2.2. Cho Profile và Account deletion (spec 011, A)
@@ -156,6 +156,7 @@ không phải lặp lại. 100 đọc block list chỉ gián tiếp qua lúc đ�
 |---|---|---|
 | 030, 031 | `CurrentUserId`, `AiPlannerController` giữ nguyên qua `ObjectProvider<CurrentUser>`; test dùng `HeaderCurrentUser` đã `@Primary` | R13 |
 | 030 | `MealPlannerPage`, `AddToPlanButton` chỉ chuyển `/login` khi `useAuth().status === 'guest'`; người hết phiên dùng `SessionExpiredDialog` | R12 |
+| 020 | `SearchViewerPort` có adapter thật `AuthSearchViewer` (id của người đăng nhập, rỗng với khách), thay `DevHeaderSearchViewer`; `RecipeSearchControllerIT` bỏ `X-Dev-User-Id` | R13 |
 | 040 | `ShoppingListController` bỏ `X-User-Id`, dùng `CurrentUser` | R13 |
 | 040 | Hàng đợi offline IndexedDB gắn `userId`, chỉ đồng bộ khi khớp người đăng nhập | Research bảng cuối, mục 19 |
 | 040 | `POST /auth/refresh` như research 040 giả định; hết phiên không xóa IndexedDB, giữ nguyên | R1 |
@@ -178,5 +179,6 @@ không phải lặp lại. 100 đọc block list chỉ gián tiếp qua lúc đ�
 | `/account-status` | 010 | Đăng nhập email truyền `code`, `reason`, `endsAt`, `closureToken` qua state của router; Google truyền qua fragment, trang đọc rồi xóa khỏi URL (FR-013) |
 | `EmailVerificationBanner` | 010 → `AppLayout` | Nhắc xác minh, nút gửi lại (AF 2.7) |
 | `/account-closure#token=…` | 010 → 011 | Màn AU07 dẫn tới trang đóng tài khoản của 011 khi có `closureToken` (research R16) |
-| Trang chủ | 020 → 010 | `/` hiện chuyển tới `/shopping-list` (cần đăng nhập), nên khách bị đưa tới `/login`; 020 thay bằng trang công khai |
+| Trang chủ, tìm kiếm | 020 → 010 | `/` (`HomePage`) và `/search` đã công khai ở `main`, 010 không bọc `RequireAuth`; `RedirectIfAuthenticated` đưa người đã đăng nhập từ `/login`, `/register` về `/` |
+| `cooking/:recipeId` | 050 → 010 | Nằm ngoài `AppLayout`, khách được dùng, chạy ở client; không có `SessionExpiredDialog` ở đó (050 NFR-004) |
 | Route | 010 | `/login`, `/register`, `/check-email`, `/verify-email`, `/forgot-password`, `/reset-password`, `/account-status`, `/access-denied`, `/auth/callback` |

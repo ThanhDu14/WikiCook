@@ -119,7 +119,7 @@ src/backend/
         │   │   │                 AuditService
         │   │   ├── security/     SecurityConfig, PublicRoutes, PublicRouteBearerTokenResolver,
         │   │   │                 SessionJwtAuthenticationConverter,
-        │   │   │                 SecurityContextCurrentAccount, PrehashedBCryptPasswordEncoder,
+        │   │   │                 SecurityContextCurrentAccount, AuthSearchViewer, PrehashedBCryptPasswordEncoder,
         │   │   │                 BcryptBulkhead, ClientHeaderFilter, AccountStateHeaderFilter, RefreshCookie,
         │   │   │                 ProblemResponseWriter, CookieOAuth2AuthorizationRequestRepository,
         │   │   │                 GoogleLoginHandlers
@@ -129,7 +129,7 @@ src/backend/
         │   │   │                 EmailSendRequestRepository, EmailOutboxRepository
         │   │   ├── domain/       UserAccount, UserSession, OneTimeToken, LoginAttempt, AuditLog,
         │   │   │                 UserSuspension, BlockedEmail, PasswordCheckFailure, EmailSendRequest,
-        │   │   │                 EmailOutboxMessage, TokenPurpose, SanctionKind, MailTemplate
+        │   │   │                 EmailOutboxMessage, TokenPurpose, SanctionKind, LiftReason, MailTemplate
         │   │   ├── dto/          RegisterRequest, LoginRequest, AuthResponse, CurrentAccountDto,
         │   │   │                 AccountAdminDto, AuditLogDto, SuspendRequest, BanRequest, ...
         │   │   ├── validation/   ValidPassword, ValidPasswordValidator, MaxCodePoints
@@ -168,7 +168,7 @@ src/frontend/
 └── src/
     ├── app/routes.tsx, AppLayout.tsx  # route auth, guard, banner, thông báo vai trò
     ├── shared/
-    │   ├── api/client.ts, authToken.ts, safeRedirect.ts
+    │   ├── api/client.ts, session.ts, safeRedirect.ts
     │   └── ui/TextField.tsx, PasswordField.tsx
     ├── features/auth/
     │   ├── AuthProvider.tsx, useAuth.ts, RequireAuth.tsx, RequireRole.tsx,
