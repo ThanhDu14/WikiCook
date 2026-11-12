@@ -1,10 +1,10 @@
 # Implementation Plan: Hands-free Cooking Mode & Concurrent Timers
 
-**Branch**: current branch prepared by the user; unverified under the constraints  
-**Date**: 2026-10-25 | **Spec**: [spec.md](spec.md)  
-**Input**: `specs/050-cooking-mode/spec.md`, status **Draft (Ready for Review)**. Per-story Jira keys have not been supplied; do not invent them. Branch metadata in the spec is not treated as verification of the current branch.
+**Branch**: current branch prepared by the user; unverified under the constraints
+**Date**: 2026-10-25; readiness update 2026-11-11 | **Spec**: [spec.md](spec.md)
+**Input**: `specs/050-cooking-mode/spec.md`, approval for independent implementation reported by feature owner and recorded in spec. Per-story Jira keys are not yet recorded; do not invent them. Branch metadata in the spec is not verification of the current branch.
 
-**Status**: proposed research/design for review, **formal Constitution gate not met**; not implementation authorization. No application code, skeleton, dependency installation, or test execution in this session.
+**Status**: Approved for isolated frontend implementation, subject to Jira traceability and test-first. Real 060 recipe-client integration and 070 review handoff remain deferred behind verified contracts. No application code or tests are claimed by this planning update.
 
 ## Summary
 
@@ -14,15 +14,15 @@ Frontend-first design, without tables/migrations/cooking-session write APIs or i
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x, React 18; the skeleton must establish the specific toolchain. Java 21/Spring Boot 3/PostgreSQL 16 form the shared platform; no dedicated backend logic for 050.  
-**Primary Dependencies**: Vite, Tailwind CSS 3.4 per the architecture; native browser APIs through adapters; no additional runtime dependencies.  
-**Storage**: in-memory runtime + localStorage `cooking_session_{recipe_id}`, envelope version 1, TTL 4h; no DB.  
-**Testing**: Vitest, React Testing Library, fake Clock/scheduler, mocked browser adapters/shared recipe client; manual browser/device acceptance. No runnable suite currently exists.  
-**Target Platform**: mobile web ≥360 CSS px, tablet/desktop, secure context for capabilities requiring it. The support matrix must record actual versions after testing, without assuming Safari/Firefox/Chrome parity.  
-**Project Type**: frontend feature in a layered client-server SPA; public recipe reads still use shared DTOs/APIs without bypassing service/backend security.  
-**Performance Goals**: transition <100ms; drift <1s/60 minutes while the tab is open; foreground alarm within 1s; restored overdue accurate to the second; instruction contrast ≥7:1 in High Contrast, readable from 1.5m; voice ≥85% in environments ≤60dB when enabled.  
-**Constraints**: Next/Previous ≥64×64px, one step/view, offline core after loading, audio at most 60s, mic idle timeout 30s; no alarm guarantee during OS suspension/browser closure, and no absolute wake guarantee.  
-**Scale/Scope**: independent recipes across multiple tabs, multiple independent timers per session; the spec sets no timer cap, so do not add a business limit. 060 baseline: 1–30 steps/1–50 ingredient rows; the draft schema accepts 3,000-character text and multiple images, unlike 060, requiring a tolerant mapper and contract approval. The 256KiB snapshot budget is an unapproved proposal, not a browser/spec quota.
+**Language/Version**: TypeScript 5.x, React 18; the skeleton must establish the specific toolchain. Java 21/Spring Boot 3/PostgreSQL 16 form the shared platform; no dedicated backend logic for 050.
+**Primary Dependencies**: Vite, Tailwind CSS 3.4 per the architecture; native browser APIs through adapters; no additional runtime dependencies.
+**Storage**: in-memory runtime + localStorage `cooking_session_{recipe_id}`, envelope version 1, TTL 4h; no DB.
+**Testing**: Vitest, React Testing Library, fake Clock/scheduler, mocked browser adapters/shared recipe client; manual browser/device acceptance. No runnable suite currently exists.
+**Target Platform**: mobile web ≥360 CSS px, tablet/desktop, secure context for capabilities requiring it. The support matrix must record actual versions after testing, without assuming Safari/Firefox/Chrome parity.
+**Project Type**: frontend feature in a layered client-server SPA; public recipe reads still use shared DTOs/APIs without bypassing service/backend security.
+**Performance Goals**: transition <100ms; drift <1s/60 minutes while the tab is open; foreground alarm within 1s; restored overdue accurate to the second; instruction contrast ≥7:1 in High Contrast, readable from 1.5m; voice ≥85% in environments ≤60dB when enabled.
+**Constraints**: Next/Previous ≥64×64px, one step/view, offline core after loading, audio at most 60s, mic idle timeout 30s; no alarm guarantee during OS suspension/browser closure, and no absolute wake guarantee.
+**Scale/Scope**: independent recipes across multiple tabs, multiple independent timers per session; the spec sets no timer cap, so do not add a business limit. 060 baseline: 1–30 steps/1–50 ingredient rows; the local fixture/mapper may tolerate 3,000-character text and multiple images, but this is not a verified 060 DTO contract. Storage budget is measured defensively; browser quotas vary and are not a fixed guarantee.
 
 ## Constitution Check
 
@@ -30,7 +30,7 @@ Frontend-first design, without tables/migrations/cooking-session write APIs or i
 
 | Principle / Gate | Before Research | After Design / Compliance Approach |
 |---|---|---|
-| I. Spec approved before plan; per-story Jira | **NOT MET**: Draft, missing approval/Jira evidence | **Still not met**. Only a requested review draft; team approval required before formal adoption/implementation. Checklist quality is not approval |
+| I. Spec approved before plan; per-story Jira | **Before update: NOT MET** (draft, no Jira evidence) | Spec approval/independent implementation authorization is recorded per feature-owner confirmation. Per-story Jira keys remain outstanding and must be created/recorded before Jira-traceable commits/PRs; do not invent keys |
 | II. Test-first, a test for every AC | No skeleton, no tests run | Design maps all 32 ACs below; write/run FAIL before future code. No claim that Red/Green has run |
 | Service JaCoCo ≥70% | No backend service added | Not specific to frontend-only 050; project-wide backend quality gate remains, without creating a backend merely for appearances |
 | III. Simple layering/DTO/shared client | Source architecture/spec available | Aligned proposal: UI → pure domain/runtime → adapters; recipe HTTP belongs to its owner through shared client/layered backend, not direct Entity/DB access |
@@ -38,7 +38,7 @@ Frontend-first design, without tables/migrations/cooking-session write APIs or i
 | V. Responsive/Vietnamese/shared UI | No UI exists yet | Proposed shared primitives, centralized strings, ≥360px, accessibility/contrast/target test plan; no manual verification yet |
 | Technical/CI/DoD | No manifests/skeleton | Lint/Vitest/Vite build and review required once the skeleton exists; do not apply “green CI” to documentation as though the app has run |
 
-**Conclusion**: Research is documented, but the process approval gate **must not be bypassed**. The user's request for a draft is not a Constitution exemption. Blocking conditions are listed at the end.
+**Conclusion (readiness update 2026-11-11)**: Owner-reported team authorization and A01–A11 selections are recorded. Isolated frontend implementation can proceed through local ports and fixtures, test-first, without waiting for 060/070 runtime delivery. Jira keys are deferred to Sprint 5 by feature-owner decision; commits/PRs must not borrow Sprint 4 keys. Live recipe and review integration must remain deferred until those contracts are verified.
 
 ## Project Structure
 
@@ -111,7 +111,7 @@ src/
 3. **Pure logic**: Deadline engine, not a tick counter; pure parser, agreed upper/lower range behavior, mandatory 1h30 compound; author timer precedence/deduplication A01. Numeric custom timers always available.
 4. **App-shell runtime**: Per-recipe session map, one shared scheduler; rendering/ticks do not write storage. Alarm coordinator uses one loop and prevents click-through; auto-mute differs from acknowledgement. Timers survive page unmount with Keep, without guarantees after document closure.
 5. **Capabilities**: Viewport is baseline, native Fullscreen optional; wake sentinel release/reacquire; independently catch audio/vibration/recognition/TTS errors without blocking core. Mic final confidence ≥0.70, 30s idle; output/mic arbitration prevents self-triggering.
-6. **Persistence**: Text/ingredient/timer/settings snapshots, versioning/validation/quota catches; semantic writes + lifecycle flush. A08 fixed startedAt TTL requires approval; same-recipe tab conflict handling is best-effort, not atomic. No binary/audio/PII storage.
+6. **Persistence**: Text/ingredient/timer/settings snapshots, versioning/validation/quota catches; semantic writes + lifecycle flush. A08 fixed startedAt TTL and A10 best-effort same-recipe tab conflict policy are selected; no binary/audio/PII storage.
 7. **Exit/completion**: Unresolved timers → Keep/Discard confirmation; Keep widget, no automatic completion. Finish with all timers resolved → release view capabilities, overview completion banner, exactly-once 070 callback; reviews do not require Cooking Mode.
 
 See data-model/research for clock, state machines, and detailed policies; see integration for per-field contract evidence. No endpoint/step mapping is assumed to exist.
@@ -120,7 +120,7 @@ See data-model/research for clock, state machines, and detailed policies; see in
 
 This is the proposed technical sequence, **not creation of tasks.md or execution of tasks/implement workflows**:
 
-1. Team approves spec/Jira and A01–A11; B/D finalize recipe DTO, E/D finalize completion/shared design; platform supplies skeleton/client/primitives.
+1. Owner-reported approval and A01–A11 selections are recorded in spec/research. Per-story Jira keys are deferred to Sprint 5 by the feature owner; until they exist, keep work local and do not invent keys in branch/commit/PR names. For isolated implementation, use the existing React/Vite/Vitest platform and a local RecipeReader port with fixtures; do not wait for the live shared client. Verify the recipe DTO with 060 before integration, and verify the completion callback with 070 before real review handoff.
 2. Write fixtures and failing parser/clock/timer/persistence/mapper tests before pure implementation; mock browser adapters.
 3. Write failing component tests, then cooking view/navigation/checklist; next timer drawer and shell runtime/dialog; integration-test Keep before connecting the router.
 4. Add voice/capability enhancements after core; failures must not make core network-dependent; mock tests precede adapter implementation.
@@ -131,17 +131,17 @@ This is the proposed technical sequence, **not creation of tasks.md or execution
 | Browser suspension/clock change/blocked audio | Missed timely alarms; incorrect time if clock changes | Deadline/reconcile, unlock/fallback, scheduled audio stop, notice; no background-delivery guarantee |
 | Wake Lock OS release / absolute SC-002 | Cannot guarantee continuous illumination in every condition | Reacquire while visible, banner, real-device evidence, team approval of G06 handling |
 | Speech availability/confidence/noise/network | Command accuracy/latency falls short | Conservative whitelist/confidence, 30s idle, privacy notice, touch/keyboard baseline; manual ≤60dB |
-| Storage quota/disabled/large snapshots | Cannot restore 100% without storage | Validated envelope, continued runtime, warning, A09 budget pending approval |
-| 24h timer / 4h TTL | Recovery lost after 4h despite running timers | No unilateral TTL changes; warn when timers exceed the window, A08 decision needed |
-| Same recipe in multiple tabs | Nonatomic, duplicate audio/races | Best-effort conflict/revision detection, one tab/recipe recommended; A10 beyond spec guarantees |
+| Storage quota/disabled/large snapshots | Cannot restore 100% without storage | Validated envelope, continued runtime, warning per selected A09; no truncation |
+| 24h timer / 4h TTL | Recovery lost after 4h despite running timers | Fixed startedAt+4h recovery window selected; warn when timers exceed it, no recovery promise beyond TTL |
+| Same recipe in multiple tabs | Nonatomic, duplicate audio/races | Best-effort conflict/revision detection and single-writer policy selected; no atomicity guarantee |
 | API DTO unsettled, 060 schema/spec differences | Integration errors or lost text/media | Evidence matrix, tolerant mapper/fixtures; B/D approval of G02/G03 |
-| Completion unclear for paused/expired/Keep | Premature/duplicate review prompts | A11 explicit Finish + all resolved + deduplication, E/D contract sign-off |
+| Completion unclear for paused/expired/Keep | Premature/duplicate review prompts | Selected A11 explicit Finish + all resolved + deduplication; real 070 payload/prompt contract still must be verified before integration |
 
 ## Complexity Tracking
 
 | Component / Exception | Rationale | Simpler Alternatives and Assessment |
 |---|---|---|
-| Draft design before spec approval | User requested research; review documentation needed | **Not a waiver** of Constitution I; not formally adopted, stop before implementation; full compliance requires team spec approval first |
+| Jira traceability before implementation PR | Per-story issue keys are not present in the repository | Do not invent keys; create/record Jira issues before branch/commit/PR naming. Isolated local implementation may proceed under owner-reported authorization |
 | App-shell runtime + pure reducer/store | Keep timers must survive page unmount; unit tests need no DOM | Page-local timer hooks are simpler but lose timers; no Redux/Zustand/event-bus dependency added |
 | Browser adapters/Clock injection | Deterministic capability/permission/clock mocks | Component-local API calls hinder testing and cleanup; no strategy framework added |
 | Snapshot beyond small timer/progress data | Offline ingredients/steps after loading and consistent restoration | IDs alone require network; budget is an assumption, no IndexedDB/PWA choice before the team demonstrates need |
@@ -239,7 +239,7 @@ USx-ACy IDs follow scenario order in the spec; each row has at least one propose
 | US5-AC2 | A-STORE valid-session-modal-step3/resume-start-over | A+M06 |
 | US5-AC3 | A-STORE resume-before-deadline-subtract-elapsed | A+M06 |
 | US5-AC4 | A-STORE resume-after-deadline-red-overdue-not-full-replay | A+M04/M06 |
-| US5-AC5 | A-STORE at-and-after-4h-purge-default-state | A+M06; A08 TTL anchor requires approval |
+| US5-AC5 | A-STORE at-and-after-4h-purge-default-state | A+M06; fixed startedAt+4h TTL selected |
 | US5-AC6 | A-SHELL finish-cancel-running-confirm-keep-or-wipe | A+M08 |
 | US5-AC7 | A-STORE recipe-A-B-isolated-keys-no-overwrite/pause | A+M07 |
 
@@ -251,17 +251,18 @@ USx-ACy IDs follow scenario order in the spec; each row has at least one propose
 - Edge 7 TTS missing: A-VOICE no-vi-fallback/voiceschanged; M05. Edge 8 active timers exit: A-SHELL keep-unmount-not-dispose/discard; M08.
 - Storage corruption/quota/unsupported version, author missing/invalid timer, step text/media mismatch, parser invalid/overflow, same-recipe tab conflict: A-STORE/A-READ/A-PARSE and M06/M07; open policies do not automatically become baseline requirements.
 
-## Open decisions & implementation blockers
+## Integration gates and implementation boundaries
 
-**Unresolved**: A01 author/parser precedence for differing durations; A02 snapshots when recipes change/become unavailable; A03 wall-clock jumps; A04 extension/restart outside RUNNING; A05 restore/audio-window; A06 multiple durations/input/range limits; A07 “Hẹn giờ”; A08 TTL anchor and long timers; A09 snapshot budget/storage failure; A10 same-recipe tabs; A11 all-resolved/completion/review lifecycle. Detailed rationale/alternatives are in research; do not treat these as fully decided by the agent.
+**Selected by feature owner on 2026-11-11**: A01–A11 policies are recorded in `spec.md` and `research.md`. Remaining open items are integration/verification gates, not unresolved Axx behavior: per-story Jira keys (deferred to Sprint 5 by feature-owner decision); verified 060 read DTO/shared client; verified 070 completion/prompt contract; browser/device acceptance and QA registration. Local adapter/fixture implementation may proceed without claiming those integrations.
 
-**Blockers Before Implementation/Formal Adoption**:
+**Independent implementation boundary**:
 
-1. Constitution I: team approves spec and story Jira, handles environment metadata prepared by the user; do not independently check the branch in this session.
-2. Platform provides skeleton/toolchain/shared client/shared UI and actual lint/test/build CI.
-3. B/D sign off read DTO/timer exposure/media/text limits; E/D sign off completion/prompt/design and business-impacting Axx items.
-4. Team finalizes acceptance handling for limitations that cannot be absolutely guaranteed (Wake/audio/background/clock/storage), without silently lowering SC/NFR.
+1. Spec approval and A01–A11 selections are recorded from the feature owner's confirmation. Per-story Jira keys remain required before Jira-compliant branch/commit/PR work; never invent them.
+2. Existing frontend platform is available. Implement with the verified React/Vite/Vitest/RTL toolchain and existing styles; do not assume Tailwind/shared Cooking UI primitives.
+3. Use a local `RecipeReader` port and deterministic fixtures. The fixture shape is provisional and is not the 060 DTO. Do not implement a guessed endpoint, direct DB access, or upstream API adapter until 060 contract is verified.
+4. Use a local completion callback port/mock. Do not claim 070 prompt/auth integration until that contract is verified.
+5. Retain test-first policy and record actual test/build/manual evidence. Browser capabilities and device acceptance are unverified; implement fallbacks and do not claim universal Wake Lock/audio/voice guarantees.
 
-**Unverified**: app build, automated tests/coverage, backend/frontend integration, capability/support matrix, secure-context deployment, manual measurements, and real-device acceptance. Reading sources/checking documentation does not replace these steps.
+**Unverified**: application tests/build for 050, live 060/070 integration, browser support matrix, secure-context deployment, manual measurements, and real-device acceptance. These are implementation/acceptance tasks, not blockers to isolated local-port development.
 
-**Execution boundary**: Create five design artifacts; the additional exception requested by the user at the end is appending Hưng's AI log. Do not modify spec/checklist, other proposals/schemas/specs, `.specify/feature.json`, or `src/specs/`; no source code/dependencies/scaffolding, tasks/implement, Jira, or Git commands/scripts indirectly invoking Git. Use the template manually without running setup/prerequisite scripts.
+**Execution scope**: 050 frontend source, tests, and its feature artifacts may be changed under the recorded independent authorization. Do not create backend services, DB tables, Flyway migrations, invented APIs, or edit unrelated feature artifacts. Jira/Git metadata must come from the user/team, not be fabricated.

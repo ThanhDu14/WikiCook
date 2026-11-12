@@ -4,6 +4,7 @@ import { HomePage } from '@/features/search/pages/HomePage';
 import { SearchResultsPage } from '@/features/search/pages/SearchResultsPage';
 import { ShoppingHistoryPage } from '@/features/shopping-list/ShoppingHistoryPage';
 import { ShoppingListPage } from '@/features/shopping-list/ShoppingListPage';
+import { CookingPage } from '@/features/cooking-mode/pages/CookingPage';
 import { AppLayout } from './AppLayout';
 import { NotFoundPage } from './NotFoundPage';
 
@@ -18,6 +19,10 @@ export const routerFuture = {
 
 // One route per feature; each feature owns its page under src/features/<feature>/.
 export const routes: RouteObject[] = [
+  {
+    path: 'cooking/:recipeId',
+    element: <CookingPage />,
+  },
   {
     element: <AppLayout />,
     children: [

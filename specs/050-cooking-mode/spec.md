@@ -4,7 +4,9 @@
 
 **Created**: 2026-10-16
 
-**Status**: Draft (Ready for Review)
+**Status**: Approved for independent implementation (approval confirmed by feature owner, 2026-11-11; per-story Jira keys still pending)
+
+**Implementation approval**: The feature owner reports that the team authorized independent implementation of Feature 050. This authorizes work within the stated frontend-only scope; it does not assert that Jira issues have been created or that the 060/070 integration contracts are complete. Until those contracts are verified, implementation must use isolated ports and fixtures and must not invent upstream APIs.
 
 **Input**: User description: "Tạo đặc tả yêu cầu chức năng cho tính năng 050-cooking-mode: Hands-free Cooking Mode & Concurrent Timers (Chế độ nấu ăn rảnh tay và Đếm giờ song song) của dự án WikiCook theo đúng cấu trúc spec-template.md."
 
@@ -43,7 +45,7 @@ When cooking in an active home kitchen, users frequently encounter physical fric
 - Q: Khi người dùng đang nấu dở một công thức (trong thời hạn 4 tiếng) mà mở tiếp một công thức khác và bấm "Bắt đầu nấu", hệ thống sẽ xử lý phiên nấu ăn như thế nào? → A: Lưu phiên độc lập theo từng mã công thức (recipe_id) trong LocalStorage (key: `cooking_session_{recipe_id}`), cho phép người dùng mở nhiều tab trên trình duyệt để nấu song song các món khác nhau mà không sợ xung đột hay mất dấu timer.
 - Q: Khi người dùng nói khẩu lệnh "Đọc lại", hệ thống sẽ phản hồi bằng giọng nói (Text-to-Speech đọc nội dung bước) hay chỉ phản hồi bằng tín hiệu hình ảnh và âm báo ngắn? → A: Đọc to toàn bộ nội dung hướng dẫn của bước hiện tại bằng Web Speech Synthesis (Text-to-Speech) tiếng Việt (`vi-VN`). Nếu thiết bị/trình duyệt không hỗ trợ gói giọng tiếng Việt, hệ thống tự động kích hoạt phương án dự phòng (fallback): phát âm báo ngắn (earcon), chớp sáng viền nội dung bước và hiển thị thông báo nhẹ.
 - Q: Khi một bộ đếm giờ (timer) đang chạy đếm ngược, người dùng có thể điều chỉnh nhanh thời gian (như cộng thêm 1 phút, 5 phút) trực tiếp trên thẻ timer hay không? → A: Cung cấp các nút chip bấm nhanh "+1 phút", "+5 phút" trực tiếp trên mỗi thẻ timer đang chạy để người dùng gia hạn thời gian tức thì chỉ với 1 lần chạm mà không cần tạm dừng hay tạo lại timer mới.
-- Q: Khi người dùng bấm "Hoàn thành nấu ăn" hoặc "Thoát" khỏi chế độ nấu, nếu vẫn còn bộ đếm giờ (timer) đang chạy đếm ngược thì hệ thống sẽ xử lý như thế nào? → A: Hiển thị hộp thoại cảnh báo kèm số lượng timer đang chạy, cung cấp hai tùy chọn: "Tiếp tục chạy bộ đếm giờ" (chuyển sang widget đếm giờ nổi trên trang công thức) hoặc "Hủy tất cả và thoát" (xóa sạch dữ liệu phiên và dừng tất cả timer).
+- Q: Khi người dùng bấm "Hoàn thành nấu ăn" hoặc "Thoát" khỏi chế độ nấu, nếu vẫn còn bộ đếm giờ chưa giải quyết thì hệ thống sẽ xử lý như thế nào? → A: Hiển thị hộp thoại phân biệt timer RUNNING, PAUSED và EXPIRED chưa xác nhận; cho phép tiếp tục phiên/giữ timer chạy ở widget hoặc hủy tất cả và thoát. Chỉ phát completion khi người dùng chủ động Finish sau khi mọi timer đã được giải quyết; hủy là cancellation, không phải hoàn thành.
 
 ---
 
@@ -173,7 +175,26 @@ As a **cook who accidentally refreshed the browser or closed the tab**, I want m
 - **FR-008**: System MUST support keyboard navigation shortcuts (`Spacebar` / `Right Arrow` for Next; `Left Arrow` for Previous).
 - **FR-009**: System MUST display the specific ingredients and measurements associated with the current step, or provide a single-tap collapsible drawer displaying the complete recipe ingredient checklist if step-level mappings are absent.
 - **FR-010**: System MUST parse instruction text for standard Vietnamese duration patterns (`X phút`, `X giờ`, `X giây`, `X-Y phút`) and render corresponding quick-start timer buttons.
-- **FR-011**: System MUST allow users to manually create, label, pause, resume, extend duration in-flight via quick-add chips (`+1 phút`, `+5 phút`), and delete custom countdown timers at any point during Cooking Mode.
+- **FR-011**: System MUST allow users to manually create, label, pause, resume, extend duration in-flight via quick-add chips (`+1 phút`, `+5 phút`) while a timer is RUNNING, and delete custom countdown timers at any point during Cooking Mode. EXPIRED timers are not extended; the user must create a new timer.
+
+### Approved behavioral decisions (2026-11-11)
+
+The feature owner selected these policies for implementation. Policies refine the acceptance scenarios above without changing the frontend-only ownership boundary:
+
+- **A01 — Author and parsed timers:** A valid author-provided `timer_seconds` is the primary quick-start. If text parsing finds a different duration, show it as a separate, source-labelled choice. Deduplicate equivalent durations; never start a timer automatically.
+- **A02 — Recipe revision/archival:** Keep the loaded snapshot stable for the active session. Notify if the recipe becomes unavailable and prevent new sessions from unavailable recipes.
+- **A03 — Wall clock changes:** Keep absolute wall-clock deadlines and notify the user when a significant wall/monotonic discrepancy is detected; do not silently adjust deadlines.
+- **A04 — Timer extension:** `+1`/`+5` applies only to RUNNING timers. PAUSED timers must be resumed first; EXPIRED timers require creating a new timer.
+- **A05 — Alarm restore:** An expiration has a maximum 60-second audio window from its deadline. Play only the remaining portion while the app is visible; do not restart a fresh 60-second window on restore. Restored overdue timers otherwise remain visual until acknowledged.
+- **A06 — Multiple parsed durations:** Show independent durations as separate source/context-labelled choices; do not add them together automatically.
+- **A07 — Voice “Hẹn giờ”:** Open the numeric timer picker for the current step; the user chooses and starts the timer.
+- **A08 — Session TTL:** Expire the stored session at `startedAt + 4 hours`; activity does not extend the TTL.
+- **A09 — Storage failure:** Preserve the in-memory session and warn that reload recovery is unavailable. Do not truncate data or block cooking solely because persistence failed.
+- **A10 — Same-recipe tabs:** Use a best-effort single-writer policy. The tab detecting a competing writer stops mutations/persistence and its alarms, then asks the user to continue in one tab. This is not a guarantee of atomic locking.
+- **A11 — Completion:** Only an explicit Finish after all timers are resolved emits completion, exactly once. RUNNING, PAUSED, IDLE, and unacknowledged EXPIRED timers remain unresolved; keeping timers in the background is not completion, and discarding is cancellation.
+
+These decisions were selected by the feature owner on 2026-11-11; cross-feature contract approval for 060/070 and browser/device acceptance remain separate integration/verification items.
+
 - **FR-012**: System MUST support the simultaneous execution of multiple independent countdown timers without clock drift.
 - **FR-013**: System MUST emit an audible, repeating alarm for a maximum duration of 60 seconds when any timer reaches zero, auto-silencing the audio after 60 seconds while maintaining a persistent pulsing red "Đã quá hạn X phút" (Overdue) visual badge and device vibration where supported.
 - **FR-014**: System MUST allow silencing active alarms through a single tap anywhere on the screen or via the `Spacebar` key.
