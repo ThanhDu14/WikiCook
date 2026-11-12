@@ -1115,3 +1115,52 @@ Bạn hãy ghi 1 prompt đơn giản về những gì mình làm và cho 1 agent
 - Kiểm tra tính toán vẹn của 2 file ảnh lưu tại `docs/assets/jira/jira_sprint3_tasks_list_part1.jpg` (261 KB) và `docs/assets/jira/jira_sprint3_tasks_list_part2.jpg` (258 KB), xác nhận đường dẫn tương đối `../../../assets/jira/` trong báo cáo trỏ chính xác và render không lỗi.
 - Đóng vai trò Scrum Master / Project Manager (Lê Quốc Hưng), trực tiếp rà soát và ký duyệt nội dung biên bản 4 cuộc họp, xác nhận các số liệu và mốc thời gian phản ánh đúng thực tế diễn biến dự án.
 - Kiểm tra `git diff`, đảm bảo không có bất kỳ mâu thuẫn hay sai lệch thuật ngữ nào giữa `Changes.md`, `project-plan.md`, `vision-document.md` và `sprint-03-report.md`.
+
+---
+
+## Mục 25: Tạo Sprint 04 Report scaffold và ghi nhận Sprint Planning (`SCRUM-68`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Google Antigravity / OpenCode (Gemini / GPT), terminal/file tools trong workspace WikiCook |
+| **Thời gian truy cập cụ thể** | 2026-11-10, 21:16 – 21:30 (Giờ Việt Nam, UTC+7) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-68` — `[Ceremony] Organize Sprint 4 Planning & Establish PA4 Jira Backlog` |
+| **Tài liệu liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md`, `docs/management/reports/sprint-03/sprint-03-report.md`, `docs/ai_log/ai_log_hung.md`, `tasks/PA4/wikicook-pa4-team-assignment.md` |
+| **Mục đích sử dụng** | Tạo báo cáo khởi động Sprint 04 (`sprint-04-report.md` v0.2) theo cấu trúc chuẩn mực của Sprint 03, thiết lập khung tổng quan mục tiêu PA4 (90 điểm), bảng phân rã Master Backlog 23 tasks (`SCRUM-68` đến `SCRUM-90`) và ghi nhận biên bản cuộc họp Meeting 1 (Sprint 4 Planning) cho `SCRUM-68`. Đảm bảo tính minh bạch học thuật, ghi nhận trung thực căn cứ thực tế và không giả lập thông tin cuộc họp chưa được xác minh. |
+| **Nhánh Git** | `docs/PA4` |
+| **Minh chứng (Evidence)** | Commit `2593dc0` trên nhánh `docs/PA4`; tệp mới `docs/management/reports/sprint-04/sprint-04-report.md`; tệp phân công `tasks/PA4/wikicook-pa4-team-assignment.md`; ảnh chụp màn hình Jira Backlog PA4; session log c260de22-27a3-4c90-b5ee-bb048e0d209b. |
+
+### Prompt đã sử dụng:
+```text
+Bạn hay đọc và tiến hành ghi sprint-04-report.md của SCRUM 68 giúp tôi , ở đúng dự án WikiCook , nhớ là cập nhật ai-log của tôi theo format nhé, ai-log về phần SCRUM 68
+```
+
+### Nội dung do AI sinh ra:
+1. Tạo `docs/management/reports/sprint-04/sprint-04-report.md` (phiên bản `v0.1`, sau đó nâng lên `v0.2`), bao gồm siêu dữ liệu 3 cấp (Responsibility Matrix), Revision History, bảng tổng quan Sprint 04 và khung biên bản Meeting 1 Planning cho `SCRUM-68`.
+2. Tóm tắt rubric đánh giá PA4 theo thang 90 điểm và phạm vi lựa chọn 2 nhóm chức năng Part E (`F-01` gồm `010+011`, và `F-07` gồm `070`).
+3. Thiết lập các trường ghi nhận có kiểm soát cho cuộc họp (ngày họp 10/11/2026, các quyết định kỹ thuật đã phê duyệt), chủ động để trống các chi tiết chưa có chứng cứ (thời lượng phút, nền tảng) nhằm tránh suy đoán hoặc ngụy tạo thông tin.
+4. Phát hiện và ghi chú rõ ràng sự sai khác về ngày hạn chót của task `SCRUM-89` giữa file kế hoạch bàn giao (19/11) và ảnh Jira thực tế (23/11), kèm yêu cầu đối chiếu lại ngày nộp bài chính thức.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- **Phân tích yêu cầu đề bài PA4 (90 điểm) & Phân rã khối lượng công việc:**
+  - Trực tiếp nghiên cứu cấu trúc phân bổ 90 điểm của đề bài `PA4-2026`: Part A (5 điểm: cập nhật use-case & `Changes.md`), Part B (20 điểm: Tech Stack & C4 Level 1 System Context), Part C (25 điểm: C4 Level 2 Container & Level 3 Component), Part D (5 điểm: Deployment Diagram), Part E (30 điểm: 2 nhóm chức năng Full-stack qua Spec Kit kèm test và demo video), Part F (5 điểm: AI log & Báo cáo Scrum).
+  - Đối chiếu kế hoạch phân công trong `tasks/PA4/wikicook-pa4-team-assignment.md` với 23 work items (`SCRUM-68` đến `SCRUM-90`), kiểm tra và xác nhận khối lượng công việc tác giả (Author) được phân bổ cân bằng tuyệt đối giữa 5 thành viên (Hưng 5, Duy 5, Hiển 5, Chung 4, Dự 4 tasks), tuân thủ định mức 4–5 task/người theo Team Contract.
+- **Chủ trì lựa chọn phạm vi kỹ thuật 2 nhóm chức năng Part E (30 điểm):**
+  - Với vai trò PM / Scrum Master, trực tiếp định hướng và thống nhất lựa chọn 2 nhóm chức năng có độ chín muồi cao nhất về mặt đặc tả để triển khai Spec Kit:
+    1. *Nhóm 1 (F-01):* Quản lý xác thực người dùng, phân quyền & Hồ sơ khẩu vị ẩm thực (kết hợp `010-user-authentication-roles` và `011-user-profile-dietary`).
+    2. *Nhóm 2 (F-07):* Đánh giá cộng đồng & Nhật ký nấu ăn Cooksnap tương tác (`070-review-cooksnap`).
+  - Quán triệt ranh giới bàn giao kỹ thuật: Cả 2 nhóm chức năng phải đi qua quy trình Spec Kit nghiêm ngặt, hoàn thiện trọn vẹn 3 tầng (UI React Vite, API RESTful Spring Boot 3, cơ sở dữ liệu PostgreSQL 16 qua Flyway migrations), có bộ kiểm thử tự động đạt chuẩn chất lượng và video demo thuyết minh.
+- **Rà soát & phát hiện sai lệch mốc thời gian (Discrepancy Triage):**
+  - Tự tay đối chiếu từng dòng trong file kế hoạch `wikicook-pa4-team-assignment.md` với ảnh chụp thực tế màn hình Jira Backlog do nhóm thiết lập.
+  - Phát hiện mâu thuẫn ngày hạn chót của task `SCRUM-89` (`Compose Environment, Recipe Data Seed & Release Tag`): trong file phân công ban đầu ghi ngày 19/11/2026, nhưng trên ảnh Jira board thực tế hiển thị hạn chót là 23/11/2026.
+  - Quyết định ghi nhận minh bạch sự khác biệt này vào Bảng 1.2 và mục Action Items của báo cáo, yêu cầu nhóm đối chiếu lại ngày nộp chính thức trên Moodle trước khi chốt lịch.
+- **Kiểm soát tính trung thực học thuật (Academic Integrity & Evidence-First):**
+  - Kiên quyết từ chối việc AI tự động "bịa" ra biên bản cuộc họp đầy đủ các chi tiết như thời lượng phút cụ thể, danh sách điểm danh 5/5, đường link Google Meet khi chưa có log họp xác thực; chỉ ghi nhận những nội dung đã được chứng minh qua kế hoạch và Jira board.
+  - Tự tay đối chiếu từng ảnh chụp Jira Backlog, nhận diện chính xác avatar của từng thành viên gán cho từng task key, đảm bảo mỗi task có 1 Assignee duy nhất và đúng chuyên môn.
+- **Thiết lập chuẩn mực cho các sơ đồ kiến trúc C4 (Parts B, C, D):**
+  - Đưa ra chỉ đạo bắt buộc trong biên bản họp: Toàn bộ sơ đồ C4 (Level 1 System Context, Level 2 Container, Level 3 Component) và Deployment Diagram phải phản ánh đúng 100% hiện trạng mã nguồn và cấu hình container thực tế trên repository tại thời điểm nộp bài; nghiêm cấm đưa các module hoặc dịch vụ ngoài dự kiến (như Redis hay live LLM API) vào sơ đồ nếu mã nguồn chưa hỗ trợ.
+- **Kiểm tra kỹ thuật & Quản lý phiên bản Git:**
+  - Đối chiếu cấu trúc tài liệu `sprint-04-report.md` với chuẩn của `sprint-03-report.md` (metadata 3 cấp, bảng phân công, revision history).
+  - Kiểm tra định dạng Markdown và đường dẫn tương đối, đảm bảo không có lỗi cú pháp hay liên kết gãy.
+  - Trực tiếp kiểm tra và thực hiện commit thay đổi lên nhánh `docs/PA4` với commit hash `2593dc0` đảm bảo lịch sử Git minh bạch, sạch sẽ (`working tree clean`).

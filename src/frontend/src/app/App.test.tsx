@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { searchHandlers } from '@/features/search/__tests__/handlers';
 import { makeList } from '@/features/shopping-list/test/fixtures';
 import { server } from '@/test/server';
 import { routerFuture, routes } from './routes';
@@ -19,17 +20,20 @@ const activeTitle = () => screen.findByRole('heading', { level: 1, name: 'Danh s
 describe('app shell', () => {
   beforeEach(() => {
     server.use(
+      ...searchHandlers,
       http.get('/api/v1/shopping-lists/active', () => HttpResponse.json(makeList())),
       http.get('/api/v1/shopping-lists/history', () => HttpResponse.json([])),
     );
   });
 
-  it('redirects the root path to the shopping list page', async () => {
+  it('renders the home page at /', async () => {
     renderAt('/');
 
-    expect(await activeTitle()).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Hôm nay nấu gì?' })).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: 'WikiCook' }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('navigation', { name: 'Điều hướng chính' })).toHaveLength(2); // header + mobile bar
+    const header = appHeader();
+    expect(within(header).getByRole('link', { name: 'Khám phá' })).toHaveAttribute('aria-current', 'page');
   });
 
   it('has the header of the screens: logo, main links, search and account (W-MP01)', async () => {
@@ -38,10 +42,11 @@ describe('app shell', () => {
 
     const header = appHeader();
     const nav = within(header).getByRole('navigation', { name: 'Điều hướng chính' });
+    expect(within(nav).getByRole('link', { name: 'Khám phá' })).toHaveAttribute('href', '/');
+    expect(within(nav).getByRole('link', { name: 'Khám phá' })).not.toHaveAttribute('aria-current', 'page');
     expect(within(nav).getByRole('link', { name: 'Thực đơn' })).toHaveAttribute('href', '/meal-planner');
     expect(within(nav).getByRole('link', { name: 'Đi chợ' })).toHaveAttribute('href', '/shopping-list');
     // modules that are not built yet are shown but not links
-    expect(within(nav).getByText('Khám phá').closest('a')).toBeNull();
     expect(within(nav).getByText('Đã lưu').closest('a')).toBeNull();
     expect(within(header).getByRole('textbox', { name: 'Tìm kiếm' })).toBeDisabled();
     expect(within(header).getByRole('button', { name: 'Thông báo' })).toBeDisabled();
@@ -63,6 +68,13 @@ describe('app shell', () => {
     renderAt('/shopping-list/import?weekStart=2026-11-30');
 
     expect(await activeTitle()).toBeInTheDocument();
+  });
+
+  it('renders search results at /search', async () => {
+    renderAt('/search?q=ga');
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Kết quả' })).toBeInTheDocument();
+    expect(await screen.findByText(/42 công thức/i)).toBeInTheDocument();
   });
 
   it('renders the active shopping list at /shopping-list', async () => {
@@ -96,11 +108,11 @@ describe('app shell', () => {
     expect(screen.getByText('Lỗi 404')).toBeInTheDocument(); // W-CM01
   });
 
-  it('navigates back to the shopping list from the not-found page', async () => {
+  it('navigates back to the home page from the not-found page', async () => {
     renderAt('/khong-ton-tai');
 
     await userEvent.click(await screen.findByRole('link', { name: 'Về trang chủ' }));
 
-    expect(await activeTitle()).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Hôm nay nấu gì?' })).toBeInTheDocument();
   });
 });
