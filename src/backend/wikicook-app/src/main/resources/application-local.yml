@@ -5,3 +5,13 @@ spring:
     url: ${DB_URL:jdbc:postgresql://localhost:${POSTGRES_PORT:5432}/${POSTGRES_DB:wikicook}}
     username: ${DB_USER:${POSTGRES_USER:wikicook}}
     password: ${DB_PASSWORD:${POSTGRES_PASSWORD:wikicook}}
+  # Mailpit from docker-compose (web UI http://localhost:8025)
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+
+# Spec 010: plain http on the Vite dev server
+wikicook:
+  auth:
+    cookie-secure: false
+    public-base-url: http://localhost:5173

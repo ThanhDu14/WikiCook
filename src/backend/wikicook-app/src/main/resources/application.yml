@@ -18,6 +18,13 @@ spring:
       ddl-auto: validate
   flyway:
     locations: classpath:db/migration
+    # V102-V104 (spec 010) are lower than V403 that already ran (research R11)
+    out-of-order: true
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
   mvc:
     problemdetails:
       enabled: true
@@ -26,11 +33,19 @@ spring:
     deserialization:
       accept-float-as-int: false
 
+# Correct client IP behind nginx (sign-in throttle, audit ip_address)
+server:
+  forward-headers-strategy: native
+
 management:
   endpoints:
     web:
       exposure:
         include: health,info
+  health:
+    # An unreachable SMTP server must not turn /actuator/health DOWN (research R8)
+    mail:
+      enabled: false
 
 wikicook:
   # Defaults live in AiProperties (wikicook-ai); every key can be overridden by its WIKICOOK_AI_* variable.
@@ -51,6 +66,26 @@ wikicook:
       total: ${WIKICOOK_AI_DAILY_CAP_TOTAL:100}
       meal-planner-share: 0.7
       nutrition-share: 0.3
+  # Spec 010 (com.wikicook.auth). Secrets come only from the environment.
+  # No spring.security.oauth2.client.registration here: Spring Boot rejects an empty client-id at startup,
+  # so the Google registration is built in code when the id is set. No issuer-uri either (research R7, NFR-005).
+  auth:
+    jwt-secret: ${WIKICOOK_JWT_SECRET:}
+    email-hash-key: ${WIKICOOK_EMAIL_HASH_KEY:}
+    public-base-url: ${WIKICOOK_PUBLIC_BASE_URL:http://localhost:3000}
+    cookie-secure: ${WIKICOOK_AUTH_COOKIE_SECURE:true}
+    bcrypt-strength: 12
+    access-token-ttl: 15m
+    mail-from: ${WIKICOOK_MAIL_FROM:no-reply@wikicook.local}
+    # Compose passes an unset variable as an empty string; AuthProperties.appealContact() falls back to mail-from.
+    appeal-contact: ${WIKICOOK_APPEAL_CONTACT:}
+    sign-in:
+      ip-limit: ${WIKICOOK_AUTH_SIGN_IN_IP_LIMIT:100}
+    jobs:
+      enabled: true
+    google:
+      client-id: ${WIKICOOK_GOOGLE_CLIENT_ID:}
+      client-secret: ${WIKICOOK_GOOGLE_CLIENT_SECRET:}
   # Dev stand-ins for 010/011 (com.wikicook.devstub); never enable in production.
   dev-stubs:
     enabled: ${WIKICOOK_DEV_STUBS_ENABLED:false}
