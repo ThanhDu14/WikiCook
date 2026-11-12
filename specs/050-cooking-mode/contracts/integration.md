@@ -1,6 +1,6 @@
 # Integration Contracts — Cooking Mode 050
 
-**Ngày**: 2026-10-25 · **Trạng thái**: đề xuất liên module, chưa là contract API đã triển khai.  
+**Ngày**: 2026-10-25 · **Trạng thái**: boundary proposal; local 050 ports may be implemented independently, but this is not a verified 060/070 wire contract.
 [Spec](../spec.md) · [Plan](../plan.md) · [Data model](../data-model.md) · [Research/gaps](../research.md)
 
 ## 1. Ownership và trạng thái hiện tại
@@ -116,7 +116,7 @@ interface PostCookingReviewPort {
 
 070 sở hữu kiểm tra đăng nhập và review đã có: chưa có → create form, đã có → “Cập nhật đánh giá” mở edit; không preselect sao, recipe được pre-link, picker Cooksnap sẵn. Guest login với return context; không auto-submit. “Để sau” chỉ cập nhật trạng thái prompt local cùng session, không tạo review. 070 validate recipe availability/ownership/one-review rule phía server. Dismiss/navigation-away không re-prompt cùng session; cần phối hợp giữ dedupe trước khi cleanup envelope.
 
-**A11 chưa duyệt**: Keep timer giữ session BACKGROUND, sau cùng phải explicit Finish để completion; auto mute không resolved, acknowledge mới resolved; Discard-all-and-exit là cancel không completion. Không dùng contract này để cấm review từ detail; 070 hoạt động độc lập nếu 050 chưa triển khai.
+**A11 đã được feature owner lựa chọn ngày 2026-11-11**: Keep timer giữ session BACKGROUND, sau cùng phải explicit Finish để completion; auto-mute không resolved, acknowledge mới resolved; Discard-all-and-exit là cancel, không completion. 050 có thể implement qua local callback port/mock. Payload, prompt/auth behavior và live integration vẫn cần xác nhận với owner 070 trước khi tích hợp thật. Không dùng contract này để cấm review từ recipe detail.
 
 ## 6. Contract verification dự kiến
 

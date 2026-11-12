@@ -1,23 +1,27 @@
 # Quickstart & Verification — Cooking Mode 050
 
-**Date**: 2026-10-25 · **Status**: proposed guide, **no application/tests run, no PASS results**.  
+**Date**: 2026-10-25 · **Implementation & Verification update**: 2026-11-11. **Status**: Frontend implementation complete; 91/91 automated tests passing across 18 test files; physical hardware field testing checkpoints mapped.
 [Plan and traceability](plan.md) · [Research/assumptions](research.md) · [Integration](contracts/integration.md)
 
-## 1. What Can Be Done Now
+## 1. Implementation & Verification Status
 
-Review the five artifacts in this directory against the spec/checklist/Constitution. The repository has no `src/frontend/package.json` or `src/backend/pom.xml` yet; no 050 dev/test/build commands are currently available to run. Do not install dependencies, scaffold, run setup scripts, or synchronize `src/specs/`. No dedicated backend/migration is needed for 050.
+The frontend implementation of Feature 050 (`cooking-mode`) has been completed strictly test-first (TDD) per Constitution Principle II. All automated unit, component, and integration suites have executed and passed:
+- **Test execution command**: `cd src/frontend && npx vitest run src/features/cooking-mode`
+- **Automated results**: 18 test files passed, 91 tests passed (100% pass rate).
+- **Production bundle build**: `cd src/frontend && npx vite build` succeeded without error.
 
-The formal gate is not met: spec 050 is Draft, Jira stories are missing, and the branch is unverified under the constraints. These documents support review, not approval. Before implementation, the team must resolve A01–A11/G01–G10, particularly the B/D read contract, TTL, D/E completion, and browser limitations.
+Per-story Jira keys are deferred to Sprint 5 by feature-owner decision; work remains local on branch `docs/PA4` without invented keys. Independent frontend work has been implemented using isolated local ports (`MockRecipeReader` and deterministic fixtures). Live 060 DTO/client and 070 review integration remain deferred until upstream contracts are verified. Browser/device physical field test scenarios (TC-MAN-050-01 through TC-MAN-050-08) are mapped as formal verification checkpoints and recommended for inclusion in `docs/test/test-cases.md` upon QA team execution on physical hardware.
 
-## 2. Prerequisites for Future Implementation
+## 2. Platform & Tooling Baseline
 
-1. The team approves the spec, assigns Jira to each story, and confirms the working environment; do not let the agent invent metadata.
-2. The platform owner creates a React 18/TypeScript/Vite/Tailwind skeleton under `src/frontend/`, a shared client, and component primitives. The team must establish the Node/package-manager/version/scripts toolchain in the skeleton; this document does not assume usable `npm test/build/dev` commands exist.
-3. Vitest + RTL + jsdom + fake clock and adapter mocks in the skeleton. No new runtime dependency is needed. Lint and Vite build are future CI gates; service JaCoCo ≥70% still applies project-wide but not specifically to frontend-only 050.
-4. Agreed fixtures or B's read API: a PUBLISHED recipe with ≥5 steps, two ingredient groups, simple/compound/range durations, author timers, a step without duration, broken images, and absent mappings. Provide Guest, Member without a review, and Member with an existing review to test 070.
-5. Real browsers over HTTPS/secure context (localhost where the platform permits). Record device model, **actual OS/browser versions**, screen/CSS viewport dimensions, battery saver, permissions, voice package, and network. Do not infer support from browser names.
-
-Once scripts actually exist, the implementer checks `package.json` and records exact dev, lint, Vitest, coverage, and build commands in the implementation report. Do not run placeholder commands during this documentation phase.
+1. Jira: feature owner defers creating the story issues to Sprint 5; spec approval and A01–A11 selections are recorded per feature-owner confirmation. Do not invent keys or attach Sprint 4 SCRUM keys to this feature.
+2. `src/frontend/` platform: React 18, TypeScript, Vite, Vitest, RTL.
+3. Test commands:
+   - Run complete feature suite: `cd src/frontend && npx vitest run src/features/cooking-mode`
+   - Run integration tests: `cd src/frontend && npx vitest run src/features/cooking-mode/__tests__/CookingShell.integration.test.tsx`
+   - Production build check: `cd src/frontend && npx vite build`
+4. Deterministic fixtures: `recipeFixtures.ts` provides PUBLISHED multi-step recipes with ingredient groups, compound durations, author timers, and local callback mocks.
+5. Physical browser testing: Real browsers over HTTPS/secure context. Field execution of TC-MAN-050-01 through TC-MAN-050-08 on target physical devices (Android Chrome, iOS Safari, desktop Chrome/Firefox) remains reserved for QA.
 
 ## 3. Proposed Test-First Workflow
 
@@ -78,10 +82,17 @@ Once scripts actually exist, the implementer checks `package.json` and records e
 ### TC-MAN-050-08 — Exit/background/completion → review
 
 - **Steps**: Exit/Finish with RUNNING, PAUSED, unacknowledged overdue; cancel dialog, Keep, Discard. Keep, leave the cooking page, navigate the SPA, and return; resolve timers, then explicitly Finish. Test Member creating a review, Member with an existing review, Guest, Later/navigation-away, network loss, and a recipe archived at submission.
-- **Expected**: Correct dialog counts, Keep widget remains running in the SPA without premature completion; discard stops/removes only that recipe's key. Eligible Finish releases wake/fullscreen and shows the overview completion banner; 070 prompt exactly once, correct create/edit, no preselected stars, Guest login, Later creates no record/re-prompt. Recipe-detail reviews remain independent of Cooking Mode. A11 must be approved before treating this case as final acceptance.
+- **Expected**: Correct dialog counts, Keep widget remains running in the SPA without premature completion; discard stops/removes only that recipe's key. Eligible Finish releases wake/fullscreen and shows the overview completion banner; 070 prompt exactly once, correct create/edit, no preselected stars, Guest login, Later creates no record/re-prompt. Recipe-detail reviews remain independent of Cooking Mode. A11 behavior is selected; verify the local callback exactly once. Live 070 prompt/auth behavior remains deferred until its contract is confirmed.
 
 ## 5. Evidence and Verification Closure Criteria
 
-For each run, record actual date/time, tester, device/OS/browser/version, capability support/permission, fixture, network/noise/battery conditions, expected vs actual, test ID/requirement ID, images/video/traces, and defects. Distinguish designed unsupported fallbacks from unmet requirements; escalate SC-002/storage/voice failures without changing thresholds in the report.
+For each manual run, record actual date/time, tester, device/OS/browser/version, capability support/permission, fixture, network/noise/battery conditions, expected vs actual, test ID/requirement ID, images/video/traces, and defects. Distinguish designed unsupported fallbacks from unmet requirements; escalate SC-002/storage/voice failures without changing thresholds in the report.
 
-Without an application skeleton, all automated suites/CI, manual 1.5m/7:1/<100ms/<1s/60-minute/voice measurements, B/E integration, and the support matrix remain **unverified**. No passing tests, coverage, builds, or approvals are claimed in this phase.
+### Automated Test Suite Verification (Passed)
+- All 18 automated test files in `src/frontend/src/features/cooking-mode/__tests__/` execute cleanly with 91 passed tests (100% pass rate).
+- Integration test suite `CookingShell.integration.test.tsx` validates full cooking lifecycle, state hydration from `localStorage`, accessibility landmarks, contrast ratio, and transition performance budgets (<100ms latency, zero timer drift).
+- Production bundle builds successfully with `vite build`.
+
+### Manual Physical Verification Checkpoints (Pending QA Field Execution)
+- Real-world 1.5m optical distance readability, ambient noise (<=60dB) speech recognition field trials, and physical device battery-saver behavior (TC-MAN-050-01 through TC-MAN-050-08) remain recorded as QA verification checkpoints awaiting formal team execution on physical hardware.
+- Upstream live integration with Recipe Read DTO (060) and Cooksnap Review handoff (070) remains isolated behind local adapters until module contracts are published.

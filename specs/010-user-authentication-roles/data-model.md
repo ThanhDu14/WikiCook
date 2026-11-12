@@ -102,14 +102,16 @@ Chỉ là bộ đếm khóa, giữ **1 ngày** (không phải 90 ngày như full
 | Cột | Kiểu | Ràng buộc | Field Java | FR |
 |---|---|---|---|---|
 | `id` | `BIGINT` identity | PK | `Long id` | |
-| `actor_id` | `BIGINT` | NULL, FK → `users` `SET NULL` | `Long actorId` | FR-025 |
+| `actor_id` | `BIGINT` | NULL; **không có FK** (như `target_id`): khóa ngoại `SET NULL` sẽ chạy `UPDATE` khi xóa người dùng và trigger chặn UPDATE từ chối việc xóa | `Long actorId` | FR-025 |
 | `action` | `VARCHAR(50)` | NOT NULL | `String action` | FR-025 |
 | `target_type` | `VARCHAR(30)` | NULL; cố ý không FK | `String targetType` | |
 | `target_id` | `BIGINT` | NULL | `Long targetId` | |
 | `details` | `JSONB` | NULL; **không bao giờ chứa email, tên hiển thị** | `Map<String,Object> details` | FR-025, NFR-009 |
 | `ip_address` | `INET` | NULL | `InetAddress ipAddress` | |
+| `created_at` | `TIMESTAMPTZ` | NOT NULL DEFAULT now() | `Instant createdAt` | FR-025, NFR-008 |
 
 - Index `(created_at DESC)`, `(target_type, target_id)`.
+- `V102` tạo luôn trigger `BEFORE UPDATE OR DELETE` ném ngoại lệ `audit_logs is append-only and cannot be updated or deleted`, như spec 100 (NFR-004). Vì vậy không bảng nào được có khóa ngoại tới `audit_logs` và `audit_logs` không có khóa ngoại tới `users`; `AuthRetentionJob` không xóa bảng này.
 - `action` của 010: `SIGN_IN_SUCCEEDED`, `SIGN_IN_FAILED`, `ACCOUNT_LOCKED`, `SIGNED_OUT`,
   `PASSWORD_RESET`, `REFRESH_TOKEN_REUSED`, `ROLE_CHANGED`, `ACCOUNT_SUSPENDED`, `ACCOUNT_BANNED`,
   `ACCOUNT_REINSTATED`, `ACCOUNT_RESET`, `ACCOUNT_PURGED_UNVERIFIED`.
@@ -130,10 +132,12 @@ Chỉ là bộ đếm khóa, giữ **1 ngày** (không phải 90 ngày như full
 | `ends_at` | `TIMESTAMPTZ` | NULL, `CHECK ((kind = 'BAN') = (ends_at IS NULL))` | `Instant endsAt` | FR-013 |
 | `created_by` | `BIGINT` | NULL, FK → `users` `SET NULL` | `Long createdBy` | FR-025 |
 | `lifted_at` | `TIMESTAMPTZ` | NULL | `Instant liftedAt` | FR-024a |
-| `lifted_by` | `BIGINT` | NULL, FK → `users` `SET NULL`; NULL + có `lifted_at` = hết hạn tự nhiên | `Long liftedBy` | FR-024a |
+| `lifted_by` | `BIGINT` | NULL, FK → `users` `SET NULL`; chỉ là người gỡ, **không** dùng để suy ra cách án kết thúc (khóa ngoại làm mất giá trị khi tài khoản đó bị xóa) | `Long liftedBy` | FR-024a |
+| `lift_reason` | `VARCHAR(20)` | NULL, `CHECK IN ('EXPIRED','LIFTED','REPLACED_BY_BAN')`; `CHECK ((lifted_at IS NULL) = (lift_reason IS NULL))` | `@Enumerated(STRING) LiftReason liftReason` | FR-024a |
 
 - 🆕 `UNIQUE (user_id) WHERE lifted_at IS NULL`: mỗi tài khoản tối đa một án đang chạy. Cấm khi đang
-  đình chỉ thì đóng án cũ trước.
+  đình chỉ thì đóng án cũ trước với `lift_reason = 'REPLACED_BY_BAN'`; hết hạn tự nhiên là `EXPIRED`
+  (`lifted_by` NULL); Administrator gỡ sớm là `LIFTED`.
 - 🆕 Index `(ends_at) WHERE lifted_at IS NULL AND kind = 'SUSPENSION'` cho `SuspensionExpiryJob`.
 - `users.status` đổi cùng transaction với bảng này.
 

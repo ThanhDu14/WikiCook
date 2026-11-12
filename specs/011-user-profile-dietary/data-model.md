@@ -115,7 +115,8 @@ Index `(user_id, kind, created_at DESC)`.
 | `recipes.author_id` | `SET NULL` | Gọi `AuthoredRecipeCleanupPort` trước; `PUBLISHED`, `ARCHIVED` ở lại với tác giả NULL, hiện "Người dùng đã xóa" (FR-033, research bảng cuối, mục 6) |
 | `reviews.user_id` (`V501`, chưa có) | `SET NULL` | Không cần làm gì, điểm giữ nguyên (FR-035) |
 | `cooksnaps.user_id` (`V501`, chưa có) | `CASCADE`, thay `SET NULL` của full-schema | Gọi `CooksnapCleanupPort` trước (FR-035, research bảng cuối, mục 4) |
-| `audit_logs.actor_id`, `recipe_media.uploaded_by`, `ingredients.proposed_by`, các cột người thao tác khác | `SET NULL` | Không cần làm gì |
+| `recipe_media.uploaded_by`, `ingredients.proposed_by`, các cột người thao tác khác | `SET NULL` | Không cần làm gì |
+| `audit_logs.actor_id`, `audit_logs.target_id` | Không có khóa ngoại (010 `V102`, trigger cấm UPDATE) | Giữ nguyên số, không phân giải được sau khi xóa |
 
 ## 3. Value object và DTO chính (record Java)
 

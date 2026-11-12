@@ -30,6 +30,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Vă
 | 24 | 2026-11-04 → 2026-11-06 | Task SCRUM-59 – sửa Project Plan lần 2 (bản nháp phần A) và lập `Changes.md` section A | `project-plan.md`, `Changes.md` |
 | 25 | 2026-11-06 | Task SCRUM-67 – chốt Project Plan `v2.0` (phần A), đối chiếu Vision, Use-Case Model, Sprint 03 report và code, viết lại `Changes.md` section A | `project-plan.md`, `Changes.md` |
 | 26 | 2026-11-07 → 2026-11-11 | Task SCRUM-72 – `/speckit-analyze` spec 010 ba lượt, sửa các lỗi tìm được, rà chéo 011 với 010, gắn mã Jira, tạo nhánh tài liệu | 010, 011 (spec, plan, research, data-model, contracts, quickstart, tasks) |
+| 27 | 2026-11-12 | Task SCRUM-72 – đọc review PR #84, sửa theo 8 góp ý của Duy, gộp `origin/main` và giải quyết xung đột ở spec 100 | 010, 011, 100, `ai_log_hien.md` |
 
 ---
 
@@ -1825,7 +1826,8 @@ Tóm lược (nguyên văn nằm trong hội thoại):
 | Lời khuyên không implement ngay | Theo | Constitution Nguyên tắc I |
 | Nhánh trong worktree `../WikiCook-SCRUM-72` | Dùng | Thư mục chính đang dở merge `origin/main` |
 | Hai thông điệp commit đề xuất | Chờ Hiển dùng | Hiển tự commit |
-| Sửa spec 100, use case, spec 030 | Bỏ (không làm) | Thuộc người khác hoặc chờ duyệt; ghi thành mục 42, 43 ở research 010 và task ⛓ |
+| Sửa spec 100 (`specs/100-admin-moderation/spec.md`: Clarifications 07/11, FR-010, FR-011, bảng `user_suspensions`, `audit_logs`) | Dùng; Hiển thêm vào PR #84 ở bước 4. Mục 27 ghi tiếp việc gộp với `main` ở ngày 12/11 | Khớp với 010; chờ E xác nhận |
+| Sửa use case, spec 030 | Bỏ (không làm) | Thuộc người khác hoặc chờ duyệt; ghi thành mục 42, 43 ở research 010 và task ⛓ |
 | Dòng Co-Authored-By và "Generated with Claude Code" | Bỏ | Hiển yêu cầu không thêm |
 
 ### Cách kiểm chứng
@@ -1833,7 +1835,7 @@ Tóm lược (nguyên văn nằm trong hội thoại):
 - Hai file `contracts/openapi.yaml` (010, 011) parse được bằng PyYAML; openapi của 010 có 20 path.
 - `grep -rn "SCRUM-xx"` trong `specs/010-…` và `specs/011-…`: chỉ còn trong Clarification lịch sử của spec 010 và trong mô tả T001 đã xong.
 - Danh sách mã task trong `tasks.md` của 010: T001–T189 cùng các task hậu tố `a`, `b`; không trùng mã, thứ tự đúng.
-- `git status --short` trong worktree: 4 file đã có trên `main` bị sửa, 12 mục mới chưa theo dõi của 010 và 011.
+- `git status --short` trong worktree: 4 file đã có trên `main` bị sửa (hai file checklists, `spec.md` của 010 và của 011), 12 mục mới chưa theo dõi của 010 và 011. Sau khi Hiển chép thêm spec 100 và AI log, PR #84 có 6 file đã có trên `main` bị sửa: `ai_log_hien.md`, hai file checklists, spec 010, spec 011 và spec 100 (góp ý của Duy trên PR).
 - Chưa chạy `mvn verify`, `npm test`, chưa render Markdown sang PDF.
 - Version Claude Code: 2.1.296; model theo từng lượt lấy từ transcript phiên.
 - Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
@@ -1843,3 +1845,68 @@ Tóm lược (nguyên văn nằm trong hội thoại):
   3. Quyết định có đưa spec 100 vào cùng PR không.
   4. Chạy lại `/speckit-analyze` cho 011 nếu muốn có báo cáo đầy đủ.
   5. Xóa bản copy chưa commit ở thư mục chính sau khi PR đã có các file đó.
+
+---
+
+## Mục 27: Task SCRUM-72 – xử lý review PR #84 và xung đột với `main`
+
+**Task: SCRUM-72**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-12 |
+| Giờ truy cập | Cùng phiên Claude Code của Mục 26 (bắt đầu 09:12 ngày 07/11); phần này sau khi Hiển chạy `/model sonnet` |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/010-user-authentication-roles/`, `specs/011-user-profile-dietary/`, `specs/100-admin-moderation/spec.md` và `research.md`, PR #84 (review của Hưng và Duy) |
+| Công cụ AI | Claude Code (VS Code, Windows 11), Sonnet 5.5 (`claude-sonnet-5-5`) cho toàn bộ mục này |
+| Mục đích | Đọc review PR #84; sửa theo góp ý; gộp `origin/main` vào nhánh `feature/SCRUM-72-spec-kit-010-011` và giải quyết xung đột |
+| Nhánh Git | `feature/SCRUM-72-spec-kit-010-011` trong worktree `../WikiCook-SCRUM-72`; đang dở một lần merge `origin/main`, chưa commit |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code trong VS Code trên Windows 11*, truy cập ngày 12/11/2026, prompt: "hãy lên xem review PR #84. Kiểm tra lại cần sửa điều gì, và giải quyết conflic cho tôi", dùng để xử lý review và xung đột của PR #84; AI đọc review bằng `gh`, gộp `origin/main` thử trong worktree, giải quyết 7 vùng xung đột ở `specs/100-admin-moderation/spec.md` và sửa 8 góp ý của Duy.
+
+### Prompt đã dùng
+
+```text
+hãy lên xem review PR #84. Kiểm tra lại cần sửa điều gì, và giải quyết conflic cho tôi
+```
+
+### Tóm tắt phản hồi của AI
+
+- Review: Hưng APPROVED ("Ok!!"); Duy để lại 8 góp ý. PR không merge được (`CONFLICTING`).
+- Xung đột: chỉ `specs/100-admin-moderation/spec.md`, 7 vùng. `main` đã có bản spec 100 viết lại (Duy). AI lấy bản của `main` làm nền, rồi áp lại các điểm cần khớp với 010: hiệu lực đình chỉ ở request kế tiếp (bản của `main` ghi chờ JWT hết hạn), giới hạn 30 ngày cho mọi vai trò, tên `action` theo 010, thao tác đình chỉ, cấm, gỡ đi qua API của 010, xóa tài khoản là xóa hẳn dòng `users` (không dùng `[DELETED_USER_xxxxx]`). Sửa cả `specs/100-admin-moderation/research.md` (không xung đột nhưng mâu thuẫn).
+- 8 góp ý của Duy đều được sửa:
+  1. `audit_logs.actor_id` bỏ khóa ngoại `SET NULL` (khóa này chạy UPDATE khi xóa người dùng, trigger của 100 sẽ từ chối); thêm trigger vào `V102` (T028, T012).
+  2. Thêm cột `lift_reason` (`EXPIRED`, `LIFTED`, `REPLACED_BY_BAN`) thay cho suy từ `lifted_by NULL`.
+  3. `AccountAdminService` gọi `finishExpired` trong cùng transaction trước khi đọc `users.status` (T118, T105).
+  4. Đổi `USER_SUSPENDED` thành `ACCOUNT_SUSPENDED` ở spec 100.
+  5. Thêm dòng `created_at` vào bảng `audit_logs` của data-model.
+  6. `/reinstatement` thêm 400; gỡ tài khoản đang `ACTIVE` trả 409 `ACCOUNT_NOT_SANCTIONED` (chọn phương án 409 trong hai phương án Duy nêu).
+  7. FR-030 của 011 tính mọi lần xác thực lại theo 010 FR-022b; FR-022b của 010 ghi rõ "any re-authentication".
+  8. AI log cập nhật dòng về spec 100 và số file.
+- Sai sót và hạn chế của AI cần ghi nhận:
+  1. Bản gộp là quyết định ngữ nghĩa, không phải chọn một bên: AI chọn bản của `main` làm nền và đổi các câu mâu thuẫn với 010. Những chỗ đó thuộc Duy và E, cần họ xác nhận, đặc biệt: `details` của `ROLE_CHANGED` là `{old, new}` (bản của `main` ghi `{old_role, new_role}`) và bỏ chuỗi `[DELETED_USER_xxxxx]`.
+  2. Bỏ khóa ngoại `actor_id` làm bảng `audit_logs` trong `full-schema.md` (mục 4.10) và trong `V503` lệch; chưa sửa các file đó (của Dự và E), chỉ ghi trong research.
+  3. AI không chạy `mvn`, `npm`, hay kiểm thử trigger trên PostgreSQL; kết luận về `UPDATE` do khóa ngoại `SET NULL` là hiểu biết về PostgreSQL, chưa kiểm chứng bằng DB.
+  4. Lần gộp kéo thêm nhiều thay đổi của người khác (spec 050, 070, code tìm kiếm và chế độ nấu) vào PR; AI không đọc những phần này.
+  5. Hai lệnh heredoc bị shell báo lỗi; AI chuyển sang ghi file script rồi chạy.
+  6. AI chưa chạy lại `/speckit-analyze` sau các sửa đổi này.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Gộp `origin/main`, giải quyết xung đột spec 100 | Dùng, chưa commit | Hiển tự `git add` và commit |
+| Sửa theo 8 góp ý của Duy | Dùng, chưa commit | Chờ Duy xem lại |
+| Sửa `specs/100-admin-moderation/research.md` | Dùng | Cùng chủ đề với spec 100, tránh mâu thuẫn trong một thư mục |
+| Sửa `full-schema.md`, `V503` | Bỏ (không làm) | Thuộc Dự và E |
+| Dòng Co-Authored-By và "Generated with Claude Code" | Bỏ | Hiển yêu cầu không thêm |
+
+### Cách kiểm chứng
+
+- `git diff --name-only --diff-filter=U`: chỉ còn `specs/100-admin-moderation/spec.md` (chưa `git add`); không còn dấu `<<<<<<<`, `>>>>>>>` trong `specs/` và `docs/ai_log/`.
+- Hai file `openapi.yaml` (010, 011) parse được bằng PyYAML; `/admin/users/{id}/reinstatement` có phản hồi 200, 400, 401, 403, 404, 409.
+- `grep` không còn `USER_SUSPENDED` (trừ ghi chú), `DELETED_USER`, `old_role` trong 010, 011, 100.
+- Chưa chạy `/speckit-analyze` lại, chưa render PDF.
+- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).

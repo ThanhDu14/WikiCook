@@ -367,7 +367,8 @@ is reused.
   suspend, ban, demote or delete themselves. Any action on another Administrator, and any promotion
   to Administrator, MUST require the acting Administrator to re-authenticate and MUST always be
   audited (FR-025).
-- **FR-022b**: Wrong passwords during re-authentication MUST share one counter per user with the
+- **FR-022b**: Wrong passwords during **any** re-authentication (including an Administrator acting on
+  another Administrator, FR-022a) MUST share one counter per user with the
   password change of spec 011: after 5 wrong passwords within 15 minutes both MUST be refused for 15
   minutes, stating when to retry. This counter is separate from FR-012 and MUST NOT lock signing in.
   Re-authentication with Google MUST be done with the Google account of the signed-in user; when it is

@@ -349,10 +349,14 @@ nào chưa vào spec thì ghi rõ ở bảng cuối.
   | Job | Lịch | Việc | Nguồn |
   |---|---|---|---|
   | `UnverifiedAccountPurgeJob` | Mỗi giờ | `email_verified_at IS NULL`, `created_at` quá 7 ngày, `NOT is_system`, `status <> 'SUSPENDED'` (hết đình chỉ thì lượt chạy kế tiếp xóa): phát `AccountPurgedEvent`, `DELETE users`, audit `ACCOUNT_PURGED_UNVERIFIED`. Không thêm vào Blocked Email, trừ khi `status = 'BANNED'`: thêm hash trong cùng transaction | FR-005, FR-026 |
-  | `SuspensionExpiryJob` | 5 phút | `kind = 'SUSPENSION'`, `ends_at` đã qua, `lifted_at IS NULL`: đặt `lifted_at = ends_at`, `users.status = 'ACTIVE'`, outbox `SUSPENSION_ENDED`, audit | FR-024a |
+  | `SuspensionExpiryJob` | 5 phút | `kind = 'SUSPENSION'`, `ends_at` đã qua, `lifted_at IS NULL`: đặt `lifted_at = ends_at`, `lift_reason = 'EXPIRED'`, `users.status = 'ACTIVE'`, outbox `SUSPENSION_ENDED`, audit | FR-024a |
   | `AuthRetentionJob` | 03:30 hằng ngày | `login_attempts`, `email_send_requests`, `password_check_failures` > 1 ngày; `one_time_tokens` đã dùng hoặc hết hạn > 7 ngày; `user_sessions` hết hạn hoặc thu hồi > 90 ngày; `email_outbox` xong > 30 ngày | Full-schema 4.1, FR-025 |
   | `OutboxDispatcher` | 15 giây | R8 | FR-012, FR-024a |
 
+  - **Thao tác quản trị trong khoảng trống 5 phút**: job chỉ chạy 5 phút một lần, nên `AccountAdminService` cũng gọi
+    `finishExpired(userId)` trong cùng transaction **trước khi** đọc `users.status`, cho mọi thao tác (đổi vai trò,
+    đình chỉ, cấm, gỡ). Nếu không: đình chỉ lại một án vừa hết nhận 409 sai, cấm ghi nhầm án tự hết thành "gỡ sớm"
+    và mất email `SUSPENSION_ENDED`, gỡ ghi `ACCOUNT_REINSTATED` cho án đã hết (góp ý của Duy).
   - **Đăng nhập ngay sau `ends_at`**: `SignInService` và `GoogleSignInService` không chờ job: nếu kỳ đình chỉ đã hết thì gọi cùng
     hàm `finishExpired(userId)` của job, hàm này idempotent nhờ `UPDATE … WHERE lifted_at IS NULL`,
     nên email chỉ gửi một lần.
@@ -399,7 +403,9 @@ nào chưa vào spec thì ghi rõ ở bảng cuối.
     quá hạn → 403 `SUSPENSION_LIMIT_EXCEEDED`. Moderator chỉ đình chỉ Member, Contributor; người khác → 403
     `ACCESS_DENIED`. Tài khoản không ở `ACTIVE` không đình chỉ được (409 `ACCOUNT_NOT_ACTIVE`), kể cả
     với Administrator, để một án ngắn không ghi đè lệnh cấm. Cấm tài khoản đang `BANNED` cũng 409
-    `ACCOUNT_NOT_ACTIVE`; cấm tài khoản đang `SUSPENDED` thì đóng án cũ trước khi chèn án mới.
+    `ACCOUNT_NOT_ACTIVE`; cấm tài khoản đang `SUSPENDED` thì đóng án cũ trước khi chèn án mới
+    (`lift_reason = 'REPLACED_BY_BAN'`). Gỡ án tài khoản đang `ACTIVE` (sau `finishExpired`) trả 409
+    `ACCOUNT_NOT_SANCTIONED`, để màn "Gỡ án" của 100 biết là không có gì để gỡ thay vì tưởng đã gỡ và gửi email.
   - **Administrator cuối cùng**: trong transaction, `SELECT id FROM users WHERE role =
     'ADMINISTRATOR' AND status = 'ACTIVE' ORDER BY id FOR UPDATE` rồi đếm; hành động làm số còn lại về 0 → 409
     `LAST_ADMINISTRATOR`. Khóa dòng để hai Administrator hạ cấp nhau đồng thời vẫn còn một người; `ORDER BY id` để các
@@ -437,7 +443,7 @@ nào chưa vào spec thì ghi rõ ở bảng cuối.
 
   | File | Nội dung | Yêu cầu |
   |---|---|---|
-  | `V102__audit_and_suspensions.sql` | `audit_logs`, `user_suspensions` đúng cột full-schema 4.10 (chuyển sớm từ `V503` của E); thêm `UNIQUE (user_id) WHERE lifted_at IS NULL` | FR-013, FR-024, FR-025 |
+  | `V102__audit_and_suspensions.sql` | `audit_logs` (không FK ở `actor_id`, có trigger cấm UPDATE, DELETE), `user_suspensions` đúng cột full-schema 4.10 (chuyển sớm từ `V503` của E); thêm `lift_reason`, `UNIQUE (user_id) WHERE lifted_at IS NULL` | FR-013, FR-024, FR-025 |
   | `V103__auth_schema_updates.sql` | `blocked_emails`, `password_check_failures`; `users.pending_role_notice_from`; `login_attempts.email_hash` thay `email_normalized`; cột xoay vòng và xác thực lại của `user_sessions`; `one_time_tokens.purpose` thêm `ACCOUNT_CLOSURE` | FR-012, FR-024a, FR-026, R2, R16 |
   | `V104__auth_mail.sql` | `email_send_requests`, `email_outbox` | FR-012, FR-017, FR-024a |
 
@@ -473,8 +479,11 @@ nào chưa vào spec thì ghi rõ ở bảng cuối.
     **`login_attempts` chỉ là bộ đếm khóa**, giữ 1 ngày, `CASCADE` là đúng (xóa tài khoản thì email
     tự do ngay, FR-002).
   - **Ẩn danh**: quy tắc viết chứ không phải bước dọn: `details` của `audit_logs` **không bao giờ** chứa
-    email hay tên hiển thị. Khi tài khoản bị xóa, `actor_id` thành NULL theo FK `SET NULL`, `target_id`
-    chỉ còn là một con số không phân giải được. Nhờ đó không cần `UPDATE`, phù hợp append-only của 100.
+    email hay tên hiển thị. `actor_id` và `target_id` đều **không có khóa ngoại**, nên khi tài khoản bị xóa
+    chúng chỉ còn là con số không phân giải được và không có `UPDATE` nào chạy, phù hợp append-only của 100.
+    Một khóa ngoại `ON DELETE SET NULL` ở `actor_id` sẽ chạy `UPDATE` lúc xóa người dùng (011, purge sau 7 ngày,
+    Google tiếp quản) và bị trigger của 100 từ chối; bỏ khóa ngoại thay vì nới trigger (góp ý của Duy, 2026-11-12).
+    `V102` tạo luôn trigger cấm UPDATE, DELETE (NFR-004 của 100).
   - **Flyway**: DB đã chạy tới `V403`, nên `V102`–`V104` là migration thấp hơn mức hiện tại. Mặc định
     Flyway sẽ báo lỗi validate ("resolved migration not applied"). Cần bật
     `spring.flyway.out-of-order: true` và `FLYWAY_OUT_OF_ORDER: "true"` cho service `migrate`.
@@ -729,7 +738,7 @@ Hiển chốt ngày 2026-11-06. Các dòng "đã vào spec" có hiệu lực khi
 | # | Với | Nội dung | Quyết định | Trạng thái |
 |---|---|---|---|---|
 | 1 | A, E, Duy | **Moderator đình chỉ**: 010 FR-022 + ma trận chỉ cho Administrator; 100 FR-011 + ma trận 100 cho Moderator đình chỉ tối đa 30 ngày; 010 FR-022a và màn AU07 ngụ ý Moderator có thể tác động vai trò thấp hơn | Sửa 010 theo 100: Moderator đình chỉ Member, Contributor đang `ACTIVE`, tối đa 30 ngày; chỉ Administrator cấm, đổi vai trò, gỡ án sớm (R10). Spec 100 không nói ai gỡ án, nên chốt theo hướng hẹp quyền | Đã vào spec, chờ Duy duyệt PR |
-| 2 | E | **Tên cột**: `ends_at`, `created_by`, `kind` (full-schema) và `suspended_until`, `suspended_by`, `status` (spec 100) | Giữ tên full-schema vì `V102` tạo bảng từ đó. "Hết hạn" = `lifted_at` có giá trị và `lifted_by` NULL | Đã sửa spec 100 ngày 2026-11-07; chờ E xác nhận |
+| 2 | E | **Tên cột**: `ends_at`, `created_by`, `kind` (full-schema) và `suspended_until`, `suspended_by`, `status` (spec 100) | Giữ tên full-schema vì `V102` tạo bảng từ đó. "Hết hạn" = `lift_reason = 'EXPIRED'` (cột mới, không suy từ `lifted_by` vì khóa ngoại `SET NULL` làm mất người gỡ khi tài khoản bị xóa) | Đã sửa spec 100 ngày 2026-11-07; chờ E xác nhận |
 | 3 | Hiển, Duy | **Tên vai trò**: project plan (`Standard User`, `Culinary Creator`, `Platform Administrator`, thiếu Moderator) khác spec | Dùng tên spec và `users.role` | Chờ sửa project plan 4.4.2, 4.4.5 |
 | 4 | Cả nhóm | **Mã Jira** cho 010 còn thiếu | Theo `pa4-guide.md` (Sprint 04): SCRUM-72 tài liệu Spec Kit 010 + 011, SCRUM-74 backend 010, SCRUM-76 frontend 010 + 011 | **Đã có** (2026-11-11); tasks.md mục "Mã Jira" |
 | 5 | E | **Clarification của 100** ghi không đẩy người bị đình chỉ ra ngay, chờ JWT hết hạn 15–30 phút, trái 010 FR-024 và Integration Points của 010 | 010 FR-024 là chuẩn (R1) | Đã sửa Clarification của 100 ngày 2026-11-07; chờ E xác nhận |

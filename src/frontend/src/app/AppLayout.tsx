@@ -7,7 +7,7 @@ type Icon = (props: { size?: 24 }) => ReactNode;
 
 /** The main destinations of the screens; those without `to` belong to modules that are not built yet. */
 const MAIN: { label: string; icon: Icon; to?: string }[] = [
-  { label: 'Khám phá', icon: CompassIcon },
+  { label: 'Khám phá', icon: CompassIcon, to: '/' },
   { label: 'Thực đơn', icon: CalendarIcon, to: '/meal-planner' },
   { label: 'Đi chợ', icon: BagIcon, to: '/shopping-list' },
   { label: 'Đã lưu', icon: BookmarkIcon },
@@ -46,7 +46,7 @@ function Header() {
         <nav className="wx-nav__links" aria-label="Điều hướng chính">
           {MAIN.map(({ label, icon: ItemIcon, to }) =>
             to ? (
-              <NavLink key={label} to={to} className="wk-navlink">
+              <NavLink key={label} to={to} end={to === '/'} className="wk-navlink">
                 <ItemIcon />
                 {label}
               </NavLink>
@@ -107,7 +107,7 @@ function BottomNav() {
     <nav className="wk-bottomnav fixed inset-x-0 bottom-0 z-40 min-[901px]:!hidden" aria-label="Điều hướng chính">
       {MOBILE.map(({ label, icon: ItemIcon, to }) =>
         to ? (
-          <NavLink key={label} to={to}>
+          <NavLink key={label} to={to} end={to === '/'}>
             <ItemIcon size={24} />
             {label}
           </NavLink>

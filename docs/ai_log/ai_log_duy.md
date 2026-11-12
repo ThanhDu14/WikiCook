@@ -36,6 +36,8 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 18 | 2026-11-09, 02:06 – 03:16 | Gemini làm frontend tìm kiếm 020 (US1–US4) trên mock MSW, Claude Code kiểm chứng | 020 frontend |
 | 19 | 2026-11-09, 03:00 – 04:02 | Gemini làm frontend 060 (wizard đăng công thức, trang chi tiết) trên mock MSW, Claude Code kiểm chứng | 060 frontend |
 | 20 | 2026-11-09, 04:20 – 04:45 | Backend tìm kiếm 020 và ACT-01 (header API dùng chung) | 020 backend, client API |
+| 21 | 2026-11-09, 04:48 – 11:45 | Claude Code làm backend 060 (wizard đăng công thức, "Công thức của tôi") chạy một mình qua đêm | 060 backend |
+| 22 | 2026-11-10, 22:43 – 23:55 | Gemini Argon làm trang chủ SR-01, đưa backend 020 lên main (PR #81), nạp dữ liệu công thức để chạy thử | 020 frontend, 020 backend |
 
 ---
 
@@ -1299,3 +1301,138 @@ Kết quả mong muốn: danh sách commit, kết quả test/coverage, việc c�
 - `mvn verify` toàn module `wikicook-app`: 155 test pass, mọi rule coverage đạt; `com.wikicook.search.service` dòng 100%, nhánh 92,6%.
 - Frontend: 233 test pass, `npm run lint` sạch, `npm run build` thành công.
 - Khi test thứ tự tên dị ứng fail, đọc lại thì thấy câu truy vấn trả đúng thứ tự tiếng Việt (Đ trước G); lỗi nằm ở kỳ vọng trong test, đã sửa test.
+
+## Mục 21: Claude Code làm backend 060 (wizard đăng công thức, "Công thức của tôi") chạy một mình qua đêm
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-09, 04:48 – 11:45 (giờ Việt Nam, UTC+7); commit từ 04:50 đến 11:27 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `src/backend/wikicook-app/src/main/java/com/wikicook/recipe/`, test tương ứng, `src/backend/wikicook-db/.../V205__*.sql`, `R__seed_recipe_taxonomy.sql`, `src/backend/docker-compose.yml` (task [BE] trong `specs/060-recipe-editor/tasks.md`; Jira Sprint 4 chưa có mã) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code (Claude Opus 5.5) trong VS Code trên Windows 11, chạy không có người trả lời |
+| Mục đích | Làm backend 060 theo plan và contract đã chốt ở mục 17 để frontend 060 (mục 19) chuyển sang gọi API thật |
+| Nhánh Git | `feat/060-recipe-backend` (tách từ `feat/020-search-backend`), 21 commit `b68f9f3`..`1d135c3`, chưa push |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `d6abcd7c-9360-4aad-9d0e-11ede9fdc183` |
+
+### Prompt đã dùng
+
+Prompt do phiên Claude Code trước soạn, mình dán nguyên văn. Tóm tắt các phần:
+
+```text
+Bối cảnh: đồ án WikiCook, B phụ trách 060. Backend 020 đã xong trên feat/020-search-backend. Làm
+BACKEND 060 (task [BE] trong specs/060-recipe-editor/tasks.md), chạy một mình qua đêm.
+Đọc trước: plan.md, research.md, data-model.md, contracts/openapi.yaml, contracts/integration.md,
+tasks.md, constitution, và code com.wikicook.search để làm theo cách nhóm viết repository và test.
+Cách làm: tạo feat/060-recipe-backend từ feat/020-search-backend; làm lần lượt T001 → T019, T029,
+T033, T035, T036, T039, T042; test trước, thấy FAIL rồi mới code, không xoá hay nới test để cho qua;
+/api/v1/recipes/{id} chỉ nhận số để không đụng /recipes/search, /featured; không sửa migration đã
+merge, chỉ thêm V205 và seed taxonomy; chỉ sửa src/backend/**.
+Quy tắc: commit nhỏ theo task, không ghi tên AI, không push, không PR, không ghi AI log; task kẹt
+sau 3 lần sửa hoặc contract mâu thuẫn thì ghi lại, bỏ qua, làm task sau.
+Kiểm tra: mvn -pl wikicook-app -am verify, JaCoCo ≥ 70% line + branch cho com.wikicook.recipe.service.
+Báo cáo: bảng task → commit, output verify, chỗ contract cần Duy quyết định, bản nháp AI log.
+```
+
+### Nội dung do AI tạo
+
+- Khung package `com.wikicook.recipe`, volume media và giới hạn upload 5 MB (T001, T002); migration V205 `recipes.client_draft_id` và seed taxonomy (T006, T007); entity, enum, repository và `RecipeFixtures` (T008, T009).
+- Phần lõi: đọc số lượng kiểu "1/2", "0,5", "1 1/2" (T010); chỉ nhận link YouTube và TikTok (T011); kiểm tra tài liệu wizard ở mức lưu nháp và mức gửi duyệt (T012); lỗi trả về `ProblemDetail` có mã theo contract (T013).
+- API: `GET /recipes/editor/options` (T014); gợi ý nguyên liệu không dấu, ưu tiên khớp đầu chuỗi (T015); xử lý tên nguyên liệu đề xuất (T016); tạo, tải, lưu nháp như một tài liệu (T017); upload ảnh bìa kiểm tra theo nội dung file (T018); gửi duyệt có lịch sử và giới hạn số nháp, số lần gửi (T019); xung đột phiên bản khi sửa trên hai thiết bị (T029); rút công thức đang chờ duyệt (T033); `GET /recipes/{id}` cho khách, tác giả và công thức import (T035); `GET /me/recipes` có phân trang, lọc trạng thái, đếm số lượng (T036).
+- Cổng coverage 70% cho `recipe.service` (T039) và tăng `max_connections` của DB test dùng chung.
+- Kiểm tra dữ liệu: trên máy chưa có file dữ liệu cào; DB demo `wikicook020-db-1` chỉ có 22 món; DB sạch không có category nên không ai gửi duyệt được.
+- Danh sách chỗ contract cần quyết định, ví dụ: dòng nguyên liệu chưa chọn đơn vị bị từ chối ngay khi lưu nháp vì cột `NOT NULL`; seed chưa có đơn vị "vừa đủ"; lưu nháp với lựa chọn admin đã tắt trả `INACTIVE_OPTION`.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Cách chạy | Cho Claude Code chạy một mình qua đêm, task kẹt thì ghi lại và bỏ qua | Tận dụng thời gian, không dừng cả đêm vì một chỗ |
+| Nhánh | Tách từ `feat/020-search-backend` | 060 cần `SearchViewerPort` và `RecipeSearchIndexFacade` của 020 |
+| Phạm vi | Chỉ `src/backend/**`, không đụng frontend, specs, docs | Frontend 060 do Gemini làm ở worktree riêng |
+| T042 (quickstart trên DB sạch) | Để lại | Docker Desktop tự khởi động lại giữa lúc build image (exit 255) |
+| Chỗ contract mâu thuẫn | Backend chọn tạm, mình quyết sau, không tự sửa `specs/` | Contract là thứ nhóm đã chốt |
+
+### Cách sinh viên kiểm chứng
+
+- `mvn -pl wikicook-app -am verify`: BUILD SUCCESS; coverage `com.wikicook.recipe.service` dòng 98,9%, nhánh 93,0% (ngưỡng 70%).
+- Mỗi task có test viết trước, chạy thấy FAIL rồi mới code; đối chiếu `git log` với danh sách task: 21 commit đúng thứ tự, working tree sạch.
+- Đọc lại các endpoint so với `contracts/openapi.yaml`: `/recipes/{id}` chỉ nhận số nên không chặn `/recipes/search`, `/recipes/featured`.
+- Phần chưa làm (T042, nối frontend với API thật, mở PR) sẽ ghi ở mục sau khi làm.
+
+## Mục 22: Gemini Argon làm trang chủ SR-01 (020), đưa backend 020 lên main (PR #81), nạp dữ liệu công thức để chạy thử
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-10, 22:43 – 23:55 (giờ Việt Nam, UTC+7); Gemini Argon chạy 23:15 – 23:31 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `src/frontend/src/features/search/pages/HomePage.tsx`, `components/SearchBox.tsx`, `components/QuickFilters.tsx`, `strings.vi.ts`, `src/frontend/src/shared/ui/RecipeCard.tsx`, `src/frontend/src/app/routes.tsx`, `AppLayout.tsx`, `src/frontend/src/test/setup.ts`; `RecipeSearchQueryRepositoryIT.java`, `tools/angingon-scraper/data/` (task T026, T027, T033 trong `specs/020-recipe-search-filter/tasks.md`; nhóm nhờ làm thêm, không có mã Jira Sprint 4) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code (Claude Opus 5.5) trong VS Code: kiểm tra phân công, soạn prompt, sửa CI, review và dọn code, bật server và nạp dữ liệu. Google Antigravity trên Windows 11, model Gemini 4 Argon (Medium), 23:15 – 23:31: merge main, code trang chủ, viết test, commit |
+| Mục đích | Làm trang chủ theo màn hình SR-01 / W-SR01 nối API thật, không đè lên phần việc của thành viên khác trong tuần; đưa backend 020 lên `main` để trang chủ có API gọi |
+| Nhánh Git | `feat/020-060-plan` → PR #81 (merge `main`, commit `45ccb06`); `feat/020-home-page` (từ `feat/020-search-frontend`), commit `2c60dc0`, `a8f0f81`, `0e0895e`, `bf803a7`, `904731f` → PR #82 |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `5b44b34c-6d19-4af5-9967-1bc42f6be719`; cuộc trò chuyện Antigravity chạy prompt trang chủ |
+
+### Prompt đã dùng
+
+Prompt gửi Claude Code (viết lại cho đầy đủ ý):
+
+```text
+Bối cảnh: đồ án WikiCook còn vài tuần, nhóm nhờ mình (B, phụ trách 020 và 060) làm dần giao diện
+trang chủ. Sprint 4 (10/11 – 23/11) mỗi người đang có task riêng.
+Yêu cầu:
+1. Pull main mới nhất về trước khi làm.
+2. Kiểm tra trang chủ thuộc màn hình và spec nào, và trong tuần này có đụng file hay task của ai
+   không (đối chiếu Sprint 04 report, các nhánh và commit mới trên main).
+3. Soạn một prompt cho Gemini 4 Argon làm trọn trong một lượt: dòng đầu ghi rõ model và loại việc;
+   bám màn hình W-SR01-Home / SR01-Home và class wk-/wx-; gọi API thật, không dùng mock trên trình
+   duyệt; chỉ sửa tối thiểu app shell của Dự; chỗ nào contract không có dữ liệu thì ẩn, không làm giả;
+   test trước rồi code; chạy test, lint, build; commit nhỏ, không ghi tên AI, không push.
+4. Backend 020 chưa lên main: merge main vào nhánh, chạy toàn bộ test backend và frontend rồi mở PR;
+   CI đỏ thì tìm nguyên nhân và sửa.
+5. Sau khi Gemini làm xong: tự kiểm tra lại trên repo (không dựa vào báo cáo của Gemini), sửa các lỗi
+   nhỏ, bật backend + frontend với DB có dữ liệu để mình xem bằng mắt.
+6. Nạp 3 file dữ liệu công thức mình vừa tải về (recipes.jsonl, recipes.jsonl.bak,
+   recipes.skipped.txt) vào thư mục tools/angingon-scraper/data như nhóm dặn, rồi import vào DB
+   đang chạy theo các bước của import.sh để trang chủ có dữ liệu thật.
+```
+
+Prompt gửi Gemini 4 Argon do Claude Code soạn, dán nguyên văn vào Antigravity. Tóm tắt:
+
+```text
+MODEL: Gemini Argon 4 — việc CODE frontend trang chủ SR-01, một lượt.
+Git: tạo feat/020-home-page từ feat/020-search-frontend, merge main; giữ app shell và các route của
+main, route / → HomePage, thêm /search; main.tsx không bật MSW trên trình duyệt.
+Đọc: W-SR01-Home, SR01-Home, CSS wikicook-web / soft-editorial, contract openapi.yaml, research R7, R9.
+Trang chủ: lời chào "Chào bạn", ô tìm kiếm, 3 chip nhanh (ẩn chip kcal), thẻ nổi bật từ
+/recipes/featured, mục "Mới đăng" 4 món từ /recipes/search?sort=NEWEST; không render "Được nấu nhiều
+tuần này" và nút lưu; mỗi mục có trạng thái tải / lỗi + thử lại / rỗng; bỏ inline style.
+AppLayout: chỉ cho "Khám phá" trỏ về /. Cấm đụng backend, docs, specs, feature khác.
+Kiểm chứng: npm run test, lint, build. Commit nhỏ, không ghi tên AI, không push. Báo cáo ngắn.
+```
+
+### Nội dung do AI tạo
+
+- Claude Code: xác định trang chủ là SR-01 của chính feature 020 và chỉ ra chỗ có thể đụng việc người khác (app shell Dự vừa merge, `AppLayout` Hưng sẽ sửa ở SCRUM-76); phát hiện backend 020 chưa lên `main` vì PR #78 merge vào `feat/020-060-plan` sau khi nhánh này đã vào `main`; soạn prompt cho Argon.
+- Claude Code: merge `main` vào `feat/020-060-plan`, mở PR #81; tìm ra lỗi CI ở test `dietVegetarianExcludesMeatAndSeafoodKinds` (DB test dùng chung, suite 030 tạo sẵn "Thịt bò" loại `OTHER` nên test dùng lại) và sửa test bằng tên nguyên liệu riêng.
+- Gemini Argon: merge `main`, gỡ conflict ở `routes.tsx`, `App.test.tsx`, `main.tsx`; viết lại `HomePage` theo SR-01, chỉnh `RecipeCard`, `SearchBox`, `QuickFilters`, chuỗi tiếng Việt; thêm `localStorage` in-memory trong `setup.ts` cho Node 26; link "Khám phá" trỏ `/`; test kèm theo.
+- Claude Code: xoá phần MSW trên trình duyệt còn sót (`mocks/browser.ts`, `public/mockServiceWorker.js`, `mocks/handlers/index.ts`, khối `msw` trong `package.json`, README chế độ mock); gộp code tải dữ liệu bị lặp trong `HomePage` (commit `904731f`).
+- Claude Code: build backend 020 trong worktree tạm, chạy backend + frontend nối DB demo `wikicook020-db-1`; copy 3 file dữ liệu vào `tools/angingon-scraper/data/` (thư mục bị git bỏ qua), chạy các bước của `import.sh` với container này (1647 món, 88 món thành nháp vì thiếu khẩu phần), rồi tính `search_vector` cho 1559 món mới vì `import.sql` chưa làm việc này (T041).
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Nơi làm | Làm tiếp nhánh `feat/020-search-frontend` thay vì viết mới | Trang chủ bản nháp đã có từ mục 18 |
+| Dữ liệu | Gọi API thật, bỏ mock trên trình duyệt | Demo phải chạy với backend thật |
+| Chỗ lệch màn hình | Ẩn "Được nấu nhiều tuần này", chip "Dưới 500 kcal", nút lưu; badge chỉ ghi "Nổi bật tuần này"; lời chào "Chào bạn" | Contract 020 không có dữ liệu lượt nấu, lọc calo hoãn (R9), 080 và đăng nhập chưa có; không làm giả dữ liệu |
+| App shell của Dự | Chỉ đổi link "Khám phá" | Không đè lên phần việc của Dự và Hưng |
+| Model | Một lượt Argon, các sửa nhỏ do Claude Code làm | Quota Argon có hạn |
+| Dữ liệu chạy thử | Import vào DB demo đang chạy, không vào DB compose chính; chạy tay lệnh tính `search_vector` | Xem được ngay; T041 (thêm dòng này vào `import.sql`) để làm riêng |
+| PR #81 | Mở PR riêng cho backend 020 trước, trang chủ push sau khi PR này merge | Trang chủ cần API `/recipes/featured`, `/recipes/search` |
+
+### Cách sinh viên kiểm chứng
+
+- Claude Code đọc diff `main...feat/020-home-page`: `AppLayout.tsx` chỉ đổi link "Khám phá", `main.tsx` giống `main`, không sửa file ngoài phạm vi.
+- Frontend sau khi dọn: `npm run test` 63 file, 376 test pass; `npm run lint` không lỗi, không warning; `npm run build` thành công.
+- Backend: `mvn -pl wikicook-app -am verify` BUILD SUCCESS (165 integration test); CI của PR #81 xanh cả backend và frontend sau commit `45ccb06`.
+- Import: `import.sql` báo 1647 dòng trong file, 1647 món được thêm; sau khi tính `search_vector`, DB có 1581 món đã xuất bản và đều có `search_vector`; tìm "pho", "chao thit bo" qua API đều ra kết quả.
+- Chạy thật: backend 020 nối DB demo; `/api/v1/recipes/featured` và `/api/v1/recipes/search?sort=NEWEST` qua proxy của vite đều trả dữ liệu; Claude Code bật backend + frontend tại `http://localhost:5173/`, mình mở xem bằng mắt và đối chiếu với W-SR01 / SR01.

@@ -393,8 +393,9 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
 - **FR-029**: A user who signs in only with Google (no password) MUST see "Set password" instead of
   "Change password"; setting a password MUST require a recent Google re-authentication, and afterwards
   the account behaves as a password account.
-- **FR-030**: Wrong passwords on "Change password" and on the re-authentication of account deletion
-  MUST share one counter per user: after 5 wrong passwords within 15 minutes both actions MUST be
+- **FR-030**: Wrong passwords on "Change password" and on every re-authentication of spec 010
+  FR-022b (account deletion here, and Administrator actions on another Administrator in 010)
+  MUST share one counter per user: after 5 wrong passwords within 15 minutes all of them MUST be
   refused for 15 minutes, stating when to retry. The counter is separate from the sign-in counter of
   spec 010 and MUST NOT lock signing in. Messages MUST NOT reveal anything beyond "incorrect".
   Google-only accounts have no password and re-authenticate with Google.
@@ -499,7 +500,7 @@ about allergens, excluded ingredients, diet type, cooking time, cuisines and ser
 | Personal data wording — **010 NFR-009** | A (010) | Already done in 010 (NFR-009, FR-025): two levels; the dietary profile and household size are visible **only to the owner**, Administrators excluded. |
 | Scope wording — **010 Out of scope** | A (010) | Already done in 010 (Clarifications 2026-10-18): editing the display name, changing / setting a password, deleting the account and the dietary profile are owned by 011. 011 only needs the 010 wording to stay consistent with this spec. |
 | Sessions on password change | A (010) | 011 needs 010's ability to end all other sessions (as in 010 FR-016) and its password rules. |
-| Wrong-password counter | A (010) | One counter per user for "Change password" and re-authentication (FR-030, 010 FR-022b), separate from sign-in. |
+| Wrong-password counter | A (010) | One counter per user for "Change password" and for every re-authentication (FR-030, 010 FR-022b, which is the reference: it also counts Administrator re-authentication in 010), separate from sign-in. |
 | Profile cannot be read | B (020), C (030, 031) | When the dietary profile cannot be read, these modules do not choose recipes automatically and show the reason (FR-026a); an expired session is treated as a guest. |
 | Last Administrator | A (010) | 011 reuses 010's rule that the last Administrator cannot be removed; same check for deletion. |
 | Banned and suspended accounts on deletion | A (010) | Per 010 FR-026: a temporarily suspended user is refused deletion until the suspension ends; a banned user may delete, and 011 MUST call 010 to store a one-way hash of the email (never the plain email) on the Blocked Email list before the account is removed, in the same all-or-nothing operation. 010 refuses registration and Google sign-in creation for any email matching the list. A banned user reaches the deletion screen through the single-use closure link of 010 FR-013, which 011 accepts in place of a session. |
