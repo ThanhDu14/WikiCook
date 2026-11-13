@@ -55,7 +55,7 @@ public class UserSession {
     @Column(name = "user_agent", length = 255)
     private String userAgent;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     protected UserSession() {
@@ -67,6 +67,7 @@ public class UserSession {
         this.rememberMe = rememberMe;
         this.lastActivityAt = lastActivityAt;
         this.expiresAt = expiresAt;
+        this.createdAt = lastActivityAt;
     }
 
     /** Issues a new refresh token: the current hash becomes {@code previous_token_hash} (R2). */
