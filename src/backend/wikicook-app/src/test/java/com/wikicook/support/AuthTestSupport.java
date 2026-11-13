@@ -1,5 +1,6 @@
 package com.wikicook.support;
 
+import com.wikicook.auth.service.AccessTokenService;
 import com.wikicook.common.security.AccountStatus;
 import com.wikicook.common.security.Role;
 import java.sql.Timestamp;
@@ -23,10 +24,12 @@ public class AuthTestSupport {
     private static final AtomicLong SEQ = new AtomicLong(1);
 
     private final JdbcTemplate jdbc;
+    private final AccessTokenService tokens;
 
     @Autowired
-    public AuthTestSupport(JdbcTemplate jdbc) {
+    public AuthTestSupport(JdbcTemplate jdbc, AccessTokenService tokens) {
         this.jdbc = jdbc;
+        this.tokens = tokens;
     }
 
     /** A verified, active Member with a unique email. */
@@ -86,6 +89,30 @@ public class AuthTestSupport {
                 INSERT INTO user_sessions (user_id, token_hash, remember_me, last_activity_at, expires_at, revoked_at)
                 VALUES (?, ?, true, ?, ?, ?) RETURNING id
                 """, Long.class, userId, randomHash(), ts(lastActivityAt), ts(expiresAt), ts(revokedAt));
+    }
+
+    /** A real access token for this session, signed like production (research R1). */
+    public String jwt(long userId, long sessionId) {
+        return tokens.issue(userId, sessionId).value();
+    }
+
+    /** An account plus an open session plus a JWT: what a signed-in caller of the matrix tests looks like. */
+    public SignedIn signedIn(Role role, AccountStatus status, boolean emailVerified) {
+        long userId = createUser(role, status, emailVerified);
+        long sessionId = session(userId);
+        return new SignedIn(userId, sessionId, jwt(userId, sessionId));
+    }
+
+    public SignedIn signedInMember() {
+        return signedIn(Role.MEMBER, AccountStatus.ACTIVE, true);
+    }
+
+    /** {@code Authorization} header value. */
+    public record SignedIn(long userId, long sessionId, String jwt) {
+
+        public String bearer() {
+            return "Bearer " + jwt;
+        }
     }
 
     /** Empties the three counters FR-012 and FR-017 read; call it in {@code @BeforeEach} of every 010 IT. */
