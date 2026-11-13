@@ -2819,13 +2819,15 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 ---
 
 ## 10. USE-CASE SPECIFICATIONS FOR FEATURE 011: USER PROFILE & DIETARY PROFILE
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 > [!NOTE]
-> **Sources:** `specs/011-user-profile-dietary/spec.md` (US1–US5, FR-001 – FR-042 including `FR-037a` and `FR-037b`, NFR-001 – NFR-008, SC-001 – SC-008), `specs/010-user-authentication-roles/spec.md` (account status, Blocked Email list, password rules), [Vision Document](vision-document.md) §5.1, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.1 and §5 (`SCRUM-49`) and the project constitution (Principles IV and V). The actor is **Member** (a signed-in user; Contributor, Moderator and Administrator inherit it). `UC-011-01` includes `UC-011-05`; `UC-011-05` is also included by `UC-020-03` and `UC-031-01`. By agreement with spec 010, editing the display name, changing or setting a password, deleting the account and the dietary profile are owned by this feature.
+> **Sources:** `specs/011-user-profile-dietary/spec.md` (US1–US5, FR-001 – FR-042 including `FR-010a`, `FR-026a`, `FR-037a` and `FR-037b`, NFR-001 – NFR-008, SC-001 – SC-008; Clarifications up to the session of 2026-11-07), `specs/011-user-profile-dietary/contracts/openapi.yaml` (endpoints under `/api/v1`, status codes and error codes quoted in the flows) and `data-model.md`, `specs/010-user-authentication-roles/spec.md` and its contract (account status, Blocked Email list, password rules, re-authentication `POST /api/v1/auth/reauthenticate`, closure link of `FR-013`), [Vision Document](vision-document.md) §5.1, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.1 and §5 (`SCRUM-49`) and the project constitution (Principles IV and V). The actor is **Member** (a signed-in user; Contributor, Moderator and Administrator inherit it). `UC-011-01` includes `UC-011-05`; `UC-011-05` is also included by `UC-020-03` and `UC-031-01`. By agreement with spec 010, editing the display name, changing or setting a password, deleting the account and the dietary profile are owned by this feature.
+>
+> **v2.0 revision note (SCRUM-71):** Spec 011 was clarified on 2026-11-06 and 2026-11-07, after the PA3 baseline (v1.2) of this section. The flows marked *"Proposed"* now follow the approved rules (`FR-026a`, `FR-028`, `FR-030`, `FR-037b`, `FR-039`), archived recipes are kept on account deletion (`FR-033`), and each step that calls the backend names the contract endpoint and the error code it returns. The backend is not implemented yet (`SCRUM-75`), so these references describe the approved contract, not running code.
 
 ### UC-011-01: Set Up Dietary Profile
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-011-01`
@@ -2836,28 +2838,28 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 - **Included Use Case:** `UC-011-05` Apply Dietary Hard Rules (defines how the saved values are used).
 
 #### 3. Description
-Lets a signed-in user record, in one place and once, what must be avoided and how the user likes to eat: allergens (from a fixed list), excluded ingredients (from the shared ingredient catalogue, up to 50), one diet type, preferred cuisines, household size (1–20) and maximum total cooking time (10–240 minutes). Every field is optional. The saved profile is the single source of truth that search (`020`), the meal planner (`030`) and the AI planner (`031`) read. Saving replaces the whole profile at once, and clearing every field is allowed.
+Lets a signed-in user record, in one place and once, what must be avoided and how the user likes to eat: allergens (from a fixed list), excluded ingredients (from the shared ingredient catalogue, up to 50), one diet type (Vegetarian, Vegan, Pescatarian or none), preferred cuisines, household size (1–20) and maximum total cooking time (10–240 minutes). Every field is optional. The saved profile is the single source of truth that search (`020`), the meal planner (`030`) and the AI planner (`031`) read. Saving replaces the whole profile at once, and clearing every field is allowed. The allergen field always warns that allergen protection is only as complete as the ingredient data of the catalogue (FR-010a).
 
 #### 4. Preconditions
-- The actor is signed in with the Member role or above and the account is active (`UC-010-02`); Guests have no profile page (FR-001).
-- The ingredient catalogue, the fixed list of allergens, the fixed list of diet types and the cuisines managed by Administrators (spec `100`) are available to the form (FR-009, FR-011, FR-012, FR-013).
+- The actor is signed in with the Member role or above and the account is active (`UC-010-02`); Guests have no profile page (FR-001). Email verification does not limit editing the profile (spec 011 Assumptions).
+- The lists of the form come from the server, not from the client: `GET /api/v1/me/dietary-options` returns the fixed allergen list, the diet types `NONE`, `VEGETARIAN`, `VEGAN`, `PESCATARIAN` and the active cuisines managed by Administrators in spec `100` (FR-009, FR-012, FR-013). Approved ingredients of the shared catalogue are available for suggestions (FR-011).
 
 #### 5. Basic Flow
-1. **Open Profile Area:** The actor opens the "Tôi" page, which shows the dietary summary (for example "Dị ứng đậu phộng · 4 người"), and chooses "Hồ sơ ăn uống". While data loads, the system shows a skeleton within 300 ms (FR-039).
-2. **Show Empty State:** The actor has no dietary profile, so the system shows the empty state "Cho chúng tôi biết bạn tránh gì và thích ăn gì", states that no item is required, explains the difference between hard rules and preferences, and offers "Bắt đầu" (US1 AS1).
-3. **Open Form:** The actor presses "Bắt đầu". The system shows the form with the group "Quy tắc bắt buộc" (allergens and excluded ingredients) and the group "Sở thích" (diet type, household size, maximum time, preferred cuisines).
+1. **Open Profile Area:** The actor opens the "Tôi" page, which shows the dietary summary (for example "Dị ứng đậu phộng · 4 người"), and chooses "Hồ sơ ăn uống". The page loads `GET /api/v1/me/dietary-profile`; while data loads, the system shows a skeleton within 300 ms (FR-039).
+2. **Show Empty State:** The server answers `200` with `empty = true` because the actor has no dietary profile. The system shows the empty state "Cho chúng tôi biết bạn tránh gì và thích ăn gì", states that no item is required, explains the difference between hard rules and preferences, and offers "Bắt đầu" (US1 AS1, FR-008).
+3. **Open Form:** The actor presses "Bắt đầu". The system shows the form with the group "Quy tắc bắt buộc" (allergens and excluded ingredients) and the group "Sở thích" (diet type, household size, maximum time, preferred cuisines). The allergen field shows the notice that allergen protection depends on the ingredient data of the catalogue, may be incomplete and does not replace checking the ingredients (FR-010a).
 4. **Choose Allergens:** The actor selects any number of allergens, for example "Đậu phộng", from the fixed list kept by the system. Free text is not accepted (US1 AS2, FR-009).
-5. **Choose Excluded Ingredients:** The actor types "ngo" in the excluded-ingredients field. The system suggests matching approved catalogue ingredients, ignoring diacritics and letter case, within 300 ms of the last keystroke. The actor picks "Ngò rí". The counter shows the number used out of 50 (US1 AS3, FR-011, NFR-001).
-6. **Choose Preferences:** The actor picks at most one diet type, for example "Ăn chay"; enters a household size, for example 4; enters a maximum total time, for example 45 minutes; and picks any number of preferred cuisines (US1 AS4, AS5; FR-012 – FR-015).
-7. **Save:** The actor presses "Lưu hồ sơ". The system disables the button until a response arrives (FR-041).
-8. **Validate on the Server:** The system checks every value: allergen identifiers exist in the fixed list; excluded ingredients are approved catalogue ingredients and at most 50; at most one diet type; household size is a whole number from 1 to 20 or empty; maximum time is a whole number from 10 to 240 or empty (FR-016, FR-040).
+5. **Choose Excluded Ingredients:** The actor types "ngo" in the excluded-ingredients field. The page calls `GET /api/v1/ingredients/suggestions?q=ngo`, which returns at most 10 approved catalogue ingredients, ignoring diacritics and letter case, exact and prefix matches first, within 300 ms of the last keystroke; fewer than 2 characters return no suggestion. The actor picks "Ngò rí". The counter shows the number used out of 50 (US1 AS3, FR-011, NFR-001).
+6. **Choose Preferences:** The actor picks at most one diet type, for example "Ăn chay" (Vegetarian; Keto is not offered in this release, FR-012); enters a household size, for example 4; enters a maximum total time (preparation plus cooking), for example 45 minutes; and picks any number of preferred cuisines (US1 AS4, AS5; FR-012 – FR-015).
+7. **Save:** The actor presses "Lưu hồ sơ". The system disables the button until a response arrives (FR-041). The browser sends `PUT /api/v1/me/dietary-profile` with `allergenIds`, `excludedIngredientIds`, `dietType`, `preferredCuisineIds`, `householdSize`, `maxCookTimeMinutes` and the `version` read in Step 1.
+8. **Validate on the Server:** The system checks every value: allergen identifiers exist in the fixed list; excluded ingredients are approved catalogue ingredients, without duplicates and at most 50; the diet type is one of the four values; household size is a whole number from 1 to 20 or empty; maximum time is a whole number from 10 to 240 or empty (FR-016, FR-040).
 9. **Apply Definitions (include `UC-011-05`):** The system classifies allergens and excluded ingredients as hard rules and diet type, maximum time and preferred cuisines as preferences, as defined by `UC-011-05`.
-10. **Store Atomically:** The system replaces the whole dietary profile in one operation, all fields or none (FR-017, NFR-007), and records an audit entry that contains no dietary detail (FR-042).
+10. **Store Atomically:** The system replaces the whole dietary profile in one operation, all fields or none (FR-017, NFR-007), records an audit entry that contains no dietary detail (FR-042) and answers `200` with the saved profile and its new `version`.
 11. **Confirm:** The system shows a success message. After a reload, and on another device, the saved values are shown (US1 AS6). From the actor's next search, dish added or generation, the new profile is used (US1 AS8, FR-024).
 
 #### 6. Alternative Flows
 - **AF 1.1: Edit an Existing Profile:**
-  - *Trigger:* At Step 2, the actor already has a dietary profile.
+  - *Trigger:* At Step 2, the actor already has a dietary profile (`empty = false`).
   - *Steps:*
     1. The system skips the empty state and shows the form filled with the saved values.
     2. The actor changes any values and the flow continues at Step 7.
@@ -2868,13 +2870,13 @@ Lets a signed-in user record, in one place and once, what must be avoided and ho
     2. After reload the empty state of Step 2 is shown again.
   - *Outcome:* The user is treated as having no hard rules and no preferences (`UC-011-05` AF 5.1).
 - **AF 1.3: Invalid Household Size:**
-  - *Trigger:* At Step 6, the actor enters 0, 21, a negative number, a decimal, or text (US1 AS5).
+  - *Trigger:* At Step 6, the actor enters 0, 21, a negative number, a decimal, or text (US1 AS5, FR-014).
   - *Steps:*
-    1. The system refuses the value with a clear field-level message and saves nothing.
+    1. The form refuses the value with a clear field-level message and saves nothing. A value that reaches the server anyway is refused as in AF 1.7.
 - **AF 1.4: Invalid Maximum Cooking Time:**
   - *Trigger:* At Step 6, the actor enters 5, 241, a decimal, or text (US1 AS5, FR-015).
   - *Steps:*
-    1. The system refuses the value with a clear field-level message and saves nothing. An empty time is accepted.
+    1. The form refuses the value with a clear field-level message and saves nothing. An empty time is accepted. A value that reaches the server anyway is refused as in AF 1.7.
 - **AF 1.5: Value Not in the Catalogue or the Fixed List:**
   - *Trigger:* At Step 4 or Step 5, the actor tries to add free text that is not an allergen of the fixed list or an ingredient of the catalogue (FR-009, FR-011).
   - *Steps:*
@@ -2882,49 +2884,53 @@ Lets a signed-in user record, in one place and once, what must be avoided and ho
 - **AF 1.6: More Than 50 Excluded Ingredients:**
   - *Trigger:* At Step 5, the actor adds the 51st ingredient (Edge Cases "Excluded ingredient list very long").
   - *Steps:*
-    1. The system refuses the 51st ingredient with a message explaining the limit of 50.
-- **AF 1.7: Invalid Data Sent by a Modified Client:**
-  - *Trigger:* At Step 8, the server receives an allergen identifier that does not exist, a household size of 0, or another invalid value (Edge Cases "Invalid data returned to the server").
+    1. The form refuses the 51st ingredient with a message explaining the limit of 50. The server also refuses a list longer than 50 (AF 1.7).
+- **AF 1.7: Invalid Data Sent to the Server:**
+  - *Trigger:* At Step 8, the server receives an allergen identifier that does not exist, a household size of 0, more than 50 excluded ingredients, or another invalid value, for example from a modified client (Edge Cases "Invalid data returned to the server").
   - *Steps:*
-    1. The system refuses the request with field-level messages and leaves the stored profile unchanged (FR-016).
+    1. The server answers `400 VALIDATION_ERROR` with one error per field; the system shows each message next to its field.
+    2. The stored profile is unchanged (FR-016).
 - **AF 1.8: Leaving With Unsaved Changes:**
   - *Trigger:* At Steps 3–6, the actor leaves the page with edited fields (Edge Cases "Unsaved changes").
   - *Steps:*
     1. The system asks for confirmation before leaving. Nothing is saved silently.
 - **AF 1.9: Network Failure While Saving:**
-  - *Trigger:* At Step 7, the connection is lost or the request fails (FR-039).
+  - *Trigger:* At Step 7, the connection is lost or the request fails (Edge Cases "Network loss while saving", FR-039).
   - *Steps:*
     1. The system shows an error message with "Try again" and keeps everything the actor typed in the form.
     2. The stored profile is unchanged.
 - **AF 1.10: Session Expired While Editing:**
-  - *Trigger:* At Steps 3–7, the session expires (Edge Cases "Session expired while editing").
+  - *Trigger:* At Steps 3–7, the session expires and the request receives `401 UNAUTHENTICATED` (Edge Cases "Session expired while editing").
   - *Steps:*
-    1. The system asks the actor to sign in again (`UC-010-02`).
+    1. The system asks the actor to sign in again (`UC-010-02` AF 2.12).
     2. After sign-in the actor returns to the profile page with the typed values still in the form where the browser allows.
     3. The save is never silently dropped or applied to another account.
-- **AF 1.11: Two Tabs or Devices Saving at Once:**
-  - *Trigger:* At Step 7, another tab or device saved the profile after this form was loaded (Edge Cases "Two tabs/devices saving at once").
+- **AF 1.11: Profile Changed in Another Tab or Device:**
+  - *Trigger:* At Step 8, another tab or device saved a different profile after this form was loaded, so the `version` sent is old (Edge Cases "Two tabs/devices saving at once").
   - *Steps:*
-    1. The later save wins for the whole form.
-    2. The earlier tab is told on its next save that the profile changed and can reload.
+    1. When the content sent is identical to the stored profile, the server answers `200` and writes nothing.
+    2. Otherwise the server answers `409 PROFILE_CHANGED`; the system tells the actor that the profile was changed elsewhere and offers to reload.
+    3. If the actor chooses to save anyway, the page reads the new `version` and sends the form again, so the later save wins for the whole form.
 - **AF 1.12: Repeated Clicks on Save:**
   - *Trigger:* At Step 7, the actor presses "Lưu hồ sơ" several times (FR-041).
   - *Steps:*
-    1. The system processes exactly one request. No duplicate effect occurs.
+    1. The button is disabled while a request runs; an identical request that still arrives is answered `200` without a second write. No duplicate effect occurs.
 - **AF 1.13: Catalogue Changed Since the Last Visit:**
-  - *Trigger:* At Step 1 or Step 3, an excluded ingredient was merged into another ingredient, an excluded ingredient was deleted, or an allergen was removed from the fixed list (FR-019, Edge Cases).
+  - *Trigger:* At Step 1, an excluded ingredient was merged into another ingredient, an excluded ingredient was deleted, or an allergen was removed from the fixed list (FR-019, Edge Cases).
   - *Steps:*
     1. For a merge, the system has already moved the exclusion to the target ingredient and keeps one entry when the target was also excluded, so there is no duplicate and the limit of 50 is not exceeded.
     2. For a deletion of an ingredient or of an allergen, the system has already removed it from the profile.
-    3. The system shows a notice about the change the next time the owner opens the profile.
+    3. The profile returned in Step 1 carries the unread notices (`INGREDIENT_MERGED`, `INGREDIENT_REMOVED`, `ALLERGEN_REMOVED`); the system shows them to the owner.
+    4. When the owner dismisses them, the page calls `POST /api/v1/me/dietary-profile/notices/ack` and they are not shown again.
 - **AF 1.14: Profile Cannot Be Loaded:**
-  - *Trigger:* At Step 1, loading fails because the device is offline, the session is invalid, or the server returns an error (FR-039).
+  - *Trigger:* At Step 1, loading fails because the device is offline, the session has expired, or the server cannot read the profile (`503 PROFILE_UNAVAILABLE`) (FR-039, FR-026a).
   - *Steps:*
     1. The system shows the error state with a clear message and "Try again", without losing what the user had typed.
+    2. The system never shows an empty profile in place of a profile it could not read (FR-026a).
 - **AF 1.15: Another User, Guest or Administrator Requests the Profile:**
   - *Trigger:* At any time, someone other than the owner asks the server for the dietary profile or household size (FR-006, FR-018).
   - *Steps:*
-    1. The server refuses the request. This also applies to an Administrator, who may see only email and account information.
+    1. The server gives no way to do it: the dietary-profile endpoints under `/api/v1/me/` have no user identifier and always act on the caller, so an Administrator also reads only their own. An Administrator may see another user's email and account information only through spec 010 (`GET /api/v1/admin/users/{id}`).
     2. The data does not appear in any public page, search result, log, error message, export or audit entry (NFR-005).
 - **AF 1.16: Guest Opens the Profile Page:**
   - *Trigger:* At Step 1, a Guest opens the profile page (FR-001).
@@ -2933,19 +2939,26 @@ Lets a signed-in user record, in one place and once, what must be avoided and ho
 - **AF 1.17: Suspended or Banned Account:**
   - *Trigger:* At Step 7, an old session belongs to an account that was suspended or banned (Edge Cases "Suspended or banned account").
   - *Steps:*
-    1. The system refuses the change; the account cannot edit its profile.
+    1. The server answers `403 ACCOUNT_SUSPENDED` (with the end date) or `403 ACCOUNT_BANNED`; the change is refused and the account-status page of `UC-010-02` AF 2.14 is shown.
 - **AF 1.18: Save Rate Limit Reached:**
-  - *Trigger:* At Step 7, the actor exceeds the limit of profile saves and avatar uploads (default 20 per hour per user, NFR-008).
+  - *Trigger:* At Step 7, the actor exceeds the limit of dietary-profile saves (default 20 per hour per user, counted separately from avatar uploads, NFR-008).
   - *Steps:*
-    1. The system refuses the save with a friendly message and keeps the typed values.
+    1. The server answers `429 PROFILE_RATE_LIMITED` with the time to wait; the system shows a friendly message and keeps the typed values.
+- **AF 1.19: Saved Cuisine No Longer Active:**
+  - *Trigger:* At Step 3, a preferred cuisine of the saved profile was deactivated by an Administrator (spec 011 Integration Points, "Preferred cuisines").
+  - *Steps:*
+    1. The cuisine stays on the saved profile but is not offered on the form.
+    2. It is dropped at the next save.
 
 #### 7. Postconditions
-- **Success:** One dietary profile is stored for the user (or none when everything was cleared); it is the only copy, and other features read it through the server. Saved values apply from the next user action; existing meal plans and shopping lists do not change (FR-024, FR-025).
+- **Success:** One dietary profile is stored for the user (or none when everything was cleared) with a new `version`; it is the only copy, and other features read it through the server. Saved values apply from the next user action; existing meal plans and shopping lists do not change (FR-024, FR-025).
 - **Failure:** The stored profile is unchanged and the typed values stay in the form where possible.
 
 #### 8. Special Requirements
-- **Privacy and security:** The whole dietary profile, including household size, is readable only by the owner; Administrators cannot read it (FR-006, FR-018, NFR-005). Every permission check and every validation is done on the server with Bean Validation (FR-040; constitution Principle IV).
-- **Data integrity:** Saving the profile is all-or-nothing (NFR-007, FR-017).
+- **Privacy and security:** The whole dietary profile, including household size, is readable and writable only by the owner; Administrators cannot read it (FR-006, FR-018, NFR-005). Every permission check and every validation is done on the server with Bean Validation (FR-040; constitution Principle IV).
+- **Safety wording:** The allergen field always shows the notice of `FR-010a`; no screen of this feature states that a recipe is safe for an allergy.
+- **Data integrity:** Saving the profile is all-or-nothing (NFR-007, FR-017); concurrent saves are detected with the profile `version` (AF 1.11).
+- **Abuse protection:** Profile saves are limited to 20 per hour per user by default (NFR-008).
 - **Performance:** Opening the profile page and saving complete in under 1 second for 95% of requests; ingredient suggestions appear within 300 ms of the last keystroke for 95% of requests with a catalogue of 10,000 ingredients (NFR-001; constitution Principle V). Suggestions return the intended ingredient in the top 5 for 100% of a 30-name test set typed without diacritics (SC-007).
 - **Usability and accessibility:** Fully usable from 360 px wide with touch targets of at least 44 × 44 px, Vietnamese by default with all strings in the shared string store, keyboard-only multi-selects, visible labels and errors announced next to the field (NFR-002, NFR-003, NFR-006).
 - **Usability target:** 90% of participants complete a profile with one allergen, one excluded ingredient and a household size in under 2 minutes (SC-001).
@@ -2965,7 +2978,7 @@ Lets a signed-in user record, in one place and once, what must be avoided and ho
 ---
 
 ### UC-011-02: Edit Public Profile & Avatar
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-011-02`
@@ -2973,62 +2986,65 @@ Lets a signed-in user record, in one place and once, what must be avoided and ho
 
 #### 2. Actor(s)
 - **Primary Actor:** **Member** — a signed-in community member who wants other cooks to recognise the name next to the recipes.
-- **Supporting Actors:** **Guest** and other users view the public profile; an **Administrator** may view a user's email and account information (AF 2.8).
+- **Supporting Actors:** **Guest** and other users view the public profile; an **Administrator** may view a user's email and account information through spec 010 (AF 2.8).
 
 #### 3. Description
-Lets a signed-in user change the display name (1–50 characters), write a short bio (up to 300 characters) and set or remove an avatar (JPEG, PNG or WebP, at most 5 MB). The public part of a profile — display name, avatar, bio and the user's published recipes — can be viewed by anyone, including Guests. The private part is split in two levels: email and account information (owner and Administrators) and the dietary profile with household size (owner only).
+Lets a signed-in user change the display name (1–50 characters), write a short bio (up to 300 characters) and set or remove an avatar (JPEG, PNG or WebP, at most 5 MB). The public part of a profile — display name, avatar, bio and the user's published recipes — can be viewed by anyone, including Guests. The private part is split in two levels: email and account information (owner and Administrators) and the dietary profile with household size (owner only). The public profile of a suspended user stays viewable; a banned, deleted or missing profile answers like one that does not exist (FR-005, FR-039).
 
 #### 4. Preconditions
-- The actor is signed in with the Member role or above and the account is active (`UC-010-02`). Guests have no profile page (FR-001).
-- The email address is shown read-only; it cannot be changed in this release (Assumptions).
+- The actor is signed in with the Member role or above and the account is active (`UC-010-02`). Guests have no profile page (FR-001). Email verification does not limit editing the profile (spec 011 Assumptions).
+- The email address is shown read-only; it cannot be changed in this release (spec 011 Assumptions).
 
 #### 5. Basic Flow
-1. **Open Public Profile Editor:** The actor opens the "Tôi" page and chooses "Hồ sơ công khai".
+1. **Open Public Profile Editor:** The actor opens the "Tôi" page and chooses "Hồ sơ công khai". The page loads `GET /api/v1/me/profile`, which returns the display name, bio, avatar, the profile `version` and the owner's account information (email read-only, role, status, verification, whether a password is set).
 2. **Display Form:** The system shows the avatar with "Đổi ảnh" and "Xóa ảnh" and the note "Ảnh phải là JPEG, PNG hoặc WebP, tối đa 5 MB", the display name with a counter (for example "9/50"), the bio with a counter (for example "68/300") and the note "Liên kết không bấm được", and the reminder that others see only the name, avatar, bio and published recipes while email and dietary profile are never shown.
 3. **Change Display Name:** The actor edits the display name to 1–50 characters.
 4. **Write Bio:** The actor types a bio of up to 300 characters; line breaks are kept (Edge Cases).
 5. **Choose Avatar:** The actor chooses "Đổi ảnh" and selects a PNG of 2 MB. The system checks type and size on the form before any upload and shows a preview immediately (US2 AS3, FR-004).
-6. **Save:** The actor presses "Lưu thay đổi". The system disables the button until a response arrives (FR-041).
-7. **Validate on the Server:** The system trims the display name and checks it is 1–50 characters, not blank and without control characters; checks the bio length; verifies that the file is really an image of an allowed type, within the size and pixel limits (FR-002, FR-003, FR-004, FR-040).
-8. **Store:** The system stores the display name and the bio as plain text, removes EXIF location data from the image, resizes it to one avatar per user, and records an audit entry without the content (FR-042, NFR-004).
-9. **Confirm and Propagate:** The system confirms. The new name and avatar are shown wherever the user appears — recipes, reviews, Cooksnaps — from the next page load, without changing the stored content (US2 AS1, FR-007).
-10. **View as Others Do:** Anyone, signed in or not, opens the public profile and sees only display name, avatar, bio and the user's published recipes in pages (US2 AS6, FR-005); the user's email, dietary profile and household size are never shown.
+6. **Save:** The actor presses "Lưu thay đổi". The system disables the button until a response arrives (FR-041). The browser sends `POST /api/v1/me/profile` as `multipart/form-data`: the part `profile` (JSON with `displayName`, `bio`, `removeAvatar` and `version`) and the optional part `avatar`.
+7. **Validate on the Server:** The system trims the display name and checks it is 1–50 characters, not blank and without control characters; checks the bio length; checks the avatar by its magic bytes and by really decoding it, its type, its size and its pixel dimensions (FR-002, FR-003, FR-004, FR-040, NFR-004).
+8. **Store:** The system stores the display name and the bio as plain text. It crops the avatar to a square of 512 px and re-encodes it as JPEG, which removes all EXIF data including the location; the avatar is served from `/api/v1/media/avatars/{file}` as `image/jpeg` with `nosniff`, so it cannot run as code. An audit entry without the content is recorded (FR-042, NFR-004). When nothing changed and no new image was sent, the server answers `200` without writing.
+9. **Confirm and Propagate:** The server answers `200` with the saved profile and the system confirms. The new name and avatar are shown wherever the user appears — recipes, reviews, Cooksnaps — from the next page load, without changing the stored content (US2 AS1, FR-007).
+10. **View as Others Do:** Anyone, signed in or not, opens the public profile (`GET /api/v1/profiles/{id}` and `GET /api/v1/profiles/{id}/recipes`) and sees only display name, avatar, bio, the number of published recipes and the published recipes in pages of 12 by default, at most 24 (US2 AS6, FR-005); the user's email, dietary profile and household size are never part of the answer.
 
 #### 6. Alternative Flows
 - **AF 2.1: Invalid Display Name:**
-  - *Trigger:* At Step 7, the display name is empty, only spaces or control characters, or longer than 50 characters (US2 AS2).
+  - *Trigger:* At Step 7, the display name is empty, only spaces or control characters, or longer than 50 characters (US2 AS2, FR-002).
   - *Steps:*
-    1. The system refuses it with a clear message and keeps what the actor typed. Leading and trailing spaces are trimmed; the name is stored and displayed as plain text, never as markup.
+    1. The server answers `400 VALIDATION_ERROR` with the error on `displayName`; the system shows a clear message and keeps what the actor typed. Leading and trailing spaces are trimmed; the name is stored and displayed as plain text, never as markup.
 - **AF 2.2: Bio Longer Than 300 Characters:**
-  - *Trigger:* At Step 4 or Step 7, the bio exceeds 300 characters (Edge Cases).
+  - *Trigger:* At Step 4 or Step 7, the bio exceeds 300 characters (Edge Cases, FR-003).
   - *Steps:*
-    1. The form and the server both refuse it. Line breaks are kept and links are not clickable.
+    1. The form refuses it, and the server refuses it with `400 VALIDATION_ERROR` on `bio`. Line breaks are kept and links are not clickable.
 - **AF 2.3: Avatar of Wrong Type or Too Large:**
   - *Trigger:* At Step 5, the file is not JPEG, PNG or WebP, or is larger than 5 MB (US2 AS4).
   - *Steps:*
     1. The system refuses it on the form before any upload, naming the allowed types and the size limit.
+    2. A file that reaches the server anyway is refused with `413 AVATAR_TOO_LARGE` or `415 AVATAR_TYPE_NOT_ALLOWED` (FR-004, SC-003); the stored avatar is unchanged.
 - **AF 2.4: File Is Not Really an Image:**
   - *Trigger:* At Step 7, the file passed the form check but is not a real image — the extension was changed, the file is corrupted, or its pixel dimensions are extreme (Edge Cases "Avatar that is not really an image").
   - *Steps:*
-    1. The server refuses the file and the stored avatar is unchanged.
+    1. The server answers `422 AVATAR_NOT_AN_IMAGE` or `422 AVATAR_DIMENSIONS_TOO_LARGE` and the stored avatar is unchanged.
 - **AF 2.5: Remove the Avatar:**
   - *Trigger:* At Step 5, the actor chooses "Xóa ảnh" (US2 AS5).
   - *Steps:*
-    1. After saving, the system shows the neutral default avatar again.
+    1. The browser sends `removeAvatar = true`; after saving, the system shows the neutral default avatar again.
 - **AF 2.6: Guest or Another User Views the Public Profile:**
   - *Trigger:* At Step 10, a Guest or any signed-in user opens a public profile (US2 AS6, FR-005).
   - *Steps:*
     1. The system shows only display name, avatar, bio and "Công thức đã đăng" in pages (for example "1–4 / 12").
+    2. When the user has no published recipe, the list shows an empty state (FR-039).
+    3. The public profile of a suspended user is shown normally (FR-005).
 - **AF 2.7: Non-Owner Requests Private Data:**
   - *Trigger:* A signed-in user who is not the owner requests another user's email, account information or dietary data (US2 AS7, FR-006).
   - *Steps:*
-    1. The server refuses what the user may not see; it is not merely hidden in the interface.
+    1. The server gives no way to obtain it: `/api/v1/me/` endpoints act only on the caller, and `/api/v1/profiles/` answers contain no private field. It is not merely hidden in the interface.
 - **AF 2.8: Administrator Opens a User's Profile:**
   - *Trigger:* An Administrator opens a user's profile (US2 AS8, FR-006).
   - *Steps:*
-    1. The system shows the email and the account information.
+    1. The system shows the email and the account information, which come from spec 010 (`GET /api/v1/admin/users/{id}`).
     2. The system does **not** show the dietary profile or the household size (least privilege).
-    3. The Administrator cannot edit the profile, the dietary profile or the password of the user.
+    3. The Administrator cannot edit the profile, the dietary profile or the password of the user; spec 011 offers no endpoint for it.
 - **AF 2.9: Leaving With Unsaved Changes:**
   - *Trigger:* At Steps 3–5, the actor leaves with edited fields (Edge Cases "Unsaved changes").
   - *Steps:*
@@ -3038,21 +3054,22 @@ Lets a signed-in user change the display name (1–50 characters), write a short
   - *Steps:*
     1. The system shows an error message with "Try again" and keeps everything the actor typed.
 - **AF 2.11: Session Expired While Editing:**
-  - *Trigger:* At Steps 3–6, the session expires (Edge Cases).
+  - *Trigger:* At Steps 3–6, the session expires and the request receives `401 UNAUTHENTICATED` (Edge Cases).
   - *Steps:*
-    1. The system asks the actor to sign in again, returns to the profile page afterwards with the typed values where the browser allows, and never drops the save silently or applies it to another account.
+    1. The system asks the actor to sign in again (`UC-010-02` AF 2.12), returns to the profile page afterwards with the typed values where the browser allows, and never drops the save silently or applies it to another account.
 - **AF 2.12: Repeated Clicks on Save:**
   - *Trigger:* At Step 6, the actor presses "Lưu thay đổi" several times (FR-041).
   - *Steps:*
-    1. Only one request is processed.
-- **AF 2.13: Upload and Save Rate Limit Reached:**
-  - *Trigger:* At Step 6, the actor exceeds the limit of avatar uploads and profile saves (default 20 per hour per user, NFR-008).
+    1. Only one request is processed; an identical request without a new image is answered `200` without writing.
+- **AF 2.13: Upload or Save Rate Limit Reached:**
+  - *Trigger:* At Step 6, the actor exceeds the limit of avatar uploads or of profile saves (default 20 per hour per user each, counted separately, NFR-008).
   - *Steps:*
-    1. The system refuses with a friendly message and keeps the typed values.
+    1. The server answers `429 PROFILE_RATE_LIMITED` with the time to wait; the system shows a friendly message and keeps the typed values.
 - **AF 2.14: Suspended or Banned Account:**
   - *Trigger:* At Step 6, an old session belongs to an account that was suspended or banned (Edge Cases).
   - *Steps:*
-    1. The system refuses the change. The public profile of a banned user follows the rules of spec 010 (see `[OQ-011-03]`).
+    1. The server answers `403 ACCOUNT_SUSPENDED` or `403 ACCOUNT_BANNED` and refuses the change.
+    2. Visitors still see the public profile of a suspended user; the public profile of a banned user answers like a missing one (AF 2.17).
 - **AF 2.15: Profile Cannot Be Loaded:**
   - *Trigger:* At Step 2, loading fails (FR-039).
   - *Steps:*
@@ -3061,22 +3078,31 @@ Lets a signed-in user change the display name (1–50 characters), write a short
   - *Trigger:* At Step 1, a Guest opens the editor (FR-001).
   - *Steps:*
     1. The system asks the Guest to sign in (`UC-010-02` AF 2.9).
+- **AF 2.17: Public Profile Not Available:**
+  - *Trigger:* At Step 10, the profile does not exist, belongs to a deleted account or belongs to a banned account (FR-005, FR-039).
+  - *Steps:*
+    1. The server answers `404 USER_NOT_FOUND` in the same way for the three cases, and the system shows the generic 404 page.
+- **AF 2.18: Profile Changed in Another Tab or Device:**
+  - *Trigger:* At Step 7, the profile was saved elsewhere after this form was loaded, so the `version` sent is old (Edge Cases "Two tabs/devices saving at once").
+  - *Steps:*
+    1. The server answers `409 PROFILE_CHANGED`; the system tells the actor and offers to reload. Nothing is stored.
 
 #### 7. Postconditions
 - **Success:** The display name, the bio and the avatar are stored; the new name and avatar appear wherever the user is shown from the next page load; the public profile shows only the public data.
 - **Failure:** Nothing is stored; the previous values and the previous avatar stay.
 
 #### 8. Special Requirements
-- **Security:** User text is displayed as plain text (NFR-004; constitution Principle IV); avatars are verified as real images on the server and served so that they cannot run as code; EXIF location data is removed; all validation and permission checks are on the server (FR-040).
+- **Security:** User text is displayed as plain text (NFR-004; constitution Principle IV); avatars are verified as real images on the server, re-encoded and served so that they cannot run as code; EXIF data is removed; all validation and permission checks are on the server (FR-040).
 - **Privacy:** Email and account information are visible only to the owner and Administrators; the dietary profile only to the owner (FR-006, NFR-005); `SC-004` requires zero leaks in tests with a second account, a Guest and an Administrator account.
 - **File rule:** The avatar rule (JPEG/PNG/WebP, 5 MB) is the same as the image rule of spec `060` (FR-004).
+- **Abuse protection:** Avatar uploads and profile saves are each limited to 20 per hour per user by default (NFR-008).
 - **Usability and accessibility:** Usable from 360 px with touch targets of at least 44 × 44 px; keyboard-only avatar picker; Vietnamese strings in the shared string store (NFR-002, NFR-003, NFR-006).
-- **Testing:** Every acceptance scenario of US2 has at least one automated test (SC-008); 100% of avatar files with a wrong type or over 5 MB are refused on the form before upload (SC-003).
+- **Testing:** Every acceptance scenario of US2 has at least one automated test (SC-008); 100% of avatar files with a wrong type or over 5 MB are refused on the form before upload, and 100% of non-image files sent directly to the server are refused (SC-003).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1), [`PF04-EditProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF04-EditProfile.dc.html) (Steps 2–9), [`PF05-PublicProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF05-PublicProfile.dc.html) (Step 10).
 - **Alternative Flows:** [`PF05-PublicProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF05-PublicProfile.dc.html) (AF 2.6).
-- **UI Asset Gap for SCRUM-58:** Needs the error states for the display name, the bio and the avatar file (AF 2.1 – AF 2.4), the Administrator's view of a user's profile (AF 2.8) and the public profile of a user without published recipes (see `[OQ-011-02]`). See Section 10.2 (Gaps 011-D to 011-F).
+- **UI Asset Gap for SCRUM-58:** Needs the error states for the display name, the bio and the avatar file (AF 2.1 – AF 2.4), the Administrator's view of a user's profile (AF 2.8) and the public profile of a user without published recipes (AF 2.6, `FR-039`). See Section 10.2 (Gaps 011-D to 011-F).
 - **Prototype Screenshots (SCRUM-58):**
   - **User profile page (`PR01-ProfileView`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -3092,7 +3118,7 @@ Lets a signed-in user change the display name (1–50 characters), write a short
 ---
 
 ### UC-011-03: Change or Set Password
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-011-03`
@@ -3103,96 +3129,102 @@ Lets a signed-in user change the display name (1–50 characters), write a short
 - **Secondary Actor:** **Google OAuth** — re-authenticates a Google-only user before a password is set (AF 3.6).
 
 #### 3. Description
-Lets a signed-in user who has a password change it by giving the current password, a new password that satisfies the rules of spec 010 and its confirmation; all other sessions of the user are then signed out while the current one stays. A user who signs in only with Google and has no password sees "Set password" instead; setting it requires a recent Google re-authentication, and afterwards the account behaves as a password account.
+Lets a signed-in user who has a password change it by giving the current password, a new password that satisfies the rules of spec 010 and differs from the current one, and its confirmation; all other sessions of the user are then signed out while the current one stays. A user who signs in only with Google and has no password sees "Set password" instead; setting it requires a Google re-authentication within the last 5 minutes, also signs out the other sessions, and afterwards the account behaves as a password account. Wrong current passwords share one counter per user with every re-authentication of spec 010 (`FR-022b`): 5 wrong passwords within 15 minutes refuse both for 15 minutes, without locking sign-in (FR-030).
 
 #### 4. Preconditions
 - The actor is signed in with the Member role or above and the account is active (`UC-010-02`).
-- The actor has a password (basic flow), or signs in only with Google and has none (AF 3.6).
+- The actor has a password (basic flow), or signs in only with Google and has none (AF 3.6). The page knows which from `hasPassword` in `GET /api/v1/me/profile` (FR-029).
 
 #### 5. Basic Flow
 1. **Open Security Settings:** The actor opens the "Tôi" page and chooses "Mật khẩu và bảo mật".
 2. **Display Form:** The system shows "Đổi mật khẩu" with the fields "Mật khẩu hiện tại", "Mật khẩu mới" with its rule checklist, "Nhập lại mật khẩu mới" and the note "Các thiết bị khác sẽ bị đăng xuất. Thiết bị này vẫn giữ đăng nhập." (US3 AS1).
 3. **Enter Passwords:** The actor types the current password, a new password and its confirmation.
-4. **Submit:** The actor presses "Đổi mật khẩu". The system disables the button until a response arrives (FR-041).
-5. **Verify Current Password:** The system verifies the current password against the stored hash. Failures are rate-limited as sign-in failures are (FR-027, FR-030).
-6. **Validate New Password:** The system checks on the server that the new password meets the password rules of spec 010 (8–128 characters, at least one letter and one digit, different from the email), differs from the current password, and equals its confirmation (FR-027).
-7. **Store and End Other Sessions:** The system stores the BCrypt hash of the new password, signs the user out of every other session and keeps the current session (FR-028, NFR-004), and records an audit entry without any password (FR-042).
+4. **Submit:** The actor presses "Đổi mật khẩu". The system disables the button until a response arrives (FR-041). The browser sends `POST /api/v1/me/password` with `currentPassword`, `newPassword` and `confirmPassword`.
+5. **Verify Current Password:** The system checks that the shared wrong-password counter of the user does not refuse the attempt (AF 3.2) and verifies the current password against the stored hash (FR-027, FR-030).
+6. **Validate New Password:** The system checks on the server that the new password meets the password rules of spec 010 (8–128 characters, at least one letter and one digit, different from the email — spec 010 `FR-004`), differs from the current password, and equals its confirmation (FR-027).
+7. **Store and End Other Sessions:** The system stores the BCrypt hash of the new password, signs the user out of every other session and keeps the current session (FR-028, NFR-004), records an audit entry without any password (FR-042) and answers `204`.
 8. **Confirm:** The system shows a confirmation. Other devices are rejected at their next request (US3 AS4, SC-005).
 
 #### 6. Alternative Flows
 - **AF 3.1: Wrong Current Password:**
   - *Trigger:* At Step 5, the current password is not correct (US3 AS2).
   - *Steps:*
-    1. The system refuses the change with a generic message ("Mật khẩu hiện tại không đúng") that reveals nothing beyond "incorrect" (FR-030).
-    2. The password is not changed.
-- **AF 3.2: Repeated Wrong Current Passwords:**
-  - *Status:* Proposed, pending clarification of spec 011 (`[OQ-011-04]`): the counter is separate from the sign-in counter and does not lock signing in; `FR-030` only says the limit works "as sign-in failures are".
-  - *Trigger:* At AF 3.1, wrong current passwords are repeated (FR-030).
+    1. The server answers `422 INVALID_CURRENT_PASSWORD`; the system shows a generic message ("Mật khẩu hiện tại không đúng") that reveals nothing beyond "incorrect" (FR-030).
+    2. The failure is counted on the shared counter (AF 3.2). The password is not changed, and the password fields are cleared (FR-039).
+- **AF 3.2: Too Many Wrong Passwords:**
+  - *Trigger:* At Step 5, 5 wrong passwords were given within 15 minutes, counting "Change password" and every re-authentication of spec 010 `FR-022b` (for example on `UC-011-04`) together (US3 AS2, FR-030).
   - *Steps:*
-    1. The system limits further attempts in the same way as sign-in failures (spec 010 `FR-012`) and tells the actor when to try again.
+    1. The server answers `429 PASSWORD_CHECK_LIMITED` with `retryAfterSeconds`; the system tells the actor when to try again.
+    2. "Change password" and re-authentication are refused for 15 minutes. Signing in (`UC-010-02`) is not affected; the counter is separate from the sign-in counter of spec 010 `FR-012` (Clarifications 2026-11-06, `[OQ-011-04]` and `[OQ-011-05]` closed).
 - **AF 3.3: New Password Breaks the Rules:**
   - *Trigger:* At Step 6, the new password is shorter than 8 or longer than 128 characters, has no letter or no digit, or equals the email (US3 AS3).
   - *Steps:*
-    1. The system refuses it, naming the rule that failed, and does not change the password.
+    1. The server answers `400 VALIDATION_ERROR`; the system names the rule that failed and does not change the password.
 - **AF 3.4: New Password Equals the Current Password:**
   - *Trigger:* At Step 6, the new password is identical to the current one (US3 AS3, FR-027).
   - *Steps:*
-    1. The system refuses it with a message and does not change the password.
+    1. The server answers `422 PASSWORD_SAME_AS_CURRENT`; the system shows the message and does not change the password.
 - **AF 3.5: Confirmation Does Not Match:**
   - *Trigger:* At Step 6, the confirmation differs from the new password.
   - *Steps:*
-    1. The system shows a field-level message and does not change the password.
+    1. The system shows a field-level message (`400 VALIDATION_ERROR`) and does not change the password.
 - **AF 3.6: Google-Only Account Sets a Password:**
-  - *Status:* Proposed, pending clarification of spec 011 (`[OQ-011-04]`) for Step 6 only: setting a password also signs out the other sessions; `FR-028` mentions only a change. Steps 1–5 follow `FR-029`.
   - *Trigger:* At Step 1, the account signs in only with Google and has no password (US3 AS5, FR-029).
   - *Steps:*
     1. The system shows "Đặt mật khẩu" instead of "Đổi mật khẩu", without a current-password field, with the text that the actor must first confirm with Google.
-    2. The actor presses "Xác nhận với Google rồi đặt mật khẩu". The system redirects the actor to Google to re-authenticate (US3 AS6).
-    3. After a recent successful Google re-authentication, the system shows the form for the new password and its confirmation.
-    4. The system validates the new password as in Step 6 and stores its hash.
-    5. From then on the account can sign in with email and password, and the screen shows "Đổi mật khẩu" (US3 AS5).
-    6. The system signs the user out of every other session, as after a password change.
+    2. The actor presses "Xác nhận với Google rồi đặt mật khẩu". The system sends the actor to `GET /api/v1/auth/oauth2/google?intent=reauth` to re-authenticate with Google (US3 AS6).
+    3. After a successful Google re-authentication, the system shows the form for the new password and its confirmation.
+    4. The browser sends `POST /api/v1/me/password/initial` with `newPassword` and `confirmPassword`. The server requires the Google re-authentication to be at most 5 minutes old, validates the new password as in Step 6 and stores its hash.
+    5. The system signs the user out of every other session, keeps the current one and answers `204` (FR-028; Clarification 2026-11-06).
+    6. From then on the account can sign in with email and password, and the screen shows "Đổi mật khẩu" (US3 AS5).
 - **AF 3.7: Google Re-Authentication Cancelled, Failed or Not Recent:**
-  - *Trigger:* At AF 3.6, the actor cancels the Google screen, Google fails, or the last sign-in is not recent.
+  - *Trigger:* At AF 3.6, the actor cancels the Google screen, Google fails, another Google account is used, or the re-authentication is older than 5 minutes.
   - *Steps:*
-    1. The system does not accept a password and nothing changes. The actor must authenticate with Google again (FR-029).
-- **AF 3.8: Stale Page for a Google-Only Account:**
+    1. The actor returns to the page that asked, still signed in (spec 010 `FR-022b`; Clarification 2026-11-06). No password is accepted and nothing changes.
+    2. A request sent without a recent re-authentication receives `403 REAUTH_REQUIRED`, and the system asks the actor to confirm with Google again (FR-029).
+- **AF 3.8: Stale "Change Password" Page for a Google-Only Account:**
   - *Trigger:* A Google-only account submits "Change password" from an out-of-date tab (Edge Cases).
   - *Steps:*
-    1. The server refuses the request and the page switches to "Set password".
+    1. The server answers `409 PASSWORD_NOT_SET` and the page switches to "Set password" (AF 3.6).
 - **AF 3.9: Repeated Clicks:**
   - *Trigger:* At Step 4, the actor presses the button several times (FR-041).
   - *Steps:*
     1. Only one request is processed.
 - **AF 3.10: Network Failure or Session Expired:**
-  - *Status:* Proposed, pending clarification of spec 011 (`[OQ-011-04]`) for the cleared password fields only: the Edge Cases keep typed values, so this is a deliberate exception.
-  - *Trigger:* At Step 4, the request fails or the session has expired (FR-039).
+  - *Trigger:* At Step 4, the request fails or the session has expired (`401 UNAUTHENTICATED`) (FR-039).
   - *Steps:*
-    1. The system shows a clear message, the password is not changed, and for an expired session the actor signs in again (`UC-010-02`). Typed values stay in the form as in the Edge Cases, except the password fields, which are cleared.
+    1. The system shows a clear message and the password is not changed; for an expired session the actor signs in again (`UC-010-02` AF 2.12).
+    2. The password fields are cleared after any failure, a deliberate exception to keeping typed values (FR-039; Clarification 2026-11-06, `[OQ-011-04]` closed).
 - **AF 3.11: Suspended or Banned Account:**
   - *Trigger:* At Step 4, an old session belongs to an account that was suspended or banned (Edge Cases).
   - *Steps:*
-    1. The system refuses the change.
+    1. The server answers `403 ACCOUNT_SUSPENDED` or `403 ACCOUNT_BANNED` and refuses the change.
 - **AF 3.12: Administrator or Another User Changes the Password:**
   - *Trigger:* An Administrator or another user tries to change the password of a user (FR-006).
   - *Steps:*
-    1. The server refuses. No one but the owner can change a password in this use case; forgotten passwords are handled by `UC-010-03`.
+    1. There is no way to do it: the password endpoints act only on the signed-in caller. No one but the owner can change a password in this use case; forgotten passwords are handled by `UC-010-03`.
+- **AF 3.13: Stale "Set Password" Page After a Password Was Set:**
+  - *Trigger:* At AF 3.6 Step 4, the account already has a password, for example set in another tab.
+  - *Steps:*
+    1. The server answers `409 PASSWORD_ALREADY_SET`; the page switches to "Change password" and nothing changes.
 
 #### 7. Postconditions
 - **Success (change):** The account has the new password hash; every other session of the user is ended and the current one remains; an audit entry exists.
-- **Success (set):** The account now has a password and can sign in with email and password as well as with Google.
-- **Failure:** The password is unchanged and all sessions stay as they were.
+- **Success (set):** The account now has a password and can sign in with email and password as well as with Google; every other session is ended.
+- **Failure:** The password is unchanged and all sessions stay as they were; a wrong current password has been counted on the shared counter.
 
 #### 8. Special Requirements
-- **Security:** Passwords are hashed with BCrypt and are never logged, stored in readable form or returned (NFR-004; constitution Principle IV); the failure message reveals nothing beyond "incorrect" (FR-030); all validation is on the server (FR-040).
+- **Security:** Passwords are hashed with BCrypt and are never logged, stored in readable form or returned (NFR-004; constitution Principle IV); the failure message reveals nothing beyond "incorrect" (FR-030); a wrong password answers `422`, not `401`, so that the client does not treat it as an expired session; all validation is on the server (FR-040).
+- **Rate limit:** 5 wrong passwords within 15 minutes per user, shared with re-authentication (spec 010 `FR-022b`), refuse further attempts for 15 minutes and never lock sign-in (FR-030).
 - **Success criterion:** After a password change, 100% of the user's other sessions are rejected at their next request while the current session continues (SC-005).
 - **Usability and accessibility:** Usable from 360 px with touch targets of at least 44 × 44 px; keyboard-only operation; errors announced next to the field (NFR-002, NFR-006).
+- **Dependency:** Google re-authentication (AF 3.6) depends on spec 010 and is not yet verified against a real Google client (spec 011 Assumptions).
 - **Testing:** Every acceptance scenario of US3 has at least one automated test (SC-008).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1), [`PF06-Security.dc.html`](../analysis-and-design/ui-ux/screens/PF06-Security.dc.html) (Steps 2–8, change-password form with the "wrong current password" message).
 - **Alternative Flows:** [`PF06-Security.dc.html`](../analysis-and-design/ui-ux/screens/PF06-Security.dc.html) (AF 3.1, AF 3.6 – "Tài khoản chỉ dùng Google").
-- **UI Asset Gap for SCRUM-58:** Needs the success confirmation (Step 8), the rule-failed state (AF 3.3), the throttled state after repeated failures (AF 3.2) and the form of "Đặt mật khẩu" after the Google re-authentication (AF 3.6 Step 3). See Section 10.2 (Gaps 011-G to 011-I).
+- **UI Asset Gap for SCRUM-58:** Needs the success confirmation (Step 8), the rule-failed state (AF 3.3), the throttled state after repeated failures (AF 3.2, `429 PASSWORD_CHECK_LIMITED`) and the form of "Đặt mật khẩu" after the Google re-authentication (AF 3.6 Step 3). See Section 10.2 (Gaps 011-G to 011-I).
 - **Prototype Screenshots (SCRUM-58):**
   - **Password & security screen (change-password form) (`PF06-Security`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -3203,61 +3235,65 @@ Lets a signed-in user who has a password change it by giving the current passwor
 ---
 
 ### UC-011-04: Delete Account
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-011-04`
 - **Use Case Name:** Delete One's Own Account After Re-Authentication and Confirmation
 
 #### 2. Actor(s)
-- **Primary Actor:** **Member** — a user who wants to leave and not be tracked after leaving.
+- **Primary Actor:** **Member** — a user who wants to leave and not be tracked after leaving. A banned user acts without a session through the closure link of spec 010 (AF 4.13).
 - **Secondary Actor:** **Google OAuth** — re-authenticates a Google-only user (AF 4.2).
 
 #### 3. Description
-Lets a user delete the own account and personal data immediately, in one step that cannot be undone. The user must re-authenticate (password, or Google for a Google-only account) **and** type `DELETE`, on a screen that lists the data deleted and the data kept anonymously. Published recipes stay with the author shown as "Người dùng đã xóa"; reviews and ratings stay anonymously without changing rating totals; all other recipes, Cooksnaps, the dietary profile, meal plans, shopping lists and collections are deleted. The last active Administrator cannot delete the account, a temporarily suspended account cannot delete itself until the suspension ends, and a banned account may delete itself but its email hash goes onto the Blocked Email list.
+Lets a user delete the own account and personal data immediately, in one step that cannot be undone. The user must re-authenticate (password, or Google for a Google-only account) **and** type `DELETE`, on a screen that lists the data deleted and the data kept anonymously. Published recipes stay with the author shown as "Người dùng đã xóa"; archived recipes stay hidden, with no author; reviews and ratings stay anonymously without changing rating totals. Recipes in draft, pending, revision requested or rejected, open revisions, Cooksnaps, the dietary profile, meal plans, shopping lists and collections are deleted. The last active Administrator cannot delete the account, a temporarily suspended account cannot delete itself until the suspension ends, and a banned account may delete itself through the single-use closure link of spec 010, its email hash going onto the Blocked Email list.
 
 #### 4. Preconditions
-- The actor is signed in (`UC-010-02`) with an account that is active, or a banned account that has reached the account-closure page (see `[OQ-010-04]`).
+- The actor is signed in (`UC-010-02`) with an active account (basic flow), or is a banned user holding a valid closure link from spec 010 (`UC-010-02` AF 2.5, `UC-010-04` AF 4.6), which replaces the session and the re-authentication (AF 4.13, FR-037b).
 - The actor can authenticate again with the password, or with Google for a Google-only account.
 
 #### 5. Basic Flow
 1. **Open Account Section:** The actor opens the "Tôi" page and chooses "Xóa tài khoản".
-2. **Display Confirmation Screen:** The system shows "Xóa tài khoản — Hành động này không thể hoàn tác" with two lists: the data that will be deleted — profile, avatar and dietary profile; drafts and unpublished recipes (with their number); meal plans, shopping lists and collections; Cooksnaps (with the number of photos) — and the data kept in anonymous form as "Người dùng đã xóa" — published recipes (number) and reviews and ratings (number) (FR-031, US4 AS1).
-3. **Re-Authenticate:** The actor enters the password ("Nhập mật khẩu để xác nhận").
+2. **Display Confirmation Screen:** The system shows "Xóa tài khoản — Hành động này không thể hoàn tác" with two lists: the data that will be deleted — profile, avatar and dietary profile; drafts and recipes in review or rejected (with their number); meal plans, shopping lists and collections; Cooksnaps (with the number of photos) — and the data kept in anonymous form as "Người dùng đã xóa" — published and archived recipes (number) and reviews and ratings (number) (FR-031, US4 AS1).
+3. **Re-Authenticate:** The actor enters the password ("Nhập mật khẩu để xác nhận"). The browser sends `POST /api/v1/auth/reauthenticate` (spec 010), which answers `204`; the re-authentication is valid for 5 minutes.
 4. **Type Confirmation Word:** The actor types `DELETE` in capital letters. The delete button "Xóa vĩnh viễn tài khoản" stays disabled until `DELETE` is typed exactly (FR-031).
-5. **Confirm:** The actor presses the button. The system accepts only one request (FR-041).
-6. **Check Rules:** The system verifies the password, checks that the account is not the last active Administrator (FR-037) and not temporarily suspended (FR-037a).
+5. **Confirm:** The actor presses the button. The browser sends `POST /api/v1/me/deletion` with `confirmation = "DELETE"`; the system accepts only one request (FR-041).
+6. **Check Rules:** The system checks that the re-authentication is at most 5 minutes old, that the confirmation word is exactly `DELETE` (letter case counts), that the account is not the last active Administrator (FR-037) and that it is not temporarily suspended (FR-037a).
 7. **Delete Atomically:** In one all-or-nothing operation (FR-032, NFR-007) the system:
-   1. deletes every recipe that is not PUBLISHED — draft, pending, revision requested, rejected, archived (FR-034);
-   2. keeps published recipes and shows their author as "Người dùng đã xóa" without name, avatar or profile link (FR-033);
-   3. keeps reviews and ratings anonymously, with the average rating and review count of each recipe unchanged, and deletes Cooksnaps (FR-035);
+   1. deletes every recipe of the user in DRAFT, PENDING, REVISION_REQUESTED or REJECTED, and every open revision of a recipe that stays (FR-034);
+   2. keeps published recipes and shows their author as "Người dùng đã xóa" without name, avatar or profile link, and keeps archived recipes hidden as before, with no author (FR-033);
+   3. keeps reviews and ratings anonymously, with the stored average rating and review count of each recipe unchanged, and deletes Cooksnaps (FR-035; see `[OQ-011-07]` for the conflict with spec 070);
    4. deletes the dietary profile, meal plans, shopping lists and collections (FR-036);
    5. removes the account, ends all sessions and makes the credentials stop working (FR-032);
    6. leaves nothing on the Blocked Email list, so the same email can register again at once (FR-038);
-   7. records an audit entry that is anonymised after the deletion (FR-042; spec 010 `FR-025`).
+   7. records an audit entry without passwords or dietary details (FR-042; spec 010 `FR-025`).
+   The server answers `204`.
 8. **Say Goodbye:** The system shows "Tạm biệt, hẹn gặp lại": the account and personal data are deleted and published recipes stay for the community, with a button "Về trang chủ" (US4 AS3). Signing in with the same credentials fails afterwards.
 
 #### 6. Alternative Flows
 - **AF 4.1: Wrong Credentials, Cancelled Re-Authentication or Wrong Confirmation Word:**
-  - *Trigger:* At Step 3–6, the password is wrong, the Google sign-in is cancelled, or the word is not exactly `DELETE` (US4 AS2).
+  - *Trigger:* At Steps 3–6, the password is wrong, the Google re-authentication is cancelled or fails, or the word is not exactly `DELETE` (US4 AS2).
   - *Steps:*
-    1. The system deletes nothing and tells the actor why.
+    1. A wrong password receives `401 INVALID_CREDENTIALS` from `POST /api/v1/auth/reauthenticate` and is counted on the shared wrong-password counter (FR-030; AF 4.12); the password field is cleared (FR-039).
+    2. A cancelled or failed Google re-authentication returns the actor to this page, still signed in (spec 010 `FR-022b`).
+    3. A wrong word receives `422 CONFIRMATION_MISMATCH`.
+    4. In every case the system deletes nothing and tells the actor why.
 - **AF 4.2: Google-Only Account:**
   - *Trigger:* At Step 3, the account has no password (US4 AS1, FR-031).
   - *Steps:*
-    1. The system asks the actor to re-authenticate with Google instead of entering a password.
-    2. After a successful Google re-authentication and the word `DELETE`, the flow continues at Step 5.
+    1. The system asks the actor to re-authenticate with Google instead of entering a password and sends the actor to `GET /api/v1/auth/oauth2/google?intent=reauth`.
+    2. After a successful Google re-authentication the actor returns to the confirmation screen and the flow continues at Step 4.
 - **AF 4.3: Last Active Administrator:**
   - *Trigger:* At Step 6, the actor is the last active Administrator (not suspended, banned or deleted) (US4 AS8, FR-037; spec 010 `FR-023`).
   - *Steps:*
-    1. The system refuses with a message to appoint another Administrator first and changes nothing.
+    1. The server answers `409 LAST_ADMINISTRATOR`; the system asks the actor to appoint another Administrator first and changes nothing.
 - **AF 4.4: Temporarily Suspended Account:**
   - *Trigger:* At Step 6, the account is suspended and the suspension has not ended (US4 AS10, FR-037a).
   - *Steps:*
-    1. The system refuses with the end date of the suspension and changes nothing.
+    1. The server answers `403 ACCOUNT_SUSPENDED` with the end date (`endsAt`); the system shows it and changes nothing.
     2. After the suspension ends the account may delete itself normally.
-- **AF 4.5: Banned Account:**
-  - *Trigger:* At Step 6, the account is banned (US4 AS11, FR-037b).
+- **AF 4.5: Banned Account (Email Hash Kept):**
+  - *Trigger:* The account being deleted is banned; this happens only through the closure link of AF 4.13 (US4 AS11, FR-037b).
   - *Steps:*
     1. The system deletes the account as in Step 7.
     2. In the same all-or-nothing operation it stores only a one-way hash of the email on the Blocked Email list of spec 010, never the plain email.
@@ -3271,7 +3307,7 @@ Lets a user delete the own account and personal data immediately, in one step th
   - *Trigger:* At Step 7, a server error interrupts the operation (US4 AS9).
   - *Steps:*
     1. The account is either fully deleted or fully intact — never half-deleted.
-    2. When the actor retries, the result is again all or nothing.
+    2. When the actor retries, the result is again all or nothing. On the closure path (AF 4.13) a failure does not consume the closure link.
 - **AF 4.8: Another Session Is Open:**
   - *Trigger:* At Step 7, the user has other open sessions (Edge Cases).
   - *Steps:*
@@ -3285,25 +3321,50 @@ Lets a user delete the own account and personal data immediately, in one step th
   - *Steps:*
     1. Nothing is deleted and the account is unchanged.
 - **AF 4.11: Network Failure or Session Expired:**
-  - *Trigger:* At Step 5, the request fails or the session has expired (FR-039).
+  - *Trigger:* At Step 5, the request fails or the session has expired (`401 UNAUTHENTICATED`) (FR-039).
   - *Steps:*
     1. The system shows a clear message and nothing is deleted. For an expired session the actor signs in again (`UC-010-02`).
+- **AF 4.12: Too Many Wrong Passwords:**
+  - *Trigger:* At Step 3, 5 wrong passwords were given within 15 minutes, counting "Change password" (`UC-011-03`) and this screen together (US4 AS13, FR-030; spec 010 `FR-022b`).
+  - *Steps:*
+    1. The server answers `429 PASSWORD_CHECK_LIMITED` with `retryAfterSeconds`; the system tells the actor when to try again.
+    2. Re-authentication is refused for 15 minutes, nothing is deleted, and signing in is not affected (Clarification 2026-11-06, `[OQ-011-05]` closed).
+- **AF 4.13: Banned Account Closes Itself Through the Closure Link:**
+  - *Trigger:* A banned user proved their identity at sign-in (correct password or Google) and received `403 ACCOUNT_BANNED` with a single-use closure link valid for 10 minutes (`UC-010-02` AF 2.5, `UC-010-04` AF 4.6), then chose to close the account (FR-037b; spec 010 `FR-013`).
+  - *Steps:*
+    1. The account-status page opens the account-closure page of this feature without a session; the page shows the lists of Step 2.
+    2. The actor types `DELETE`; the button stays disabled until the word is exact.
+    3. The browser sends `POST /api/v1/account-closure` with `closureToken` and `confirmation`; the closure link replaces the session and the re-authentication of Step 3.
+    4. The system deletes the account as in Step 7 and AF 4.5, in one operation, consumes the link and answers `204`; the goodbye page of Step 8 is shown.
+  - *Outcome:* A banned user can leave without ever getting a session (Clarification 2026-11-06, `[OQ-011-06]` closed).
+- **AF 4.14: Closure Link Invalid, Expired or Used:**
+  - *Trigger:* At AF 4.13 Step 3, the closure link is wrong, older than 10 minutes or already used.
+  - *Steps:*
+    1. The server answers `410 TOKEN_INVALID`; nothing is deleted. A new link is obtained only by proving the identity again at sign-in (`UC-010-02` AF 2.5).
+- **AF 4.15: Account State Changed Meanwhile:**
+  - *Trigger:* At Step 6 or AF 4.13 Step 3, the account status changed after the screen was opened, for example the ban was lifted or the account was suspended while the closure link was still valid.
+  - *Steps:*
+    1. The server answers `409 ACCOUNT_STATE_CHANGED`, or `403 ACCOUNT_SUSPENDED` with the end date for a new suspension; nothing is deleted.
+- **AF 4.16: Re-Authentication No Longer Recent:**
+  - *Trigger:* At Step 6, the re-authentication of Step 3 is older than 5 minutes.
+  - *Steps:*
+    1. The server answers `403 REAUTH_REQUIRED`; the system asks the actor to re-authenticate again (Step 3 or AF 4.2) and nothing is deleted.
 
 #### 7. Postconditions
-- **Success:** The account and its personal data no longer exist; published recipes remain under "Người dùng đã xóa"; reviews and ratings remain anonymously with unchanged totals; all other recipes, Cooksnaps and the listed personal data are gone; audit entries are kept in anonymised form for the retention period; the email is free, except for a banned account whose email hash is on the Blocked Email list.
-- **Failure:** The account and all data are intact.
+- **Success:** The account and its personal data no longer exist; published recipes remain under "Người dùng đã xóa"; archived recipes remain hidden with no author; reviews and ratings remain anonymously with unchanged totals; recipes in other statuses, open revisions, Cooksnaps and the listed personal data are gone; audit entries contain no password or dietary detail; the email is free, except for a banned account whose email hash is on the Blocked Email list.
+- **Failure:** The account and all data are intact; a closure link that was not used stays valid until it expires.
 
 #### 8. Special Requirements
-- **Data integrity:** The deletion is immediate, permanent (no grace period or undo) and all-or-nothing (FR-032, NFR-007); 100% of data items are in the stated state in tests including one forced failure midway (SC-006).
-- **Security:** Re-authentication and the word `DELETE` are both mandatory and checked on the server (FR-031, FR-040); no password is logged (NFR-004).
-- **Privacy:** Only a one-way hash of the email of a banned account is kept, never the plain email (FR-037b); audit entries do not contain personal details after deletion.
+- **Data integrity:** The deletion is immediate, permanent (no grace period or undo) and all-or-nothing (FR-032, NFR-007); 100% of data items are in the stated state in tests including one forced failure midway, a banned account's email hash is on the block list, a suspended account is refused, and any other deleted email is free to register again (SC-006).
+- **Security:** Re-authentication (valid 5 minutes) and the exact word `DELETE` are both mandatory and checked on the server (FR-031, FR-040); wrong passwords share the counter of `FR-030`; no password is logged (NFR-004).
+- **Privacy:** Only a one-way hash of the email of a banned account is kept, never the plain email (FR-037b); audit entries contain no password or dietary detail (FR-042).
 - **Usability and accessibility:** The confirmation screen is usable from 360 px with touch targets of at least 44 × 44 px and keyboard-only operation (NFR-002, NFR-006).
 - **Testing:** Every acceptance scenario of US4 has at least one automated test (SC-008; constitution Principle II).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1), [`PF07-DeleteAccount.dc.html`](../analysis-and-design/ui-ux/screens/PF07-DeleteAccount.dc.html) (Steps 2–5), [`PF08-Goodbye.dc.html`](../analysis-and-design/ui-ux/screens/PF08-Goodbye.dc.html) (Step 8).
-- **Alternative Flows:** No prototype screen exists for AF 4.1 – AF 4.4.
-- **UI Asset Gap for SCRUM-58:** Needs the refusal messages for the last Administrator (AF 4.3) and for a temporarily suspended account (AF 4.4), the error state for a wrong credential or a wrong confirmation word (AF 4.1) and the Google re-authentication variant of the form (AF 4.2). See Section 10.2 (Gaps 011-J to 011-M).
+- **Alternative Flows:** No prototype screen exists for AF 4.1 – AF 4.4, AF 4.12 and AF 4.13.
+- **UI Asset Gap for SCRUM-58:** Needs the refusal messages for the last Administrator (AF 4.3) and for a temporarily suspended account (AF 4.4), the error state for a wrong credential or a wrong confirmation word (AF 4.1), the Google re-authentication variant of the form (AF 4.2) and the account-closure page reached from the banned-account screen (AF 4.13). See Section 10.2 (Gaps 011-J to 011-N).
 - **Prototype Screenshots (SCRUM-58):**
   - **Delete account screen / dialog (`PR04-DeleteAccount`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -3314,7 +3375,7 @@ Lets a user delete the own account and personal data immediately, in one step th
 ---
 
 ### UC-011-05: Apply Dietary Hard Rules *(included use case)*
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-011-05`
@@ -3333,7 +3394,7 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 
 #### 5. Basic Flow
 1. **Trigger:** An invoking use case needs to choose, filter, rank or pre-fill recipes for the signed-in user and passes the candidate recipes.
-2. **Read Profile:** The system reads the dietary profile of the owner through the server. It is never copied into the tables of other features (FR-025).
+2. **Read Profile:** The system reads the dietary profile of the owner through the server. It is never copied into the tables of other features (FR-025). Diet type is one of Vegetarian, Vegan, Pescatarian or none (FR-012).
 3. **Find Conflicts:** For each candidate recipe, the system decides that it breaks a hard rule if it contains at least one ingredient that is in the user's excluded ingredients, or that is linked in the catalogue to one of the user's allergens (FR-021). This single rule is used by specs `020`, `030` and `031`.
 4. **Report Conflicts:** The system returns, per recipe, every conflicting allergen and ingredient by name.
 5. **Hand Back the Decision:** The invoking use case presents the recipe: search hides it and lets the user reveal it, the planner lists it last with a confirmation, the AI planner removes it completely (FR-020). A recipe that is shown despite a conflict carries a warning naming each conflicting allergen or ingredient (US5 AS2).
@@ -3377,16 +3438,18 @@ Defines in one place what the dietary profile means, so that search, the meal pl
   - *Steps:*
     1. The system reads no profile. A Guest is treated as a user with no profile (AF 5.1); another user's profile is never read.
 - **AF 5.9: Profile Cannot Be Read:**
-  - *Trigger:* At Step 2, the server cannot read the profile because of a failure.
+  - *Trigger:* At Step 2, the server cannot read the profile because of a failure; the profile API answers `503 PROFILE_UNAVAILABLE` instead of an empty profile (FR-026a).
   - *Steps:*
-    1. The spec does not define the behaviour. Because wrongly showing an unsafe recipe is a safety risk, this case is raised in `[OQ-011-01]` and no flow is invented here.
+    1. The invoking use case does not choose recipes automatically and shows the reason to the user.
+    2. It does not continue as if the user had no profile.
+    3. An expired session is not this case: the user is treated as a Guest (AF 5.8) (Clarification 2026-11-06, `[OQ-011-01]` closed).
 
 #### 7. Postconditions
 - **Success:** The invoking use case receives, per recipe, the list of conflicting allergens and ingredients, the preferences for ranking and the default servings; nothing is stored or changed by this use case.
-- **Failure:** See `[OQ-011-01]`.
+- **Failure (AF 5.9):** No recipe is chosen automatically and the reason is shown; nothing is stored or changed.
 
 #### 8. Special Requirements
-- **Safety:** With any saved profile, zero recipes that break a hard rule are chosen automatically by specs `020`, `030` and `031` in acceptance tests (SC-002).
+- **Safety:** With any saved profile, zero recipes that break a hard rule are chosen automatically by specs `020`, `030` and `031` in acceptance tests, on a data set whose ingredient ↔ allergen links are complete (SC-002; Clarification 2026-11-07). Allergen protection is only as complete as those links, so no screen states that a recipe is safe for an allergy (FR-010a).
 - **Privacy:** Allergy data is sensitive health information and is shared with no third party except the AI service, only as anonymous constraints required by spec `031` (NFR-005).
 - **Consistency:** FR-020 – FR-026 are authoritative; specs `020`, `030` and `031` must not use different wording (spec 011 Integration Points). Other modules read the profile only through the server (FR-025).
 - **Testing:** Every acceptance scenario of US5 has at least one automated test (SC-008).
@@ -3405,18 +3468,20 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 ---
 
 ### 10.1. Feature 011 (User Profile & Dietary Profile) Traceability
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria | Vision Feature |
 | :---: | :--- | :---: | :--- | :--- | :---: | :---: |
-| **`UC-011-01`** | Set Up Dietary Profile | `US1` (AS 1–8) | `FR-001`, `FR-006`, `FR-008`, `FR-009`, `FR-010`, `FR-011`, `FR-012`, `FR-013`, `FR-014`, `FR-015`, `FR-016`, `FR-017`, `FR-018`, `FR-019`, `FR-024`, `FR-025`, `FR-039` – `FR-042` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-005`, `NFR-006`, `NFR-007`, `NFR-008` | `SC-001`, `SC-004`, `SC-007`, `SC-008` | §5.1 |
+| **`UC-011-01`** | Set Up Dietary Profile | `US1` (AS 1–8) | `FR-001`, `FR-006`, `FR-008`, `FR-009`, `FR-010`, `FR-010a`, `FR-011`, `FR-012`, `FR-013`, `FR-014`, `FR-015`, `FR-016`, `FR-017`, `FR-018`, `FR-019`, `FR-024`, `FR-025`, `FR-026a`, `FR-039` – `FR-042` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-005`, `NFR-006`, `NFR-007`, `NFR-008` | `SC-001`, `SC-004`, `SC-007`, `SC-008` | §5.1 |
 | **`UC-011-02`** | Edit Public Profile & Avatar | `US2` (AS 1–8) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-006`, `FR-007`, `FR-039`, `FR-040`, `FR-041`, `FR-042` | `NFR-002`, `NFR-003`, `NFR-004`, `NFR-005`, `NFR-006`, `NFR-008` | `SC-003`, `SC-004`, `SC-008` | §5.1 |
 | **`UC-011-03`** | Change or Set Password | `US3` (AS 1–6) | `FR-027`, `FR-028`, `FR-029`, `FR-030`, `FR-039`, `FR-040`, `FR-041`, `FR-042` | `NFR-002`, `NFR-004`, `NFR-006` | `SC-005`, `SC-008` | §5.1 |
-| **`UC-011-04`** | Delete Account | `US4` (AS 1–12) | `FR-031`, `FR-032`, `FR-033`, `FR-034`, `FR-035`, `FR-036`, `FR-037`, `FR-037a`, `FR-037b`, `FR-038`, `FR-041`, `FR-042` | `NFR-002`, `NFR-004`, `NFR-006`, `NFR-007` | `SC-006`, `SC-008` | §5.1 |
-| **`UC-011-05`** | Apply Dietary Hard Rules *(included)* | `US5` (AS 1–5) | `FR-010`, `FR-019`, `FR-020`, `FR-021`, `FR-022`, `FR-023`, `FR-024`, `FR-025`, `FR-026` | `NFR-005` | `SC-002`, `SC-008` | §5.1 |
+| **`UC-011-04`** | Delete Account | `US4` (AS 1–13) | `FR-030`, `FR-031`, `FR-032`, `FR-033`, `FR-034`, `FR-035`, `FR-036`, `FR-037`, `FR-037a`, `FR-037b`, `FR-038`, `FR-039`, `FR-040`, `FR-041`, `FR-042` | `NFR-002`, `NFR-004`, `NFR-006`, `NFR-007` | `SC-006`, `SC-008` | §5.1 |
+| **`UC-011-05`** | Apply Dietary Hard Rules *(included)* | `US5` (AS 1–5) | `FR-010`, `FR-010a`, `FR-012`, `FR-019`, `FR-020`, `FR-021`, `FR-022`, `FR-023`, `FR-024`, `FR-025`, `FR-026`, `FR-026a` | `NFR-005` | `SC-002`, `SC-008` | §5.1 |
 
-*Verification:* All 5 user stories of spec 011 (39 acceptance scenarios), all 44 functional requirements (`FR-001` – `FR-042` including `FR-037a` and `FR-037b`), the 8 NFRs and `SC-001` – `SC-008` are mapped. `FR-006` is spread over `UC-011-01`, `UC-011-02` and `UC-011-03` because it governs who may read or change each part of the profile.
+*Verification:* All 5 user stories of spec 011 (40 acceptance scenarios: 8 + 8 + 6 + 13 + 5), all 46 functional requirements (`FR-001` – `FR-042` including `FR-010a`, `FR-026a`, `FR-037a` and `FR-037b`), the 8 NFRs and `SC-001` – `SC-008` are mapped. `FR-006` is spread over `UC-011-01`, `UC-011-02` and `UC-011-03` because it governs who may read or change each part of the profile. `FR-030` (shared wrong-password counter) is exercised by `UC-011-03` and `UC-011-04`.
 
 ### 10.2. Prototype Screen Mapping & UI Asset Gaps (for SCRUM-58)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Use Case ID | Flow / Step Reference | Existing Screen ID & Filename | Description of Prototype View | Asset Status & Action for SCRUM-58 |
 | :---: | :--- | :--- | :--- | :---: |
@@ -3430,7 +3495,7 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 | `UC-011-02` | Basic Flow (Step 10), AF 2.6 | `PF05-PublicProfile.dc.html` | Public profile with name, avatar, bio and paged published recipes | **Available** |
 | `UC-011-02` | AF 2.1 – AF 2.4 | *Gap 011-D* | Editor with errors: invalid name, bio over 300, wrong avatar type or size | **GAP** |
 | `UC-011-02` | AF 2.8 | *Gap 011-E* | Administrator's view of a user: email and account information only | **GAP** |
-| `UC-011-02` | AF 2.6 (no recipes) | *Gap 011-F* | Public profile of a user without published recipes | **GAP** (see `[OQ-011-02]`) |
+| `UC-011-02` | AF 2.6 (no recipes) | *Gap 011-F* | Public profile of a user without published recipes | **GAP** (behaviour now defined by `FR-039`) |
 | `UC-011-03` | Basic Flow (Steps 2–5), AF 3.1, AF 3.6 | `PF06-Security.dc.html` | Change-password form with the wrong-current-password message; "Tài khoản chỉ dùng Google" with "Đặt mật khẩu" | **Available** |
 | `UC-011-03` | Basic Flow (Step 8) | *Gap 011-G* | "Password changed" confirmation | **GAP** |
 | `UC-011-03` | AF 3.2, AF 3.3 | *Gap 011-H* | Rule-failed state and throttled state after repeated wrong passwords | **GAP** |
@@ -3441,51 +3506,62 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 | `UC-011-04` | AF 4.2 | *Gap 011-K* | Delete screen for a Google-only account asking for Google re-authentication | **GAP** |
 | `UC-011-04` | AF 4.3 | *Gap 011-L* | Refusal for the last active Administrator | **GAP** |
 | `UC-011-04` | AF 4.4 | *Gap 011-M* | Refusal for a temporarily suspended account with the end date | **GAP** |
+| `UC-011-04` | AF 4.13 | *Gap 011-N* | Account-closure page opened from the banned-account screen (`AU07`) without a session: lists, type DELETE | **GAP** |
 | `UC-011-05` | Basic Flow | `PF02-DietEmpty.dc.html`, `PF03-DietForm.dc.html` | Explanation of hard rules and preferences in the profile screens | **Available** |
 
-*Note:* `AF 1.2`, `AF 1.5`, `AF 1.7`, `AF 1.8`, `AF 1.10` – `AF 1.12`, `AF 1.15` – `AF 1.18`, `AF 2.5`, `AF 2.7`, `AF 2.9` – `AF 2.16`, `AF 3.4` – `AF 3.5`, `AF 3.7` – `AF 3.12`, `AF 4.5` – `AF 4.11` and `AF 5.1` – `AF 5.9` reuse the screens above, are background behaviour, or are server refusals that show a message in a screen already listed.
+*Note:* `AF 1.2`, `AF 1.5`, `AF 1.7`, `AF 1.8`, `AF 1.10` – `AF 1.12`, `AF 1.15` – `AF 1.19`, `AF 2.5`, `AF 2.7`, `AF 2.9` – `AF 2.18`, `AF 3.4` – `AF 3.5`, `AF 3.7` – `AF 3.13`, `AF 4.5` – `AF 4.12`, `AF 4.14` – `AF 4.16` and `AF 5.1` – `AF 5.9` reuse the screens above, are background behaviour, or are server refusals that show a message in a screen already listed.
 
 *Desktop variants:* every screen listed in this table also has a web variant named `W-<ID>` in the same folder (for example `W-AU02-Register.dc.html`). The mobile files are listed because the flows are written for the 360 px layout (constitution Principle V). `AU01` exists only as `W-AU01-Login.dc.html`.
 
 ### 10.3. Open Questions (For Team Alignment)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 *Decisions of 30/10/2026 by Mai Văn Hiển are recorded under each item. Changes to specs `011` need Duy's approval through a PR; the use cases above change only where a decision is stated in the flow.*
+
+*Status update (v2.0, 13/11/2026, `SCRUM-71`):* spec 011 was clarified on 2026-11-06 and 2026-11-07. Each item below now carries a *Status (v2.0)* line.
 
 1. **`[OQ-011-01]` Behaviour When the Profile Cannot Be Read (`UC-011-05` AF 5.9):**
    - *Issue:* The spec does not say whether a module that cannot read the dietary profile must hide recipes, refuse to generate a plan, or continue as if there were no profile. Continuing silently could show an unsafe recipe to a user with an allergy.
    - *Current Stance:* No flow is invented. The safe choice (refuse to choose recipes automatically and say why) is proposed for the specs of `020`, `030` and `031`.
    - *Owner:* Mai Văn Hiển with Nguyễn Đức Duy (`020`) and Nguyễn Thành Dự (`030`, `031`).
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 011, highest priority: a new FR after `FR-026` — a module that cannot read the profile does not choose recipes automatically and shows the reason. Add one Integration Points row for `020`, `030` and `031`. Not for an expired session (treated as a Guest).
+   - *Status (v2.0):* **Closed** by spec 011 Clarifications 2026-11-06 (`FR-026a`; contract `503 PROFILE_UNAVAILABLE`). `UC-011-05` AF 5.9 and `UC-011-01` AF 1.14 updated. Whether `UC-020-03` and `UC-031-01` already follow `FR-026a` is left to the owners of those sections.
 2. **`[OQ-011-02]` Empty and Error States of the Public Profile (`UC-011-02`):**
    - *Issue:* `FR-039` defines four states for "the profile page" but does not say what a visitor sees on a public profile with no published recipes or on a profile that does not exist or belongs to a deleted user.
    - *Current Stance:* Only the data state is written; a deleted user appears as "Người dùng đã xóa" without a profile link (`FR-033`).
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 011 (small): `FR-039` — no recipes shows an empty state; a missing or deleted profile shows the generic 404.
+   - *Status (v2.0):* **Closed** by spec 011 Clarifications 2026-11-06 (`FR-039`; contract `404 USER_NOT_FOUND`). `UC-011-02` AF 2.6 and AF 2.17 updated.
 3. **`[OQ-011-03]` Public Profile of a Suspended or Banned User:**
    - *Issue:* Edge Cases say it "follows the rules of spec 010", but spec 010 defines no such rule.
    - *Current Stance:* `AF 2.14` only states that the account cannot edit.
    - *Owner:* Mai Văn Hiển (specs `010` and `011`).
    - *Decision (30/10/2026, Mai Văn Hiển):* Proposed, not yet decided: a suspended user's profile stays viewable, a banned user's is 404; Hiển decides after asking Chung; record in spec 010.
+   - *Status (v2.0):* **Closed** by spec 011 Clarifications 2026-11-06 (`FR-005`), recorded in spec 011 rather than spec 010. `UC-011-02` AF 2.6, AF 2.14 and AF 2.17 updated.
 4. **`[OQ-011-04]` Details of Password-Change Failures (`UC-011-03`):**
    - *Issue:* `FR-030` limits wrong current passwords "as sign-in failures are", but it is not stated whether this lock also blocks signing in; it is also not stated whether "Set password" signs out other sessions (`FR-028` mentions only a change), or whether typed passwords are kept after a network failure.
    - *Current Stance:* `AF 3.2`, `AF 3.6` and `AF 3.10` mark the proposed rules as "Proposed" until the clarification of spec 011 is approved.
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Proposed: a separate counter that does not lock sign-in; "Set password" also signs out other sessions; password fields cleared on failure (a deliberate exception to the Edge Cases). Pending clarification of spec 011; `AF 3.2`, `AF 3.6` and `AF 3.10` are marked "Proposed".
+   - *Status (v2.0):* **Closed** by spec 011 Clarifications 2026-11-06 (`FR-028`, `FR-030`, `FR-039`). The "Proposed" marks of `AF 3.2`, `AF 3.6` and `AF 3.10` are removed.
 5. **`[OQ-011-05]` Re-Authentication Rate Limit on Account Deletion:**
    - *Issue:* `FR-030` limits wrong passwords for password change only. A stolen session could use the deletion screen to guess the password without limit.
    - *Current Stance:* `AF 4.1` only refuses; no limit is described.
    - *Owner:* Mai Văn Hiển, to be settled before `/speckit-plan`.
    - *Decision (30/10/2026, Mai Văn Hiển):* Open — proposed, awaiting clarification of spec 011: wrong current passwords on "Change password" and on "Delete account" share one counter per user (5 wrong passwords within 15 minutes, both actions refused for 15 minutes with the time to retry), separate from the sign-in counter so it never locks sign-in; Google-only accounts re-authenticate with Google and have no password to guess (`FR-030`). `AF 4.1` stays unchanged for now. After the clarification is approved, add `AF 4.12: Too Many Wrong Passwords` to `UC-011-04` and update this item.
+   - *Status (v2.0):* **Closed** by spec 011 Clarifications 2026-11-06 (`FR-030`, US4 AS13) and spec 010 `FR-022b`; contract `429 PASSWORD_CHECK_LIMITED`. `AF 4.12: Too Many Wrong Passwords` added to `UC-011-04`; `UC-011-03` AF 3.2 uses the same counter.
 6. **`[OQ-011-06]` How a Banned User Reaches Account Deletion:**
    - *Issue:* Same as `[OQ-010-04]`: spec 011 Assumptions leave the route to spec 010.
    - *Current Stance:* `UC-011-04` allows a banned account to delete itself once it reaches the account-closure page.
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Merged into `[OQ-010-04]`, deferred.
+   - *Status (v2.0):* **Closed** with `[OQ-010-04]` by spec 011 Clarifications 2026-11-06 (`FR-037b`) and spec 010 `FR-013`; contract `POST /api/v1/account-closure`. `UC-011-04` AF 4.13 – AF 4.15 added.
 7. **`[OQ-011-07]` Items Still Owned by Other Specs:**
    - *Issue:* Spec 011 Integration Points mark as "to be confirmed" the anonymous reviews (`070`), the deletion of Cooksnaps (`070`), the deletion of meal plans, shopping lists and collections (`030`, `040`, `080`) and the "deleted user" author of published recipes (`060`).
    - *Current Stance:* `UC-011-04` Step 7 follows spec 011 `FR-033` – `FR-036`; the owners must confirm.
    - *Owner:* Trần Nguyễn Công Chung (`070`), Nguyễn Thành Dự (`030`), Lê Quốc Hưng (`040`), Nguyễn Đức Duy (`060`).
    - *Decision (30/10/2026, Mai Văn Hiển):* Pass to Trần Nguyễn Công Chung (`070`), Nguyễn Thành Dự (`030`), Lê Quốc Hưng (`040`) and Nguyễn Đức Duy (`060`), due 02/11.
+   - *Status (v2.0):* **Open.** Spec 011 still marks `FR-035` "to be confirmed by E". Spec 070 now **contradicts** it: spec 070 Edge Case 5 keeps the Cooksnaps of a deleted user visible (`cooksnaps.user_id` set to `NULL`), while spec 011 `FR-035` and US4 AS6 delete them. `UC-011-04` Step 7 follows spec 011; `UC-070-04` AF 4.3 states the conflict. The spec owners (Mai Văn Hiển for 011, Trần Nguyễn Công Chung for 070) must agree on one rule; the other rows (`030`, `040`, `060`, `080`) are not confirmed in this revision.
 8. **`[OQ-011-08]` Prototype `PF07` Shows Only the Password Variant:**
    - *Issue:* The delete screen shows the password field but spec `FR-031` also requires a Google re-authentication variant.
    - *Current Stance:* The variant is described in `AF 4.2` and listed as Gap 011-K; no UI is invented.
