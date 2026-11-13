@@ -39,14 +39,55 @@ public class RecordingMailSender {
 
         private final List<MimeMessage> messages = new CopyOnWriteArrayList<>();
         private volatile int failures;
+        private final java.util.concurrent.atomic.AtomicInteger attempts = new java.util.concurrent.atomic.AtomicInteger();
 
         public List<MimeMessage> messages() {
             return List.copyOf(messages);
         }
 
+        /** How many times a send was tried, failed attempts included. */
+        public int attempts() {
+            return attempts.get();
+        }
+
+        /** The text of a message: its text/plain and text/html parts, in that order. */
+        public static java.util.List<String> parts(MimeMessage message) {
+            java.util.List<String> parts = new java.util.ArrayList<>();
+            try {
+                collect(message.getContent(), parts);
+            } catch (Exception e) {
+                throw new IllegalStateException("cannot read the message", e);
+            }
+            return parts;
+        }
+
+        private static void collect(Object content, java.util.List<String> parts) throws Exception {
+            if (content instanceof String text) {
+                parts.add(text);
+            } else if (content instanceof jakarta.mail.Multipart multipart) {
+                for (int i = 0; i < multipart.getCount(); i++) {
+                    collect(multipart.getBodyPart(i).getContent(), parts);
+                }
+            }
+        }
+
+        /** The messages sent to this address. */
+        public java.util.List<MimeMessage> messagesTo(String address) {
+            return messages.stream().filter(m -> {
+                try {
+                    return m.getRecipients(jakarta.mail.Message.RecipientType.TO) != null
+                            && java.util.Arrays.stream(m.getRecipients(jakarta.mail.Message.RecipientType.TO))
+                                    .anyMatch(a -> a.toString().equalsIgnoreCase(address));
+                } catch (jakarta.mail.MessagingException e) {
+                    return false;
+                }
+            }).toList();
+        }
+
         public void clear() {
             messages.clear();
             failures = 0;
+            attempts.set(0);
         }
 
         public void failNext(int count) {
@@ -69,6 +110,7 @@ public class RecordingMailSender {
 
         @Override
         public void send(MimeMessage mimeMessage) throws MailException {
+            attempts.incrementAndGet();
             if (failures > 0) {
                 failures--;
                 throw new MailSendException("recording sender: simulated SMTP failure");
