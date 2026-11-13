@@ -2164,7 +2164,7 @@ When the ingredient the author needs is not in the shared catalogue, the author 
 ---
 
 ## 9. USE-CASE SPECIFICATIONS FOR FEATURE 010: USER AUTHENTICATION & ROLES
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 > [!NOTE]
 > **Sources:** `specs/010-user-authentication-roles/spec.md` (US1–US5, FR-001 – FR-026 including `FR-022a`, `FR-022b` and `FR-024a`, NFR-001 – NFR-009, SC-001 – SC-007; Clarifications up to the session of 2026-11-09), `specs/010-user-authentication-roles/contracts/openapi.yaml` (endpoints under `/api/v1`, status codes and error codes quoted in the flows) and `contracts/integration.md`, [Vision Document](vision-document.md) §5.1 and §7.4, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.1 (`SCRUM-49`) and the project constitution (`.specify/memory/constitution.md`, Principles IV and V). Actors follow the model: **Guest** is a visitor without a session; **Email Service** and **Google OAuth** are secondary systems. `UC-010-04` extends `UC-010-01`. Role-based access (`010` US3) has no use case of its own in the model: it is carried by the actor generalization (model §2.2), by `UC-100-03` (role changes, suspensions and bans) and by the alternative flows `AF 2.9`, `AF 2.15` and `AF 2.16` below (see `[OQ-010-01]` in Section 9.3).
@@ -2172,7 +2172,7 @@ When the ingredient the author needs is not in the shared catalogue, the author 
 > **v2.0 revision note (SCRUM-71):** Spec 010 was clarified on 2026-11-06, 2026-11-07 and 2026-11-09, after the PA3 baseline (v1.2) of this section. Every flow that was marked *"Proposed, pending clarification"* or that pointed to an open question now follows the approved rule, and each step that calls the backend names the contract endpoint and the error code it returns. The backend is not implemented yet (`SCRUM-74`), so these references describe the approved contract, not running code. The interface shows every message in Vietnamese (NFR-006); English wording in the flows gives the meaning only.
 
 ### UC-010-01: Register Account & Verify Email
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-010-01`
@@ -2318,7 +2318,7 @@ Lets a visitor create a WikiCook account with a display name, an email address, 
 ---
 
 ### UC-010-02: Sign In with Email & Password
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-010-02`
@@ -2486,7 +2486,7 @@ Lets a registered user authenticate with an email and a password so that the per
 ---
 
 ### UC-010-03: Reset Forgotten Password
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-010-03`
@@ -2593,7 +2593,7 @@ Lets a registered user regain access without contacting support. The user reques
 ---
 
 ### UC-010-04: Sign In with Google
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-010-04`
@@ -2702,6 +2702,7 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 ---
 
 ### 9.1. Feature 010 (User Authentication & Roles) Traceability
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria | Vision Feature |
 | :---: | :--- | :---: | :--- | :--- | :---: | :---: |
@@ -2713,6 +2714,7 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 *Verification:* User stories `US1`, `US2`, `US4` and `US5` and their 20 acceptance scenarios map to one use case each. `US3` (role-based access) has no dedicated use case in the Use-Case Model: its Guest scenario is `AF 2.9`, its permission scenarios are `AF 2.15` and `AF 2.16`, and role changes by an Administrator belong to `UC-100-03`. `FR-021`, `FR-022`, `FR-022a`, `FR-023` and the permission matrix are enforced by every Member-only use case in the model as a special requirement. `FR-023` (last active Administrator) and the Administrator-side part of `FR-022`, `FR-022a`, `FR-024a` and `FR-025` are performed through `UC-100-03`. The emails of `FR-024a` (account suspended or banned, suspension ended, ban lifted) are sent by spec 010 when a Moderator or Administrator acts through `UC-100-03` or when a suspension ends on schedule; `UC-010-02` shows their effect on a signed-in user (`AF 2.14`) and the in-app role-change notice (`AF 2.15`). `FR-022b` (shared wrong-password counter for re-authentication) is exercised by `UC-011-03`, `UC-011-04` and the Administrator actions of `UC-100-03`. See `[OQ-010-01]`.
 
 ### 9.2. Prototype Screen Mapping & UI Asset Gaps (for SCRUM-58)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Use Case ID | Flow / Step Reference | Existing Screen ID & Filename | Description of Prototype View | Asset Status & Action for SCRUM-58 |
 | :---: | :--- | :--- | :--- | :---: |
@@ -2726,7 +2728,7 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 | `UC-010-02` | AF 2.3, AF 2.4, AF 2.5 | `AU07-Locked.dc.html` | Locked account until a time with "Đặt lại mật khẩu"; suspended account with end date and reason; note for banned accounts | **Available** |
 | `UC-010-02` | AF 2.7 | *Gap 010-F* | Reminder banner to verify the email, with the request for a new link | **GAP** |
 | `UC-010-02` | AF 2.9 | `AU08-SignInPrompt.dc.html` | Guest presses Save: "Đăng nhập / Tạo tài khoản / Để sau" | **Available** |
-| `UC-010-02` | AF 2.12 | *Gap 010-G* | Session expired: sign in again, with the leave-page warning | **GAP** |
+| `UC-010-02` | AF 2.12 | *Gap 010-G* | Session ended: sign-in dialog over the page, unsaved form content kept, leave-page warning | **GAP** |
 | `UC-010-02` | AF 2.15 | *Gap 010-H* | One-time in-app notice of the new role and the permissions that changed | **GAP** |
 | `UC-010-02` | AF 2.16 | `AU09-AccessDenied.dc.html` | "Bạn không có quyền xem trang này" | **Available** |
 | `UC-010-03` | Basic Flow (Steps 2–5), AF 3.1 | `AU05-ForgotPassword.dc.html` | Request form and the neutral "Đã gửi yêu cầu" message with "Gửi lại link" | **Available** |
@@ -2739,13 +2741,16 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 | `UC-010-04` | AF 4.4 | *Gap 010-M* | Refusal: Google account has no verified email, with the suggestion to register by email | **GAP** |
 | `UC-010-04` | AF 4.7 | *Gap 010-N* | "Google sign-in is not available now", email sign-in still shown | **GAP** |
 
-*Note:* `AF 1.3` – `AF 1.8`, `AF 1.12` – `AF 1.15`, `AF 2.6`, `AF 2.8`, `AF 2.10` – `AF 2.11`, `AF 2.13` – `AF 2.14`, `AF 2.17`, `AF 3.2` – `AF 3.3`, `AF 3.6` – `AF 3.9` and `AF 4.1` – `AF 4.2`, `AF 4.5` – `AF 4.6`, `AF 4.8` – `AF 4.9` are validation messages, redirects or background behaviour that reuse the screens above and need no separate screenshot.
+*Note:* `AF 1.3` – `AF 1.8`, `AF 1.12` – `AF 1.15`, `AF 2.6`, `AF 2.8`, `AF 2.10` – `AF 2.11`, `AF 2.13` – `AF 2.14`, `AF 2.17` – `AF 2.19`, `AF 3.2` – `AF 3.3`, `AF 3.6` – `AF 3.10` and `AF 4.1` – `AF 4.2`, `AF 4.5` – `AF 4.6`, `AF 4.8` – `AF 4.10` are validation messages, redirects or background behaviour that reuse the screens above and need no separate screenshot.
 
 *Desktop variants:* every screen listed in this table also has a web variant named `W-<ID>` in the same folder (for example `W-AU02-Register.dc.html`). The mobile files are listed because the flows are written for the 360 px layout (constitution Principle V). `AU01` exists only as `W-AU01-Login.dc.html`.
 
 ### 9.3. Open Questions (For Team Alignment)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 *Decisions of 30/10/2026 by Mai Văn Hiển are recorded under each item. Changes to specs `010` need Duy's approval through a PR; the use cases above change only where a decision is stated in the flow.*
+
+*Status update (v2.0, 13/11/2026, `SCRUM-71`):* spec 010 was clarified on 2026-11-06, 2026-11-07 and 2026-11-09. Each item below now carries a *Status (v2.0)* line; the flows of `UC-010-01` – `UC-010-04` follow the clarified spec and the approved contract `specs/010-user-authentication-roles/contracts/openapi.yaml`.
 
 1. **`[OQ-010-01]` Role-Based Access Has No Use Case (`US3`):**
    - *Issue:* Spec 010 has five user stories but the Use-Case Model has four use cases for feature 010; `US3` is modelled only by the actor generalization and by `UC-100-03`. The prototype nevertheless contains `AU08` and `AU09` for it.
@@ -2753,53 +2758,63 @@ Lets a visitor continue with a Google account that has a verified email. If no W
    - *Proposal:* Either keep this stance, or add a Brief use case `UC-010-05 Enforce Role-Based Access` to the model before the freeze on 02/11/2026.
    - *Owner:* Mai Văn Hiển with Nguyễn Đức Duy (`SCRUM-49`).
    - *Decision (30/10/2026, Mai Văn Hiển):* Keep. `AF 2.9`, `AF 2.15` and `AF 2.16` stay; Duy confirms during review.
+   - *Status (v2.0):* Still **open** at model level. Spec 010 still has no use case for `US3`; the stance is kept and `AF 2.14` (suspension or ban while signed in) now also carries part of `US3`. Whether to add `UC-010-05` is proposed to the owner of `use-case-model.md`, not decided here.
 2. **`[OQ-010-02]` Lockout Details:**
    - *Issue:* The spec does not say whether a successful password reset ends an active lock, nor what the lock screen shows for an unregistered email (a lock message appears only for real accounts, which can reveal that the account exists and conflicts with `NFR-003`).
    - *Current Stance:* Unknown emails are counted and get the same lock screen (`AF 2.2`, `AF 2.3`).
    - *Depends on this question:* `UC-010-02` `AF 2.2` and `AF 2.3` (both marked "Proposed"). `UC-010-03` `AF 3.8` states the open point about the lock and a reset but proposes nothing.
    - *Owner:* Mai Văn Hiển (spec 010 owner) to decide.
    - *Decision (30/10/2026, Mai Văn Hiển):* Option A: count failures per normalized email including unregistered ones; same lock screen with the retry time and a neutral note; the `FR-012` email only when an account exists. Open, pending clarification of spec 010 (Duy approves by PR). "A successful reset clears the lock" is not in the flows. For `/speckit-plan`: the unknown-email counter expires after 15 minutes and is limited per IP address; audit entries never store an unknown email in readable form.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-012`, `FR-025`): option A is approved; attempts are also limited per IP address; a successful reset does **not** end the lock and the lock does not block Google sign-in. Flows updated: `AF 2.2`, `AF 2.3`, `AF 2.18`, `UC-010-03` `AF 3.8`, `UC-010-04` `AF 4.10`. The per-IP numbers are not fixed by the spec (configuration of the plan).
 3. **`[OQ-010-03]` Older Verification Links After a Resend:**
    - *Issue:* `FR-015` invalidates earlier links only for password reset. For verification, the spec says only "single-use and expires after 24 hours".
    - *Current Stance:* `AF 1.9` does not state whether older unused verification links stay valid.
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010: one sentence in `FR-005` — a new verification link invalidates earlier ones, as `FR-015` does for reset links. Then update `AF 1.9`.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-005`). `AF 1.9` and `AF 1.12` updated.
 4. **`[OQ-010-04]` How a Banned User Reaches Account Closure:**
    - *Issue:* A banned user may delete the account (`010` FR-026, `011` FR-037b), but sign-in is refused for banned accounts (`FR-013`). Spec `011` Assumptions leave the route to the restricted account-closure page to spec 010 and the plan.
    - *Current Stance:* `AF 2.5` shows only the ban message.
    - *Owner:* Mai Văn Hiển, to be settled before `/speckit-plan`.
    - *Decision (30/10/2026, Mai Văn Hiển):* Defer to `/speckit-plan`. To close it earlier, add to `FR-013` a restricted session for the account-closure page. Includes `[OQ-011-06]`.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-013`): after a correct password (or Google identity) a banned user receives a single-use closure link valid for 10 minutes that opens only the closure page of spec 011 and creates no session (`closureToken` of `403 ACCOUNT_BANNED`). Flows updated: `AF 2.5`, `UC-010-04` `AF 4.6`, `UC-011-04` `AF 4.13`. Closes `[OQ-011-06]` too.
 5. **`[OQ-010-05]` Message for a Blocked Email:**
    - *Issue:* `FR-026` says registration and Google account creation are refused for blocked emails but gives no message text; a message that names the block would reveal that the email belonged to a banned account.
    - *Current Stance:* `AF 1.7` and `AF 4.5` refuse without stating a reason.
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 (small): `FR-026` refuses with a neutral message, no reason.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-026`; contract `422 REGISTRATION_REFUSED`, Google error `registration_refused`). `AF 1.7` and `AF 4.5` updated.
 6. **`[OQ-010-06]` Answer When the Reset Request Limit Is Exceeded:**
    - *Issue:* `FR-017` limits requests but does not say what the user sees, and `NFR-003` forbids revealing registered emails.
    - *Current Stance:* `AF 3.2` counts requests per address and gives no registration-dependent answer.
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 (small): add "try again in X minutes". Counting per address is already right.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 and 2026-11-07 (`FR-017`; contract `429 EMAIL_RATE_LIMITED` with `retryAfterSeconds`). Verification and reset emails are counted separately, the first email at registration counts, and the limit never refuses a registration. `AF 1.10` and `AF 3.2` updated.
 7. **`[OQ-010-07]` Atomicity of the Unverified-Account Reset:**
    - *Issue:* `FR-019` lists the data deleted when Google takes over an unverified account but does not say what happens if one of the receiving specs (`011`, `060`, `080`) fails to delete its data.
    - *Current Stance:* `AF 4.2` assumes the whole reset succeeds or the sign-in is not completed.
    - *Owner:* Mai Văn Hiển with the owners of `011`, `060`, `080`.
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 and ask Duy: the reset is all-or-nothing; Duy confirms that `060` has a deletion handler.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-019`): all-or-nothing; on failure nothing changes and the sign-in is not completed. Clarification 2026-11-07 adds that a suspended or banned unverified account is never reset. `AF 4.2` and `AF 4.6` updated.
 8. **`[OQ-010-08]` Display Name and Session Lifetime for Google Accounts:**
    - *Issue:* `FR-019` takes the display name from Google only for the reset case, and the spec does not say whether a Google sign-in uses "Remember me".
    - *Current Stance:* `AF 4.8` applies the 1–50 character rule to the Google name; the session follows the default lifetime of `FR-009` without "Remember me".
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Keep; record in a clarification after 03/11.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-018`). `AF 4.8` and Step 8 of `UC-010-04` updated. How a name outside 1–50 characters is corrected is not fixed by the spec (see the note of `AF 4.8`).
 9. **`[OQ-010-09]` Prototype `AU03` Offers "Đổi địa chỉ email":**
    - *Issue:* The check-email screen shows "Đổi địa chỉ email", but spec 010 has no such function and spec `011` states that the email cannot be changed in this release.
    - *Current Stance:* No flow is written for it; it is not a requirement.
    - *Proposal:* Remove the link from `AU03` (Chung, `SCRUM-58`) or add the function to the spec first.
    - *Owner:* Mai Văn Hiển with Trần Nguyễn Công Chung.
    - *Decision (30/10/2026, Mai Văn Hiển):* Pass to Chung: remove "Đổi địa chỉ email" from `AU03`, because spec 011 says the email cannot be changed.
+   - *Status (v2.0):* **Open** (prototype task, `SCRUM-58`). Spec 010 and spec 011 (Assumptions: the email cannot be changed) are unchanged, so no flow is written for the link.
 10. **`[OQ-010-10]` Other Unspecified Cases:**
     - *Issue:* The spec does not state whether registration signs the user in automatically (the prototype `AU03` suggests it does), whether verification signs the user in, whether a suspended, banned, unverified or Google-only account may request a password reset, or what a lock does to a Google sign-in.
     - *Current Stance:* The flows above do not describe these cases; they are not invented.
     - *Owner:* Mai Văn Hiển.
     - *Decision (30/10/2026, Mai Văn Hiển):* Defer until after 03/11. The cases listed in this item stay out of the flows.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-005`, `FR-012`, `FR-014`): registering and verifying do not sign the user in; Google-only, suspended and banned accounts receive no reset link but the same answer; a lock does not block Google sign-in. Flows updated: `UC-010-01` Steps 7 – 11, `UC-010-03` `AF 3.10`, `UC-010-04` `AF 4.10`.
 
 ---
 
