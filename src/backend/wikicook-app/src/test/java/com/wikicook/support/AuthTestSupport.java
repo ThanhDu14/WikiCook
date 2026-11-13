@@ -91,6 +91,14 @@ public class AuthTestSupport {
                 """, Long.class, userId, randomHash(), ts(lastActivityAt), ts(expiresAt), ts(revokedAt));
     }
 
+    /** A running sanction: {@code endsAt} set means a suspension, null means a ban (V102 CHECK). */
+    public long sanction(long userId, String reason, Instant endsAt) {
+        return jdbc.queryForObject("""
+                INSERT INTO user_suspensions (user_id, kind, reason, starts_at, ends_at)
+                VALUES (?, ?, ?, ?, ?) RETURNING id
+                """, Long.class, userId, endsAt == null ? "BAN" : "SUSPENSION", reason, ts(Instant.now()), ts(endsAt));
+    }
+
     /** A real access token for this session, signed like production (research R1). */
     public String jwt(long userId, long sessionId) {
         return tokens.issue(userId, sessionId).value();
