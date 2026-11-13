@@ -9,6 +9,7 @@ import java.util.HexFormat;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Test data for the 010 integration tests: accounts by role, status and verification (also with a fixed
@@ -25,11 +26,13 @@ public class AuthTestSupport {
 
     private final JdbcTemplate jdbc;
     private final AccessTokenService tokens;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthTestSupport(JdbcTemplate jdbc, AccessTokenService tokens) {
+    public AuthTestSupport(JdbcTemplate jdbc, AccessTokenService tokens, PasswordEncoder passwordEncoder) {
         this.jdbc = jdbc;
         this.tokens = tokens;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /** A verified, active Member with a unique email. */
@@ -43,6 +46,15 @@ public class AuthTestSupport {
 
     public long createUser(String email, Role role, AccountStatus status, boolean emailVerified, String passwordHash) {
         return insertUser(null, email, role, status, emailVerified, passwordHash);
+    }
+
+    /** An account that can sign in with {@code password}, hashed like production (bcrypt cost of the test config). */
+    public long userWithPassword(String email, String password, Role role, AccountStatus status, boolean emailVerified) {
+        return insertUser(null, email, role, status, emailVerified, password == null ? null : passwordEncoder.encode(password));
+    }
+
+    public long memberWithPassword(String email, String password) {
+        return userWithPassword(email, password, Role.MEMBER, AccountStatus.ACTIVE, true);
     }
 
     /** Creates the account with this exact id (for tests that send {@code X-Test-User}); a no-op when it exists. */

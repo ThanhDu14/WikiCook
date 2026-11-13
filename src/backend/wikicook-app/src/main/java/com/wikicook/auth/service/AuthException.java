@@ -1,5 +1,7 @@
 package com.wikicook.auth.service;
 
+import com.wikicook.auth.dto.SessionSnapshot;
+import com.wikicook.common.security.AccountStatus;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,8 +27,11 @@ public class AuthException extends RuntimeException {
         this(code, code.name());
     }
 
+    /** Adds an extra field of the contract; a null value is left out, as the field is optional. */
     public AuthException with(String name, Object value) {
-        properties.put(name, value);
+        if (value != null) {
+            properties.put(name, value);
+        }
         return this;
     }
 
@@ -90,6 +95,13 @@ public class AuthException extends RuntimeException {
     public static AuthException emailRateLimited(long retryAfterSeconds) {
         return new AuthException(AuthErrorCode.EMAIL_RATE_LIMITED, "Too many emails requested, try again later")
                 .with("retryAfterSeconds", retryAfterSeconds);
+    }
+
+    /** The 403 of a suspended or banned account, with the reason and, for a suspension, its end (FR-013, FR-024). */
+    public static AuthException restricted(SessionSnapshot snapshot) {
+        return snapshot.status() == AccountStatus.BANNED
+                ? accountBanned(snapshot.sanctionReason(), null)
+                : accountSuspended(snapshot.sanctionReason(), snapshot.sanctionEndsAt());
     }
 
     public static AuthException tooManyRequests(long retryAfterSeconds) {

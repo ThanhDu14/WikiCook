@@ -55,7 +55,7 @@ public class SessionJwtAuthenticationConverter implements Converter<Jwt, Abstrac
                 .orElseThrow(() -> failure(AuthException.unauthenticated()));
 
         if (snapshot.status() != AccountStatus.ACTIVE) {
-            throw failure(restricted(snapshot));
+            throw failure(AuthException.restricted(snapshot));
         }
         Instant now = clock.instant();
         if (snapshot.revokedAt() != null || !snapshot.expiresAt().isAfter(now)) {
@@ -76,12 +76,6 @@ public class SessionJwtAuthenticationConverter implements Converter<Jwt, Abstrac
         AuthenticatedAccount account = new AuthenticatedAccount(snapshot.userId(), snapshot.role(),
                 snapshot.emailVerified(), snapshot.sessionId(), snapshot.pendingRoleNoticeFrom());
         return new AccountAuthentication(account, authorities, jwt);
-    }
-
-    private static AuthException restricted(SessionSnapshot snapshot) {
-        return snapshot.status() == AccountStatus.BANNED
-                ? AuthException.accountBanned(snapshot.sanctionReason(), null)
-                : AuthException.accountSuspended(snapshot.sanctionReason(), snapshot.sanctionEndsAt());
     }
 
     private static Long parseLong(String value) {
