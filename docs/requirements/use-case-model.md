@@ -4,9 +4,9 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 05  
 **Document Title:** Use-Case Model (Mermaid) covering the 10 product features of Vision Document §5  
-**Sprint Cycle:** Sprint 03 (Project Assignment 3 — Part C, 10 Points)  
-**Document Version:** 0.2 (Draft for Standup 1 on 30/10/2026 — freeze on 02/11/2026)  
-**Date:** October 29, 2026
+**Sprint Cycle:** Sprint 04 (Project Assignment 4 — Part A, revised use-case documents); first edition Sprint 03 (Project Assignment 3 — Part C)  
+**Document Version:** 2.0 (Second Edition — PA4 self-audit revision, `SCRUM-70`)  
+**Date:** November 13, 2026
 
 ---
 
@@ -14,19 +14,23 @@
 
 | Section | Section Title | Performed by (Author) | Reviewed by | Edited by | Jira Task |
 | :---: | :--- | :---: | :---: | :---: | :---: |
-| **Section 1** | Introduction | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-49` |
-| **Section 2** | Actors | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-49` |
-| **Section 3** | System Overview Diagram | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-49` |
-| **Section 4** | Use-Case Diagrams by Feature | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-49` |
-| **Section 5** | Use-Case Catalogue & Traceability | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-49` |
-| **Section 6** | Coverage Check & Open Issues | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-49` |
+| **Section 1** | Introduction | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-49`, `SCRUM-70` |
+| **Section 2** | Actors | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-49`, `SCRUM-70` |
+| **Section 3** | System Overview Diagram | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-49`, `SCRUM-70` |
+| **Section 4** | Use-Case Diagrams by Feature | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-49`, `SCRUM-70` |
+| **Section 5** | Use-Case Catalogue & Traceability | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-49`, `SCRUM-70` |
+| **Section 6** | Coverage Check & Open Issues | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-49`, `SCRUM-70` |
+
+*Version 2.0 (`SCRUM-70`):* besides the six section headers, the parts revised in this version carry their own attribution line: Revision History, 1.2, 1.4, 1.5, 2.1, 2.2, 4.1, 4.3, 4.7, 4.10, 4.11, 6.1 and 6.2. Sections 4.2, 4.4 – 4.6, 4.8 and 4.9 are unchanged from `v0.2`.
 
 ### Revision History
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Date | Version | Description | Author |
 | :---: | :---: | :--- | :--- |
 | **29/10/2026** | `v0.1` | Initial draft: 8 actors with generalization, system overview, 11 use-case diagrams (one per Vision §5 feature plus the shared Recipe Detail page), catalogue of 64 use cases with traceability to Vision §5, specs and user stories, and coverage check (`SCRUM-49`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **29/10/2026** | `v0.2` | Aligned with the Use-Case Specifications v1.1 (`SCRUM-51`): added `UC-060-05 «include» UC-060-02` (`OQ-060-01`), closed open issue 3, updated the status of the open issues. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
+| **13/11/2026** | `v2.0` | Second Edition, PA4 Part A (`SCRUM-70`). No TA feedback on PA3 was received, so this is a self-audit against the Spec Kit artifacts of `010`, `011` and `070` on `main` (the two PA4 Part E groups F-01 and F-07), the other specifications, Vision `v2.0` and Use-Case Specifications `v1.4`. Four use cases added with the next free IDs (`UC-010-05` Sign Out, `UC-011-06` View Public Profile, `UC-070-07` Mark Review as Helpful, `UC-070-08` Update Recipe Rating Summary); no existing ID renumbered. Actors and relations corrected: Email Service on `UC-010-02` (lockout notice), Google OAuth on `UC-011-03` and `UC-011-04` (re-authentication), Moderator on `UC-100-03` and `UC-100-06`, `UC-011-05` also included by `UC-030-01` and `UC-031-05`, `UC-070-02` also extends `UC-070-03`, the post-cooking prompt `UC-070-06` is now extended by `UC-070-01` / `UC-070-03` instead of including `UC-070-01`, verified-email rule limited to reviews and Cooksnaps. Catalogue (68 use cases), coverage, sources and open issues updated. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 
 ---
 
@@ -35,11 +39,12 @@
 
 ### 1.1. Purpose
 
-This document is the Use-Case Model of WikiCook. It shows who interacts with the system (actors), what goals they achieve (use cases) and how the use cases depend on each other (`«include»`, `«extend»` and actor generalization). It is the index for the Use-Case Specifications in [`use-case-specification.md`](use-case-specification.md): every use case drawn here has exactly one owner who writes its specification under `SCRUM-50` – `SCRUM-54`, and every use case ID used there must come from Section 5 of this document.
+This document is the Use-Case Model of WikiCook. It shows who interacts with the system (actors), what goals they achieve (use cases) and how the use cases depend on each other (`«include»`, `«extend»` and actor generalization). It is the index for the Use-Case Specifications in [`use-case-specification.md`](use-case-specification.md): every use case drawn here has exactly one owner who writes its specification (`SCRUM-50` – `SCRUM-54` in PA3, revised under `SCRUM-71` in PA4), and every use case ID used there must come from Section 5 of this document.
 
 ### 1.2. Scope
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
-The model covers all ten features of [Vision Document](vision-document.md) §5 and the twelve feature specifications in `specs/` (`010`, `011`, `020`, `030`, `031`, `040`, `050`, `060`, `070`, `080`, `090`, `100`). It describes the **complete** behaviour of each specification, not only the slice implemented in Sprint 3. For example, `040` User Stories 3–5 are deferred to PA4 for Part E, but their use cases are still part of this model.
+The model covers all ten features of [Vision Document](vision-document.md) §5 and the twelve feature specifications in `specs/` (`010`, `011`, `020`, `030`, `031`, `040`, `050`, `060`, `070`, `080`, `090`, `100`). It describes the **complete** behaviour of each specification, not only the slice implemented in one sprint. The feature codes used in the Sprint reports map one-to-one to Vision §5: `F-01` = §5.1, …, `F-10` = §5.10. In PA4 (Sprint 04), Part E implements two groups end to end: **F-01** (specs `010` and `011`, Section 4.1) and **F-07** (spec `070`, Section 4.7); all other features stay in the model with their full scope even though they are not implemented in this sprint.
 
 ### 1.3. Notation
 
@@ -57,15 +62,20 @@ Mermaid has no native UML use-case diagram, so the diagrams use `flowchart LR` w
 | Generalization | Thick arrow from the child actor to the parent actor |
 
 ### 1.4. Use-Case Identifiers
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
-Every use case has the ID `UC-<spec>-<NN>`, where `<spec>` is the three-digit specification number and `<NN>` is a two-digit sequence inside that specification. The IDs `UC-040-01` – `UC-040-05` and `UC-050-01` – `UC-050-05` are kept exactly as already published in `use-case-specification.md` (`SCRUM-53`). In diagrams, the hyphens are written as underscores in node names (`UC020_01`) because Mermaid does not allow hyphens there; the visible label keeps the official ID.
+Every use case has the ID `UC-<spec>-<NN>`, where `<spec>` is the three-digit specification number and `<NN>` is a two-digit sequence inside that specification. The IDs `UC-040-01` – `UC-040-05` and `UC-050-01` – `UC-050-05` are kept exactly as already published in `use-case-specification.md` (`SCRUM-53`). IDs are never renumbered or reused: a use case added in a later version takes the next free number of its specification (in `v2.0`: `UC-010-05`, `UC-011-06`, `UC-070-07`, `UC-070-08`). In diagrams, the hyphens are written as underscores in node names (`UC020_01`) because Mermaid does not allow hyphens there; the visible label keeps the official ID.
 
 ### 1.5. Sources
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
-- [Vision Document](vision-document.md) v1.1 — §3.2 User Summary, §5 Product Features, §5.11 Feature Traceability.
+- [Vision Document](vision-document.md) v2.0 — §3.2 User Summary, §5 Product Features, §5.11 Feature Traceability, §8 Traceability to the Use-Case Model.
 - Feature specifications `specs/010` – `specs/100` — user stories, functional requirements and the permission matrix of `specs/010-user-authentication-roles/spec.md`.
-- [Use-Case Specifications](use-case-specification.md) v1.1 — use cases of `040`, `050` (`SCRUM-53`), `020` and `060` (`SCRUM-51`).
+- Spec Kit artifacts of the PA4 Part E groups as merged on `main` (13/11/2026): `specs/010-user-authentication-roles/` and `specs/011-user-profile-dietary/` (`spec.md`, `plan.md`, `data-model.md`, `contracts/`; `SCRUM-72`, PR #84) and `specs/070-review-cooksnap/` (`spec.md`, `plan.md`, `data-model.md`, `contracts/openapi.yaml`; PR #87, #88). Use cases of these features follow these files; behaviour they do not define is not modelled.
+- `specs/100-admin-moderation/spec.md` — RBAC matrix (Moderator suspension and dashboard rights).
+- [Use-Case Specifications](use-case-specification.md) v1.4 — all use cases of `010` – `100` (`SCRUM-50` – `SCRUM-54`).
 - [Sprint 03 Report](../management/reports/sprint-03/sprint-03-report.md) — Meeting 1, Decision 3 (the model must cover all ten features).
+- [Sprint 04 Report](../management/reports/sprint-04/sprint-04-report.md) — §1.1 (Part E groups F-01 and F-07), §1.2 (`SCRUM-69` – `SCRUM-71`).
 
 ---
 
@@ -73,21 +83,23 @@ Every use case has the ID `UC-<spec>-<NN>`, where `<spec>` is the three-digit sp
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 ### 2.1. Actor Catalogue
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Actor | Type | Description | Source |
 | :--- | :--- | :--- | :--- |
-| **Guest** | Primary, person | Visitor without an account. Can search, read published recipes and reviews, and register or sign in. | `010` FR-020, permission matrix |
-| **Member** | Primary, person | Signed-in user (the busy home cook of Vision §3.2). Owns a dietary profile, meal plans, shopping lists, collections, reviews and recipe drafts. Reviewing and submitting recipes require a verified email. | `010` FR-020, `011`, `060` FR-001 |
+| **Guest** | Primary, person | Visitor without an account or session. Can search and read published recipes, read reviews and open Cooksnap photos at full size, view public profiles, and register, sign in or reset a password. Any Member-only action asks a Guest to sign in first. | `010` FR-020, permission matrix; `011` FR-005; `070` FR-017, FR-023 |
+| **Member** | Primary, person | Signed-in user (the busy home cook of Vision §3.2). Owns a public profile, a dietary profile, meal plans, shopping lists, collections, reviews and recipe drafts. An unverified Member can sign in and use the personal features, but publishing content (submitting recipes, reviews, Cooksnaps) requires a verified email. | `010` FR-006, FR-020; `011` FR-001; `060` FR-001 |
 | **Contributor** | Primary, person | Member granted the "Verified Contributor" badge by an Administrator. Has the same use cases as Member; the badge is shown on their recipes. Their recipes still go through moderation. | `010` permission matrix, `060` |
-| **Moderator** | Primary, person | Reviews submitted recipes and proposed ingredients, and processes reports about recipes, reviews, Cooksnaps and users. | `010` permission matrix, `100` US1–US2 |
-| **Administrator** | Primary, person | Has every Moderator capability and also manages accounts and roles, taxonomies, featured recipes, nutrition estimates and the audit trail. | `010` FR-022, `100` US3–US6, `090` US7 |
+| **Moderator** | Primary, person | Reviews submitted recipes and proposed ingredients, processes reports about recipes, reviews, Cooksnaps and users (hide, restore, dismiss), suspends active Member or Contributor accounts for at most 30 days, and views the dashboard metrics. Cannot act on another Moderator or an Administrator. | `010` FR-022, FR-022a, permission matrix; `100` US1 – US3, RBAC matrix |
+| **Administrator** | Primary, person | Has every Moderator capability and also bans accounts, lifts suspensions and bans, changes roles, manages taxonomies, featured recipes and nutrition estimates, and reads the audit trail. Actions on another Administrator need re-authentication; the last active Administrator can never be removed. | `010` FR-022 – FR-023; `100` US3 – US6; `090` US7 |
 | **LLM Service** | Secondary, external system | Large language model and embedding API used to arrange AI meal plans, estimate nutrition and embed recipes for retrieval. | `031`, `090` |
-| **Google OAuth** | Secondary, external system | Identity provider for "Sign in with Google". | `010` US5 |
-| **Email Service** | Secondary, external system | Sends verification, password-reset and account-status emails. | `010` US2, US4; `100` US3 |
+| **Google OAuth** | Secondary, external system | Identity provider for "Sign in with Google" and for the re-authentication of Google-only accounts (setting a first password, deleting the account). | `010` US5, FR-018, FR-022b; `011` FR-029, FR-031 |
+| **Email Service** | Secondary, external system | Sends verification, password-reset and sign-in lockout emails, and the account-status emails (suspension, ban, end of a suspension, lifted ban). | `010` FR-005, FR-012, FR-014, FR-024a; `100` US3 |
 
 ### 2.2. Actor Generalization
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
-The person actors form an inheritance chain that follows the permission matrix of spec `010`: each child actor can perform every use case of its parent. Contributor and Moderator both specialise Member, and Administrator specialises Moderator.
+The person actors form an inheritance chain that follows the permission matrix of spec `010`: each child actor can perform every use case of its parent. Contributor and Moderator both specialise Member, and Administrator specialises Moderator. Guest is not an account role (`010` FR-020: every account has exactly one of the four roles); the generalization from Member to Guest only states that a signed-in actor can still do everything a visitor can.
 
 ```mermaid
 flowchart BT
@@ -113,7 +125,7 @@ Because of this generalization, the diagrams in Section 4 connect each use case 
 ## 3. SYSTEM OVERVIEW DIAGRAM
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
-The overview shows the ten features of Vision §5 as use-case packages inside the WikiCook boundary and the actors that interact with each package. The detailed use cases of each package are drawn in Section 4.
+The overview shows the ten features of Vision §5 as use-case packages inside the WikiCook boundary and the actors that interact with each package. Each package is labelled with its Sprint feature code (`F-01` – `F-10`) and its Vision section. The detailed use cases of each package are drawn in Section 4; the PA4 Part E groups are `F-01` and `F-07`.
 
 ```mermaid
 flowchart LR
@@ -124,16 +136,16 @@ flowchart LR
 
     subgraph WIKICOOK["WikiCook"]
         direction TB
-        F51(["5.1 Authentication &<br/>Dietary Profile<br/>(010, 011)"])
-        F52(["5.2 Recipe Discovery<br/>& Filters (020)"])
-        F53(["5.3 Meal Planner<br/>Manual + AI (030, 031)"])
-        F54(["5.4 Smart Shopping<br/>List (040)"])
-        F55(["5.5 Hands-free<br/>Cooking Mode (050)"])
-        F56(["5.6 Community Recipe<br/>Contribution (060)"])
-        F57(["5.7 Reviews &<br/>Cooksnaps (070)"])
-        F58(["5.8 Recipe<br/>Collections (080)"])
-        F59(["5.9 Nutrition &<br/>Allergen Analyzer (090)"])
-        F510(["5.10 Admin Content<br/>Moderation (100)"])
+        F51(["F-01 · 5.1 Authentication<br/>& Dietary Profile<br/>(010, 011)"])
+        F52(["F-02 · 5.2 Recipe Discovery<br/>& Filters (020)"])
+        F53(["F-03 · 5.3 Meal Planner<br/>Manual + AI (030, 031)"])
+        F54(["F-04 · 5.4 Smart Shopping<br/>List (040)"])
+        F55(["F-05 · 5.5 Hands-free<br/>Cooking Mode (050)"])
+        F56(["F-06 · 5.6 Community Recipe<br/>Contribution (060)"])
+        F57(["F-07 · 5.7 Reviews &<br/>Cooksnaps (070)"])
+        F58(["F-08 · 5.8 Recipe<br/>Collections (080)"])
+        F59(["F-09 · 5.9 Nutrition &<br/>Allergen Analyzer (090)"])
+        F510(["F-10 · 5.10 Admin Content<br/>Moderation (100)"])
     end
 
     LLM["«actor»<br/>LLM Service"]
@@ -178,7 +190,8 @@ Contributor is omitted from the overview because it has no use case of its own; 
 
 One diagram per Vision §5 feature (4.1 – 4.10), plus one cross-feature diagram for the shared Recipe Detail page (4.11). Use cases of another feature appear with a dashed border and only where a relationship crosses the feature boundary.
 
-### 4.1. Feature 5.1 — User Authentication & Dietary Profile (`010`, `011`)
+### 4.1. Feature 5.1 (F-01) — User Authentication & Dietary Profile (`010`, `011`)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 ```mermaid
 flowchart LR
@@ -191,6 +204,8 @@ flowchart LR
         UC010_02(["UC-010-02<br/>Sign In with Email & Password"])
         UC010_03(["UC-010-03<br/>Reset Forgotten Password"])
         UC010_04(["UC-010-04<br/>Sign In with Google"])
+        UC010_05(["UC-010-05<br/>Sign Out"])
+        UC011_06(["UC-011-06<br/>View Public Profile"])
         UC011_01(["UC-011-01<br/>Set Up Dietary Profile"])
         UC011_02(["UC-011-02<br/>Edit Public Profile & Avatar"])
         UC011_03(["UC-011-03<br/>Change or Set Password"])
@@ -205,14 +220,19 @@ flowchart LR
     GUEST --- UC010_02
     GUEST --- UC010_03
     GUEST --- UC010_04
+    GUEST --- UC011_06
+    MEMBER --- UC010_05
     MEMBER --- UC011_01
     MEMBER --- UC011_02
     MEMBER --- UC011_03
     MEMBER --- UC011_04
 
     UC010_01 --- EMAIL
+    UC010_02 --- EMAIL
     UC010_03 --- EMAIL
     UC010_04 --- GOOGLE
+    UC011_03 --- GOOGLE
+    UC011_04 --- GOOGLE
 
     UC010_04 -. "«extend»" .-> UC010_01
     UC011_01 -. "«include»" .-> UC011_05
@@ -223,9 +243,23 @@ flowchart LR
     class GOOGLE,EMAIL system
 ```
 
-- `UC-010-04` extends `UC-010-01`: a first Google sign-in creates the account instead of the email registration form (`010` US5).
-- `UC-011-05` is the single definition of hard rules (allergens, excluded ingredients) and preferences required by `011` US5. Setting up the profile includes it to validate the input, and search (`UC-020-03`) and the AI planner (`UC-031-01`) include it to filter recipes.
-- Role-based access (`010` US3) has no separate use case: it is modelled by the actor generalization in Section 2.2 and by role changes in `UC-100-03`.
+**Authentication (`010`).**
+
+- `UC-010-01` creates a **Member** account in the unverified state and sends a single-use verification link valid for 24 hours (`010` FR-001 – FR-005). Neither registering nor verifying signs the user in. Requesting a new link (limited to 3 per 15 minutes, `010` FR-017) invalidates the earlier ones, and an account still unverified 7 days after registration is deleted automatically (`010` FR-005); both are alternative flows of this use case, not separate user goals.
+- `UC-010-02` covers "Remember me" (30 days, otherwise 24 hours of inactivity, `010` FR-009), the return to the requested internal page (`010` FR-011), the lock after 5 failed attempts in 15 minutes, the refusal of suspended or banned accounts with the single-use account-closure link for banned users (`010` FR-012, FR-013) and the one-time notice after a role change (`010` FR-024a). It is now associated with the **Email Service** because the lock sends a notice to the owner of a registered account (`010` FR-012).
+- `UC-010-03` always gives the same answer whether or not the email is registered; Google-only, suspended and banned accounts receive no link (`010` FR-014). The link is valid for 30 minutes, and a successful reset signs out all other sessions (`010` FR-015, FR-016).
+- `UC-010-04` extends `UC-010-01`: a first Google sign-in creates a verified Member account instead of the email registration form (`010` US5). A Google email that matches a verified account signs in to it; one that matches an unverified account resets that account all-or-nothing, unless it is suspended or banned (`010` FR-019).
+- `UC-010-05` Sign Out *(new in v2.0)* ends the current session immediately; sessions on other devices stay signed in (`010` US1 AS4, FR-010, Edge Cases; `POST /auth/logout` in `contracts/openapi.yaml`). Version `0.2` had no use case for it and Use-Case Specifications `v1.4` describe it as an alternative flow of `UC-010-02`; it is now separate because its actor is a signed-in Member, not a Guest.
+- Role-based access (`010` US3) still has no separate use case, as decided for `[OQ-010-01]` (Use-Case Specifications §9.3): it is modelled by the actor generalization in Section 2.2, by the permission checks inside every use case and by role changes, suspensions and bans in `UC-100-03`. The scheduled end of an expired suspension (`010` Integration Points) is a system rule without a user goal and is not modelled as a use case.
+
+**Profile and dietary profile (`011`).**
+
+- `UC-011-01` saves the whole dietary profile atomically (allergens from a fixed list, up to 50 excluded ingredients from the catalogue, one diet type, preferred cuisines, household size 1 – 20, maximum total time; `011` FR-008 – FR-017). It includes `UC-011-05` to apply the shared definitions.
+- `UC-011-05` is the single definition of hard rules (allergens, excluded ingredients), preferences and default servings (`011` US5, FR-020 – FR-026). Besides `UC-011-01`, it is included by search (`UC-020-03`), the meal-plan recipe picker (`UC-030-01`), the AI planner (`UC-031-01`) and the single-slot suggestions (`UC-031-05`); see Sections 4.2 and 4.3.
+- `UC-011-02` edits display name (1 – 50 characters), bio (up to 300 characters) and avatar (JPEG, PNG or WebP up to 5 MB) (`011` FR-001 – FR-004).
+- `UC-011-06` View Public Profile *(new in v2.0)* lets anyone, including a Guest, see a user's display name, avatar, bio and published recipes, never the email or the dietary profile; the profile of a banned user answers like one that does not exist (`011` US2 AS6, FR-005; `GET /profiles/{id}`). In `v1.4` of the specifications it is Step 10 and `AF 2.6` of `UC-011-02`; it is separate now because its primary actor is a Guest.
+- `UC-011-03` and `UC-011-04` are now associated with **Google OAuth**: a Google-only account re-authenticates with Google before setting a first password or deleting the account (`011` FR-029, FR-031; `010` FR-022b). Wrong passwords on both share one counter that never locks signing in (`011` FR-030).
+- `UC-011-04` refuses a temporarily suspended account and the last active Administrator; a banned account may delete itself through the closure link of `UC-010-02`, and its email hash goes on the block list (`011` FR-037 – FR-037b; `010` FR-026). Reviews stay anonymous and rating totals do not change (`011` FR-035), so it does not include `UC-070-08`.
 
 ### 4.2. Feature 5.2 — Smart Recipe Discovery & Filters (`020`)
 
@@ -268,6 +302,7 @@ flowchart LR
 - `UC-020-06` is the shared Recipe Detail page that many other features extend; see Section 4.11.
 
 ### 4.3. Feature 5.3 — Weekly Meal Planner, Manual and AI (`030`, `031`)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 ```mermaid
 flowchart LR
@@ -298,7 +333,9 @@ flowchart LR
     MEMBER --- UC031_02
     UC031_01 --- LLM
 
+    UC030_01 -. "«include»" .-> UC011_05
     UC031_01 -. "«include»" .-> UC011_05
+    UC031_05 -. "«include»" .-> UC011_05
     UC031_01 -. "«include»" .-> UC031_03
     UC031_04 -. "«extend»" .-> UC031_01
     UC031_05 -. "«extend»" .-> UC030_01
@@ -316,6 +353,7 @@ flowchart LR
 - `UC-031-01` always includes the hard-rule filter and the validation of every AI pick against the catalogue (`031` US1, US3). Not enough suitable recipes (`031` US4) and the fair-use limit (`031` US5) are alternative flows of `UC-031-01`.
 - `UC-031-04` extends `UC-031-01` when the LLM Service fails or times out, so the user still gets a draft (`031` US6).
 - `UC-031-05` extends manual slot filling with recommendations for the selected meal (`031` US7).
+- *(v2.0)* `UC-030-01` and `UC-031-05` now also include `UC-011-05`, as their specifications already state: the recipe picker labels and lists last the recipes that break a hard rule, and the slot suggestions remove them (`011` FR-020; Use-Case Specifications `UC-030-01` supporting use cases, `UC-031-05` Step 2).
 - `UC-031-06` (Sync Recipe Embeddings, `031` US8) is triggered by moderation and is drawn in Section 4.10.
 
 ### 4.4. Feature 5.4 — Smart Shopping List (`040`)
@@ -434,7 +472,8 @@ flowchart LR
 - `UC-060-07` extends the ingredient step when the ingredient is not in the shared catalogue; the Moderator approves it together with the recipe in `UC-100-01` (`060` clarification Q3).
 - Revising, editing a published recipe and archiving/restoring/deleting are actions offered on the "My Recipes" page, so they extend `UC-060-04`. The decision that triggers `UC-060-03` comes from `UC-100-01` (shown unconnected because it is a state change, not a use-case relationship).
 
-### 4.7. Feature 5.7 — Social Cooksnaps & Reviews (`070`)
+### 4.7. Feature 5.7 (F-07) — Social Cooksnaps & Reviews (`070`)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 ```mermaid
 flowchart LR
@@ -444,33 +483,50 @@ flowchart LR
     subgraph SYS["WikiCook — Reviews & Cooksnaps"]
         direction TB
         UC070_04(["UC-070-04<br/>Browse, Sort &<br/>Filter Reviews"])
+        UC070_07(["UC-070-07<br/>Mark Review as Helpful"])
         UC070_01(["UC-070-01<br/>Rate & Review Recipe"])
         UC070_02(["UC-070-02<br/>Upload Cooksnap Photos"])
         UC070_03(["UC-070-03<br/>Edit or Delete Own Review"])
         UC070_05(["UC-070-05<br/>Report Review or Cooksnap"])
         UC070_06(["UC-070-06<br/>Respond to Post-Cooking<br/>Review Prompt"])
+        UC070_08(["UC-070-08<br/>Update Recipe<br/>Rating Summary"])
     end
 
     UC050_02(["UC-050-02<br/>Step-by-Step Cooking Navigation"])
+    UC100_02(["UC-100-02<br/>Process Content Reports"])
 
     GUEST --- UC070_04
+    MEMBER --- UC070_07
     MEMBER --- UC070_01
     MEMBER --- UC070_03
     MEMBER --- UC070_05
 
+    UC070_07 -. "«extend»" .-> UC070_04
     UC070_02 -. "«extend»" .-> UC070_01
+    UC070_02 -. "«extend»" .-> UC070_03
     UC070_06 -. "«extend»" .-> UC050_02
-    UC070_06 -. "«include»" .-> UC070_01
+    UC070_01 -. "«extend»" .-> UC070_06
+    UC070_03 -. "«extend»" .-> UC070_06
+    UC070_01 -. "«include»" .-> UC070_08
+    UC070_03 -. "«include»" .-> UC070_08
+    UC070_05 -. "«include»" .-> UC070_08
+    UC100_02 -. "«include»" .-> UC070_08
 
     classDef actor fill:#e8f1fb,stroke:#2f6db5,color:#0b2545
     classDef external fill:#ffffff,stroke:#888888,stroke-dasharray:5 5,color:#444444
     class GUEST,MEMBER actor
-    class UC050_02 external
+    class UC050_02,UC100_02 external
 ```
 
-- Reviewing, posting Cooksnaps and reporting require a signed-in Member with a verified email (`010` permission matrix).
-- A Cooksnap is attached to a review, so `UC-070-02` extends `UC-070-01` (`070` US2).
-- Reports created in `UC-070-05` are handled by the Moderator in `UC-100-02`.
+- **Access.** Guests read every visible review and open Cooksnap photos at full size in the lightbox; "Write a review", "Hữu ích" and "Report" ask a Guest to sign in (`070` FR-017, FR-023, US4 AS5). Writing a review and posting Cooksnaps publish content, so they also need a verified email (`010` FR-006, permission matrix). Marking a review as helpful and reporting need only a signed-in Member (`070` FR-015, FR-022). *(v2.0 correction: version `0.2` also required a verified email for reporting, which no specification states.)*
+- **`UC-070-01` rules.** One review per user and recipe; once a review exists, "Write a review" becomes "Edit review" (`070` FR-002, US1 AS4). The author of the recipe cannot review it (`070` FR-020), a user can submit at most 5 reviews in 10 minutes (`070` FR-021), and only a published recipe can be reviewed (`070` Edge Case 4). A review has a required 1 – 5 star rating, a comment of 10 – 2,000 characters and an optional substitution tip of up to 500 characters (`070` FR-003 – FR-005).
+- **Cooksnaps.** Up to 3 photos per review, JPEG, PNG or WebP, at most 5 MB each, with EXIF data stripped (`070` FR-006 – FR-008). Every Cooksnap belongs to a review (`070` data-model, `cooksnaps.review_id`), so `UC-070-02` extends `UC-070-01` and, *new in v2.0*, also `UC-070-03`, where photos can be added or removed while editing (`070` US3 AS2 – AS3).
+- **`UC-070-03`.** Only the owner can edit or delete a review (`070` US3 AS5). Deleting removes the review with its Cooksnaps, helpful votes and reports, so the user may review the recipe again later; a review hidden by moderation cannot be edited or replaced (`070` FR-011).
+- **`UC-070-07` Mark Review as Helpful** *(new in v2.0)* toggles the signed-in user's "Hữu ích" vote on a review written by someone else and updates its count, which feeds the "Most helpful" sort (`070` US4 AS6, FR-012, FR-022; `POST /reviews/{reviewId}/helpful`). It extends `UC-070-04`, where the button is shown; in `v1.4` of the specifications it is Step 6 of `UC-070-04`.
+- **`UC-070-05`.** Reasons `SPAM`, `OFFENSIVE`, `COPYRIGHT`, `UNSAFE`, `OTHER`; one report per user and item; not on one's own content (`070` FR-015, FR-016). When a review or Cooksnap reaches 10 open reports it is hidden automatically until a Moderator decides (`070` FR-024); that flow includes `UC-070-08`. Reports are handled by the Moderator in `UC-100-02`.
+- **`UC-070-08` Update Recipe Rating Summary** *(new in v2.0, included use case)* recalculates the recipe's average rating (1 decimal) and review count from its visible reviews without changing the recipe version (`070` FR-009, FR-024, NFR-003, Edge Case 1). It is included wherever the set of visible ratings changes: a new review (`UC-070-01`), a changed rating or a deletion (`UC-070-03`), the automatic hiding (`UC-070-05`) and a Moderator hiding or restoring a review (`UC-100-02`; `100` US2 AS6). Inside `UC-070-03`, `UC-070-05` and `UC-100-02` it runs only in the flow where the visible ratings change. The rule that a recipe needs at least 3 reviews to lead the "Top rated" ranking (`070` FR-025) uses this summary and is not a separate use case.
+- **`UC-070-06`.** When a signed-in cook finishes the last step in Cooking Mode, the prompt extends the cooking session (`070` US6, FR-018). Writing the review is optional ("Để sau" dismisses the prompt and creates nothing), and a cook who already reviewed the recipe gets the edit form, so *in v2.0* `UC-070-01` and `UC-070-03` extend `UC-070-06`; version `0.2` drew an unconditional «include» of `UC-070-01` (`070` US6 AS3 – AS4).
+- Moderators and Administrators hide, restore or delete reviews and Cooksnaps only through `UC-100-02` (`070` RBAC matrix).
 
 ### 4.8. Feature 5.8 — Custom Recipe Collections (`080`)
 
@@ -548,6 +604,7 @@ flowchart LR
 - Calories used by the search filter and the planner (`090` US6) are read by `UC-020-02` and `UC-030-01`; they are not a separate user goal.
 
 ### 4.10. Feature 5.10 — Admin Content Moderation (`100`)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 ```mermaid
 flowchart LR
@@ -566,36 +623,41 @@ flowchart LR
 
     UC090_02(["UC-090-02<br/>Estimate Nutrition on<br/>Publication or Change"])
     UC031_06(["UC-031-06<br/>Sync Recipe Embeddings"])
+    UC070_08(["UC-070-08<br/>Update Recipe<br/>Rating Summary"])
     LLM["«actor»<br/>LLM Service"]
     EMAIL["«actor»<br/>Email Service"]
 
     MOD --- UC100_01
     MOD --- UC100_02
-    ADMIN --- UC100_03
+    MOD --- UC100_03
+    MOD --- UC100_06
     ADMIN --- UC100_04
     ADMIN --- UC100_05
-    ADMIN --- UC100_06
     UC100_03 --- EMAIL
     UC031_06 --- LLM
 
     UC100_01 -. "«include»" .-> UC090_02
     UC100_01 -. "«include»" .-> UC031_06
     UC031_06 -. "«extend»" .-> UC100_02
+    UC100_02 -. "«include»" .-> UC070_08
 
     classDef actor fill:#e8f1fb,stroke:#2f6db5,color:#0b2545
     classDef system fill:#eeeeee,stroke:#666666,color:#222222
     classDef external fill:#ffffff,stroke:#888888,stroke-dasharray:5 5,color:#444444
     class MOD,ADMIN actor
     class LLM,EMAIL system
-    class UC090_02,UC031_06 external
+    class UC090_02,UC031_06,UC070_08 external
 ```
 
-- Administrator inherits `UC-100-01` and `UC-100-02` from Moderator (Section 2.2).
+- Administrator inherits `UC-100-01`, `UC-100-02`, `UC-100-03` and `UC-100-06` from Moderator (Section 2.2).
+- *(v2.0)* `UC-100-03` and `UC-100-06` are now associated with **Moderator** with limited rights, as in `100` RBAC matrix, `010` FR-022 and Use-Case Specifications `v1.4`: in `UC-100-03` a Moderator can view the user list and suspend an active Member or Contributor for at most 30 days; banning, lifting a suspension or ban and changing roles stay with the Administrator. In `UC-100-06` a Moderator sees the dashboard metrics; the audit log is for Administrators only. Version `0.2` associated both use cases with Administrator only.
+- When a Moderator hides or restores a reported review (including one hidden automatically after 10 reports), `UC-100-02` includes `UC-070-08` to keep the recipe's rating summary correct (`100` US2 AS6, `070` FR-009).
 - When a recipe is approved, `UC-100-01` includes the nutrition estimate and the embedding update, so the AI planner can suggest the new recipe (`031` US8). When a report leads to taking a recipe down, `UC-031-06` extends `UC-100-02` to remove it from the AI index.
 - Proposed ingredients from `UC-060-07` are approved or rejected inside `UC-100-01`.
-- `UC-100-03` covers role changes, suspension and banning, including the rules of `010` FR-022a and FR-023 (role hierarchy, last active Administrator); account-status emails go through the Email Service.
+- `UC-100-03` covers role changes, suspension and banning, including the rules of `010` FR-022a and FR-023 (role hierarchy, last active Administrator, re-authentication before acting on another Administrator); the account status itself is owned by spec `010`, which sends the suspension, ban, end-of-suspension and lifted-ban emails through the Email Service (`010` FR-024a). A role change sends no email; the user sees a notice at the next sign-in or request (`UC-010-02`).
 
 ### 4.11. Cross-Feature Diagram — Recipe Detail Page (`UC-020-06`)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 The Recipe Detail page is the shared screen where most features meet. Duy (`SCRUM-51`) owns the page frame; the other owners fill their blocks. This diagram is the contract for which use cases start from the page.
 
@@ -642,16 +704,16 @@ flowchart LR
 | "Add to shopping list" | `UC-040-02` | Member and above | Lê Quốc Hưng |
 | "Start cooking" | `UC-050-01` | Guest and above | Lê Quốc Hưng |
 | "Save" / "Save to collection" | `UC-080-01` | Member and above | Mai Văn Hiển |
-| Reviews and Cooksnaps section, "Write a review" | `UC-070-04`, `UC-070-01` | Read: Guest; write: Member | Trần Nguyễn Công Chung |
+| Reviews and Cooksnaps section (rating summary, sort, filter, Cooksnap lightbox), "Write a review" / "Edit review", "Hữu ích", "Report" | `UC-070-04`, `UC-070-01`, `UC-070-03`, `UC-070-07`, `UC-070-05` | Read and lightbox: Guest; write, vote, report: Member (writing needs a verified email) | Trần Nguyễn Công Chung |
 
-When a Guest presses a Member-only button, the page asks them to sign in (screen `AU08-SignInPrompt`) and returns to the same recipe afterwards; this alternative flow belongs to `UC-020-06`.
+When a Guest presses a Member-only button, the page asks them to sign in (screen `AU08-SignInPrompt`) and returns to the same recipe afterwards; this alternative flow belongs to `UC-020-06`. *(v2.0)* The diagram shows only the use cases that start directly from the page; `UC-070-03`, `UC-070-05` and `UC-070-07` start from a review card inside the reviews block and are drawn in Section 4.7.
 
 ---
 
 ## 5. USE-CASE CATALOGUE & TRACEABILITY
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
-This table is the official list of use-case IDs. Every row must have a specification in `use-case-specification.md` written by the owner in the last column; every specification there must use an ID from this table.
+This table is the official list of use-case IDs. Every row must have a specification in `use-case-specification.md` written by the owner in the last column; every specification there must use an ID from this table. Rows marked *(new v2.0)* were added in this version; their specifications are written under `SCRUM-71` (see 6.2, issue 6).
 
 | UC ID | Use Case Name | Primary Actor | Vision §5 | Spec · User Story | UC Spec Owner (Jira) |
 | :--- | :--- | :--- | :---: | :--- | :--- |
@@ -659,11 +721,13 @@ This table is the official list of use-case IDs. Every row must have a specifica
 | `UC-010-02` | Sign In with Email & Password | Guest | 5.1 | `010` US1 | Mai Văn Hiển (`SCRUM-50`) |
 | `UC-010-03` | Reset Forgotten Password | Guest | 5.1 | `010` US4 | Mai Văn Hiển (`SCRUM-50`) |
 | `UC-010-04` | Sign In with Google | Guest | 5.1 | `010` US5 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-010-05` | Sign Out *(new v2.0)* | Member | 5.1 | `010` US1 AS4, FR-010 | Nguyễn Đức Duy (`SCRUM-71`) |
 | `UC-011-01` | Set Up Dietary Profile | Member | 5.1 | `011` US1 | Mai Văn Hiển (`SCRUM-50`) |
 | `UC-011-02` | Edit Public Profile & Avatar | Member | 5.1 | `011` US2 | Mai Văn Hiển (`SCRUM-50`) |
 | `UC-011-03` | Change or Set Password | Member | 5.1 | `011` US3 | Mai Văn Hiển (`SCRUM-50`) |
 | `UC-011-04` | Delete Account | Member | 5.1 | `011` US4 | Mai Văn Hiển (`SCRUM-50`) |
 | `UC-011-05` | Apply Dietary Hard Rules *(included)* | — | 5.1 | `011` US5 | Mai Văn Hiển (`SCRUM-50`) |
+| `UC-011-06` | View Public Profile *(new v2.0)* | Guest | 5.1 | `011` US2 AS6, FR-005 | Nguyễn Đức Duy (`SCRUM-71`) |
 | `UC-020-01` | Search Recipes by Keyword | Guest | 5.2 | `020` US1 | Nguyễn Đức Duy (`SCRUM-51`) |
 | `UC-020-02` | Filter Search Results | Guest | 5.2 | `020` US2; `090` US6 | Nguyễn Đức Duy (`SCRUM-51`) |
 | `UC-020-03` | Hide Recipes Conflicting with Dietary Profile | Member | 5.2 | `020` US3 | Nguyễn Đức Duy (`SCRUM-51`) |
@@ -704,6 +768,8 @@ This table is the official list of use-case IDs. Every row must have a specifica
 | `UC-070-04` | Browse, Sort & Filter Reviews | Guest | 5.7 | `070` US4 | Trần Nguyễn Công Chung (`SCRUM-54`) |
 | `UC-070-05` | Report Review or Cooksnap | Member | 5.7 | `070` US5 | Trần Nguyễn Công Chung (`SCRUM-54`) |
 | `UC-070-06` | Respond to Post-Cooking Review Prompt | Member | 5.7 | `070` US6 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-070-07` | Mark Review as Helpful *(new v2.0)* | Member | 5.7 | `070` US4 AS6, FR-022 | Nguyễn Đức Duy (`SCRUM-71`) |
+| `UC-070-08` | Update Recipe Rating Summary *(included; new v2.0)* | — | 5.7 | `070` FR-009, FR-024, FR-025; US1 AS3, US3 AS3 – AS4, US5 AS6 | Nguyễn Đức Duy (`SCRUM-71`) |
 | `UC-080-01` | Save Recipe with One Tap | Member | 5.8 | `080` US1 | Mai Văn Hiển (`SCRUM-50`) |
 | `UC-080-02` | Add Recipe to Collections | Member | 5.8 | `080` US2 | Mai Văn Hiển (`SCRUM-50`) |
 | `UC-080-03` | Create, Rename & Delete Collection | Member | 5.8 | `080` US3 | Mai Văn Hiển (`SCRUM-50`) |
@@ -715,12 +781,12 @@ This table is the official list of use-case IDs. Every row must have a specifica
 | `UC-090-05` | Review, Recalculate & Hide Estimates | Administrator | 5.9 | `090` US7 | Nguyễn Thành Dự (`SCRUM-52`) |
 | `UC-100-01` | Moderate Recipe Submission | Moderator | 5.10 | `100` US1 | Trần Nguyễn Công Chung (`SCRUM-54`) |
 | `UC-100-02` | Process Content Reports | Moderator | 5.10 | `100` US2 | Trần Nguyễn Công Chung (`SCRUM-54`) |
-| `UC-100-03` | Manage User Accounts & Roles | Administrator | 5.10 | `100` US3; `010` US3 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-100-03` | Manage User Accounts & Roles | Moderator *(suspend only)*; Administrator | 5.10 | `100` US3; `010` US3, FR-022 | Trần Nguyễn Công Chung (`SCRUM-54`) |
 | `UC-100-04` | Manage Categories & Taxonomies | Administrator | 5.10 | `100` US4 | Trần Nguyễn Công Chung (`SCRUM-54`) |
 | `UC-100-05` | Curate Featured Recipes | Administrator | 5.10 | `100` US5 | Trần Nguyễn Công Chung (`SCRUM-54`) |
-| `UC-100-06` | View Dashboard & Audit Trail | Administrator | 5.10 | `100` US6 | Trần Nguyễn Công Chung (`SCRUM-54`) |
+| `UC-100-06` | View Dashboard & Audit Trail | Moderator *(dashboard only)*; Administrator | 5.10 | `100` US6, RBAC matrix | Trần Nguyễn Công Chung (`SCRUM-54`) |
 
-**Totals:** 64 use cases — Mai Văn Hiển 13, Nguyễn Đức Duy 13, Nguyễn Thành Dự 16, Lê Quốc Hưng 10, Trần Nguyễn Công Chung 12. Use cases marked *(included)* have no primary actor because they only run inside another use case; their specification can be written at the Brief level and linked from the base use case.
+**Totals:** 68 use cases (64 in `v0.2` plus 4 new in `v2.0`) — Mai Văn Hiển 13, Nguyễn Đức Duy 17 (13 + the 4 new use cases under `SCRUM-71`), Nguyễn Thành Dự 16, Lê Quốc Hưng 10, Trần Nguyễn Công Chung 12. Feature split: `010` 5, `011` 6, `020` 6, `030` 5, `031` 6, `040` 5, `050` 5, `060` 7, `070` 8, `080` 4, `090` 5, `100` 6. Use cases marked *(included)* have no primary actor because they only run inside another use case; their specification is written at the Brief level with a "Trigger" instead of a primary actor and linked from the base use cases.
 
 ---
 
@@ -728,22 +794,25 @@ This table is the official list of use-case IDs. Every row must have a specifica
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 ### 6.1. Coverage
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 **Vision features.** All ten features of Vision §5 have a diagram in Section 4 (5.1 → 4.1, …, 5.10 → 4.10) and at least four use cases in Section 5.
+
+**PA4 Part E groups.** `F-01` (specs `010`, `011`) is covered by `UC-010-01` – `UC-010-05` and `UC-011-01` – `UC-011-06` (11 use cases, Section 4.1); `F-07` (spec `070`) by `UC-070-01` – `UC-070-08` (8 use cases, Section 4.7). Every user story, every endpoint group of the three `contracts/openapi.yaml` files that a user starts, and every permission row of the `010` permission matrix and the `070` RBAC matrix maps to one of these use cases or to `UC-100-02` / `UC-100-03` (moderation, suspension, bans, roles).
 
 **Specification user stories.** Every user story of the twelve specifications maps to a use case; user stories that describe a system rule or an exception rather than a separate user goal are covered as an included use case, an alternative flow or the actor generalization:
 
 | Spec | User stories | Covered by |
 | :---: | :---: | :--- |
-| `010` | 5 | `UC-010-01` – `04`; US3 (role-based access) by Section 2.2 and `UC-100-03` |
-| `011` | 5 | `UC-011-01` – `05` |
+| `010` | 5 | `UC-010-01` – `05` (US1 → `02` and `05`); US3 (role-based access) by Section 2.2, the permission checks inside each use case and `UC-100-03` |
+| `011` | 5 | `UC-011-01` – `06` (US2 → `02` and `06`) |
 | `020` | 4 | `UC-020-01` – `04` |
 | `030` | 7 | `UC-030-01` – `05`; US6 (unavailable recipes) and US7 (phone, lost connection) as alternative flows of `UC-030-01` |
 | `031` | 8 | `UC-031-01` – `06`; US4 (not enough recipes) and US5 (fair-use limit) as alternative flows of `UC-031-01` |
 | `040` | 5 | `UC-040-01` – `05` |
 | `050` | 5 | `UC-050-01` – `05` |
 | `060` | 6 | `UC-060-01` – `07` |
-| `070` | 6 | `UC-070-01` – `06` |
+| `070` | 6 | `UC-070-01` – `08` (US4 → `04` and `07`; rating aggregation FR-009, FR-024 → `08`, included by `01`, `03`, `05` and `UC-100-02`) |
 | `080` | 5 | `UC-080-01` – `04`; US5 (recipes no longer available) as an alternative flow of `UC-080-04` |
 | `090` | 7 | `UC-090-01` – `05`; US6 (calories for search and planner) inside `UC-020-02` and `UC-030-01` |
 | `100` | 6 | `UC-100-01` – `06` |
@@ -752,14 +821,14 @@ This table is the official list of use-case IDs. Every row must have a specifica
 
 | Old user story | Use cases |
 | :--- | :--- |
-| US-01 Register, sign in, set up dietary profile | `UC-010-01` – `04`, `UC-011-01` |
+| US-01 Register, sign in, set up dietary profile | `UC-010-01` – `05`, `UC-011-01` |
 | US-02 Find recipes by ingredients at hand | `UC-020-01` – `05` |
 | US-03 AI weekly meal plan | `UC-031-01` – `06` (manual planner `UC-030-01` – `05` as fallback) |
 | US-04 Shopping list with merged ingredients | `UC-040-01` – `05` |
 | US-05 Publish a recipe | `UC-060-01` – `07` |
 | US-06 Hands-free cooking mode | `UC-050-01` – `05` |
 | US-07 Moderate recipes and manage categories | `UC-100-01` – `06` |
-| *(not covered before)* Reviews & Cooksnaps, Collections, Nutrition | `UC-070-01` – `06`, `UC-080-01` – `04`, `UC-090-01` – `05` |
+| *(not covered before)* Reviews & Cooksnaps, Collections, Nutrition | `UC-070-01` – `08`, `UC-080-01` – `04`, `UC-090-01` – `05` |
 
 ### 6.2. Open Issues (to resolve before the freeze on 02/11/2026)
 
