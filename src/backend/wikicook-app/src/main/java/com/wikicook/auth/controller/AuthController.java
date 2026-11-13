@@ -3,9 +3,12 @@ package com.wikicook.auth.controller;
 import com.wikicook.auth.dto.AuthResponse;
 import com.wikicook.auth.dto.CurrentAccountDto;
 import com.wikicook.auth.dto.LoginRequest;
+import com.wikicook.auth.dto.RegisterRequest;
+import com.wikicook.auth.dto.RegisterResponse;
 import com.wikicook.auth.security.RefreshCookie;
 import com.wikicook.auth.service.AccountSessionService;
 import com.wikicook.auth.service.AccountSessionService.Refreshed;
+import com.wikicook.auth.service.RegistrationService;
 import com.wikicook.auth.service.SessionService;
 import com.wikicook.auth.service.SessionService.Status;
 import com.wikicook.auth.service.SignInService;
@@ -17,6 +20,7 @@ import jakarta.validation.Valid;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,18 +41,25 @@ public class AuthController {
     private static final String USER_AGENT = "User-Agent";
 
     private final SignInService signIn;
+    private final RegistrationService registration;
     private final AccountSessionService accounts;
     private final SessionService sessions;
     private final RefreshCookie cookie;
     private final CurrentAccount current;
 
-    public AuthController(SignInService signIn, AccountSessionService accounts, SessionService sessions,
+    public AuthController(SignInService signIn, RegistrationService registration, AccountSessionService accounts, SessionService sessions,
             RefreshCookie cookie, CurrentAccount current) {
         this.signIn = signIn;
+        this.registration = registration;
         this.accounts = accounts;
         this.sessions = sessions;
         this.cookie = cookie;
         this.current = current;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(registration.register(request));
     }
 
     @PostMapping("/login")

@@ -92,6 +92,23 @@ public class AuthException extends RuntimeException {
         return closureToken == null ? exception : exception.with("closureToken", closureToken);
     }
 
+    public static AuthException emailTaken() {
+        return new AuthException(AuthErrorCode.EMAIL_TAKEN, "An account with this email already exists");
+    }
+
+    /** Neutral on purpose: it must not say that the email is on the Blocked Email list (FR-026). */
+    public static AuthException registrationRefused() {
+        return new AuthException(AuthErrorCode.REGISTRATION_REFUSED, "This email cannot be used to register");
+    }
+
+    public static AuthException tokenExpired() {
+        return new AuthException(AuthErrorCode.TOKEN_EXPIRED, "This link has expired");
+    }
+
+    public static AuthException tokenInvalid() {
+        return new AuthException(AuthErrorCode.TOKEN_INVALID, "This link is not valid");
+    }
+
     public static AuthException emailRateLimited(long retryAfterSeconds) {
         return new AuthException(AuthErrorCode.EMAIL_RATE_LIMITED, "Too many emails requested, try again later")
                 .with("retryAfterSeconds", retryAfterSeconds);
