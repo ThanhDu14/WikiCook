@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Clock;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -30,10 +31,12 @@ import org.springframework.security.web.access.AccessDeniedHandler;
  * {@code HttpSession}, CSRF off (every endpoint authenticates with the {@code Authorization} header; the two that read
  * the refresh cookie are protected by {@link ClientHeaderFilter}). Default is deny: only {@link PublicRoutes} are open,
  * the rest of {@code /api/**} needs a valid session, anything else is refused. Roles inherit downwards for
- * {@code @ModeratorOnly} and {@code @AdministratorOnly}.
+ * {@code @ModeratorOnly} and {@code @AdministratorOnly}. Only for a servlet application: contexts started without a web
+ * environment (repository tests) have no {@code HttpSecurity} and need no filter chain.
  */
 @Configuration(proxyBeanMethods = false)
 @EnableMethodSecurity
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class SecurityConfig {
 
     @Bean

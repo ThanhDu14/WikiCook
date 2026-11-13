@@ -26,7 +26,6 @@ public class ProblemResponseWriter {
         ProblemDetail problem = exception.problem();
         response.setStatus(problem.getStatus());
         response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
-        response.setCharacterEncoding("UTF-8");
         Long retryAfter = exception.retryAfterSeconds();
         if (retryAfter != null) {
             response.setHeader("Retry-After", Long.toString(retryAfter));
