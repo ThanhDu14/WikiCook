@@ -128,13 +128,20 @@ class SecurityFilterChainIT extends AbstractPostgresIT {
         String forged = "Bearer " + new AccessTokenService(TestAuthProperties.create(
                 "another-secret-0123456789abcdef0123456789abcdef", "key"), Clock.systemUTC()).issue(1L, 1L).value();
 
+        String email = AuthTestSupport.uniqueEmail();
+        support.memberWithPassword(email, "abc12345");
+        String credentials = "{\"email\":\"" + email + "\",\"password\":\"abc12345\"}";
+
         for (String bearer : new String[] {expired, forged, "Bearer garbage"}) {
-            int refresh = mvc.perform(post("/api/v1/auth/refresh").header("X-WikiCook-Client", "web")
-                    .header("Authorization", bearer)).andReturn().getResponse().getStatus();
-            int login = mvc.perform(post("/api/v1/auth/login").header("Authorization", bearer)
-                    .contentType("application/json").content("{}")).andReturn().getResponse().getStatus();
-            assertThat(refresh).as("refresh with %s", bearer).isNotEqualTo(401);
-            assertThat(login).as("login with %s", bearer).isNotEqualTo(401);
+            // real sign-in: the bearer must be ignored, the answer is 200 and not 401
+            MvcResult login = mvc.perform(post("/api/v1/auth/login").header("Authorization", bearer)
+                    .contentType("application/json").content(credentials)).andReturn();
+            assertThat(login.getResponse().getStatus()).as("login with %s", bearer).isEqualTo(200);
+            String cookie = login.getResponse().getHeader("Set-Cookie").split(";")[0].substring("wc_rt=".length());
+            MvcResult refresh = mvc.perform(post("/api/v1/auth/refresh").header("X-WikiCook-Client", "web")
+                    .header("Authorization", bearer).cookie(new jakarta.servlet.http.Cookie("wc_rt", cookie)))
+                    .andReturn();
+            assertThat(refresh.getResponse().getStatus()).as("refresh with %s", bearer).isEqualTo(200);
         }
     }
 
