@@ -4173,119 +4173,119 @@ Lets a signed-in user see all saved recipes and collections at a glance and open
 ---
 
 ## 12. USE-CASE SPECIFICATIONS FOR FEATURE 070: COMMUNITY REVIEWS & COOKSNAPS
-*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+> [!NOTE]
+> **Sources:** `specs/070-review-cooksnap/spec.md` (US1–US6, FR-001 – FR-025, NFR-001 – NFR-006, SC-001 – SC-006, RBAC matrix; Clarifications of 2026-10-19 and 2026-11-09), `specs/070-review-cooksnap/contracts/openapi.yaml` (endpoints under `/api/v1`, status codes and error identifiers quoted in the flows) and `data-model.md`, `specs/010-user-authentication-roles/spec.md` (`FR-006` verified email for publishing, session and account status) and `contracts/integration.md` §2.4, `specs/011-user-profile-dietary/spec.md` (`FR-035`, account deletion), the Use-Case Model [`use-case-model.md`](use-case-model.md) (`UC-070-02` extends `UC-070-01`; reports are handled in `UC-100-02`) and the project constitution (Principles IV and V). Actors follow the model: **Member** (any signed-in role) writes, edits, votes and reports; **Guest** only reads.
+>
+> **v2.0 revision note (SCRUM-71):** The PA3 baseline (v1.3) of this section described endpoints, error codes, limits and audit entries that spec 070 and its contract do not define (for example `POST /api/v1/reports`, a standalone Cooksnap upload endpoint, a report rate limit, a 30-day retention of hidden photos and `422` answers for self-votes and self-reports). This revision aligns every flow with the approved spec and contract and moves each remaining conflict between sources to Section 12.3 instead of choosing silently. Spec 070 identifies errors by the ProblemDetail `type` (for example `.../errors/review-already-exists`); the flows quote the code names used in its text (for example `REVIEW_ALREADY_EXISTS`). The backend is not implemented yet, so these references describe the approved contract, not running code.
 
 ### UC-070-01: Rate & Review Recipe
-*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-01`
 - **Use Case Name:** Rate & Review Recipe
 
 #### 2. Actor(s)
-- **Primary Actor:** **Home Cook** (Authenticated Member per Spec 010).
-- **Secondary Actor / Systems:** **Recipe Management Service** (Spec 060), **Notification System**.
+- **Primary Actor:** **Member** — any signed-in user (Member, Contributor, Moderator, Administrator) who is not the author of the recipe (RBAC matrix).
+- **Extending Use Case:** `UC-070-02` Upload Cooksnap Photos (attach up to 3 photos to the review).
 
 #### 3. Description
-Enables an authenticated user to leave feedback on a published recipe by selecting a 1-to-5 star rating, writing detailed comments, and optionally sharing substitution advice or cooking tips. The system guarantees that each user can only submit one active review per recipe, **prevents recipe authors from rating their own creations** (to preserve rating integrity), and updates the recipe's aggregate score and review count in real time.
+Lets a signed-in user rate a published recipe from 1 to 5 stars, write a comment of 10–2000 characters and optionally add a substitution tip of up to 500 characters. Each user may hold only one review per recipe (FR-002); the author of the recipe cannot review it (FR-020); a user may submit at most 5 reviews in a 10-minute sliding window (FR-021). The recipe's average rating and review count are recalculated in the same transaction, without changing the recipe's `version` (FR-009).
 
 #### 4. Preconditions
-- The user is logged in with a valid JWT token (`Member` role or higher).
-- The recipe exists and is in `PUBLISHED` status.
-- The user has not previously reviewed this recipe (`SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND recipe_id = :recipeId AND status = 'VISIBLE'` evaluates to 0).
-- **The user is not the author of the recipe** (`recipes.author_id != auth.user_id`). Recipe owners may upload Cooksnaps through other flows, but are explicitly excluded from submitting star ratings to prevent self-inflation of the aggregate score.
+- The actor is signed in with the Member role or above, the account is active and the email is verified (`UC-010-02`; spec 010 `FR-006`).
+- The recipe exists and is `PUBLISHED`.
+- The actor holds no review row for this recipe, whatever its status (FR-002; data-model unique index `(recipe_id, user_id)`).
+- The actor is not the author of the recipe (FR-020).
 
 #### 5. Basic Flow
-1. **Open Recipe:** The user navigates to the target recipe page (`/recipes/:id`) and scrolls down to the reviews section.
-2. **Author Guard Check:** The frontend checks whether the current user is the recipe author. If `recipe.author_id == auth.user_id`, the `"Viết đánh giá"` button is **hidden entirely** from the UI. Instead, the author sees a contextual note: *"Bạn là tác giả công thức này — bạn có thể xem đánh giá, nhưng không thể tự chấm điểm."*
-3. **Start Review:** The user (non-author) clicks the `"Viết đánh giá"` (Write Review) button.
-4. **Show Review Form:** The application displays the review modal (`RV02-WriteReview`), presenting:
-   - Recipe thumbnail and title.
-   - 5-star rating selector (unselected by default).
-   - Comment box with a live character counter (`0/2000`).
-   - Optional input field for cooking tips (`0/500`).
-   - Image attachment zone for Cooksnaps.
-5. **Enter Feedback:**
-   - The user selects a rating from 1 to 5 stars (e.g., 4 stars).
-   - The user enters a written review of at least 10 characters (e.g., *"Nước dùng chua thanh rất vừa miệng, cá lóc nấu chín tới không bị tanh."*).
-   - The user optionally enters a tip (e.g., *"Có thể dùng me tươi thay thế sốt me đóng chai."*).
-6. **Submit:** The user clicks `"Gửi đánh giá"`.
-7. **Client Validation:** The frontend checks:
-   - Rating is selected ($1 \le \text{rating} \le 5$).
-   - Comment is between 10 and 2000 characters after trimming whitespace.
-   - Tip does not exceed 500 characters.
-8. **Send API Call:** The browser sends a `POST /api/v1/recipes/:id/reviews` request with the JSON payload `{ rating, comment, tip }`.
-9. **Process on Server:**
-   - The server authenticates the request, strips potential XSS tags from text inputs, and verifies the recipe is still `PUBLISHED`.
-   - **Author self-review guard:** Server verifies `recipes.author_id != auth.user_id`. If the submitter is the author, returns HTTP 403 Forbidden with error code `SELF_REVIEW_FORBIDDEN`.
-   - **Review velocity check (anti-spam):** Server verifies the user has already submitted 5 or more reviews within the past 10 minutes (`SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND created_at > NOW() - INTERVAL '10 minutes'`). If count $\ge 5$, returns HTTP 429 Too Many Requests with message *"Bạn đang đánh giá quá nhanh. Vui lòng đợi vài phút trước khi tiếp tục."*.
-   - Opens a database transaction:
-     - Inserts a new row into `reviews` (`user_id`, `recipe_id`, `rating`, `comment`, `substitution_tip`, `status = 'VISIBLE'`, `created_at = NOW()`).
-     - Atomically recalculates the recipe's aggregate values:
+1. **Open Recipe:** The actor opens the recipe detail page and scrolls to the reviews section (`UC-070-04`).
+2. **Show Entry Point:** Because the actor is signed in, is not the author and has not reviewed the recipe, the system shows "Viết đánh giá" (FR-001).
+3. **Start Review:** The actor presses "Viết đánh giá".
+4. **Show Review Form:** The system opens the review form (`RV02-WriteReview`) with a 5-star selector with no star selected (FR-003), a comment box with a live counter (`0/2000`) (FR-004), the optional field "Mẹo nấu / Thay thế nguyên liệu" (`0/500`) (FR-005) and the Cooksnap zone of `UC-070-02` (US1 AS1).
+5. **Enter Feedback:** The actor selects a rating, for example 4 stars, writes a comment of at least 10 characters (for example *"Nước dùng chua thanh rất vừa miệng, cá lóc nấu chín tới không bị tanh."*) and optionally a tip (for example *"Có thể dùng me tươi thay thế sốt me đóng chai."*).
+6. **Submit:** The actor presses "Gửi đánh giá".
+7. **Client Validation:** The form checks that a rating is selected, that the comment has 10–2000 characters and that the tip has at most 500 characters (FR-003 – FR-005).
+8. **Send Request:** The browser sends `POST /api/v1/recipes/{recipeId}/reviews` with `rating`, `comment` and the optional `substitutionTip` — as JSON, or as `multipart/form-data` with up to 3 `cooksnapFiles` when photos are attached (`UC-070-02`).
+9. **Process on Server:** The server validates the fields again, checks that the recipe is `PUBLISHED`, that the actor is not its author, that the actor has no review for it and that the actor has submitted fewer than 5 reviews in the preceding 10 minutes. In one transaction it locks the recipe row, inserts the review with `status = 'VISIBLE'` and recalculates the aggregates over the visible reviews of the recipe, without changing the recipe's `version` (FR-009, Edge Case 1):
        $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE status = 'VISIBLE'}$$
        $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE status = 'VISIBLE'}$$
-       across all visible reviews for this `recipe_id`.
-     - Commits the transaction.
-10. **Update UI:** The server returns HTTP 201 Created. The modal closes, a success toast displays *"Đánh giá của bạn đã được đăng thành công"*, the aggregate score and star chart update, and the new review appears at the top with a `"Mới"` (New) badge.
+10. **Update UI:** The server answers `201 Created` with the review. The new review appears at the top of the list with the badge "Mới", the rating summary updates, and "Viết đánh giá" is replaced by "Chỉnh sửa đánh giá" (US1 AS2 – AS4).
 
 #### 6. Alternative Flows
-- **AF 1.1: Guest User Attempts to Review:**
-  - *Trigger:* An unauthenticated user clicks `"Đăng nhập để đánh giá"`.
+- **AF 1.1: Guest Presses "Viết đánh giá":**
+  - *Trigger:* At Step 3, the visitor is not signed in (US4 AS5, FR-023).
   - *Steps:*
-    1. The app saves the current page URL as redirect destination.
-    2. Navigates the user to the login screen (`AU08-SignInPrompt` / `W-AU01-Login`).
-    3. Once authenticated, returns the user directly back to `/recipes/:id#reviews` with the review modal open.
-- **AF 1.2: Comment Under 10 Characters:**
-  - *Trigger:* User types fewer than 10 non-whitespace characters (e.g., *"Ngon lắm"*).
+    1. The system shows the sign-in prompt `AU08-SignInPrompt` (`UC-010-02` AF 2.9).
+    2. After signing in, the actor returns to the recipe page and the flow restarts at Step 2.
+- **AF 1.2: Comment Shorter Than 10 Characters:**
+  - *Trigger:* At Step 7, the comment has fewer than 10 characters (for example *"Ngon lắm"*) (US1 AS5).
   - *Steps:*
-    1. The form highlights the textarea with a red border and displays: *"Nhận xét phải có ít nhất 10 ký tự"*.
-    2. Form submission is prevented; no API call is made.
+    1. The form shows "Nhận xét phải có ít nhất 10 ký tự" at the comment box and does not submit. A request that reaches the server anyway receives `400` with the field error.
 - **AF 1.3: No Star Rating Selected:**
-  - *Trigger:* User writes a comment but forgets to click any star.
+  - *Trigger:* At Step 7, the actor wrote a comment but selected no star (FR-003).
   - *Steps:*
-    1. The form displays an error prompt near the stars: *"Vui lòng chọn số sao đánh giá (1–5 sao)"*.
-    2. Focus moves to the star rating component.
-- **AF 1.4: Duplicate Review Detected:**
-  - *Trigger:* User already submitted a review from another tab or device.
+    1. The form shows next to the stars that a rating from 1 to 5 must be chosen, moves the focus to the star selector and does not submit.
+- **AF 1.4: Comment Left Empty:**
+  - *Trigger:* At Step 7, the actor selected stars but left the comment empty (US1 AS6).
   - *Steps:*
-    1. The database partial unique index throws a duplicate key exception.
-    2. The API returns HTTP 409 Conflict (`REVIEW_ALREADY_EXISTS`).
-    3. The frontend displays: *"Bạn đã có bài đánh giá cho món này. Bạn có muốn chuyển sang chỉnh sửa bài viết không?"*.
-    4. If accepted, the form reloads in edit mode (`RV04-OwnReview`).
-- **AF 1.5: Recipe Inactive or Archived During Submission:**
-  - *Trigger:* Recipe status changes to `ARCHIVED` or `REJECTED` while user is writing.
+    1. The form shows "Vui lòng viết nhận xét" and does not submit.
+- **AF 1.5: Text Longer Than the Limits:**
+  - *Trigger:* At Step 5, the comment reaches 2000 characters or the tip reaches 500 characters (Edge Case 7).
   - *Steps:*
-    1. The backend rejects the insert with HTTP 422 Unprocessable Entity.
-    2. The UI shows an alert: *"Công thức này đã bị gỡ hoặc lưu trữ, không thể nhận đánh giá mới"*.
-    3. The review modal closes and redirects to recipe search.
-- **AF 1.6: Recipe Author Attempts to Submit Rating:**
-  - *Trigger:* The author of the recipe attempts to bypass the hidden UI and calls the API directly to submit a review.
+    1. The live counter shows the limit and the form does not accept more text. The server validates the lengths independently and answers `400` when they are exceeded.
+- **AF 1.6: Review Already Exists:**
+  - *Trigger:* At Step 9, the actor already has a review for this recipe, for example submitted from another tab or device (US1 AS4, FR-002).
   - *Steps:*
-    1. Server detects `recipes.author_id == auth.user_id`.
-    2. Rejects request with HTTP 403 Forbidden (`SELF_REVIEW_FORBIDDEN`).
-    3. No review is created. Audit log records the attempted self-review for monitoring.
-  - *Design Rationale:* Recipe authors have an inherent conflict of interest when rating their own content. Allowing self-ratings would undermine the aggregate score's credibility and mislead future cooks relying on community feedback to select recipes.
-- **AF 1.7: Suspected Clone Account Spam (Velocity Anomaly):**
-  - *Trigger:* A user account attempts to submit a 6th review within a rolling 10-minute window, suggesting automated or coordinated rating manipulation.
+    1. The server answers `409 REVIEW_ALREADY_EXISTS` and creates nothing.
+    2. The system shows "Bạn đã đánh giá công thức này rồi. Vui lòng chỉnh sửa đánh giá hiện có." and offers to open the existing review in edit mode (`UC-070-03`).
+- **AF 1.7: Earlier Review Hidden by Moderation:**
+  - *Trigger:* At Step 9, the actor's earlier review of this recipe is `HIDDEN` by moderation (FR-011).
   - *Steps:*
-    1. Server counts recent review submissions: `SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND created_at > NOW() - INTERVAL '10 minutes'`.
-    2. If count ≥ 5, returns HTTP 429 Too Many Requests.
-    3. Frontend displays: *"Bạn đang đánh giá quá nhanh. Vui lòng đợi vài phút trước khi tiếp tục."*.
-    4. If the velocity threshold is breached 3 times within 24 hours, the system writes an entry to `audit_logs` (`action = 'REVIEW_VELOCITY_FLAGGED'`, `target_type = 'USER'`) and surfaces an operational alert flag on `AD01-Dashboard`.
+    1. The server answers `409 REVIEW_UNDER_MODERATION`; the system explains that the review is hidden pending moderation and that no new review can be submitted until moderation ends.
+- **AF 1.8: Recipe No Longer Available:**
+  - *Trigger:* At Step 9, the recipe was archived or rejected (or is otherwise not published) after the actor opened the form (Edge Case 4).
+  - *Steps:*
+    1. The server refuses the review and nothing is created; the system shows "Công thức này không còn khả dụng để đánh giá."
+  - *Note:* Spec 070 Edge Case 4 answers `422`, while the contract defines only `404` ("không tồn tại hoặc chưa được xuất bản") for this case; see `[OQ-070-07]`.
+- **AF 1.9: Recipe Author Bypasses the Interface:**
+  - *Trigger:* At Step 2 the author sees, instead of "Viết đánh giá", the note *"Bạn là tác giả công thức này — bạn có thể xem đánh giá, nhưng không thể tự chấm điểm."*; at Step 9 the author calls the API directly (US1 AS7, FR-020, Edge Case 8).
+  - *Steps:*
+    1. The server answers `403 SELF_REVIEW_FORBIDDEN`. No review is created.
+- **AF 1.10: Too Many Reviews in 10 Minutes:**
+  - *Trigger:* At Step 9, the actor has already submitted 5 or more reviews in the preceding 10 minutes (US1 AS8, FR-021, Edge Case 9).
+  - *Steps:*
+    1. The server answers `429 RATE_LIMIT_EXCEEDED` and creates nothing.
+    2. The system shows *"Bạn đang đánh giá quá nhanh. Vui lòng đợi vài phút trước khi tiếp tục."* and keeps the typed text.
+- **AF 1.11: Email Not Verified:**
+  - *Trigger:* At Step 9, the actor's email is not verified (spec 010 `FR-006`; `contracts/integration.md` §2.4).
+  - *Steps:*
+    1. The server answers `403 EMAIL_NOT_VERIFIED`; the system reminds the actor to verify the email (`UC-010-02` AF 2.7) and keeps the typed text.
+- **AF 1.12: Session Expired:**
+  - *Trigger:* At Step 9, the request receives `401 UNAUTHENTICATED`.
+  - *Steps:*
+    1. The system asks the actor to sign in again without leaving the page and keeps the typed text (`UC-010-02` AF 2.12).
+- **AF 1.13: Suspended or Banned Account:**
+  - *Trigger:* At Step 9, the account was suspended or banned.
+  - *Steps:*
+    1. The server answers `403 ACCOUNT_SUSPENDED` or `403 ACCOUNT_BANNED` and the account-status page is shown (`UC-010-02` AF 2.14).
 
 #### 7. Postconditions
-- **Database:** A row is inserted in `reviews`; `recipes.rating_avg` and `recipes.review_count` are recalculated.
-- **UI:** The button changes from `"Viết đánh giá"` to `"Chỉnh sửa đánh giá của bạn"`.
-- **Author view:** If the current user is the recipe author, the `"Viết đánh giá"` button remains hidden; authors see their recipe's rating summary in read-only mode.
+- **Success:** A `reviews` row exists with `status = 'VISIBLE'`; `recipes.rating_avg` and `recipes.review_count` are recalculated over the visible reviews; the recipe's `version` is unchanged; the page shows "Chỉnh sửa đánh giá" instead of "Viết đánh giá".
+- **Failure:** No review is created and the aggregates are unchanged; typed text stays in the form.
 
 #### 8. Special Requirements
-- **Performance:** Review submission and aggregate calculation must finish within 200ms using atomic SQL updates.
-- **Accessibility:** Star controls must support keyboard input (`Tab`, Arrow keys, `Space`/`Enter` to select) and explicit ARIA labels.
-- **Anti-Spam:** Review velocity check enforced at $\le 5$ reviews per 10-minute window per user. Repeated breaches write to audit log and alert on dashboard.
+- **Data integrity:** The aggregates always match the visible reviews, also under concurrent writes: review writes on one recipe are serialized by locking the recipe row, and the aggregate update never increments the recipe's `version` (NFR-003, SC-003, Edge Case 1). `rating_avg` is rounded to 1 decimal place and stored as `NUMERIC(3,2)` (for example `4.30`).
+- **Anti-spam:** At most 5 reviews per user per 10-minute sliding window (FR-021).
+- **Accessibility:** The star selector is keyboard-navigable (arrow keys to select, Enter to confirm) and announces the selected rating through ARIA attributes (NFR-005).
+- **Usability:** A signed-in user can submit a rating and review within 3 taps from the recipe detail page (SC-001); the section works from 360 px to 4K (NFR-006).
+- **Security:** Every check (author guard, uniqueness, rate limit, verified email, lengths) is repeated on the server (constitution Principle IV).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/RV01-Reviews.dc.html), [`RV02-WriteReview.dc.html`](../analysis-and-design/ui-ux/screens/RV02-WriteReview.dc.html).
-- **Gaps:** *Gap 070-A* — Success toast notification after review submission (Basic Flow Step 10). *Gap 070-I* — Contextual author guard banner replacing "Viết đánh giá" button (Basic Flow Step 2). *Gap 070-J* — Anti-spam HTTP 429 warning toast ("Đang đánh giá quá nhanh", AF 1.7).
+- **Gaps:** *Gap 070-A* — Success toast notification after review submission (Basic Flow Step 10). *Gap 070-I* — Contextual author guard banner replacing "Viết đánh giá" button (Basic Flow Step 2). *Gap 070-J* — Anti-spam HTTP 429 warning toast ("Đang đánh giá quá nhanh", AF 1.10).
 - **Prototype Screenshots (SCRUM-58):**
   - **Recipe reviews section (`RV01-Reviews`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -4301,83 +4301,78 @@ Enables an authenticated user to leave feedback on a published recipe by selecti
 ---
 
 ### UC-070-02: Upload Cooksnap Photos
-*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-02`
 - **Use Case Name:** Upload Cooksnap Photos
 
 #### 2. Actor(s)
-- **Primary Actor:** **Home Cook** (Authenticated Member).
-- **Secondary Actor / Systems:** **Media Storage Pipeline** (Image Resizer & EXIF Stripper).
+- **Primary Actor:** **Member** — the author of the review being written or edited.
+- **Relationship:** Extends `UC-070-01` (photos attached to a new review) and is also used while editing an own review (`UC-070-03`). A Cooksnap always belongs to a review (data-model `cooksnaps.review_id`); there is no standalone upload.
 
 #### 3. Description
-Allows users to attach up to 3 photos of their finished dish (Cooksnaps) to their review. The system enforces strict format and size limits, strips out privacy-sensitive EXIF metadata (such as GPS coordinates), generates lightweight thumbnails, and lets viewers view full-resolution photos in a lightbox.
+Lets the author of a review attach up to 3 photos of the finished dish (Cooksnaps), each JPEG, PNG or WebP of at most 5 MB. Files are checked in the browser before upload and again on the server (magic bytes, size), all EXIF metadata is removed, a compressed thumbnail is generated, and anyone — including Guests — can open the full-resolution photo in a lightbox (FR-006 – FR-008, FR-023).
 
 #### 4. Preconditions
-- The user is writing or editing their own review.
-- The user grants device file/camera access.
+- The actor is writing a new review (`UC-070-01`, all its preconditions hold) or editing an own review that is `VISIBLE` (`UC-070-03`).
+- The review holds fewer than 3 photos.
 
 #### 5. Basic Flow
-1. **Attach Photos:** In the review form (`RV02-WriteReview`), the user clicks the `"Thêm ảnh Cooksnap"` tile.
-2. **Select Files:** The file picker opens; user selects 1 to 3 images (`.jpg`, `.png`, `.webp`).
-3. **Client-Side Checks:** The browser verifies:
-   - Format is valid (JPEG, PNG, or WebP).
-   - Each file is $\le 5$ MB.
-   - Total count does not exceed 3 photos.
-4. **Render Previews:** The app creates local preview thumbnails in the form with a small `"Xóa"` ($\times$) button on each and displays an upload progress bar with per-file status indicator (*Gap 070-K*).
-5. **Submit Review / Cooksnap:** User completes comment/stars (if submitting with review) or clicks upload in the Cooksnap composer.
-6. **Upload Files (API Call):**
-   - **Case 1 (upload together with the first review):** The client sends `POST /api/v1/recipes/:id/reviews` with `Content-Type: multipart/form-data` containing both the text fields (`rating`, `comment`, `substitution_tip`) and the binary image parts (`cooksnaps[]`).
-   - **Case 2 (standalone upload without review text):** The client calls the dedicated endpoint `POST /api/v1/recipes/:id/cooksnaps` with `Content-Type: multipart/form-data` (optional `caption`). To delete a single Cooksnap photo, the client calls `DELETE /api/v1/cooksnaps/:cooksnapId`.
-7. **Server Processing:**
-   - Validates image magic bytes to verify actual MIME type.
-   - Strips all EXIF metadata (specifically GPS coordinates and camera serial numbers).
-   - Generates a 400px wide WebP thumbnail for fast loading.
-   - Stores master images and thumbnails in object storage (`/uploads/cooksnaps/:recipeId/:userId/`).
-   - Inserts records into the `cooksnaps` table referencing `recipe_id` and `user_id` with `status = 'VISIBLE'`.
-8. **Display on Page:** When the recipe reloads, the review displays the Cooksnap photo grid (`RV01-Reviews`).
-9. **Open Lightbox:** Clicking any photo opens the full-screen lightbox (`RV03-Lightbox`) with skeleton loading state (*Gap 070-B*), swipe navigation, author name, and zoom controls.
+1. **Attach Photos:** In the review form (`RV02-WriteReview`) the actor presses "Thêm ảnh Cooksnap" (US2 AS1).
+2. **Select Files:** The device's file picker opens and allows selecting up to 3 images at once.
+3. **Client-Side Checks:** The browser checks that each file is JPEG, PNG or WebP, that each is at most 5 MB, and that the review will hold at most 3 photos (FR-006, FR-007).
+4. **Render Previews:** The form shows a thumbnail preview of each accepted file with a "Xóa" (Remove) icon (US2 AS2).
+5. **Submit With the Review:** The actor submits the review. The photos travel as `cooksnapFiles` in the `multipart/form-data` request of `POST /api/v1/recipes/{recipeId}/reviews` (new review) or `PUT /api/v1/reviews/{reviewId}` (edit).
+6. **Process on Server:** In the same transaction as the review, the server checks each file by its magic bytes, refuses files with embedded scripts, enforces the 5 MB limit, strips all EXIF metadata (GPS location, camera information), re-encodes the image, stores it under a unique `storage_key`, generates a compressed 400 × 400 thumbnail (the full image is kept at up to 1920 × 1080) and inserts one `cooksnaps` row per photo, linked to the review, with `status = 'VISIBLE'`. Files are deleted again if the transaction rolls back (US2 AS7, Edge Case 3; data-model).
+7. **Display on Page:** The review shows a grid of clickable thumbnails served by `GET /api/v1/media/cooksnaps/{storageKey}?thumbnail=true` (US2 AS6, FR-008).
+8. **Open Lightbox:** Any visitor, signed in or not, taps a thumbnail; the lightbox (`RV03-Lightbox`) opens the full-resolution image from `GET /api/v1/media/cooksnaps/{storageKey}` with swipe navigation between the photos of the review (US2 AS6, FR-023).
 
 #### 6. Alternative Flows
 - **AF 2.1: Image File Exceeds 5 MB:**
-  - *Trigger:* User selects a file larger than 5 MB.
+  - *Trigger:* At Step 3, the actor selects a file larger than 5 MB (US2 AS3).
   - *Steps:*
-    1. The client rejects the oversized file immediately.
-    2. Displays an error banner: *"Ảnh vượt quá 5 MB. Vui lòng chọn ảnh nhỏ hơn."*.
-    3. Any valid files selected alongside are retained.
+    1. The form rejects the file immediately with "Ảnh vượt quá 5 MB. Vui lòng chọn ảnh nhỏ hơn."
 - **AF 2.2: Unsupported File Format:**
-  - *Trigger:* User picks an unapproved file format (e.g., GIF, BMP, HEIC, PDF).
+  - *Trigger:* At Step 3, the actor selects a file of another format, for example BMP, GIF, TIFF or SVG (US2 AS4).
   - *Steps:*
-    1. The client displays error banner on `RV02`: *"Định dạng không hỗ trợ. Vui lòng chọn JPEG, PNG hoặc WebP."*.
-    2. The invalid file is excluded from staging.
-- **AF 2.3: More Than 3 Photos Selected:**
-  - *Trigger:* User tries to add a 4th image.
+    1. The form rejects the file with "Định dạng không hỗ trợ. Vui lòng chọn JPEG, PNG hoặc WebP."
+- **AF 2.3: More Than 3 Photos:**
+  - *Trigger:* At Step 1, the review already holds 3 photos (US2 AS5).
   - *Steps:*
-    1. The upload tile turns disabled with a tooltip: *"Tối đa 3 ảnh cho mỗi đánh giá"*.
+    1. "Thêm ảnh Cooksnap" is disabled with the tooltip "Tối đa 3 ảnh cho mỗi đánh giá."
+    2. A request that would leave more than 3 photos on the review is refused by the server with `400` (contract: `maxItems: 3`; on edit, existing minus removed plus new photos at most 3).
 - **AF 2.4: Removing a Staged Photo:**
-  - *Trigger:* User clicks the `"Xóa"` icon on a preview thumbnail before submitting.
+  - *Trigger:* At Step 4, the actor presses "Xóa" on a preview before submitting (US2 AS2).
   - *Steps:*
-    1. The photo is removed from upload memory.
-    2. The upload tile re-enables and photo count adjusts (e.g., `2/3`).
-- **AF 2.5: Upload Network Timeout:**
-  - *Trigger:* Network drops during file upload.
+    1. The photo is removed from the form and "Thêm ảnh Cooksnap" is enabled again when fewer than 3 photos remain.
+- **AF 2.5: Network Interruption During Upload:**
+  - *Trigger:* At Step 5, the connection drops (Edge Case 2).
   - *Steps:*
-    1. Request times out after 15 seconds.
-    2. The form retains user text and selected images in local state.
-    3. Displays a retry prompt: *"Tải ảnh thất bại do lỗi kết nối. Dữ liệu đánh giá của bạn đã được lưu nháp."* with a `"Thử lại"` button.
+    1. The client keeps the review text and star rating in a local draft.
+    2. The system shows the recoverable error "Tải ảnh thất bại. Kiểm tra kết nối mạng và thử lại." with "Thử lại". The review text is not lost.
+- **AF 2.6: File Refused by the Server:**
+  - *Trigger:* At Step 6, a file passed the browser checks but is not a real image of an allowed type, carries an embedded script, or exceeds 5 MB (Edge Case 3, FR-007).
+  - *Steps:*
+    1. The server answers `400` and stores nothing: neither the photos nor the review of this request are created or changed.
+- **AF 2.7: Photo No Longer Visible:**
+  - *Trigger:* At Step 7 or Step 8, the photo or its review was hidden by moderation or deleted (data-model "Visibility gate").
+  - *Steps:*
+    1. The media endpoint answers `404` without revealing whether the file still exists. Because images are cached for at most 1 hour with revalidation, a hidden or deleted photo disappears from caches within that hour.
 
 #### 7. Postconditions
-- **Database:** Rows added to `cooksnaps` (`recipe_id`, `user_id`, `storage_key`, `content_type`, `size_bytes`, `caption`, `status = 'VISIBLE'`).
-- **Storage:** Cleaned images and thumbnails stored in persistent storage (`/uploads/cooksnaps/:recipeId/:userId/`).
+- **Success:** Up to 3 `cooksnaps` rows exist for the review (`review_id`, `recipe_id`, `user_id`, `storage_key`, `content_type`, `size_bytes`, `status = 'VISIBLE'`); the stored images and thumbnails carry no EXIF metadata.
+- **Failure:** No photo is stored and the review of the same request is not created or changed.
 
 #### 8. Special Requirements
-- **Privacy:** 100% of EXIF GPS coordinates must be purged before saving to storage.
-- **Performance:** Server-side thumbnail generation must complete in $< 800$ms per 5 MB image.
+- **Privacy and security:** All EXIF metadata is removed and files are served only through `/api/v1/media/cooksnaps/{storageKey}` with the proper content type and security headers (NFR-004; constitution Principle IV).
+- **Performance:** Uploading a 5 MB photo completes within 5 seconds on a standard 4G connection of 10 Mbps (NFR-002).
+- **Responsiveness:** The thumbnail grid adapts from 1 column on mobile to 3 columns on desktop (NFR-006).
+- **Validation:** Invalid files are rejected in the browser before upload and the server independently confirms file integrity (SC-002).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV02-WriteReview.dc.html`](../analysis-and-design/ui-ux/screens/RV02-WriteReview.dc.html), [`RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/RV01-Reviews.dc.html), [`RV03-Lightbox.dc.html`](../analysis-and-design/ui-ux/screens/RV03-Lightbox.dc.html).
-- **Gaps:** *Gap 070-K* — Image upload progress bar with per-file status indicator (Basic Flow Step 4). *Gap 070-B* — Lightbox skeleton loading state (Basic Flow Step 9).
+- **Gaps:** *Gap 070-K* — Image upload progress bar with per-file status indicator (Basic Flow Steps 4–5; prototype proposal, not required by spec 070). *Gap 070-B* — Lightbox skeleton loading state (Basic Flow Step 8).
 - **Prototype Screenshots (SCRUM-58):**
   - **Cooksnap photo lightbox (`RV03-CooksnapLightbox`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -4388,82 +4383,81 @@ Allows users to attach up to 3 photos of their finished dish (Cooksnaps) to thei
 ---
 
 ### UC-070-03: Edit or Delete Own Review
-*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-03`
 - **Use Case Name:** Edit or Delete Own Review
 
 #### 2. Actor(s)
-- **Primary Actor:** **Review Author** (Authenticated Member).
-- **Secondary Actor / Systems:** **Recipe Management Service** (Spec 060).
+- **Primary Actor:** **Member** — the author of the review.
 
 #### 3. Description
-Allows users to update their previously submitted reviews (changing rating, text, or photos) or permanently soft-delete them. Deletion automatically hides associated Cooksnap photos and updates the recipe's aggregate score.
+Lets the author of a review change its rating, comment, substitution tip and Cooksnap photos at any time, or delete it. Deleting is a hard delete: the review, its Cooksnaps (and their files), its helpful votes and its reports are removed, so the user may review the recipe again later. `status = 'HIDDEN'` is reserved for moderation; a review hidden by moderation cannot be edited (FR-010, FR-011). The recipe's aggregates are recalculated in the same transaction, without changing the recipe's `version` (FR-009).
+
+> **Source conflict:** spec 070 US3 AS4 and the Clarification of 2026-10-19 still describe deletion as `status = 'HIDDEN'` (or a hard delete when there are no interactions), while `FR-011`, the contract (`DELETE /reviews/{reviewId}`) and `data-model.md` define an owner deletion as a hard delete. This use case follows `FR-011` and the contract; the conflict is recorded as `[OQ-070-08]`.
 
 #### 4. Preconditions
-- User is logged in.
-- User has an existing active review on this recipe (`reviews.user_id = auth.user_id` and `reviews.status = 'VISIBLE'`).
+- The actor is signed in (`UC-010-02`).
+- The actor owns a review of this recipe whose status is `VISIBLE` (a review hidden by moderation: AF 3.4).
 
 #### 5. Basic Flow (Branch A: Edit Review)
-1. **Find Own Review:** The user navigates to the recipe page and locates their own review card (`RV04-OwnReview`), identified by a `"Bạn"` (You) badge.
-2. **Open Options:** User clicks the kebab menu button (`⋮`).
-3. **Choose Edit:** User selects `"Chỉnh sửa"` (Edit) from the menu.
-4. **Open Form with Data:** The review form (`RV02-WriteReview`) opens with existing values pre-filled (stars, comment, tips, current Cooksnaps).
-5. **Update Details:** User updates the star rating (e.g., from 4 to 5 stars), edits the text, removes an old photo, and attaches a new one.
-6. **Save Changes:** User clicks `"Lưu thay đổi"`.
-7. **Persist Updates:** Client sends `PUT /api/v1/recipes/:id/reviews/:reviewId`.
-8. **Server Execution:**
-   - Confirms the active user owns the review.
-   - Updates `reviews` table (`rating`, `comment`, `substitution_tip`, `updated_at = NOW()`).
-   - Marks removed Cooksnaps as `status = 'HIDDEN'` (or deletes via `DELETE /api/v1/cooksnaps/:cooksnapId`) and inserts new photos.
-   - Recalculates the recipe's `rating_avg` if stars changed.
-9. **UI Confirmation:** The modal closes with a toast *"Đã cập nhật đánh giá thành công"*, showing the updated review with an `"(đã chỉnh sửa)"` label (*Gap 070-C*).
+1. **Find Own Review:** The actor opens the recipe page and finds the own review card (`RV04-OwnReview`), marked with the badge "Bạn".
+2. **Open Options:** The actor presses the "⋮" menu; the system shows "Chỉnh sửa" and "Xóa" (US3 AS1).
+3. **Choose Edit:** The actor selects "Chỉnh sửa".
+4. **Open Form With Data:** The review form (`RV02-WriteReview`) opens with the current rating, comment, substitution tip and Cooksnap thumbnails (US3 AS2).
+5. **Update Details:** The actor changes the rating (for example from 3 to 5 stars), edits the text, removes an old photo and attaches a new one (`UC-070-02`).
+6. **Save Changes:** The actor presses "Lưu thay đổi".
+7. **Send Request:** The browser sends `PUT /api/v1/reviews/{reviewId}` with `rating`, `comment`, `substitutionTip`, the `removeCooksnapIds` of the photos to remove and, when new photos are attached, the `cooksnapFiles` (as `multipart/form-data`; JSON otherwise).
+8. **Process on Server:** The server checks that the actor owns the review and that it is `VISIBLE`, validates the fields as in `UC-070-01` and the photo total (at most 3 after the edit), updates the review and its `updated_at`, deletes the removed photos (rows deleted, files deleted after commit), adds the new ones and recalculates `rating_avg` in the same transaction without changing the recipe's `version` (US3 AS3, FR-009, FR-010). It answers `200` with the updated review.
+9. **Show Result:** The form closes and the updated review is shown (the prototype proposes an "(đã chỉnh sửa)" label, *Gap 070-C*).
 
-#### 5b. Alternative Flow (Branch B: Delete Review)
-1. **Choose Delete:** At Step 3 above, user selects `"Xóa"` (Delete).
-2. **Show Warning:** A confirmation modal opens (`W-RV04b-DeleteConfirm`):
-   - Title: *"Xóa đánh giá này?"*
-   - Description: *"Hành động không thể hoàn tác. Điểm sao và ảnh Cooksnap của bạn sẽ bị gỡ."*
-   - Buttons: `"Hủy"` and `"Xóa"`.
-3. **Confirm:** User clicks `"Xóa"`.
-4. **Send Delete Call:** Browser sends `DELETE /api/v1/recipes/:id/reviews/:reviewId`.
-5. **Server Soft Deletion / Hiding:**
-   - Verifies ownership.
-   - Sets `reviews.status = 'HIDDEN'`.
-   - Sets `cooksnaps.status = 'HIDDEN'` for linked user Cooksnaps on this recipe (`WHERE recipe_id = :recipeId AND user_id = :userId`).
-   - **Cascading aggregate recalculation** — updates recipe counts using the atomic formula excluding hidden reviews:
+#### 5b. Basic Flow (Branch B: Delete Review)
+1. **Choose Delete:** At Step 3 above, the actor selects "Xóa".
+2. **Show Warning:** The system asks for confirmation: "Bạn có chắc muốn xóa đánh giá này? Hành động không thể hoàn tác." with "Hủy" and "Xóa" (US3 AS4; prototype `W-RV04b-DeleteConfirm`).
+3. **Confirm:** The actor presses "Xóa".
+4. **Send Request:** The browser sends `DELETE /api/v1/reviews/{reviewId}`.
+5. **Process on Server:** The server checks ownership, hard-deletes the review together with its Cooksnaps, helpful votes and reports (foreign keys `CASCADE`), deletes the image files after the transaction commits, and recalculates the aggregates over the visible reviews without changing the recipe's `version` (FR-009, FR-011):
      $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE status = 'VISIBLE'}$$
      $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE status = 'VISIBLE'}$$
-   - **Consistency guarantee:** This recalculation is triggered by *any* event that changes a review's status — whether initiated by the author (self-hide/delete), by a Moderator (hide via `UC-100-02`), or by system automation (spam account suspension). The service-layer method `RecipeAggregateService.recalculate(recipeId)` is the single source of truth for both `rating_avg` and `review_count`, ensuring no code path can alter review status without updating the parent recipe's scores.
-6. **UI Refresh:** The review card is removed from the list, the review summary updates, and the button reverts back to `"Viết đánh giá"`. If no reviews remain, the empty state (`RV06-Empty`) is shown.
+   It answers `204 No Content`.
+6. **Refresh UI:** The review card is removed, the rating summary updates and "Viết đánh giá" is shown again, because the actor may review the recipe again (FR-011). When no review remains, the empty state of `UC-070-04` AF 4.1 is shown.
 
 #### 6. Alternative Flows
-- **AF 3.1: Attempting to Edit Another User's Review:**
-  - *Trigger:* Malicious user crafts an API request to modify someone else's review ID.
+- **AF 3.1: Editing or Deleting Another User's Review:**
+  - *Trigger:* At Branch A Step 7 or Branch B Step 4, the request targets a review owned by another user (US3 AS5).
   - *Steps:*
-    1. Server detects `review.user_id != session.user_id`.
-    2. Rejects request with HTTP 403 Forbidden.
-- **AF 3.2: User Cancels Deletion:**
-  - *Trigger:* User clicks `"Hủy"` in the delete dialog.
+    1. The server answers `403 Forbidden` and changes nothing. Moderators and Administrators hide content only through spec 100 (`UC-100-02`), not through this use case.
+- **AF 3.2: Actor Cancels Deletion:**
+  - *Trigger:* At Branch B Step 3, the actor presses "Hủy".
   - *Steps:*
-    1. Modal closes. No data is changed.
-- **AF 3.3: Review Was Already Deleted by Moderator:**
-  - *Trigger:* Admin removed the review while user was preparing to edit.
+    1. The dialog closes. Nothing changes.
+- **AF 3.3: Review No Longer Exists:**
+  - *Trigger:* At Branch A Step 7 or Branch B Step 4, the review was already deleted, for example by its owner from another tab or device.
   - *Steps:*
-    1. Server returns HTTP 404 Not Found.
-    2. Frontend shows: *"Đánh giá này không còn tồn tại hoặc đã bị gỡ bỏ."* and reloads the reviews.
+    1. The server answers `404`; the system tells the actor that the review no longer exists and reloads the reviews.
+- **AF 3.4: Review Hidden by Moderation:**
+  - *Trigger:* At Branch A Step 8, the review is `HIDDEN` by moderation (manual hide or auto-quarantine, `UC-070-05` AF 5.4) (FR-011).
+  - *Steps:*
+    1. The server answers `409 REVIEW_UNDER_MODERATION`; the system explains that the review is hidden pending moderation and cannot be edited.
+- **AF 3.5: Invalid Changes:**
+  - *Trigger:* At Branch A Step 8, a field breaks the rules of `UC-070-01` (rating, 10–2000 characters, tip of at most 500) or more than 3 photos would remain (`UC-070-02` AF 2.3).
+  - *Steps:*
+    1. The server answers `400` and nothing is changed; the form keeps the actor's edits.
+- **AF 3.6: Session Expired or Account Restricted:**
+  - *Trigger:* At Branch A Step 7 or Branch B Step 4, the request receives `401 UNAUTHENTICATED`, or `403 ACCOUNT_SUSPENDED` / `403 ACCOUNT_BANNED`.
+  - *Steps:*
+    1. The system follows `UC-010-02` AF 2.12 (sign in again on the page, edits kept) or AF 2.14 (account-status page). Nothing is changed.
 
 #### 7. Postconditions
-- **Database:**
-  - Edit: `reviews.updated_at` updated; `recipes.rating_avg` recalculated via `RecipeAggregateService.recalculate(recipeId)` if star rating changed.
-  - Delete: `reviews.status = 'HIDDEN'` and author's `cooksnaps.status = 'HIDDEN'` set; `rating_avg` and `review_count` fully recalculated (not merely decremented) using `WHERE status = 'VISIBLE'` to prevent drift from accumulated rounding.
-  - Admin Hide (cross-reference `UC-100-02`): When a Moderator hides a review through the report resolution flow (`status = 'HIDDEN'`), the same `RecipeAggregateService.recalculate(recipeId)` method is invoked, guaranteeing that the recipe's public score accurately reflects only reviews with `status = 'VISIBLE'` at all times.
-> **[OQ-070-05]:** The current schema has no `reviews.hidden_reason`. Proposal: add the columns `hidden_reason VARCHAR(300) NULL` and `hidden_by BIGINT NULL (FK → users SET NULL)` to the `reviews` table, following the existing pattern of `recipe_nutrition.hidden_reason`.
-- **UI:** Review card is updated or removed.
+- **Edit:** The review holds the new values and a new `updated_at`; removed photos are gone and new photos are stored; `rating_avg` is recalculated when the rating changed; the recipe's `version` is unchanged.
+- **Delete:** The review, its Cooksnaps and their files, its helpful votes and its reports no longer exist; `rating_avg` and `review_count` are fully recalculated over the visible reviews (not merely decremented); the actor may review the recipe again.
+- **Moderation (cross-reference):** When a Moderator hides a review in `UC-100-02`, the same recalculation runs, so the public score always reflects only `VISIBLE` reviews (FR-009, FR-024).
 
 #### 8. Special Requirements
-- **Data Retention:** Hidden Cooksnap files (`status = 'HIDDEN'`) are retained for 30 days before purge to support moderation audit and recovery.
+- **Data integrity:** Aggregates stay consistent with the review data at all times, including under concurrent writes (NFR-003, SC-003).
+- **Ownership:** Only the owner may edit or delete a review; the check is done on the server (US3 AS5; constitution Principle IV).
+- **Timestamps:** Only an edit by the author changes `updated_at`; helpful votes and moderation changes do not (contract `updatedAt`).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV04-OwnReview.dc.html`](../analysis-and-design/ui-ux/screens/RV04-OwnReview.dc.html), [`W-RV04b-DeleteConfirm.dc.html`](../analysis-and-design/ui-ux/screens/W-RV04b-DeleteConfirm.dc.html).
