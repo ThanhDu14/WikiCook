@@ -17,7 +17,8 @@ import com.wikicook.aiplanner.support.AiPlannerItBeans;
 import com.wikicook.aiplanner.support.RecipeFixtures;
 import com.wikicook.aiplanner.support.RecipeSeed;
 import com.wikicook.common.diet.DietRestrictions;
-import com.wikicook.devstub.StubCurrentUser;
+import com.wikicook.support.AuthTestSupport;
+import com.wikicook.support.HeaderCurrentUser;
 import com.wikicook.mealplan.domain.DietType;
 import com.wikicook.mealplan.domain.Meal;
 import com.wikicook.mealplan.service.WeekCalendar;
@@ -43,9 +44,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 /** T064: a meal with fewer suitable recipes than slots is a 422 with what to relax, and costs no generation (US4). */
-@SpringBootTest(properties = {"wikicook.dev-stubs.enabled=true", "wikicook.ai.mode=mock"})
+@SpringBootTest(properties = "wikicook.ai.mode=mock")
 @AutoConfigureMockMvc
-@Import(AiPlannerItBeans.class)
+@Import({AiPlannerItBeans.class, HeaderCurrentUser.class, AuthTestSupport.class})
 class NotEnoughRecipesIT extends AbstractPostgresIT {
 
     private static final long USER = 3101;
@@ -71,19 +72,23 @@ class NotEnoughRecipesIT extends AbstractPostgresIT {
     @Autowired
     EligibleRecipeQuery eligibleQuery;
 
+    @Autowired
+    AuthTestSupport authSupport;
+
     private final LocalDate nextWeek = WeekCalendar.currentWeekStart(Clock.systemUTC()).plusWeeks(1);
 
     @BeforeEach
     void seed() {
         clock.set(Instant.now()); // another class of the context may have moved it
         RecipeFixtures.clear(jdbc);
+        authSupport.createUserWithId(USER); // StubCurrentUser used to create the row on every request
         jdbc.update("DELETE FROM ai_requests WHERE user_id = ?", USER);
         RecipeSeed.seed(new RecipeFixtures(jdbc));
     }
 
     private ResultActions options() throws Exception {
         return mvc.perform(get("/api/v1/ai-planner/weeks/{weekStart}/options", nextWeek)
-                .header(StubCurrentUser.HEADER, USER));
+                .header(HeaderCurrentUser.HEADER, USER));
     }
 
     @Test
@@ -98,7 +103,7 @@ class NotEnoughRecipesIT extends AbstractPostgresIT {
                 MAX_COOK_TIME, Set.of()));
 
         mvc.perform(post("/api/v1/ai-planner/weeks/{weekStart}/generations", nextWeek)
-                        .header(StubCurrentUser.HEADER, USER)
+                        .header(HeaderCurrentUser.HEADER, USER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json.writeValueAsString(week)))
                 .andExpect(status().isUnprocessableEntity())

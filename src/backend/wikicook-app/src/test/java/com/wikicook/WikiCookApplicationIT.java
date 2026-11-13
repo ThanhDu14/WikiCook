@@ -36,14 +36,16 @@ class WikiCookApplicationIT extends AbstractPostgresIT {
         assertThat(response.getBody()).contains("\"status\":\"UP\"");
     }
 
+    /** Every /api route is denied by default (spec 010), so an unknown one is 401; the 404 with a real JWT is in SecurityFilterChainIT. */
     @Test
     void unknownPathReturnsProblemDetail() {
         ResponseEntity<String> response = http.getForEntity("/api/v1/does-not-exist", String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         assertThat(response.getHeaders().getContentType()).hasToString("application/problem+json");
+        assertThat(response.getBody()).contains("\"code\":\"UNAUTHENTICATED\"");
     }
 
-    /** Without the dev stubs nobody is signed in yet (spec 010 not built): the AI planner answers 401. */
+    /** Nobody is signed in, so the AI planner answers 401 UNAUTHENTICATED (010 denies by default; 031 R16). */
     @Test
     void aiPlannerWithoutSignedInUserIs401() {
         ResponseEntity<String> response = http.getForEntity("/api/v1/ai-planner/weeks/2026-11-02/options",
