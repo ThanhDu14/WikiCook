@@ -1237,7 +1237,7 @@ Hiện trạng thái page local hiện tại của các giao diện liên quan c
 | **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md`, `tasks/PA4/wikicook-pa4-team-assignment.md`, `tasks/PA4/pa4-guide.md`, `specs/010-user-authentication-roles/`, `specs/011-user-profile-dietary/`, `specs/070-review-cooksnap/` |
 | **Mục đích sử dụng** | Soạn thảo chi tiết biên bản cho 2 buổi họp Weekly Scrum của Sprint 4 gồm Meeting 2 (Weekly Standup 01, 14/11/2026) và Meeting 3 (Weekly Standup 02, 19/11/2026), cập nhật ma trận phân công trách nhiệm, lịch sử sửa đổi, và bảng theo dõi các hành động quản trị (Cross-Meeting Action Items Traceability Matrix) theo chuẩn Phần F (Weekly Reports). |
 | **Nhánh Git** | `docs/PA4` |
-| **Minh chứng (Evidence)** | Các commit `c016b2b`, `7c6f802`, `acdfc61`, `352a4aa` trên nhánh `docs/PA4`; tệp `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.2, 2.3, 2.4); đối chiếu chéo các PR #84, #87, #88 và các nhánh `feature/SCRUM-74-auth-backend`, `feature/SCRUM-76-frontend-auth-profile`. |
+| **Minh chứng (Evidence)** | Chuỗi 6 commit `c016b2b`, `7c6f802`, `acdfc61`, `352a4aa`, `c336e5f`, và commit kiểm tra chéo cuối trên nhánh `docs/PA4`; tệp `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.2, 2.3, 2.4); đối chiếu chéo các PR #84, #87, #88 và các nhánh `feature/SCRUM-74-auth-backend`, `feature/SCRUM-76-frontend-auth-profile`. |
 
 ### Prompt đã sử dụng:
 ```text
