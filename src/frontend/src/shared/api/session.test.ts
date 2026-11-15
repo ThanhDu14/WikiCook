@@ -38,4 +38,15 @@ describe('dev session (ACT-01)', () => {
     setAccessToken(null);
     expect(getAccessToken()).toBeNull();
   });
+
+  it('keeps the access token in memory only and drops the key an earlier build wrote (R2)', () => {
+    window.localStorage.setItem('wk.accessToken', 'old');
+
+    setAccessToken('t2');
+
+    expect(window.localStorage.getItem('wk.accessToken')).toBeNull();
+    expect(Object.keys(window.localStorage)).not.toContain('wk.accessToken');
+    expect(getAccessToken()).toBe('t2');
+    setAccessToken(null);
+  });
 });
