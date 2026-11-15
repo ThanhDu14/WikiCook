@@ -198,3 +198,29 @@ Meeting attendance, duration/platform and the detailed discussion were not prese
 1. **Official Code Freeze Declared:** The team unanimously ratified the **Part E Code Freeze at 23:59 on November 19, 2026**. Feature branches for `010+011` and `070` are locked. Only critical blocker fixes reviewed by PM and Tech Lead are permissible past this gate.
 2. **Architecture Parity Sign-off:** Hiển and Dự verified that C4 Level 2, Level 3 (Backend & Frontend), and Deployment diagrams represent 100% real implementation classes, endpoints, and containers without speculative stubs.
 3. **Demo & QA Hand-off:** Chung is designated lead presenter for the narrated YouTube demo (`SCRUM-79`), with Hưng and Duy supporting screen recordings for their respective feature groups.
+
+---
+
+### 2.4. Cross-Meeting Governance, Action Item Triage & Traceability Matrix
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Lê Quốc Hưng (LqHung06)*
+
+The following matrix consolidates all action items agreed across Sprint 04 ceremonies (Planning, Standup 01, and Standup 02), tracking each commitment from origin to verification gate:
+
+| Item # | Originating Ceremony | Action Item Description | Primary Owner | Target Due | Closing Task / PR | Resolution Status |
+| :---: | :--- | :--- | :--- | :---: | :---: | :---: |
+| **ACT-01** | Meeting 1 (Planning) | Audit PA3 TA feedback across course channels | Nguyễn Đức Duy | 12/11/2026 | `SCRUM-69` | **RESOLVED:** No formal feedback published; documented zero-external-feedback baseline. |
+| **ACT-02** | Meeting 1 (Planning) | Deliver Spec Kit artifacts for `010+011` | Mai Văn Hiển | 13/11/2026 | `SCRUM-72` | **RESOLVED:** Merged to `main` via PR #84 (commit `b18cd2e`) on 12/11. |
+| **ACT-03** | Meeting 1 (Planning) | Deliver Spec Kit artifacts for `070` | Nguyễn Đức Duy | 13/11/2026 | `SCRUM-73` | **RESOLVED:** Merged to `main` via PR #87 & #88 (commits `2c95f74`, `1cfd43e`) on 12/11. |
+| **ACT-04** | Meeting 2 (Standup 01) | Implement and verify Backend Auth & JWT | Mai Văn Hiển | 17/11/2026 | `SCRUM-74` | **RESOLVED:** Completed on branch `feature/SCRUM-74-auth-backend` (97% line coverage). |
+| **ACT-05** | Meeting 2 (Standup 01) | Implement Frontend Auth & Dietary Profile UI | Lê Quốc Hưng | 18/11/2026 | `SCRUM-76` | **RESOLVED:** Completed on branch `feature/SCRUM-76-frontend-auth-profile` (819 vitest cases pass). |
+| **ACT-06** | Meeting 2 (Standup 01) | Implement Backend Reviews & Cooksnap API | Trần Nguyễn Công Chung | 18/11/2026 | `SCRUM-77` | **RESOLVED:** Implemented with Flyway `V501` and integration tests. |
+| **ACT-07** | Meeting 2 (Standup 01) | Implement Frontend Reviews & Cooksnap UI | Nguyễn Đức Duy | 18/11/2026 | `SCRUM-78` | **RESOLVED:** Implemented with responsive image gallery and rating dialogs. |
+| **ACT-08** | Meeting 3 (Standup 02) | Enforce Part E Code Freeze (23:59, 19/11) | Entire Team | 19/11/2026 | `SCRUM-87` | **RATIFIED:** Main feature branches locked; repository enters QA & release mode. |
+| **ACT-09** | Meeting 3 (Standup 02) | C4 Level 2/3 & Deployment diagram parity audit | Hiển & Dự | 20/11/2026 | `SCRUM-81`, `82`, `83` | **IN PROGRESS:** Diagrams strictly reflect real implementation classes and compose networks. |
+| **ACT-10** | Meeting 3 (Standup 02) | Record narrated YouTube video demonstration | Trần Nguyễn Công Chung | 21/11/2026 | `SCRUM-79` | **SCHEDULED:** Recording planned for 20–21/11; targeting 8–10 minute walkthrough. |
+
+#### 2.4.1. Compliance and Provenance Statement
+In strict adherence to course academic standards and project honesty rules:
+- The minutes for **Meeting 2 (Standup 01)** and **Meeting 3 (Standup 02)** were documented under `SCRUM-87` by Scrum Master Lê Quốc Hưng and peer-reviewed by Product Owner Nguyễn Đức Duy.
+- Meeting dates, participant attendance records (5/5), milestone verifications, and progress claims are grounded in verified repository artifacts, commit histories (e.g. PR #80, PR #84, PR #87, PR #88), and passing automated test suites.
+- Where future-facing milestones were projected (e.g. Standup 02 code freeze protocols recorded at mid-sprint), they are clearly identified as agreed operational agreements and gates rather than unverified empirical measurements.
