@@ -375,7 +375,7 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case (`Edge: Brute force`�
 - [ ] T181 [P] E2E Playwright `auth-a11y.spec.ts` – NFR-007: đi hết form đăng nhập, đăng ký, quên mật khẩu, đặt mật khẩu chỉ bằng bàn phím; mọi trường có nhãn hiển thị (`getByLabel`); lỗi nằm cạnh trường qua `aria-describedby`, lỗi chung `role="alert"` trong src/frontend/e2e/auth-a11y.spec.ts
 - [ ] T182 Kiểm tra accessibility cho NFR-007 như 030: chạy axe `wcag2a`, `wcag2aa`, `wcag21aa` trên mọi màn auth, thêm một lượt NVDA hoặc VoiceOver thật, ghi kết quả vào docs/test/010-user-authentication-roles-a11y.md. axe chạy ngoài repo, không thêm dependency
 - [ ] T183 [P] So `/v3/api-docs` với specs/010-user-authentication-roles/contracts/openapi.yaml bằng script: đường dẫn, method, `operationId`, field, enum `code`; ghi chênh lệch vào docs/test/010-user-authentication-roles-acceptance.md
-- [ ] T184 Chạy `cd src/backend && mvn verify`, xác nhận JaCoCo `com.wikicook.auth.service` line và branch ≥ 70% theo rule ở src/backend/wikicook-app/pom.xml; thêm test nếu thiếu
+- [x] T184 Chạy `cd src/backend && mvn verify`, xác nhận JaCoCo `com.wikicook.auth.service` line và branch ≥ 70% theo rule ở src/backend/wikicook-app/pom.xml; thêm test nếu thiếu
 - [ ] T185 Chạy `cd src/frontend && npm run lint && npm test && npm run build && npm run e2e`, xác nhận `eslint-plugin-jsx-a11y` không có lỗi ở src/frontend/src/features/auth/
 - [ ] T186 Chạy quickstart Q1–Q46 (specs/010-user-authentication-roles/quickstart.md) và ghi kết quả vào docs/test/010-user-authentication-roles-acceptance.md
 - [ ] T187 [P] Tổ chức buổi thử với người dùng cho SC-003 (≥ 90% đăng ký, đăng nhập được ngay lần đầu), đo SC-001, SC-002, SC-006, ghi vào docs/test/010-user-authentication-roles-acceptance.md
