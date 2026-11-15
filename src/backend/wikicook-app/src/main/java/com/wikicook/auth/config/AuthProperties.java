@@ -26,7 +26,8 @@ public record AuthProperties(
         @DefaultValue("") String appealContact,
         @Valid @DefaultValue SignIn signIn,
         @Valid @DefaultValue Jobs jobs,
-        @Valid @DefaultValue Google google) {
+        @Valid @DefaultValue Google google,
+        @Valid @DefaultValue BootstrapAdmin bootstrapAdmin) {
 
     private static final int MIN_JWT_SECRET_BYTES = 32;
 
@@ -40,6 +41,20 @@ public record AuthProperties(
 
         public boolean configured() {
             return clientId != null && !clientId.isBlank() && clientSecret != null && !clientSecret.isBlank();
+        }
+    }
+
+    /** The first Administrator, created at startup when both are set and no active Administrator exists. */
+    public record BootstrapAdmin(@DefaultValue("") String email, @DefaultValue("") String password) {
+
+        public boolean configured() {
+            return email != null && !email.isBlank() && password != null && !password.isEmpty();
+        }
+
+        /** The password must never reach a log line (NFR-001). */
+        @Override
+        public String toString() {
+            return "BootstrapAdmin[email=" + email + ", password=****]";
         }
     }
 

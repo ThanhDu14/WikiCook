@@ -50,6 +50,7 @@ class AuthPropertiesTest {
     private static AuthProperties withAppealContact(String contact) {
         return new AuthProperties(TestAuthProperties.JWT_SECRET, TestAuthProperties.EMAIL_HASH_KEY,
                 "http://localhost:3000", false, 4, Duration.ofMinutes(15), "no-reply@wikicook.local", contact,
-                new AuthProperties.SignIn(100), new AuthProperties.Jobs(false), new AuthProperties.Google("", ""));
+                new AuthProperties.SignIn(100), new AuthProperties.Jobs(false), new AuthProperties.Google("", ""),
+                new AuthProperties.BootstrapAdmin("", ""));
     }
 }

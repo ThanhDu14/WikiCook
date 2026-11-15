@@ -86,6 +86,10 @@ wikicook:
     google:
       client-id: ${WIKICOOK_GOOGLE_CLIENT_ID:}
       client-secret: ${WIKICOOK_GOOGLE_CLIENT_SECRET:}
+    # First Administrator: created at startup only when both are set and no active Administrator exists (spec 010).
+    bootstrap-admin:
+      email: ${WIKICOOK_BOOTSTRAP_ADMIN_EMAIL:}
+      password: ${WIKICOOK_BOOTSTRAP_ADMIN_PASSWORD:}
   # Dev stand-ins for 010/011 (com.wikicook.devstub); never enable in production.
   dev-stubs:
     enabled: ${WIKICOOK_DEV_STUBS_ENABLED:false}

@@ -19,6 +19,14 @@ public final class TestAuthProperties {
     public static AuthProperties create(String jwtSecret, String emailHashKey) {
         return new AuthProperties(jwtSecret, emailHashKey, "http://localhost:3000", false, 4,
                 Duration.ofMinutes(15), "no-reply@wikicook.local", "",
-                new AuthProperties.SignIn(100), new AuthProperties.Jobs(false), new AuthProperties.Google("", ""));
+                new AuthProperties.SignIn(100), new AuthProperties.Jobs(false), new AuthProperties.Google("", ""),
+                new AuthProperties.BootstrapAdmin("", ""));
+    }
+
+    public static AuthProperties withBootstrap(String email, String password) {
+        return new AuthProperties(JWT_SECRET, EMAIL_HASH_KEY, "http://localhost:3000", false, 4,
+                Duration.ofMinutes(15), "no-reply@wikicook.local", "", new AuthProperties.SignIn(100),
+                new AuthProperties.Jobs(false), new AuthProperties.Google("", ""),
+                new AuthProperties.BootstrapAdmin(email, password));
     }
 }

@@ -52,6 +52,40 @@ public class MatrixProbeController {
         return Map.of("ok", true);
     }
 
+    /** Matrix row "review, rate, post cooksnaps": needs a verified email (FR-006); the module (070) does not exist yet. */
+    @GetMapping("/review")
+    @VerifiedEmailRequired
+    public Map<String, Object> review() {
+        return Map.of("ok", true);
+    }
+
+    /** Matrix row "submit recipes": also needs a verified email (060 does not exist yet). */
+    @GetMapping("/submit")
+    @VerifiedEmailRequired
+    public Map<String, Object> submit() {
+        return Map.of("ok", true);
+    }
+
+    /** The Contributor badge is data about the author, not a right: any signed-in user may ask, only Contributors have it. */
+    @GetMapping("/badge")
+    public Map<String, Object> badge() {
+        return Map.of("verifiedContributor", account.role() == com.wikicook.common.security.Role.CONTRIBUTOR);
+    }
+
+    /** Matrix row "moderate recipes, reviews and reports" (100 does not exist yet). */
+    @GetMapping("/moderate")
+    @ModeratorOnly
+    public Map<String, Object> moderate() {
+        return Map.of("ok", true);
+    }
+
+    /** Matrix row "manage categories and taxonomies" (100 does not exist yet). */
+    @GetMapping("/taxonomies")
+    @AdministratorOnly
+    public Map<String, Object> taxonomies() {
+        return Map.of("ok", true);
+    }
+
     @GetMapping("/administrator")
     @AdministratorOnly
     public Map<String, Object> administrator() {

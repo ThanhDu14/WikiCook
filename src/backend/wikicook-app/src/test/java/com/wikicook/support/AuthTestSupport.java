@@ -111,6 +111,17 @@ public class AuthTestSupport {
                 """, Long.class, userId, endsAt == null ? "BAN" : "SUSPENSION", reason, ts(Instant.now()), ts(endsAt));
     }
 
+    /** Marks the session as re-authenticated at {@code at} (FR-022a), as POST /auth/reauthenticate would. */
+    public void reauthenticated(long sessionId, Instant at) {
+        jdbc.update("UPDATE user_sessions SET reauthenticated_at = ? WHERE id = ?", ts(at), sessionId);
+    }
+
+    /** A system account (no credentials, never affected by admin actions). */
+    public long systemAccount() {
+        return jdbc.queryForObject("INSERT INTO users (email, display_name, is_system) VALUES (?, 'System', true) RETURNING id",
+                Long.class, uniqueEmail());
+    }
+
     /** A real access token for this session, signed like production (research R1). */
     public String jwt(long userId, long sessionId) {
         return tokens.issue(userId, sessionId).value();
