@@ -62,7 +62,8 @@ public class SecurityConfig {
                         .authenticationEntryPoint(entryPoint)
                         .accessDeniedHandler(accessDenied)
                         .jwt(jwt -> jwt.decoder(jwtDecoder).jwtAuthenticationConverter(converter)))
-                .addFilterBefore(new ClientHeaderFilter(problems), BearerTokenAuthenticationFilter.class);
+                .addFilterBefore(new ClientHeaderFilter(problems), BearerTokenAuthenticationFilter.class)
+                .addFilterAfter(new AccountStateHeaderFilter(), BearerTokenAuthenticationFilter.class);
         return http.build();
     }
 

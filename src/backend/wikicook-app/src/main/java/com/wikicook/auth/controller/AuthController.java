@@ -5,6 +5,8 @@ import com.wikicook.auth.dto.CurrentAccountDto;
 import com.wikicook.auth.dto.LoginRequest;
 import com.wikicook.auth.dto.RegisterRequest;
 import com.wikicook.auth.dto.RegisterResponse;
+import com.wikicook.auth.dto.ReauthenticateRequest;
+import com.wikicook.auth.api.ReauthService;
 import com.wikicook.auth.security.RefreshCookie;
 import com.wikicook.auth.service.AccountSessionService;
 import com.wikicook.auth.service.AccountSessionService.Refreshed;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -42,15 +45,18 @@ public class AuthController {
 
     private final SignInService signIn;
     private final RegistrationService registration;
+    private final ReauthService reauth;
     private final AccountSessionService accounts;
     private final SessionService sessions;
     private final RefreshCookie cookie;
     private final CurrentAccount current;
 
-    public AuthController(SignInService signIn, RegistrationService registration, AccountSessionService accounts, SessionService sessions,
+    public AuthController(SignInService signIn, RegistrationService registration, ReauthService reauth,
+            AccountSessionService accounts, SessionService sessions,
             RefreshCookie cookie, CurrentAccount current) {
         this.signIn = signIn;
         this.registration = registration;
+        this.reauth = reauth;
         this.accounts = accounts;
         this.sessions = sessions;
         this.cookie = cookie;
@@ -92,6 +98,20 @@ public class AuthController {
             sessions.logout(refreshToken);
         }
         return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, cookie.clear()).build();
+    }
+
+    /** Proves the password again for 5 minutes (FR-022a); 401 INVALID_CREDENTIALS when it is wrong. */
+    @PostMapping("/reauthenticate")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void reauthenticate(@Valid @RequestBody ReauthenticateRequest request) {
+        reauth.reauthenticate(current.id(), current.sessionId(), request.password());
+    }
+
+    /** The user has seen the role-change notice (FR-024a); idempotent. */
+    @PostMapping("/role-notice/ack")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void acknowledgeRoleNotice() {
+        accounts.acknowledgeRoleNotice(current.id());
     }
 
     @GetMapping("/me")

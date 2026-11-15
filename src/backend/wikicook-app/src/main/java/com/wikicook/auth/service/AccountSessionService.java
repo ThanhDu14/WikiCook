@@ -9,6 +9,7 @@ import com.wikicook.auth.service.SessionService.RefreshResult;
 import com.wikicook.auth.service.SessionService.Status;
 import com.wikicook.common.security.AccountStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * What the endpoints around a session need besides sign-in: the refresh with its account and token, and the current
@@ -51,6 +52,15 @@ public class AccountSessionService {
         }
         UserAccount user = users.findById(snapshot.userId()).orElseThrow(AuthException::unauthenticated);
         return new Refreshed(user, result, tokens.issue(user.getId(), sessionId));
+    }
+
+    /** Clears the pending role-change notice of the user (FR-024a); nothing happens when there is none. */
+    @Transactional
+    public void acknowledgeRoleNotice(long userId) {
+        users.findById(userId).filter(user -> user.getPendingRoleNoticeFrom() != null).ifPresent(user -> {
+            user.setPendingRoleNoticeFrom(null);
+            users.save(user);
+        });
     }
 
     public CurrentAccountDto currentAccount(long userId) {
