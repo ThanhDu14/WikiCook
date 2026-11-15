@@ -26,7 +26,8 @@ class AuditServiceTest {
     private static final Instant NOW = Instant.parse("2026-11-13T05:00:00Z");
 
     private final AuditLogRepository repository = mock(AuditLogRepository.class);
-    private final AuditService service = new AuditService(repository, Clock.fixed(NOW, ZoneOffset.UTC));
+    private final AuditService service = new AuditService(repository, Clock.fixed(NOW, ZoneOffset.UTC),
+            mock(org.springframework.jdbc.core.JdbcTemplate.class), new com.fasterxml.jackson.databind.ObjectMapper());
 
     @AfterEach
     void clear() {
