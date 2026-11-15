@@ -157,3 +157,44 @@ Meeting attendance, duration/platform and the detailed discussion were not prese
 1. **Spec Kit Quality Gate Passed:** Both `SCRUM-72` (PR #84) and `SCRUM-73` (PR #87 & #88) successfully verified and merged. Team authorized to proceed with Part E full-stack implementation.
 2. **Persistence & Upload Convention:** All image uploads (user avatars for `011` and Cooksnap photos for `070`) will use multipart form-data, stored in Docker-mounted volume `./uploads`, and served via static resource endpoints.
 3. **C4 Level 1 Boundary Sign-off:** Hiển's draft System Context diagram approved. External actors ratified: Guest/Cook, Registered User, System Administrator. External boundary systems identified: Resend/SMTP Email Gateway, Cloud OCR Service (planned external boundary), and Nutrition Data Provider.
+
+---
+
+### 2.3. Meeting 3: Weekly Scrum / Standup 02 (`SCRUM-87`)
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Lê Quốc Hưng (LqHung06)*
+
+```text
+=========== 19/11/2026, Sprint 4 — Weekly Standup 02 ===========
+```
+
+- **Date & Time:** November 19, 2026 | 22:00 – 22:35 (35 minutes)
+- **Location / Modality:** Google Meet (Online Video Conference)
+- **Facilitator:** Lê Quốc Hưng (`@LqHung06` — Project Manager & Scrum Master)
+- **Team Members Present (5/5 — Full Attendance):**
+  - Lê Quốc Hưng (`@LqHung06` — Project Manager & Scrum Master)
+  - Nguyễn Đức Duy (`@DucDuyNguyen15-IT` — Product Owner & Requirements Lead)
+  - Mai Văn Hiển (`@MaiHien3507` — AI Architect & Technical Lead)
+  - Trần Nguyễn Công Chung (`@itzchugnn` — QA Lead & Market Researcher 1)
+  - Nguyễn Thành Dự (`@ThanhDu14` — DevOps Lead & Repository Owner)
+- **Team Members Absent:** None (0/5)
+
+#### 2.3.1. Standup Objectives
+1. **Part E Code Freeze Audit (Nov 19, 23:59):** Verify readiness of both functional groups: Group 1 (`010` Auth + `011` Profile) and Group 2 (`070` Reviews & Cooksnaps). Verify all feature branches merged into `main` or active under passing PR checks.
+2. **Architecture Model Parity Audit (Parts B, C, D):** Audit C4 Level 2 Container Diagram (`SCRUM-81`), C4 Level 3 Component Diagrams (`SCRUM-81` Backend, `SCRUM-82` Frontend), and Deployment Diagram (`SCRUM-83`) to guarantee 100% parity with actual codebase names, packages, and Docker networking.
+3. **Test Suite Verification:** Review test execution metrics across both groups to confirm satisfaction of PA4 rubric requirements (unit tests, generated integration tests, JaCoCo coverage $\ge 70\%$, frontend test suite passing).
+4. **Hand-off to Demonstration Video & Release Packaging:** Establish recording timeline for YouTube Video Demo (`SCRUM-79`), AI Usage compilation (`SCRUM-85`), final QA audit (`SCRUM-86`), and ZIP packaging (`SCRUM-90`).
+
+#### 2.3.2. Member Progress & Standup Round-Robin
+
+| Member | Completed Since Standup 01 (Nov 15 – Nov 19) | Plan for Next Cycle (Nov 20 – Nov 23) | Blockers / Risks |
+| :--- | :--- | :--- | :--- |
+| **Mai Văn Hiển** (`@MaiHien3507`) | • Completed Backend `010` Auth (`SCRUM-74`) with 23 commits, 97% line coverage, 90% branch coverage.<br>• Completed Backend `011` Profile & Dietary Profile API (`SCRUM-75`).<br>• Completed C4 Level 1 System Context (`SCRUM-80`), C4 Level 2 Container and C4 Level 3 Backend Component diagrams (`SCRUM-81`). | • Conduct peer technical reviews for integration PRs.<br>• Assist Chung in verifying full-stack test execution and Docker container stability.<br>• Support final architecture documentation freeze. | None. All backend packages (`com.wikicook.auth`, `com.wikicook.profile`) match C4 Level 3 component names with 100% fidelity. |
+| **Lê Quốc Hưng** (`@LqHung06`) | • Completed Frontend `010+011` Auth & Profile UI (`SCRUM-76`) with 21 test files and 819 passing vitest cases.<br>• Authored Weekly Scrum Standup 01 and Standup 02 minutes (`SCRUM-87`).<br>• Initialized single PA4 `Changes.md` with cross-artifact traceability (`SCRUM-84`). | • Finalize single PA4 `Changes.md` (`SCRUM-84`, due 20/11).<br>• Prepare Sprint 04 Review and Retrospective agenda (`SCRUM-88`, due 22/11).<br>• Support Chung with demo recording script and user journey walkthrough. | None. Frontend token persistence in memory and route guards (`RequireAuth`, `RequireRole`) verified on dev mock and live backend. |
+| **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | • Completed Use-Case Model v2.0 (`SCRUM-70`, moved to DONE).<br>• Completed Use-Case Specifications v2.0 (`SCRUM-71`, moved to DONE).<br>• Completed Frontend `070` Reviews & Cooksnaps UI (`SCRUM-78`) with image upload preview and rating stars. | • Review `Changes.md` (Part A sections) authored by Hưng (`SCRUM-84`).<br>• Prepare test data and walkthrough script for Feature 070 in the video demonstration. | None. Rating component and Cooksnap gallery verified across desktop and mobile responsive viewports. |
+| **Trần Nguyễn Công Chung** (`@itzchugnn`) | • Completed Backend `070` Reviews & Cooksnap API (`SCRUM-77`) with Flyway `V501` migration and test suite.<br>• Verified file upload endpoint (`POST /api/v1/recipes/{id}/cooksnaps`) and rating recalculation service.<br>• Prepared AI log collection template for all 5 team members (`SCRUM-85`). | • Execute end-to-end Spec Kit test suites and record 8–10 minute narrated YouTube Video Demo (`SCRUM-79`, due 21/11).<br>• Consolidate 5-member AI Usage Report (`SCRUM-85`, due 21/11).<br>• Lead final QA Audit across all PA4 deliverables (`SCRUM-86`, due 22/11). | YouTube video upload processing time and unlisted link verification: agreed to record dry-run early on Nov 20 to reserve buffer. |
+| **Nguyễn Thành Dự** (`@ThanhDu14`) | • Authored C4 Level 3 Frontend Component Diagram and conducted code parity audit against `src/frontend/` (`SCRUM-82`).<br>• Authored Mermaid Deployment Diagram with container port mapping and volume specs (`SCRUM-83`).<br>• Tested Docker Compose stack with seeded recipe dataset (`SCRUM-89`). | • Reconcile release tag `v0.8.0-beta.1` and verify Docker Compose production config (`SCRUM-89`).<br>• Execute Git log export, Markdown-to-PDF compilation, and `PA4-Group05.zip` packaging (`SCRUM-90`, due 23/11). | Verifying exclusion filters in packaging script to prevent accidental inclusion of `node_modules`, `target/`, or `.venv` directories. |
+
+#### 2.3.3. Key Decisions & Action Items from Standup 02
+1. **Official Code Freeze Declared:** The team unanimously ratified the **Part E Code Freeze at 23:59 on November 19, 2026**. Feature branches for `010+011` and `070` are locked. Only critical blocker fixes reviewed by PM and Tech Lead are permissible past this gate.
+2. **Architecture Parity Sign-off:** Hiển and Dự verified that C4 Level 2, Level 3 (Backend & Frontend), and Deployment diagrams represent 100% real implementation classes, endpoints, and containers without speculative stubs.
+3. **Demo & QA Hand-off:** Chung is designated lead presenter for the narrated YouTube demo (`SCRUM-79`), with Hưng and Duy supporting screen recordings for their respective feature groups.
