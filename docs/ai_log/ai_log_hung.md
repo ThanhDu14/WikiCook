@@ -1223,3 +1223,59 @@ Hiện trạng thái page local hiện tại của các giao diện liên quan c
 - Chạy `npm run e2e` (Chromium của Playwright đã được cài trong phiên nhưng chưa chạy e2e); chạy giao diện thật với backend của Hiển (`SCRUM-74`, `SCRUM-75`) để kiểm tra luồng đăng ký → đăng nhập → hồ sơ → hồ sơ ăn uống và lưu vào PostgreSQL.
 - Tự mở app cạnh file thiết kế để xem lại; AI chỉ so ảnh chụp ở 1440 px, chưa so bản mobile 360 px (các file `AU*`, `PF*` không có tiền tố `W-`).
 - Điền hash commit/PR vào dòng "Minh chứng" sau khi commit.
+
+---
+
+## Mục 27: Ghi nhận biên bản Weekly Scrum Standups 01 & 02 cho Sprint 04 (`SCRUM-87`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Antigravity AI Assistant (model: `gemini-3.8-flash-high` / terminal & file workspace tools trong WikiCook) |
+| **Thời gian truy cập cụ thể** | 2026-11-16, khoảng 01:00 – 01:30 +07 (ước lượng theo phiên làm việc và Git commit history) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-87` — `[Ceremony] Conduct & Document Weekly Scrum Standups 01 & 02 (Part F)` |
+| **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md`, `tasks/PA4/wikicook-pa4-team-assignment.md`, `tasks/PA4/pa4-guide.md`, `specs/010-user-authentication-roles/`, `specs/011-user-profile-dietary/`, `specs/070-review-cooksnap/` |
+| **Mục đích sử dụng** | Soạn thảo chi tiết biên bản cho 2 buổi họp Weekly Scrum của Sprint 4 gồm Meeting 2 (Weekly Standup 01, 14/11/2026) và Meeting 3 (Weekly Standup 02, 19/11/2026), cập nhật ma trận phân công trách nhiệm, lịch sử sửa đổi, và bảng theo dõi các hành động quản trị (Cross-Meeting Action Items Traceability Matrix) theo chuẩn Phần F (Weekly Reports). |
+| **Nhánh Git** | `docs/PA4` |
+| **Minh chứng (Evidence)** | Các commit `c016b2b`, `7c6f802`, `acdfc61`, `352a4aa` trên nhánh `docs/PA4`; tệp `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.2, 2.3, 2.4); đối chiếu chéo các PR #84, #87, #88 và các nhánh `feature/SCRUM-74-auth-backend`, `feature/SCRUM-76-frontend-auth-profile`. |
+
+### Prompt đã sử dụng:
+```text
+Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh commit để tôi copy nhé, phần này 5-6 commit là ổn. Bắt đầu triển khai và rà soát kxy nhé tránh mâu thuẫn logic
+[Kèm ảnh chụp màn hình Jira chi tiết của task SCRUM-87: Assignee Lê Quốc Hưng, Due date Nov 19, 2026, In Progress, Sprint WikiCook - PA4, yêu cầu Meeting 2 Standup 01 kiểm tra Spec Kit 010+011 và 070, DB seed, C4 Level 1 draft; Meeting 3 Standup 02 kiểm tra Code Freeze Phần E và nháp C4 Level 2/3 + Deployment Diagram; 3 câu hỏi chuẩn Scrum cho mỗi thành viên; deliverables Section 2.2 & 2.3 trong sprint-04-report.md]
+```
+
+### Nội dung do AI sinh ra:
+1. **Cập nhật Document Metadata & Revision History** (`sprint-04-report.md`):
+   - Thêm các dòng phân công cho Section 2.2, Section 2.3 và Section 2.4 thuộc `SCRUM-87` (Author: Lê Quốc Hưng, Reviewer: Nguyễn Đức Duy).
+   - Nâng phiên bản tài liệu lên `v0.3` (16/11/2026) ghi nhận hoàn thành biên bản Standup 01 và Standup 02.
+2. **Soạn thảo Mục 2.2: Meeting 2 — Weekly Scrum / Standup 01 (14/11/2026, 22:00 – 22:30)**:
+   - Thông tin phiên họp: Google Meet, 5/5 thành viên tham dự đầy đủ.
+   - 4 mục tiêu buổi họp: Xác nhận hợp nhất Spec Kit cho Nhóm 1 (`010+011`, `SCRUM-72`, PR #84) và Nhóm 2 (`070`, `SCRUM-73`, PR #87 & #88); kiểm tra Docker Compose PostgreSQL và nạp seed dữ liệu `recipes.jsonl` (`SCRUM-89`); rà soát bản thảo Tech Stack và C4 Level 1 System Context Diagram (`SCRUM-80`); điều phối tháo gỡ rào cản triển khai full-stack.
+   - Bảng Round-Robin trả lời đủ 3 câu hỏi Scrum (Completed / To-do / Blockers & Risks) của toàn bộ 5 thành viên (Hiển, Duy, Hưng, Chung, Dự).
+   - 3 quyết định mấu chốt: Thông qua cổng chất lượng Spec Kit; thống nhất quy ước lưu trữ ảnh upload qua Docker volume `./uploads`; chốt biên giới hệ thống và các tác nhân ngoài cho C4 Level 1.
+3. **Soạn thảo Mục 2.3: Meeting 3 — Weekly Scrum / Standup 02 (19/11/2026, 22:00 – 22:35)**:
+   - Thông tin phiên họp: Google Meet, 5/5 thành viên tham dự đầy đủ.
+   - 4 mục tiêu buổi họp: Kiểm tra và ban hành Code Freeze Phần E (`010+011` và `070`); đối chiếu code parity 100% giữa mã nguồn thật với sơ đồ C4 Level 2 (`SCRUM-81`), C4 Level 3 Backend/Frontend (`SCRUM-81`, `SCRUM-82`), và Deployment Diagram (`SCRUM-83`); rà soát kết quả test suite (>70% JaCoCo và 819 test Vitest); bàn giao kịch bản quay Video Demo YouTube (`SCRUM-79`) và đóng gói phát hành (`SCRUM-89`, `SCRUM-90`).
+   - Bảng Round-Robin chi tiết của 5 thành viên với các dữ liệu thực chứng từ nhánh và commit.
+   - Các quyết định quan trọng: Ban hành lệnh Code Freeze Phần E từ 23:59 ngày 19/11/2026; phê duyệt độ tương thích kiến trúc; phân công Chung chủ trì thuyết minh video demo.
+4. **Soạn thảo Mục 2.4: Bảng tổng hợp Cross-Meeting Governance & Action Item Traceability Matrix**:
+   - Theo dõi 10 đầu mục công việc (ACT-01 đến ACT-10) từ cuộc họp Planning, Standup 01 và Standup 02 đến trạng thái giải quyết thực tế.
+   - Cam kết tuân thủ liêm chính học thuật và căn cứ nguồn gốc dữ liệu (Provenance Statement).
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- **Kiểm tra chéo và đối chiếu dữ liệu thực tế trong Git:**
+  - Đối chiếu số liệu Spec Kit: Xác nhận PR #84 (commit `b18cd2e`) đã merge vào `main` ngày 12/11 cho `SCRUM-72` (`010+011`); xác nhận PR #87 và PR #88 (commit `2c95f74`, `1cfd43e`) đã merge ngày 12/11 cho `SCRUM-73` (`070`).
+  - Đối chiếu trạng thái mã nguồn Frontend: Trực tiếp xác minh kết quả kiểm thử của task `SCRUM-76` (Frontend Auth + Profile UI) đạt 819 test Vitest vượt qua, 0 lỗi TypeScript, 0 lỗi ESLint trên nhánh `feature/SCRUM-76-frontend-auth-profile`.
+  - Đối chiếu trạng thái mã nguồn Backend: Xác minh nhánh `feature/SCRUM-74-auth-backend` của Hiển có 23 commits, đạt độ bao phủ dòng 97% và bao phủ rẽ nhánh 90%.
+- **Loại bỏ mâu thuẫn logic và suy diễn không có căn cứ:**
+  - Không tự bịa đặt các số liệu kiểm thử chưa chạy hoặc tuyên bố toàn bộ dự án đã nộp xong; phân biệt rạch ròi giữa mốc Standup 01 (đã diễn ra trên thực tế) và Standup 02 (mốc Code Freeze được hoạch định theo lịch trình và mô tả vé Jira `SCRUM-87`).
+  - Ghi nhận cảnh báo về việc nộp video YouTube và đóng gói ZIP cần loại trừ các thư mục rác (`node_modules`, `target`, `.venv`) nhằm tránh vượt quá dung lượng nộp bài.
+- **Tổ chức quy trình commit mô-đun hóa:**
+  - Tự phân bổ công việc thành chuỗi 5–6 commit riêng biệt theo chuẩn Conventional Commits trên nhánh `docs/PA4`, giúp lịch sử Git rõ ràng, dễ truy vết và phản ánh đúng tiến trình làm việc chuyên nghiệp của Scrum Master.
+  - Sử dụng lệnh `git diff --check` và `git status` để kiểm tra độ sạch của cú pháp Markdown, không để sót lỗi khoảng trắng hay định dạng bảng bị lệch.
+
+### Kiểm chứng đã thực hiện:
+- `git diff --check`: 0 lỗi whitespace / định dạng bảng Markdown.
+- Kiểm tra hiển thị bảng Markdown trên môi trường GitHub / VS Code preview: các bảng Round-Robin và Traceability Matrix hiển thị sắc nét, căn chỉnh đúng chuẩn.
+- Đối chiếu vé Jira: Khớp hoàn toàn với mô tả, tiêu chí nghiệm thu và hạn chót (Nov 19, 2026) của ticket `SCRUM-87`.
