@@ -92,6 +92,38 @@ public class AuthException extends RuntimeException {
         return closureToken == null ? exception : exception.with("closureToken", closureToken);
     }
 
+    public static AuthException userNotFound() {
+        return new AuthException(AuthErrorCode.USER_NOT_FOUND, "No such account");
+    }
+
+    public static AuthException selfActionForbidden() {
+        return new AuthException(AuthErrorCode.SELF_ACTION_FORBIDDEN, "You cannot do this to your own account");
+    }
+
+    public static AuthException reauthRequired() {
+        return new AuthException(AuthErrorCode.REAUTH_REQUIRED, "Confirm your password again to continue");
+    }
+
+    public static AuthException suspensionLimitExceeded() {
+        return new AuthException(AuthErrorCode.SUSPENSION_LIMIT_EXCEEDED, "A suspension lasts at most 30 days");
+    }
+
+    public static AuthException accountNotActive() {
+        return new AuthException(AuthErrorCode.ACCOUNT_NOT_ACTIVE, "The account is not active");
+    }
+
+    public static AuthException accountNotSanctioned() {
+        return new AuthException(AuthErrorCode.ACCOUNT_NOT_SANCTIONED, "The account has no suspension or ban to lift");
+    }
+
+    public static AuthException lastAdministrator() {
+        return new AuthException(AuthErrorCode.LAST_ADMINISTRATOR, "There must be at least one active Administrator");
+    }
+
+    public static AuthException validation(String detail) {
+        return new AuthException(AuthErrorCode.VALIDATION_ERROR, detail);
+    }
+
     public static AuthException emailTaken() {
         return new AuthException(AuthErrorCode.EMAIL_TAKEN, "An account with this email already exists");
     }
