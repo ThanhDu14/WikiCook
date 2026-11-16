@@ -19,8 +19,8 @@ import com.wikicook.aiplanner.service.CandidateService;
 import com.wikicook.aiplanner.service.InFlightGenerations;
 import com.wikicook.aiplanner.support.RecipeFixtures;
 import com.wikicook.aiplanner.support.RecipeSeed;
-import com.wikicook.devstub.DevUserProvisioner;
-import com.wikicook.devstub.StubCurrentUser;
+import com.wikicook.support.AuthTestSupport;
+import com.wikicook.support.HeaderCurrentUser;
 import com.wikicook.mealplan.api.DraftItem;
 import com.wikicook.mealplan.api.MealPlanWriteFacade;
 import com.wikicook.mealplan.domain.DietType;
@@ -46,6 +46,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -55,8 +56,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 /** T032: the US1 endpoints end to end, with the dev stubs standing in for 010/011/030. */
-@SpringBootTest(properties = {"wikicook.dev-stubs.enabled=true", "wikicook.ai.mode=mock"})
+@SpringBootTest(properties = "wikicook.ai.mode=mock")
 @AutoConfigureMockMvc
+@Import({HeaderCurrentUser.class, AuthTestSupport.class})
 class AiPlannerControllerUS1IT extends AbstractPostgresIT {
 
     private static final AtomicLong NEXT_USER = new AtomicLong(1000);
@@ -99,7 +101,7 @@ class AiPlannerControllerUS1IT extends AbstractPostgresIT {
     MealPlanWriteFacade mealPlans;
 
     @Autowired
-    DevUserProvisioner provisioner;
+    AuthTestSupport authSupport;
 
     @Autowired
     InFlightGenerations inFlight;
@@ -113,6 +115,7 @@ class AiPlannerControllerUS1IT extends AbstractPostgresIT {
         RecipeFixtures.clear(jdbc);
         seed = RecipeSeed.seed(new RecipeFixtures(jdbc));
         user = NEXT_USER.incrementAndGet();
+        authSupport.createUserWithId(user); // StubCurrentUser used to create the row on every request
     }
 
     private static GenerationConstraints constraints(Integer servings, Integer maxCookTime) {
@@ -145,12 +148,12 @@ class AiPlannerControllerUS1IT extends AbstractPostgresIT {
 
     private ResultActions options(LocalDate week) throws Exception {
         return mvc.perform(get("/api/v1/ai-planner/weeks/{weekStart}/options", week)
-                .header(StubCurrentUser.HEADER, user));
+                .header(HeaderCurrentUser.HEADER, user));
     }
 
     private ResultActions generate(LocalDate week, Object body) throws Exception {
         return mvc.perform(post("/api/v1/ai-planner/weeks/{weekStart}/generations", week)
-                .header(StubCurrentUser.HEADER, user)
+                .header(HeaderCurrentUser.HEADER, user)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json.writeValueAsString(body)));
     }
@@ -241,7 +244,6 @@ class AiPlannerControllerUS1IT extends AbstractPostgresIT {
         for (Meal meal : Meal.values()) {
             monday.add(new DraftItem(DayOfWeek.MONDAY, meal, seed.allDay().get(meal.ordinal()), 2, ItemSource.MANUAL));
         }
-        provisioner.ensure(user); // the real 030 tables reference users; the stub kept weeks in memory
         mealPlans.saveDraft(user, nextWeek, monday);
 
         generate(nextWeek, monday())
@@ -257,7 +259,7 @@ class AiPlannerControllerUS1IT extends AbstractPostgresIT {
         generate(nextWeek.plusDays(1), monday())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("INVALID_WEEK_START"));
-        mvc.perform(get("/api/v1/ai-planner/weeks/not-a-date/options").header(StubCurrentUser.HEADER, user))
+        mvc.perform(get("/api/v1/ai-planner/weeks/not-a-date/options").header(HeaderCurrentUser.HEADER, user))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("INVALID_WEEK_START"));
     }
@@ -304,13 +306,5 @@ class AiPlannerControllerUS1IT extends AbstractPostgresIT {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.code").value("GENERATION_IN_PROGRESS"));
         running.get().andExpect(status().isOk()).andExpect(jsonPath("$.mode").value("AI"));
-    }
-
-    @Test
-    void invalidDevUserHeaderIs400() throws Exception {
-        mvc.perform(get("/api/v1/ai-planner/weeks/{weekStart}/options", nextWeek)
-                        .header(StubCurrentUser.HEADER, "abc"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"));
     }
 }

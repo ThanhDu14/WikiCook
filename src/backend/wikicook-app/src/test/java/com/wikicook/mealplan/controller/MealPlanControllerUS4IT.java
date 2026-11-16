@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wikicook.aiplanner.support.RecipeFixtures;
-import com.wikicook.mealplan.support.HeaderCurrentUser;
+import com.wikicook.support.HeaderCurrentUser;
 import com.wikicook.mealplan.support.MealPlanFixtures;
 import com.wikicook.support.AbstractPostgresIT;
 import java.time.Clock;

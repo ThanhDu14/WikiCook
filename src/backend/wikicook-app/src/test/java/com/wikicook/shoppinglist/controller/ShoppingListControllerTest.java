@@ -11,9 +11,13 @@ import com.wikicook.shoppinglist.dto.UpdateTitleRequest;
 import com.wikicook.shoppinglist.service.CapacityExceededException;
 import com.wikicook.shoppinglist.service.ShoppingListNotFoundException;
 import com.wikicook.shoppinglist.service.ShoppingListService;
+import com.wikicook.common.security.CurrentUser;
+import com.wikicook.common.security.UnauthenticatedException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -30,6 +34,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ShoppingListController.class)
+@AutoConfigureMockMvc(addFilters = false) // the filters of 010 are tested in SessionCheckIT; here CurrentUser is mocked
 @Import(ShoppingListExceptionHandler.class)
 class ShoppingListControllerTest {
 
@@ -51,7 +58,15 @@ class ShoppingListControllerTest {
     @MockBean
     private ShoppingListService shoppingListService;
 
+    @MockBean
+    private CurrentUser currentUser;
+
     private final Long userId = 100L;
+
+    @BeforeEach
+    void signedInAs100() {
+        when(currentUser.id()).thenReturn(userId);
+    }
 
     private ShoppingListResponse createSampleResponse(Long id, String title, String status) {
         return new ShoppingListResponse(
@@ -71,8 +86,7 @@ class ShoppingListControllerTest {
         ShoppingListResponse response = createSampleResponse(1L, "Danh sách mua sắm 29/10", "ACTIVE");
         when(shoppingListService.getActiveShoppingList(userId)).thenReturn(response);
 
-        mockMvc.perform(get("/api/v1/shopping-lists/active")
-                        .header("X-User-Id", userId))
+        mockMvc.perform(get("/api/v1/shopping-lists/active"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.title").value("Danh sách mua sắm 29/10"))
@@ -80,10 +94,26 @@ class ShoppingListControllerTest {
     }
 
     @Test
-    @DisplayName("GET /api/v1/shopping-lists/active without X-User-Id returns 400 Bad Request")
-    void getActiveShoppingList_missingHeader_returns400() throws Exception {
+    @DisplayName("R13: an X-User-Id of someone else is ignored, the list of CurrentUser.id() is used")
+    void getActiveShoppingList_otherUsersHeaderIsIgnored() throws Exception {
+        ShoppingListResponse response = createSampleResponse(1L, "Mine", "ACTIVE");
+        when(shoppingListService.getActiveShoppingList(userId)).thenReturn(response);
+
+        mockMvc.perform(get("/api/v1/shopping-lists/active").header("X-User-Id", 999L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Mine"));
+        verify(shoppingListService).getActiveShoppingList(userId);
+        verify(shoppingListService, never()).getActiveShoppingList(999L);
+    }
+
+    @Test
+    @DisplayName("R13: nobody signed in is 401 UNAUTHENTICATED")
+    void getActiveShoppingList_notSignedIn_returns401() throws Exception {
+        when(currentUser.id()).thenThrow(new UnauthenticatedException());
+
         mockMvc.perform(get("/api/v1/shopping-lists/active"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("UNAUTHENTICATED"));
     }
 
     @Test
@@ -95,7 +125,6 @@ class ShoppingListControllerTest {
         UpdateTitleRequest request = new UpdateTitleRequest("Tiệc sinh nhật cuối tuần");
 
         mockMvc.perform(patch("/api/v1/shopping-lists/active")
-                        .header("X-User-Id", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -108,8 +137,7 @@ class ShoppingListControllerTest {
         ShoppingListResponse response = createSampleResponse(2L, "Danh sách mua sắm mới", "ACTIVE");
         when(shoppingListService.archiveActiveShoppingList(userId)).thenReturn(response);
 
-        mockMvc.perform(post("/api/v1/shopping-lists/active/archive")
-                        .header("X-User-Id", userId))
+        mockMvc.perform(post("/api/v1/shopping-lists/active/archive"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(2L))
                 .andExpect(jsonPath("$.status").value("ACTIVE"));
@@ -121,8 +149,7 @@ class ShoppingListControllerTest {
         ShoppingListResponse response = createSampleResponse(1L, "Chuyến đi cũ", "ARCHIVED");
         when(shoppingListService.getArchivedLists(userId)).thenReturn(List.of(response));
 
-        mockMvc.perform(get("/api/v1/shopping-lists")
-                        .header("X-User-Id", userId))
+        mockMvc.perform(get("/api/v1/shopping-lists"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[0].status").value("ARCHIVED"));
@@ -134,8 +161,7 @@ class ShoppingListControllerTest {
         ShoppingListResponse response = createSampleResponse(1L, "Chuyến đi cũ", "ARCHIVED");
         when(shoppingListService.getShoppingListById(userId, 1L)).thenReturn(response);
 
-        mockMvc.perform(get("/api/v1/shopping-lists/1")
-                        .header("X-User-Id", userId))
+        mockMvc.perform(get("/api/v1/shopping-lists/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L));
     }
@@ -146,8 +172,7 @@ class ShoppingListControllerTest {
         when(shoppingListService.getShoppingListById(userId, 999L))
                 .thenThrow(new ShoppingListNotFoundException("Not found"));
 
-        mockMvc.perform(get("/api/v1/shopping-lists/999")
-                        .header("X-User-Id", userId))
+        mockMvc.perform(get("/api/v1/shopping-lists/999"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.detail").value("Not found"));
     }
@@ -158,8 +183,7 @@ class ShoppingListControllerTest {
         ShoppingListResponse response = createSampleResponse(1L, "Danh sách phục hồi", "ACTIVE");
         when(shoppingListService.restoreArchivedList(userId, 1L)).thenReturn(response);
 
-        mockMvc.perform(post("/api/v1/shopping-lists/1/restore")
-                        .header("X-User-Id", userId))
+        mockMvc.perform(post("/api/v1/shopping-lists/1/restore"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("ACTIVE"));
     }
@@ -174,7 +198,6 @@ class ShoppingListControllerTest {
                 UUID.randomUUID(), "Dầu ăn", new BigDecimal("1"), "chai", 6L);
 
         mockMvc.perform(post("/api/v1/shopping-lists/items")
-                        .header("X-User-Id", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
@@ -190,7 +213,6 @@ class ShoppingListControllerTest {
                 UUID.randomUUID(), "Dầu ăn", new BigDecimal("1"), "chai", 6L);
 
         mockMvc.perform(post("/api/v1/shopping-lists/items")
-                        .header("X-User-Id", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isUnprocessableEntity())
@@ -203,8 +225,7 @@ class ShoppingListControllerTest {
         UUID itemUuid = UUID.randomUUID();
         doNothing().when(shoppingListService).deleteItem(userId, itemUuid);
 
-        mockMvc.perform(delete("/api/v1/shopping-lists/items/" + itemUuid)
-                        .header("X-User-Id", userId))
+        mockMvc.perform(delete("/api/v1/shopping-lists/items/" + itemUuid))
                 .andExpect(status().isNoContent());
     }
 
@@ -217,7 +238,6 @@ class ShoppingListControllerTest {
         ImportRecipeRequest request = new ImportRecipeRequest(1L, new BigDecimal("4"), null);
 
         mockMvc.perform(post("/api/v1/shopping-lists/import/recipe")
-                        .header("X-User-Id", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -231,8 +251,7 @@ class ShoppingListControllerTest {
         ItemProvenanceDto p = new ItemProvenanceDto(1L, 10L, null, "Bò kho", new BigDecimal("600"), "g");
         when(shoppingListService.getItemProvenance(userId, itemUuid)).thenReturn(List.of(p));
 
-        mockMvc.perform(get("/api/v1/shopping-lists/items/" + itemUuid + "/provenance")
-                        .header("X-User-Id", userId))
+        mockMvc.perform(get("/api/v1/shopping-lists/items/" + itemUuid + "/provenance"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].recipeTitleSnapshot").value("Bò kho"))
                 .andExpect(jsonPath("$[0].contributedQuantity").value(600));

@@ -20,6 +20,7 @@ const echoHeaders = ({ request }: { request: Request }) =>
 describe('api client identity headers (ACT-01)', () => {
   afterEach(() => {
     window.localStorage.clear();
+    setAccessToken(null);
   });
 
   it('sends the default dev user 1 in X-User-Id and X-Dev-User-Id, no Authorization', async () => {

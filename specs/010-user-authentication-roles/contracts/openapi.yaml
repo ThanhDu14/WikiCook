@@ -624,11 +624,13 @@ components:
         reason: { type: string, maxLength: 500 }
     AccountAdmin:
       type: object
-      required: [id, displayName, email, role, status, emailVerified]
+      required: [id, displayName, role, status, emailVerified]
       properties:
         id: { type: integer, format: int64 }
         displayName: { type: string }
-        email: { type: string }
+        email:
+          type: string
+          description: Chỉ có khi người gọi là Administrator. Moderator nhận phản hồi của `POST /admin/users/{id}/suspension` không có trường này (NFR-009).
         role: { $ref: '#/components/schemas/Role' }
         status: { $ref: '#/components/schemas/AccountStatus' }
         emailVerified: { type: boolean }

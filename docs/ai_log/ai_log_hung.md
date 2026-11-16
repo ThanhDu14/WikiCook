@@ -1164,3 +1164,118 @@ Bạn hay đọc và tiến hành ghi sprint-04-report.md của SCRUM 68 giúp t
   - Đối chiếu cấu trúc tài liệu `sprint-04-report.md` với chuẩn của `sprint-03-report.md` (metadata 3 cấp, bảng phân công, revision history).
   - Kiểm tra định dạng Markdown và đường dẫn tương đối, đảm bảo không có lỗi cú pháp hay liên kết gãy.
   - Trực tiếp kiểm tra và thực hiện commit thay đổi lên nhánh `docs/PA4` với commit hash `2593dc0` đảm bảo lịch sử Git minh bạch, sạch sẽ (`working tree clean`).
+
+
+---
+
+## Mục 26: Hiện thực Frontend Part E Nhóm 1 — Auth (`010`) và Hồ sơ & Hồ sơ ăn uống (`011`) (`SCRUM-76`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Sonnet 5.5 (`claude-sonnet-5-5`) cho phần hiện thực; Claude Haiku 5.5 (`claude-haiku-5-5`) cho bước đọc ngữ cảnh PA4 đầu phiên |
+| **Thời gian truy cập cụ thể** | 2026-11-15, khoảng 22:00 – 23:59 (Giờ Việt Nam, UTC+7); giờ lấy từ dấu thời gian các lần chạy `vitest` trong phiên (từ 22:51), giờ bắt đầu và kết thúc là ước lượng |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-76` — `[Implementation] Frontend Part E (Group 1): 010 + 011 Auth & Dietary Profile UI` |
+| **Tài liệu / spec liên quan** | `specs/010-user-authentication-roles/` (`spec.md`, `tasks.md`, `contracts/openapi.yaml`, `contracts/integration.md`), `specs/011-user-profile-dietary/` (cùng bộ), `tasks/PA4/pa4-guide.md`, `docs/analysis-and-design/ui-ux/screens/` (`W-AU01…W-AU09`, `W-PF01…W-PF04`) |
+| **Mục đích sử dụng** | Viết giao diện React 18 + TypeScript cho đăng ký, đăng nhập, đăng xuất, bảo vệ route theo vai trò, hồ sơ cá nhân và hồ sơ ăn uống; token JWT gắn tự động qua `src/frontend/src/shared/api/client.ts`; viết bộ test Vitest + React Testing Library + msw bám theo `tasks.md` của hai spec. |
+| **Nhánh Git** | `feature/SCRUM-76-frontend-auth-profile` (tạo từ `origin/main` tại `b18cd2e`) |
+| **Minh chứng (Evidence)** | **Chưa commit tại thời điểm ghi log** (thay đổi đang ở working tree; điền hash commit/PR sau khi commit). Kết quả chạy lệnh nằm ở phần kiểm chứng bên dưới. |
+
+### Prompt đã sử dụng:
+```text
+Bạn hãy vào folder WikiCook và các mục có liên quan đến PA4 nằm trong tasks/PA4 và guide_tasks/PA4 , đọc để hiểu context của PA4 hiện tại
+
+Tôi cần làm SCRUM-76 như trên ảnh [ảnh chụp mô tả task SCRUM-76 trên Jira], và nhớ cập nhật vào docs/ai_log/ai_log_hung.md giúp tôi nhé
+
+Bạn dựa vào ảnh hay html nào của design ui/ux và làm sao để tôi giao diện bạn đã code và đối chiếu với mẫu ui/ux có trong docs
+
+Hiện trạng thái page local hiện tại của các giao diện liên quan chưa bám sát UI/UX đã thiết kế từ trước , bạn hãy kiểm tra lại và đối chiếu đảm bảo thiết kế giống 100% giao diện màu sắc , nếu sai logic thì dẫn đến hiển thị tương ứng giúp tôi [ảnh chụp cột trái của trang đăng nhập: 3 ô màu không có icon]
+```
+
+### Nội dung do AI sinh ra:
+1. **Lớp dùng chung** (`src/frontend/src/shared/`): `api/session.ts` (access token chỉ giữ trong bộ nhớ, xóa khóa `wk.accessToken` cũ trong `localStorage`); `api/client.ts` (gắn `Authorization: Bearer` trừ các route công khai `/auth/*`, header `X-WikiCook-Client: web`, `refreshSession()` một lần tại một thời điểm, gặp 401 thì refresh rồi gửi lại đúng một lần, sự kiện `auth:refreshed` / `auth:expired` / `auth:restricted`, `api.postForm`); `api/safeRedirect.ts`; `ui/TextField.tsx`, `ui/PasswordField.tsx`, `ui/useFieldIds.ts`.
+2. **Auth (`src/frontend/src/features/auth/`)**: `AuthProvider` + `useAuth` (trạng thái `loading | guest | authenticated | offline | expired`, thử lại khi offline, đồng bộ nhiều tab bằng `BroadcastChannel`, kiểm tra lại phiên khi `pageshow`), `guards.tsx` (`RequireAuth`, `RequireRole`, `RedirectIfAuthenticated`), các trang `LoginPage`, `RegisterPage`, `CheckEmailPage`, `VerifyEmailPage`, `AccountStatusPage`, `AccessDeniedPage`, các thành phần `SessionExpiredDialog`, `UnsavedChangesDialog`, `EmailVerificationBanner`, `AccountMenu`, `PasswordRules`, hook `useUnsavedChangesBlocker`, `strings.vi.ts`.
+3. **Hồ sơ (`src/frontend/src/features/profile/`)**: `MyAccountPage`, `EditProfilePage` (tên, giới thiệu, ảnh đại diện, gửi `multipart/form-data`), `DietaryProfilePage` (dị ứng từ danh sách, nguyên liệu không ăn có gợi ý không dấu + debounce 150 ms + hủy request cũ, chế độ ăn, khẩu phần 1–20, thời gian nấu 10–240, ẩm thực, xung đột `PROFILE_CHANGED` với "Tải lại"/"Lưu đè", cảnh báo thay đổi chưa lưu, thông báo thay đổi danh mục), kèm các component `AllergenPicker`, `ExcludedIngredientPicker`, `CuisinePicker`, `DietTypeSelect`, `NumberField`, `AvatarPicker`, `CatalogueNotices`, `AccountLayout`.
+4. **Sửa file có sẵn**: `app/App.tsx` (bọc `AuthProvider`), `app/routes.tsx` (route `/login`, `/register`, `/check-email`, `/verify-email`, `/account-status`, `/access-denied`, `/profile`, `/profile/edit`, `/profile/dietary`; bọc `/meal-planner` và `/shopping-list*` bằng `RequireAuth`), `app/AppLayout.tsx` (tên người dùng, "Đăng xuất", tab "Tôi" / "Đăng nhập"), `test/server.ts` (handler mặc định `POST /auth/refresh` → 401), `test/setup.ts` (xóa token sau mỗi test), `e2e/fakeApi.ts` (trả phiên đăng nhập giả), `nginx.conf` (`client_max_body_size 6m` cho upload ảnh đại diện).
+5. **Test**: 21 file test mới trong `features/auth/__tests__/`, `features/profile/__tests__/`, `shared/api/`, `shared/ui/`; thêm test vào `session.test.ts` (1) và `App.test.tsx` (5); sửa `client.test.ts` để xóa token sau mỗi test.
+
+### Vòng đối chiếu giao diện với thiết kế (theo yêu cầu cuối phiên):
+- Cách làm: cài Chromium cho Playwright, chụp ảnh các file thiết kế `W-AU01…W-AU07`, `W-AU09`, `W-PF01…W-PF04` (mở trực tiếp file `.dc.html`, 1440 px) và chụp trang app tương ứng với API giả bằng `page.route` (script nằm trong thư mục tạm của phiên, không đưa vào repo); AI đọc từng cặp ảnh để liệt kê chỗ lệch rồi sửa và chụp lại.
+- Lỗi tìm thấy và đã sửa: ô trang trí cột trái trống (thiếu icon bát/trứng/cá); banner thiếu icon; thiếu nút Google và dòng "hoặc dùng email"; thiếu link "Quên mật khẩu?"; header bị chật vì đặt tên + nút Đăng xuất trong header (thiết kế chỉ có avatar, "Đăng xuất" nằm ở menu tài khoản); menu tài khoản và thẻ tổng quan thiếu icon và thiếu các mục "Công thức của tôi", "Mật khẩu và bảo mật", "Xóa tài khoản"; checklist mật khẩu 4 mục thay vì 3 như thiết kế; ô chọn dị ứng thiếu dấu tick; ô tìm nguyên liệu thiếu icon kính lúp; khối "Sở thích" 2 cột thay vì 3; màn hết hạn link, khóa/đình chỉ tài khoản, không có quyền dựng lại theo `W-AU04`, `W-AU07`, `W-AU09`; chữ tiêu đề rộng hơn thiết kế vì font Fraunces thiếu trục `opsz`/`SOFT` (đổi import sang `@fontsource-variable/fraunces/full.css` trong `src/styles/index.css`, ảnh hưởng toàn app).
+- Thêm theo thiết kế: `GoogleButton` + `/auth/callback`, `ForgotPasswordPage` (`W-AU05`), `ResetPasswordPage` (`W-AU06`), `shared/ui/Icon.tsx`, `shared/ui/Banner.tsx`, thẻ tổng quan có tóm tắt hồ sơ ăn uống.
+- Chủ ý khác thiết kế (do spec/logic): không có "Đổi địa chỉ email" ở `W-AU03` (spec 010 `OQ-010-09`); giữ ghi chú giới hạn dữ liệu dị ứng ở form hồ sơ ăn uống (spec 011 FR-010a); mỗi trang chỉ hiện đúng trường hợp đang xảy ra (khóa / đình chỉ / cấm) thay vì nhiều trường hợp như mẫu; "Xóa ảnh" chỉ hiện khi có ảnh; nút "Lưu thay đổi" mờ khi chưa có thay đổi; các mục của trang chưa làm (Công thức của tôi, Mật khẩu và bảo mật, Xóa tài khoản, Xem hồ sơ công khai) hiển thị mờ, không bấm được ("Sắp có"), giống cách header đang làm với "Đã lưu".
+
+### Kiểm chứng đã thực hiện trong phiên (lệnh và kết quả thực tế):
+- `npx tsc -b` — không lỗi.
+- `npx eslint .` — 0 lỗi; còn 2 cảnh báo `react-refresh/only-export-components` ở `CookingRuntimeProvider.tsx` có từ trước (không thuộc thay đổi này).
+- `npx vitest run` — 108 file test, **819 test đạt** (tính ra trước thay đổi: 87 file, 617 test; thêm 202 test).
+- `npm run build` — build thành công.
+- `npx playwright test` — lần chạy đầu thất bại vì chưa có Chromium; sau đó Chromium được cài để chụp ảnh đối chiếu nhưng **chưa chạy lại** các e2e của module Thực đơn sau khi thêm bảo vệ route. `e2e/fakeApi.ts` đã sửa nhưng chưa được kiểm chứng bằng trình duyệt.
+
+### Phạm vi chưa làm (cần nhóm xác nhận, không khai là hoàn thành):
+- `010`: `SignInPrompt` (`W-AU08`), `RoleChangeNotice` và header `X-WikiCook-Role-Notice`, các e2e `auth*.spec.ts` (nút Google và `/auth/callback` đã có nhưng chưa thử với Google và backend thật); `011`: hồ sơ công khai (`W-PF05`), đổi mật khẩu/bảo mật (`W-PF06`), xóa tài khoản (`W-PF07`, `W-PF08`), `AdminAccountPanel`; CSP trong `nginx.conf` (T175).
+- `T026a` / `T054a`: chưa sửa `MealPlannerPage`, `AddToPlanButton` (thuộc module khác, spec yêu cầu báo người phụ trách review); hiện khi hết phiên trang Thực đơn vẫn tự chuyển `/login`.
+- Chưa bỏ `X-User-Id` / `X-Dev-User-Id` và danh tính dev trong `session.ts`/`client.ts` vì backend `SCRUM-74` chưa merge; `tasks.md` của 010 yêu cầu hai PR vào `main` cùng đợt.
+- Chưa kiểm chứng với backend thật: toàn bộ test dùng `msw` theo `contracts/openapi.yaml`.
+
+### Phần sinh viên cần tự làm, hiệu chỉnh & kiểm chứng (chưa thực hiện tại thời điểm ghi log — cập nhật sau khi làm):
+- Đọc lại diff và xác nhận phạm vi trên với Hiển (reviewer `SCRUM-76`), nhất là việc bọc `RequireAuth` cho `/meal-planner`, `/shopping-list*` trước khi backend `SCRUM-74` merge.
+- Chạy `npm run e2e` (Chromium của Playwright đã được cài trong phiên nhưng chưa chạy e2e); chạy giao diện thật với backend của Hiển (`SCRUM-74`, `SCRUM-75`) để kiểm tra luồng đăng ký → đăng nhập → hồ sơ → hồ sơ ăn uống và lưu vào PostgreSQL.
+- Tự mở app cạnh file thiết kế để xem lại; AI chỉ so ảnh chụp ở 1440 px, chưa so bản mobile 360 px (các file `AU*`, `PF*` không có tiền tố `W-`).
+- Điền hash commit/PR vào dòng "Minh chứng" sau khi commit.
+
+---
+
+## Mục 27: Ghi nhận biên bản Weekly Scrum Standups 01 & 02 cho Sprint 04 (`SCRUM-87`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Antigravity AI Assistant (model: `gemini-3.8-flash-high` / terminal & file workspace tools trong WikiCook) |
+| **Thời gian truy cập cụ thể** | 2026-11-16, khoảng 01:00 – 01:30 +07 (ước lượng theo phiên làm việc và Git commit history) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-87` — `[Ceremony] Conduct & Document Weekly Scrum Standups 01 & 02 (Part F)` |
+| **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md`, `tasks/PA4/wikicook-pa4-team-assignment.md`, `tasks/PA4/pa4-guide.md`, `specs/010-user-authentication-roles/`, `specs/011-user-profile-dietary/`, `specs/070-review-cooksnap/` |
+| **Mục đích sử dụng** | Soạn thảo chi tiết biên bản cho 2 buổi họp Weekly Scrum của Sprint 4 gồm Meeting 2 (Weekly Standup 01, 14/11/2026) và Meeting 3 (Weekly Standup 02, 19/11/2026), cập nhật ma trận phân công trách nhiệm, lịch sử sửa đổi, và bảng theo dõi các hành động quản trị (Cross-Meeting Action Items Traceability Matrix) theo chuẩn Phần F (Weekly Reports). |
+| **Nhánh Git** | `docs/PA4` |
+| **Minh chứng (Evidence)** | Chuỗi 6 commit `c016b2b`, `7c6f802`, `acdfc61`, `352a4aa`, `c336e5f`, và commit kiểm tra chéo cuối trên nhánh `docs/PA4`; tệp `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.2, 2.3, 2.4); đối chiếu chéo các PR #84, #87, #88 và các nhánh `feature/SCRUM-74-auth-backend`, `feature/SCRUM-76-frontend-auth-profile`. |
+
+### Prompt đã sử dụng:
+```text
+Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh commit để tôi copy nhé, phần này 5-6 commit là ổn. Bắt đầu triển khai và rà soát kxy nhé tránh mâu thuẫn logic
+[Kèm ảnh chụp màn hình Jira chi tiết của task SCRUM-87: Assignee Lê Quốc Hưng, Due date Nov 19, 2026, In Progress, Sprint WikiCook - PA4, yêu cầu Meeting 2 Standup 01 kiểm tra Spec Kit 010+011 và 070, DB seed, C4 Level 1 draft; Meeting 3 Standup 02 kiểm tra Code Freeze Phần E và nháp C4 Level 2/3 + Deployment Diagram; 3 câu hỏi chuẩn Scrum cho mỗi thành viên; deliverables Section 2.2 & 2.3 trong sprint-04-report.md]
+```
+
+### Nội dung do AI sinh ra:
+1. **Cập nhật Document Metadata & Revision History** (`sprint-04-report.md`):
+   - Thêm các dòng phân công cho Section 2.2, Section 2.3 và Section 2.4 thuộc `SCRUM-87` (Author: Lê Quốc Hưng, Reviewer: Nguyễn Đức Duy).
+   - Nâng phiên bản tài liệu lên `v0.3` (16/11/2026) ghi nhận hoàn thành biên bản Standup 01 và Standup 02.
+2. **Soạn thảo Mục 2.2: Meeting 2 — Weekly Scrum / Standup 01 (14/11/2026, 22:00 – 22:30)**:
+   - Thông tin phiên họp: Google Meet, 5/5 thành viên tham dự đầy đủ.
+   - 4 mục tiêu buổi họp: Xác nhận hợp nhất Spec Kit cho Nhóm 1 (`010+011`, `SCRUM-72`, PR #84) và Nhóm 2 (`070`, `SCRUM-73`, PR #87 & #88); kiểm tra Docker Compose PostgreSQL và nạp seed dữ liệu `recipes.jsonl` (`SCRUM-89`); rà soát bản thảo Tech Stack và C4 Level 1 System Context Diagram (`SCRUM-80`); điều phối tháo gỡ rào cản triển khai full-stack.
+   - Bảng Round-Robin trả lời đủ 3 câu hỏi Scrum (Completed / To-do / Blockers & Risks) của toàn bộ 5 thành viên (Hiển, Duy, Hưng, Chung, Dự).
+   - 3 quyết định mấu chốt: Thông qua cổng chất lượng Spec Kit; thống nhất quy ước lưu trữ ảnh upload qua Docker volume `./uploads`; chốt biên giới hệ thống và các tác nhân ngoài cho C4 Level 1.
+3. **Soạn thảo Mục 2.3: Meeting 3 — Weekly Scrum / Standup 02 (19/11/2026, 22:00 – 22:35)**:
+   - Thông tin phiên họp: Google Meet, 5/5 thành viên tham dự đầy đủ.
+   - 4 mục tiêu buổi họp: Kiểm tra và ban hành Code Freeze Phần E (`010+011` và `070`); đối chiếu code parity 100% giữa mã nguồn thật với sơ đồ C4 Level 2 (`SCRUM-81`), C4 Level 3 Backend/Frontend (`SCRUM-81`, `SCRUM-82`), và Deployment Diagram (`SCRUM-83`); rà soát kết quả test suite (>70% JaCoCo và 819 test Vitest); bàn giao kịch bản quay Video Demo YouTube (`SCRUM-79`) và đóng gói phát hành (`SCRUM-89`, `SCRUM-90`).
+   - Bảng Round-Robin chi tiết của 5 thành viên với các dữ liệu thực chứng từ nhánh và commit.
+   - Các quyết định quan trọng: Ban hành lệnh Code Freeze Phần E từ 23:59 ngày 19/11/2026; phê duyệt độ tương thích kiến trúc; phân công Chung chủ trì thuyết minh video demo.
+4. **Soạn thảo Mục 2.4: Bảng tổng hợp Cross-Meeting Governance & Action Item Traceability Matrix**:
+   - Theo dõi 10 đầu mục công việc (ACT-01 đến ACT-10) từ cuộc họp Planning, Standup 01 và Standup 02 đến trạng thái giải quyết thực tế.
+   - Cam kết tuân thủ liêm chính học thuật và căn cứ nguồn gốc dữ liệu (Provenance Statement).
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- **Kiểm tra chéo và đối chiếu dữ liệu thực tế trong Git:**
+  - Đối chiếu số liệu Spec Kit: Xác nhận PR #84 (commit `b18cd2e`) đã merge vào `main` ngày 12/11 cho `SCRUM-72` (`010+011`); xác nhận PR #87 và PR #88 (commit `2c95f74`, `1cfd43e`) đã merge ngày 12/11 cho `SCRUM-73` (`070`).
+  - Đối chiếu trạng thái mã nguồn Frontend: Trực tiếp xác minh kết quả kiểm thử của task `SCRUM-76` (Frontend Auth + Profile UI) đạt 819 test Vitest vượt qua, 0 lỗi TypeScript, 0 lỗi ESLint trên nhánh `feature/SCRUM-76-frontend-auth-profile`.
+  - Đối chiếu trạng thái mã nguồn Backend: Xác minh nhánh `feature/SCRUM-74-auth-backend` của Hiển có 23 commits, đạt độ bao phủ dòng 97% và bao phủ rẽ nhánh 90%.
+- **Loại bỏ mâu thuẫn logic và suy diễn không có căn cứ:**
+  - Không tự bịa đặt các số liệu kiểm thử chưa chạy hoặc tuyên bố toàn bộ dự án đã nộp xong; phân biệt rạch ròi giữa mốc Standup 01 (đã diễn ra trên thực tế) và Standup 02 (mốc Code Freeze được hoạch định theo lịch trình và mô tả vé Jira `SCRUM-87`).
+  - Ghi nhận cảnh báo về việc nộp video YouTube và đóng gói ZIP cần loại trừ các thư mục rác (`node_modules`, `target`, `.venv`) nhằm tránh vượt quá dung lượng nộp bài.
+- **Tổ chức quy trình commit mô-đun hóa:**
+  - Tự phân bổ công việc thành chuỗi 5–6 commit riêng biệt theo chuẩn Conventional Commits trên nhánh `docs/PA4`, giúp lịch sử Git rõ ràng, dễ truy vết và phản ánh đúng tiến trình làm việc chuyên nghiệp của Scrum Master.
+  - Sử dụng lệnh `git diff --check` và `git status` để kiểm tra độ sạch của cú pháp Markdown, không để sót lỗi khoảng trắng hay định dạng bảng bị lệch.
+
+### Kiểm chứng đã thực hiện:
+- `git diff --check`: 0 lỗi whitespace / định dạng bảng Markdown.
+- Kiểm tra hiển thị bảng Markdown trên môi trường GitHub / VS Code preview: các bảng Round-Robin và Traceability Matrix hiển thị sắc nét, căn chỉnh đúng chuẩn.
+- Đối chiếu vé Jira: Khớp hoàn toàn với mô tả, tiêu chí nghiệm thu và hạn chót (Nov 19, 2026) của ticket `SCRUM-87`.

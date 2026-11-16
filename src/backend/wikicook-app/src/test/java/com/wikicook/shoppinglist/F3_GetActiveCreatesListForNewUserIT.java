@@ -6,7 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.wikicook.support.HeaderCurrentUser;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpEntity;
@@ -22,6 +24,7 @@ import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(HeaderCurrentUser.class)
 class F3_GetActiveCreatesListForNewUserIT {
 
     @Container
@@ -47,7 +50,7 @@ class F3_GetActiveCreatesListForNewUserIT {
     @DisplayName("F3: GET /active for user without active list must return 200 and create list")
     void getActiveCreatesListForNewUser() {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("X-User-Id", String.valueOf(testUserId));
+        headers.set(HeaderCurrentUser.HEADER, String.valueOf(testUserId));
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = http.exchange(

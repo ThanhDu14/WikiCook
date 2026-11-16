@@ -13,8 +13,8 @@ import com.wikicook.ai.testing.FakeLlmClient;
 import com.wikicook.aiplanner.dto.ConfirmRequest;
 import com.wikicook.aiplanner.support.RecipeFixtures;
 import com.wikicook.aiplanner.support.RecipeSeed;
-import com.wikicook.devstub.DevUserProvisioner;
-import com.wikicook.devstub.StubCurrentUser;
+import com.wikicook.support.AuthTestSupport;
+import com.wikicook.support.HeaderCurrentUser;
 import com.wikicook.mealplan.api.DraftItem;
 import com.wikicook.mealplan.api.MealPlanWriteFacade;
 import com.wikicook.mealplan.domain.ItemSource;
@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -43,8 +44,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 /** T048: confirming a draft writes the week through 030 (US2-2, US2-6, FR-018, FR-019). */
-@SpringBootTest(properties = {"wikicook.dev-stubs.enabled=true", "wikicook.ai.mode=mock"})
+@SpringBootTest(properties = "wikicook.ai.mode=mock")
 @AutoConfigureMockMvc
+@Import({HeaderCurrentUser.class, AuthTestSupport.class})
 class AiPlannerControllerUS2IT extends AbstractPostgresIT {
 
     private static final AtomicLong NEXT_USER = new AtomicLong(2000);
@@ -81,7 +83,7 @@ class AiPlannerControllerUS2IT extends AbstractPostgresIT {
     MealPlanWriteFacade mealPlans;
 
     @Autowired
-    DevUserProvisioner provisioner;
+    AuthTestSupport authSupport;
 
     private RecipeSeed.Seeded seed;
     private long user;
@@ -92,18 +94,18 @@ class AiPlannerControllerUS2IT extends AbstractPostgresIT {
         RecipeFixtures.clear(jdbc);
         seed = RecipeSeed.seed(new RecipeFixtures(jdbc));
         user = NEXT_USER.incrementAndGet();
-        provisioner.ensure(user);
+        authSupport.createUserWithId(user); // StubCurrentUser used to create the row on every request
     }
 
     private ResultActions confirm(Object body) throws Exception {
         return mvc.perform(post("/api/v1/ai-planner/weeks/{weekStart}/confirm", nextWeek)
-                .header(StubCurrentUser.HEADER, user)
+                .header(HeaderCurrentUser.HEADER, user)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json.writeValueAsString(body)));
     }
 
     private ResultActions week() throws Exception {
-        return mvc.perform(get("/api/v1/meal-plans/{weekStart}", nextWeek).header(StubCurrentUser.HEADER, user));
+        return mvc.perform(get("/api/v1/meal-plans/{weekStart}", nextWeek).header(HeaderCurrentUser.HEADER, user));
     }
 
     private static ConfirmRequest.Item item(DayOfWeek day, Meal meal, long recipeId, ItemSource source) {
@@ -222,7 +224,7 @@ class AiPlannerControllerUS2IT extends AbstractPostgresIT {
     @Test
     void weekStartNotAMondayIs400() throws Exception {
         mvc.perform(post("/api/v1/ai-planner/weeks/{weekStart}/confirm", nextWeek.plusDays(1))
-                        .header(StubCurrentUser.HEADER, user)
+                        .header(HeaderCurrentUser.HEADER, user)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json.writeValueAsString(new ConfirmRequest(UUID.randomUUID(), List.of(
                                 item(DayOfWeek.MONDAY, Meal.LUNCH, seed.allDay().getFirst(), ItemSource.AI))))))

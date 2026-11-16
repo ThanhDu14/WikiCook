@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
+import { setAccessToken } from '@/shared/api/session';
 import { server } from './server';
 
 function createMemoryStorage(): Storage {
@@ -37,6 +38,7 @@ if (typeof globalThis.localStorage === 'undefined') {
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 afterEach(() => {
   cleanup();
+  setAccessToken(null); // the token lives in memory (spec 010 R2): no test inherits another's session
   server.resetHandlers();
 });
 afterAll(() => server.close());

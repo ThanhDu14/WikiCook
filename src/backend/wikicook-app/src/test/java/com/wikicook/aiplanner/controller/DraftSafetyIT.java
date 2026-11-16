@@ -15,7 +15,8 @@ import com.wikicook.aiplanner.dto.GenerationConstraints;
 import com.wikicook.aiplanner.support.AiPlannerItBeans;
 import com.wikicook.aiplanner.support.RecipeFixtures;
 import com.wikicook.aiplanner.support.RecipeSeed;
-import com.wikicook.devstub.StubCurrentUser;
+import com.wikicook.support.AuthTestSupport;
+import com.wikicook.support.HeaderCurrentUser;
 import com.wikicook.mealplan.domain.DietType;
 import com.wikicook.mealplan.domain.Meal;
 import com.wikicook.mealplan.service.WeekCalendar;
@@ -44,9 +45,9 @@ import org.springframework.test.web.servlet.MockMvc;
  * allergen. None of them reaches the draft; their meals become "Chọn món" and the row counts them (SC-003, NFR-004,
  * FR-032).
  */
-@SpringBootTest(properties = {"wikicook.dev-stubs.enabled=true", "wikicook.ai.mode=mock"})
+@SpringBootTest(properties = "wikicook.ai.mode=mock")
 @AutoConfigureMockMvc
-@Import(AiPlannerItBeans.class)
+@Import({AiPlannerItBeans.class, HeaderCurrentUser.class, AuthTestSupport.class})
 class DraftSafetyIT extends AbstractPostgresIT {
 
     private static final long USER = 3001;
@@ -69,12 +70,16 @@ class DraftSafetyIT extends AbstractPostgresIT {
     MutableClock clock;
 
     private RecipeSeed.Seeded seed;
+    @Autowired
+    AuthTestSupport authSupport;
+
     private final LocalDate nextWeek = WeekCalendar.currentWeekStart(Clock.systemUTC()).plusWeeks(1);
 
     @BeforeEach
     void seed() {
         clock.set(Instant.now()); // another class of the context may have moved it
         RecipeFixtures.clear(jdbc);
+        authSupport.createUserWithId(USER); // StubCurrentUser used to create the row on every request
         jdbc.update("DELETE FROM ai_requests WHERE user_id = ?", USER);
         seed = RecipeSeed.seed(new RecipeFixtures(jdbc));
     }
@@ -96,7 +101,7 @@ class DraftSafetyIT extends AbstractPostgresIT {
                 DietType.NONE, 2, null, Set.of()));
 
         String body = mvc.perform(post("/api/v1/ai-planner/weeks/{weekStart}/generations", nextWeek)
-                        .header(StubCurrentUser.HEADER, USER)
+                        .header(HeaderCurrentUser.HEADER, USER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json.writeValueAsString(request)))
                 .andExpect(status().isOk())
