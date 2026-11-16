@@ -6,6 +6,9 @@ export const NOW = new Date('2026-10-21T09:00:00+07:00');
 export const THIS_WEEK = '2026-10-19';
 const TODAY = '2026-10-21';
 
+/** The signed-in Member of every e2e test (the member pages need a session, spec 010). */
+const ACCOUNT = { id: 1, displayName: 'Thanh Du', email: 'thanhdu@gmail.com', role: 'MEMBER', emailVerified: true };
+
 export interface Recipe {
   recipeId: number;
   title: string;
@@ -127,6 +130,11 @@ export class FakeApi {
     const url = new URL(request.url());
     const path = url.pathname.replace(/^\/api\/v1/, '');
     const method = request.method();
+    // The session of spec 010: the app asks for one at start-up. Not counted in `calls`, which lists what a test did.
+    if (method === 'POST' && path === '/auth/refresh') {
+      return route.fulfill({ json: { accessToken: 'e2e-token', expiresIn: 900, account: ACCOUNT } });
+    }
+    if (method === 'GET' && path === '/auth/me') return route.fulfill({ json: ACCOUNT });
     this.calls.push(`${method} ${path}`);
     const body = request.postDataJSON?.() as Record<string, unknown> | null;
     const problem = (status: number, code: string) =>

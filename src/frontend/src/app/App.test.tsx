@@ -2,6 +2,8 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { AuthProvider } from '@/features/auth/AuthProvider';
+import { signedInHandler } from '@/features/auth/__tests__/handlers';
 import { searchHandlers } from '@/features/search/__tests__/handlers';
 import { makeList } from '@/features/shopping-list/test/fixtures';
 import { server } from '@/test/server';
@@ -9,7 +11,12 @@ import { routerFuture, routes } from './routes';
 
 function renderAt(path: string) {
   const router = createMemoryRouter(routes, { initialEntries: [path], future: routerFuture });
-  render(<RouterProvider router={router} future={{ v7_startTransition: true }} />);
+  render(
+    <AuthProvider>
+      <RouterProvider router={router} future={{ v7_startTransition: true }} />
+    </AuthProvider>,
+  );
+  return router;
 }
 
 /** The app header; pages may have a <header> of their own. */
@@ -20,6 +27,7 @@ const activeTitle = () => screen.findByRole('heading', { level: 1, name: 'Danh s
 describe('app shell', () => {
   beforeEach(() => {
     server.use(
+      signedInHandler(), // the member pages (meal planner, shopping list) need a session (spec 010 T054)
       ...searchHandlers,
       http.get('/api/v1/shopping-lists/active', () => HttpResponse.json(makeList())),
       http.get('/api/v1/shopping-lists/history', () => HttpResponse.json([])),
@@ -115,4 +123,49 @@ describe('app shell', () => {
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Hôm nay nấu gì?' })).toBeInTheDocument();
   });
+
+  it('sends a guest from a member page to /login with the page as redirect (spec 010 T054)', async () => {
+    server.use(http.post('/api/v1/auth/refresh', () => HttpResponse.json({ status: 401, code: 'UNAUTHENTICATED' }, { status: 401 })));
+    const router = renderAt('/meal-planner?week=2026-10-26');
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Chào mừng trở lại' })).toBeInTheDocument();
+    expect(router.state.location.pathname + router.state.location.search).toBe(
+      `/login?redirect=${encodeURIComponent('/meal-planner?week=2026-10-26')}`,
+    );
+  });
+
+  it('keeps the home page, search and cooking mode open to guests', async () => {
+    server.use(http.post('/api/v1/auth/refresh', () => HttpResponse.json({ status: 401, code: 'UNAUTHENTICATED' }, { status: 401 })));
+    const router = renderAt('/');
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Hôm nay nấu gì?' })).toBeInTheDocument();
+    expect(router.state.location.pathname).toBe('/');
+  });
+
+  it('renders the sign-in and register screens outside the app shell', async () => {
+    server.use(http.post('/api/v1/auth/refresh', () => HttpResponse.json({ status: 401, code: 'UNAUTHENTICATED' }, { status: 401 })));
+    renderAt('/register');
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Tạo tài khoản' })).toBeInTheDocument();
+    expect(document.querySelector('header.wx-nav')).toBeNull();
+  });
+
+  it('shows the access-denied page inside the app shell', async () => {
+    renderAt('/access-denied');
+
+    expect(await screen.findByText('Bạn không có quyền xem trang này')).toBeInTheDocument();
+    expect(appHeader()).not.toBeNull();
+  });
+
+  it('renders the account pages for a signed-in member', async () => {
+    server.use(
+      http.get('/api/v1/me/profile', () =>
+        HttpResponse.json({ id: 1, displayName: 'Thanh Du', version: 1, account: { email: 'thanhdu@gmail.com', role: 'MEMBER', status: 'ACTIVE', emailVerified: true, hasPassword: true, googleLinked: false, createdAt: '2026-10-01T00:00:00Z' } }),
+      ),
+    );
+    renderAt('/profile');
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Thanh Du' })).toBeInTheDocument();
+  });
 });
+

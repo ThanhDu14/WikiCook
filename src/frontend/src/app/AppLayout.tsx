@@ -1,5 +1,10 @@
 import type { ReactNode } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+import { AccountMenu } from '@/features/auth/components/AccountMenu';
+import { EmailVerificationBanner } from '@/features/auth/components/EmailVerificationBanner';
+import { SessionExpiredDialog } from '@/features/auth/components/SessionExpiredDialog';
+import { strings as authStrings } from '@/features/auth/strings.vi';
+import { useAuth } from '@/features/auth/useAuth';
 import { HealthBadge } from './HealthBadge';
 import { BagIcon, BellIcon, BookmarkIcon, CalendarIcon, CompassIcon, PenIcon, SearchIcon, UserIcon } from './navIcons';
 
@@ -12,8 +17,6 @@ const MAIN: { label: string; icon: Icon; to?: string }[] = [
   { label: 'Đi chợ', icon: BagIcon, to: '/shopping-list' },
   { label: 'Đã lưu', icon: BookmarkIcon },
 ];
-
-const MOBILE: typeof MAIN = [...MAIN, { label: 'Tôi', icon: UserIcon }];
 
 const SOON = 'Sắp có';
 
@@ -70,11 +73,7 @@ function Header() {
           <button className="wk-icon-btn wk-icon-btn--plain" type="button" aria-label="Thông báo" title={SOON} disabled>
             <BellIcon />
           </button>
-          <span className="wk-navlink" style={{ padding: '0 4px' }} aria-label="Tài khoản của tôi" title={SOON}>
-            <span className="wk-avatar wk-avatar--sm">
-              <UserIcon />
-            </span>
-          </span>
+          <AccountMenu />
         </div>
       </div>
     </header>
@@ -103,6 +102,14 @@ function Footer() {
 
 /** Bottom navigation of the mobile screens (MP01), under 900px where the header links are hidden. */
 function BottomNav() {
+  const { account } = useAuth();
+  // the last tab is the account: "Tôi" when signed in, "Đăng nhập" for a guest
+  const MOBILE: typeof MAIN = [
+    ...MAIN,
+    account
+      ? { label: authStrings.nav.me, icon: UserIcon, to: '/profile' }
+      : { label: authStrings.nav.signIn, icon: UserIcon, to: '/login' },
+  ];
   return (
     <nav className="wk-bottomnav fixed inset-x-0 bottom-0 z-40 min-[901px]:!hidden" aria-label="Điều hướng chính">
       {MOBILE.map(({ label, icon: ItemIcon, to }) =>
@@ -130,11 +137,13 @@ export function AppLayout() {
       <main className="flex-1 pb-[88px] pt-ds-6 min-[901px]:pb-ds-6">
         {/* every page in the 1264px column of the screens (W-MP01 too) */}
         <div className="wx-wrap">
+          <EmailVerificationBanner />
           <Outlet />
         </div>
       </main>
       <Footer />
       <BottomNav />
+      <SessionExpiredDialog />
     </div>
   );
 }
