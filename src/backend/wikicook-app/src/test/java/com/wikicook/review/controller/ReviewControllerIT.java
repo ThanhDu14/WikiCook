@@ -2,7 +2,7 @@ package com.wikicook.review.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wikicook.aiplanner.support.RecipeFixtures;
-import com.wikicook.mealplan.support.HeaderCurrentUser;
+import com.wikicook.support.HeaderCurrentUser;
 import com.wikicook.mealplan.support.MealPlanFixtures;
 import com.wikicook.review.dto.CreateReviewRequest;
 import com.wikicook.review.dto.UpdateReviewRequest;
