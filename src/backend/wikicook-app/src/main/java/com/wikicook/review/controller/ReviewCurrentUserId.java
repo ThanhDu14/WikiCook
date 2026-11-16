@@ -24,7 +24,14 @@ public class ReviewCurrentUserId {
 
     public Long getOptionalId() {
         CurrentUser user = currentUser.getIfAvailable();
-        return user != null ? user.id() : null;
+        if (user == null) {
+            return null;
+        }
+        try {
+            return user.id();
+        } catch (Exception ex) {
+            return null;
+        }
     }
 }
 
