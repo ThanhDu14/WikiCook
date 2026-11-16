@@ -220,6 +220,23 @@ thì ghi ở bảng cuối.
   không lộ `userId`. `eclipse-temurin:21-jre-alpine` chưa được thử với ImageIO: máy lập plan không
   có JDK 21 và Docker, nên task đầu của Phase 1 phải chạy spike bằng JPEG CMYK, PNG alpha, WebP
   lossy, lossless, animated, và ghi lại kết quả.
+- **Kết quả spike T007 (2026-11-16)**: chạy trên `eclipse-temurin:21-jre-alpine` (Java 21.0.13, Linux
+  amd64), `imageio-webp` 3.15.3 cùng `imageio-core`, `imageio-metadata`, `common-*` cùng bản; mẫu ở
+  `src/backend/wikicook-app/src/test/resources/avatars/` (tạo bằng Pillow 11.3, ảnh 120 × 80). Mỗi mẫu
+  được đọc bằng `ImageReader`, cắt vuông, thu 64 × 64, nền trắng, mã hóa lại JPEG:
+
+  | Mẫu | Reader | Kết quả |
+  |---|---|---|
+  | `plain.jpg` (RGB) | `JPEGImageReader` | Đọc và mã hóa lại được |
+  | `cmyk.jpg` (JPEG CMYK) | `JPEGImageReader` | Đọc và mã hóa lại được; màu CMYK chưa được so với bản gốc |
+  | `alpha.png` (PNG alpha) | `PNGImageReader` | Đọc được, alpha được trải trên nền trắng |
+  | `lossy.webp`, `lossless.webp` | `WebPImageReader` | Đọc và mã hóa lại được |
+  | `alpha-lossless.webp` | `WebPImageReader` | Đọc được, có alpha |
+  | `animated.webp` (2 khung) | `WebPImageReader` | Đọc được, lấy khung đầu (`getNumImages` = 2) |
+  | `orientation6.jpg`, `gps.jpg` | `JPEGImageReader` | Đọc được; Orientation và GPS nằm trong EXIF nên phải đọc ở `AvatarImageProcessor`, ImageIO không tự xoay |
+
+  Không có định dạng nào không đọc được, nên không có gì phải báo trước khi làm tiếp. `java.awt` chạy
+  headless trên Alpine không cần thêm gói.
 - **Alternatives considered**: `POST /me/avatar` riêng – lỗi ở lần gọi thứ hai để lại nửa thay đổi;
   lưu nguyên file sau khi kiểm tra – còn EXIF và rủi ro file đa định dạng; xuất WebP – plugin chỉ
   đọc; `BYTEA` – phình `users`; S3, MinIO – thêm service cho bản demo; nginx phục vụ thẳng thư mục –

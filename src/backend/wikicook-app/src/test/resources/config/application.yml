@@ -1,6 +1,9 @@
 # Added on top of main/resources/application.yml (classpath:/config/ wins per key, nothing else is hidden).
 # Fixed fake values for tests only, not real secrets: CI runs without any environment variable.
 wikicook:
+  profile:
+    # Avatars written by the tests go under target/, not into the working tree
+    media-dir: target/test-media
   auth:
     jwt-secret: test-only-jwt-secret-0123456789abcdef0123456789abcdef
     email-hash-key: test-only-email-hash-key-0123456789abcdef

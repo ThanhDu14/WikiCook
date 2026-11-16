@@ -28,6 +28,13 @@ spring:
   mvc:
     problemdetails:
       enabled: true
+  # Avatar upload (spec 011 R7): 5 MB file, 6 MB request; resolve-lazily so the size error is raised after the handler
+  # is chosen and the advice of com.wikicook.profile can answer it with AVATAR_TOO_LARGE.
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+      resolve-lazily: true
   # "servings": 2.5 is a 400, not silently 2 (030 edge case servings).
   jackson:
     deserialization:
@@ -36,6 +43,8 @@ spring:
 # Correct client IP behind nginx (sign-in throttle, audit ip_address)
 server:
   forward-headers-strategy: native
+  tomcat:
+    max-swallow-size: 6MB
 
 management:
   endpoints:
@@ -90,6 +99,10 @@ wikicook:
     bootstrap-admin:
       email: ${WIKICOOK_BOOTSTRAP_ADMIN_EMAIL:}
       password: ${WIKICOOK_BOOTSTRAP_ADMIN_PASSWORD:}
+  # Spec 011 (com.wikicook.profile): where avatars are stored, and writes per hour per kind (NFR-008).
+  profile:
+    media-dir: ${WIKICOOK_MEDIA_DIR:./.media}
+    write-limit-per-hour: 20
   # Dev stand-ins for 010/011 (com.wikicook.devstub); never enable in production.
   dev-stubs:
     enabled: ${WIKICOOK_DEV_STUBS_ENABLED:false}

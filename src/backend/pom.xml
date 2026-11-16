@@ -35,6 +35,7 @@
         <wiremock.version>3.13.2</wiremock.version>
         <jacoco.version>0.8.16</jacoco.version>
         <springdoc.version>2.8.13</springdoc.version>
+        <imageio-webp.version>3.15.3</imageio-webp.version>
     </properties>
 
     <dependencyManagement>
@@ -69,6 +70,11 @@
                 <groupId>org.wiremock</groupId>
                 <artifactId>wiremock-standalone</artifactId>
                 <version>${wiremock.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.twelvemonkeys.imageio</groupId>
+                <artifactId>imageio-webp</artifactId>
+                <version>${imageio-webp.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
