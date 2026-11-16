@@ -16,19 +16,22 @@ import com.wikicook.mealplan.port.DietaryProfilePort;
 import com.wikicook.mealplan.port.PlannerProfile;
 import com.wikicook.search.support.SearchFixtures;
 import com.wikicook.support.AbstractPostgresIT;
+import com.wikicook.support.AuthTestSupport;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 /** HTTP shape of 020 contracts/openapi.yaml, end to end on the real database. */
-@SpringBootTest(properties = "wikicook.dev-stubs.enabled=true")
+@SpringBootTest
 @AutoConfigureMockMvc
+@Import(AuthTestSupport.class)
 class RecipeSearchControllerIT extends AbstractPostgresIT {
 
     @Autowired
@@ -37,6 +40,9 @@ class RecipeSearchControllerIT extends AbstractPostgresIT {
     @Autowired
     JdbcTemplate jdbc;
 
+    @Autowired
+    AuthTestSupport support;
+
     @MockitoBean
     DietaryProfilePort profiles;
 
@@ -44,6 +50,12 @@ class RecipeSearchControllerIT extends AbstractPostgresIT {
     long peanutAllergen;
     long safe;
     long withPeanut;
+
+    /** A real access token for this user: the viewer is the authenticated principal, no header decides it (020 R6). */
+    private String signedIn(long userId) {
+        support.createUserWithId(userId);
+        return "Bearer " + support.jwt(userId, support.session(userId));
+    }
 
     @BeforeEach
     void setUp() {
@@ -128,7 +140,7 @@ class RecipeSearchControllerIT extends AbstractPostgresIT {
         when(profiles.findByUserId(5L))
                 .thenReturn(new PlannerProfile(null, DietType.NONE, null, Set.of(peanutAllergen), Set.of(), Set.of()));
 
-        mvc.perform(get("/api/v1/recipes/search").param("q", "pho").header("X-Dev-User-Id", "5"))
+        mvc.perform(get("/api/v1/recipes/search").param("q", "pho").header("Authorization", signedIn(5L)))
                 .andExpect(jsonPath("$.totalItems").value(1))
                 .andExpect(jsonPath("$.items[*].id").value(not(hasItem((int) withPeanut))))
                 .andExpect(jsonPath("$.dietary.applied").value(true))
@@ -142,20 +154,13 @@ class RecipeSearchControllerIT extends AbstractPostgresIT {
                 .thenReturn(new PlannerProfile(null, DietType.NONE, null, Set.of(peanutAllergen), Set.of(), Set.of()));
 
         mvc.perform(get("/api/v1/recipes/search").param("q", "pho").param("showHidden", "true")
-                        .header("X-Dev-User-Id", "5"))
+                        .header("Authorization", signedIn(5L)))
                 .andExpect(jsonPath("$.totalItems").value(2))
                 .andExpect(jsonPath("$.dietary.applied").value(false))
                 .andExpect(jsonPath("$.dietary.showingHidden").value(true))
                 .andExpect(jsonPath("$.dietary.hiddenCount").value(1))
                 .andExpect(jsonPath("$.items[?(@.id == " + withPeanut + ")].conflicts[0].type").value(contains("ALLERGEN")))
                 .andExpect(jsonPath("$.items[?(@.id == " + withPeanut + ")].conflicts[0].name").value(contains("Đậu phộng")));
-    }
-
-    @Test
-    void malformedViewerHeaderIs400() throws Exception {
-        mvc.perform(get("/api/v1/recipes/search").header("X-Dev-User-Id", "abc"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"));
     }
 
     @Test

@@ -19,7 +19,8 @@ import com.wikicook.aiplanner.service.CandidateService;
 import com.wikicook.aiplanner.support.AiPlannerItBeans;
 import com.wikicook.aiplanner.support.RecipeFixtures;
 import com.wikicook.aiplanner.support.RecipeSeed;
-import com.wikicook.devstub.StubCurrentUser;
+import com.wikicook.support.AuthTestSupport;
+import com.wikicook.support.HeaderCurrentUser;
 import com.wikicook.mealplan.domain.DietType;
 import com.wikicook.mealplan.domain.Meal;
 import com.wikicook.mealplan.service.WeekCalendar;
@@ -55,9 +56,9 @@ import org.springframework.test.web.servlet.ResultActions;
  * T068: five counted generations per user in a rolling 60 minutes (US5, FR-025, FR-026, SC-007), with a clock the
  * test moves.
  */
-@SpringBootTest(properties = {"wikicook.dev-stubs.enabled=true", "wikicook.ai.mode=mock"})
+@SpringBootTest(properties = "wikicook.ai.mode=mock")
 @AutoConfigureMockMvc
-@Import(AiPlannerItBeans.class)
+@Import({AiPlannerItBeans.class, HeaderCurrentUser.class, AuthTestSupport.class})
 class RateLimitIT extends AbstractPostgresIT {
 
     private static final AtomicLong NEXT_USER = new AtomicLong(3200);
@@ -84,6 +85,9 @@ class RateLimitIT extends AbstractPostgresIT {
     @Autowired
     CandidateService candidateService;
 
+    @Autowired
+    AuthTestSupport authSupport;
+
     private long user;
     private Instant start;
     private LocalDate nextWeek;
@@ -93,6 +97,7 @@ class RateLimitIT extends AbstractPostgresIT {
         RecipeFixtures.clear(jdbc);
         RecipeSeed.seed(new RecipeFixtures(jdbc));
         user = NEXT_USER.incrementAndGet();
+        authSupport.createUserWithId(user); // StubCurrentUser used to create the row on every request
         start = Instant.now().truncatedTo(ChronoUnit.SECONDS);
         clock.set(start);
         nextWeek = WeekCalendar.currentWeekStart(Clock.fixed(start, ZoneOffset.UTC)).plusWeeks(1);
@@ -126,12 +131,12 @@ class RateLimitIT extends AbstractPostgresIT {
 
     private ResultActions options() throws Exception {
         return mvc.perform(get("/api/v1/ai-planner/weeks/{weekStart}/options", nextWeek)
-                .header(StubCurrentUser.HEADER, user));
+                .header(HeaderCurrentUser.HEADER, user));
     }
 
     private ResultActions generate(GenerateRequest request) throws Exception {
         return mvc.perform(post("/api/v1/ai-planner/weeks/{weekStart}/generations", nextWeek)
-                .header(StubCurrentUser.HEADER, user)
+                .header(HeaderCurrentUser.HEADER, user)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json.writeValueAsString(request)));
     }

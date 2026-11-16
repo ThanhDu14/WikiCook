@@ -1,0 +1,11 @@
+Xin chào ${name},
+
+Cảm ơn bạn đã đăng ký tài khoản WikiCook. Để xác minh địa chỉ email, hãy mở liên kết sau:
+
+${link}
+
+Liên kết chỉ dùng được một lần và hết hạn sau ${hours} giờ. Nếu liên kết hết hạn, bạn có thể yêu cầu gửi lại trên trang đăng ký.
+
+Nếu bạn không đăng ký tài khoản WikiCook, hãy bỏ qua email này.
+
+WikiCook

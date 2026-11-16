@@ -8,7 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.wikicook.support.HeaderCurrentUser;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpEntity;
@@ -28,6 +30,7 @@ import java.util.List;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(HeaderCurrentUser.class)
 class F1_CrossRequestImportMergesIT {
 
     @Container
@@ -101,7 +104,7 @@ class F1_CrossRequestImportMergesIT {
     @DisplayName("F1: cross-request recipe imports must merge identical ingredients (600g + 400g = 1 kg) without null displayUnit")
     void crossRequestImportMergesIngredientWithDisplayUnit() throws Exception {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("X-User-Id", String.valueOf(testUserId));
+        headers.set(HeaderCurrentUser.HEADER, String.valueOf(testUserId));
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         // Request 1: Import recipe 1 (Bò kho, base 2 servings, scaled x4 -> 600g Thịt bò)

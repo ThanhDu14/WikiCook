@@ -42,6 +42,22 @@ services:
       WIKICOOK_AI_EMBEDDING_RECONCILE_LIMIT: ${WIKICOOK_AI_EMBEDDING_RECONCILE_LIMIT:-0}
       WIKICOOK_DEV_STUBS_ENABLED: ${WIKICOOK_DEV_STUBS_ENABLED:-false}
       WIKICOOK_DEV_STUBS_USER_ID: ${WIKICOOK_DEV_STUBS_USER_ID:-1}
+      # Auth (spec 010). JWT secret and email-hash key are required: compose fails with the message below when missing.
+      WIKICOOK_JWT_SECRET: ${WIKICOOK_JWT_SECRET:?set WIKICOOK_JWT_SECRET in src/backend/.env (at least 32 bytes, see .env.example)}
+      WIKICOOK_EMAIL_HASH_KEY: ${WIKICOOK_EMAIL_HASH_KEY:?set WIKICOOK_EMAIL_HASH_KEY in src/backend/.env (see .env.example)}
+      WIKICOOK_PUBLIC_BASE_URL: ${WIKICOOK_PUBLIC_BASE_URL:-http://localhost:3000}
+      WIKICOOK_AUTH_COOKIE_SECURE: ${WIKICOOK_AUTH_COOKIE_SECURE:-false}
+      WIKICOOK_AUTH_SIGN_IN_IP_LIMIT: ${WIKICOOK_AUTH_SIGN_IN_IP_LIMIT:-100}
+      MAIL_HOST: mailpit
+      MAIL_PORT: ${MAIL_PORT:-1025}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      WIKICOOK_MAIL_FROM: ${WIKICOOK_MAIL_FROM:-no-reply@wikicook.local}
+      WIKICOOK_APPEAL_CONTACT: ${WIKICOOK_APPEAL_CONTACT:-${WIKICOOK_MAIL_FROM:-no-reply@wikicook.local}}
+      WIKICOOK_GOOGLE_CLIENT_ID: ${WIKICOOK_GOOGLE_CLIENT_ID:-}
+      WIKICOOK_GOOGLE_CLIENT_SECRET: ${WIKICOOK_GOOGLE_CLIENT_SECRET:-}
+      WIKICOOK_BOOTSTRAP_ADMIN_EMAIL: ${WIKICOOK_BOOTSTRAP_ADMIN_EMAIL:-}
+      WIKICOOK_BOOTSTRAP_ADMIN_PASSWORD: ${WIKICOOK_BOOTSTRAP_ADMIN_PASSWORD:-}
       TZ: Asia/Ho_Chi_Minh
     ports:
       - "${APP_PORT:-8080}:8080"
@@ -51,6 +67,15 @@ services:
       timeout: 3s
       start_period: 40s
       retries: 10
+
+  # Dev SMTP sink for verification and notification emails (spec 010): web UI on http://localhost:8025.
+  # app does not depend_on it: mail is sent after commit and a missing SMTP server must not stop the app.
+  mailpit:
+    image: axllent/mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
 
   # Same Flyway history table the Spring Boot app will use later, so the app sees these as applied.
   migrate:
@@ -66,6 +91,8 @@ services:
       FLYWAY_PASSWORD: ${POSTGRES_PASSWORD:-wikicook}
       FLYWAY_LOCATIONS: filesystem:/flyway/sql
       FLYWAY_CONNECT_RETRIES: 10
+      # V102-V104 (spec 010) are lower than V403 that already ran (research R11)
+      FLYWAY_OUT_OF_ORDER: "true"
     volumes:
       - ./wikicook-db/src/main/resources/db/migration:/flyway/sql:ro
 

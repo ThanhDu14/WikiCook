@@ -8,7 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.wikicook.support.HeaderCurrentUser;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpEntity;
@@ -24,6 +26,7 @@ import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(HeaderCurrentUser.class)
 class F4_ArchiveRestoreIT {
 
     @Container
@@ -51,7 +54,7 @@ class F4_ArchiveRestoreIT {
     @DisplayName("F4: POST /active/archive then POST /{id}/restore when another active list exists must return 200")
     void archiveAndRestoreSucceedsWithoutUniqueConstraintViolation() {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("X-User-Id", String.valueOf(testUserId));
+        headers.set(HeaderCurrentUser.HEADER, String.valueOf(testUserId));
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
         // 1. Archive active list (creates new active list)

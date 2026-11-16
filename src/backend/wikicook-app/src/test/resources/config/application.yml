@@ -1,0 +1,16 @@
+# Added on top of main/resources/application.yml (classpath:/config/ wins per key, nothing else is hidden).
+# Fixed fake values for tests only, not real secrets: CI runs without any environment variable.
+wikicook:
+  auth:
+    jwt-secret: test-only-jwt-secret-0123456789abcdef0123456789abcdef
+    email-hash-key: test-only-email-hash-key-0123456789abcdef
+    public-base-url: http://localhost:3000
+    cookie-secure: false
+    # Cost 4 keeps BCrypt fast in tests; production default stays 12.
+    bcrypt-strength: 4
+    # No scheduled job runs by itself in tests; ITs call the job beans directly.
+    jobs:
+      enabled: false
+    sign-in:
+      # Every IT calls from 127.0.0.1 on one shared container (research R5).
+      ip-limit: 10000

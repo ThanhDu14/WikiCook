@@ -18,6 +18,7 @@ import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /** T010: every meal planner error is a ProblemDetail with a stable {@code code} (research R11). */
 @WebMvcTest(controllers = MealPlanExceptionHandlerTest.FakeController.class)
+@AutoConfigureMockMvc(addFilters = false) // the handler is under test, not the security of 010
 @Import(MealPlanExceptionHandlerTest.FakeController.class)
 class MealPlanExceptionHandlerTest {
 
