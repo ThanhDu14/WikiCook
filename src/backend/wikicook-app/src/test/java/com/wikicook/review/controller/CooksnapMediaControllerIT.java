@@ -9,12 +9,14 @@ import com.wikicook.review.repository.CooksnapRepository;
 import com.wikicook.review.repository.ReviewRepository;
 import com.wikicook.review.service.StorageService;
 import com.wikicook.support.AbstractPostgresIT;
+import com.wikicook.support.HeaderCurrentUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Import(HeaderCurrentUser.class)
 class CooksnapMediaControllerIT extends AbstractPostgresIT {
 
     @Autowired

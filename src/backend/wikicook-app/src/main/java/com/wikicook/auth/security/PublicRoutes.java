@@ -40,13 +40,16 @@ public final class PublicRoutes {
             PATHS.matcher("/v3/api-docs"),
             PATHS.matcher("/v3/api-docs/**"),
             PATHS.matcher("/swagger-ui.html"),
-            PATHS.matcher("/swagger-ui/**"));
+            PATHS.matcher("/swagger-ui/**"),
+            PATHS.matcher(HttpMethod.GET, "/api/v1/media/cooksnaps/**"));
 
     private static final RequestMatcher OPTIONALLY_SIGNED_IN = new OrRequestMatcher(
             // 020: a guest searches recipes (020 acceptance 3.4); a signed-in user gets their dietary profile applied
             PATHS.matcher(HttpMethod.GET, "/api/v1/recipes/search"),
             PATHS.matcher(HttpMethod.GET, "/api/v1/recipes/search/options"),
-            PATHS.matcher(HttpMethod.GET, "/api/v1/recipes/featured"));
+            PATHS.matcher(HttpMethod.GET, "/api/v1/recipes/featured"),
+            // 070: public recipe reviews
+            PATHS.matcher(HttpMethod.GET, "/api/v1/recipes/*/reviews"));
 
     private static final RequestMatcher ALL = new OrRequestMatcher(BEARER_IGNORED, OPTIONALLY_SIGNED_IN);
 

@@ -96,7 +96,8 @@ class ReviewRepositoryIT extends AbstractPostgresIT {
                 .sizeBytes(1024)
                 .status(ReviewStatus.VISIBLE)
                 .build();
-        cooksnapRepository.saveAndFlush(cs);
+        savedReview.getCooksnaps().add(cs);
+        reviewRepository.saveAndFlush(savedReview);
 
         assertThat(cooksnapRepository.findByStorageKey(cs.getStorageKey())).isPresent();
 

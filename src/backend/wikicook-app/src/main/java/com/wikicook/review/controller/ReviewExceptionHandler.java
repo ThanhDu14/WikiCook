@@ -34,7 +34,7 @@ public class ReviewExceptionHandler {
     public ProblemDetail handleSelfHelpfulVoteForbidden(SelfHelpfulVoteForbiddenException ex) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
         problem.setTitle("Forbidden");
-        problem.setType(URI.create("https://wikicook.com/errors/self-upvote-forbidden"));
+        problem.setType(URI.create("https://wikicook.com/errors/self-helpful-vote-forbidden"));
         return problem;
     }
 
