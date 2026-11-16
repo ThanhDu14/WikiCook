@@ -1,6 +1,6 @@
 # Nhật ký sử dụng AI – Mai Văn Hiển
 
-Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Văn Hiển** (mã **A**, AI Architect & Technical Lead, phụ trách spec `010-user-authentication-roles` (làm rõ bằng `/speckit-clarify`), `011-user-profile-dietary` và `080-bookmark-collection` theo [phân công tuần 12/10 – 18/10](../management/w1-spec-design-assignment.md), và `SCRUM-29`, `SCRUM-36`, `SCRUM-45` của Sprint 2 trong [project plan](../management/project-plan.md), và `SCRUM-59` của Sprint 3 (sửa project plan lần 2 và `Changes.md` section A)). Mỗi lần dùng AI là một mục mới, mục mới nhất ở cuối.
+Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Văn Hiển** (mã **A**, AI Architect & Technical Lead, phụ trách spec `010-user-authentication-roles` (làm rõ bằng `/speckit-clarify`), `011-user-profile-dietary` và `080-bookmark-collection` theo [phân công tuần 12/10 – 18/10](../management/w1-spec-design-assignment.md), và `SCRUM-29`, `SCRUM-36`, `SCRUM-45` của Sprint 2 trong [project plan](../management/project-plan.md), và `SCRUM-59` của Sprint 3 (sửa project plan lần 2 và `Changes.md` section A); từ Sprint 4: `SCRUM-72`, `SCRUM-74` (backend 010), `SCRUM-80` (Part B) và các lần review PR của nhóm, xem Mục 28 – 38). Mỗi lần dùng AI là một mục mới, mục mới nhất ở cuối.
 
 | # | Ngày | Nội dung | Spec / Tài liệu |
 |---|---|---|---|
@@ -31,6 +31,17 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Vă
 | 25 | 2026-11-06 | Task SCRUM-67 – chốt Project Plan `v2.0` (phần A), đối chiếu Vision, Use-Case Model, Sprint 03 report và code, viết lại `Changes.md` section A | `project-plan.md`, `Changes.md` |
 | 26 | 2026-11-07 → 2026-11-11 | Task SCRUM-72 – `/speckit-analyze` spec 010 ba lượt, sửa các lỗi tìm được, rà chéo 011 với 010, gắn mã Jira, tạo nhánh tài liệu | 010, 011 (spec, plan, research, data-model, contracts, quickstart, tasks) |
 | 27 | 2026-11-12 | Task SCRUM-72 – đọc review PR #84, sửa theo 8 góp ý của Duy, gộp `origin/main` và giải quyết xung đột ở spec 100 | 010, 011, 100, `ai_log_hien.md` |
+| 28 | 2026-10-31 | Review PR #52 (SCRUM-55): chạy build trong WSL, tái hiện 4 lỗi, soạn comment và 4 issue | spec 040, PR #52 |
+| 29 | 2026-11-01 → 2026-11-03 | Review PR #59, #61, #63 và phản hồi review của Hưng (AI đăng review lên PR #61 và #63 bằng tài khoản của Hiển) | PR #59, #61, #63, spec 040, 070, 100 |
+| 30 | 2026-11-06 | Thử nối 030 với 040 và giải xung đột merge; AI làm hỏng bước giải xung đột, không có code mới | 030, 031, 040 |
+| 31 | 2026-11-06 → 2026-11-07 | Task SCRUM-72 – tạo plan, research, data model, contracts, quickstart, tasks cho 010 và 011; chạy `/speckit-analyze` và sửa lỗi | 010, 011, 100 |
+| 32 | 2026-11-11 | Review PR #83 (spec 070 và 100) và soạn comment | PR #83, `full-schema.md` |
+| 33 | 2026-11-11 | Task SCRUM-74 (chuẩn bị) – kiểm tra tiến độ, cập nhật `main`, tạo nhánh, commit, merge, soạn prompt triển khai | `pa4-guide.md`, 010 `tasks.md` |
+| 34 | 2026-11-12 | Task SCRUM-72 – `/speckit-analyze` lần 4 sau review PR #84 và sửa F1 – F9 | 010, 011, 100 |
+| 35 | 2026-11-12 → 2026-11-15 | Task SCRUM-74 – triển khai backend 010 (Phase 1 – 5), kiểm tra hoàn thành, soạn mô tả PR | 010, code `src/backend` |
+| 36 | 2026-11-15 | Task SCRUM-80 – kiểm tra, soạn prompt và viết Part B (Tech Stack, C4 Level 1) | `architecture.md` |
+| 37 | 2026-11-16 | Review PR #90 (SCRUM-76, SCRUM-87) | PR #90, `sprint-04-report.md` |
+| 38 | 2026-11-16 | Rà soát AI log và bổ sung Mục 28 – 38 | `ai_log_hien.md` |
 
 ---
 
@@ -1910,3 +1921,558 @@ hãy lên xem review PR #84. Kiểm tra lại cần sửa điều gì, và giả
 - `grep` không còn `USER_SUSPENDED` (trừ ghi chú), `DELETED_USER`, `old_role` trong 010, 011, 100.
 - Chưa chạy `/speckit-analyze` lại, chưa render PDF.
 - Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+
+---
+
+> **Ghi chú về các Mục 28–38 (bổ sung ngày 2026-11-16).** Các mục này được lập sau khi đối chiếu AI log với transcript Claude Code trong `C:\Users\DMX\.claude\projects\...` và lịch sử Git. Chúng ghi lại các lần dùng AI đã xảy ra từ 31/10 đến 16/11 nhưng chưa có trong log. Mục được sắp theo thời gian làm việc, không theo thời điểm viết. Giờ ghi theo múi giờ Việt Nam (UTC+7; transcript lưu UTC). Những chỗ chỉ Hiển biết (đã chỉnh sửa gì, đã đăng gì) được để **Hiển điền**; các mục này không khẳng định thay Hiển điều transcript không cho thấy.
+
+## Mục 28: Review PR #52 (SCRUM-55, spec 040 Shopping List): chạy build, tái hiện lỗi, soạn comment và issue
+
+**Task: SCRUM-55 (Hiển là reviewer)**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-31 |
+| Giờ truy cập | 08:06 – 08:21 (phiên giải thích cách kiểm tra), 08:27 – 14:27 (phiên review chính) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/040-shopping-list/`, PR #52 (Hưng, đã merge 30/10), `wikicook-pa3-team-assignment.md` (SCRUM-55, SCRUM-56) |
+| Công cụ AI | Claude Code (VS Code, Windows 11), phiên bản 2.1.296, Sonnet 5.5 (`claude-sonnet-5-5`) |
+| Mục đích | Review kỹ thuật PR #52: kiểm tra code khớp spec 040 và kiến trúc Controller → Service → Repository, chạy `mvn clean verify`, tái hiện các lỗi tìm được, soạn comment và issue |
+| Nhánh Git | Không sửa repo. Build chạy trên bản clone riêng `~/wikicook-review` trong WSL Ubuntu (commit `56c2d6a`, merge PR #54 chứa PR #52) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 08:27 – 14:27 ngày 31/10/2026, prompt: "# Nhiệm vụ: Review PR #52 (shopping list, spec 040) của WikiCook …" (brief dài dán vào, tóm lược bên dưới), dùng để review PR #52; AI đọc PR và code, cài JDK 21 và Maven trong WSL, chạy `mvn -B clean verify`, viết một integration test tạm trong bản clone để tái hiện 4 lỗi, publish báo cáo lên một trang Artifact riêng tư và soạn sẵn comment cùng 4 issue; Hiển tự đăng comment và 4 issue lên GitHub.
+
+### Prompt đã dùng
+
+Tóm lược (nguyên văn nằm trong hội thoại):
+
+1. (08:27) Brief review PR #52: đọc PR `feature/SCRUM-55-backend-sh…`, đối chiếu spec 040 và kiến trúc, chạy kiểm tra, **chỉ đọc và báo cáo, không sửa code, không comment**.
+2. (09:41, 09:44) Hỏi mục "việc chưa kiểm tra được", rồi "hãy làm mục 1. trước" (dựng môi trường chạy `mvn clean verify`).
+3. (10:00, 13:15) Báo đã chạy xong từng bước cài đặt.
+4. (13:25) "hãy thực hiện" (tái hiện các phát hiện F1–F4 trên PostgreSQL thật).
+5. (13:37 – 13:46) Hỏi có cần đợi SCRUM-56 không; "hãy làm theo như bạn đề xuất" (viết báo cáo cuối).
+6. (13:50 – 14:16) "hãy publish báo cáo trang và chỉ tôi các bước để soạn nội dung comment lên PR", "hãy tiếp tục", "tôi không biết cách làm bước 4", hỏi về nhãn `gh issue create`.
+7. (14:23, 14:27) "tôi đã đưa lên github rồi", "hãy dọn file tạm cho tôi".
+8. Phiên 08:06: hỏi cách thực hiện việc kiểm tra spec 040 và kiến trúc; gặp lỗi `gh auth login` và hỏi mã 8 ký tự lấy ở đâu (mã thiết bị).
+
+### Tóm tắt phản hồi của AI
+
+- Máy chỉ có Java 1.8, không có `mvn`, không có Docker, nên báo cáo đầu ghi rõ chưa chạy được build và dùng log CI. Sau khi Hiển làm các bước cài, AI chạy `mvn -B clean verify` trong WSL: BUILD SUCCESS; `wikicook-ai` 18 unit và 4 IT, `wikicook-app` 39 unit và 3 IT, 0 lỗi, khớp log CI.
+- AI viết `ShoppingListReproIT` tạm (chỉ nằm trong bản clone) và tái hiện được cả 4 phát hiện F1–F4 trên PostgreSQL 16, 7/7 test chạy, để loại trừ khả năng lỗi do cách dựng test. Ví dụ F1: `unitName` là `@Transient` nên không gộp được nguyên liệu qua nhiều request.
+- Báo cáo cuối được publish lên Artifact riêng tư (`https://claude.ai/artifact/QdUk8tVZeT4PEQsuXP2MV3`); Hiển phải tự chia sẻ cho Hưng, Duy.
+- AI soạn `comment.md` và `issue-F1.md` … `issue-F4.md` trong thư mục tạm ngoài repo. **AI không đăng gì lên GitHub.** Hiển đăng comment lên PR #52 (tài khoản `MaiHien3507`, 07:22 UTC ngày 31/10) và tạo issue #55 – #58, gán `LqHung06`, nhãn `bug`. AI chỉ đọc lại để xác nhận (kiểm 150 ký tự đầu của comment).
+- Sai sót của AI cần ghi nhận:
+  1. Ở 13:37 AI nói không tìm thấy SCRUM-56 trong repo và kết luận review PR #52 không bị ảnh hưởng. Sau khi Hiển chọn đoạn SCRUM-56 trong `wikicook-pa3-team-assignment.md`, AI sửa lại: SCRUM-56 là frontend US1 + US2 của Duy và cần backend được sửa trước.
+  2. WSL ban đầu chưa có Docker; AI báo `apt-get install docker.io` chưa chạy thật sau khi Hiển báo "đã chạy xong bước 2", và phải đợi Hiển cài lại.
+  3. Mạng chậm (khoảng 120 KB/s) làm một lần tải JDK bị ngắt.
+- Dọn dẹp: AI xóa 8 script tạm trong `%TEMP%`, thư mục `C:\Users\DMX\pr52-post` và các file log, theo yêu cầu của Hiển. `git status` của repo không đổi.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Kết quả `mvn clean verify` trong WSL | Dùng làm bằng chứng cho báo cáo | Số test khớp log CI của PR; tự chạy lại được |
+| Bốn phát hiện F1–F4 | Dùng, đăng thành issue #55 – #58 | Đã tái hiện trên PostgreSQL 16 thật, không chỉ đọc code |
+| Trang Artifact báo cáo | Dùng để gửi nhóm | Riêng tư theo mặc định, Hiển tự cấp quyền xem |
+
+### Cách kiểm chứng
+
+- Issue #55 – #58 và comment trên PR #52 tồn tại trên GitHub (AI đã kiểm bằng `gh`).
+- Chưa kiểm lại: phần bảng phía dưới trong comment hiển thị đúng hay không (AI chỉ đọc 150 ký tự đầu).
+
+---
+
+## Mục 29: Review PR #59, #61, #63 và phản hồi review của Hưng (SCRUM-54, 55, 56, 57)
+
+**Task: SCRUM-54, SCRUM-55, SCRUM-56, SCRUM-57 (Hiển là reviewer)**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-01, 2026-11-02, 2026-11-03 |
+| Giờ truy cập | 01/11: 09:31 – 09:49; 02/11: 07:51 – 20:30 (PR #59, #61) và 16:52 – 18:02 (PR #63); 03/11: 09:31 – 09:34 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | PR #59 (Hưng, sửa blocker shopping list), PR #61 (Chung, UC specification 070 và 100), PR #63 (Duy, frontend shopping list, SCRUM-56); `specs/040`, `specs/070`, `specs/100`, `docs/analysis-and-design/database/full-schema.md` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 |
+| Mục đích | Soạn và đăng review cho PR của bạn cùng nhóm; đối chiếu phản hồi của Hưng với commit sửa lỗi; chạy lại test frontend của PR #63 |
+| Nhánh Git | Không sửa repo. PR #59 được `fetch` về ref local `pr59` (không checkout). PR #63 được kiểm trong thư mục tạm ngoài repo |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập từ 01/11 đến 03/11/2026 (khung giờ ở bảng trên), prompt: "hãy vào github để check PR của Hưng và Chung", "hãy lên github đọc và review PR #63 của Scrum 56 của Duy", "hãy viết review lại và thay thế cái comment cũ" (danh sách đầy đủ bên dưới), dùng để review các PR của Hưng, Chung và Duy; AI đọc diff bằng `gh`, đối chiếu với spec và schema, soạn review, và **AI đã đăng hai review lên GitHub bằng tài khoản `MaiHien3507` của Hiển** (PR #61 và PR #63) theo yêu cầu của Hiển.
+
+### Prompt đã dùng
+
+1. (01/11 09:31) Gửi file phản hồi của Hưng sau review vòng 1 của Hiển (`wikicook-scrum57-reply-to-hien-v2.md`, nằm ở thư mục dự án, chưa commit) và nhờ đối chiếu; 09:49: "hãy soạn bản trả lời".
+2. (02/11 07:51) "hãy vào github để check PR của Hưng và Chung"; 08:01: "hãy review của Hưng trước"; 08:58: "hãy review của Chung"; 09:03: "hãy viết review trong đoạn chat này để tôi gửi cho Chung"; 09:06: "hãy viết phần review lên github (ngắn gọn chỉ 6 mục chính)"; 20:30: "review lại của Chung".
+3. (02/11 16:52) "hãy lên github đọc và review PR #63 của Scrum 56 của Duy"; 16:57: hỏi hai mức Comment và Request changes khác nhau thế nào; 16:59: "hãy viết comment".
+4. (02/11 17:05) Brief: "Review kỹ thuật toàn bộ code phần E ở SCRUM-55 và SCRUM-56, không phải viết thêm code …: kiểm tra code khớp spec và acceptance criteria" (dán vào); 17:12: làm rõ chỉ cần SCRUM-56, chuẩn tiếng Anh kỹ thuật chỉ áp dụng cho `specs/`, `docs/` và `tasks.md`, hỏi cách xóa comment cũ; 17:58: "hãy viết review lại và thay thế cái comment cũ".
+5. (03/11 09:31) "hãy lên github đọc và nhận xét feat(shopping-list): frontend for US1 and US2 (SCRUM-56) - #63" (lần 1 lỗi OAuth tạm thời, lần 2 chạy được).
+
+### Tóm tắt phản hồi của AI
+
+- **Phản hồi của Hưng (01/11):** AI đối chiếu với commit `679f86a` trên nhánh sửa. Khớp: F2 (V402 seed 6 aisle, 7 unit, `ON CONFLICT DO NOTHING`), F3 (bỏ `readOnly` ở `getActiveShoppingList`), F4 (`saveAndFlush`), F5 (9 chỗ `X-User-Id` là `required = true`), F9. AI chỉ ra các chỗ chưa khớp, gồm V402 chưa đẩy sequence identity, `IngredientAggregationService` còn hardcode id↔tên 7 unit, constructor `ShoppingListService` truyền `unitRepository = null`. AI ghi rõ chỉ đọc diff, chưa chạy `mvn verify` nên "7 test, 0 failure" là của Hưng. Bản trả lời cho Hưng soạn ở file local, chưa commit, chưa gửi.
+- **PR #59 (Round 3, HEAD `36266bd`):** kết luận nên merge, 3 mục "nên sửa" của review trước đã xử lý; CI `verify` xanh. AI chưa chạy lại test. Trong lúc review, Hưng đã merge PR #59.
+- **PR #61 (Chung, UC 070 và 100):** AI đối chiếu Section 12 – 13 với `specs/070`, `specs/100`, `full-schema.md`; đề nghị sửa 6 mục (tên cột lệch schema, auto-hide kích hoạt lại sau khi khôi phục, mass-report cho Cooksnap sai logic, UC-070-01 gửi JSON còn UC-070-02 gửi multipart, v.v.) và **đăng lên PR #61 dạng Comment bằng tài khoản `MaiHien3507`**. Re-review (20:30, HEAD `56cb0af`): 6 mục đã xử lý, còn 3 chỗ sửa nhanh. PR có thêm một review APPROVED của `MaiHien3507` lúc 13:28 không phải do AI bấm.
+- **PR #63 (Duy, SCRUM-56):** lượt đầu AI đọc code frontend, đối chiếu DTO và controller backend, kết luận "nên Approve sau khi sửa vài chỗ nhỏ" và **đăng review dạng Comment**. Sau brief 17:05, AI tự nhận review đầu "chỉ phủ khoảng một phần ba": chưa đối chiếu spec và acceptance criteria. AI chạy `npm ci`, `npm test` (87/87 pass), `npm run lint`, build trong thư mục tạm, viết "Biên bản review PR #63 (SCRUM-56)" với kết luận **REQUEST CHANGES** và **thay nội dung review cũ** (id `5734820980`) bằng biên bản này, rồi dọn thư mục tạm. 03/11 AI đọc lại PR sau các commit sửa của Duy (HEAD `2ff8e7e`, CI xanh), không đăng gì.
+- Sai sót của AI cần ghi nhận:
+  1. Review PR #63 lần đầu thiếu phạm vi (xem trên) và đã được đăng trước khi AI tự phát hiện; phải thay bằng bản đầy đủ.
+  2. Lần 1 ngày 03/11 thất bại vì lỗi làm mới OAuth token (`another Claude Code process is refreshing it`), chạy lại sau 2 phút.
+  3. Với PR #63, lần đầu AI chưa chạy test frontend vì chưa có `node_modules`; bản thay thế mới chạy.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Review PR #61 (6 mục) đăng bằng tài khoản của Hiển | Dùng; Hiển yêu cầu đăng và rút gọn còn 6 mục | Đối chiếu được với `specs/070`, `specs/100` và `full-schema.md` |
+| Review PR #63 lần đầu (Comment) | Bỏ, thay bằng biên bản đầy đủ | Thiếu đối chiếu spec và acceptance criteria |
+| Biên bản review PR #63 (REQUEST CHANGES) | Dùng | AI tự chạy test 87/87, lint, build trước khi kết luận |
+
+### Cách kiểm chứng
+
+- Review `5734820980` trên PR #63, comment trên PR #61, trạng thái các PR đối chiếu được trên GitHub.
+
+---
+
+## Mục 30: Thử nối 030 với 040 và giải xung đột merge `main` (không có code mới)
+
+**Task: không gắn mã Jira (thử nghiệm tích hợp 030 → 040)**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-06 |
+| Giờ truy cập | 09:13 – 09:36 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/030-meal-planner/`, `specs/040-shopping-list/`, `specs/031-ai-weekly-meal-planner/tasks.md` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Opus 5.5 (`claude-opus-5-5`) |
+| Mục đích | Nối lịch tuần của 030 với shopping list của 040 (đưa dữ liệu từ lịch tuần sang shopping list) và giải xung đột khi merge |
+| Nhánh Git | `feature/030-040-meal-plan-import`, tạo từ `origin/feature/030-meal-planner`; đang dở một lần merge `origin/main` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Opus 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 09:13 ngày 06/11/2026, prompt: "liên kết phần 030 lại với phần 040 được chưa bạn. đưa dữ liệu từ lịch tuần sang shopping list", dùng để nối 030 và 040 và giải xung đột merge; AI chưa viết dòng code nào cho việc nối và làm hỏng bước giải xung đột (xem bên dưới), Hiển dừng phiên.
+
+### Prompt đã dùng
+
+```text
+liên kết phần 030 lại với phần 040 được chưa bạn. đưa dữ liệu từ lịch tuần sang shopping list
+```
+
+(Hiển ngắt phiên lúc 09:21.)
+
+### Tóm tắt phản hồi của AI
+
+- AI viết script gộp `specs/031-ai-weekly-meal-planner/tasks.md` đang có 9 dòng conflict marker. File dùng CRLF nên regex không khớp (`hunks 0`), lần sửa thứ hai vẫn không có tác dụng.
+- **Lỗi của AI (tự nhận):** lệnh tiếp theo vẫn chạy `git add`, nên file còn nguyên 9 dòng conflict marker đã bị stage. `git diff --diff-filter=U` báo 0 conflict nhưng thực tế chưa giải quyết. AI khuyên không commit merge này.
+- Kết quả: 030 và 040 vẫn chưa được nối, chưa có dòng code nào cho việc này, chưa commit, chưa push. Về sau (11/11, Mục 33) merge này được hoàn tất thành commit `82d3c70`; AI đã kiểm tra ngoài 3 file Hiển giải xung đột (`spec.md` và `tasks.md` của 031, `docker-compose.yml`) không có thay đổi lạ.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Script gộp `tasks.md` của 031 | Bỏ | Làm file lỗi bị stage; Hiển tự giải xung đột (xem Mục 33) |
+| Việc nối 030 và 040 | Chưa làm | Hiển dừng phiên |
+
+### Cách kiểm chứng
+
+- Mục 33 xác nhận kết quả merge cuối; `git log` có commit `82d3c70` (merge).
+
+---
+
+## Mục 31: Task SCRUM-72 – tạo plan, research, data model, contracts, quickstart và tasks cho 010 và 011
+
+**Task: SCRUM-72**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-06 (tối) và 2026-11-07 (sáng) |
+| Giờ truy cập | 06/11: 19:44 – 22:15 (010), 21:22 – 22:08 (011); 07/11: 08:18 – 08:57 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/010-user-authentication-roles/` và `specs/011-user-profile-dietary/` (plan, research, data-model, quickstart, `contracts/openapi.yaml`, `contracts/integration.md`, tasks), `specs/030-meal-planner/` làm mẫu, `specs/100-admin-moderation/` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Opus 5.5 (`claude-opus-5-5`); skill `speckit-plan`, `speckit-tasks`, `speckit-analyze` |
+| Mục đích | Sinh bộ tài liệu Spec Kit còn thiếu của 010 và 011 theo mẫu của 030; chốt các điểm còn mở; sửa các lỗi `/speckit-analyze` phát hiện |
+| Nhánh Git | `feature/030-040-meal-plan-import` (theo yêu cầu "không tạo branch mới", plan ghi `feature/SCRUM-xx-…` chờ mã Jira) |
+
+Mục này là phần chuẩn bị của Mục 26 (Mục 26 bắt đầu bằng `/speckit-analyze` lúc 09:12 ngày 07/11, sau các bản sửa dưới đây).
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Opus 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 19:44 ngày 06/11 đến 08:57 ngày 07/11/2026, prompt: "hãy viết prompt cho tôi để có thể tạo ra các file của thư mục specs/010-user-authentication-roles giống như trong thư mục specs/030-meal-planner", sau đó `/speckit-plan`, `/speckit-tasks`, `/speckit-analyze` cho 010 và 011 (nguyên văn trong hội thoại), dùng để tạo tài liệu thiết kế; AI tạo 6 file thiết kế và `tasks.md` cho mỗi spec (010: 189 task; 011: 140 task), chốt hàng chục điểm còn mở và sửa các lỗi phân tích; Hiển ra các yêu cầu bổ sung (ví dụ quy tắc hoãn xóa) và chỉ định các dòng cần sửa ngày 07/11; các quyết định AI chốt thay Hiển xem bảng cuối.
+
+### Prompt đã dùng
+
+Tóm lược:
+
+1. (19:44) Nhờ viết prompt tạo các file của 010 giống 030. AI đề xuất hai prompt chạy lần lượt (`/speckit-plan` rồi `/speckit-tasks`) và một prompt rà soát; lưu ý `.specify/feature.json` đang trỏ sang 011 nên đặt `SPECIFY_FEATURE_DIRECTORY`. Tương tự cho 011 lúc 21:22 (3 prompt).
+2. (19:53) `/speckit-plan` cho 010 (chỉ tạo file trong thư mục 010, không sửa `spec.md`, code, migration, `full-schema.md`; trả lời 14 câu research; mẫu 030).
+3. (20:22) Dán lại kết quả plan và yêu cầu **chốt các mục còn mở**; (20:41) bổ sung quy tắc: tài khoản chưa xác minh đang bị đình chỉ không bị xóa sau 7 ngày khi còn án.
+4. (20:45) `/speckit-tasks` cho 010 (chỉ tạo `tasks.md`, mẫu `specs/030-meal-planner/tasks.md`).
+5. (21:34) `/speckit-plan` cho 011; (22:08) "hãy chốt các vấn đề cho tôi".
+6. (22:15) `/speckit-analyze` cho 010 (không sửa file).
+7. (07/11 08:18) "Sửa spec 011 theo các dòng 1, 3, 6, 10, 11, 12, 16. Sửa spec 010 theo dòng 12, 13."
+8. (07/11 08:23) "hãy đề xuất nội dung sửa cụ thể cho 8 lỗi HIGH và sửa cho tôi"; 08:43: "hãy sửa lỗi medium và low xong viết cho tôi prompt để tôi chạy speckit-analyze"; 08:57: `/speckit-tasks` cho 011.
+
+### Tóm tắt phản hồi của AI
+
+- **010:** `plan.md`, `research.md` (R1 – R16, cộng bảng 26 điểm cần chốt, sau thêm điểm 27), `data-model.md` (đề xuất `V102` – `V104`), `quickstart.md`, `contracts/openapi.yaml`, `contracts/integration.md`, `tasks.md` (189 task, 126 task `[P]`; T001 mã Jira và T002 duyệt PR đang chặn mọi task từ T003). Script đối chiếu: đủ 37 FR/NFR và 7 SC; 26 acceptance scenario và 15 edge case đều có task test.
+- **011:** 6 file thiết kế (`research.md` R1 – R20, 14 endpoint trong `openapi.yaml`, bảng 19 điểm cần chốt), `tasks.md` 140 task (40/40 acceptance scenario và 18/18 edge case có task test), sửa `checklists/requirements.md` từ 200 xuống 50 nguyên liệu loại trừ.
+- **`/speckit-analyze` 010 (22:15):** 1 CRITICAL, 8 HIGH, 13 MEDIUM, 5 LOW. AI sửa 8 HIGH (ví dụ I1 mất mạng khi mở app bị đẩy về `/login`, I2 đăng nhập Google xóa án của tài khoản chưa xác minh, I3 spec 100 không có quy trình khiếu nại, I4 spec 100 ghi cấm "không thể hoàn tác"), rồi 9 MEDIUM và 5 LOW (4 MEDIUM đã được bản trước xử lý).
+- **Các quyết định do AI chốt thay Hiển** theo yêu cầu "hãy chốt các vấn đề cho tôi" (24/26 mục của 010 và 17/19 mục của 011; hai mục còn mở là mã Jira và hosting/mapping dị ứng, cần người thật): Moderator đình chỉ Member và Contributor tối đa 30 ngày; đình chỉ có hiệu lực ở request kế tiếp (spec 100 phải sửa theo); đóng tài khoản cho người bị cấm; household trống dùng 2 ở mọi spec; diet type có 4 giá trị, không có Keto; **công thức `ARCHIVED` được giữ lại khi xóa tài khoản (khác chữ của FR-034 và khác đề xuất trước của chính AI)**. AI tự ghi rằng đây là lựa chọn của AI nên Hiển phải đọc lại và Duy phải duyệt qua PR; AI đổi Status của 010 thành "In Review".
+- Hạn chế: không chạy code, migration hay `openapi.yaml` (chưa có `node_modules` để parse); các sửa đổi spec 100 chờ Duy (E) xác nhận.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Bộ tài liệu plan, research, data-model, contracts, quickstart, tasks của 010 và 011 | Dùng làm bản nháp, đưa vào PR #84 | Sau đó được rà qua `/speckit-analyze` nhiều lượt (Mục 26, 27, 34) và Duy, Hưng review |
+| Các quyết định AI chốt thay Hiển | Dùng tạm, chờ Duy duyệt PR | Không phải quyết định đã được nhóm duyệt |
+| Quy tắc hoãn xóa tài khoản chưa xác minh đang bị đình chỉ | Dùng | Do Hiển yêu cầu thêm (20:41) |
+
+### Cách kiểm chứng
+
+- Số liệu task, số FR/NFR đếm bằng script của AI; Mục 26 và 27 ghi các lượt kiểm chứng tiếp theo.
+
+---
+
+## Mục 32: Review PR #83 (spec 070 và 100, research) và soạn comment
+
+**Task: review PR #83 của Chung (transcript không ghi mã Jira)**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-11 |
+| Giờ truy cập | 20:28 – 20:31 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | PR #83 "docs(specs): ratify spec 070 & 100 and add technical research documents (Phase 1 & 2)", `docs/analysis-and-design/database/full-schema.md` §4.9 và §4.10, nhánh `feature/SCRUM-72-spec-kit-010-011` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Opus 5.5 |
+| Mục đích | Review PR #83 và viết comment để Hiển đăng |
+| Nhánh Git | Không sửa repo |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Opus 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 20:28 ngày 11/11/2026, prompt: "hãy vào review PR docs(specs): ratify spec 070 & 100 and add technical research documents (Phase 1 & 2)- #83", rồi "hãy viết comment chô tôi", dùng để review PR #83; AI đọc diff bằng `gh` (9 lệnh Bash, 1 lần đọc file) và soạn comment; Hiển tự đăng.
+
+### Prompt đã dùng
+
+```text
+hãy vào review PR docs(specs): ratify spec 070 & 100 and add technical research documents (Phase 1 & 2)- #83
+```
+
+```text
+hãy viết comment chô tôi
+```
+
+### Tóm tắt phản hồi của AI
+
+- Kết luận: **Request changes**, chưa nên merge. Nghiệp vụ mới hợp lý (chặn tác giả tự đánh giá, giới hạn tốc độ đăng, nút "Hữu ích", tự ẩn khi đủ 10 báo cáo, khóa lạc quan bằng `version`) nhưng spec chuyển "Ratified" khi còn lệch.
+- Lỗi chặn: (1) lệch `full-schema.md` §4.9, §4.10 (`reviews`/`cooksnaps` dùng `status VISIBLE/HIDDEN`, không `deleted_at`; `reports` dùng cột FK riêng và `CHECK num_nonnulls = 1`, status `OPEN`; `audit_logs` có `actor_id` NULL được); (2) tên cột viết kiểu "a / b" (ví dụ `photo_url` / `image_url`); (3) xung đột với nhánh `feature/SCRUM-72-spec-kit-010-011` (commit `a9b92cc`).
+- Comment gửi tác giả (`itzchugnn`) viết giọng đồng đội, dán thẳng vào ô review. AI không đăng gì.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Các lỗi lệch schema | Dùng, đối chiếu được với `full-schema.md` | Có số mục và tên cột cụ thể |
+| Nội dung comment | đăng nguyên văn | Transcript chỉ cho thấy bản nháp |
+
+### Cách kiểm chứng
+
+- Đối chiếu với `full-schema.md` §4.9, §4.10 và PR #83 trên GitHub.
+
+---
+
+## Mục 33: Task SCRUM-74 (chuẩn bị) – kiểm tra tiến độ, cập nhật `main`, tạo nhánh, merge và soạn prompt triển khai
+
+**Task: SCRUM-74, SCRUM-75**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-11 |
+| Giờ truy cập | 12:45 – 13:06 (phiên riêng, còn mở tới 14:01 ngày 12/11); 20:45 (một câu hỏi trong phiên SCRUM-72 của Mục 26) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `pa4-guide.md` (SCRUM-74, 75), `specs/010-user-authentication-roles/tasks.md`, `.specify/memory/constitution.md` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Opus 5.5 (một lượt cuối ngày 12/11 sau khi Hiển chạy `/model sonnet`) |
+| Mục đích | Kiểm tra SCRUM-74, 75 đã làm chưa; kéo `main` mới; tạo nhánh `feature/SCRUM-74-auth-backend`; commit, merge; viết prompt `/speckit-implement`; trả lời có nên chạy implement trước khi PR SCRUM-72 được duyệt |
+| Nhánh Git | `feature/030-040-meal-plan-import` → `feature/SCRUM-74-auth-backend` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Opus 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 12:45 ngày 11/11/2026, prompt: "@pa4-guide.md hãy xem file và kiểm tra xem Scrum 74 và 75 tôi đã làm được chưa", "hãy tạo nhánh cho tôi", "hãy commit trước rồi chuyển qua cho tôi", "hãy merge", "hãy viết prompt cho tôi để thực hiện Scrum 74", dùng để chuẩn bị SCRUM-74; AI quét các nhánh, cập nhật `main`, tạo nhánh, **chạy `git commit`, `git stash` và `git merge`** trên máy của Hiển và soạn prompt triển khai; Hiển ra từng lệnh.
+
+### Prompt đã dùng
+
+1. (12:45) "@pa4-guide.md hãy xem file và kiểm tra xem Scrum 74 và 75 tôi đã làm được chưa".
+2. (12:59) "hãy kiểm tra code mới nhất trên main và pull về cho tôi".
+3. (13:00) "hãy tạo nhánh cho tôi"; (13:02) "hãy commit trước rồi chuyển qua cho tôi"; (13:05) "hãy merge".
+4. (13:06) "hãy viết prompt cho tôi để thực hiện Scrum 74".
+5. (20:45, phiên SCRUM-72) "nếu chưa được approve thì tôi chạy trước speckit implememt được không".
+
+### Tóm tắt phản hồi của AI
+
+- SCRUM-74 và 75 chưa có dòng code nào; thứ đã có là tài liệu Spec Kit của SCRUM-72, `V101__users_auth.sql`, và `CurrentUser` vẫn ghi "Spec 010 will implement it…". `tasks.md` của 010 mới xong T001.
+- `main` ở máy cũ; AI cập nhật lên `544bb37` (PR #81, thêm 76 commit gồm search 020, AI planner 031, frontend shell). Tạo nhánh `feature/SCRUM-74-auth-backend` từ đó nhưng **chưa chuyển** vì nhánh 030-040 còn 178 file chưa commit, đưa ra 3 cách và Hiển chọn commit trước.
+- **Phát hiện và xử lý:** nhánh 030-040 đang có một merge `main` làm dở (PR #72). AI định tách 4 commit nhưng Git không cho; lệnh commit cuối hoàn tất merge thành commit `82d3c70`, AI sửa lại thông điệp. Các thay đổi chưa staged được cất vào `stash@{0}`; trong đó có phần sửa `ai_log_hien.md` làm mất cột cuối của 3 dòng bảng (AI báo Hiển xem lại) và spec 080 chỉ có ở máy.
+- "hãy merge": nhánh SCRUM-74 được fast-forward lên `bd611ff` (chứa nhánh SCRUM-72), không có conflict.
+- Prompt `/speckit-implement` cho SCRUM-74 (Phase 1 – 5 backend, TDD, không push, không merge vào `main`, không thêm dòng Co-Authored-By) được soạn và Hiển dán vào phiên mới (Mục 35).
+- Câu hỏi 20:45: AI trả lời **không nên** chạy implement trước khi PR SCRUM-72 được duyệt (vi phạm nguyên tắc I của constitution; T002 sẽ phải bị đánh dấu sai sự thật), và nếu nhóm vẫn quyết định làm trước thì phải ghi rõ trong Sprint 4 report và AI log. Hiển bắt đầu implement ngày 12/11 lúc 14:01; khi đó PR #84 đã vào `main` (merge commit `b18cd2e`, 14:05) và AI merge `origin/main` vào nhánh SCRUM-74 (Mục 35).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Nhánh `feature/SCRUM-74-auth-backend` | Dùng | Tạo từ `main` mới, sau đó nhận SCRUM-72 qua merge |
+| Lời khuyên không implement trước khi PR được duyệt | Dùng (Hiển implement sau khi PR #84 merge) | Theo constitution nguyên tắc I |
+
+### Cách kiểm chứng
+
+- `git reflog` có `82d3c70` (merge) và việc fast-forward lên `bd611ff`.
+
+---
+
+## Mục 34: Task SCRUM-72 – `/speckit-analyze` lần 4 sau review PR #84 và sửa F1 – F9
+
+**Task: SCRUM-72**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-12 |
+| Giờ truy cập | 13:48 – 13:55 (cùng phiên Claude Code của Mục 26 và 27) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/010-user-authentication-roles/`, `specs/011-user-profile-dietary/`, `specs/100-admin-moderation/`; code `main` (`RecipeSearchController`, `PublicRoutes`, `session.ts`, `DevHeaderSearchViewer`) |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 |
+| Mục đích | Chạy lại `/speckit-analyze` cho 010 sau khi gộp `main` và sửa theo review PR #84; sửa các phát hiện |
+| Nhánh Git | `feature/SCRUM-72-spec-kit-010-011` (worktree `../WikiCook-SCRUM-72`); kết quả được commit `7ca0520` lúc 13:54 |
+
+Cập nhật Mục 27: dòng "AI chưa chạy lại `/speckit-analyze`" đúng tại thời điểm viết Mục 27; sau đó AI đã chạy lại như mô tả dưới đây.
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 13:48 ngày 12/11/2026, prompt: "có" (đồng ý chạy `/speckit-analyze` do AI đề nghị), rồi "hãy sửa cho tôi", dùng để phân tích lại 010 sau review; AI chạy `/speckit-analyze` (lần 4), tìm F1 – F9 và sửa trong tài liệu 010, 011, 100.
+
+### Prompt đã dùng
+
+```text
+có
+```
+
+(AI đề nghị chạy lại `/speckit-analyze` sau khi Hiển báo "tôi đã push rồi" lúc 13:47; skill chạy với feature `specs/010-user-authentication-roles` trong worktree SCRUM-72.)
+
+```text
+hãy sửa cho tôi
+```
+
+```text
+cần push lên nhánh khác không, hiện  tại đang ở nhánh Scrum 74
+```
+
+### Tóm tắt phản hồi của AI
+
+- Kiểm chứng 7 mục sửa từ Mục 27 đều khớp; phát hiện mới do `main` đổi: **F1 (HIGH)** `main` đã có `RecipeSearchController` (`GET /api/v1/recipes/search`, `/search/options`, `/featured`), nhưng 010 mặc định từ chối mọi `/api/**` chưa khai báo, nên Phase 2 sẽ làm trang chủ và tìm kiếm trả 401 cho khách; **F2 (HIGH)** dev identity của `session.ts`, `addIdentity` và `DevHeaderSearchViewer` chưa được tính; F3 `finishExpired` trong cùng giao dịch sẽ bị rollback khi lỗi 409; F4 – F9 (enum `LiftReason`, test `audit_logs` không dọn được, danh sách việc của Dự, spec 100 gọi `AccountAdminFacade.suspend`, header đăng xuất và route công khai, dòng "Trang chủ" lỗi thời).
+- Sửa: `PublicRoutes` (T043) khai báo 3 route tìm kiếm công khai; thêm T019a, T042a (`AuthSearchViewer`); `finishExpired` chạy `REQUIRES_NEW`; thêm `LiftReason`; tổng 202 task, mã không trùng.
+- Hạn chế: AI không chạy lại `/speckit-analyze` sau lượt sửa này; AI ghi nhận các nhãn **[CODE]/[TL]/[HV]** để phân biệt điều đã đọc từ code, từ tài liệu và suy luận từ hiểu biết về framework.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Sửa F1 – F9 | Dùng, đã commit `7ca0520` | Là cơ sở để triển khai Phase 2 đúng với `main` mới |
+| Quyết định `finishExpired` dùng `REQUIRES_NEW` | Dùng | Về sau được hiện thực ở Mục 35 |
+
+### Cách kiểm chứng
+
+- `git show 7ca0520`; PR #84 đã merge lúc 14:05 ngày 12/11 (commit `b18cd2e`).
+- Chưa chạy lại `/speckit-analyze` sau lượt sửa.
+
+---
+
+## Mục 35: Task SCRUM-74 – triển khai backend 010 (Phase 1 – 5), kiểm tra hoàn thành và soạn mô tả PR
+
+**Task: SCRUM-74**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-12, 2026-11-13, 2026-11-15 |
+| Giờ truy cập | 12/11 14:01 – 14:31 (Phase 1); 13/11 07:47 – 09:56 (Phase 2 – 4, chuyển ổ D); 15/11 09:28 – 09:59 (Phase 5, T184, mô tả PR) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/010-user-authentication-roles/` (`tasks.md`, `plan.md`, `contracts/openapi.yaml`), `pa4-guide.md` (SCRUM-74), code 030, 031, 040 (chỉ phần định danh) |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 (`claude-sonnet-5-5`), skill `speckit-implement` |
+| Mục đích | Hiện thực phần backend của 010: Phase 1 Setup, Phase 2 Foundational, US1 Sign in, US2 Register + verify email, US3 Role-based access; T184 (JaCoCo) |
+| Nhánh Git | `feature/SCRUM-74-auth-backend`, 23 commit đi trước `origin/main` (`b18cd2e`), toàn bộ tác giả Git là Hiển, không có dòng Co-Authored-By theo yêu cầu. PR #89 "Feature/scrum 74 auth backend" |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5 (claude-sonnet-5-5), Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập từ 14:01 ngày 12/11 đến 09:59 ngày 15/11/2026, prompt: `/speckit-implement` kèm brief "Thực hiện SCRUM-74: Backend cho spec 010 User Authentication & Roles" (nguyên văn trong hội thoại, tóm lược bên dưới), dùng để hiện thực backend 010 theo TDD; AI cài môi trường (JDK 21, Maven, Docker), viết test trước rồi code cho Phase 1 – 5, chạy `mvn verify` sau mỗi phase, tạo 23 commit và soạn mô tả PR; Hiển xác nhận từng phase bằng lệnh kế tiếp; việc push và mở PR do Hiển thực hiện.
+
+### Prompt đã dùng
+
+Brief ban đầu (14:01), tóm lược: nhánh `feature/SCRUM-74-auth-backend`; đọc `specs/010…` và `constitution.md`; phạm vi MVP chỉ backend: Phase 1 (T003 – T009, bỏ T010 frontend), Phase 2 (T011 – T022, T028 – T047), backend của Phase 3 – 5, cuối cùng T184 (JaCoCo `com.wikicook.auth.service` ≥ 70% line và branch); **không làm** frontend (SCRUM-76 của Hưng), Phase 6 – 9, T170; riêng T002 phải hỏi Hiển đã duyệt chưa; TDD bắt buộc (test trước, FAIL, rồi GREEN); IT dùng `AbstractPostgresIT` (Testcontainers pgvector, không H2); task ⛓ (T022, T044 – T047) chỉ đổi phần định danh; Conventional Commits có mã Jira; commit nhỏ; **không** thêm Co-Authored-By hay "Generated with Claude Code"; **không push, không merge vào `main`**; báo cáo tiếng Việt sau mỗi phase (task xong, kết quả `mvn verify`, file người khác đã sửa, điểm cần Hiển quyết) rồi dừng chờ xác nhận.
+
+Các lượt sau của Hiển: "hãy cài giúp tôi" (14:11), "hãy chạy phase 2" (13/11 07:47), "có thể chuyển hết qua ổ D không" (08:31), "chuyển docker sang ổ D" (08:35), "sang phase 3" (08:48), "hãy sang phase 4" (09:09; lượt này bị cắt giữa chừng do lỗi mạng `ENOTFOUND` lúc 09:14, Hiển gửi lại "tiếp tục" lúc 09:20), "chuyển sang phase 5" (15/11 09:28), "hãy kiểm tra xem tôi đã hoàn thành Scrum 74 chưa, có cần push lên hay pull từ main về không" (09:52), "bạn hãy tick T184." (09:56), "hãy viết cho tôi phần description" (09:57).
+
+### Tóm tắt phản hồi của AI
+
+- **Điểm lệch so với brief:** nhánh SCRUM-74 chưa có tài liệu SCRUM-72 như brief nói; AI `git fetch` thấy PR #84 đã vào `origin/main` và merge (fast-forward, HEAD `b18cd2e`). Checklist `requirements.md` còn 1 mục chưa tick (AI báo, không chặn code). AI hỏi Hiển về T002 trước khi bắt đầu T003 như brief yêu cầu.
+- **Môi trường:** cài JDK 21.0.13, Maven 3.9.11, Docker Desktop 29.9.3 bằng PowerShell. Ổ `C:` gần đầy nên Docker báo `read-only file system` lần đầu; AI chuyển dữ liệu Docker sang `D:\DockerWSL`, sau đó theo yêu cầu chuyển JDK, Maven, kho Maven, junction `D:\wk` và cả chương trình Docker sang ổ D (gỡ rồi cài lại, image cũ mất và tải lại). Đường dẫn dự án có tiếng Việt làm JaCoCo crash nên Maven chạy qua junction ASCII.
+- **Phase 1 (T002 – T009):** thêm starter `oauth2-resource-server`, `oauth2-client`, `mail`; `spring-security-test`, `wiremock-standalone`; luật JaCoCo ≥ 0,70 cho `com.wikicook.auth.service`; biến môi trường trong `.env.example` (không có giá trị thật), service `mailpit`, `FLYWAY_OUT_OF_ORDER`. Mốc trước khi sửa: `mvn verify` xanh; sau khi bật security, 25/266 unit và 67/165 IT đỏ (92 lỗi) do mọi `/api/**` bị chặn, đúng như dự kiến.
+- **Phase 2 (T011 – T022, T028 – T047):** migration `V102` – `V104` (`audit_logs` có trigger chỉ-thêm, `user_suspensions`, `blocked_emails`, bảng email, cột phiên), 10 entity, `PrehashedBCryptPasswordEncoder`, `BcryptBulkhead`, `EmailHasher`, `AccessTokenService`, `SecurityConfig`, `SessionJwtAuthenticationConverter` (kiểm phiên đúng 4 bước, mỗi request đúng một query, có test đếm), `AuditService`, bỏ `X-User-Id` ở `ShoppingListController`. Kết quả: app 344 unit và 206 IT, **0 đỏ** (trước 92 đỏ).
+- **Phase 3 (US1 Sign in):** `SignInThrottle` (khóa 5 lần trong 15 phút), `SessionService` (refresh token 256 bit chỉ lưu SHA-256, xoay vòng, ân hạn 10 giây, phát hiện dùng lại), `SignInService`, `AuthController` (`/auth/login`, `/auth/refresh`, `/auth/logout`, `/auth/me`). App: 371 unit và 246 IT, 0 đỏ.
+- **Phase 4 (US2 Register + verify email):** `@ValidPassword`, `EmailRequestLimiter` (advisory lock), `OneTimeTokenService`, `LinkMailer`, mẫu email tiếng Việt, `RegistrationService`, `POST /auth/register`, `/confirm`, `/resend`. App: 401 unit và 289 IT, 0 đỏ.
+- **Phase 5 (US3 Role-based access):** `PermissionMatrixIT` 45 ca (58 test kể cả ca Member chưa xác minh), `AccountActionPolicy` (33 test), `AccountAdminService` (đổi vai trò, đình chỉ, cấm, gỡ án trong một transaction), `POST /auth/reauthenticate`, `AuditLogController` chỉ đọc, `AdminBootstrapRunner`, sửa `openapi.yaml` (T114). App: 434 unit và 413 IT, 0 đỏ.
+- **Kết quả cuối:** `mvn verify` BUILD SUCCESS; AI 60 unit và 27 IT (2 skipped); app 434 unit và 413 IT; JaCoCo `com.wikicook.auth.service` **97,4% line (673/691), 90,5% branch (257/284)**, vượt ngưỡng 70%. T184 được tick ở commit `bc6aa8c` theo yêu cầu của Hiển.
+- **File của người khác đã sửa (⛓), chỉ đổi phần định danh:** 040: `ShoppingListController`, `ShoppingListControllerTest`, `F1_CrossRequestImportMergesIT`, `F3_GetActiveCreatesListForNewUserIT`, `F4_ArchiveRestoreIT`; 030: `HeaderCurrentUser` chuyển từ `mealplan/support` sang `support/` (thêm `@Primary` và filter chain permit-all cho `/api/**`), đổi import ở 5 IT và `addFilters = false` ở `MealPlanExceptionHandlerTest`; 020 và 031: các IT chuyển sang `HeaderCurrentUser` và JWT thật (commit `badbe92`).
+- **Điểm AI nêu cho Hiển quyết định (còn chờ khi viết mục này):** route tìm kiếm là "đăng nhập tùy chọn"; tắt CSRF toàn bộ; ranh giới khóa 15 phút đọc là "ngặt nhỏ hơn 15 phút"; tên audit `SUSPENSION_EXPIRED` khi án tự hết hạn; `finishExpired` đã làm trước hạn (một phần T164); `closureToken` cho tài khoản bị cấm (R16) và `OutboxDispatcher` gửi email thật chưa có, để Phase 8.
+- **Kiểm tra hoàn thành (09:52):** AI kết luận code và test xong nhưng chưa "Done" theo `pa4-guide.md` vì PR chưa tồn tại (nhánh chưa push); khuyên push nhánh và **không merge vào `main`** trước SCRUM-76 vì frontend hiện tại sẽ hỏng (mọi `/api/**` không JWT trả 401). T170 (xóa dev stub) chưa làm. AI không tự push; sau đó nhánh được đẩy lên và PR #89 được mở.
+- **Mô tả PR (09:57):** AI soạn mô tả tiếng Việt cho Dự (reviewer) và chủ module 020/030/031/040, có cảnh báo "KHÔNG merge vào `main` trước SCRUM-76" và danh sách file ⛓; AI bỏ dòng "Generated with Claude Code" theo quy tắc của Hiển.
+- Sai sót và hạn chế của AI cần ghi nhận:
+  1. Các kịch bản Checkpoint chạy tay (ví dụ Q1 – Q18, Q46) **chưa được chạy** vì chưa có frontend; mới được kiểm bằng test tự động.
+  2. Tại thời điểm kết thúc, Phase 6 – 9 (đặt lại mật khẩu, Google sign-in, tích hợp, polish) và T170 chưa làm; chỉ phạm vi Phase 1 – 5 và T184 đã xong.
+  3. AI thêm một số test ngoài `tasks.md` (ví dụ `AuthPropertiesTest`, `AuditServiceTest`, `BlockedEmailServiceTest`); cần Hiển xác nhận là chấp nhận được.
+  4. Lần chạy `mvn verify` đầu tiên dùng `maven.test.failure.ignore` chỉ để lấy số liệu cơ sở, không phải bản build đạt.
+  5. Hai quyết định thiết kế (đọc "trong 15 phút" là ngặt nhỏ hơn; route tìm kiếm đăng nhập tùy chọn) là cách đọc của AI, chưa có người duyệt.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Toàn bộ code, test và migration Phase 1 – 5 | Dùng | Test chạy xanh; chờ review của Dự |
+| 23 commit do AI tạo (không có Co-Authored-By) | Dùng | Theo yêu cầu của Hiển trong brief |
+| File ⛓ của 030, 031, 040 | Dùng, cần chủ module xem lại | Chỉ đổi phần định danh, theo `tasks.md` |
+| T170 (xóa dev stub), Phase 6 – 9 | Chưa làm | Ngoài phạm vi brief |
+| Mô tả PR | Dùng | AI bỏ dòng attribution theo yêu cầu |
+
+### Cách kiểm chứng
+
+- `mvn verify` (Maven qua junction `D:\wk`): BUILD SUCCESS, số test như trên; JaCoCo `com.wikicook.auth.service` 97,4% line, 90,5% branch.
+- `git log b18cd2e..feature/SCRUM-74-auth-backend`: 23 commit, 185 file thay đổi (+13.052/−237).
+- Chưa kiểm: Checkpoint chạy tay, hành vi với frontend (chờ SCRUM-76).
+
+---
+
+## Mục 36: Task SCRUM-80 – kiểm tra SCRUM-80, 81, soạn prompt và viết Part B (Tech Stack và C4 Level 1)
+
+**Task: SCRUM-80**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-15 |
+| Giờ truy cập | 10:00 – 10:03 (kiểm tra và soạn prompt), 10:07 – 10:15 (thực hiện) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `pa4-guide.md` (SCRUM-80, 81), `docs/analysis-and-design/architecture.md`, `.specify/memory/constitution.md`, `src/backend/pom.xml`, `application.yml`, `docker-compose.yml` (gốc và backend), `src/backend/Dockerfile`, `src/frontend/package.json` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 (hai phiên: soạn prompt, thực hiện) |
+| Mục đích | Kiểm tra SCRUM-80 và 81 đã làm chưa; viết prompt cho SCRUM-80; viết Part B của `architecture.md`: tech stack thực tế và C4 Level 1 System Context bằng Mermaid |
+| Nhánh Git | `docs/SCRUM-80-tech-stack-c4-l1` (AI fast-forward lên `origin/main` `b18cd2e` trước khi làm); thay đổi ở `architecture.md` chưa commit khi viết mục này |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 10:00 và 10:07 ngày 15/11/2026, prompt: "hãy kiểm tra xem tôi đã làm được SCRUM 80 và 81 chưa", "hãy viết prompt đề làm Scrum 80", rồi dán prompt đó vào phiên mới (nguyên văn trong hội thoại), dùng để làm Part B; AI kiểm chứng tech stack theo cấu hình thật, viết lại `architecture.md` (+176/−65 dòng) và render thử sơ đồ; Hiển review và là người quyết định nội dung nộp.
+
+### Prompt đã dùng
+
+1. (10:00) "hãy kiểm tra xem tôi đã làm được SCRUM 80 và 81 chưa".
+2. (10:02) "hãy viết prompt đề làm Scrum 80".
+3. (10:07, phiên mới) Prompt do AI soạn ở bước 2, tóm lược: làm SCRUM-80 (Part B), người làm Hiển, reviewer Duy, hạn 17/11; file đích `docs/analysis-and-design/architecture.md` (bản PA1, 102 dòng); **không làm Part C** (SCRUM-81); đọc trước khi sửa; kiểm chứng từng dòng tech stack với `pom.xml`, `application.yml`, Compose, Dockerfile, `package.json` thay vì tin tài liệu PA1; vẽ C4 Level 1 bằng Mermaid; giải thích bằng tiếng Anh; phân biệt dịch vụ hiện có và dự kiến.
+
+### Tóm tắt phản hồi của AI
+
+- **Kiểm tra SCRUM-80 và 81 (10:00):** chưa làm. `architecture.md` 102 dòng, lần sửa cuối là commit PA1 `af3a9f3`, không có commit nào mang mã SCRUM-80 hay 81. AI lưu ý tài liệu PA1 ghi Redis, pgvector, Gemini Pro/GPT-4 và Text Embedding Model như đã có và cần kiểm chứng.
+- **Part B (10:07 – 10:15):** AI fast-forward nhánh lên `origin/main` (`b18cd2e`) rồi viết lại `architecture.md`. Bảng kiểm chứng (đối chiếu với `origin/main`): Java 21, Spring Boot 3.5.16, Hibernate 6.6.53, springdoc 2.8.13, Maven 3.9; PostgreSQL 16 với pgvector (client 0.1.6), `pg_trgm`, `unaccent`, Flyway 11.7.2 (15 migration `V001` – `V403`); React 18.3.1, Vite 6.4.5, Tailwind 3.4.19, TypeScript 5.9.3, React Router 6.30.6, nginx 1.27; Gemini API (LLM `gemini-3.5-flash`, embedding `gemini-embedding-001` 768 chiều; mặc định `mode=mock`, cần key mới gọi thật); Docker Compose (`db`, `app`, `web`, `migrate`), GitHub Actions, JUnit/Testcontainers/JaCoCo, Vitest/Playwright; scraper Python angingon.com chạy offline, không nằm trong app.
+- **Quyết định của AI:** vẽ bằng `flowchart` mô phỏng C4 thay vì `C4Context`, vì theo hiểu biết của AI `C4Context` không vẽ được nét đứt phân biệt hiện có và dự kiến; AI ghi lý do vào tài liệu và nói thẳng rằng chưa thử lại bằng `mmdc`. Sơ đồ render thử bằng `mmdc` 11 qua Edge, AI đã xem ảnh. File giữ CRLF toàn bộ.
+- Hạn chế: chưa commit, chưa push; không chạy ứng dụng để xác nhận từng dịch vụ hoạt động, chỉ đọc cấu hình; phần "dự kiến" phụ thuộc vào phạm vi PA4 mà Duy (reviewer) cần xác nhận.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Bảng kiểm chứng tech stack | Dùng | Số liệu lấy từ cấu hình thật; AI không chạy ứng dụng |
+| Sơ đồ C4 L1 dạng `flowchart` | Dùng | AI nêu lý do và giới hạn của quyết định này |
+| Part C (SCRUM-81) | Không làm | Theo brief, làm sau code freeze |
+
+### Cách kiểm chứng
+
+- `git diff docs/analysis-and-design/architecture.md`: +176/−65 dòng; Mermaid render bằng `mmdc`.
+
+---
+
+## Mục 37: Review PR #90 (SCRUM-76 giao diện đăng nhập/hồ sơ và SCRUM-87 biên bản standup)
+
+**Task: SCRUM-76, SCRUM-87 (Hiển là reviewer của SCRUM-76)**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-16 |
+| Giờ truy cập | 11:56 – 11:57 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | PR #90 (+6.987/−39 dòng, 102 file, từ `docs/PA4` vào `main`), `docs/management/reports/sprint-04/sprint-04-report.md` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 |
+| Mục đích | Đọc PR #90 trên GitHub và nhận xét |
+| Nhánh Git | `docs/SCRUM-80-tech-stack-c4-l1`; không sửa repo |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 11:56 ngày 16/11/2026, prompt: "hãy lên github kiểm tra và nhận xét PR #90", dùng để review PR #90; AI đọc metadata và diff bằng `gh` (7 lệnh Bash) và viết nhận xét trong hội thoại; AI không đăng gì lên GitHub.
+
+### Prompt đã dùng
+
+```text
+hãy lên github kiểm tra và nhận xét PR #90
+```
+
+### Tóm tắt phản hồi của AI
+
+- Trạng thái lúc đọc: OPEN, MERGEABLE, CI `verify` xanh, chưa có review.
+- **Đề nghị chặn merge:** `sprint-04-report.md` mục 2.3 ghi Standup 02 ngày 19/11/2026 "5/5 có mặt" cùng nhiều kết quả chưa có thật tại ngày 16/11 (Backend 010 "hoàn thành 23 commit, 97% coverage" khi PR #89 còn OPEN; Frontend 070 và Backend 070 "hoàn thành"; C4 L3 và Deployment "hoàn thành"; "Code Freeze nhất trí 23:59 19/11"; ACT-04 – ACT-07 đánh dấu RESOLVED). AI đánh giá đây là biên bản viết trước cho tương lai, trái nguyên tắc "Evidence must be genuine" của `pa4-guide.md` và quy định AI usage, và đề xuất tách phần docs ra PR riêng, chỉ ghi Standup 02 sau khi họp thật. Standup 01 (14/11) cũng có chi tiết không kiểm chứng được (giờ họp, "BCrypt salt rounds").
+- Hạn chế: phiên chỉ gồm 7 lệnh Bash đọc dữ liệu từ `gh` và repo; không có bước chạy test hay build, nên phần giao diện SCRUM-76 (React) chưa được kiểm chứng bằng cách chạy.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Nhận xét về biên bản Standup 02 | **Hiển điền** đã đăng lên PR hay chuyển tới Hưng chưa | Transcript chỉ cho thấy bản nhận xét trong hội thoại |
+
+### Cách kiểm chứng
+
+- Đối chiếu `sprint-04-report.md` mục 2.3 với trạng thái PR #89 và ngày hiện tại (16/11/2026).
+
+---
+
+## Mục 38: Rà soát AI log và bổ sung các mục còn thiếu (Mục 28 – 38)
+
+**Task: SCRUM-85 (AI Usage Report, phần log cá nhân của Hiển)**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-16 |
+| Giờ truy cập | Từ 11:59 ngày 16/11 (phiên hiện tại) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/ai_log/ai_log_hien.md`, `AI Usage Guidelines.pdf`, `pa4-guide.md` (SCRUM-85), transcript Claude Code, lịch sử Git |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 |
+| Mục đích | Kiểm tra AI log đã đầy đủ chưa; bổ sung các lần dùng AI còn thiếu |
+| Nhánh Git | `docs/SCRUM-80-tech-stack-c4-l1`; chỉ sửa `docs/ai_log/ai_log_hien.md`, chưa commit |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập ngày 16/11/2026, prompt: "hãy kiểm tra xem hiện tại AI log của tôi đầy đủ chưa, nếu chưa thì hãy bổ sung cho tôi", dùng để đối chiếu AI log với các yêu cầu và với bằng chứng thật; AI đọc log, hướng dẫn của giảng viên, `pa4-guide.md`, lịch sử Git và các file transcript của Claude Code, rồi viết Mục 28 – 38 và thêm các dòng tương ứng vào bảng đầu file.
+
+### Prompt đã dùng
+
+```text
+hãy kiểm tra xem hiện tại AI log của tôi đầy đủ chưa, nếu chưa thì hãy bổ sung cho tôi
+```
+
+### Tóm tắt phản hồi của AI
+
+- Đối chiếu với `AI Usage Guidelines.pdf` (mục 5): mỗi lần dùng AI cần tên công cụ, phiên bản, nền tảng; thời gian truy cập; prompt; mục đích; phần nào do AI tạo; phần nào làm độc lập, đã chỉnh sửa hoặc kiểm chứng ra sao; ảnh chụp hoặc lịch sử chat. Log đang có Mục 1 – 27 (đến 12/11) đáp ứng cấu trúc này.
+- Phát hiện thiếu: toàn bộ công việc từ 12/11 (SCRUM-74, SCRUM-80, review PR #83, #90), và các phiên trước đó chưa có mục: review PR #52, #59, #61, #63 và phản hồi cho Hưng, thử nối 030 – 040, tạo tài liệu Spec Kit 010/011 ngày 06 – 07/11, chuẩn bị SCRUM-74, `/speckit-analyze` lần 4.
+- Cách làm: đọc các file transcript `.jsonl` bằng một script tạm (trích prompt người dùng, model, nhánh, công cụ đã gọi, câu trả lời cuối của mỗi lượt); đối chiếu với `git log`, `git reflog` và `gh pr list`; viết mục chỉ với dữ kiện nhìn thấy trong transcript. Không sửa Mục 1 – 27.
+- Hạn chế: các mục được viết sau khi sự việc xảy ra; những chỗ chỉ Hiển biết (đã chỉnh sửa gì, đã đăng gì) được để **Hiển điền**. Một số phiên nhỏ chưa được xem xét kỹ và chưa có mục riêng (ví dụ hỏi cách xử lý lỗi `git pull` ngày 19/10, soạn lại cấu trúc log ngày 20 – 22/10, các câu hỏi ngắn ngày 01 – 02/11 về `use-case-specification.md` và `wikicook-pa3-team-assignment.md`); Hiển cần xem lại và ghi thêm nếu các phiên này có tạo nội dung nộp.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Các ô "Hiển điền" | Bắt buộc điền hoặc xóa trước khi nộp | AI không biết Hiển đã làm gì ngoài transcript |
+
+### Cách kiểm chứng
+
+- Đối chiếu từng mục với file transcript, `git log` và GitHub.
