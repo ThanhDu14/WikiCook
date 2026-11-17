@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 /**
@@ -78,10 +79,25 @@ public class ProfileExceptionHandler {
         return respond(ProfileErrorCode.VALIDATION_ERROR, errors, null);
     }
 
-    /** Raised after the handler is chosen because {@code spring.servlet.multipart.resolve-lazily} is on (R7). */
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    ResponseEntity<ProblemDetail> handle(MaxUploadSizeExceededException exception) {
-        return respond(ProfileErrorCode.AVATAR_TOO_LARGE, List.of(), null);
+    /**
+     * A multipart request that could not be read. Over the limit of {@code spring.servlet.multipart.max-file-size} or
+     * {@code max-request-size} it is 413 {@code AVATAR_TOO_LARGE}: raised after the handler is chosen because
+     * {@code resolve-lazily} is on (R7), as a {@link MaxUploadSizeExceededException} or, when a {@code @RequestPart} is
+     * read first, as a plain {@link MultipartException} whose cause is the size error of the servlet container.
+     */
+    @ExceptionHandler(MultipartException.class)
+    ResponseEntity<ProblemDetail> handle(MultipartException exception) {
+        return respond(isTooLarge(exception) ? ProfileErrorCode.AVATAR_TOO_LARGE : ProfileErrorCode.VALIDATION_ERROR,
+                List.of(), null);
+    }
+
+    private static boolean isTooLarge(Throwable exception) {
+        for (Throwable cause = exception; cause != null; cause = cause.getCause()) {
+            if (cause instanceof MaxUploadSizeExceededException || cause.getClass().getSimpleName().contains("SizeLimitExceeded")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @ExceptionHandler(HandlerMethodValidationException.class)

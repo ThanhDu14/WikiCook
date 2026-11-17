@@ -6,7 +6,9 @@ import com.wikicook.profile.port.CuisineCatalogPort;
 import com.wikicook.profile.port.IngredientCatalogPort;
 import com.wikicook.profile.port.JdbcCuisineCatalog;
 import com.wikicook.profile.port.JdbcIngredientCatalog;
+import com.wikicook.profile.port.JdbcPublicRecipes;
 import com.wikicook.profile.port.ProfileAuditPort;
+import com.wikicook.profile.port.PublicRecipesPort;
 import java.nio.file.Path;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -44,6 +46,13 @@ public class ProfileDefaultsConfig {
     @ConditionalOnMissingBean(CuisineCatalogPort.class)
     CuisineCatalogPort jdbcCuisineCatalog(NamedParameterJdbcTemplate jdbc) {
         return new JdbcCuisineCatalog(jdbc);
+    }
+
+    /** ⛓ 060: reads the recipe tables directly until its public recipe bean exists (T064). */
+    @Bean
+    @ConditionalOnMissingBean(PublicRecipesPort.class)
+    PublicRecipesPort jdbcPublicRecipes(NamedParameterJdbcTemplate jdbc) {
+        return new JdbcPublicRecipes(jdbc);
     }
 
     /** Avatars on local disk (research R7); 060 and 070 reuse the bean for their photos. */

@@ -149,6 +149,20 @@ class ProfileExceptionHandlerTest {
     }
 
     @Test
+    @DisplayName("R7: a multipart read that failed on the size limit of the container is 413, any other multipart failure is 400")
+    void multipartFailuresAreTold() {
+        ResponseEntity<ProblemDetail> tooLarge = handler.handle(new org.springframework.web.multipart.MultipartException(
+                "Could not access multipart servlet request", new MaxUploadSizeExceededException(5L * 1024 * 1024)));
+        ResponseEntity<ProblemDetail> broken = handler.handle(new org.springframework.web.multipart.MultipartException(
+                "Could not access multipart servlet request", new IllegalStateException("stream ended")));
+
+        assertThat(tooLarge.getStatusCode()).isEqualTo(HttpStatus.PAYLOAD_TOO_LARGE);
+        assertThat(properties(tooLarge)).containsEntry("code", "AVATAR_TOO_LARGE");
+        assertThat(broken.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(properties(broken)).containsEntry("code", "VALIDATION_ERROR");
+    }
+
+    @Test
     @DisplayName("Constitution IV: the detail is fixed text, not the exception message")
     void noInternalDetailLeaks() {
         ResponseEntity<ProblemDetail> response = handler.handle(new ProfileException(ProfileErrorCode.USER_NOT_FOUND));
