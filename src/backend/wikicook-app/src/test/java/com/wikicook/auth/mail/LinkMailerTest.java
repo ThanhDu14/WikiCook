@@ -116,4 +116,40 @@ class LinkMailerTest {
         assertThat(threads).hasSize(1);
         assertThat(smtp.messages()).hasSize(1);
     }
+
+    @Test
+    void passwordResetMailCarriesTheResetLinkInTheFragmentAndTheThirtyMinuteExpiry() throws Exception {
+        mailer.sendPasswordReset("an@mail.com", "An", "tok_en-123");
+
+        assertThat(smtp.messages()).hasSize(1);
+        MimeMessage message = smtp.messages().get(0);
+        assertThat(message.getRecipients(Message.RecipientType.TO)[0]).hasToString("an@mail.com");
+        assertThat(message.getSubject()).containsIgnoringCase("mật khẩu");
+        assertThat(Recorder.parts(message)).hasSize(2).allSatisfy(part -> assertThat(part)
+                .contains("http://localhost:3000/reset-password#token=tok_en-123").contains("30 phút"));
+        assertThat(LinkMailer.resetLink("https://wikicook.vn/", "abc")).isEqualTo(
+                "https://wikicook.vn/reset-password#token=abc");
+    }
+
+    @Test
+    void passwordResetMailIsRetriedThreeTimesLikeTheVerificationMail() {
+        smtp.failNext(2);
+
+        mailer.sendPasswordReset("an@mail.com", "An", "tok");
+
+        assertThat(smtp.attempts()).isEqualTo(3);
+        assertThat(smtp.messages()).hasSize(1);
+    }
+
+    @Test
+    void passwordResetMailGoesOutOnlyAfterCommitAndNeverForARolledBackTransaction() {
+        TransactionSynchronizationManager.initSynchronization();
+
+        mailer.sendPasswordReset("an@mail.com", "An", "tok");
+        assertThat(smtp.messages()).as("nothing before the commit").isEmpty();
+        TransactionSynchronizationManager.getSynchronizations()
+                .forEach(s -> s.afterCompletion(TransactionSynchronization.STATUS_ROLLED_BACK));
+
+        assertThat(smtp.messages()).isEmpty();
+    }
 }

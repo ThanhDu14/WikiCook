@@ -19,7 +19,7 @@ public class ValidPasswordPairValidator implements ConstraintValidator<ValidPass
         boolean valid = true;
         if (form.email() != null
                 && EmailNormalizer.normalize(form.password()).equals(EmailNormalizer.normalize(form.email()))) {
-            context.buildConstraintViolationWithTemplate("PASSWORD_EQUALS_EMAIL").addPropertyNode("password")
+            context.buildConstraintViolationWithTemplate("PASSWORD_EQUALS_EMAIL").addPropertyNode(form.passwordField())
                     .addConstraintViolation();
             valid = false;
         }

@@ -4,6 +4,7 @@ import com.wikicook.auth.dto.SessionSnapshot;
 import com.wikicook.common.security.AccountStatus;
 import java.time.Instant;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.ProblemDetail;
 
@@ -122,6 +123,12 @@ public class AuthException extends RuntimeException {
 
     public static AuthException validation(String detail) {
         return new AuthException(AuthErrorCode.VALIDATION_ERROR, detail);
+    }
+
+    /** 400 {@code VALIDATION_ERROR} with {@code errors[{field, code}]} like a Bean Validation failure (FR-004, R6). */
+    public static AuthException passwordEqualsEmail() {
+        return validation("The request is not valid").with("errors",
+                List.of(Map.of("field", "newPassword", "code", "PASSWORD_EQUALS_EMAIL")));
     }
 
     public static AuthException emailTaken() {

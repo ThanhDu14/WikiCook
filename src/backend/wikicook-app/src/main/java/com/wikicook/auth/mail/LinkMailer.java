@@ -17,7 +17,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
- * Sends the emails that carry a one-time link (research R8): verification now, password reset in a later phase. The raw
+ * Sends the emails that carry a one-time link (research R8): email verification and password reset. The raw
  * token is never stored, so these cannot go through the outbox; instead the mail goes out <em>after the transaction
  * commits</em> (never for a rolled-back one), on a virtual thread so the response does not wait for SMTP, with three
  * attempts. When all fail it only logs: the account exists, and the user asks for a new link (Edge Cases, FR-017).
@@ -28,6 +28,8 @@ public class LinkMailer {
     private static final Logger log = LoggerFactory.getLogger(LinkMailer.class);
     private static final int ATTEMPTS = 3;
     private static final int VERIFICATION_HOURS = 24;
+    /** Matches {@code PasswordResetService.RESET_TTL} (FR-015); the IT checks the mail against the real expiry. */
+    private static final int RESET_MINUTES = 30;
 
     private final JavaMailSender sender;
     private final MailRenderer renderer;
@@ -54,15 +56,30 @@ public class LinkMailer {
         Rendered mail = renderer.render("verify-email", Map.of("name", displayName,
                 "link", verificationLink(properties.publicBaseUrl(), token), "hours",
                 Integer.toString(VERIFICATION_HOURS)));
-        afterCommit(() -> executor.execute(() -> deliver(toEmail, mail)));
+        afterCommit(() -> executor.execute(() -> deliver("verification", toEmail, mail)));
+    }
+
+    /** Mails the password reset link (FR-015); {@code token} is the raw one-time token. */
+    public void sendPasswordReset(String toEmail, String displayName, String token) {
+        Rendered mail = renderer.render("reset-password", Map.of("name", displayName,
+                "link", resetLink(properties.publicBaseUrl(), token), "minutes", Integer.toString(RESET_MINUTES)));
+        afterCommit(() -> executor.execute(() -> deliver("password reset", toEmail, mail)));
     }
 
     /** The token goes in the fragment: it never reaches a proxy log or a Referer header, and a link scanner that only
      * GETs the page does not use it (research R6). */
     static String verificationLink(String publicBaseUrl, String token) {
+        return link(publicBaseUrl, "/verify-email", token);
+    }
+
+    static String resetLink(String publicBaseUrl, String token) {
+        return link(publicBaseUrl, "/reset-password", token);
+    }
+
+    private static String link(String publicBaseUrl, String path, String token) {
         String base = publicBaseUrl.endsWith("/") ? publicBaseUrl.substring(0, publicBaseUrl.length() - 1)
                 : publicBaseUrl;
-        return base + "/verify-email#token=" + token;
+        return base + path + "#token=" + token;
     }
 
     private static void afterCommit(Runnable task) {
@@ -78,17 +95,17 @@ public class LinkMailer {
         });
     }
 
-    private void deliver(String toEmail, Rendered mail) {
+    private void deliver(String kind, String toEmail, Rendered mail) {
         for (int attempt = 1; attempt <= ATTEMPTS; attempt++) {
             try {
                 sender.send(build(toEmail, mail));
                 return;
             } catch (Exception e) {
                 if (attempt == ATTEMPTS) {
-                    log.error("Giving up on a verification email after {} attempts: {}", ATTEMPTS, e.toString());
+                    log.error("Giving up on a {} email after {} attempts: {}", kind, ATTEMPTS, e.toString());
                     return;
                 }
-                log.warn("Verification email attempt {} failed: {}", attempt, e.toString());
+                log.warn("{} email attempt {} failed: {}", kind, attempt, e.toString());
                 pause();
             }
         }
