@@ -1,7 +1,6 @@
 package com.wikicook.devstub;
 
 import com.wikicook.common.security.CurrentUser;
-import com.wikicook.mealplan.port.DietaryProfilePort;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -35,11 +34,5 @@ public class DevStubConfig {
     @ConditionalOnMissingBean(CurrentUser.class)
     CurrentUser stubCurrentUser(DevStubProperties properties, DevUserProvisioner provisioner) {
         return new StubCurrentUser(properties.userId(), provisioner);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(DietaryProfilePort.class)
-    DietaryProfilePort stubDietaryProfile(DevStubProperties properties) {
-        return new StubDietaryProfile(properties.profile().toPlannerProfile());
     }
 }

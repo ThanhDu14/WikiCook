@@ -24,3 +24,6 @@ playwright-report/
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Avatars written by a locally run backend (spec 011, WIKICOOK_MEDIA_DIR default)
+.media/

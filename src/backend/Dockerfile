@@ -19,6 +19,8 @@ RUN java -Djarmode=tools -jar app.jar extract --layers --launcher --destination 
 FROM eclipse-temurin:21-jre-alpine
 RUN addgroup -S -g 1001 wikicook && adduser -S -u 1001 -G wikicook wikicook
 WORKDIR /app
+# Avatar directory (spec 011): created and owned here, otherwise a new volume mounted on it belongs to root
+RUN mkdir -p /var/lib/wikicook/media && chown wikicook:wikicook /var/lib/wikicook/media
 # Least to most frequently changed.
 COPY --from=extract /build/extracted/dependencies/ ./
 COPY --from=extract /build/extracted/spring-boot-loader/ ./

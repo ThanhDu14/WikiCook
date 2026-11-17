@@ -58,9 +58,13 @@ services:
       WIKICOOK_GOOGLE_CLIENT_SECRET: ${WIKICOOK_GOOGLE_CLIENT_SECRET:-}
       WIKICOOK_BOOTSTRAP_ADMIN_EMAIL: ${WIKICOOK_BOOTSTRAP_ADMIN_EMAIL:-}
       WIKICOOK_BOOTSTRAP_ADMIN_PASSWORD: ${WIKICOOK_BOOTSTRAP_ADMIN_PASSWORD:-}
+      # Avatars (spec 011 R7): local disk on the media volume
+      WIKICOOK_MEDIA_DIR: /var/lib/wikicook/media
       TZ: Asia/Ho_Chi_Minh
     ports:
       - "${APP_PORT:-8080}:8080"
+    volumes:
+      - media:/var/lib/wikicook/media
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://127.0.0.1:8080/actuator/health"]
       interval: 10s
@@ -98,3 +102,4 @@ services:
 
 volumes:
   pgdata:
+  media:

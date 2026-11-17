@@ -5,8 +5,6 @@ import static org.mockito.Mockito.mock;
 
 import com.wikicook.aiplanner.repository.EligibleRecipeQuery;
 import com.wikicook.devstub.DevStubConfig;
-import com.wikicook.devstub.StubDietaryProfile;
-import com.wikicook.mealplan.domain.DietType;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Map;
@@ -33,24 +31,12 @@ class DefaultPortsConfigTest {
     @Test
     void defaultsAreEmpty() {
         runner.run(context -> {
-            assertThat(context.getBean(DietaryProfilePort.class).findByUserId(1)).isEqualTo(PlannerProfile.empty());
+            assertThat(context).doesNotHaveBean(DietaryProfilePort.class); // 011 provides the real one (T047)
             assertThat(context.getBean(CollectionRecipePort.class).savedRecipeIds(1)).isEmpty();
             assertThat(context.getBean(DayNutritionPort.class).totals(Map.of(DayOfWeek.MONDAY, List.of(1L))))
                     .isEmpty();
             assertThat(context).getBean(RecipeSummaryPort.class).isInstanceOf(JdbcRecipeSummaryAdapter.class);
         });
-    }
-
-    @Test
-    void devStubProfileWinsOverTheEmptyDefault() {
-        runner.withPropertyValues("wikicook.dev-stubs.enabled=true", "wikicook.dev-stubs.profile.household-size=4",
-                        "wikicook.dev-stubs.profile.diet-type=VEGAN")
-                .run(context -> {
-                    assertThat(context).getBean(DietaryProfilePort.class).isInstanceOf(StubDietaryProfile.class);
-                    PlannerProfile profile = context.getBean(DietaryProfilePort.class).findByUserId(1);
-                    assertThat(profile.householdSize()).isEqualTo(4);
-                    assertThat(profile.dietType()).isEqualTo(DietType.VEGAN);
-                });
     }
 
     @Test

@@ -528,6 +528,8 @@ components:
       properties:
         ids:
           type: array
+          minItems: 1
+          maxItems: 100
           items: { type: integer, format: int64 }
     ChangePasswordRequest:
       type: object

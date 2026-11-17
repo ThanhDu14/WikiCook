@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.wikicook.common.diet.DietaryProfileUnavailableException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.hamcrest.Matchers;
@@ -55,8 +56,25 @@ class GlobalExceptionHandlerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
+    /** T042a, FR-026a: the dietary profile can not be read, so the caller must not choose dishes on its own. */
+    @Test
+    void unreadableDietaryProfileBecomes503WithoutLeakingTheCause() throws Exception {
+        mvc.perform(get("/profile-down"))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.status").value(503))
+                .andExpect(jsonPath("$.code").value("PROFILE_UNAVAILABLE"))
+                .andExpect(jsonPath("$.detail").value("The dietary profile can not be read right now"))
+                .andExpect(content().string(Matchers.not(Matchers.containsString("secret-host"))));
+    }
+
     @RestController
     static class SampleController {
+        @GetMapping("/profile-down")
+        String profileDown() {
+            throw new DietaryProfileUnavailableException("jdbc://secret-host is down", new RuntimeException("refused"));
+        }
+
 
         @GetMapping("/boom")
         String boom() {
