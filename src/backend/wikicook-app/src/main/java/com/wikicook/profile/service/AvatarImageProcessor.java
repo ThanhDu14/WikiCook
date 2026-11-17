@@ -8,7 +8,10 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -121,20 +124,39 @@ public class AvatarImageProcessor {
     }
 
     /**
-     * The reader the registry offers for these bytes. The WebP reader comes from a jar nested in the application, and
-     * the registry of a thread group that never scanned would not know it, so one rescan is made before giving up.
+     * The reader for these bytes. The WebP reader comes from a jar nested in the application, and the registry of a
+     * thread group that never scanned would not know it, so one rescan is made before giving up. Which reader decodes
+     * is not left to the order of the jars: the registry of the whole JVM also holds the readers other modules bring
+     * (070 adds the TwelveMonkeys JPEG reader, which warns on a CMYK file without a profile, and the Luciad WebP
+     * reader, which cannot read an animated file), so the readers the spike of research R7 validated come first.
      */
     private static ImageReader readerFor(ImageInputStream in) throws IOException {
-        Iterator<ImageReader> readers = ImageIO.getImageReaders(in);
-        if (!readers.hasNext() && RESCANNED.compareAndSet(false, true)) {
+        List<ImageReader> candidates = candidates(in);
+        if (candidates.isEmpty() && RESCANNED.compareAndSet(false, true)) {
             ImageIO.scanForPlugins();
             in.seek(0);
-            readers = ImageIO.getImageReaders(in);
+            candidates = candidates(in);
         }
-        if (!readers.hasNext()) {
+        if (candidates.isEmpty()) {
             throw new ProfileException(ProfileErrorCode.AVATAR_NOT_AN_IMAGE);
         }
-        return readers.next();
+        ImageReader chosen = candidates.get(0);
+        candidates.stream().skip(1).forEach(ImageReader::dispose);
+        return chosen;
+    }
+
+    /** The readers of the registry for these bytes, the validated ones first, the others in registry order. */
+    private static List<ImageReader> candidates(ImageInputStream in) throws IOException {
+        List<ImageReader> readers = new ArrayList<>();
+        ImageIO.getImageReaders(in).forEachRemaining(readers::add);
+        readers.sort(Comparator.comparingInt(reader -> isValidated(reader) ? 0 : 1));
+        return readers;
+    }
+
+    /** The JDK readers (JPEG, PNG) and the TwelveMonkeys WebP reader, the combination of research R7. */
+    private static boolean isValidated(ImageReader reader) {
+        String name = reader.getClass().getName();
+        return name.startsWith("com.sun.imageio.") || name.startsWith("com.twelvemonkeys.imageio.plugins.webp.");
     }
 
     /**

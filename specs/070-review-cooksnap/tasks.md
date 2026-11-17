@@ -48,11 +48,11 @@
 
 **Purpose**: Initialize project build descriptors, configure dependencies, and create directory scaffolding.
 
-- [ ] T001 [CORE] Verify and configure Maven dependencies (`org.sejda.imageio:webp-imageio:0.1.6`, TwelveMonkeys `com.twelvemonkeys.imageio:imageio-metadata:3.10.1` and `imageio-jpeg:3.10.1`, Caffeine `com.github.ben-manes.caffeine:caffeine:3.1.8`, Testcontainers PostgreSQL `16`) in `src/backend/wikicook-app/pom.xml`
-- [ ] T002 [P] [CORE] Create backend package structure for review module (`config`, `controller`, `domain`, `dto`, `exception`, `repository`, `service`) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/`
+- [X] T001 [CORE] Verify and configure Maven dependencies (`org.sejda.imageio:webp-imageio:0.1.6`, TwelveMonkeys `com.twelvemonkeys.imageio:imageio-metadata:3.10.1` and `imageio-jpeg:3.10.1`, Caffeine `com.github.ben-manes.caffeine:caffeine:3.1.8`, Testcontainers PostgreSQL `16`) in `src/backend/wikicook-app/pom.xml`
+- [X] T002 [P] [CORE] Create backend package structure for review module (`config`, `controller`, `domain`, `dto`, `exception`, `repository`, `service`) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/`
 - [ ] T003 [P] [CORE] Create frontend directory structure for review feature modules (`components`, `hooks`, `services`, `types`) in `src/frontend/src/features/reviews/`
-- [ ] T004 [P] [CORE] Create storage configuration properties class `ReviewStorageProperties.java` (specifying upload root path `uploads/cooksnaps/`, max size 5MB, allowed MIME types) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/config/ReviewStorageProperties.java`
-- [ ] T005 [P] [CORE] Create WebP Service Provider configuration `WebPImageIOConfig.java` ensuring native `webp-imageio` readers/writers register properly upon Spring Boot startup in `src/backend/wikicook-app/src/main/java/com/wikicook/review/config/WebPImageIOConfig.java`
+- [X] T004 [P] [CORE] Create storage configuration properties class `ReviewStorageProperties.java` (specifying upload root path `uploads/cooksnaps/`, max size 5MB, allowed MIME types) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/config/ReviewStorageProperties.java`
+- [X] T005 [P] [CORE] Create WebP Service Provider configuration `WebPImageIOConfig.java` ensuring native `webp-imageio` readers/writers register properly upon Spring Boot startup in `src/backend/wikicook-app/src/main/java/com/wikicook/review/config/WebPImageIOConfig.java`
 
 ---
 
@@ -62,23 +62,23 @@
 
 **⚠️ CRITICAL**: No user story implementation can begin until this foundational phase is fully complete.
 
-- [ ] T006 [CORE] Create Flyway migration script `V501__community.sql` defining `reviews`, `cooksnaps` (with `review_id` FK and `UNIQUE (storage_key)`), `review_helpful_votes` (`user_id ON DELETE SET NULL`) tables and partial unique index `uq_reviews_recipe_user` (no `updated_at` trigger) in `src/backend/wikicook-db/src/main/resources/db/migration/V501__community.sql`
-- [ ] T007 [CORE] Verify Flyway migration execution and assert table and index creation against PostgreSQL 16 container (`Run: cd src/backend && docker compose up -d db && docker compose run --rm migrate`)
-- [ ] T008 [P] [CORE] Create `ReviewStatus` enum (`VISIBLE`, `HIDDEN`) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/domain/ReviewStatus.java`
-- [ ] T009 [P] [CORE] Create `Review` JPA entity with validation constraints (comment 10-2000), read-only `helpful_count`, `updated_at` set only in `editContent()` (no `@UpdateTimestamp`), and `hide()`/`restore()` helpers in `src/backend/wikicook-app/src/main/java/com/wikicook/review/domain/Review.java` (depends on T008)
-- [ ] T010 [P] [CORE] Create `Cooksnap` JPA entity with size check, MIME type check, and storage key mapping in `src/backend/wikicook-app/src/main/java/com/wikicook/review/domain/Cooksnap.java` (depends on T008)
-- [ ] T011 [P] [CORE] Create `ReviewHelpfulVote` JPA entity with unique constraint on `(review_id, user_id)` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/domain/ReviewHelpfulVote.java`
-- [ ] T012 [P] [CORE] Create `ReviewRepository` interface with queries for active recipe reviews, author checks, and summary calculation in `src/backend/wikicook-app/src/main/java/com/wikicook/review/repository/ReviewRepository.java` (depends on T009)
-- [ ] T013 [P] [CORE] Create `CooksnapRepository` interface with lookup queries by review ID and recipe ID in `src/backend/wikicook-app/src/main/java/com/wikicook/review/repository/CooksnapRepository.java` (depends on T010)
-- [ ] T014 [P] [CORE] Create `ReviewHelpfulVoteRepository` interface with exists query by user and review in `src/backend/wikicook-app/src/main/java/com/wikicook/review/repository/ReviewHelpfulVoteRepository.java` (depends on T011)
-- [ ] T015 [CORE] Create integration test `ReviewRepositoryIT.java` with Testcontainers PostgreSQL 16 verifying entity mappings, partial unique index `uq_reviews_recipe_user`, cascade delete behaviors, and that a helpful-vote recount does not change `updated_at` in `src/backend/wikicook-app/src/test/java/com/wikicook/review/repository/ReviewRepositoryIT.java` (depends on T012, T013, T014)
-- [ ] T016 [P] [CORE] Create Java Record DTOs (`CreateReviewRequest`, `UpdateReviewRequest`, `CreateReportRequest`, `ReviewResponse`, `CooksnapDto`, `ReviewAuthorDto`, `HelpfulVoteResponse`, `ReportResponse`, `RatingSummaryDto`, `ReviewListResponse`) matching `data-model.md` and `openapi.yaml` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/dto/`
-- [ ] T017 [P] [CORE] Create domain exception classes (`SelfReviewForbiddenException`, `ReviewAlreadyExistsException`, `ReviewUnderModerationException`, `ReportAlreadyExistsException`, `SelfReportForbiddenException`, `RateLimitExceededException`, `ReviewNotFoundException`, `CooksnapProcessingException`) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/exception/`
-- [ ] T018 [P] [CORE] Create `ReviewExceptionHandler` translating domain exceptions into RFC 7807 `ProblemDetail` structures without leaking internal stack traces in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/ReviewExceptionHandler.java` (depends on T017)
-- [ ] T019 [P] [CORE] Create `StorageService` interface defining file save, retrieve, and delete contracts in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/StorageService.java`
-- [ ] T020 [P] [CORE] Implement `LocalStorageServiceImpl` for local disk filesystem storage with UUID-based key naming under `uploads/cooksnaps/{storageKey}`, registering a `TransactionSynchronization` that deletes written files on rollback and removed files after commit in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/LocalStorageServiceImpl.java` (depends on T004, T019)
-- [ ] T021 [P] [CORE] Implement `RateLimitingService` using Caffeine Cache sliding window (5 reviews per 10 minutes per `(userId, clientIp)`) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/RateLimitingService.java`
-- [ ] T022 [P] [CORE] Create unit test `RateLimitingServiceTest.java` verifying that 5 submissions within 10 minutes pass and the 6th throws `RateLimitExceededException` in `src/backend/wikicook-app/src/test/java/com/wikicook/review/service/RateLimitingServiceTest.java` (depends on T021)
+- [X] T006 [CORE] Create Flyway migration script `V501__community.sql` defining `reviews`, `cooksnaps` (with `review_id` FK and `UNIQUE (storage_key)`), `review_helpful_votes` (`user_id ON DELETE SET NULL`) tables and partial unique index `uq_reviews_recipe_user` (no `updated_at` trigger) in `src/backend/wikicook-db/src/main/resources/db/migration/V501__community.sql`
+- [X] T007 [CORE] Verify Flyway migration execution and assert table and index creation against PostgreSQL 16 container (`Run: cd src/backend && docker compose up -d db && docker compose run --rm migrate`)
+- [X] T008 [P] [CORE] Create `ReviewStatus` enum (`VISIBLE`, `HIDDEN`) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/domain/ReviewStatus.java`
+- [X] T009 [P] [CORE] Create `Review` JPA entity with validation constraints (comment 10-2000), read-only `helpful_count`, `updated_at` set only in `editContent()` (no `@UpdateTimestamp`), and `hide()`/`restore()` helpers in `src/backend/wikicook-app/src/main/java/com/wikicook/review/domain/Review.java` (depends on T008)
+- [X] T010 [P] [CORE] Create `Cooksnap` JPA entity with size check, MIME type check, and storage key mapping in `src/backend/wikicook-app/src/main/java/com/wikicook/review/domain/Cooksnap.java` (depends on T008)
+- [X] T011 [P] [CORE] Create `ReviewHelpfulVote` JPA entity with unique constraint on `(review_id, user_id)` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/domain/ReviewHelpfulVote.java`
+- [X] T012 [P] [CORE] Create `ReviewRepository` interface with queries for active recipe reviews, author checks, and summary calculation in `src/backend/wikicook-app/src/main/java/com/wikicook/review/repository/ReviewRepository.java` (depends on T009)
+- [X] T013 [P] [CORE] Create `CooksnapRepository` interface with lookup queries by review ID and recipe ID in `src/backend/wikicook-app/src/main/java/com/wikicook/review/repository/CooksnapRepository.java` (depends on T010)
+- [X] T014 [P] [CORE] Create `ReviewHelpfulVoteRepository` interface with exists query by user and review in `src/backend/wikicook-app/src/main/java/com/wikicook/review/repository/ReviewHelpfulVoteRepository.java` (depends on T011)
+- [X] T015 [CORE] Create integration test `ReviewRepositoryIT.java` with Testcontainers PostgreSQL 16 verifying entity mappings, partial unique index `uq_reviews_recipe_user`, cascade delete behaviors, and that a helpful-vote recount does not change `updated_at` in `src/backend/wikicook-app/src/test/java/com/wikicook/review/repository/ReviewRepositoryIT.java` (depends on T012, T013, T014)
+- [X] T016 [P] [CORE] Create Java Record DTOs (`CreateReviewRequest`, `UpdateReviewRequest`, `CreateReportRequest`, `ReviewResponse`, `CooksnapDto`, `ReviewAuthorDto`, `HelpfulVoteResponse`, `ReportResponse`, `RatingSummaryDto`, `ReviewListResponse`) matching `data-model.md` and `openapi.yaml` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/dto/`
+- [X] T017 [P] [CORE] Create domain exception classes (`SelfReviewForbiddenException`, `ReviewAlreadyExistsException`, `ReviewUnderModerationException`, `ReportAlreadyExistsException`, `SelfReportForbiddenException`, `RateLimitExceededException`, `ReviewNotFoundException`, `CooksnapProcessingException`) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/exception/`
+- [X] T018 [P] [CORE] Create `ReviewExceptionHandler` translating domain exceptions into RFC 7807 `ProblemDetail` structures without leaking internal stack traces in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/ReviewExceptionHandler.java` (depends on T017)
+- [X] T019 [P] [CORE] Create `StorageService` interface defining file save, retrieve, and delete contracts in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/StorageService.java`
+- [X] T020 [P] [CORE] Implement `LocalStorageServiceImpl` for local disk filesystem storage with UUID-based key naming under `uploads/cooksnaps/{storageKey}`, registering a `TransactionSynchronization` that deletes written files on rollback and removed files after commit in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/LocalStorageServiceImpl.java` (depends on T004, T019)
+- [X] T021 [P] [CORE] Implement `RateLimitingService` using Caffeine Cache sliding window (5 reviews per 10 minutes per `(userId, clientIp)`) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/RateLimitingService.java`
+- [X] T022 [P] [CORE] Create unit test `RateLimitingServiceTest.java` verifying that 5 submissions within 10 minutes pass and the 6th throws `RateLimitExceededException` in `src/backend/wikicook-app/src/test/java/com/wikicook/review/service/RateLimitingServiceTest.java` (depends on T021)
 
 **Checkpoint**: Foundation ready — Schema migrated, entities mapped, repositories verified with Testcontainers, DTOs defined, and storage & rate limiting primitives ready.
 
@@ -92,21 +92,21 @@
 
 ### Tests for User Story 1 & 2 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T023 [P] [US1] Create unit tests in `ImageProcessorServiceTest.java` verifying magic bytes validation (accept JPEG/PNG/WebP, reject spoofed files), 100% EXIF/GPS metadata stripping, and $400\times 400$ thumbnail dimension scaling in `src/backend/wikicook-app/src/test/java/com/wikicook/review/service/ImageProcessorServiceTest.java`
-- [ ] T024 [P] [US1] Create unit tests in `ReviewServiceTest.java` covering valid review creation, star validation (1-5), comment length validation (10-2000), `substitution_tip` validation ($\le 500$), author self-review blocking (HTTP 403), duplicate review blocking (HTTP 409 `REVIEW_ALREADY_EXISTS` / `REVIEW_UNDER_MODERATION`), recipe row locked before writing, `rating_avg` rounded to 1 decimal, and rating recalculation without version increment in `src/backend/wikicook-app/src/test/java/com/wikicook/review/service/ReviewServiceTest.java`
-- [ ] T025 [P] [US1] Create integration tests in `ReviewControllerIT.java` with Testcontainers testing `POST /api/v1/recipes/{recipeId}/reviews` (both multipart/form-data with images and JSON-only), author self-review rejection (403), duplicate review rejection (409), rate limit enforcement (429), and non-existent recipe rejection (404) in `src/backend/wikicook-app/src/test/java/com/wikicook/review/controller/ReviewControllerIT.java`
-- [ ] T026 [P] [US2] Create integration tests in `CooksnapMediaControllerIT.java` testing `GET /api/v1/media/cooksnaps/{storageKey}` (binary streaming, `thumbnail=true` query param, `Cache-Control: public, max-age=3600, must-revalidate` + `ETag`/304, 404 for missing keys, 404 when the Cooksnap or its review is `HIDDEN`) in `src/backend/wikicook-app/src/test/java/com/wikicook/review/controller/CooksnapMediaControllerIT.java`
+- [X] T023 [P] [US1] Create unit tests in `ImageProcessorServiceTest.java` verifying magic bytes validation (accept JPEG/PNG/WebP, reject spoofed files), 100% EXIF/GPS metadata stripping, and $400\times 400$ thumbnail dimension scaling in `src/backend/wikicook-app/src/test/java/com/wikicook/review/service/ImageProcessorServiceTest.java`
+- [X] T024 [P] [US1] Create unit tests in `ReviewServiceTest.java` covering valid review creation, star validation (1-5), comment length validation (10-2000), `substitution_tip` validation ($\le 500$), author self-review blocking (HTTP 403), duplicate review blocking (HTTP 409 `REVIEW_ALREADY_EXISTS` / `REVIEW_UNDER_MODERATION`), recipe row locked before writing, `rating_avg` rounded to 1 decimal, and rating recalculation without version increment in `src/backend/wikicook-app/src/test/java/com/wikicook/review/service/ReviewServiceTest.java`
+- [X] T025 [P] [US1] Create integration tests in `ReviewControllerIT.java` with Testcontainers testing `POST /api/v1/recipes/{recipeId}/reviews` (both multipart/form-data with images and JSON-only), author self-review rejection (403), duplicate review rejection (409), rate limit enforcement (429), and non-existent recipe rejection (404) in `src/backend/wikicook-app/src/test/java/com/wikicook/review/controller/ReviewControllerIT.java`
+- [X] T026 [P] [US2] Create integration tests in `CooksnapMediaControllerIT.java` testing `GET /api/v1/media/cooksnaps/{storageKey}` (binary streaming, `thumbnail=true` query param, `Cache-Control: public, max-age=3600, must-revalidate` + `ETag`/304, 404 for missing keys, 404 when the Cooksnap or its review is `HIDDEN`) in `src/backend/wikicook-app/src/test/java/com/wikicook/review/controller/CooksnapMediaControllerIT.java`
 
 ### Implementation for User Story 1 & 2
 
-- [ ] T027 [US2] Implement `ImageProcessorService` performing magic bytes validation, EXIF metadata stripping via TwelveMonkeys, WebP encoding via `webp-imageio`, and $400\times 400$ thumbnail generation in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/ImageProcessorService.java` (depends on T023)
-- [ ] T028 [US1] Implement `ReviewService.createReview()` locking the recipe row (`SELECT ... FOR UPDATE`), checking author guard (`recipe.author_id != userId`), checking existing review (visible → `REVIEW_ALREADY_EXISTS`, hidden → `REVIEW_UNDER_MODERATION`), saving review, saving processed Cooksnaps, and executing atomic SQL rating calculation without `recipes.version` bump in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/ReviewService.java` (depends on T024, T027)
-- [ ] T029 [US2] Implement `CooksnapMediaService` resolving the Cooksnap by `storage_key`, returning 404 unless the Cooksnap and its review are `VISIBLE`, then retrieving stored image files and thumbnail variants from `StorageService` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/CooksnapMediaService.java`
-- [ ] T030 [US1] Implement `ReviewController` endpoint `POST /api/v1/recipes/{recipeId}/reviews` supporting both `multipart/form-data` and `application/json` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/ReviewController.java` (depends on T025, T028)
-- [ ] T031 [US2] Implement `CooksnapMediaController` endpoint `GET /api/v1/media/cooksnaps/{storageKey}` with `thumbnail` query parameter, `Cache-Control: public, max-age=3600, must-revalidate` and strong `ETag` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/CooksnapMediaController.java` (depends on T026, T029)
-- [ ] T072 [CORE] Map `rating_avg` and `review_count` on the module-060 `Recipe` entity as `@Column(insertable = false, updatable = false)` and add a test proving that saving a stale `Recipe` does not overwrite the stats written by a concurrent review in `src/backend/wikicook-app/src/main/java/com/wikicook/recipe/domain/Recipe.java`
-- [ ] T073 [US1] Create concurrency integration test `ReviewConcurrencyIT.java` submitting 2 reviews for the same recipe in parallel threads and asserting `review_count = 2` and the correct `rating_avg` in `src/backend/wikicook-app/src/test/java/com/wikicook/review/service/ReviewConcurrencyIT.java`
-- [ ] T032 [US1] Verify User Story 1 & 2 test suites pass (`Run: mvn test -Dtest=ImageProcessorServiceTest,ReviewServiceTest,ReviewControllerIT,CooksnapMediaControllerIT`)
+- [X] T027 [US2] Implement `ImageProcessorService` performing magic bytes validation, EXIF metadata stripping via TwelveMonkeys, WebP encoding via `webp-imageio`, and $400\times 400$ thumbnail generation in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/ImageProcessorService.java` (depends on T023)
+- [X] T028 [US1] Implement `ReviewService.createReview()` locking the recipe row (`SELECT ... FOR UPDATE`), checking author guard (`recipe.author_id != userId`), checking existing review (visible → `REVIEW_ALREADY_EXISTS`, hidden → `REVIEW_UNDER_MODERATION`), saving review, saving processed Cooksnaps, and executing atomic SQL rating calculation without `recipes.version` bump in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/ReviewService.java` (depends on T024, T027)
+- [X] T029 [US2] Implement `CooksnapMediaService` resolving the Cooksnap by `storage_key`, returning 404 unless the Cooksnap and its review are `VISIBLE`, then retrieving stored image files and thumbnail variants from `StorageService` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/CooksnapMediaService.java`
+- [X] T030 [US1] Implement `ReviewController` endpoint `POST /api/v1/recipes/{recipeId}/reviews` supporting both `multipart/form-data` and `application/json` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/ReviewController.java` (depends on T025, T028)
+- [X] T031 [US2] Implement `CooksnapMediaController` endpoint `GET /api/v1/media/cooksnaps/{storageKey}` with `thumbnail` query parameter, `Cache-Control: public, max-age=3600, must-revalidate` and strong `ETag` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/CooksnapMediaController.java` (depends on T026, T029)
+- [X] T072 [CORE] Map `rating_avg` and `review_count` on the module-060 `Recipe` entity as `@Column(insertable = false, updatable = false)` and add a test proving that saving a stale `Recipe` does not overwrite the stats written by a concurrent review in `src/backend/wikicook-app/src/main/java/com/wikicook/recipe/domain/Recipe.java`
+- [X] T073 [US1] Create concurrency integration test `ReviewConcurrencyIT.java` submitting 2 reviews for the same recipe in parallel threads and asserting `review_count = 2` and the correct `rating_avg` in `src/backend/wikicook-app/src/test/java/com/wikicook/review/service/ReviewConcurrencyIT.java`
+- [X] T032 [US1] Verify User Story 1 & 2 test suites pass (`Run: mvn test -Dtest=ImageProcessorServiceTest,ReviewServiceTest,ReviewControllerIT,CooksnapMediaControllerIT`)
 
 **Checkpoint**: User Story 1 & 2 are complete — Core MVP review creation, EXIF-stripped Cooksnap upload, static media serving, and lock-free rating synchronization are verified.
 
@@ -120,14 +120,14 @@
 
 ### Tests for User Story 3 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T033 [P] [US3] Create unit tests in `ReviewServiceTest.java` for `updateReview()` and `deleteReview()` (ownership validation, updating comment/stars/tip, adding/removing Cooksnaps with the ≤ 3 rule, `updated_at` changed only by edits, 409 when the review is `HIDDEN`, hard-deleting the review, rating recalculation)
-- [ ] T034 [P] [US3] Create integration tests in `ReviewControllerIT.java` testing `PUT /api/v1/reviews/{reviewId}` and `DELETE /api/v1/reviews/{reviewId}` (owner succeeds 200/204, multipart edit with `removeCooksnapIds` + `cooksnapFiles`, non-owner gets 403 Forbidden, hidden review gets 409, non-existent review gets 404 Not Found, re-review after delete gets 201)
+- [X] T033 [P] [US3] Create unit tests in `ReviewServiceTest.java` for `updateReview()` and `deleteReview()` (ownership validation, updating comment/stars/tip, adding/removing Cooksnaps with the ≤ 3 rule, `updated_at` changed only by edits, 409 when the review is `HIDDEN`, hard-deleting the review, rating recalculation)
+- [X] T034 [P] [US3] Create integration tests in `ReviewControllerIT.java` testing `PUT /api/v1/reviews/{reviewId}` and `DELETE /api/v1/reviews/{reviewId}` (owner succeeds 200/204, multipart edit with `removeCooksnapIds` + `cooksnapFiles`, non-owner gets 403 Forbidden, hidden review gets 409, non-existent review gets 404 Not Found, re-review after delete gets 201)
 
 ### Implementation for User Story 3
 
-- [ ] T035 [US3] Implement `ReviewService.updateReview()` (recipe row lock, `Review.editContent()`, Cooksnap add/remove, files removed after commit) and `ReviewService.deleteReview()` (hard delete with cascade, files deleted after commit), both recalculating `recipes.rating_avg` and `review_count` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/ReviewService.java` (depends on T033)
-- [ ] T036 [US3] Implement endpoints `PUT /api/v1/reviews/{reviewId}` and `DELETE /api/v1/reviews/{reviewId}` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/ReviewController.java` (depends on T034, T035)
-- [ ] T037 [US3] Verify User Story 3 test suites pass (`Run: mvn test -Dtest=ReviewServiceTest,ReviewControllerIT`)
+- [X] T035 [US3] Implement `ReviewService.updateReview()` (recipe row lock, `Review.editContent()`, Cooksnap add/remove, files removed after commit) and `ReviewService.deleteReview()` (hard delete with cascade, files deleted after commit), both recalculating `recipes.rating_avg` and `review_count` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/ReviewService.java` (depends on T033)
+- [X] T036 [US3] Implement endpoints `PUT /api/v1/reviews/{reviewId}` and `DELETE /api/v1/reviews/{reviewId}` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/ReviewController.java` (depends on T034, T035)
+- [X] T037 [US3] Verify User Story 3 test suites pass (`Run: mvn test -Dtest=ReviewServiceTest,ReviewControllerIT`)
 
 **Checkpoint**: User Story 3 is complete — Edit (including photos) and delete workflows are secure, ownership-guarded, and recalculate recipe rating statistics.
 
@@ -141,15 +141,15 @@
 
 ### Tests for User Story 4 (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T038 [P] [US4] Create unit tests in `ReviewServiceTest.java` testing review pagination, sort mappings, star rating filter, hasCooksnapOnly filter (including reviews of deleted users), and rating distribution aggregation
-- [ ] T039 [P] [US4] Create integration tests in `ReviewControllerIT.java` testing `GET /api/v1/recipes/{recipeId}/reviews` (public guest access, page limits, sorting correctness, filter correctness, empty list when no reviews)
+- [X] T038 [P] [US4] Create unit tests in `ReviewServiceTest.java` testing review pagination, sort mappings, star rating filter, hasCooksnapOnly filter (including reviews of deleted users), and rating distribution aggregation
+- [X] T039 [P] [US4] Create integration tests in `ReviewControllerIT.java` testing `GET /api/v1/recipes/{recipeId}/reviews` (public guest access, page limits, sorting correctness, filter correctness, empty list when no reviews)
 
 ### Implementation for User Story 4
 
-- [ ] T040 [US4] Implement `ReviewRepository` dynamic query method `findAllByRecipeIdAndCriteria()` with Spring Data `Pageable` and partial index hints in `src/backend/wikicook-app/src/main/java/com/wikicook/review/repository/ReviewRepository.java`
-- [ ] T041 [US4] Implement `ReviewService.getRecipeReviews()` aggregating paginated review items, Cooksnaps, author info (handling GDPR deleted users as `Người dùng đã xóa`), and `RatingSummaryDto` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/ReviewService.java` (depends on T038, T040)
-- [ ] T042 [US4] Implement endpoint `GET /api/v1/recipes/{recipeId}/reviews` open to public guests (`security: []`) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/ReviewController.java` (depends on T039, T041)
-- [ ] T043 [US4] Verify User Story 4 test suites pass (`Run: mvn test -Dtest=ReviewServiceTest,ReviewControllerIT`)
+- [X] T040 [US4] Implement `ReviewRepository` dynamic query method `findAllByRecipeIdAndCriteria()` with Spring Data `Pageable` and partial index hints in `src/backend/wikicook-app/src/main/java/com/wikicook/review/repository/ReviewRepository.java`
+- [X] T041 [US4] Implement `ReviewService.getRecipeReviews()` aggregating paginated review items, Cooksnaps, author info (handling GDPR deleted users as `Người dùng đã xóa`), and `RatingSummaryDto` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/ReviewService.java` (depends on T038, T040)
+- [X] T042 [US4] Implement endpoint `GET /api/v1/recipes/{recipeId}/reviews` open to public guests (`security: []`) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/ReviewController.java` (depends on T039, T041)
+- [X] T043 [US4] Verify User Story 4 test suites pass (`Run: mvn test -Dtest=ReviewServiceTest,ReviewControllerIT`)
 
 **Checkpoint**: User Story 4 is complete — Paginated browsing, multi-criteria sorting, and rating breakdown calculations are verified.
 
@@ -163,14 +163,14 @@
 
 ### Tests for Helpful Voting (Test-First: Write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T044 [P] [VOTE] Create unit tests in `ReviewServiceTest.java` for `toggleHelpfulVote()` (first vote increments count, second vote decrements count, author self-upvote throws `SelfReviewForbiddenException`, unauthenticated throws 401, `updated_at` unchanged)
-- [ ] T045 [P] [VOTE] Create integration tests in `ReviewControllerIT.java` testing `POST /api/v1/reviews/{reviewId}/helpful` (successful toggle, two parallel toggles end with a consistent count and no 500, count stays equal to vote rows after a voter account is deleted, 401 Unauthorized for guests, 403 Forbidden for author, 404 for missing review)
+- [X] T044 [P] [VOTE] Create unit tests in `ReviewServiceTest.java` for `toggleHelpfulVote()` (first vote increments count, second vote decrements count, author self-upvote throws `SelfReviewForbiddenException`, unauthenticated throws 401, `updated_at` unchanged)
+- [X] T045 [P] [VOTE] Create integration tests in `ReviewControllerIT.java` testing `POST /api/v1/reviews/{reviewId}/helpful` (successful toggle, two parallel toggles end with a consistent count and no 500, count stays equal to vote rows after a voter account is deleted, 401 Unauthorized for guests, 403 Forbidden for author, 404 for missing review)
 
 ### Implementation for Helpful Voting
 
-- [ ] T046 [VOTE] Implement `ReviewService.toggleHelpfulVote()` checking self-vote guard (`review.user_id != current_user_id`), locking the review row `FOR UPDATE`, deleting or inserting the vote, and recomputing `helpful_count` from `COUNT(*)` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/ReviewService.java` (depends on T044)
-- [ ] T047 [VOTE] Implement endpoint `POST /api/v1/reviews/{reviewId}/helpful` requiring authentication in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/ReviewController.java` (depends on T045, T046)
-- [ ] T048 [VOTE] Verify Helpful Voting test suites pass (`Run: mvn test -Dtest=ReviewServiceTest,ReviewControllerIT`)
+- [X] T046 [VOTE] Implement `ReviewService.toggleHelpfulVote()` checking self-vote guard (`review.user_id != current_user_id`), locking the review row `FOR UPDATE`, deleting or inserting the vote, and recomputing `helpful_count` from `COUNT(*)` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/ReviewService.java` (depends on T044)
+- [X] T047 [VOTE] Implement endpoint `POST /api/v1/reviews/{reviewId}/helpful` requiring authentication in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/ReviewController.java` (depends on T045, T046)
+- [X] T048 [VOTE] Verify Helpful Voting test suites pass (`Run: mvn test -Dtest=ReviewServiceTest,ReviewControllerIT`)
 
 **Checkpoint**: Helpful voting is complete — Atomic toggle mechanism, anti-self-vote guard, and real-time counter updates are verified.
 
@@ -184,16 +184,16 @@
 
 ### Tests for Reporting (Test-First) ⚠️
 
-- [ ] T074 [P] [US5] Create unit tests in `ReviewReportServiceTest.java` (create report, duplicate → `ReportAlreadyExistsException`, self-report → `SelfReportForbiddenException`, 10th `OPEN` report hides the target and recalculates stats) in `src/backend/wikicook-app/src/test/java/com/wikicook/review/service/ReviewReportServiceTest.java`
-- [ ] T075 [P] [US5] Create integration tests in `ReviewReportControllerIT.java` for `POST /api/v1/reviews/{reviewId}/reports` and `POST /api/v1/cooksnaps/{cooksnapId}/reports` (201, 400, 401, 403, 404, 409, auto-quarantine) in `src/backend/wikicook-app/src/test/java/com/wikicook/review/controller/ReviewReportControllerIT.java`
+- [X] T074 [P] [US5] Create unit tests in `ReviewReportServiceTest.java` (create report, duplicate → `ReportAlreadyExistsException`, self-report → `SelfReportForbiddenException`, 10th `OPEN` report hides the target and recalculates stats) in `src/backend/wikicook-app/src/test/java/com/wikicook/review/service/ReviewReportServiceTest.java`
+- [X] T075 [P] [US5] Create integration tests in `ReviewReportControllerIT.java` for `POST /api/v1/reviews/{reviewId}/reports` and `POST /api/v1/cooksnaps/{cooksnapId}/reports` (201, 400, 401, 403, 404, 409, auto-quarantine) in `src/backend/wikicook-app/src/test/java/com/wikicook/review/controller/ReviewReportControllerIT.java`
 
 ### Implementation for Reporting
 
-- [ ] T076 [US5] Create `Report` entity mapping the shared `reports` table (full-schema §4.10, spec 100) and `ReportRepository` with `countByReviewIdAndStatus` / `countByCooksnapIdAndStatus` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/domain/Report.java` and `.../repository/ReportRepository.java`
-- [ ] T077 [US5] Implement `ReviewReportService` (insert report, map unique violation to 409, self-report guard, auto-quarantine at ≥ 10 `OPEN` reports with recipe row lock and stats recalculation) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/ReviewReportService.java` (depends on T074, T076)
-- [ ] T078 [US5] Implement `ReviewReportController` endpoints in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/ReviewReportController.java` (depends on T075, T077)
+- [X] T076 [US5] Create `Report` entity mapping the shared `reports` table (full-schema §4.10, spec 100) and `ReportRepository` with `countByReviewIdAndStatus` / `countByCooksnapIdAndStatus` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/domain/Report.java` and `.../repository/ReportRepository.java`
+- [X] T077 [US5] Implement `ReviewReportService` (insert report, map unique violation to 409, self-report guard, auto-quarantine at ≥ 10 `OPEN` reports with recipe row lock and stats recalculation) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/ReviewReportService.java` (depends on T074, T076)
+- [X] T078 [US5] Implement `ReviewReportController` endpoints in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/ReviewReportController.java` (depends on T075, T077)
 - [ ] T079 [P] [UI] Implement `ReportDialog.tsx` (reasons `SPAM`/`OFFENSIVE`/`COPYRIGHT`/`UNSAFE`/`OTHER`, details ≤ 1000 chars, login prompt for guests, duplicate-report message) in `src/frontend/src/features/reviews/components/ReportDialog.tsx`
-- [ ] T080 [US5] Verify Reporting test suites pass (`Run: mvn test -Dtest=ReviewReportServiceTest,ReviewReportControllerIT`)
+- [X] T080 [US5] Verify Reporting test suites pass (`Run: mvn test -Dtest=ReviewReportServiceTest,ReviewReportControllerIT`)
 
 **Checkpoint**: Reporting is complete — Reports reach the spec-100 moderation queue, duplicates are blocked, and mass-reported content is quarantined.
 
@@ -229,7 +229,7 @@
 
 **Purpose**: Execute end-to-end verification, quality audit, performance benchmarking, and prepare demo evidence.
 
-- [ ] T064 [QA] Execute full backend test suite (`mvn clean verify`) and confirm JaCoCo test coverage for `com.wikicook.review.service` achieves $\ge 70\%$
+- [X] T064 [QA] Execute full backend test suite (`mvn clean verify`) and confirm JaCoCo test coverage for `com.wikicook.review.service` achieves $\ge 70\%$
 - [ ] T065 [QA] Execute full frontend test suite (`npm test -- --run`) and assert 100% test pass rate
 - [ ] T066 [QA] Execute Performance Benchmark: Verify GET `/recipes/{recipeId}/reviews` p95 response time is $< 100\text{ms}$ and POST Helpful Vote is $< 300\text{ms}$ under 50 concurrent virtual users
 - [ ] T067 [QA] Execute Manual Test `TC-MAN-070-01`: Verify 100% of EXIF, GPS coordinates, and camera metadata are stripped from uploaded smartphone photos using `exiftool`
