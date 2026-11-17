@@ -91,6 +91,16 @@ public class DietaryProfileService {
         return toDto(userId, saved);
     }
 
+    /**
+     * FR-019: closes the notices the person has read. Only rows of {@code userId} are deleted, so an id of someone else
+     * or one that is already gone is ignored and the call is safe to repeat. The profile itself is not written: no
+     * version change, no audit row.
+     */
+    @Transactional
+    public void acknowledgeNotices(long userId, Set<Long> ids) {
+        notices.deleteByUserIdAndIdIn(userId, ids);
+    }
+
     /** Research R5 step 2: an id the person already has is kept even when the catalogue has withdrawn it since. */
     private void validate(DietaryProfileUpdateRequest request, Snapshot current) {
         List<FieldCode> errors = new ArrayList<>();

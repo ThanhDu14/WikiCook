@@ -294,10 +294,10 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case (`Edge: …`) mà nó 
 ### 8b. Thay đổi catalogue (FR-019)
 
 - [ ] T122 [P] ⛓ B, E 🕓 #8 Integration test `DietaryCatalogChangesIT` – `Edge: Ingredient merged` (chuyển sang đích, đã loại trừ đích thì giữ một dòng, không vượt 50), `Edge: Ingredient deleted`, `Edge: Allergen removed`: mỗi trường hợp một `dietary_notices` đúng tên; chạy trong transaction bên gọi, rollback thì không đổi; không đổi `dietary_version` trong src/backend/wikicook-app/src/test/java/com/wikicook/profile/service/DietaryCatalogChangesIT.java
-- [ ] T123 [P] Integration test `DietaryNoticeAckIT` – FR-019: `GET /me/dietary-profile` trả `notices[]`, `POST …/notices/ack` xóa đúng của người gọi, bỏ qua id người khác trong src/backend/wikicook-app/src/test/java/com/wikicook/profile/controller/DietaryNoticeAckIT.java
+- [x] T123 [P] Integration test `DietaryNoticeAckIT` – FR-019: `GET /me/dietary-profile` trả `notices[]`, `POST …/notices/ack` xóa đúng của người gọi, bỏ qua id người khác trong src/backend/wikicook-app/src/test/java/com/wikicook/profile/controller/DietaryNoticeAckIT.java
 - [ ] T124 [P] Test `CatalogueNotices.test.tsx` – `Edge: Ingredient merged`, `Edge: Ingredient deleted`, `Edge: Allergen removed`, Gap 011-C: hiện ở lần vào sau, đóng rồi không hiện lại trong src/frontend/src/features/profile/__tests__/CatalogueNotices.test.tsx
 - [ ] T125 ⛓ B, E 🕓 #8 Cài `DietaryCatalogChanges` trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/api/DietaryCatalogChanges.java và `DietaryCatalogChangeService` trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/service/DietaryCatalogChangeService.java (làm T122 xanh). Chưa có merge của 100 thì interface chưa ai gọi, test gọi trực tiếp
-- [ ] T126 Thêm record `AckNoticesRequest`, `POST /me/dietary-profile/notices/ack`, trả `notices[]` trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/controller/DietaryProfileController.java (làm T123 xanh)
+- [x] T126 Thêm record `AckNoticesRequest`, `POST /me/dietary-profile/notices/ack`, trả `notices[]` trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/controller/DietaryProfileController.java (làm T123 xanh)
 - [ ] T127 Tạo `CatalogueNotices` trong src/frontend/src/features/profile/components/CatalogueNotices.tsx, gắn vào src/frontend/src/features/profile/pages/DietaryProfilePage.tsx (làm T124 xanh)
 
 ### 8c. Tên tác giả (FR-007) và lỗi đọc hồ sơ (FR-026a)
