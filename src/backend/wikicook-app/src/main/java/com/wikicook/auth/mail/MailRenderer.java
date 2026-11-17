@@ -23,7 +23,8 @@ public class MailRenderer {
     private static final Pattern PLACEHOLDER = Pattern.compile("\\$\\{(\\w+)}");
 
     private static final Map<String, String> SUBJECTS = Map.of(
-            "verify-email", "Xác minh email tài khoản WikiCook");
+            "verify-email", "Xác minh email tài khoản WikiCook",
+            "reset-password", "Đặt lại mật khẩu WikiCook");
 
     private final Map<String, String> templates = new ConcurrentHashMap<>();
 

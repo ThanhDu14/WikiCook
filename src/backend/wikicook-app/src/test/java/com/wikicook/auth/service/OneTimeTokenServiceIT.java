@@ -182,4 +182,33 @@ class OneTimeTokenServiceIT extends AbstractPostgresIT {
                 Timestamp.class, SessionService.hash(issued.token())).toInstant();
         assertThat(expires).isBefore(clock.instant());
     }
+
+    @Test
+    @DisplayName("AU06: inspect reports VALID, EXPIRED, USED and UNKNOWN with the user and expiry, and never uses the token")
+    void inspectLooksWithoutConsuming() {
+        Duration ttl = Duration.ofMinutes(30);
+        Issued issued = tokens.issue(user, TokenPurpose.PASSWORD_RESET, ttl);
+
+        for (int i = 0; i < 3; i++) {
+            OneTimeTokenService.Inspection live = tokens.inspect(issued.token(), TokenPurpose.PASSWORD_RESET);
+            assertThat(live.status()).isEqualTo(Status.VALID);
+            assertThat(live.userId()).isEqualTo(user);
+            assertThat(live.expiresAt()).isEqualTo(issued.expiresAt());
+        }
+        assertThat(tokens.inspect(issued.token(), TokenPurpose.EMAIL_VERIFICATION).status())
+                .as("another purpose").isEqualTo(Status.UNKNOWN);
+        assertThat(tokens.inspect("never-issued", TokenPurpose.PASSWORD_RESET).status()).isEqualTo(Status.UNKNOWN);
+
+        Issued newer = tokens.issue(user, TokenPurpose.PASSWORD_RESET, ttl);
+        assertThat(tokens.inspect(issued.token(), TokenPurpose.PASSWORD_RESET).status())
+                .as("replaced by a newer one").isEqualTo(Status.USED);
+        assertThat(tokens.consume(newer.token(), TokenPurpose.PASSWORD_RESET).status()).isEqualTo(Status.CONSUMED);
+        assertThat(tokens.inspect(newer.token(), TokenPurpose.PASSWORD_RESET).status()).isEqualTo(Status.USED);
+
+        Issued last = tokens.issue(user, TokenPurpose.PASSWORD_RESET, ttl);
+        clock.advance(ttl.plusSeconds(1));
+        OneTimeTokenService.Inspection expired = tokens.inspect(last.token(), TokenPurpose.PASSWORD_RESET);
+        assertThat(expired.status()).isEqualTo(Status.EXPIRED);
+        assertThat(expired.userId()).isEqualTo(user);
+    }
 }

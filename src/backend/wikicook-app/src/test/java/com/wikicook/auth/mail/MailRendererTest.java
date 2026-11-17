@@ -71,4 +71,44 @@ class MailRendererTest {
         assertThatThrownBy(() -> renderer.render("no-such-mail", Map.of())).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("no-such-mail");
     }
+
+    private static final Map<String, String> RESET_VARIABLES = Map.of("name", "An", "link",
+            "http://localhost:3000/reset-password#token=abc_DEF-123", "minutes", "30");
+
+    @Test
+    void resetPasswordHasAnHtmlAndAPlainTextVersionInVietnameseWithTheLink() {
+        Rendered mail = renderer.render("reset-password", RESET_VARIABLES);
+
+        assertThat(mail.subject()).contains("WikiCook").containsIgnoringCase("mật khẩu");
+        assertThat(mail.html()).contains("<html").contains("Xin chào An")
+                .contains("href=\"http://localhost:3000/reset-password#token=abc_DEF-123\"");
+        assertThat(mail.text()).doesNotContain("<").contains("Xin chào An")
+                .contains("http://localhost:3000/reset-password#token=abc_DEF-123");
+    }
+
+    @Test
+    void resetPasswordStatesThatTheLinkLastsThirtyMinutesAndIsSingleUse() {
+        Rendered mail = renderer.render("reset-password", RESET_VARIABLES);
+
+        assertThat(mail.html()).contains("30 phút").contains("một lần");
+        assertThat(mail.text()).contains("30 phút").contains("một lần");
+    }
+
+    @Test
+    void resetPasswordTellsThePersonWhoDidNotAskToIgnoreIt() {
+        Rendered mail = renderer.render("reset-password", RESET_VARIABLES);
+
+        assertThat(mail.html()).contains("bỏ qua email này");
+        assertThat(mail.text()).contains("bỏ qua email này");
+    }
+
+    @Test
+    void resetPasswordNeverContainsAPasswordOrAnotherLink() {
+        Rendered mail = renderer.render("reset-password", RESET_VARIABLES);
+
+        assertThat(mail.text().replace(RESET_VARIABLES.get("link"), "").toLowerCase()).doesNotContain("password");
+        assertThat(mail.text().split("http", -1)).as("the only link is the reset link").hasSize(2);
+        assertThat(mail.html()).doesNotContain("${");
+        assertThat(mail.text()).doesNotContain("${");
+    }
 }

@@ -79,6 +79,24 @@ public class OneTimeTokenService {
         return new Consumption(rows.get(0).get("used_at") != null ? Status.USED : Status.EXPIRED, userId);
     }
 
+    /**
+     * Looks at a token without using it (the reset form checks its link before it shows, AU06). The state is the same
+     * one {@link #consume} would find: {@link Status#VALID} for a link that can still be used, otherwise the reason
+     * it cannot.
+     */
+    @Transactional(readOnly = true)
+    public Inspection inspect(String token, TokenPurpose purpose) {
+        Instant now = clock.instant();
+        return jdbc.query("SELECT user_id, used_at, expires_at FROM one_time_tokens WHERE token_hash = ? AND purpose = ?",
+                (rs, row) -> {
+                    Instant expiresAt = rs.getTimestamp("expires_at").toInstant();
+                    Status status = rs.getTimestamp("used_at") != null ? Status.USED
+                            : expiresAt.isAfter(now) ? Status.VALID : Status.EXPIRED;
+                    return new Inspection(status, rs.getLong("user_id"), expiresAt);
+                }, SessionService.hash(token), purpose.name()).stream().findFirst()
+                .orElse(new Inspection(Status.UNKNOWN, null, null));
+    }
+
     /** The user a token was issued to, whatever its state (to resend an expired link). */
     @Transactional(readOnly = true)
     public Optional<Long> userOf(String token, TokenPurpose purpose) {
@@ -88,6 +106,8 @@ public class OneTimeTokenService {
 
     public enum Status {
         CONSUMED,
+        /** Only from {@code inspect}: unused and not expired, so {@code consume} would use it. */
+        VALID,
         /** Past its expiry and never used. */
         EXPIRED,
         /** Used before, or replaced by a newer token. */
@@ -96,6 +116,10 @@ public class OneTimeTokenService {
     }
 
     public record Consumption(Status status, Long userId) {
+    }
+
+    /** {@code userId} and {@code expiresAt} are null for {@link Status#UNKNOWN}. */
+    public record Inspection(Status status, Long userId, Instant expiresAt) {
     }
 
     public record Issued(String token, Instant expiresAt) {
