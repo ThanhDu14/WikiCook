@@ -37,7 +37,7 @@ Spec 010 (đăng nhập), 011 (hồ sơ) và 030 (lưu meal plan) chưa có, nê
 | Bean | Bản giả lập | Thay bằng |
 |---|---|---|
 | `CurrentUser` | `StubCurrentUser`: id lấy từ header `X-Dev-User-Id`, không có thì dùng `wikicook.dev-stubs.user-id` (mặc định 1); id không phải số dương → 400 `VALIDATION_ERROR` | Spring Security của 010 |
-| `DietaryProfilePort` | `StubDietaryProfile`: cùng một hồ sơ cho mọi người, từ `wikicook.dev-stubs.profile.*` (`household-size`, `diet-type`, `max-cook-time-minutes`, `allergen-ids`, `excluded-ingredient-ids`, `preferred-cuisine-ids`); mặc định rỗng, `NONE` | Module hồ sơ (011) |
+| `DietaryProfilePort` | Không còn bản giả lập: `MealPlanDietaryAdapter` của module hồ sơ (011) đọc hồ sơ thật từ `users` và ba bảng `user_*`; người dùng chưa có hồ sơ là hồ sơ rỗng, lỗi đọc là 503 `PROFILE_UNAVAILABLE` | – |
 | `MealPlanWriteFacade` | `InMemoryMealPlanFacade`: tuần lưu trong bộ nhớ, mất khi khởi động lại | Cài đặt của 030 trên `meal_plan_items` |
 | (dòng `users`) | `DevUserProvisioner`: thêm user có id cần dùng nếu thiếu (`ai_requests.user_id` có khóa ngoại), rồi đẩy sequence `users.id` qua id đó | Không cần khi có đăng ký thật |
 
@@ -94,7 +94,6 @@ curl -s -X POST localhost:8080/api/v1/ai-planner/weeks/2026-10-19/generations \
 | `wikicook.ai-planner.meal-cutoffs.{breakfast,lunch,dinner}` | – | `10:00` / `14:00` / `20:00` giờ VN; bữa của hôm nay qua giờ này thì không tạo được |
 | `wikicook.dev-stubs.enabled` | `WIKICOOK_DEV_STUBS_ENABLED` | `false`; chỉ cho dev |
 | `wikicook.dev-stubs.user-id` | `WIKICOOK_DEV_STUBS_USER_ID` | `1` |
-| `wikicook.dev-stubs.profile.*` | – | hồ sơ rỗng, `diet-type: NONE` |
 
 ## Build và test
 

@@ -1,5 +1,11 @@
 # Added on top of main/resources/application.yml (classpath:/config/ wins per key, nothing else is hidden).
 # Fixed fake values for tests only, not real secrets: CI runs without any environment variable.
+spring:
+  datasource:
+    hikari:
+      # Every cached context keeps its own pool open until the JVM exits, and the suite has about 40 contexts
+      maximum-pool-size: 6
+      minimum-idle: 1
 wikicook:
   profile:
     # Avatars written by the tests go under target/, not into the working tree

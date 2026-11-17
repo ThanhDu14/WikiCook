@@ -13,12 +13,13 @@ public abstract class AbstractPostgresIT {
 
     /**
      * Each cached Spring context keeps its own connection pool open until the JVM exits; the default 100 connections
-     * run out once the suite has about ten contexts.
+     * run out once the suite has about ten contexts. The test config caps each pool at 6 and the context cache holds
+     * 100 contexts (src/test/resources/spring.properties), so 500 is enough for every context the suite keeps alive.
      */
     @ServiceConnection
     protected static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>(
             DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres"))
-            .withCommand("postgres", "-c", "max_connections=300");
+            .withCommand("postgres", "-c", "max_connections=500");
 
     static {
         POSTGRES.start(); // stopped by Testcontainers' Ryuk when the JVM exits

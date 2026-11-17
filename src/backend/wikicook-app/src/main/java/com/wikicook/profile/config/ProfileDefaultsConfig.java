@@ -2,12 +2,17 @@ package com.wikicook.profile.config;
 
 import com.wikicook.common.media.LocalDiskMediaStorage;
 import com.wikicook.common.media.MediaStorage;
+import com.wikicook.profile.port.CuisineCatalogPort;
+import com.wikicook.profile.port.IngredientCatalogPort;
+import com.wikicook.profile.port.JdbcCuisineCatalog;
+import com.wikicook.profile.port.JdbcIngredientCatalog;
 import com.wikicook.profile.port.ProfileAuditPort;
 import java.nio.file.Path;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 /**
  * What spec 011 uses while the modules it depends on do not provide their side yet (contracts/integration.md 1.2,
@@ -25,6 +30,20 @@ public class ProfileDefaultsConfig {
     ProfileAuditPort noAudit() {
         return (userId, action, details) -> {
         };
+    }
+
+    /** ⛓ 060: reads the ingredient tables directly until its catalogue bean exists (T040). */
+    @Bean
+    @ConditionalOnMissingBean(IngredientCatalogPort.class)
+    IngredientCatalogPort jdbcIngredientCatalog(NamedParameterJdbcTemplate jdbc) {
+        return new JdbcIngredientCatalog(jdbc);
+    }
+
+    /** ⛓ 100: reads the cuisine table directly until its catalogue bean exists (T040). */
+    @Bean
+    @ConditionalOnMissingBean(CuisineCatalogPort.class)
+    CuisineCatalogPort jdbcCuisineCatalog(NamedParameterJdbcTemplate jdbc) {
+        return new JdbcCuisineCatalog(jdbc);
     }
 
     /** Avatars on local disk (research R7); 060 and 070 reuse the bean for their photos. */
