@@ -17,7 +17,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
  * <li><b>Bearer ignored</b> ({@link #bearerIgnoredMatcher()}): sign-in, refresh, health, API docs. An expired or wrong
  *     {@code Authorization} header there must not turn the request into a 401, or a client with an expired access
  *     token could never refresh it.
- * <li><b>Optionally signed in</b>: recipe search of 020. A guest is served without a token; a valid token identifies
+ * <li><b>Optionally signed in</b>: recipe search of 020. The public profile pages and avatars of 011 are in the same group. A guest is served without a token; a valid token identifies
  *     the user (so {@code AuthSearchViewer} can apply their dietary profile, 020 R6). Not listed in the first group on
  *     purpose; an invalid token is 401 and the client refreshes once and retries, as for any other route (R12).
  * </ul>
@@ -46,7 +46,11 @@ public final class PublicRoutes {
             // 020: a guest searches recipes (020 acceptance 3.4); a signed-in user gets their dietary profile applied
             PATHS.matcher(HttpMethod.GET, "/api/v1/recipes/search"),
             PATHS.matcher(HttpMethod.GET, "/api/v1/recipes/search/options"),
-            PATHS.matcher(HttpMethod.GET, "/api/v1/recipes/featured"));
+            PATHS.matcher(HttpMethod.GET, "/api/v1/recipes/featured"),
+            // 011: the public page of a person and the avatars it shows (FR-005); a guest reads them (US2-6)
+            PATHS.matcher(HttpMethod.GET, "/api/v1/profiles/*"),
+            PATHS.matcher(HttpMethod.GET, "/api/v1/profiles/*/recipes"),
+            PATHS.matcher(HttpMethod.GET, "/api/v1/media/avatars/*"));
 
     private static final RequestMatcher ALL = new OrRequestMatcher(BEARER_IGNORED, OPTIONALLY_SIGNED_IN);
 
