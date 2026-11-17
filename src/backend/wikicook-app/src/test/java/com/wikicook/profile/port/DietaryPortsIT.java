@@ -119,7 +119,9 @@ class DietaryPortsIT extends AbstractPostgresIT {
 
         UserDietaryRestrictions restrictions = shopping.getRestrictions(user);
 
-        assertThat(restrictions.allergenIngredientIds()).containsExactlyInAnyOrder(peanutButter, peanutOil);
+        // Other ITs commit PEANUT tags to the shared container and never clean them, so assert on what this test
+        // tagged rather than on the whole set.
+        assertThat(restrictions.allergenIngredientIds()).contains(peanutButter, peanutOil).doesNotContain(butter);
         assertThat(restrictions.allergenIngredientIds()).doesNotContain(peanut); // an ingredient id, not allergens.id
         assertThat(restrictions.excludedIngredientIds()).containsExactlyInAnyOrder(ngoRi, salt);
     }
