@@ -113,10 +113,7 @@ test.describe('FR-013 (010) – suspended and banned accounts', () => {
     await expect(page.getByText(/đình chỉ đến/)).toBeHidden();
   });
 
-  // Found by this test: in the dev server (React StrictMode renders twice) the first render of AccountStatusPage reads
-  // and removes the fragment, the second finds none and goes to /login. The unit test (no StrictMode) passes; a
-  // production build renders once. Fix is outside this task: read the fragment once (useState initialiser).
-  test.fixme('Google sends a suspended person to /account-status with the reason in the URL fragment, which is then removed', async ({ page }) => {
+  test('Google sends a suspended person to /account-status with the reason in the URL fragment, which is then removed', async ({ page }) => {
     await open(page, new FakeAuthApi(), '/account-status#code=ACCOUNT_SUSPENDED&reason=Spam+qu%E1%BA%A3ng+c%C3%A1o&endsAt=2026-10-30T00%3A00%3A00Z');
 
     await expect(page.getByText('Lý do: Spam quảng cáo')).toBeVisible();
