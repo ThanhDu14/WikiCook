@@ -1,14 +1,14 @@
 import { http, HttpResponse } from 'msw';
 import { server } from '@/test/server';
 import { api, ApiError } from './client';
-import { GUEST, setAccessToken, setDevUserId } from './session';
+import { setAccessToken } from './session';
 import { installMemoryStorage } from './memoryStorage.testutil';
 
 beforeAll(() => {
   installMemoryStorage();
 });
 
-/** Echoes the identity headers the backend reads (ACT-01). */
+/** Echoes the headers the backend reads. */
 const echoHeaders = ({ request }: { request: Request }) =>
   HttpResponse.json({
     userId: request.headers.get('x-user-id'),
@@ -17,27 +17,20 @@ const echoHeaders = ({ request }: { request: Request }) =>
     contentType: request.headers.get('content-type'),
   });
 
-describe('api client identity headers (ACT-01)', () => {
+describe('api client identity headers', () => {
   afterEach(() => {
     window.localStorage.clear();
     setAccessToken(null);
   });
 
-  it('sends the default dev user 1 in X-User-Id and X-Dev-User-Id, no Authorization', async () => {
+  it('sends no identity and no Authorization without a token', async () => {
     server.use(http.get('/api/v1/whoami', echoHeaders));
 
-    await expect(api.get('/whoami')).resolves.toMatchObject({ userId: '1', devUserId: '1', authorization: null });
+    await expect(api.get('/whoami')).resolves.toMatchObject({ userId: null, devUserId: null, authorization: null });
   });
 
-  it('sends the dev user chosen in the session', async () => {
-    setDevUserId(5);
-    server.use(http.get('/api/v1/whoami', echoHeaders));
-
-    await expect(api.get('/whoami')).resolves.toMatchObject({ userId: '5', devUserId: '5' });
-  });
-
-  it('sends no user headers when the dev user is a guest', async () => {
-    setDevUserId(GUEST);
+  it('never sends the dev identity headers, even when an earlier build stored a dev user', async () => {
+    window.localStorage.setItem('wk.devUserId', '5');
     server.use(http.get('/api/v1/whoami', echoHeaders));
 
     await expect(api.get('/whoami')).resolves.toMatchObject({ userId: null, devUserId: null });
@@ -51,14 +44,12 @@ describe('api client identity headers (ACT-01)', () => {
   });
 
   it('upload() posts multipart form data with the same headers and no JSON content type', async () => {
-    setDevUserId(5);
     setAccessToken('tok');
     server.use(
       http.post('/api/v1/recipes/9/cover', async ({ request }) => {
         const form = await request.formData();
         const file = form.get('file') as File;
         return HttpResponse.json({
-          devUserId: request.headers.get('x-dev-user-id'),
           authorization: request.headers.get('authorization'),
           multipart: (request.headers.get('content-type') ?? '').startsWith('multipart/form-data'),
           fileName: file.name,
@@ -69,11 +60,32 @@ describe('api client identity headers (ACT-01)', () => {
     form.append('file', new File(['x'], 'cover.jpg', { type: 'image/jpeg' }));
 
     await expect(api.upload('/recipes/9/cover', form)).resolves.toEqual({
-      devUserId: '5',
       authorization: 'Bearer tok',
       multipart: true,
       fileName: 'cover.jpg',
     });
+  });
+
+  it('postForm() sends FormData as multipart and leaves the content type, with its boundary, to the browser (spec 011 T014)', async () => {
+    setAccessToken('tok');
+    server.use(
+      http.post('/api/v1/me/profile', async ({ request }) => {
+        const form = await request.formData();
+        return HttpResponse.json({
+          authorization: request.headers.get('authorization'),
+          contentType: request.headers.get('content-type') ?? '',
+          profile: await (form.get('profile') as Blob).text(),
+        });
+      }),
+    );
+    const form = new FormData();
+    form.append('profile', new Blob([JSON.stringify({ displayName: 'Hưng' })], { type: 'application/json' }), 'profile.json');
+
+    const answer = await api.postForm<{ authorization: string; contentType: string; profile: string }>('/me/profile', form);
+
+    expect(answer.authorization).toBe('Bearer tok');
+    expect(answer.contentType).toMatch(/^multipart\/form-data; boundary=/);
+    expect(JSON.parse(answer.profile)).toEqual({ displayName: 'Hưng' });
   });
 
   it('upload() turns an error response into an ApiError', async () => {
@@ -96,8 +108,9 @@ describe('api client identity headers (ACT-01)', () => {
     server.use(http.get('/api/v1/whoami', echoHeaders));
 
     const { fetchJson } = await import('./client');
-    await expect(fetchJson('/api/v1/whoami', { headers: { 'X-Dev-User-Id': '9' } })).resolves.toMatchObject({
-      devUserId: '9',
+    setAccessToken('from-session');
+    await expect(fetchJson('/api/v1/whoami', { headers: { Authorization: 'Bearer from-caller' } })).resolves.toMatchObject({
+      authorization: 'Bearer from-caller',
     });
   });
 });
