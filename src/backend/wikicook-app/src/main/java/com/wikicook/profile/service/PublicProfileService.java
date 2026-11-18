@@ -1,5 +1,6 @@
 package com.wikicook.profile.service;
 
+import com.wikicook.common.media.AvatarUrls;
 import com.wikicook.profile.dto.PublicProfileDto;
 import com.wikicook.profile.dto.PublicRecipeCardDto;
 import com.wikicook.profile.dto.PublicRecipePageDto;
