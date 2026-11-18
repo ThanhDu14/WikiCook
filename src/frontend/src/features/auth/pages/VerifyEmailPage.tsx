@@ -20,6 +20,8 @@ function takeToken(): string | null {
 /** W-AU04 Link đã hết hạn (AF 1.11, Gap 010-B), and the pages for a verified or unusable link. */
 export function VerifyEmailPage() {
   const token = useRef<string | null | undefined>(undefined);
+  /** One request per link: a second one would answer ALREADY_VERIFIED and hide that the first one verified the address. */
+  const request = useRef<ReturnType<typeof authApi.confirmVerification> | null>(null);
   const [phase, setPhase] = useState<Phase>('checking');
   const [resent, setResent] = useState(false);
 
@@ -32,8 +34,8 @@ export function VerifyEmailPage() {
       return;
     }
     let cancelled = false;
-    authApi
-      .confirmVerification(value)
+    request.current ??= authApi.confirmVerification(value);
+    request.current
       .then((result) => !cancelled && setPhase(result.status === 'VERIFIED' ? 'verified' : 'already'))
       .catch((error) => !cancelled && setPhase(problemCode(error) === 'TOKEN_EXPIRED' || problemCode(error) === 'TOKEN_INVALID' ? 'expired' : 'missing'));
     return () => {
