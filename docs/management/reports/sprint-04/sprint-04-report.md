@@ -3,7 +3,7 @@
 **Course:** CS300 - CSC13002 - Introduction to Software Engineering
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem
 **Sprint Cycle:** Sprint 04 (Project Assignment 4 — Requirements Revision, Software Architecture & Two Full-Stack Functional Groups)
-**Sprint Duration:** November 10, 2026 – November 23, 2026 *(Final submission deadline to be confirmed against the official course instructions)*
+**Sprint Duration:** November 10, 2026 – November 29, 2026. The official PA4 deadline is **29/11/2026**; the team aims to submit by **23/11/2026** so that late problems can still be fixed (an internal target, not a limit)
 **Document Version:** 0.5 (SCRUM-68 Planning and SCRUM-87 Standup 01 recorded; Standup 02 prepared, not yet held; 18/11/2026)
 
 ---
@@ -24,10 +24,10 @@
 | Date | Version | Description | Author |
 | :---: | :---: | :--- | :--- |
 | **10/11/2026** | `v0.1` | Created the Sprint 04 report scaffold and recorded the SCRUM-68 planning baseline. | Lê Quốc Hưng (`LqHung06`) |
-| **10/11/2026** | `v0.2` | Updated SCRUM-68 after the user confirmed the planning meeting had taken place; recorded the 23 Jira work items shown in the provided screenshots and documented confirmed scope/workload decisions while leaving unsupported meeting logistics unasserted. | Lê Quốc Hưng (`LqHung06`) |
+| **10/11/2026** | `v0.2` | Updated SCRUM-68 after the Scrum Master confirmed the planning meeting had taken place; recorded the 23 Jira work items shown in the provided screenshots and documented confirmed scope/workload decisions while leaving unsupported meeting logistics unasserted. | Lê Quốc Hưng (`LqHung06`) |
 | **16/11/2026** | `v0.3` | Documented Meeting 2 (Standup 01, 14/11) and Meeting 3 (Standup 02, 19/11) minutes under SCRUM-87; audited Part E Spec Kit progress (010+011, 070), database seed state, C4 Level 1 draft, Part E Code Freeze criteria, and architecture diagram alignment. | Lê Quốc Hưng (`LqHung06`) |
 | **18/11/2026** | `v0.4` | Added Section 3: PA3 TA feedback status (none received) and the self-audit checklist feeding SCRUM-70, SCRUM-71 and SCRUM-84 (SCRUM-69). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
-| **18/11/2026** | `v0.5` | Correction of `v0.3` (SCRUM-87): Section 2.3 (Standup 02, planned 19/11) described a meeting that had not happened, with attendance, member reports and decisions. It is now a template with the planned agenda, repository evidence checked on 18/11 and blank fields for the meeting; Section 2.4 lists only ceremonies that took place, with the status of each action item checked against `origin/main`; Provenance Statement rewritten. Section 2.2 (Standup 01) is unchanged. | Lê Quốc Hưng (`LqHung06`) |
+| **18/11/2026** | `v0.5` | Correction of `v0.3` (SCRUM-87): Section 2.3 (Standup 02, planned 19/11) described a meeting that had not happened, with attendance, member reports and decisions. It is now a template with the planned agenda, repository evidence checked on 18/11 and blank fields for the meeting; Section 2.4 lists only ceremonies that took place, with the status of each action item checked against `origin/main`; Provenance Statement rewritten. Section 2.2 (Standup 01): only the statements that do not match the repository were changed (a frontend client built with Axios, the `dev:mock` command, work on `SCRUM-76` dated before 14/11, a boundary list with Cloud OCR); attendance and time are unchanged and still to be confirmed from the meeting notes. Section 2.1: wording of the conversation removed, action statuses updated, submission date stated as official 29/11 and team target 23/11. | Lê Quốc Hưng (`LqHung06`) |
 
 ---
 
@@ -51,7 +51,7 @@ The architecture diagrams must describe the actual implementation and deployment
 ### 1.2. Sprint 04 Jira Backlog — SCRUM-68 to SCRUM-90
 *Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Lê Quốc Hưng (LqHung06)*
 
-The Sprint 4 Jira backlog shown in the screenshots provided by the user contains **23 work items**, `SCRUM-68`–`SCRUM-90`. The visible issue summaries, assignees (identified by the user from Jira avatars), statuses and due dates were compared with the team assignment plan. The screenshot shows the issues in `To Do` at capture time; that status is not represented as completion. Reviewer fields are not visible in the screenshots and should be checked in each Jira issue.
+The Sprint 4 Jira backlog shown in the Jira screenshots contains **23 work items**, `SCRUM-68`–`SCRUM-90`. The visible issue summaries, assignees (identified by the Scrum Master from Jira avatars), statuses and due dates were compared with the team assignment plan. The screenshot shows the issues in `To Do` at capture time; that status is not represented as completion. Reviewer fields are not visible in the screenshots and should be checked in each Jira issue.
 
 | Jira Key | Planned Summary | Planned Assignee | Planned Due Date | Part |
 | :---: | :--- | :--- | :---: | :---: |
@@ -88,9 +88,9 @@ The Sprint 4 Jira backlog shown in the screenshots provided by the user contains
 ### 2.1. Meeting 1: Sprint 04 Planning (`SCRUM-68`)
 *Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Lê Quốc Hưng (LqHung06)*
 
-The user confirmed that Sprint 4 Planning took place. The decisions and backlog details below are recorded from the user's confirmation, the approved PA4 assignment plan and the Jira backlog screenshots supplied in this conversation. Meeting time, platform, attendee list and discussion transcript were not supplied, so they are not inferred here.
+The Scrum Master confirmed that Sprint 4 Planning took place. The decisions and backlog details below come from that confirmation, the approved PA4 assignment plan and the Jira backlog screenshots. Meeting time, platform, attendee list and discussion transcript were not recorded, so they are not inferred here.
 
-- **Date:** 10/11/2026 (Sprint 4 start date in the assignment plan; user confirms the planning meeting has occurred on this date).
+- **Date:** 10/11/2026 (Sprint 4 start date in the assignment plan; the Scrum Master confirms the planning meeting took place on this date).
 - **Time / platform:** Not recorded in the available evidence.
 - **Attendees:** Not recorded in the available evidence.
 - **Facilitator / minute taker:** Lê Quốc Hưng (`@LqHung06`), SCRUM-68 assignee.
@@ -100,25 +100,25 @@ The user confirmed that Sprint 4 Planning took place. The decisions and backlog 
 
 1. **PA4 scope:** The updated PA4 brief totals 90 points and includes revised use-case documents (A), architecture diagrams (B–D), two Spec Kit-driven end-to-end functional groups with generated tests and narrated demo (E), and AI/Weekly reporting (F).
 2. **Part E group selection:** The team selected **F-01 (`010` Authentication + `011` Profile & Dietary Profile)** and **F-07 (`070` Reviews & Cooksnap)**. Both are planned as full-stack groups; the delivery needs to demonstrate UI, API/business logic and persistence.
-3. **Jira backlog:** The screenshots show 23 work items, `SCRUM-68`–`SCRUM-90`, with the task summaries and assignee avatars. The user confirmed that they can identify the Jira avatars as the respective members. The visible items were in `To Do` when captured; that status is preserved as shown, not interpreted as task completion.
+3. **Jira backlog:** The screenshots show 23 work items, `SCRUM-68`–`SCRUM-90`, with the task summaries and assignee avatars. The Scrum Master identified the Jira avatars as the respective members. The visible items were in `To Do` when captured; that status is preserved as shown, not interpreted as task completion.
 4. **Workload distribution:** Planned author counts are Hưng 5, Duy 5, Hiển 5, Chung 4, Dự 4 tasks, meeting the agreed target of 4–5 SCRUM tasks per person.
 5. **Architecture quality constraint:** C4 diagrams are to describe the real source/configuration at submission time; unimplemented modules must not be presented as implemented.
-6. **Submission target:** The working plan uses 23/11/2026 as the final date. Confirm the official date/time in Moodle or the assignment instructions before submission.
+6. **Submission date:** The official PA4 deadline is **29/11/2026** (given by the Scrum Master). The team plans to submit by **23/11/2026** to keep a buffer for problems found late; the date and time are to be checked again in Moodle before submission. Other documents still carry older dates: `project-plan.md` (Sprint 4 from 16/11 to 04/12, submission 04/12/2026, estimated) and `w6-w10-weekly-plan.md` (submission 21/11/2026, estimated). They are not changed here; this report and `Changes.md` use 29/11 as the official deadline and 23/11 as the team target.
 
 #### Jira backlog review and follow-up
 
-The screenshots show backlog summaries and assignee avatars, but not issue descriptions/reviewers. SCRUM-89 is displayed with a due date of 23/11/2026 in the screenshot, whereas the team-assignment file has 19/11/2026; the live Jira date is recorded in the backlog table above and the source assignment should be reconciled. Reviewers and detailed descriptions should be checked in Jira issue details.
+The screenshots show backlog summaries and assignee avatars, but not issue descriptions/reviewers. SCRUM-89 is displayed with a due date of 23/11/2026 in the screenshot, whereas the team-assignment file lists 19/11/2026. The Jira date (23/11/2026) is the one used in the backlog table above and in this report; the 19/11 date of the assignment file is treated as superseded. Reviewers and detailed descriptions should be checked in Jira issue details.
 
 | Action | Owner | Due | Status |
 |---|---|---:|---|
-| Check PA3 TA feedback and record sourced feedback or a no-feedback self-audit | Nguyễn Đức Duy (`SCRUM-69`) | 12/11/2026 | Assigned; outcome pending. |
-| Prepare Spec Kit artifacts for F-01 (`010` + `011`) | Mai Văn Hiển (`SCRUM-72`) | 13/11/2026 | Assigned; work pending. |
-| Prepare Spec Kit artifacts for F-07 (`070`) | Nguyễn Đức Duy (`SCRUM-73`) | 13/11/2026 | Assigned; work pending. |
-| Reconcile SCRUM-89 due date in the source assignment with the Jira date | Lê Quốc Hưng / team | Before the task is due | Open. |
+| Check PA3 TA feedback and record sourced feedback or a no-feedback self-audit | Nguyễn Đức Duy (`SCRUM-69`) | 12/11/2026 | Done (Section 3, PR #100); no feedback found, to be checked again before submission. |
+| Prepare Spec Kit artifacts for F-01 (`010` + `011`) | Mai Văn Hiển (`SCRUM-72`) | 13/11/2026 | Done (PR #84, 12/11). |
+| Prepare Spec Kit artifacts for F-07 (`070`) | Nguyễn Đức Duy (`SCRUM-73`) | 13/11/2026 | Done (PR #87, #88, 12/11). |
+| Reconcile SCRUM-89 due date in the source assignment with the Jira date | Lê Quốc Hưng / team | Before the task is due | Closed on 18/11/2026: the Jira date (23/11/2026) is used; the assignment file (19/11) is superseded. |
 
 #### Attendance and evidence note
 
-Meeting attendance, duration/platform and the detailed discussion were not present in the evidence available when this report was updated. Add them from the team's actual meeting record if needed. The Jira screenshots supplied by the user are the evidence for the visible backlog items and assignee avatars; attach the original image files in the report package if they are available in the repository.
+Meeting attendance, duration/platform and the detailed discussion were not present in the evidence available when this report was updated. Add them from the team's actual meeting record if needed. The Jira screenshots are the evidence for the visible backlog items and assignee avatars; attach the original image files in the report package if they are available in the repository.
 
 ---
 
@@ -152,14 +152,14 @@ Meeting attendance, duration/platform and the detailed discussion were not prese
 | :--- | :--- | :--- | :--- |
 | **Mai Văn Hiển** (`@MaiHien3507`) | • Completed and merged Spec Kit for `010+011` (`SCRUM-72`, PR #84, commit `b18cd2e` on 12/11).<br>• Drafted C4 Level 1 System Context diagram and Tech Stack summary (`SCRUM-80`).<br>• Scaffolded Spring Security filter chain, JWT provider, and user entity repository on branch `feature/SCRUM-74-auth-backend`. | • Finalize Backend `010` (Authentication, JWT & RBAC, `SCRUM-74`) and open PR into `main`.<br>• Implement Backend `011` (Profile & Dietary Profile API, `SCRUM-75`).<br>• Finalize C4 Level 1 documentation for Part B milestone on 17/11. | Balancing BCrypt salt rounds between rapid integration test cycles ($<2$ seconds) and secure production hashing requirements (addressed via profile-specific test beans). |
 | **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | • Completed and merged Spec Kit for `070-review-cooksnap` (`SCRUM-73`, PR #87 & #88, commits `2c95f74`, `1cfd43e` on 12/11).<br>• Audited TA Feedback for PA3 (`SCRUM-69`) — confirmed no formal feedback published on course channels.<br>• Outlined revisions for Use-Case Model v2.0 (`SCRUM-70`). | • Finalize Use-Case Model v2.0 (`SCRUM-70`, due 16/11).<br>• Author Use-Case Specifications v2.0 (`SCRUM-71`, due 18/11).<br>• Begin Frontend `070` Reviews & Cooksnap UI implementation (`SCRUM-78`). | Handling multipart photo upload preview and client-side image compression for Cooksnap submissions before Backend `070` endpoints are live. |
-| **Lê Quốc Hưng** (`@LqHung06`) | • Published Sprint 04 Planning report & Jira backlog (`SCRUM-68`, PR #80).<br>• Initialized Frontend shared API client with JWT in-memory store, token refresh mutex, and Axios interceptors (`session.ts`, `client.ts`).<br>• Scaffolded UI components for `010+011` (`SCRUM-76`). | • Complete Frontend `010+011` Auth & Profile UI with Vitest + MSW test suite (`SCRUM-76`).<br>• Initialize PA4 `Changes.md` scaffold (`SCRUM-84`).<br>• Facilitate and document Standup 01 and Standup 02 minutes (`SCRUM-87`). | Avoiding stale session redirects on meal-planner or shopping-list routes during local testing (resolved via dev-mode mock server `dev:mock`). |
+| **Lê Quốc Hưng** (`@LqHung06`) | • Published Sprint 04 Planning report & Jira backlog (`SCRUM-68`, PR #80).<br>• Frontend `010+011` (`SCRUM-76`): `[to confirm from the meeting notes]`. The first `SCRUM-76` commits in the repository are dated 16/11/2026. | • Complete Frontend `010+011` Auth & Profile UI with Vitest + MSW test suite (`SCRUM-76`).<br>• Initialize PA4 `Changes.md` scaffold (`SCRUM-84`).<br>• Facilitate and document Standup 01 and Standup 02 minutes (`SCRUM-87`). | `[to confirm from the meeting notes]` |
 | **Trần Nguyễn Công Chung** (`@itzchugnn`) | • Reviewed Spec Kit `070` contracts (`contracts/openapi.yaml`) and database schema requirements.<br>• Scaffolded Spring Boot controller, service, and repository structure for Cooksnaps & Reviews (`SCRUM-77`). | • Implement Backend `070` Review & Cooksnap API (`SCRUM-77`), including Flyway `V501` migration script and photo upload handler.<br>• Establish 5-member AI Usage log collection template (`SCRUM-85`). | File storage volume mounting in Docker: decided to map local `./uploads/cooksnaps` into container `/app/uploads` to ensure uploads persist across container restarts. |
 | **Nguyễn Thành Dự** (`@ThanhDu14`) | • Configured unified `docker-compose.yml` environment with PostgreSQL 16 and backend/frontend containers.<br>• Ran Flyway migrations up to `V210` and verified initial import of recipes dataset (`SCRUM-89`). | • Support database schema updates (`V501`) and ensure recipe seed data availability.<br>• Draft Mermaid Deployment Diagram (`SCRUM-83`, due 19/11).<br>• Collaborate with Hiển on C4 Level 3 Frontend Component diagram (`SCRUM-82`). | Ensuring PostgreSQL container does not encounter memory throttling during concurrent backend integration test executions. |
 
 #### 2.2.3. Key Decisions & Action Items from Standup 01
 1. **Spec Kit Quality Gate Passed:** Both `SCRUM-72` (PR #84) and `SCRUM-73` (PR #87 & #88) successfully verified and merged. Team authorized to proceed with Part E full-stack implementation.
 2. **Persistence & Upload Convention:** All image uploads (user avatars for `011` and Cooksnap photos for `070`) will use multipart form-data, stored in Docker-mounted volume `./uploads`, and served via static resource endpoints.
-3. **C4 Level 1 Boundary Sign-off:** Hiển's draft System Context diagram approved. External actors ratified: Guest/Cook, Registered User, System Administrator. External boundary systems identified: Resend/SMTP Email Gateway, Cloud OCR Service (planned external boundary), and Nutrition Data Provider.
+3. **C4 Level 1 Boundary:** Hiển's draft System Context diagram was reviewed. The final list of actors and external systems is the one in `docs/analysis-and-design/architecture.md` Sections 2.3 – 2.4 (merged by PR #91 and #94): Guest, Member, Contributor, Moderator, Administrator; Google Gemini API, angingon.com, Google Sign-In, an SMTP email service and YouTube/TikTok. What was said at the meeting about the boundary is `[to confirm from the meeting notes]`.
 
 ---
 
