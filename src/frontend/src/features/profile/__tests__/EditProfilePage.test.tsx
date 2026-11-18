@@ -1,7 +1,8 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { Link, type RouteObject } from 'react-router-dom';
+import { AccountMenu } from '@/features/auth/components/AccountMenu';
 import { problem, signedInHandler } from '@/features/auth/__tests__/handlers';
 import { renderWithAuth } from '@/features/auth/__tests__/helpers';
 import { server } from '@/test/server';
@@ -117,6 +118,37 @@ describe('EditProfilePage (spec 011 T059)', () => {
     expect(sent[0].avatar?.name).toBe('me.png');
     expect(sent[1].profile.removeAvatar).toBe(true);
     expect(sent[1].avatar).toBeNull();
+  });
+
+  it('refreshes the account in AuthProvider: the header shows the new picture at once, and the initials again after a removal', async () => {
+    const user = userEvent.setup();
+    server.use(
+      signedInHandler(),
+      myProfileHandler(),
+      http.post('/api/v1/me/profile', async ({ request }) => {
+        const { profile } = await readForm(request);
+        return HttpResponse.json({
+          ...myProfile,
+          avatarUrl: profile.removeAvatar ? null : '/api/v1/media/avatars/new.jpg',
+          version: profile.removeAvatar ? 7 : 6,
+        });
+      }),
+    );
+    renderWithAuth([{ path: '/profile/edit', element: <><AccountMenu /><EditProfilePage /></> }], '/profile/edit');
+    const menu = await screen.findByRole('link', { name: 'Tài khoản của tôi' });
+    expect(within(menu).getByText('TD')).toBeInTheDocument();
+    await screen.findByLabelText('Tên hiển thị');
+
+    await user.upload(screen.getByTestId('avatar-input'), new File(['x'], 'me.png', { type: 'image/png' }));
+    await user.click(await save());
+    await screen.findByText('Đã lưu hồ sơ');
+    await waitFor(() => expect(menu.querySelector('img')).toHaveAttribute('src', '/api/v1/media/avatars/new.jpg'));
+    expect(within(menu).queryByText('TD')).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Xóa ảnh' }));
+    await user.click(await save());
+    await waitFor(() => expect(menu.querySelector('img')).toBeNull());
+    expect(within(menu).getByText('TD')).toBeInTheDocument();
   });
 
   it('shows the server reason for a refused picture next to it (US2-5)', async () => {

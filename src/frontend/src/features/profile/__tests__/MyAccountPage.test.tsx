@@ -25,6 +25,13 @@ describe('MyAccountPage (spec 011 T062, FR-001)', () => {
     expect(screen.getAllByRole('link', { name: /Lịch sử mua sắm/ })[0]).toHaveAttribute('href', '/shopping-list/history');
   });
 
+  it('"Xem hồ sơ công khai" is a link to the public page of the signed-in person', async () => {
+    server.use(signedInHandler(), myProfileHandler());
+    renderWithAuth(routes, '/profile');
+
+    expect(await screen.findByRole('link', { name: 'Xem hồ sơ công khai' })).toHaveAttribute('href', '/profiles/1');
+  });
+
   it('says when the e-mail is not verified yet', async () => {
     server.use(signedInHandler(), myProfileHandler({ ...myProfile, account: { ...myProfile.account, emailVerified: false } }));
     renderWithAuth(routes, '/profile');

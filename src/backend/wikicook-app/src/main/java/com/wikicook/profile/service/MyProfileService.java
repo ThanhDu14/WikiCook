@@ -1,5 +1,6 @@
 package com.wikicook.profile.service;
 
+import com.wikicook.common.media.AvatarUrls;
 import com.wikicook.common.media.MediaStorage;
 import com.wikicook.common.security.AccountStatus;
 import com.wikicook.common.security.Role;

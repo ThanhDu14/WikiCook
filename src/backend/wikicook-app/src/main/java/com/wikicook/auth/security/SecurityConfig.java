@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Clock;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +33,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
  * the refresh cookie are protected by {@link ClientHeaderFilter}). Default is deny: only {@link PublicRoutes} are open,
  * the rest of {@code /api/**} needs a valid session, anything else is refused. Roles inherit downwards for
  * {@code @ModeratorOnly} and {@code @AdministratorOnly}. Only for a servlet application: contexts started without a web
- * environment (repository tests) have no {@code HttpSecurity} and need no filter chain.
+ * environment (repository tests) have no {@code HttpSecurity} and need no filter chain. Google sign-in ({@code oauth2Login})
+ * is added by {@link GoogleOAuthConfigurer} only when a client id and secret are configured.
  */
 @Configuration(proxyBeanMethods = false)
 @EnableMethodSecurity
@@ -41,7 +43,8 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, SessionJwtAuthenticationConverter converter,
-            JwtDecoder jwtDecoder, ProblemResponseWriter problems) throws Exception {
+            JwtDecoder jwtDecoder, ProblemResponseWriter problems, ObjectProvider<GoogleOAuthConfigurer> google)
+            throws Exception {
         AuthenticationEntryPoint entryPoint = entryPoint(problems);
         AccessDeniedHandler accessDenied = accessDeniedHandler(problems);
         http
@@ -64,6 +67,10 @@ public class SecurityConfig {
                         .jwt(jwt -> jwt.decoder(jwtDecoder).jwtAuthenticationConverter(converter)))
                 .addFilterBefore(new ClientHeaderFilter(problems), BearerTokenAuthenticationFilter.class)
                 .addFilterAfter(new AccountStateHeaderFilter(), BearerTokenAuthenticationFilter.class);
+        GoogleOAuthConfigurer googleLogin = google.getIfAvailable(); // only when Google is configured (research R7)
+        if (googleLogin != null) {
+            googleLogin.apply(http);
+        }
         return http.build();
     }
 

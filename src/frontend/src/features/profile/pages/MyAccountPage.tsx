@@ -76,7 +76,7 @@ export function MyAccountPage() {
       ) : null}
       {state.status === 'ready' ? (
         <>
-          <div className="wx-panel" style={{ flexDirection: 'row', alignItems: 'center', gap: 24 }}>
+          <div className="wx-panel" style={{ flexDirection: 'row', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
             {state.data.avatarUrl ? (
               <img className="wk-avatar wk-avatar--xl" src={state.data.avatarUrl} alt="" style={{ objectFit: 'cover' }} />
             ) : (
@@ -84,19 +84,19 @@ export function MyAccountPage() {
                 {initials(state.data)}
               </span>
             )}
-            <div className="sx-grow sx-stack" style={{ gap: 4 }}>
-              <h1>{state.data.displayName}</h1>
+            <div className="sx-grow sx-stack" style={{ gap: 4, minWidth: 0 }}>
+              <h1 style={{ overflowWrap: 'anywhere' }}>{state.data.displayName}</h1>
               <p className="wk-muted">
                 {state.data.account.email} · {ROLE_LABELS[state.data.account.role]}
                 {state.data.account.emailVerified ? '' : ` · ${strings.me.unverified}`}
               </p>
             </div>
-            <span className="wk-btn wk-btn--secondary wk-btn--sm cursor-default" aria-disabled="true" title="Sắp có">
+            <Link className="wk-btn wk-btn--secondary wk-btn--sm" to={`/profiles/${state.data.id}`}>
               <Icon name="eye" />
               {strings.me.viewPublic}
-            </span>
+            </Link>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: 16 }}>
             <Card icon="salad" title={strings.me.dietaryCard} hint={dietarySummary(dietary)} to="/profile/dietary" />
             <Card icon="chef" title={strings.me.myRecipesCard} hint={strings.me.myRecipesHint} />
             <Card icon="history" title={strings.me.historyCard} hint={strings.me.historyCardHint} to="/shopping-list/history" />

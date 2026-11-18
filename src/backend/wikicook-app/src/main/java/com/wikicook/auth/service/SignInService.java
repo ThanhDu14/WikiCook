@@ -25,7 +25,8 @@ import org.springframework.stereotype.Service;
  * <p>An email without an account and an account without a password are compared against {@code dummyHash}, made at
  * startup with the same cost, so the answer takes the same time as a real wrong password (NFR-003). The status of the
  * account (suspended, banned) is looked at only <em>after</em> the password was right, so it is not revealed to someone
- * who does not know it (FR-013). Google is never called here (NFR-005).
+ * who does not know it (FR-013); a banned account then also gets a closure token (R16). Google is never called here
+ * (NFR-005).
  */
 @Service
 public class SignInService {
@@ -38,11 +39,12 @@ public class SignInService {
     private final AuditWriter audit;
     private final EmailHasher hasher;
     private final UserSuspensionRepository suspensions;
+    private final ClosureTokenService closureTokens;
     private final String dummyHash;
 
     public SignInService(SignInThrottle throttle, PasswordEncoder encoder, BcryptBulkhead bulkhead,
             SessionService sessions, AccessTokenService tokens, AuditWriter audit, EmailHasher hasher,
-            UserSuspensionRepository suspensions) {
+            UserSuspensionRepository suspensions, ClosureTokenService closureTokens) {
         this.throttle = throttle;
         this.encoder = encoder;
         this.bulkhead = bulkhead;
@@ -51,6 +53,7 @@ public class SignInService {
         this.audit = audit;
         this.hasher = hasher;
         this.suspensions = suspensions;
+        this.closureTokens = closureTokens;
         byte[] random = new byte[16];
         new SecureRandom().nextBytes(random);
         this.dummyHash = encoder.encode(HexFormat.of().formatHex(random));
@@ -117,8 +120,9 @@ public class SignInService {
     private AuthException restricted(UserAccount user) {
         UserSuspension sanction = suspensions.findRunning(user.getId()).orElse(null);
         String reason = sanction == null ? null : sanction.getReason();
+        // only here, after the password was right: the banned user's way to the closure page of 011 (research R16)
         return user.getStatus() == AccountStatus.BANNED
-                ? AuthException.accountBanned(reason, null)
+                ? AuthException.accountBanned(reason, closureTokens.issue(user.getId()))
                 : AuthException.accountSuspended(reason, sanction == null ? null : sanction.getEndsAt());
     }
 

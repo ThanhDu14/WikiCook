@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
-import { initials } from '../lib/initials';
 import { strings } from '../strings.vi';
 import { useAuth } from '../useAuth';
+import { AccountAvatar } from './AccountAvatar';
 
 /**
- * The account corner of the header (W-MP01 …): the avatar with the user's initials, a link to `/profile`; "Đăng nhập"
+ * The account corner of the header (W-MP01 …): the user's avatar (picture or initials), a link to `/profile`; "Đăng nhập"
  * for a guest. Sign-out is in the account menu (W-PF01), as in the screens, not in the header.
  */
 export function AccountMenu() {
@@ -22,7 +22,7 @@ export function AccountMenu() {
   }
   return (
     <Link className="wk-navlink" to="/profile" aria-label={strings.nav.account} title={account.displayName} style={{ padding: '0 4px' }}>
-      <span className="wk-avatar wk-avatar--sm">{initials(account)}</span>
+      <AccountAvatar account={account} size="sm" />
     </Link>
   );
 }
