@@ -4,15 +4,18 @@ import { QuickFilters } from './QuickFilters';
 export function LoadingState() {
   return (
     <div
-      className="sx-card sx-stack"
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-ds-4"
       data-testid="loading-skeleton"
       aria-busy="true"
       aria-label={strings.loadingState.loading}
-      style={{ gap: '12px', padding: '16px' }}
     >
-      <div className="wk-skel" style={{ height: '140px', borderRadius: '12px' }} />
-      <div className="wk-skel" style={{ height: '20px', width: '70%', borderRadius: '4px' }} />
-      <div className="wk-skel" style={{ height: '16px', width: '50%', borderRadius: '4px' }} />
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="sx-card sx-stack" style={{ gap: '12px', padding: '16px' }}>
+          <div className="wk-skel" style={{ height: '140px', borderRadius: '12px' }} />
+          <div className="wk-skel" style={{ height: '20px', width: '70%', borderRadius: '4px' }} />
+          <div className="wk-skel" style={{ height: '16px', width: '50%', borderRadius: '4px' }} />
+        </div>
+      ))}
     </div>
   );
 }

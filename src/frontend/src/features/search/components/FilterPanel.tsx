@@ -116,7 +116,7 @@ export function FilterPanel({
 
       {/* Cuisine group (multi choice) */}
       {options.cuisines && options.cuisines.length > 0 && (
-        <div className="sx-stack" style={{ gap: '8px' }}>
+        <div className="sx-stack" style={{ gap: '8px', paddingTop: '12px', borderTop: '1px solid var(--color-border)' }}>
           <p className="wk-label" style={{ margin: 0 }}>
             {strings.filters.cuisineGroup}
           </p>
@@ -142,7 +142,7 @@ export function FilterPanel({
 
       {/* Difficulty group (multi choice) */}
       {options.difficulties && options.difficulties.length > 0 && (
-        <div className="sx-stack" style={{ gap: '8px' }}>
+        <div className="sx-stack" style={{ gap: '8px', paddingTop: '12px', borderTop: '1px solid var(--color-border)' }}>
           <p className="wk-label" style={{ margin: 0 }}>
             {strings.filters.difficultyGroup}
           </p>
@@ -168,7 +168,7 @@ export function FilterPanel({
 
       {/* Category group (multi choice) */}
       {options.categories && options.categories.length > 0 && (
-        <div className="sx-stack" style={{ gap: '8px' }}>
+        <div className="sx-stack" style={{ gap: '8px', paddingTop: '12px', borderTop: '1px solid var(--color-border)' }}>
           <p className="wk-label" style={{ margin: 0 }}>
             {strings.filters.categoryGroup}
           </p>
@@ -194,7 +194,7 @@ export function FilterPanel({
 
       {/* Method group (multi choice) */}
       {options.methods && options.methods.length > 0 && (
-        <div className="sx-stack" style={{ gap: '8px' }}>
+        <div className="sx-stack" style={{ gap: '8px', paddingTop: '12px', borderTop: '1px solid var(--color-border)' }}>
           <p className="wk-label" style={{ margin: 0 }}>
             {strings.filters.methodGroup}
           </p>
@@ -220,7 +220,7 @@ export function FilterPanel({
 
       {/* Diet group */}
       {options.diets && options.diets.length > 0 && (
-        <div className="sx-stack" style={{ gap: '8px' }}>
+        <div className="sx-stack" style={{ gap: '8px', paddingTop: '12px', borderTop: '1px solid var(--color-border)' }}>
           <p className="wk-label" style={{ margin: 0 }}>
             {strings.filters.dietGroup}
           </p>
