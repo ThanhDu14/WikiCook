@@ -29,7 +29,7 @@ export function EmailVerificationBanner() {
         {state === 'sent' ? (
           strings.banner.resent
         ) : (
-          <button type="button" className="wk-link" onClick={resend} disabled={state === 'sending'}>
+          <button type="button" className="wk-link" onClick={resend} disabled={state === 'sending'} aria-busy={state === 'sending' || undefined}>
             {strings.banner.resend}
           </button>
         )}

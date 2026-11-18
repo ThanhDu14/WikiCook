@@ -106,7 +106,10 @@ export function RegisterPage() {
           name="displayName"
           autoComplete="nickname"
           value={displayName}
-          onChange={(event) => setDisplayName(event.target.value)}
+          onChange={(event) => {
+            setDisplayName(event.target.value);
+            if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: '' }));
+          }}
           error={errors.displayName}
           helper={strings.fields.displayNameHelper}
           counter={`${codePoints(displayName.trim())}/${NAME_MAX}`}
@@ -118,7 +121,10 @@ export function RegisterPage() {
             name="email"
             autoComplete="email"
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={(event) => {
+              setEmail(event.target.value);
+              if (errors.email) setErrors((prev) => ({ ...prev, email: '' }));
+            }}
             error={errors.email}
             maxLength={254}
           />
@@ -136,7 +142,10 @@ export function RegisterPage() {
           name="password"
           autoComplete="new-password"
           value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={(event) => {
+            setPassword(event.target.value);
+            if (errors.password) setErrors((prev) => ({ ...prev, password: '' }));
+          }}
           error={errors.password ?? liveError}
           onBlur={() => setPasswordLeft(true)}
           showLabel={strings.fields.showPassword}
@@ -148,12 +157,20 @@ export function RegisterPage() {
           name="confirmPassword"
           autoComplete="new-password"
           value={confirmPassword}
-          onChange={(event) => setConfirmPassword(event.target.value)}
+          onChange={(event) => {
+            setConfirmPassword(event.target.value);
+            if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: '' }));
+          }}
           error={errors.confirmPassword}
           showLabel={strings.fields.showPassword}
           hideLabel={strings.fields.hidePassword}
         />
-        <button type="submit" className="wk-btn wk-btn--primary wk-btn--block" disabled={submitting}>
+        <button
+          type="submit"
+          className={`wk-btn wk-btn--primary wk-btn--block${submitting ? ' is-loading' : ''}`}
+          disabled={submitting}
+          aria-busy={submitting || undefined}
+        >
           {submitting ? strings.register.submitting : strings.register.submit}
         </button>
       </form>
