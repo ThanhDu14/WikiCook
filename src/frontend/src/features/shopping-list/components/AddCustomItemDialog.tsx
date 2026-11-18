@@ -64,7 +64,10 @@ export function AddCustomItemDialog({ onSubmit, onClose }: AddCustomItemDialogPr
             type="text"
             maxLength={100}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value);
+              if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
+            }}
             aria-invalid={Boolean(errors.name)}
             aria-describedby={errors.name ? `${id}-name-error` : undefined}
           />
@@ -85,7 +88,10 @@ export function AddCustomItemDialog({ onSubmit, onClose }: AddCustomItemDialogPr
               type="text"
               inputMode="decimal"
               value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
+              onChange={(e) => {
+                setQuantity(e.target.value);
+                if (errors.quantity) setErrors((prev) => ({ ...prev, quantity: undefined }));
+              }}
               aria-invalid={Boolean(errors.quantity)}
               aria-describedby={errors.quantity ? `${id}-qty-error` : undefined}
             />
@@ -127,7 +133,12 @@ export function AddCustomItemDialog({ onSubmit, onClose }: AddCustomItemDialogPr
           </select>
         </div>
         <p className="wk-small wk-muted">Món không có trong danh mục sẽ vào quầy “Đồ dùng khác”.</p>
-        <button className={`wk-btn wk-btn--primary wk-btn--block${saving ? ' is-loading' : ''}`} type="submit">
+        <button
+          className={`wk-btn wk-btn--primary wk-btn--block${saving ? ' is-loading' : ''}`}
+          type="submit"
+          disabled={saving}
+          aria-busy={saving || undefined}
+        >
           Thêm vào danh sách
         </button>
       </form>

@@ -70,6 +70,8 @@ export function ItemProvenanceModal({ item, aisleName, onDelete, onClose }: Item
         <button
           className={`wk-btn wk-btn--ghost${deleting ? ' is-loading' : ''}`}
           type="button"
+          disabled={deleting}
+          aria-busy={deleting || undefined}
           onClick={() => void remove()}
         >
           <Icon name="trash" />

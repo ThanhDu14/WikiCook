@@ -96,7 +96,7 @@ export function PreImportBottomSheet({ recipe, initialServings, error, onConfirm
               {preview.rows.map((row) => (
                 <tr key={row.ingredientId}>
                   <td>
-                    <label className="wk-check" style={{ minHeight: 40 }}>
+                    <label className="wk-check" style={{ minHeight: 44 }}>
                       <input type="checkbox" checked={row.selected} onChange={() => preview.toggle(row.ingredientId)} />
                       {row.name}
                       {row.isStaple && <span className="wk-badge wk-badge--draft">gia vị cơ bản</span>}
@@ -127,7 +127,8 @@ export function PreImportBottomSheet({ recipe, initialServings, error, onConfirm
           <button
             className={`wk-btn wk-btn--primary${saving ? ' is-loading' : ''}`}
             type="button"
-            disabled={preview.selectedCount === 0}
+            disabled={preview.selectedCount === 0 || saving}
+            aria-busy={saving || undefined}
             onClick={() => void confirm()}
           >
             {`Thêm ${preview.selectedCount} món`}
