@@ -298,6 +298,37 @@ class SessionLifecycleIT extends AbstractPostgresIT {
     }
 
     @Test
+    @DisplayName("FR-013, FR-024: refresh of a suspended account also carries endsAt, and sets no new cookie")
+    void refreshOfASuspendedAccountCarriesTheEnd() throws Exception {
+        String cookie = cookieValue(login(true));
+        jdbc.update("UPDATE users SET status = 'SUSPENDED' WHERE id = ?", userId);
+        Instant endsAt = clock.instant().plus(Duration.ofDays(2)).truncatedTo(java.time.temporal.ChronoUnit.SECONDS);
+        support.sanction(userId, "Spam", endsAt);
+
+        MockHttpServletResponse response = refresh(cookie);
+
+        assertThat(response.getStatus()).isEqualTo(403);
+        assertThat(Instant.parse(body(response).get("endsAt").asText())).isEqualTo(endsAt);
+        assertThat(response.getHeader("Set-Cookie")).as("a refused refresh does not hand out a cookie").isNull();
+    }
+
+    @Test
+    @DisplayName("FR-013, FR-024: refreshing for a banned account is 403 ACCOUNT_BANNED with the reason and no endsAt")
+    void refreshOfABannedAccountIs403() throws Exception {
+        String cookie = cookieValue(login(true));
+        jdbc.update("UPDATE users SET status = 'BANNED' WHERE id = ?", userId);
+        support.sanction(userId, "Vi phạm nhiều lần", null);
+
+        MockHttpServletResponse response = refresh(cookie);
+
+        assertThat(response.getStatus()).isEqualTo(403);
+        assertThat(body(response).get("code").asText()).isEqualTo("ACCOUNT_BANNED");
+        assertThat(body(response).get("reason").asText()).isEqualTo("Vi phạm nhiều lần");
+        assertThat(body(response).has("endsAt")).isFalse();
+        assertThat(response.getHeader("Set-Cookie")).isNull();
+    }
+
+    @Test
     @DisplayName("FR-024a: /auth/me returns the account, with the role notice while one is pending")
     void meReturnsTheAccountAndThePendingRoleNotice() throws Exception {
         String accessToken = body(login(false)).get("accessToken").asText();
