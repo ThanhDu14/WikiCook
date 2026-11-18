@@ -36,6 +36,13 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 21 | 2026-11-01, 13:30 – 13:52 | `SCRUM-57` Review Fix-up R2 | Sửa 4 điểm code (V403 sequence identity, dynamic UnitRepository, F8 aisle code precedence, dead 5-arg constructor) và kiểm toán tasks.md theo phản hồi v2 của Hiển | `8ff370a` .. `b6a5d33` | `src/backend/`, `specs/040-shopping-list/tasks.md` |
 | 22 | 2026-11-01, 14:02 – 14:10 | `SCRUM-57` F9 Wiring Follow-up | Viết test ApplicationContextRunner kiểm chứng `@ConditionalOnMissingBean` cho SeedRecipeDetailAdapter và thêm log WARN khi seed active | `df055df` | `src/backend/wikicook-app/` |
 | 23 | 2026-11-01, 23:40 – 23:55 | `SCRUM-57` Review Fix-up R3 | Sửa guard IngredientAggregationService, chuyển seed adapter sang @Configuration, siết IT F4 và dọn style import ShoppingListService theo review COMMENTED của Hiển | `e439aa5` .. `5184fc0` | `src/backend/wikicook-app/` |
+| 24 | 2026-11-06, 09:20 – 09:35 | `SCRUM-61`, `SCRUM-64` | Hoàn tất `Changes.md` PA3 và Báo cáo Sprint 03 với minh chứng Jira 22/22 Done | Nhánh `docs/PA3` (xem Mục 24) | `Changes.md`, `docs/management/reports/sprint-03/` |
+| 25 | 2026-11-10, 21:16 – 21:30 | `SCRUM-68` | Tạo khung Sprint 04 Report và ghi nhận Sprint Planning | `2593dc0` | `docs/management/reports/sprint-04/sprint-04-report.md` |
+| 26 | 2026-11-15, khoảng 22:00 – 23:59 | `SCRUM-76` | Frontend nhóm 1: Auth (`010`) và Hồ sơ, Hồ sơ ăn uống (`011`) | `2298962`, `68bec30`, `79abd14` (PR #90) | `src/frontend/` |
+| 27 | 2026-11-16, khoảng 01:00 – 01:30 | `SCRUM-87` | Biên bản Standup 01 và 02 (Standup 02 được viết trước buổi họp, đã sửa ở Mục 29) | `c016b2b` .. `c336e5f` | `sprint-04-report.md` |
+| 28 | 2026-11-18, khoảng 21:00 – 22:30 | `SCRUM-84` | `Changes.md` PA4 và cập nhật ghi chú Google trong Use-Case Specification | `e97bca0`, `c070eca`, `746f3c6`, `a9e6a8e` | `Changes.md`, `use-case-specification.md` |
+| 29 | 2026-11-18, khoảng 21:30 – 23:00 | `SCRUM-87`, `SCRUM-68` | Sửa Standup 02 thành khung chờ họp, sửa Standup 01, Planning và ngày nộp | `173d5ac`, `3d1b9aa` | `sprint-04-report.md` |
+| 30 | 2026-11-16 .. 2026-11-18 (ước lượng) | `SCRUM-76` | Kiểm tra giao diện với backend thật, sửa trang xác minh email, kiểm PR #97, gỡ định danh dev, bổ sung test, cập nhật `tasks.md` | `60d835a`, `a2d0dbb`, `33156dd`, `85f0437` | `src/frontend/`, `specs/010-*/tasks.md`, `specs/011-*/tasks.md` |
 
 ---
 
@@ -1354,3 +1361,41 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - `grep` controller của backend: không có endpoint `.../recipes/{id}/cooksnaps`.
 - `git diff --check`: không có lỗi khoảng trắng.
 - Chưa chạy lại test (chỉ sửa tài liệu).
+
+---
+
+## Mục 30: Kiểm tra giao diện SCRUM-76 với backend thật và khắc phục các điểm lệch so với Spec Kit (`SCRUM-76`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Sonnet 5.5 (`claude-sonnet-5-5`) |
+| **Thời gian truy cập cụ thể** | Từ 2026-11-16, khoảng 21:00 đến 2026-11-18, khoảng 22:30 (Giờ Việt Nam, UTC+7); giờ là ước lượng theo phiên làm việc và dấu thời gian các lần chạy kiểm thử |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-76` — `[Implementation] Frontend Part E (Group 1): 010 + 011 Auth & Dietary Profile UI` |
+| **Tài liệu / spec liên quan** | `specs/010-user-authentication-roles/` và `specs/011-user-profile-dietary/` (`tasks.md`, `contracts/openapi.yaml`), mã nguồn backend `com.wikicook.auth` và `com.wikicook.profile` trên `main` |
+| **Mục đích sử dụng** | Chạy backend thật bằng Docker và kiểm tra các luồng của giao diện (đăng ký, đăng nhập, hồ sơ, hồ sơ ăn uống, quên mật khẩu, xác minh email); đánh giá PR #97 trước khi merge; rà soát các điểm lệch giữa `tasks.md` của Spec Kit và code rồi khắc phục. |
+| **Nhánh Git** | `fix/SCRUM-76-verify-email-once` (sửa lỗi xác minh email); `chore/SCRUM-76-close-gaps` (gỡ định danh dev, thêm test, cập nhật `tasks.md`) |
+| **Minh chứng (Evidence)** | Commit `60d835a` (sửa trang xác minh email, kèm test chạy trong StrictMode); `a2d0dbb` (gỡ `X-User-Id`, `X-Dev-User-Id` và phiên người dùng dev); `33156dd` (test `api.postForm`, spec 011 T014); `85f0437` (tick 41 task của `010` và 21 task của `011`). PR: điền số PR khi mở. |
+
+### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
+1. Kiểm tra xem frontend SCRUM-76 đã chạy được với backend sau khi cập nhật `main` chưa, rồi kiểm lại với backend mới (có API hồ sơ).
+2. Kiểm tra PR "avatarUrl, public profile, Google sign-in, closure token (SCRUM-74/75/76)" đã sẵn sàng merge chưa.
+3. Rà soát các SCRUM của PM, tìm mâu thuẫn logic và khắc phục.
+
+### Nội dung do AI sinh ra:
+1. Dựng backend bằng Docker Compose (tạo `src/backend/.env` cục bộ với khóa ngẫu nhiên, không commit), gọi các endpoint bằng `curl` và chạy các kịch bản Playwright để kiểm tra giao diện thật: đăng ký, đăng nhập, tải lại giữ phiên, sửa hồ sơ kèm ảnh, hồ sơ ăn uống, xung đột phiên bản 409 rồi "Lưu đè", quên mật khẩu rồi đặt lại, xác minh email.
+2. Phát hiện lỗi: dưới StrictMode trang xác minh email gọi `confirm` hai lần nên lần đầu hiện "đã xác minh trước đó"; viết bản sửa và test hồi quy (`60d835a`).
+3. Đánh giá PR #97: gộp thử với `main`, chạy `mvn verify` (1410 test), `vitest` (833 test), lint, build, e2e; đọc mã Google sign-in và closure token.
+4. Khắc phục các điểm lệch Spec Kit: gỡ `X-User-Id`, `X-Dev-User-Id`, `getDevUserId`, `setDevUserId`, `GUEST` theo `tasks.md` T023, T049, T051 (kể cả `ReviewSection` và test của nó); thêm test `api.postForm` (T014); tick các task đã giao trong hai `tasks.md`, để mở các task mà file hoặc hành vi chưa tồn tại.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng (chưa thực hiện tại thời điểm ghi log — cập nhật sau khi làm):
+- Đọc lại diff và nhờ Hiển (reviewer `SCRUM-76`) duyệt; nhờ Duy xem thay đổi ở `ReviewSection` vì đây là code của `SCRUM-78`.
+- Rà lại danh sách task được tick: AI chỉ tick khi file nêu tên đã tồn tại và bộ test qua, không đọc lại từng yêu cầu của task.
+- Các task còn mở cần quyết định: Content-Security-Policy trong `nginx.conf` (T175), xử lý 401 của trang Meal Planner (T026a, T054a), e2e riêng cho auth (T066, T131, T180, T181), trang đổi mật khẩu và xóa tài khoản của `011` (US3, US4, phụ thuộc backend chưa có).
+- Chạy lại e2e: còn 1 test của `meal-planner.spec.ts` lỗi sẵn trên `main` (route `shopping-list/import`), không thuộc `SCRUM-76`.
+
+### Kiểm chứng đã thực hiện:
+- Backend `mvn verify` trên bản đã gộp PR #97 với `main`: 1410 test, 0 lỗi, 0 thất bại.
+- Frontend sau khi gỡ định danh dev: `vitest` 120 file / 916 test, `eslint` 0 lỗi (2 cảnh báo có sẵn), `tsc -b` và build qua.
+- Trình duyệt thật với backend: 20 request API sau khi đăng nhập, không request nào mang header dev, 10 request mang bearer token.
+- Test hồi quy xác minh email đỏ khi bỏ bản sửa, xanh khi có.
