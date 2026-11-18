@@ -66,6 +66,28 @@ describe('api client identity headers', () => {
     });
   });
 
+  it('postForm() sends FormData as multipart and leaves the content type, with its boundary, to the browser (spec 011 T014)', async () => {
+    setAccessToken('tok');
+    server.use(
+      http.post('/api/v1/me/profile', async ({ request }) => {
+        const form = await request.formData();
+        return HttpResponse.json({
+          authorization: request.headers.get('authorization'),
+          contentType: request.headers.get('content-type') ?? '',
+          profile: await (form.get('profile') as Blob).text(),
+        });
+      }),
+    );
+    const form = new FormData();
+    form.append('profile', new Blob([JSON.stringify({ displayName: 'Hưng' })], { type: 'application/json' }), 'profile.json');
+
+    const answer = await api.postForm<{ authorization: string; contentType: string; profile: string }>('/me/profile', form);
+
+    expect(answer.authorization).toBe('Bearer tok');
+    expect(answer.contentType).toMatch(/^multipart\/form-data; boundary=/);
+    expect(JSON.parse(answer.profile)).toEqual({ displayName: 'Hưng' });
+  });
+
   it('upload() turns an error response into an ApiError', async () => {
     server.use(
       http.post('/api/v1/recipes/9/cover', () =>
