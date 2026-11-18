@@ -24,6 +24,12 @@ function renderCard(recipe: RecipeCardType, horizontal?: boolean) {
 }
 
 describe('RecipeCard (T016)', () => {
+  it('links the title to the recipe reviews page (070 W-RV01)', () => {
+    renderCard(baseRecipe);
+
+    expect(screen.getByRole('link', { name: 'Gà kho gừng' })).toHaveAttribute('href', '/recipes/101');
+  });
+
   it('renders cover image when provided', () => {
     renderCard(baseRecipe);
 
@@ -95,11 +101,10 @@ describe('RecipeCard (T016)', () => {
     expect(screen.getByText('Có Ngò rí')).toBeInTheDocument();
   });
 
-  it('does not render save button (080 not built) and is not a link until recipe detail route exists', () => {
+  it('does not render save button (080 not built)', () => {
     const { container } = renderCard(baseRecipe);
 
     expect(screen.getByRole('article')).toHaveClass('wk-card');
-    expect(screen.queryByRole('link')).not.toBeInTheDocument();
     expect(container.querySelector('.wk-card__save')).toBeNull();
   });
 

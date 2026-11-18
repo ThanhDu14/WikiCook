@@ -50,7 +50,7 @@
 
 - [X] T001 [CORE] Verify and configure Maven dependencies (`org.sejda.imageio:webp-imageio:0.1.6`, TwelveMonkeys `com.twelvemonkeys.imageio:imageio-metadata:3.10.1` and `imageio-jpeg:3.10.1`, Caffeine `com.github.ben-manes.caffeine:caffeine:3.1.8`, Testcontainers PostgreSQL `16`) in `src/backend/wikicook-app/pom.xml`
 - [X] T002 [P] [CORE] Create backend package structure for review module (`config`, `controller`, `domain`, `dto`, `exception`, `repository`, `service`) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/`
-- [ ] T003 [P] [CORE] Create frontend directory structure for review feature modules (`components`, `hooks`, `services`, `types`) in `src/frontend/src/features/reviews/`
+- [x] T003 [P] [CORE] Create frontend directory structure for review feature modules (`components`, `hooks`, `services`, `types`) in `src/frontend/src/features/reviews/`
 - [X] T004 [P] [CORE] Create storage configuration properties class `ReviewStorageProperties.java` (specifying upload root path `uploads/cooksnaps/`, max size 5MB, allowed MIME types) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/config/ReviewStorageProperties.java`
 - [X] T005 [P] [CORE] Create WebP Service Provider configuration `WebPImageIOConfig.java` ensuring native `webp-imageio` readers/writers register properly upon Spring Boot startup in `src/backend/wikicook-app/src/main/java/com/wikicook/review/config/WebPImageIOConfig.java`
 
@@ -192,7 +192,7 @@
 - [X] T076 [US5] Create `Report` entity mapping the shared `reports` table (full-schema §4.10, spec 100) and `ReportRepository` with `countByReviewIdAndStatus` / `countByCooksnapIdAndStatus` in `src/backend/wikicook-app/src/main/java/com/wikicook/review/domain/Report.java` and `.../repository/ReportRepository.java`
 - [X] T077 [US5] Implement `ReviewReportService` (insert report, map unique violation to 409, self-report guard, auto-quarantine at ≥ 10 `OPEN` reports with recipe row lock and stats recalculation) in `src/backend/wikicook-app/src/main/java/com/wikicook/review/service/ReviewReportService.java` (depends on T074, T076)
 - [X] T078 [US5] Implement `ReviewReportController` endpoints in `src/backend/wikicook-app/src/main/java/com/wikicook/review/controller/ReviewReportController.java` (depends on T075, T077)
-- [ ] T079 [P] [UI] Implement `ReportDialog.tsx` (reasons `SPAM`/`OFFENSIVE`/`COPYRIGHT`/`UNSAFE`/`OTHER`, details ≤ 1000 chars, login prompt for guests, duplicate-report message) in `src/frontend/src/features/reviews/components/ReportDialog.tsx`
+- [x] T079 [P] [UI] Implement `ReportDialog.tsx` (reasons `SPAM`/`OFFENSIVE`/`COPYRIGHT`/`UNSAFE`/`OTHER`, details ≤ 1000 chars, login prompt for guests, duplicate-report message) in `src/frontend/src/features/reviews/components/ReportDialog.tsx`
 - [X] T080 [US5] Verify Reporting test suites pass (`Run: mvn test -Dtest=ReviewReportServiceTest,ReviewReportControllerIT`)
 
 **Checkpoint**: Reporting is complete — Reports reach the spec-100 moderation queue, duplicates are blocked, and mass-reported content is quarantined.
@@ -205,21 +205,21 @@
 
 **Independent Test**: Run Vitest and preview in browser: Render recipe detail review section, open review form, select 5 stars, attach photo preview, submit review, verify review appears in list, click photo thumbnail to open full-screen Lightbox modal, and click "Hữu ích" to toggle vote.
 
-- [ ] T049 [P] [UI] Define TypeScript interfaces and types (`Review`, `Cooksnap`, `ReviewAuthor`, `RatingSummary`, `ReviewListResponse`, `ReviewSortOption`, `CreateReviewPayload`, `UpdateReviewPayload`, `CreateReportPayload`) in `src/frontend/src/features/reviews/types/review.ts`
-- [ ] T050 [P] [UI] Implement API client `reviewApi.ts` using Axios wrapping all 8 endpoints in `src/frontend/src/features/reviews/services/reviewApi.ts` (depends on T049)
-- [ ] T051 [P] [UI] Implement custom hook `useReviews.ts` managing fetch, pagination, sorting, and filter state in `src/frontend/src/features/reviews/hooks/useReviews.ts` (depends on T050)
-- [ ] T052 [P] [UI] Implement custom hook `useReviewVote.ts` with optimistic UI update for helpful votes in `src/frontend/src/features/reviews/hooks/useReviewVote.ts` (depends on T050)
-- [ ] T053 [P] [UI] Implement `RatingBreakdown.tsx` component displaying average score badge and 1-5 star distribution bars in `src/frontend/src/features/reviews/components/RatingBreakdown.tsx`
-- [ ] T054 [P] [UI] Implement `HelpfulVoteButton.tsx` component with minimum $44\times 44\text{px}$ touch target, thumbs-up icon, and active state in `src/frontend/src/features/reviews/components/HelpfulVoteButton.tsx` (depends on T052)
-- [ ] T055 [P] [UI] Implement `CooksnapUploader.tsx` component supporting drag-and-drop, max 3 photos, file size check $\le 5\text{MB}$, and preview thumbnails with remove button in `src/frontend/src/features/reviews/components/CooksnapUploader.tsx`
-- [ ] T056 [P] [UI] Implement `ReviewCard.tsx` component rendering author avatar, star rating, comment, `substitution_tip` highlight pill, Cooksnap thumbnails, and helpful vote button in `src/frontend/src/features/reviews/components/ReviewCard.tsx` (depends on T054)
-- [ ] T057 [P] [UI] Implement `CooksnapLightbox.tsx` accessible full-screen modal overlay supporting swipe gestures, thumbnail strip, and Esc key dismissal in `src/frontend/src/features/reviews/components/CooksnapLightbox.tsx`
-- [ ] T058 [UI] Implement `ReviewForm.tsx` modal/drawer with interactive 5-star selector, character counter (10-2000), `substitution_tip` input, and `CooksnapUploader` in `src/frontend/src/features/reviews/components/ReviewForm.tsx` (depends on T055)
-- [ ] T059 [UI] Implement `ReviewList.tsx` master component assembling `RatingBreakdown`, filter controls, sort dropdown, review cards, pagination, and `CooksnapLightbox` in `src/frontend/src/features/reviews/components/ReviewList.tsx` (depends on T051, T053, T056, T057, T058)
-- [ ] T060 [P] [UI] Create Vitest component test `ReviewList.test.tsx` verifying review list rendering, sort selection change, and pagination triggers in `src/frontend/src/test/features/reviews/ReviewList.test.tsx`
-- [ ] T061 [P] [UI] Create Vitest component test `ReviewForm.test.tsx` verifying validation errors (missing stars, comment $<10$ chars) and submission payload in `src/frontend/src/test/features/reviews/ReviewForm.test.tsx`
-- [ ] T062 [P] [UI] Create Vitest component test `CooksnapLightbox.test.tsx` verifying modal open, next/prev image navigation, and Esc key dismissal in `src/frontend/src/test/features/reviews/CooksnapLightbox.test.tsx`
-- [ ] T063 [UI] Verify all frontend Vitest tests pass (`Run: npm test -- run reviews`)
+- [x] T049 [P] [UI] Define TypeScript interfaces and types (`Review`, `Cooksnap`, `ReviewAuthor`, `RatingSummary`, `ReviewListResponse`, `ReviewSortOption`, `CreateReviewPayload`, `UpdateReviewPayload`, `CreateReportPayload`) in `src/frontend/src/features/reviews/types/review.ts`
+- [x] T050 [P] [UI] Implement API client `reviewApi.ts` using Axios wrapping all 8 endpoints in `src/frontend/src/features/reviews/services/reviewApi.ts` (depends on T049)
+- [x] T051 [P] [UI] Implement custom hook `useReviews.ts` managing fetch, pagination, sorting, and filter state in `src/frontend/src/features/reviews/hooks/useReviews.ts` (depends on T050)
+- [x] T052 [P] [UI] Implement custom hook `useReviewVote.ts` with optimistic UI update for helpful votes in `src/frontend/src/features/reviews/hooks/useReviewVote.ts` (depends on T050)
+- [x] T053 [P] [UI] Implement `RatingBreakdown.tsx` component displaying average score badge and 1-5 star distribution bars in `src/frontend/src/features/reviews/components/RatingBreakdown.tsx`
+- [x] T054 [P] [UI] Implement `HelpfulVoteButton.tsx` component with minimum $44\times 44\text{px}$ touch target, thumbs-up icon, and active state in `src/frontend/src/features/reviews/components/HelpfulVoteButton.tsx` (depends on T052)
+- [x] T055 [P] [UI] Implement `CooksnapUploader.tsx` component supporting drag-and-drop, max 3 photos, file size check $\le 5\text{MB}$, and preview thumbnails with remove button in `src/frontend/src/features/reviews/components/CooksnapUploader.tsx`
+- [x] T056 [P] [UI] Implement `ReviewCard.tsx` component rendering author avatar, star rating, comment, `substitution_tip` highlight pill, Cooksnap thumbnails, and helpful vote button in `src/frontend/src/features/reviews/components/ReviewCard.tsx` (depends on T054)
+- [x] T057 [P] [UI] Implement `CooksnapLightbox.tsx` accessible full-screen modal overlay supporting swipe gestures, thumbnail strip, and Esc key dismissal in `src/frontend/src/features/reviews/components/CooksnapLightbox.tsx`
+- [x] T058 [UI] Implement `ReviewForm.tsx` modal/drawer with interactive 5-star selector, character counter (10-2000), `substitution_tip` input, and `CooksnapUploader` in `src/frontend/src/features/reviews/components/ReviewForm.tsx` (depends on T055)
+- [x] T059 [UI] Implement `ReviewList.tsx` master component assembling `RatingBreakdown`, filter controls, sort dropdown, review cards, pagination, and `CooksnapLightbox` in `src/frontend/src/features/reviews/components/ReviewList.tsx` (depends on T051, T053, T056, T057, T058)
+- [x] T060 [P] [UI] Create Vitest component test `ReviewList.test.tsx` verifying review list rendering, sort selection change, and pagination triggers in `src/frontend/src/test/features/reviews/ReviewList.test.tsx`
+- [x] T061 [P] [UI] Create Vitest component test `ReviewForm.test.tsx` verifying validation errors (missing stars, comment $<10$ chars) and submission payload in `src/frontend/src/test/features/reviews/ReviewForm.test.tsx`
+- [x] T062 [P] [UI] Create Vitest component test `CooksnapLightbox.test.tsx` verifying modal open, next/prev image navigation, and Esc key dismissal in `src/frontend/src/test/features/reviews/CooksnapLightbox.test.tsx`
+- [x] T063 [UI] Verify all frontend Vitest tests pass (`Run: npm test -- run reviews`)
 
 **Checkpoint**: Frontend UI integration is complete — All review components, form validations, optimistic voting, and full-screen Lightbox modal are verified.
 
@@ -230,7 +230,7 @@
 **Purpose**: Execute end-to-end verification, quality audit, performance benchmarking, and prepare demo evidence.
 
 - [X] T064 [QA] Execute full backend test suite (`mvn clean verify`) and confirm JaCoCo test coverage for `com.wikicook.review.service` achieves $\ge 70\%$
-- [ ] T065 [QA] Execute full frontend test suite (`npm test -- --run`) and assert 100% test pass rate
+- [x] T065 [QA] Execute full frontend test suite (`npm test -- --run`) and assert 100% test pass rate
 - [ ] T066 [QA] Execute Performance Benchmark: Verify GET `/recipes/{recipeId}/reviews` p95 response time is $< 100\text{ms}$ and POST Helpful Vote is $< 300\text{ms}$ under 50 concurrent virtual users
 - [ ] T067 [QA] Execute Manual Test `TC-MAN-070-01`: Verify 100% of EXIF, GPS coordinates, and camera metadata are stripped from uploaded smartphone photos using `exiftool`
 - [ ] T068 [QA] Execute Manual Test `TC-MAN-070-02`: Verify mobile touch targets ($\ge 44\times 44\text{px}$) and smooth Lightbox swipe gestures on mobile viewport ($375\times 667\text{px}$)

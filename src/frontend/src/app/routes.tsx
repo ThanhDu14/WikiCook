@@ -18,6 +18,7 @@ import { CookingPage } from '@/features/cooking-mode/pages/CookingPage';
 import { DietaryProfilePage } from '@/features/profile/pages/DietaryProfilePage';
 import { EditProfilePage } from '@/features/profile/pages/EditProfilePage';
 import { MyAccountPage } from '@/features/profile/pages/MyAccountPage';
+import { RecipeReviewsPage } from '@/features/reviews/RecipeReviewsPage';
 import { AppLayout } from './AppLayout';
 import { NotFoundPage } from './NotFoundPage';
 
@@ -56,6 +57,8 @@ export const routes: RouteObject[] = [
       { index: true, element: <HomePage /> },
       { path: 'search', element: <SearchResultsPage /> },
       { path: 'access-denied', element: <AccessDeniedPage /> },
+      // Reviews & Cooksnap (070, W-RV01): public to read; writing asks a guest to sign in.
+      { path: 'recipes/:id', element: <RecipeReviewsPage /> },
       // Member pages: a guest is sent to /login?redirect=; an expired session keeps the page (SessionExpiredDialog).
       {
         element: <RequireAuth />,

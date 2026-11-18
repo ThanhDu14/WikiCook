@@ -6,6 +6,13 @@
 import type { ReportReason, ReviewSortOption } from './types';
 
 export const strings = {
+  page: {
+    eyebrow: 'Đánh giá cho',
+    fallbackTitle: 'Công thức',
+    crumbsLabel: 'Vị trí',
+    explore: 'Khám phá',
+  },
+
   section: {
     title: 'Đánh giá và Cooksnap',
     regionLabel: 'Đánh giá công thức',
