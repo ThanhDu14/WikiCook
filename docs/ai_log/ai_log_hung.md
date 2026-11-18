@@ -43,6 +43,7 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 28 | 2026-11-18, khoảng 21:00 – 22:30 | `SCRUM-84` | `Changes.md` PA4 và cập nhật ghi chú Google trong Use-Case Specification | `e97bca0`, `c070eca`, `746f3c6`, `a9e6a8e` | `Changes.md`, `use-case-specification.md` |
 | 29 | 2026-11-18, khoảng 21:30 – 23:00 | `SCRUM-87`, `SCRUM-68` | Sửa Standup 02 thành khung chờ họp, sửa Standup 01, Planning và ngày nộp | `173d5ac`, `3d1b9aa` | `sprint-04-report.md` |
 | 30 | 2026-11-16 .. 2026-11-18 (ước lượng) | `SCRUM-76` | Kiểm tra giao diện với backend thật, sửa trang xác minh email, kiểm PR #97, gỡ định danh dev, bổ sung test, cập nhật `tasks.md` | `60d835a`, `a2d0dbb`, `33156dd`, `85f0437` | `src/frontend/`, `specs/010-*/tasks.md`, `specs/011-*/tasks.md` |
+| 31 | 2026-11-19, khoảng 00:00 – 01:00 | `SCRUM-88`, `SCRUM-87`, `SCRUM-84` | Soạn bản nháp Sprint Review và Retrospective từ bằng chứng trong repo; cập nhật các câu lỗi thời sau khi PR #98 được merge | `7abb494`, `ff02385`, `3e813c1` | `sprint-04-report.md`, `Changes.md`, `use-case-specification.md` |
 
 ---
 
@@ -1399,3 +1400,37 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - Frontend sau khi gỡ định danh dev: `vitest` 120 file / 916 test, `eslint` 0 lỗi (2 cảnh báo có sẵn), `tsc -b` và build qua.
 - Trình duyệt thật với backend: 20 request API sau khi đăng nhập, không request nào mang header dev, 10 request mang bearer token.
 - Test hồi quy xác minh email đỏ khi bỏ bản sửa, xanh khi có.
+
+---
+
+## Mục 31: Soạn bản nháp Sprint Review và Retrospective từ tiến độ hiện tại của nhóm (`SCRUM-88`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Sonnet 5.5 (`claude-sonnet-5-5`) |
+| **Thời gian truy cập cụ thể** | 2026-11-19, khoảng 00:00 – 01:00 (Giờ Việt Nam, UTC+7); giờ là ước lượng theo phiên làm việc |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-88` — `[Ceremony] Sprint 4 Review, Retrospective & Sprint Report`; sửa nhỏ cho `SCRUM-87` và `SCRUM-84` |
+| **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.3, 2.4, 4, 5), `Changes.md`, `use-case-specification.md`, `tasks/PA4/pa4-guide.md` (SCRUM-88: "Add Jira screenshots only after verifying the live board") |
+| **Mục đích sử dụng** | Soạn nháp Mục 4 (Review) và Mục 5 (Retrospective) dựa trên trạng thái thật của 23 task trên `origin/main`; cập nhật các câu đã lỗi thời vì PR #98 (frontend `070`) được merge. |
+| **Nhánh Git** | `docs/SCRUM-88-review-retro-draft` (tách từ `docs/SCRUM-87-standup-02-template`) |
+| **Minh chứng (Evidence)** | Commit `3e813c1` (Mục 4 và 5), `7abb494` (cập nhật Standup 02), `ff02385` (spec và `Changes.md`); PR: điền số PR khi mở. |
+
+### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
+1. Soạn bản nháp Sprint Review và Retrospective dựa vào tiến độ hiện tại của các thành viên.
+
+### Nội dung do AI sinh ra:
+1. Đối chiếu 23 task với `origin/main` (PR đã merge, nhánh còn mở, thẻ phát hành, tài liệu kiến trúc) và lập bảng trạng thái, bảng theo từng phần PA4, danh sách demo, danh sách giới hạn đã biết.
+2. Viết ứng viên Glad / Sad / Mad kèm bằng chứng và đề xuất việc cho Sprint 5; ghi rõ đây chỉ là bản nháp, buổi họp chưa diễn ra.
+3. Phát hiện PR #98 đã merge sau khi viết nháp Standup 02 nên cập nhật dòng của Duy, ACT-07, và các câu "frontend 070 chưa merge" trong `Changes.md` và spec.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng (chưa thực hiện tại thời điểm ghi log — cập nhật sau khi làm):
+- Họp Review/Retro (22/11, 20:00), để cả nhóm giữ, sửa hoặc bỏ từng ứng viên; điền ngày giờ, người có mặt, quyết định.
+- Kiểm bảng Jira thật rồi mới chụp và đặt ảnh vào `docs/assets/jira/sprint-04/`.
+- Kiểm lại trạng thái `main` vào ngày họp; bảng ở Mục 4.2 chỉ đúng tại 19/11/2026, 00:30.
+- Xác nhận với Duy và Chung việc chạy nhóm 2 (`070`) đầu cuối, vì AI chưa kiểm phần này.
+
+### Kiểm chứng đã thực hiện:
+- `git fetch` rồi đối chiếu `origin/main`, danh sách PR đã merge, thẻ (`git tag`: không có), nhánh từ xa.
+- `git diff --check`: không lỗi khoảng trắng.
+- Chưa chạy test (chỉ sửa tài liệu).
