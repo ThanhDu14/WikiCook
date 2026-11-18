@@ -96,7 +96,7 @@ export function MyAccountPage() {
               {strings.me.viewPublic}
             </span>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 16 }}>
+          <div className="grid grid-cols-1 gap-ds-4 sm:grid-cols-2">
             <Card icon="salad" title={strings.me.dietaryCard} hint={dietarySummary(dietary)} to="/profile/dietary" />
             <Card icon="chef" title={strings.me.myRecipesCard} hint={strings.me.myRecipesHint} />
             <Card icon="history" title={strings.me.historyCard} hint={strings.me.historyCardHint} to="/shopping-list/history" />

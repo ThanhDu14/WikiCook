@@ -24,7 +24,12 @@ export function CatalogueNotices({ notices, onClose }: { notices: DietaryNotice[
         return (
           <Banner key={notice.id} tone="info" title={title}>
             {body}{' '}
-            <button type="button" className="wk-link" onClick={() => onClose(notice)}>
+            <button
+              type="button"
+              className="wk-link"
+              style={{ minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
+              onClick={() => onClose(notice)}
+            >
               {strings.dietary.notice.close}
             </button>
           </Banner>
