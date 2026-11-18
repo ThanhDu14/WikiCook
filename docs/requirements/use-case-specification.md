@@ -2822,9 +2822,11 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 > [!NOTE]
-> **Sources:** `specs/011-user-profile-dietary/spec.md` (US1–US5, FR-001 – FR-042 including `FR-010a`, `FR-026a`, `FR-037a` and `FR-037b`, NFR-001 – NFR-008, SC-001 – SC-008; Clarifications up to the session of 2026-11-07), `specs/011-user-profile-dietary/contracts/openapi.yaml` (endpoints under `/api/v1`, status codes and error codes quoted in the flows) and `data-model.md`, `specs/010-user-authentication-roles/spec.md` and its contract (account status, Blocked Email list, password rules, re-authentication `POST /api/v1/auth/reauthenticate`, closure link of `FR-013`), [Vision Document](vision-document.md) §5.1, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.1 and §5 (`SCRUM-49`) and the project constitution (Principles IV and V). The actor is **Member** (a signed-in user; Contributor, Moderator and Administrator inherit it). `UC-011-01` includes `UC-011-05`; `UC-011-05` is also included by `UC-020-03` and `UC-031-01`. By agreement with spec 010, editing the display name, changing or setting a password, deleting the account and the dietary profile are owned by this feature.
+> **Sources:** `specs/011-user-profile-dietary/spec.md` (US1–US5, FR-001 – FR-042 including `FR-010a`, `FR-026a`, `FR-037a` and `FR-037b`, NFR-001 – NFR-008, SC-001 – SC-008; Clarifications up to the session of 2026-11-07), `specs/011-user-profile-dietary/contracts/openapi.yaml` (endpoints under `/api/v1`, status codes and error codes quoted in the flows) and `data-model.md`, `specs/010-user-authentication-roles/spec.md` and its contract (account status, Blocked Email list, password rules, re-authentication `POST /api/v1/auth/reauthenticate`, closure link of `FR-013`), [Vision Document](vision-document.md) §5.1, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.1 and §5 (`SCRUM-49`) and the project constitution (Principles IV and V). The actor is **Member** (a signed-in user; Contributor, Moderator and Administrator inherit it). `UC-011-01` includes `UC-011-05`; `UC-011-05` is also included by `UC-020-03`, `UC-030-01`, `UC-031-01` and `UC-031-05`. `UC-011-06` View Public Profile *(new in v2.0)* has the primary actor **Guest**. By agreement with spec 010, editing the display name, changing or setting a password, deleting the account and the dietary profile are owned by this feature.
 >
-> **v2.0 revision note (SCRUM-71):** Spec 011 was clarified on 2026-11-06 and 2026-11-07, after the PA3 baseline (v1.2) of this section. The flows marked *"Proposed"* now follow the approved rules (`FR-026a`, `FR-028`, `FR-030`, `FR-037b`, `FR-039`), archived recipes are kept on account deletion (`FR-033`), and each step that calls the backend names the contract endpoint and the error code it returns. The backend is not implemented yet (`SCRUM-75`), so these references describe the approved contract, not running code.
+> **v2.0 revision note (SCRUM-71):** Spec 011 was clarified on 2026-11-06 and 2026-11-07, after the PA3 baseline (v1.2) of this section. The flows marked *"Proposed"* now follow the approved rules (`FR-026a`, `FR-028`, `FR-030`, `FR-037b`, `FR-039`), archived recipes are kept on account deletion (`FR-033`), and each step that calls the backend names the contract endpoint and the error code it returns.
+>
+> **v2.0 code check (18/11/2026):** The profile backend was merged into `main` by `SCRUM-75` (PR #95): `GET`/`POST /api/v1/me/profile`, the dietary profile, the public profile (`GET /api/v1/profiles/{id}`, `/recipes`) and the avatar media. `UC-011-06` was written from that code. Password change, password set, account deletion and account closure (US3, US4) are not implemented yet, so `UC-011-03` and `UC-011-04` still describe the approved contract; the differences are listed in `[OQ-011-09]`.
 
 ### UC-011-01: Set Up Dietary Profile
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
@@ -2982,14 +2984,14 @@ Lets a signed-in user record, in one place and once, what must be avoided and ho
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-011-02`
-- **Use Case Name:** Edit Display Name, Bio and Avatar and View the Public Profile
+- **Use Case Name:** Edit Display Name, Bio and Avatar
 
 #### 2. Actor(s)
 - **Primary Actor:** **Member** — a signed-in community member who wants other cooks to recognise the name next to the recipes.
-- **Supporting Actors:** **Guest** and other users view the public profile; an **Administrator** may view a user's email and account information through spec 010 (AF 2.8).
+- **Supporting Actor:** an **Administrator** may view a user's email and account information through spec 010 (AF 2.8). Viewing the public profile is the separate use case `UC-011-06` (primary actor Guest).
 
 #### 3. Description
-Lets a signed-in user change the display name (1–50 characters), write a short bio (up to 300 characters) and set or remove an avatar (JPEG, PNG or WebP, at most 5 MB). The public part of a profile — display name, avatar, bio and the user's published recipes — can be viewed by anyone, including Guests. The private part is split in two levels: email and account information (owner and Administrators) and the dietary profile with household size (owner only). The public profile of a suspended user stays viewable; a banned, deleted or missing profile answers like one that does not exist (FR-005, FR-039).
+Lets a signed-in user change the display name (1–50 characters), write a short bio (up to 300 characters) and set or remove an avatar (JPEG, PNG or WebP, at most 5 MB). Only the public part — display name, avatar, bio and the user's published recipes — is shown to others, through `UC-011-06` View Public Profile. The private part is split in two levels: email and account information (owner and Administrators) and the dietary profile with household size (owner only) (FR-005, FR-006).
 
 #### 4. Preconditions
 - The actor is signed in with the Member role or above and the account is active (`UC-010-02`). Guests have no profile page (FR-001). Email verification does not limit editing the profile (spec 011 Assumptions).
@@ -3005,7 +3007,7 @@ Lets a signed-in user change the display name (1–50 characters), write a short
 7. **Validate on the Server:** The system trims the display name and checks it is 1–50 characters, not blank and without control characters; checks the bio length; checks the avatar by its magic bytes and by really decoding it, its type, its size and its pixel dimensions (FR-002, FR-003, FR-004, FR-040, NFR-004).
 8. **Store:** The system stores the display name and the bio as plain text. It crops the avatar to a square of 512 px and re-encodes it as JPEG, which removes all EXIF data including the location; the avatar is served from `/api/v1/media/avatars/{file}` as `image/jpeg` with `nosniff`, so it cannot run as code. An audit entry without the content is recorded (FR-042, NFR-004). When nothing changed and no new image was sent, the server answers `200` without writing.
 9. **Confirm and Propagate:** The server answers `200` with the saved profile and the system confirms. The new name and avatar are shown wherever the user appears — recipes, reviews, Cooksnaps — from the next page load, without changing the stored content (US2 AS1, FR-007).
-10. **View as Others Do:** Anyone, signed in or not, opens the public profile (`GET /api/v1/profiles/{id}` and `GET /api/v1/profiles/{id}/recipes`) and sees only display name, avatar, bio, the number of published recipes and the published recipes in pages of 12 by default, at most 24 (US2 AS6, FR-005); the user's email, dietary profile and household size are never part of the answer.
+10. **View as Others Do:** The actor may open the own public profile to see it as others do; this is `UC-011-06` View Public Profile (US2 AS6, FR-005).
 
 #### 6. Alternative Flows
 - **AF 2.1: Invalid Display Name:**
@@ -3030,11 +3032,7 @@ Lets a signed-in user change the display name (1–50 characters), write a short
   - *Steps:*
     1. The browser sends `removeAvatar = true`; after saving, the system shows the neutral default avatar again.
 - **AF 2.6: Guest or Another User Views the Public Profile:**
-  - *Trigger:* At Step 10, a Guest or any signed-in user opens a public profile (US2 AS6, FR-005).
-  - *Steps:*
-    1. The system shows only display name, avatar, bio and "Công thức đã đăng" in pages (for example "1–4 / 12").
-    2. When the user has no published recipe, the list shows an empty state (FR-039).
-    3. The public profile of a suspended user is shown normally (FR-005).
+  - *Moved in v2.0:* this flow is now the use case `UC-011-06` View Public Profile (Basic Flow, AF 6.1 – AF 6.2), because its primary actor is a Guest (Use-Case Model v2.0 §4.1).
 - **AF 2.7: Non-Owner Requests Private Data:**
   - *Trigger:* A signed-in user who is not the owner requests another user's email, account information or dietary data (US2 AS7, FR-006).
   - *Steps:*
@@ -3069,7 +3067,7 @@ Lets a signed-in user change the display name (1–50 characters), write a short
   - *Trigger:* At Step 6, an old session belongs to an account that was suspended or banned (Edge Cases).
   - *Steps:*
     1. The server answers `403 ACCOUNT_SUSPENDED` or `403 ACCOUNT_BANNED` and refuses the change.
-    2. Visitors still see the public profile of a suspended user; the public profile of a banned user answers like a missing one (AF 2.17).
+    2. Visitors still see the public profile of a suspended user; the public profile of a banned user answers like a missing one (`UC-011-06` AF 6.3).
 - **AF 2.15: Profile Cannot Be Loaded:**
   - *Trigger:* At Step 2, loading fails (FR-039).
   - *Steps:*
@@ -3079,16 +3077,14 @@ Lets a signed-in user change the display name (1–50 characters), write a short
   - *Steps:*
     1. The system asks the Guest to sign in (`UC-010-02` AF 2.9).
 - **AF 2.17: Public Profile Not Available:**
-  - *Trigger:* At Step 10, the profile does not exist, belongs to a deleted account or belongs to a banned account (FR-005, FR-039).
-  - *Steps:*
-    1. The server answers `404 USER_NOT_FOUND` in the same way for the three cases, and the system shows the generic 404 page.
+  - *Moved in v2.0:* now `UC-011-06` AF 6.3.
 - **AF 2.18: Profile Changed in Another Tab or Device:**
   - *Trigger:* At Step 7, the profile was saved elsewhere after this form was loaded, so the `version` sent is old (Edge Cases "Two tabs/devices saving at once").
   - *Steps:*
     1. The server answers `409 PROFILE_CHANGED`; the system tells the actor and offers to reload. Nothing is stored.
 
 #### 7. Postconditions
-- **Success:** The display name, the bio and the avatar are stored; the new name and avatar appear wherever the user is shown from the next page load; the public profile shows only the public data.
+- **Success:** The display name, the bio and the avatar are stored; the new name and avatar appear wherever the user is shown from the next page load, including the public profile of `UC-011-06`.
 - **Failure:** Nothing is stored; the previous values and the previous avatar stay.
 
 #### 8. Special Requirements
@@ -3100,9 +3096,9 @@ Lets a signed-in user change the display name (1–50 characters), write a short
 - **Testing:** Every acceptance scenario of US2 has at least one automated test (SC-008); 100% of avatar files with a wrong type or over 5 MB are refused on the form before upload, and 100% of non-image files sent directly to the server are refused (SC-003).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
-- **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1), [`PF04-EditProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF04-EditProfile.dc.html) (Steps 2–9), [`PF05-PublicProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF05-PublicProfile.dc.html) (Step 10).
-- **Alternative Flows:** [`PF05-PublicProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF05-PublicProfile.dc.html) (AF 2.6).
-- **UI Asset Gap for SCRUM-58:** Needs the error states for the display name, the bio and the avatar file (AF 2.1 – AF 2.4), the Administrator's view of a user's profile (AF 2.8) and the public profile of a user without published recipes (AF 2.6, `FR-039`). See Section 10.2 (Gaps 011-D to 011-F).
+- **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1), [`PF04-EditProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF04-EditProfile.dc.html) (Steps 2–9). Step 10 uses the screen of `UC-011-06`.
+- **Alternative Flows:** No own prototype screen; the screens above show the messages.
+- **UI Asset Gap for SCRUM-58:** Needs the error states for the display name, the bio and the avatar file (AF 2.1 – AF 2.4) and the Administrator's view of a user's profile (AF 2.8). See Section 10.2 (Gaps 011-D and 011-E; Gap 011-F moved to `UC-011-06`).
 - **Prototype Screenshots (SCRUM-58):**
   - **User profile page (`PR01-ProfileView`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -3219,6 +3215,7 @@ Lets a signed-in user who has a password change it by giving the current passwor
 - **Success criterion:** After a password change, 100% of the user's other sessions are rejected at their next request while the current session continues (SC-005).
 - **Usability and accessibility:** Usable from 360 px with touch targets of at least 44 × 44 px; keyboard-only operation; errors announced next to the field (NFR-002, NFR-006).
 - **Dependency:** Google re-authentication (AF 3.6) depends on spec 010 and is not yet verified against a real Google client (spec 011 Assumptions).
+- **Implementation status (v2.0):** `POST /api/v1/me/password` and `POST /api/v1/me/password/initial` are not implemented on `main` yet (spec 011 tasks T073 – T084, deferred after 18/11/2026), and the Google OAuth endpoints of spec 010 are not implemented either. The flows above describe the approved contract; the error codes they quote already exist in `ProfileErrorCode`. See `[OQ-011-09]`.
 - **Testing:** Every acceptance scenario of US3 has at least one automated test (SC-008).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
@@ -3360,6 +3357,7 @@ Lets a user delete the own account and personal data immediately, in one step th
 - **Privacy:** Only a one-way hash of the email of a banned account is kept, never the plain email (FR-037b); audit entries contain no password or dietary detail (FR-042).
 - **Usability and accessibility:** The confirmation screen is usable from 360 px with touch targets of at least 44 × 44 px and keyboard-only operation (NFR-002, NFR-006).
 - **Testing:** Every acceptance scenario of US4 has at least one automated test (SC-008; constitution Principle II).
+- **Implementation status (v2.0):** `POST /api/v1/me/deletion` and `POST /api/v1/account-closure` are not implemented on `main` yet (spec 011 tasks T085 – T102). `POST /api/v1/auth/reauthenticate` (Step 3) is implemented and answers `204` or `401 INVALID_CREDENTIALS`, but it does not yet count wrong passwords, so the `429 PASSWORD_CHECK_LIMITED` of AF 4.12 is not returned yet. See `[OQ-011-09]`.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1), [`PF07-DeleteAccount.dc.html`](../analysis-and-design/ui-ux/screens/PF07-DeleteAccount.dc.html) (Steps 2–5), [`PF08-Goodbye.dc.html`](../analysis-and-design/ui-ux/screens/PF08-Goodbye.dc.html) (Step 8).
@@ -3383,7 +3381,7 @@ Lets a user delete the own account and personal data immediately, in one step th
 
 #### 2. Actor(s)
 - **Primary Actor:** None. This use case has a **Trigger** instead (Use-Case Model §6.2, issue 5): it runs only inside another use case.
-- **Invoking Use Cases:** `UC-011-01` (validation and definitions), `UC-020-03` (hide recipes in search), `UC-031-01` (generate the AI plan) and the recipe picker of the meal planner (`030`). The signed-in **Member** is the person whose profile is read.
+- **Invoking Use Cases:** `UC-011-01` (validation and definitions), `UC-020-03` (hide recipes in search), `UC-030-01` (recipe picker of the meal planner), `UC-031-01` (generate the AI plan) and `UC-031-05` (suggestions for one slot), as in Use-Case Model v2.0 §4.1 and §4.3. The signed-in **Member** is the person whose profile is read.
 
 #### 3. Description
 Defines in one place what the dietary profile means, so that search, the meal planner and the AI planner treat the same user in the same way. **Hard rules** are allergens and excluded ingredients: the system never chooses automatically a recipe that breaks one, and if such a recipe is shown anyway it carries a warning naming each conflict. **Preferences** are diet type, maximum total cooking time and preferred cuisines: they only rank results or pre-fill forms. **Default servings** are the household size, or 2 when it is empty.
@@ -3452,6 +3450,7 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 - **Safety:** With any saved profile, zero recipes that break a hard rule are chosen automatically by specs `020`, `030` and `031` in acceptance tests, on a data set whose ingredient ↔ allergen links are complete (SC-002; Clarification 2026-11-07). Allergen protection is only as complete as those links, so no screen states that a recipe is safe for an allergy (FR-010a).
 - **Privacy:** Allergy data is sensitive health information and is shared with no third party except the AI service, only as anonymous constraints required by spec `031` (NFR-005).
 - **Consistency:** FR-020 – FR-026 are authoritative; specs `020`, `030` and `031` must not use different wording (spec 011 Integration Points). Other modules read the profile only through the server (FR-025).
+- **Implementation status (v2.0):** On `main`, every module reads the profile through `DietaryProfileReader` (the ports of `020`, `030`, `031` and also the shopping list `040`); a read failure raises `DietaryProfileUnavailableException`, answered `503 PROFILE_UNAVAILABLE`, and a user without a row is an empty profile (AF 5.1, AF 5.9). Nothing is cached, so Step 8 holds.
 - **Testing:** Every acceptance scenario of US5 has at least one automated test (SC-008).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
@@ -3467,18 +3466,92 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 
 ---
 
+### UC-011-06: View Public Profile
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+> *New in v2.0 (`SCRUM-71`).* Use-Case Model v2.0 §4.1 adds this use case because its primary actor is a Guest; in v1.4 it was Step 10 and `AF 2.6` / `AF 2.17` of `UC-011-02`. Checked against `PublicProfileController`, `PublicProfileService` and `UserProfileRepository.findPublic` on `main` (`SCRUM-75`, PR #95).
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-011-06`
+- **Use Case Name:** View a User's Public Profile and Published Recipes
+
+#### 2. Actor(s)
+- **Primary Actor:** **Guest** — any visitor, signed in or not; Member and the other roles inherit it (Use-Case Model §2.2).
+- **Secondary Actor:** None.
+
+#### 3. Description
+Lets anyone, including a Guest, open the public profile of a user and see the display name, the avatar, the bio, the number of published recipes and the published recipes in pages. The answer never contains the email, the account information, the dietary profile or the household size. The profile of a suspended user stays viewable; the profile of a banned, deleted or missing user answers exactly like one that does not exist (FR-005, FR-039).
+
+#### 4. Preconditions
+- The actor can reach the WikiCook web application. No sign-in is needed: `GET /api/v1/profiles/{id}` and `GET /api/v1/profiles/{id}/recipes` are public routes (contract `security: []`).
+- The actor has the id of a user, for example from the author name on a recipe (`UC-020-06`) or from the own profile page (`UC-011-02` Step 10).
+
+#### 5. Basic Flow
+1. **Open Profile:** The actor opens the public profile of a user.
+2. **Load Profile:** The browser sends `GET /api/v1/profiles/{id}`. The server reads only the public columns of the user (id, display name, avatar, bio), and only when the account is not banned (FR-005).
+3. **Return Public Data:** The server answers `200` with `id`, `displayName`, `avatarUrl` (`null` means the default avatar), `bio` and `publishedRecipeCount` (contract `PublicProfile`).
+4. **Load Recipes:** The browser sends `GET /api/v1/profiles/{id}/recipes?page=0&size=12`. The server answers `200` with the user's `PUBLISHED` recipes, newest first: per recipe `id`, `title`, the cover image, the total time, the average rating and the review count, with `page`, `size` and `totalItems`.
+5. **Display:** The system shows the avatar (or the neutral default avatar), the display name, the bio as plain text with its line breaks, the number of published recipes and the recipe cards under "Công thức đã đăng" (US2 AS6, FR-005).
+6. **Page Through Recipes:** The actor moves to the next page; the browser repeats Step 4 with the next `page` (page size 12 by default, at most 24).
+7. **Open a Recipe:** The actor selects a recipe card; the recipe detail page opens (`UC-020-06`).
+
+#### 6. Alternative Flows
+- **AF 6.1: User Has No Published Recipe:**
+  - *Trigger:* At Step 4, the user has no `PUBLISHED` recipe.
+  - *Steps:*
+    1. The server answers `200` with an empty `items` list and `totalItems = 0`; the system shows the empty state of the recipe list (FR-039).
+- **AF 6.2: Suspended User:**
+  - *Trigger:* At Step 2, the account is suspended.
+  - *Steps:*
+    1. The profile and the recipes are shown normally (FR-005).
+- **AF 6.3: Profile Not Available:**
+  - *Trigger:* At Step 2 or Step 4, the user does not exist, the account was deleted, or the account is banned (FR-005, FR-039).
+  - *Steps:*
+    1. The server answers `404 USER_NOT_FOUND` in the same way for the three cases, so the answer does not reveal which one applies; an id that is not a number is also answered `404`.
+    2. The system shows the generic 404 page.
+- **AF 6.4: Owner or Another Signed-In User Opens the Profile:**
+  - *Trigger:* At Step 1, the actor is signed in, possibly as the owner of the profile (US2 AS6 – AS7).
+  - *Steps:*
+    1. The answer is the same public data as for a Guest. Private data is reached only through `/api/v1/me/` endpoints by the owner, or by an Administrator through spec 010 (`UC-011-02` AF 2.7, AF 2.8).
+- **AF 6.5: Invalid Page Parameters:**
+  - *Trigger:* At Step 4 or Step 6, `page` is negative or `size` is outside 1 – 24.
+  - *Steps:*
+    1. The server answers `400 VALIDATION_ERROR` and returns no recipes.
+- **AF 6.6: Loading Fails:**
+  - *Trigger:* At Step 2 or Step 4, the request fails, for example because the connection is lost (FR-039).
+  - *Steps:*
+    1. The system shows the error state with a clear message and "Try again"; nothing is changed.
+
+#### 7. Postconditions
+- **Success:** The actor sees only the public data of the user. Nothing is stored or changed.
+- **Failure:** The generic 404 page or the error state is shown. Nothing is stored or changed.
+
+#### 8. Special Requirements
+- **Privacy:** The answers contain no email, account information, dietary profile or household size, because the server reads only the public columns; this is enforced by the server, not by hiding fields in the interface (FR-005, FR-006, NFR-005). `SC-004` requires zero leaks in tests with a second account, a Guest and an Administrator.
+- **Security:** Display name and bio are shown as plain text; avatars are served by `GET /api/v1/media/avatars/{file}` as `image/jpeg` with `nosniff` (NFR-004).
+- **Usability and accessibility:** Usable from 360 px with touch targets of at least 44 × 44 px and keyboard-only operation; loading, empty, error and data states are distinct (NFR-002, NFR-006, FR-039).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`PF05-PublicProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF05-PublicProfile.dc.html) (Steps 5–6; name, avatar, bio and paged published recipes).
+- **Alternative Flows:** No prototype screen exists for AF 6.1; AF 6.3 uses the generic 404 page.
+- **UI Asset Gap for SCRUM-58:** Needs the public profile of a user without published recipes (AF 6.1, `FR-039`). See Section 10.2 (Gap 011-F).
+- **Prototype Screenshots (SCRUM-58):** None captured yet. The existing screenshot `UC011_02_Basic_ProfileView` shows the owner's "Tôi" page (with the email), not the public profile, so it is not reused here; a capture of `PF05-PublicProfile` is needed (Gap 011-F).
+
+---
+
 ### 10.1. Feature 011 (User Profile & Dietary Profile) Traceability
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria | Vision Feature |
 | :---: | :--- | :---: | :--- | :--- | :---: | :---: |
 | **`UC-011-01`** | Set Up Dietary Profile | `US1` (AS 1–8) | `FR-001`, `FR-006`, `FR-008`, `FR-009`, `FR-010`, `FR-010a`, `FR-011`, `FR-012`, `FR-013`, `FR-014`, `FR-015`, `FR-016`, `FR-017`, `FR-018`, `FR-019`, `FR-024`, `FR-025`, `FR-026a`, `FR-039` – `FR-042` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-005`, `NFR-006`, `NFR-007`, `NFR-008` | `SC-001`, `SC-004`, `SC-007`, `SC-008` | §5.1 |
-| **`UC-011-02`** | Edit Public Profile & Avatar | `US2` (AS 1–8) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-006`, `FR-007`, `FR-039`, `FR-040`, `FR-041`, `FR-042` | `NFR-002`, `NFR-003`, `NFR-004`, `NFR-005`, `NFR-006`, `NFR-008` | `SC-003`, `SC-004`, `SC-008` | §5.1 |
+| **`UC-011-02`** | Edit Public Profile & Avatar | `US2` (AS 1–5, 7–8) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-006`, `FR-007`, `FR-039`, `FR-040`, `FR-041`, `FR-042` | `NFR-002`, `NFR-003`, `NFR-004`, `NFR-005`, `NFR-006`, `NFR-008` | `SC-003`, `SC-004`, `SC-008` | §5.1 |
 | **`UC-011-03`** | Change or Set Password | `US3` (AS 1–6) | `FR-027`, `FR-028`, `FR-029`, `FR-030`, `FR-039`, `FR-040`, `FR-041`, `FR-042` | `NFR-002`, `NFR-004`, `NFR-006` | `SC-005`, `SC-008` | §5.1 |
 | **`UC-011-04`** | Delete Account | `US4` (AS 1–13) | `FR-030`, `FR-031`, `FR-032`, `FR-033`, `FR-034`, `FR-035`, `FR-036`, `FR-037`, `FR-037a`, `FR-037b`, `FR-038`, `FR-039`, `FR-040`, `FR-041`, `FR-042` | `NFR-002`, `NFR-004`, `NFR-006`, `NFR-007` | `SC-006`, `SC-008` | §5.1 |
 | **`UC-011-05`** | Apply Dietary Hard Rules *(included)* | `US5` (AS 1–5) | `FR-010`, `FR-010a`, `FR-012`, `FR-019`, `FR-020`, `FR-021`, `FR-022`, `FR-023`, `FR-024`, `FR-025`, `FR-026`, `FR-026a` | `NFR-005` | `SC-002`, `SC-008` | §5.1 |
+| **`UC-011-06`** | View Public Profile *(new v2.0)* | `US2` (AS 6) | `FR-005`, `FR-006`, `FR-039` | `NFR-002`, `NFR-004`, `NFR-005`, `NFR-006` | `SC-004`, `SC-008` | §5.1 |
 
-*Verification:* All 5 user stories of spec 011 (40 acceptance scenarios: 8 + 8 + 6 + 13 + 5), all 46 functional requirements (`FR-001` – `FR-042` including `FR-010a`, `FR-026a`, `FR-037a` and `FR-037b`), the 8 NFRs and `SC-001` – `SC-008` are mapped. `FR-006` is spread over `UC-011-01`, `UC-011-02` and `UC-011-03` because it governs who may read or change each part of the profile. `FR-030` (shared wrong-password counter) is exercised by `UC-011-03` and `UC-011-04`.
+*Verification:* All 5 user stories of spec 011 (40 acceptance scenarios: 8 + 8 + 6 + 13 + 5), all 46 functional requirements (`FR-001` – `FR-042` including `FR-010a`, `FR-026a`, `FR-037a` and `FR-037b`), the 8 NFRs and `SC-001` – `SC-008` are mapped. `FR-006` is spread over `UC-011-01`, `UC-011-02`, `UC-011-03` and `UC-011-06` because it governs who may read or change each part of the profile. *(v2.0)* `US2` AS6 (public profile) moved from `UC-011-02` to the new `UC-011-06`. `FR-030` (shared wrong-password counter) is exercised by `UC-011-03` and `UC-011-04`.
 
 ### 10.2. Prototype Screen Mapping & UI Asset Gaps (for SCRUM-58)
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
@@ -3492,10 +3565,10 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 | `UC-011-01` | AF 1.9, AF 1.14 | *Gap 011-B* | Save failed or profile not loaded, with "Try again" and the typed values kept | **GAP** |
 | `UC-011-01` | AF 1.13 | *Gap 011-C* | Notice that an excluded ingredient was merged, deleted or an allergen removed | **GAP** |
 | `UC-011-02` | Basic Flow (Steps 1–9) | `PF04-EditProfile.dc.html` | Avatar with change and remove, display name 9/50, bio 68/300, privacy note | **Available** |
-| `UC-011-02` | Basic Flow (Step 10), AF 2.6 | `PF05-PublicProfile.dc.html` | Public profile with name, avatar, bio and paged published recipes | **Available** |
+| `UC-011-06` | Basic Flow (Steps 5–6) | `PF05-PublicProfile.dc.html` | Public profile with name, avatar, bio and paged published recipes | **Available** |
 | `UC-011-02` | AF 2.1 – AF 2.4 | *Gap 011-D* | Editor with errors: invalid name, bio over 300, wrong avatar type or size | **GAP** |
 | `UC-011-02` | AF 2.8 | *Gap 011-E* | Administrator's view of a user: email and account information only | **GAP** |
-| `UC-011-02` | AF 2.6 (no recipes) | *Gap 011-F* | Public profile of a user without published recipes | **GAP** (behaviour now defined by `FR-039`) |
+| `UC-011-06` | AF 6.1 (no recipes) | *Gap 011-F* | Public profile of a user without published recipes | **GAP** (behaviour now defined by `FR-039`) |
 | `UC-011-03` | Basic Flow (Steps 2–5), AF 3.1, AF 3.6 | `PF06-Security.dc.html` | Change-password form with the wrong-current-password message; "Tài khoản chỉ dùng Google" with "Đặt mật khẩu" | **Available** |
 | `UC-011-03` | Basic Flow (Step 8) | *Gap 011-G* | "Password changed" confirmation | **GAP** |
 | `UC-011-03` | AF 3.2, AF 3.3 | *Gap 011-H* | Rule-failed state and throttled state after repeated wrong passwords | **GAP** |
@@ -3509,7 +3582,7 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 | `UC-011-04` | AF 4.13 | *Gap 011-N* | Account-closure page opened from the banned-account screen (`AU07`) without a session: lists, type DELETE | **GAP** |
 | `UC-011-05` | Basic Flow | `PF02-DietEmpty.dc.html`, `PF03-DietForm.dc.html` | Explanation of hard rules and preferences in the profile screens | **Available** |
 
-*Note:* `AF 1.2`, `AF 1.5`, `AF 1.7`, `AF 1.8`, `AF 1.10` – `AF 1.12`, `AF 1.15` – `AF 1.19`, `AF 2.5`, `AF 2.7`, `AF 2.9` – `AF 2.18`, `AF 3.4` – `AF 3.5`, `AF 3.7` – `AF 3.13`, `AF 4.5` – `AF 4.12`, `AF 4.14` – `AF 4.16` and `AF 5.1` – `AF 5.9` reuse the screens above, are background behaviour, or are server refusals that show a message in a screen already listed.
+*Note:* `AF 1.2`, `AF 1.5`, `AF 1.7`, `AF 1.8`, `AF 1.10` – `AF 1.12`, `AF 1.15` – `AF 1.19`, `AF 2.5`, `AF 2.7`, `AF 2.9` – `AF 2.16`, `AF 2.18`, `AF 3.4` – `AF 3.5`, `AF 3.7` – `AF 3.13`, `AF 4.5` – `AF 4.12`, `AF 4.14` – `AF 4.16` `AF 5.1` – `AF 5.9` and `AF 6.2` – `AF 6.6` reuse the screens above (`AF 6.3` uses the generic 404 page), are background behaviour, or are server refusals that show a message in a screen already listed.
 
 *Desktop variants:* every screen listed in this table also has a web variant named `W-<ID>` in the same folder (for example `W-AU02-Register.dc.html`). The mobile files are listed because the flows are written for the 360 px layout (constitution Principle V). `AU01` exists only as `W-AU01-Login.dc.html`.
 
@@ -3518,7 +3591,7 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 
 *Decisions of 30/10/2026 by Mai Văn Hiển are recorded under each item. Changes to specs `011` need Duy's approval through a PR; the use cases above change only where a decision is stated in the flow.*
 
-*Status update (v2.0, 13/11/2026, `SCRUM-71`):* spec 011 was clarified on 2026-11-06 and 2026-11-07. Each item below now carries a *Status (v2.0)* line.
+*Status update (v2.0, 13/11/2026, `SCRUM-71`):* spec 011 was clarified on 2026-11-06 and 2026-11-07. Each item below now carries a *Status (v2.0)* line. *(18/11/2026)* `[OQ-011-02]` and `[OQ-011-03]` now apply to `UC-011-06` (the public-profile flows moved there); `[OQ-011-09]` records the code check.
 
 1. **`[OQ-011-01]` Behaviour When the Profile Cannot Be Read (`UC-011-05` AF 5.9):**
    - *Issue:* The spec does not say whether a module that cannot read the dietary profile must hide recipes, refuse to generate a plan, or continue as if there were no profile. Continuing silently could show an unsafe recipe to a user with an allergy.
@@ -3567,6 +3640,16 @@ Defines in one place what the dietary profile means, so that search, the meal pl
    - *Current Stance:* The variant is described in `AF 4.2` and listed as Gap 011-K; no UI is invented.
    - *Owner:* Trần Nguyễn Công Chung (`SCRUM-58`).
    - *Decision (30/10/2026, Mai Văn Hiển):* Closed — already tracked as Gap 011-K.
+9. **`[OQ-011-09]` Implemented Code vs. Approved Contract (v2.0 code check, 18/11/2026):**
+   - *Issue:* The use cases must state only implemented or approved behaviour. Checking `main` (profile module of `SCRUM-75`, auth module of `SCRUM-74`) found:
+     1. `POST /api/v1/me/password`, `POST /api/v1/me/password/initial`, `POST /api/v1/me/deletion` and `POST /api/v1/account-closure` do not exist yet (spec 011 tasks T073 – T102, US3 and US4 planned after 18/11/2026). `UC-011-03` and `UC-011-04` describe the contract.
+     2. `POST /api/v1/auth/reauthenticate` exists but does not count wrong passwords (`PasswordCheckFailure` is defined but not used), so `429 PASSWORD_CHECK_LIMITED` (spec 010 `FR-022b`, spec 011 `FR-030`) is not returned yet (`UC-011-03` AF 3.2, `UC-011-04` AF 4.12).
+     3. The Google OAuth endpoints (`GET /api/v1/auth/oauth2/google`, `intent=reauth`) are not implemented, so `UC-011-03` AF 3.6 – AF 3.7 and `UC-011-04` AF 4.2 cannot run yet.
+     4. The dietary profile is also read by the shopping list (`040`, `ShoppingDietaryAdapter`); spec 011 FR-020 lists only `020`, `030` and `031`. This is an extra reader, not a different rule.
+     5. `UC-011-06` matches the code: banned, deleted and missing users all answer `404 USER_NOT_FOUND`; the code comment still calls this rule "not approved yet" (research row 11) although spec 011 FR-005 approves it.
+   - *Current Stance:* Flows follow the contract; no behaviour is invented. The items are reported to the owner of `SCRUM-75`.
+   - *Owner:* Mai Văn Hiển (code of `SCRUM-74` / `SCRUM-75`), Nguyễn Đức Duy (spec 011 approval).
+   - *Status (v2.0):* **Open.**
 
 ---
 
