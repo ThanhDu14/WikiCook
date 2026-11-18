@@ -49,6 +49,7 @@ public class GoogleSignInService {
 
     private final UserAccountRepository users;
     private final UserSuspensionRepository suspensions;
+    private final ClosureTokenService closureTokens;
     private final SuspensionExpiryJob expiry;
     private final BlockedEmails blockedEmails;
     private final SessionService sessions;
@@ -60,11 +61,12 @@ public class GoogleSignInService {
     private final Clock clock;
 
     public GoogleSignInService(UserAccountRepository users, UserSuspensionRepository suspensions,
-            SuspensionExpiryJob expiry, BlockedEmails blockedEmails, SessionService sessions, AuditWriter audit,
+            ClosureTokenService closureTokens, SuspensionExpiryJob expiry, BlockedEmails blockedEmails, SessionService sessions, AuditWriter audit,
             EmailHasher hasher, ApplicationEventPublisher events, TransactionTemplate transaction, JdbcTemplate jdbc,
             Clock clock) {
         this.users = users;
         this.suspensions = suspensions;
+        this.closureTokens = closureTokens;
         this.expiry = expiry;
         this.blockedEmails = blockedEmails;
         this.sessions = sessions;
@@ -203,8 +205,9 @@ public class GoogleSignInService {
     private AuthException restriction(UserAccount account) {
         UserSuspension sanction = suspensions.findRunning(account.getId()).orElse(null);
         String reason = sanction == null ? null : sanction.getReason();
+        // the person proved who they are with Google, so a banned one gets the closure token too (R16)
         return account.getStatus() == AccountStatus.BANNED
-                ? AuthException.accountBanned(reason, null)
+                ? AuthException.accountBanned(reason, closureTokens.issue(account.getId()))
                 : AuthException.accountSuspended(reason, sanction == null ? null : sanction.getEndsAt());
     }
 

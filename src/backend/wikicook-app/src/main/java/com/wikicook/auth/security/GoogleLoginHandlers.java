@@ -107,6 +107,9 @@ public class GoogleLoginHandlers implements AuthenticationSuccessHandler, Authen
         if (restriction.properties().get("endsAt") instanceof Instant endsAt) {
             fragment.append("&endsAt=").append(encode(endsAt.toString()));
         }
+        if (restriction.properties().get("closureToken") instanceof String closureToken) {
+            fragment.append("&closureToken=").append(encode(closureToken));
+        }
         return "/account-status#" + fragment;
     }
 

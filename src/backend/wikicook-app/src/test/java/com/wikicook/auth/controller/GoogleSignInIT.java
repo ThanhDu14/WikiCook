@@ -62,6 +62,12 @@ class GoogleSignInIT extends AbstractPostgresIT {
     BlockedEmails blockedEmails;
 
     @Autowired
+    com.wikicook.auth.api.ClosureTokens closureTokens;
+
+    @Autowired
+    org.springframework.transaction.support.TransactionTemplate transaction;
+
+    @Autowired
     ObjectMapper json;
 
     @BeforeEach
@@ -286,6 +292,7 @@ class GoogleSignInIT extends AbstractPostgresIT {
         Map<String, String> fragment = fragment(location);
         assertThat(fragment).containsEntry("code", "ACCOUNT_SUSPENDED").containsEntry("reason", "Spam & quảng cáo");
         assertThat(Instant.parse(fragment.get("endsAt"))).isEqualTo(ends);
+        assertThat(fragment).as("a suspension has no closure token").doesNotContainKey("closureToken");
         assertNoSessionAnywhere(response);
         assertThat(sessions(id)).isZero();
         assertThat(user(email).get("google_sub")).as("nothing is linked to a refused account").isNull();
@@ -304,6 +311,11 @@ class GoogleSignInIT extends AbstractPostgresIT {
         assertThat(fragment).containsEntry("code", "ACCOUNT_BANNED").containsEntry("reason", "Vi phạm nhiều lần")
                 .doesNotContainKey("endsAt");
         assertNoSessionAnywhere(response);
+        // R16: the banned person proved who they are with Google, so the fragment also carries the closure token
+        String closureToken = fragment.get("closureToken");
+        assertThat(closureToken).isNotBlank();
+        java.util.OptionalLong consumed = transaction.execute(status -> closureTokens.consume(closureToken));
+        assertThat(consumed).hasValue(id);
     }
 
     @Test
