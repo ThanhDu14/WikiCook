@@ -1,7 +1,6 @@
 import { useCallback, useContext, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '@/features/auth/authContext';
-import { GUEST, getDevUserId } from '@/shared/api/session';
 import { CooksnapLightbox } from './components/CooksnapLightbox';
 import { DeleteConfirm } from './components/DeleteConfirm';
 import { Icon } from './components/Icon';
@@ -32,10 +31,10 @@ type Dialog =
   | { kind: 'photo'; review: Review; index: number }
   | { kind: 'signIn'; title: string };
 
-/** Signed in per spec 010; without an `AuthProvider` (unit tests) the dev identity decides. */
+/** Signed in per spec 010; anyone else, and a render outside an `AuthProvider`, is treated as a Guest. */
 function useIsGuest(): boolean {
   const auth = useContext(AuthContext);
-  return auth ? auth.status !== 'authenticated' : getDevUserId() === GUEST;
+  return auth?.status !== 'authenticated';
 }
 
 /**

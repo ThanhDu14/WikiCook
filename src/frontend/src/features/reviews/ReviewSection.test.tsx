@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { installMemoryStorage } from '@/shared/api/memoryStorage.testutil';
-import { setDevUserId } from '@/shared/api/session';
+import { AuthContext, type AuthContextValue } from '@/features/auth/authContext';
 import { server } from '@/test/server';
 import { emptyList, makeCooksnap, makeList, makeReview, problem } from './__tests__/fixtures';
 import { HELPFUL_URL, REVIEW_REPORT_URL, REVIEW_URL, REVIEWS_URL, listHandler } from './__tests__/handlers';
@@ -14,20 +14,37 @@ function LoginPage() {
   return <p>Trang đăng nhập {new URLSearchParams(location.search).get('redirect')}</p>;
 }
 
+/** Whether the section is rendered for a signed-in Member (spec 010) or for a Guest. */
+let signedIn = true;
+
+function session(): AuthContextValue {
+  return {
+    status: signedIn ? 'authenticated' : 'guest',
+    account: signedIn ? { id: 1, displayName: 'Hưng', email: 'hung@example.com', role: 'MEMBER', emailVerified: true } : null,
+    restriction: null,
+    updateAccount: () => {},
+    signIn: () => {},
+    signOut: async () => true,
+    addSignOutGuard: () => () => {},
+  };
+}
+
 function renderSection(props: Partial<Parameters<typeof ReviewSection>[0]> = {}) {
   return render(
-    <MemoryRouter initialEntries={['/recipes/105']}>
-      <Routes>
-        <Route path="/recipes/:id" element={<ReviewSection recipeId={105} recipeTitle="Canh chua cá lóc" {...props} />} />
-        <Route path="/login" element={<LoginPage />} />
-      </Routes>
-    </MemoryRouter>,
+    <AuthContext.Provider value={session()}>
+      <MemoryRouter initialEntries={['/recipes/105']}>
+        <Routes>
+          <Route path="/recipes/:id" element={<ReviewSection recipeId={105} recipeTitle="Canh chua cá lóc" {...props} />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </MemoryRouter>
+    </AuthContext.Provider>,
   );
 }
 
 beforeEach(() => {
   installMemoryStorage();
-  setDevUserId(1);
+  signedIn = true;
 });
 
 describe('ReviewSection (integration point for the 060 recipe page)', () => {
@@ -233,7 +250,9 @@ describe('ReviewSection (integration point for the 060 recipe page)', () => {
   });
 
   describe('as a guest (US4-AS5, FR-017, FR-023)', () => {
-    beforeEach(() => setDevUserId('guest'));
+    beforeEach(() => {
+      signedIn = false;
+    });
 
     it('can read and open photos, but writing asks to sign in and comes back to the page', async () => {
       server.use(listHandler(makeList({ items: [makeReview({ cooksnaps: [makeCooksnap()] })] })));
