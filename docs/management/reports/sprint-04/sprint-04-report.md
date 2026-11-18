@@ -4,7 +4,7 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem
 **Sprint Cycle:** Sprint 04 (Project Assignment 4 — Requirements Revision, Software Architecture & Two Full-Stack Functional Groups)
 **Sprint Duration:** November 10, 2026 – November 29, 2026. The official PA4 deadline is **29/11/2026**; the team aims to submit by **23/11/2026** so that late problems can still be fixed (an internal target, not a limit)
-**Document Version:** 0.5 (SCRUM-68 Planning and SCRUM-87 Standup 01 recorded; Standup 02 prepared, not yet held; 18/11/2026)
+**Document Version:** 0.6 (SCRUM-68 Planning and SCRUM-87 Standup 01 recorded; Standup 02 prepared, not yet held; SCRUM-88 Review and Retrospective drafted, not yet held; 19/11/2026)
 
 ---
 
@@ -18,6 +18,8 @@
 | **Section 2.3** | Meeting 3 Minutes: Weekly Standup 02 | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-87` |
 | **Section 2.4** | Cross-Meeting Governance & Action Item Matrix | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-87` |
 | **Section 3** | PA3 TA Feedback Status & Use-Case Consistency Audit | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-69` |
+| **Section 4** | Sprint Review (draft) | **Lê Quốc Hưng (LqHung06)** | **Trần Nguyễn Công Chung (itzchugnn)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-88` |
+| **Section 5** | Sprint Retrospective (draft) | **Lê Quốc Hưng (LqHung06)** | **Trần Nguyễn Công Chung (itzchugnn)** | **Lê Quốc Hưng (LqHung06)** | `SCRUM-88` |
 
 ### Revision History
 
@@ -28,6 +30,7 @@
 | **16/11/2026** | `v0.3` | Documented Meeting 2 (Standup 01, 14/11) and Meeting 3 (Standup 02, 19/11) minutes under SCRUM-87; audited Part E Spec Kit progress (010+011, 070), database seed state, C4 Level 1 draft, Part E Code Freeze criteria, and architecture diagram alignment. | Lê Quốc Hưng (`LqHung06`) |
 | **18/11/2026** | `v0.4` | Added Section 3: PA3 TA feedback status (none received) and the self-audit checklist feeding SCRUM-70, SCRUM-71 and SCRUM-84 (SCRUM-69). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **18/11/2026** | `v0.5` | Correction of `v0.3` (SCRUM-87): Section 2.3 (Standup 02, planned 19/11) described a meeting that had not happened, with attendance, member reports and decisions. It is now a template with the planned agenda, repository evidence checked on 18/11 and blank fields for the meeting; Section 2.4 lists only ceremonies that took place, with the status of each action item checked against `origin/main`; Provenance Statement rewritten. Section 2.2 (Standup 01): only the statements that do not match the repository were changed (a frontend client built with Axios, the `dev:mock` command, work on `SCRUM-76` dated before 14/11, a boundary list with Cloud OCR); attendance and time are unchanged and still to be confirmed from the meeting notes. Section 2.1: wording of the conversation removed, action statuses updated, submission date stated as official 29/11 and team target 23/11. | Lê Quốc Hưng (`LqHung06`) |
+| **19/11/2026** | `v0.6` | Added Sections 4 and 5 as a **draft** for `SCRUM-88`: the delivery state of the 23 backlog tasks checked against `origin/main` on 19/11/2026, known gaps, a demo checklist, and retrospective candidates taken from repository evidence. The Sprint Review and Retrospective (planned 22/11, 20:00) have not been held; nothing in the two sections is a team decision yet. | Lê Quốc Hưng (`LqHung06`) |
 
 ---
 
@@ -264,3 +267,125 @@ The PA3 baseline (`use-case-model.md` `v0.2`, `use-case-specification.md` `v1.4`
 - `SCRUM-70`: checklist items 1 – 4, 6 – 9 → PR #99.
 - `SCRUM-71`: items 1, 3, 5 → branch `docs/scrum-71-uc-spec-v2`.
 - `SCRUM-84`: the change lists of `SCRUM-70` and `SCRUM-71` were given to Lê Quốc Hưng for the root `Changes.md`; it must state that no PA3 TA feedback was received.
+
+---
+
+## 4. SPRINT 04 REVIEW (`SCRUM-88`) — DRAFT
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
+
+> **Status: draft, the meeting has not been held.** The Sprint Review and the Retrospective are planned for **22/11/2026, 20:00** (`SCRUM-88`, due 22/11). This section is prepared from the repository so that the meeting can start from facts. It is updated after the meeting; the repository state is re-checked on that day, and the Jira screenshots are added only after the live board has been checked.
+
+### 4.1. Meeting record
+- **Planned date & time:** 22/11/2026, 20:00
+- **Actual date & time / modality:** `[to fill after the meeting]`
+- **Facilitator:** Lê Quốc Hưng (`@LqHung06`)
+- **Team members present / absent:** `[to fill, from the real attendance]`
+
+### 4.2. Delivery against the Sprint 04 backlog
+State on `origin/main` on **19/11/2026, 00:30**, taken from `git`. "Not found" means that no deliverable of the task is on `main`; it does not say the work was not started. The Jira status of each task was not checked.
+
+| Jira Key | Owner | Due | Evidence on `main` | State |
+| :---: | :--- | :---: | :--- | :---: |
+| `SCRUM-68` | Hưng | 11/11 | Sections 1 and 2.1 of this report (PR #80) | Done |
+| `SCRUM-69` | Duy | 12/11 | Section 3 of this report (PR #100) | Done |
+| `SCRUM-70` | Duy | 16/11 | Use-Case Model `v2.0` (PR #99) | Done |
+| `SCRUM-71` | Duy | 18/11 | Use-Case Specification `v2.0` (PR #101) | Done |
+| `SCRUM-72` | Hiển | 13/11 | Spec Kit of `010` + `011` (PR #84) | Done |
+| `SCRUM-73` | Duy | 13/11 | Spec Kit of `070` (PR #87, #88) | Done |
+| `SCRUM-74` | Hiển | 17/11 | Authentication backend (PR #89), password reset (PR #96), Google sign-in and closure token (PR #97); `intent=reauth` is not built | Merged, with one gap |
+| `SCRUM-75` | Hiển | 18/11 | Profile backend (PR #95, #97) | Merged |
+| `SCRUM-76` | Hưng | 18/11 | Frontend of `010` + `011` (PR #90, and parts of PR #97). Three follow-up branches are waiting for review | Merged, follow-ups open |
+| `SCRUM-77` | Chung | 18/11 | Review and Cooksnap backend with `V501` (PR #93) | Merged |
+| `SCRUM-78` | Duy | 18/11 | Frontend of `070` (PR #98), UX pass (PR #102) | Merged |
+| `SCRUM-79` | Chung | 21/11 | No test report and no demo video found | Not found |
+| `SCRUM-80` | Hiển | 17/11 | Tech Stack and C4 Level 1 in `architecture.md` Sections 2 – 3 (PR #91, #94) | Done |
+| `SCRUM-81` | Hiển | 20/11 | `architecture.md` Section 4 still says "Reserved for Part C" | Not found |
+| `SCRUM-82` | Dự | 20/11 | No C4 Level 3 frontend diagram found | Not found |
+| `SCRUM-83` | Dự | 19/11 | No Deployment Diagram found | Not found |
+| `SCRUM-84` | Hưng | 20/11 | `Changes.md` is on a branch with a pull request still to be opened | In review |
+| `SCRUM-85` | Chung | 21/11 | Individual AI logs exist; no five-member summary found | Not found |
+| `SCRUM-86` | Chung | 22/11 | None yet | Not found |
+| `SCRUM-87` | Hưng | 19/11 | Standup 01 recorded; Standup 02 template waiting for the meeting | Partly done |
+| `SCRUM-88` | Hưng | 22/11 | This draft | Draft |
+| `SCRUM-89` | Dự | 23/11 | `docker-compose.yml` exists from earlier sprints; no release tag and no seed check found | Not found |
+| `SCRUM-90` | Dự | 23/11 | No `git-log` update, PDF export or ZIP found | Not found |
+
+Of the 23 tasks, 12 are done or merged, 2 are in review or partly done, 1 is this draft, and 8 have no deliverable on `main` yet. The tasks with due dates after 19/11 are not late; they are listed so that the team sees what is still missing.
+
+### 4.3. State by PA4 part
+No score is claimed here; the grading is done by the course.
+
+| Part | What is on `main` | What is missing |
+| :---: | :--- | :--- |
+| **A** | Use-Case Model and Specification `v2.0`, the TA-feedback audit (Section 3). `Changes.md` is written and waiting for review. | Review of `Changes.md`; a new TA-feedback check before submission. |
+| **B** | Tech Stack and C4 Level 1 (`architecture.md` Sections 2 – 3). | Review by the team. |
+| **C** | Nothing beyond C4 Level 1. | C4 Level 2, Level 3 backend (`SCRUM-81`) and Level 3 frontend (`SCRUM-82`). |
+| **D** | Nothing yet. | Deployment Diagram (`SCRUM-83`). |
+| **E** | Group 1 (`010` + `011`): backend and frontend on `main`. Group 2 (`070`): backend and frontend on `main`. | Test report, demo video (`SCRUM-79`); items of 4.5. |
+| **F** | Planning and Standup 01 minutes, AI logs of the members. | Standup 02 (after the meeting), Review and Retrospective (this section), Jira evidence, five-member AI summary (`SCRUM-85`). |
+
+### 4.4. Demo checklist (to confirm before the meeting)
+Checked on 18/11/2026 against a local backend started with Docker Compose and a browser, on a local merge of PR #97 and `main`:
+- **Group 1:** register, verification email (Mailpit), sign in, reload keeps the session, sign out, edit the public profile with an avatar, dietary profile (allergens, excluded ingredients with suggestions, diet type, household size, maximum cooking time), version conflict on two tabs, forgot and reset password, public profile page.
+- **Group 2:** the reviews and Cooksnap screen of a recipe (`/recipes/:id`) with the backend of `SCRUM-77`. Group 2 was **not** exercised end to end in this check; Duy and Chung confirm it.
+- **Measured on 18/11/2026:** backend `mvn verify` 1410 tests, no failure (local merge of PR #97 and `main`); frontend `vitest` 916 tests, `eslint` 0 errors, `tsc` and build pass (branch `chore/SCRUM-76-close-gaps`); Playwright e2e 37 passed, 1 failed (the failing test of `meal-planner.spec.ts` also fails on `main`).
+
+### 4.5. Known gaps and limits
+- Google sign-in has been tested with a fake Google only; `intent=reauth` is not built (task T149a, blocked by T149b).
+- Password change, first password for a Google account, account deletion and account closure (spec 011 US3, US4) have no backend and no screen; the account menu shows them as "coming soon".
+- `Content-Security-Policy` (spec 010 T175) is not set in `nginx.conf`.
+- Meal planner handling of an expired session (spec 010 T026a, T054a) was not changed.
+- Moderator hide and restore of reviews (spec 100) is not implemented in the review module.
+- The post-cooking review prompt hook of Cooking Mode is not connected to the review screen.
+- Open points of the specifications are listed in `use-case-specification.md` (`[OQ-011-09]`, `[OQ-070-07]` – `[OQ-070-18]`).
+
+### 4.6. Jira evidence
+`[to attach after the live board is checked]` — screenshots go to `docs/assets/jira/sprint-04/`; each file name states the date it was taken.
+
+### 4.7. Review feedback and decisions
+`[to fill after the meeting]`
+
+---
+
+## 5. SPRINT 04 RETROSPECTIVE (`SCRUM-88`) — DRAFT
+*Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
+
+> **These are candidates, not team conclusions.** The Scrum Master prepared them from repository evidence on 19/11/2026. At the retrospective on 22/11/2026 the team keeps, changes or drops each item and adds its own. Only what the team confirms is kept in the final version.
+
+### 5.1. Glad (candidates)
+| # | Candidate | Evidence |
+| :---: | :--- | :--- |
+| G1 | Spec Kit artifacts of both Part E groups were merged on 12/11, one day before their due date. | PR #84, #87, #88 |
+| G2 | Both Part E groups have backend and frontend on `main` before the end of 18/11. | Section 4.2 |
+| G3 | The authentication backend went beyond the MVP: password reset, Google sign-in and closure token; backend tests pass. | PR #96, #97; `mvn verify` |
+| G4 | Part A was written from a documented self-audit with sources; no TA feedback was invented. | Section 3, `Changes.md` |
+| G5 | Cross-checking before submission found real defects that were then fixed (verification link requested twice, specification notes out of date, minutes written before the meeting). | Section 2.3 history `v0.5`; `fix/SCRUM-76-verify-email-once` |
+
+### 5.2. Sad (candidates)
+| # | Candidate | Evidence |
+| :---: | :--- | :--- |
+| S1 | Parts C and D (C4 Level 2 and 3, Deployment Diagram) had no deliverable on `main` on 19/11, when `SCRUM-83` was due and one day before `SCRUM-81` and `SCRUM-82`. | Section 4.2 |
+| S2 | The test report, the demo video and the five-member AI summary were not started in the repository by 19/11. | Section 4.2 |
+| S3 | The Spec Kit task lists were not kept up to date: no frontend task was ticked until 18/11 although the screens existed. | `specs/010-*/tasks.md`, `specs/011-*/tasks.md` |
+| S4 | Part of the approved scope stayed undone: password change and account deletion, Google re-authentication, Content-Security-Policy. | Section 4.5 |
+
+### 5.3. Mad (candidates)
+| # | Candidate | Evidence |
+| :---: | :--- | :--- |
+| M1 | Minutes of Standup 02 were written before the meeting took place, with attendance and decisions; this was found on 18/11 and corrected. | Section 2.3, `v0.5` |
+| M2 | Dates disagree between documents: the project plan (submission 04/12), the weekly plan (21/11), the PA4 brief (23/11) and the official deadline (29/11); `SCRUM-89` has a different date in Jira and in the plan. | Section 2.1, decision 6 |
+| M3 | One end-to-end test of the meal planner fails on `main` since the app shell of 10/11 and no owner is recorded for it; a merged feature (`070`) still used the dev identity that spec 010 asked to remove. | `meal-planner.spec.ts`; `chore/SCRUM-76-close-gaps` |
+
+### 5.4. Proposed actions for Sprint 5 (owners and dates to be agreed at the meeting)
+| # | Action | Proposed owner |
+| :---: | :--- | :--- |
+| A1 | Write minutes only after the meeting and attach the attendance and the evidence. | Scrum Master |
+| A2 | Tick the tasks of `tasks.md` in the same pull request that delivers them. | Author of each task |
+| A3 | Keep one source for dates (Jira) and update the plan documents when the date changes. | Scrum Master |
+| A4 | Fix or remove the failing meal-planner e2e test. | Owner of the app shell route |
+| A5 | Decide for password change, account deletion and Google re-authentication: build them or declare them out of scope in the specifications. | Tech Lead, Scrum Master |
+| A6 | Add Content-Security-Policy to `nginx.conf` and test it in the Docker image. | Tech Lead, Scrum Master |
+| A7 | Check the live Jira board before any screenshot is added to a report. | Scrum Master |
+
+### 5.5. Team's own items and final decisions
+`[to fill after the meeting]`
