@@ -46,8 +46,10 @@ export function CookingPage(): React.ReactElement {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center p-6 text-center">
-        <p className="text-base font-semibold text-stone-500 animate-pulse">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-6 text-center" aria-busy="true">
+        <div className="wk-skel w-full max-w-md" style={{ height: 32 }} />
+        <div className="wk-skel w-full max-w-xl" style={{ height: 140 }} />
+        <p className="text-base font-semibold text-stone-500">
           Đang tải chế độ nấu...
         </p>
       </div>
@@ -61,7 +63,7 @@ export function CookingPage(): React.ReactElement {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="rounded-xl bg-stone-200 px-4 py-2 font-semibold text-stone-700 hover:bg-stone-300 transition"
+          className="min-h-[44px] rounded-xl bg-stone-200 px-5 py-2.5 font-semibold text-stone-700 hover:bg-stone-300 active:scale-[0.97] transition"
         >
           Quay lại
         </button>
@@ -76,7 +78,7 @@ export function CookingPage(): React.ReactElement {
         <p role="status" className="rounded-xl bg-success-tint p-4 text-success">Chúc mừng bạn đã hoàn thành món ăn!</p>
         <h1 className="mt-6 text-2xl font-bold">{snapshot.title}</h1>
         <p className="mt-2">Đã hoàn thành {snapshot.steps.length} bước nấu.</p>
-        <button className="mt-6 rounded-xl bg-primary px-4 py-3 text-primary-on" onClick={() => navigate('/shopping-list')}>Về danh sách mua sắm</button>
+        <button className="mt-6 min-h-[44px] rounded-xl bg-primary px-5 py-3 text-primary-on active:scale-[0.97] transition" onClick={() => navigate('/shopping-list')}>Về danh sách mua sắm</button>
       </main>
     );
   }

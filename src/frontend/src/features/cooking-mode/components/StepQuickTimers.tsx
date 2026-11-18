@@ -43,7 +43,7 @@ export function StepQuickTimers({
             <button
               type="button"
               onClick={() => onStartQuickTimer(cand.seconds, cand.label)}
-              className="flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-800 shadow-sm transition hover:bg-orange-100 active:scale-95 [.theme-high-contrast-dark_&]:border-yellow-400 [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-yellow-200 [.theme-high-contrast-dark_&]:hover:bg-yellow-900"
+              className="flex min-h-[44px] items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-800 shadow-sm transition hover:bg-orange-100 active:scale-95 [.theme-high-contrast-dark_&]:border-yellow-400 [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-yellow-200 [.theme-high-contrast-dark_&]:hover:bg-yellow-900"
             >
               <span>⏱️</span>
               <span>{durationText}</span>
@@ -58,7 +58,7 @@ export function StepQuickTimers({
               <button
                 type="button"
                 onClick={() => onStartQuickTimer(cand.lowerSeconds!, cand.label)}
-                className="flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-100 px-3.5 py-1.5 text-xs font-semibold text-stone-700 shadow-sm transition hover:bg-stone-200 active:scale-95 [.theme-high-contrast-dark_&]:border-yellow-400 [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-yellow-200 [.theme-high-contrast-dark_&]:hover:bg-yellow-900"
+                className="flex min-h-[44px] items-center gap-1.5 rounded-full border border-stone-200 bg-stone-100 px-3.5 py-2 text-xs font-semibold text-stone-700 shadow-sm transition hover:bg-stone-200 active:scale-95 [.theme-high-contrast-dark_&]:border-yellow-400 [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-yellow-200 [.theme-high-contrast-dark_&]:hover:bg-yellow-900"
               >
                 <span>⏱️</span>
                 <span>{lowerText}</span>
