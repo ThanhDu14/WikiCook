@@ -63,7 +63,7 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case (`Edge: …`) mà nó 
 - [x] T003 Thêm rule PACKAGE cho `com.wikicook.profile.service`, LINE và BRANCH ≥ 70%, cùng dạng rule của `com.wikicook.mealplan.service` trong src/backend/wikicook-app/pom.xml
 - [x] T004 ⛓ A Sửa src/backend/wikicook-app/src/main/resources/application.yml: `spring.servlet.multipart.max-file-size: 5MB`, `max-request-size: 6MB`, `resolve-lazily: true`, `server.tomcat.max-swallow-size: 6MB`, `wikicook.profile.media-dir: ${WIKICOOK_MEDIA_DIR:./.media}`, `wikicook.profile.write-limit-per-hour: 20`; thêm `spring.flyway.out-of-order: true` nếu T007 của 010 chưa merge (research R2, R7). Bên merge sau bỏ qua dòng này
 - [x] T005 [P] ⛓ A Sửa src/backend/docker-compose.yml: volume `media:/var/lib/wikicook/media` cho `app`, `WIKICOOK_MEDIA_DIR`, `FLYWAY_OUT_OF_ORDER: "true"` cho `migrate` (bỏ qua nếu 010 đã thêm); thêm `WIKICOOK_MEDIA_DIR` vào src/backend/.env.example; tạo và `chown` `/var/lib/wikicook/media` trước `USER wikicook` trong src/backend/Dockerfile
-- [ ] T006 [P] Thêm `client_max_body_size 6m` trong `location /api/` của src/frontend/nginx.conf (research R7)
+- [x] T006 [P] Thêm `client_max_body_size 6m` trong `location /api/` của src/frontend/nginx.conf (research R7)
 - [x] T007 Spike ảnh trên `eclipse-temurin:21-jre-alpine`: JPEG CMYK, PNG alpha, WebP lossy, lossless, animated; ghi kết quả vào mục R7 của specs/011-user-profile-dietary/research.md, mẫu lưu ở src/backend/wikicook-app/src/test/resources/avatars/. Định dạng nào không đọc được thì báo Hiển trước khi làm tiếp, không tự bỏ
 
 **Checkpoint**: `mvn verify`, `npm test` vẫn xanh như trước; ImageIO đã được kiểm chứng trên image thật.
@@ -82,8 +82,8 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case (`Edge: …`) mà nó 
 - [x] T011 [P] Unit test `PlainTextLineValidatorTest` – `Edge: Display name`: từ chối ký tự điều khiển, chỉ khoảng trắng; đếm theo code point, emoji tính một trong src/backend/wikicook-app/src/test/java/com/wikicook/profile/validation/PlainTextLineValidatorTest.java
 - [x] T012 [P] Integration test `ProfileWriteLimiterIT` – NFR-008: lần 21 trong một giờ → 429 `PROFILE_RATE_LIMITED` có `retryAfterSeconds`; `PROFILE_SAVE`, `AVATAR_UPLOAD` đếm riêng; gửi song song không vượt 20; dòng quá 1 giờ bị xóa khi đếm; transaction ngoài rollback vẫn tốn lượt trong src/backend/wikicook-app/src/test/java/com/wikicook/profile/service/ProfileWriteLimiterIT.java
 - [x] T013 [P] Unit test `LocalDiskMediaStorageTest` – ghi file tạm rồi `ATOMIC_MOVE`, `load`, `delete`, khóa thoát khỏi thư mục gốc bị từ chối trong src/backend/wikicook-app/src/test/java/com/wikicook/common/media/LocalDiskMediaStorageTest.java
-- [ ] T014 [P] Test `client.test.ts` – `api.postForm` gửi `FormData`, không tự đặt `Content-Type` trong src/frontend/src/shared/api/client.test.ts
-- [ ] T015 [P] Test `codePoints.test.ts` – đếm emoji là một ký tự, khớp `@CodePointLength` trong src/frontend/src/features/profile/__tests__/codePoints.test.ts
+- [x] T014 [P] Test `client.test.ts` – `api.postForm` gửi `FormData`, không tự đặt `Content-Type` trong src/frontend/src/shared/api/client.test.ts
+- [x] T015 [P] Test `codePoints.test.ts` – đếm emoji là một ký tự, khớp `@CodePointLength` trong src/frontend/src/features/profile/__tests__/codePoints.test.ts
 
 ### Implementation cho Foundational
 
@@ -96,8 +96,8 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case (`Edge: …`) mà nó 
 - [x] T022 Tạo `ProfileWriteLimiter` (`REQUIRES_NEW`, chỉ điều phối các lệnh của `ProfileWriteRequestRepository`, không chứa SQL) trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/service/ProfileWriteLimiter.java (làm T012 xanh)
 - [x] T023 [P] Tạo `MediaStorage`, `LocalDiskMediaStorage` trong src/backend/wikicook-app/src/main/java/com/wikicook/common/media/ (làm T013 xanh)
 - [x] T024 ⛓ A Tạo `ProfileAuditPort`, `ProfileDefaultsConfig` (auto-configuration, bean `@ConditionalOnMissingBean`, audit mặc định không làm gì) trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/port/ProfileAuditPort.java và src/backend/wikicook-app/src/main/java/com/wikicook/profile/config/ProfileDefaultsConfig.java; đăng ký ở src/backend/wikicook-app/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports. Adapter thật ở T116
-- [ ] T025 [P] ⛓ A Thêm `api.postForm` trong src/frontend/src/shared/api/client.ts, đi qua cùng `fetchJson` để có bearer và refresh của 010 (T051 của 010 cũng sửa file này: bên merge sau rebase) (làm T014 xanh)
-- [ ] T026 [P] Tạo `strings.vi.ts`, `types.ts`, `lib/codePoints.ts`, `lib/avatarRules.ts` (JPEG, PNG, WebP, 5 MiB) trong src/frontend/src/features/profile/ (làm T015 xanh)
+- [x] T025 [P] ⛓ A Thêm `api.postForm` trong src/frontend/src/shared/api/client.ts, đi qua cùng `fetchJson` để có bearer và refresh của 010 (T051 của 010 cũng sửa file này: bên merge sau rebase) (làm T014 xanh)
+- [x] T026 [P] Tạo `strings.vi.ts`, `types.ts`, `lib/codePoints.ts`, `lib/avatarRules.ts` (JPEG, PNG, WebP, 5 MiB) trong src/frontend/src/features/profile/ (làm T015 xanh)
 
 **Checkpoint**: Nền tảng xanh; các story bắt đầu được.
 
@@ -120,9 +120,9 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case (`Edge: …`) mà nó 
 - [x] T033 [P] [US1] Integration test `IngredientSuggestionThirtyNamesIT` – **SC-007**: bộ 30 tên tiếng Việt, gồm tên có "đ", gõ không dấu, tên đúng nằm trong 5 kết quả đầu ở 100% ca; danh sách ở src/backend/wikicook-app/src/test/resources/ingredients/sc007-names.csv, test trong src/backend/wikicook-app/src/test/java/com/wikicook/profile/controller/IngredientSuggestionThirtyNamesIT.java
 - [x] T034 [P] [US1] ⛓ C, D Integration test `DietaryPortsIT` – US1-8, FR-023, FR-026, FR-026a: `findByUserId` trả đúng 6 trường, `householdSize` là `null` khi trống; không có dòng `users` → `PlannerProfile.empty()`; `getRestrictions` trả id **nguyên liệu** suy từ `ingredient_allergens`; lỗi DB ném `DietaryProfileUnavailableException`, không trả hồ sơ trống; bean thật thắng `DevStubConfig`, `DefaultPortsConfig` trong src/backend/wikicook-app/src/test/java/com/wikicook/profile/port/DietaryPortsIT.java
 - [x] T034a [P] [US1] ⛓ C Integration test `ProfileUnavailableIT` – FR-026a: khi `DietaryProfileReader` ném lỗi, `GET /me/dietary-profile`, `GET /meal-plans/picker/recipes`, `GET /ai-planner/weeks/{weekStart}/options` đều trả 503 `PROFILE_UNAVAILABLE`, không lộ chi tiết, không trả hồ sơ trống trong src/backend/wikicook-app/src/test/java/com/wikicook/profile/port/ProfileUnavailableIT.java
-- [ ] T035 [P] [US1] Test `DietaryProfilePage.test.tsx` – US1-1, US1-6, US1-7; FR-039 (skeleton, trống, lỗi, dữ liệu); `Edge: Network loss`: "Thử lại", giữ dữ liệu đã gõ; `Edge: Two tabs`: 409 hiện "Tải lại", "Lưu đè"; `Edge: Unsaved changes`; `Edge: Repeated clicks`: nút tắt khi `inFlight` trong src/frontend/src/features/profile/__tests__/DietaryProfilePage.test.tsx
+- [x] T035 [P] [US1] Test `DietaryProfilePage.test.tsx` – US1-1, US1-6, US1-7; FR-039 (skeleton, trống, lỗi, dữ liệu); `Edge: Network loss`: "Thử lại", giữ dữ liệu đã gõ; `Edge: Two tabs`: 409 hiện "Tải lại", "Lưu đè"; `Edge: Unsaved changes`; `Edge: Repeated clicks`: nút tắt khi `inFlight` trong src/frontend/src/features/profile/__tests__/DietaryProfilePage.test.tsx
 - [ ] T036 [P] [US1] ⛓ A Test `DietaryProfilePage.session.test.tsx` – `Edge: Session expired`: render trong `AppLayout`, 401 sau refresh (`useAuth().status = expired`) hiện `SessionExpiredDialog` của 010 (một dialog, trang không tự gắn), trang không chuyển `/login`, form giữ nguyên, không lưu vào tài khoản khác. Tạm: mock `useAuth` và dialog tới khi có T053, T077 của 010, trong src/frontend/src/features/profile/__tests__/DietaryProfilePage.session.test.tsx
-- [ ] T037 [P] [US1] Test `ExcludedIngredientPicker.test.tsx` – US1-3; debounce 150 ms, `AbortController` hủy request cũ; chỉ thêm được mục trong catalogue; `Edge: 51st ingredient`; bàn phím (NFR-006) trong src/frontend/src/features/profile/__tests__/ExcludedIngredientPicker.test.tsx
+- [x] T037 [P] [US1] Test `ExcludedIngredientPicker.test.tsx` – US1-3; debounce 150 ms, `AbortController` hủy request cũ; chỉ thêm được mục trong catalogue; `Edge: 51st ingredient`; bàn phím (NFR-006) trong src/frontend/src/features/profile/__tests__/ExcludedIngredientPicker.test.tsx
 - [ ] T038 [P] [US1] Test `DietaryForm.test.tsx` – US1-2, US1-4 (không có Keto, không hard-code ẩm thực), US1-5: lỗi cạnh trường; FR-010a: luôn có ghi chú giới hạn dữ liệu dị ứng, không có câu nào nói món an toàn trong src/frontend/src/features/profile/__tests__/DietaryForm.test.tsx
 
 ### Implementation for User Story 1
@@ -137,10 +137,10 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case (`Edge: …`) mà nó 
 - [x] T045 [US1] Tạo `DietaryProfileController` (`GET`, `PUT /me/dietary-profile`, `GET /me/dietary-options`), `IngredientSuggestionController`, gọi `ProfileWriteLimiter` với `PROFILE_SAVE` trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/controller/ (làm T028, T031 xanh)
 - [x] T046 [US1] ⛓ C, D Tạo `MealPlanDietaryAdapter` cài `com.wikicook.mealplan.port.DietaryProfilePort`, `ShoppingDietaryAdapter` cài `com.wikicook.shoppinglist.port.DietaryProfilePort`, là `@Component`, trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/port/ (làm T034 xanh; chữ ký port giữ nguyên)
 - [x] T047 [US1] ⛓ C Xóa `StubDietaryProfile`, `DevStubProperties.Profile`, bean ở src/backend/wikicook-app/src/main/java/com/wikicook/devstub/DevStubConfig.java; xóa `emptyDietaryProfile` ở src/backend/wikicook-app/src/main/java/com/wikicook/mealplan/port/DefaultPortsConfig.java; sửa `MealPlanWriteFacadeIT` (`@Primary`), `DevStubConfigTest`, `DefaultPortsConfigTest` trong src/backend/wikicook-app/src/test/java/com/wikicook/. Phần còn lại của `devstub` đi theo 010
-- [ ] T048 [P] [US1] Tạo `dietaryApi.ts` trong src/frontend/src/features/profile/api/dietaryApi.ts
-- [ ] T049 [US1] Tạo `useDietaryProfile`, `useIngredientSuggestions` trong src/frontend/src/features/profile/hooks/
-- [ ] T050 [US1] Tạo `AllergenPicker` (có ghi chú FR-010a), `ExcludedIngredientPicker`, `CuisinePicker`, `DietTypeSelect`, `NumberField`, `ProfileSkeleton`, `DietaryEmptyState` theo `PF02`, `PF03` trong src/frontend/src/features/profile/components/ (làm T037, T038 xanh)
-- [ ] T051 [US1] Tạo `DietaryProfilePage` (`useUnsavedChangesBlocker()` của 010, tạm dùng `useBlocker` tới khi có T077 của 010; `beforeunload`; hộp xung đột) trong src/frontend/src/features/profile/pages/DietaryProfilePage.tsx và thêm route `profile/dietary` trong src/frontend/src/app/routes.tsx (làm T035, T036 xanh)
+- [x] T048 [P] [US1] Tạo `dietaryApi.ts` trong src/frontend/src/features/profile/api/dietaryApi.ts
+- [x] T049 [US1] Tạo `useDietaryProfile`, `useIngredientSuggestions` trong src/frontend/src/features/profile/hooks/
+- [x] T050 [US1] Tạo `AllergenPicker` (có ghi chú FR-010a), `ExcludedIngredientPicker`, `CuisinePicker`, `DietTypeSelect`, `NumberField`, `ProfileSkeleton`, `DietaryEmptyState` theo `PF02`, `PF03` trong src/frontend/src/features/profile/components/ (làm T037, T038 xanh)
+- [x] T051 [US1] Tạo `DietaryProfilePage` (`useUnsavedChangesBlocker()` của 010, tạm dùng `useBlocker` tới khi có T077 của 010; `beforeunload`; hộp xung đột) trong src/frontend/src/features/profile/pages/DietaryProfilePage.tsx và thêm route `profile/dietary` trong src/frontend/src/app/routes.tsx (làm T035, T036 xanh)
 
 **Checkpoint**: Quickstart Q1–Q9 đạt; 030, 031 đọc hồ sơ thật. Chạy bằng dev stub, chưa triển khai công khai (research R19).
 
@@ -161,10 +161,10 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case (`Edge: …`) mà nó 
 - [x] T056 [P] [US2] Integration test `PublicProfileIT` – US2-6: khách đọc được, JSON chỉ có `id, displayName, avatarUrl, bio, publishedRecipeCount`, công thức phân trang, chỉ `PUBLISHED`; không có công thức → `items` rỗng; không tồn tại → 404 `USER_NOT_FOUND` trong src/backend/wikicook-app/src/test/java/com/wikicook/profile/controller/PublicProfileIT.java
 - [ ] T057 [P] [US2] 🕓 #11 Integration test `PublicProfileStatusIT` – `Edge: Suspended or banned`: `SUSPENDED` xem được; `BANNED` trả 404 giống hệt không tồn tại trong src/backend/wikicook-app/src/test/java/com/wikicook/profile/controller/PublicProfileStatusIT.java
 - [x] T058 [P] [US2] Integration test `PrivateDataStructureIT` – US2-7 phần cấu trúc: mọi route `/me/**` theo người gọi, không có route nào nhận id người khác; `X-Test-User` thứ hai chỉ thấy dữ liệu của mình. Toàn bộ US2-7 ở T112, trong src/backend/wikicook-app/src/test/java/com/wikicook/profile/controller/PrivateDataStructureIT.java
-- [ ] T059 [P] [US2] Test `EditProfilePage.test.tsx` – US2-1, US2-2, `Edge: Display name`, `Edge: Bio`, `Edge: Unsaved changes`, `Edge: Network loss`, `Edge: Repeated clicks`, 4 trạng thái (FR-039), Gap 011-D trong src/frontend/src/features/profile/__tests__/EditProfilePage.test.tsx
-- [ ] T060 [P] [US2] Test `AvatarPicker.test.tsx` – US2-3 (xem trước bằng `FileReader`, URL `data:`, không dùng `blob:`), US2-4, **SC-003** phía form (sai loại, quá 5 MB không có request), US2-5, bàn phím trong src/frontend/src/features/profile/__tests__/AvatarPicker.test.tsx
-- [ ] T061 [P] [US2] Test `PublicProfilePage.test.tsx` – US2-6, không có công thức hiện trạng thái rỗng, 404 chung, không có "tham gia" (FR-005), Gap 011-F trong src/frontend/src/features/profile/__tests__/PublicProfilePage.test.tsx
-- [ ] T062 [P] [US2] Test `MyAccountPage.test.tsx` – FR-001, liên kết tới hồ sơ, hồ sơ ăn uống, bảo mật, xóa tài khoản theo `PF01` trong src/frontend/src/features/profile/__tests__/MyAccountPage.test.tsx
+- [x] T059 [P] [US2] Test `EditProfilePage.test.tsx` – US2-1, US2-2, `Edge: Display name`, `Edge: Bio`, `Edge: Unsaved changes`, `Edge: Network loss`, `Edge: Repeated clicks`, 4 trạng thái (FR-039), Gap 011-D trong src/frontend/src/features/profile/__tests__/EditProfilePage.test.tsx
+- [x] T060 [P] [US2] Test `AvatarPicker.test.tsx` – US2-3 (xem trước bằng `FileReader`, URL `data:`, không dùng `blob:`), US2-4, **SC-003** phía form (sai loại, quá 5 MB không có request), US2-5, bàn phím trong src/frontend/src/features/profile/__tests__/AvatarPicker.test.tsx
+- [x] T061 [P] [US2] Test `PublicProfilePage.test.tsx` – US2-6, không có công thức hiện trạng thái rỗng, 404 chung, không có "tham gia" (FR-005), Gap 011-F trong src/frontend/src/features/profile/__tests__/PublicProfilePage.test.tsx
+- [x] T062 [P] [US2] Test `MyAccountPage.test.tsx` – FR-001, liên kết tới hồ sơ, hồ sơ ăn uống, bảo mật, xóa tài khoản theo `PF01` trong src/frontend/src/features/profile/__tests__/MyAccountPage.test.tsx
 
 ### Implementation for User Story 2
 
@@ -174,10 +174,10 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case (`Edge: …`) mà nó 
 - [x] T066 [US2] Cài `MyProfileService`: `ProfileWriteLimiter` (`AVATAR_UPLOAD` khi có file, ngược lại `PROFILE_SAVE`) → xử lý ảnh → ghi file → transaction `UPDATE … WHERE profile_version = :version` → `afterCommit` xóa file cũ, `afterCompletion(ROLLED_BACK)` xóa file mới, trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/service/MyProfileService.java (làm T052 xanh)
 - [ ] T067 [P] [US2] 🕓 #11 Cài `PublicProfileService` chỉ `SELECT` cột công khai; `BANNED` → `USER_NOT_FOUND` trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/service/PublicProfileService.java (làm T056, T057 xanh)
 - [x] T068 [US2] Tạo `MyProfileController` (`GET`, `POST /me/profile`, multipart), `PublicProfileController`, `AvatarMediaController` trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/controller/ (làm T053, T055, T058 xanh)
-- [ ] T069 [P] [US2] Tạo `profileApi.ts` dùng `api.postForm` trong src/frontend/src/features/profile/api/profileApi.ts
-- [ ] T070 [US2] Tạo `useMyProfile` trong src/frontend/src/features/profile/hooks/useMyProfile.ts
-- [ ] T071 [US2] Tạo `AvatarPicker` trong src/frontend/src/features/profile/components/AvatarPicker.tsx (làm T060 xanh)
-- [ ] T072 [US2] Tạo `MyAccountPage`, `EditProfilePage`, `PublicProfilePage` theo `PF01`, `PF04`, `PF05` trong src/frontend/src/features/profile/pages/ và thêm route `profile`, `profile/edit`, `users/:id` trong src/frontend/src/app/routes.tsx (làm T059, T061, T062 xanh)
+- [x] T069 [P] [US2] Tạo `profileApi.ts` dùng `api.postForm` trong src/frontend/src/features/profile/api/profileApi.ts
+- [x] T070 [US2] Tạo `useMyProfile` trong src/frontend/src/features/profile/hooks/useMyProfile.ts
+- [x] T071 [US2] Tạo `AvatarPicker` trong src/frontend/src/features/profile/components/AvatarPicker.tsx (làm T060 xanh)
+- [x] T072 [US2] Tạo `MyAccountPage`, `EditProfilePage`, `PublicProfilePage` theo `PF01`, `PF04`, `PF05` trong src/frontend/src/features/profile/pages/ và thêm route `profile`, `profile/edit`, `users/:id` trong src/frontend/src/app/routes.tsx (làm T059, T061, T062 xanh)
 
 **Checkpoint**: Quickstart Q10–Q15 đạt. US2-7, US2-8 đóng ở Phase 8.
 
@@ -287,7 +287,7 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case (`Edge: …`) mà nó 
 - [ ] T116 ⛓ A Tạo adapter `ProfileAuditPort` → `AuditWriter`, `ProfileAudit` trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/port/AuditWriterAdapter.java và src/backend/wikicook-app/src/main/java/com/wikicook/profile/service/ProfileAudit.java (làm T110 xanh; cần T039 của 010)
 - [ ] T117 ⛓ A Tạo `AvatarCleanupListener`: `@EventListener` đọc khóa, `registerSynchronization` xóa ở `afterCommit` trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/service/AvatarCleanupListener.java (làm T111 xanh; cần T146, T163 của 010)
 - [ ] T118 ⛓ A Thêm vào src/backend/wikicook-app/src/main/java/com/wikicook/auth/security/PublicRoutes.java: `GET /api/v1/profiles/*`, `GET /api/v1/profiles/*/recipes`, `GET /api/v1/media/avatars/*`, `POST /api/v1/account-closure`; `RouteProtectionIT` của 010 phải xanh (cần T043 của 010)
-- [ ] T119 ⛓ A Bọc `/profile*` bằng `RequireAuth` (không `offlineFirst`), thêm mục `/profile` vào src/frontend/src/app/AppLayout.tsx, sửa src/frontend/src/app/routes.tsx; **không** gắn thêm `SessionExpiredDialog` (010 đã gắn ở `AppLayout`), thay `useBlocker` tạm ở `DietaryProfilePage`, `EditProfilePage` bằng `useUnsavedChangesBlocker()` trong src/frontend/src/features/profile/pages/ (cần T053, T054, T077 của 010; làm T036 xanh với dialog thật)
+- [x] T119 ⛓ A Bọc `/profile*` bằng `RequireAuth` (không `offlineFirst`), thêm mục `/profile` vào src/frontend/src/app/AppLayout.tsx, sửa src/frontend/src/app/routes.tsx; **không** gắn thêm `SessionExpiredDialog` (010 đã gắn ở `AppLayout`), thay `useBlocker` tạm ở `DietaryProfilePage`, `EditProfilePage` bằng `useUnsavedChangesBlocker()` trong src/frontend/src/features/profile/pages/ (cần T053, T054, T077 của 010; làm T036 xanh với dialog thật)
 - [ ] T120 ⛓ A Tạo `AdminAccountPanel` gọi `GET /admin/users/{id}`, gắn vào src/frontend/src/features/profile/pages/PublicProfilePage.tsx, trong src/frontend/src/features/profile/components/AdminAccountPanel.tsx (làm T115 xanh)
 - [ ] T121 ⛓ A Thay input tạm bằng `PasswordField` trong src/frontend/src/features/profile/components/ChangePasswordForm.tsx và SetPasswordForm.tsx; bằng `TextField` trong src/frontend/src/features/profile/components/NumberField.tsx và src/frontend/src/features/profile/pages/EditProfilePage.tsx (cần T055 của 010)
 
@@ -298,7 +298,7 @@ ghi mã acceptance scenario (`US1-3`…) hoặc edge case (`Edge: …`) mà nó 
 - [ ] T124 [P] Test `CatalogueNotices.test.tsx` – `Edge: Ingredient merged`, `Edge: Ingredient deleted`, `Edge: Allergen removed`, Gap 011-C: hiện ở lần vào sau, đóng rồi không hiện lại trong src/frontend/src/features/profile/__tests__/CatalogueNotices.test.tsx
 - [ ] T125 ⛓ B, E 🕓 #8 Cài `DietaryCatalogChanges` trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/api/DietaryCatalogChanges.java và `DietaryCatalogChangeService` trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/service/DietaryCatalogChangeService.java (làm T122 xanh). Chưa có merge của 100 thì interface chưa ai gọi, test gọi trực tiếp
 - [x] T126 Thêm record `AckNoticesRequest`, `POST /me/dietary-profile/notices/ack`, trả `notices[]` trong src/backend/wikicook-app/src/main/java/com/wikicook/profile/controller/DietaryProfileController.java (làm T123 xanh)
-- [ ] T127 Tạo `CatalogueNotices` trong src/frontend/src/features/profile/components/CatalogueNotices.tsx, gắn vào src/frontend/src/features/profile/pages/DietaryProfilePage.tsx (làm T124 xanh)
+- [x] T127 Tạo `CatalogueNotices` trong src/frontend/src/features/profile/components/CatalogueNotices.tsx, gắn vào src/frontend/src/features/profile/pages/DietaryProfilePage.tsx (làm T124 xanh)
 
 ### 8c. Tên tác giả (FR-007) và lỗi đọc hồ sơ (FR-026a)
 
