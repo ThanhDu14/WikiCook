@@ -18,6 +18,7 @@ import { CookingPage } from '@/features/cooking-mode/pages/CookingPage';
 import { DietaryProfilePage } from '@/features/profile/pages/DietaryProfilePage';
 import { EditProfilePage } from '@/features/profile/pages/EditProfilePage';
 import { MyAccountPage } from '@/features/profile/pages/MyAccountPage';
+import { PublicProfilePage } from '@/features/profile/pages/PublicProfilePage';
 import { AppLayout } from './AppLayout';
 import { NotFoundPage } from './NotFoundPage';
 
@@ -56,6 +57,8 @@ export const routes: RouteObject[] = [
       { index: true, element: <HomePage /> },
       { path: 'search', element: <SearchResultsPage /> },
       { path: 'access-denied', element: <AccessDeniedPage /> },
+      // The public page of a person (011 FR-005): a guest may open it, so it is outside the member routes.
+      { path: 'profiles/:id', element: <PublicProfilePage /> },
       // Member pages: a guest is sent to /login?redirect=; an expired session keeps the page (SessionExpiredDialog).
       {
         element: <RequireAuth />,

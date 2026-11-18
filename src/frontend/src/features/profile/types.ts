@@ -35,6 +35,15 @@ export interface MyProfile {
   account: AccountInfo;
 }
 
+/** `GET /profiles/{id}`: what a guest may see of a person; no email, no dietary data (FR-005, NFR-005). */
+export interface PublicProfile {
+  id: number;
+  displayName: string;
+  avatarUrl?: string | null;
+  bio?: string | null;
+  publishedRecipeCount: number;
+}
+
 export interface ProfileUpdate {
   displayName: string;
   bio: string | null;

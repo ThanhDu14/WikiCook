@@ -8,6 +8,7 @@ import type { Plugin } from 'vite';
  *
  * Handy inputs: any e-mail and password sign in; the password `sai` is refused (INVALID_CREDENTIALS); the e-mail
  * `trung@gmail.com` is "already registered"; the verify link `#token=het-han` is expired; `#token=ok` verifies.
+ * Public profiles: `/profiles/1` (you), `/profiles/2` (another cook), `/profiles/500` (server error), any other id is 404.
  */
 export function mockApi(): Plugin {
   let account: { id: number; displayName: string; email: string; role: string; emailVerified: boolean } | null = null;
@@ -141,6 +142,14 @@ export function mockApi(): Plugin {
             };
           }
           return send(res, 200, dietary);
+        }
+        const publicId = /^\/profiles\/(\d+)$/.exec(path)?.[1];
+        if (publicId && method === 'GET') {
+          // open to guests; 1 is the signed-in person, 2 another cook, 500 fails, anything else is "not found" (also a banned one)
+          if (publicId === '500') return problem(res, 500, 'ERROR');
+          if (publicId === '1') return send(res, 200, { id: 1, displayName: profile.displayName, avatarUrl: profile.avatarUrl, bio: profile.bio, publishedRecipeCount: 3 });
+          if (publicId === '2') return send(res, 200, { id: 2, displayName: 'Minh Anh', avatarUrl: null, bio: 'Thích món chay và bánh ngọt. Chia sẻ mỗi cuối tuần.', publishedRecipeCount: 12 });
+          return problem(res, 404, 'USER_NOT_FOUND');
         }
         if (path === '/ingredients/suggestions') {
           const q = strip(url.searchParams.get('q') ?? '');
