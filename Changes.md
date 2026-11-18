@@ -5,7 +5,7 @@
 **Team:** Group 05  
 **Submission:** Project Assignment 4 (`PA4-Group05.zip`) — Part A (5 points)  
 **Jira Task:** `SCRUM-84` (author Lê Quốc Hưng, reviewer Nguyễn Đức Duy)  
-**File Status:** **Draft of 18/11/2026, not yet reviewed.** The review by Nguyễn Đức Duy and the re-check of the TA feedback before the Moodle deadline (23/11/2026) are still to be done; this file is updated if either changes a row.
+**File Status:** **Draft of 18/11/2026, not yet reviewed.** The review by Nguyễn Đức Duy and the re-check of the TA feedback before submission (official deadline 29/11/2026; the team aims to submit by 23/11/2026) are still to be done; this file is updated if either changes a row.
 
 This is the single change log for the two documents revised for Part A of PA4. Each section lists every change against the PA3 baseline, with the document, the location, the content of the change, the reason and the Jira task. The change log of PA3 (Project Plan and Vision Document) is not repeated here; it stays in the PA3 package and in the repository history (`Changes.md` at commit `00bbaac`, 07/11/2026).
 
@@ -23,7 +23,7 @@ The Vision Document is **not** revised in PA4. The two places where it no longer
 | Item | Result |
 | :--- | :--- |
 | Channels checked | Moodle submission page of PA3 and the team's own channels (group chat, GitHub PR comments). |
-| Checked by / last check | Nguyễn Đức Duy, 12/11/2026. To be checked again before submission on 23/11/2026. |
+| Checked by / last check | Nguyễn Đức Duy, 12/11/2026. To be checked again before submission (official deadline 29/11/2026; team target 23/11/2026). |
 | Feedback found | **None.** No written or verbal feedback on the PA3 Use-Case Model or Use-Case Specification had been published to the team at the time of the check. |
 | Consequence | **No feedback was invented.** Every change below comes from the team's own self-audit (Sprint 04 Report, Section 3: audit checklist items 1 – 9), not from the TA. If feedback arrives before submission, it is recorded in Sprint 04 Report Section 3.1 and in this file with its source and date, as a separate change. |
 
@@ -137,6 +137,7 @@ Sections 4.2, 4.4 – 4.6, 4.8 and 4.9 (features `020`, `040`, `050`, `060`, `08
 ### B.4. Limits of this revision
 
 - **Status notes are dated.** The "implementation status" notes and `[OQ-011-09]` record `main` as checked on 18/11/2026. Google sign-in was merged afterwards (PR #97) and the notes about it were updated in the same revision: sign-in is implemented, but its re-authentication variant `intent=reauth` is not built (task T149a, blocked by T149b), so `UC-011-03` `AF 3.6` – `3.7` and `UC-011-04` `AF 4.2` still describe the approved contract only. Google sign-in has been tested with a fake Google, not with a real Google client. `UC-010-04` was not re-checked line by line against the Google code of PR #97. The sentence "the review screens of the frontend are not implemented on `main` yet" is also dated: the frontend of `070` (`SCRUM-78`) is on a separate branch that is not merged.
+- **Scope of the audit.** The team assignment (`SCRUM-71`, `SCRUM-84`) asks for the specification to be aligned with `010`, `011`, `030`, `031`, `040` and `070` and with the Vision Document, while `pa4-guide.md` names `010`, `011` and `070`. Version `2.0` revises `010`, `011` and `070` use case by use case. The flows of `030`, `031` and `040` were **not changed** in `v2.0` (only the relations of `UC-030-01` and `UC-031-05` to `UC-011-05` were added in the model). The self-audit (Sprint 04 Report 3.2) lists the frontend of `030`, `031` and `040` among its sources but records no finding for them. This is a known limit of the revision, not a statement that these use cases were checked line by line against the code. The Vision Document was not revised either (Section D).
 - **`UC-010-01` – `UC-010-04`** were written against the approved contract; only `UC-010-05` and `UC-011-06` were written from the code.
 - **Section 13 (`100`)** is unchanged; the Moderator rights of `UC-100-03` and `UC-100-06` shown in the model were already in specification `v1.4`.
 - **Review status.** No review of this file or of the two documents is claimed here; the reviewers named in the documents are the planned ones.
@@ -159,6 +160,7 @@ Sections 4.2, 4.4 – 4.6, 4.8 and 4.9 (features `020`, `040`, `050`, `060`, `08
 ## SECTION D — WHAT WAS NOT CHANGED IN PA4
 
 - Vision Document `v2.0` (the four new IDs are not yet in its §8; model issue 7).
+- Flows of the use cases of `030`, `031` and `040` (Sections 1, 2, 14 – 15 of the specification); see the scope note of B.4.
 - Use-case IDs: none renumbered or removed.
 - Section 13 of the specification (feature `100`) and Sections 1 – 8, 11, 14 – 17 (see Section B).
 - Prototype screens and `full-schema.md`.
