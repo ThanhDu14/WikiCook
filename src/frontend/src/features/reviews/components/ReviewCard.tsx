@@ -36,7 +36,8 @@ export function ReviewCard({
   const firstItem = useRef<HTMLButtonElement>(null);
   const { author } = review;
   const name = review.isOwner ? strings.card.you : author.isDeleted ? strings.card.deletedUser : author.displayName;
-  const edited = review.updatedAt !== review.createdAt;
+  // the server stamps createdAt and updatedAt microseconds apart on create, so only a real later save counts
+  const edited = Date.parse(review.updatedAt) - Date.parse(review.createdAt) > 1000;
 
   useEffect(() => {
     if (!menuOpen) return;

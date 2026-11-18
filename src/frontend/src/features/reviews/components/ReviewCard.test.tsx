@@ -17,6 +17,16 @@ function renderCard(review: Review, extra: Partial<Parameters<typeof ReviewCard>
 }
 
 describe('ReviewCard (T054, T056, W-RV01, W-RV04)', () => {
+  it('does not mark a new review "đã sửa" when the server stamps differ by microseconds', () => {
+    renderCard(makeReview({ createdAt: '2026-11-18T08:00:00.123456Z', updatedAt: '2026-11-18T08:00:00.123789Z' }));
+    expect(screen.queryByText(/đã sửa/)).not.toBeInTheDocument();
+  });
+
+  it('marks a review "đã sửa" after a later save', () => {
+    renderCard(makeReview({ createdAt: '2026-11-18T08:00:00Z', updatedAt: '2026-11-18T09:30:00Z' }));
+    expect(screen.getByText(/đã sửa/)).toBeInTheDocument();
+  });
+
   it('renders author, stars, comment, tip and Cooksnap thumbnails', async () => {
     const snaps = [makeCooksnap({ id: 1 }), makeCooksnap({ id: 2 })];
     const { onOpenPhoto } = renderCard(
