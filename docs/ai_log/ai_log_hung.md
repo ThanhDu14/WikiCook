@@ -1279,3 +1279,44 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - `git diff --check`: 0 lỗi whitespace / định dạng bảng Markdown.
 - Kiểm tra hiển thị bảng Markdown trên môi trường GitHub / VS Code preview: các bảng Round-Robin và Traceability Matrix hiển thị sắc nét, căn chỉnh đúng chuẩn.
 - Đối chiếu vé Jira: Khớp hoàn toàn với mô tả, tiêu chí nghiệm thu và hạn chót (Nov 19, 2026) của ticket `SCRUM-87`.
+
+---
+
+## Mục 29: Sửa biên bản Standup 02 viết trước khi họp thành khung chưa điền kết quả (`SCRUM-87`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Sonnet 5.5 (`claude-sonnet-5-5`) |
+| **Thời gian truy cập cụ thể** | 2026-11-18, khoảng 21:30 – 23:00 (Giờ Việt Nam, UTC+7); giờ là ước lượng theo phiên làm việc |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-87` — `[Ceremony] Conduct & Document Weekly Scrum Standups 01 & 02 (Part F)` |
+| **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.3, 2.4, Revision History), `tasks/PA4/pa4-guide.md` (SCRUM-87: "do not pre-fill outcomes as facts"), `tasks/PA4/wikicook-pa4-team-assignment.md` (lịch: Code Freeze 18/11 23:59, Standup 02 ngày 19/11 22:00) |
+| **Mục đích sử dụng** | Rà soát Mục 2.3 và 2.4 do mục 27 tạo ra (16/11): biên bản Standup 02 ghi đầy đủ giờ họp, 5/5 người có mặt, lời từng người và quyết định cho một buổi họp chưa diễn ra; nhiều tiến độ được ghi là đã xong nhưng không có trên `main`. Viết lại thành khung chờ họp thật. |
+| **Nhánh Git** | `docs/SCRUM-87-standup-02-template` (tạo từ `origin/main` tại `0831048`) |
+| **Minh chứng (Evidence)** | Commit `173d5ac` trên nhánh trên (PR sẽ mở sau; điền số PR khi có). Chưa push tại thời điểm ghi log. |
+
+### Prompt đã sử dụng:
+```text
+Tiến độ hiện tại của PA4 tới đâu, tóm gọn báo cáo lẹ của từng thành viên giúp tôi
+Hiện tôi đã merge 1 số PR, bạn hãy kiểm tra hiện tại tiến độ của PA4, và tiến hành commit bản sửa của bạn
+Hiện tôi còn thiếu những SCRUM nào , và SCRUM nào của tôi cần hoàn thành
+ok bạn hãy triển khai theo ý bạn nhé
+```
+
+### Nội dung do AI sinh ra:
+1. Phát hiện Mục 2.3 (Standup 02, "19/11/2026, 22:00 – 22:35, 5/5 có mặt") được ghi trước ngày họp (commit ngày 16/11, hôm nay là 18/11), kèm các khẳng định không có trên `main`: C4 Level 2/3 và Deployment Diagram "đã xong", frontend `070` "đã xong", endpoint `POST /api/v1/recipes/{id}/cooksnaps` (không có trong controller), Code Freeze "19/11 23:59" (lịch PA4 ghi 18/11 23:59).
+2. Viết lại Mục 2.3 thành khung: trạng thái "chưa họp", chương trình dự kiến lấy từ mô tả Jira `SCRUM-87`, cột "Bằng chứng trong repo ngày 18/11" (lấy từ `git` trên `origin/main`) và các ô `[to fill]` cho giờ họp thật, người có mặt, lời từng người, quyết định.
+3. Viết lại Mục 2.4: chỉ giữ ACT-01 đến ACT-07 (các buổi đã diễn ra), mỗi dòng có trạng thái ngày 18/11 (ví dụ `SCRUM-78` chưa merge); bỏ ACT-08 đến ACT-10; viết lại Provenance Statement, bỏ câu "peer-reviewed".
+4. Thêm dòng `v0.5` vào Revision History và sửa số phiên bản tiêu đề.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng (chưa thực hiện tại thời điểm ghi log — cập nhật sau khi làm):
+- Họp Standup 02 thật (19/11, 22:00), rồi điền các ô `[to fill]` bằng giờ, người có mặt và nội dung thực tế; sau đó nâng phiên bản lên `v0.6`.
+- Đối chiếu **Mục 2.2 (Standup 01, 14/11)** với ghi chép buổi họp thật: AI chưa sửa mục này vì không biết thực tế đã nói gì. Một số chi tiết đáng nghi: "Axios interceptors" (dự án dùng `fetch`), "dev-mode mock server `dev:mock`" (lệnh này được tạo sau ngày 14/11), "Cloud OCR Service" là hệ thống ngoài của C4 Level 1.
+- Nhờ Duy review mục này (reviewer của `SCRUM-87`) và Hiển/Dự xác nhận cột bằng chứng của mình.
+- Tự đọc lại diff trước khi merge.
+
+### Kiểm chứng đã thực hiện:
+- `git fetch` rồi so với `origin/main` (`0831048`): danh sách PR đã merge (#84, #87, #88, #89, #90, #91, #93, #94, #95, #96, #97, #99, #100, #101, #103), nhánh `feat/070-reviews-frontend` chưa merge và xung đột với `main` ở `MyAccountPage.tsx` (kiểm bằng `git merge-tree`).
+- `grep` controller của backend: không có endpoint `.../recipes/{id}/cooksnaps`.
+- `git diff --check`: không có lỗi khoảng trắng.
+- Chưa chạy lại test (chỉ sửa tài liệu).
