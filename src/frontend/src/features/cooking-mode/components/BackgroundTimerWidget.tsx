@@ -59,7 +59,7 @@ export function BackgroundTimerWidget({
           type="button"
           onClick={onDismiss}
           aria-label="Ẩn tiện ích"
-          className="rounded p-1 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
+          className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-1 text-stone-400 hover:bg-stone-100 hover:text-stone-600 active:scale-95 transition dark:hover:bg-stone-800 dark:hover:text-stone-300"
         >
           ✕
         </button>
@@ -89,7 +89,7 @@ export function BackgroundTimerWidget({
         <button
           type="button"
           onClick={onReturnToCooking}
-          className="rounded-xl bg-orange-600 px-3 py-2 text-xs font-bold text-white shadow hover:bg-orange-700 active:scale-95 transition"
+          className="min-h-[44px] rounded-xl bg-orange-600 px-3.5 py-2 text-xs font-bold text-white shadow hover:bg-orange-700 active:scale-95 transition"
         >
           {COOKING_VI.returnToCooking}
         </button>

@@ -53,7 +53,10 @@ export function ForgotPasswordPage() {
           name="email"
           autoComplete="email"
           value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            if (error) setError(null);
+          }}
           error={error}
           maxLength={254}
         />
@@ -62,7 +65,12 @@ export function ForgotPasswordPage() {
             {strings.forgot.sentBody}
           </Banner>
         ) : null}
-        <button type="submit" className={sent ? 'wk-btn wk-btn--secondary wk-btn--block' : 'wk-btn wk-btn--primary wk-btn--block'} disabled={sending}>
+        <button
+          type="submit"
+          className={`${sent ? 'wk-btn wk-btn--secondary wk-btn--block' : 'wk-btn wk-btn--primary wk-btn--block'}${sending ? ' is-loading' : ''}`}
+          disabled={sending}
+          aria-busy={sending || undefined}
+        >
           {sending ? strings.forgot.sending : sent ? strings.forgot.resend : strings.forgot.submit}
         </button>
       </form>

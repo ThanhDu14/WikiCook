@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { COOKING_VI } from '../i18n/vi';
 
 export interface ExitSessionDialogProps {
@@ -20,6 +20,29 @@ export function ExitSessionDialog({
   onDiscardAll,
   onCancel,
 }: ExitSessionDialogProps): React.ReactElement | null {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const onCancelRef = useRef(onCancel);
+  useEffect(() => {
+    onCancelRef.current = onCancel;
+  });
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.activeElement as HTMLElement | null;
+    panelRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onCancelRef.current();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      previous?.focus?.();
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -29,7 +52,11 @@ export function ExitSessionDialog({
       aria-labelledby="exit-dialog-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
     >
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-white">
+      <div
+        ref={panelRef}
+        tabIndex={-1}
+        className="wk-dialog relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl focus:outline-none [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-white"
+      >
         <h2 id="exit-dialog-title" className="text-xl font-bold text-stone-900 [.theme-high-contrast-dark_&]:text-white">
           {COOKING_VI.exitDialogTitle}
         </h2>
@@ -64,6 +91,13 @@ export function ExitSessionDialog({
           </button>
         </div>
       </div>
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-hidden="true"
+        onClick={onCancel}
+        className="fixed inset-0 border-0 bg-transparent p-0 cursor-default"
+      />
     </div>
   );
 }

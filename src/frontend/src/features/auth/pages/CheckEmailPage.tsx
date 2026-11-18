@@ -98,13 +98,19 @@ export function CheckEmailPage() {
             {strings.checkEmail.openGmail}
           </a>
         ) : null}
-        <button type="button" className="wk-btn wk-btn--secondary" onClick={resend} disabled={sending || wait > 0}>
+        <button
+          type="button"
+          className={`wk-btn wk-btn--secondary${sending ? ' is-loading' : ''}`}
+          onClick={resend}
+          disabled={sending || wait > 0}
+          aria-busy={sending || undefined}
+        >
           {strings.checkEmail.resend}
         </button>
       </div>
       {wait > 0 ? <p className="wk-small wk-muted">{strings.checkEmail.resendIn(mmss(wait))}</p> : null}
       <p>
-        <Link className="wk-link" to={loginLink}>
+        <Link className="wk-link" to={loginLink} style={{ minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>
           {strings.checkEmail.toLogin}
         </Link>
       </p>

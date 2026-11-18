@@ -68,7 +68,12 @@
   --duration-fast: 120ms;
   --duration-base: 200ms;
   --duration-slow: 300ms;
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-slow: 280ms;
   --easing: cubic-bezier(0.2,0,0,1);
+  --ease-out: cubic-bezier(.2,.8,.2,1);
+  --ease-in-out: cubic-bezier(.4,0,.2,1);
   --content-max: 1200px;
   --reading-max: 720px;
   color-scheme: light;

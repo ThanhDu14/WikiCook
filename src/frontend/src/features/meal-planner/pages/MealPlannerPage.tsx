@@ -113,7 +113,18 @@ export function MealPlannerPage() {
       )}
 
       {!online && <OfflineNotice onRetry={retry} />}
-      {online && plan.status === 'loading' && <p className="wk-muted">{vi.loading}</p>}
+      {online && plan.status === 'loading' && (
+        <div className="sx-stack" style={{ gap: 12 }} aria-busy="true">
+          <p className="wk-muted" role="status">
+            {vi.loading}
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-ds-3">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="wk-skel" style={{ height: 140 }} />
+            ))}
+          </div>
+        </div>
+      )}
       {online && plan.status === 'error' && (
         <div className="wk-state wk-state--error" role="alert">
           <div className="wk-state__art">

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import type { InstructionStep, IngredientSnapshot, IngredientRowId } from '../domain/sessionModel';
 import { COOKING_VI } from '../i18n/vi';
 
@@ -19,6 +19,29 @@ export function IngredientDrawer({
   checkedRowIds,
   onToggleIngredient,
 }: IngredientDrawerProps): React.ReactElement | null {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.activeElement as HTMLElement | null;
+    panelRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onCloseRef.current();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      previous?.focus?.();
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const hasStepMapping = step.ingredientRowIds && step.ingredientRowIds.length > 0;
@@ -35,7 +58,11 @@ export function IngredientDrawer({
       aria-label={drawerTitle}
       className="fixed inset-0 z-40 flex justify-end bg-black/50 backdrop-blur-sm"
     >
-      <div className="flex h-full w-full max-w-md flex-col bg-white shadow-2xl transition-transform [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-yellow-200">
+      <div
+        ref={panelRef}
+        tabIndex={-1}
+        className="wx-drawer relative z-10 flex h-full w-full max-w-md flex-col bg-white shadow-2xl transition-transform focus:outline-none [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-yellow-200"
+      >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-stone-200 p-4 [.theme-high-contrast-dark_&]:border-yellow-500">
           <h2 className="text-lg font-bold text-stone-900 [.theme-high-contrast-dark_&]:text-yellow-200">{drawerTitle}</h2>
@@ -43,7 +70,7 @@ export function IngredientDrawer({
             type="button"
             onClick={onClose}
             aria-label="Đóng danh sách nguyên liệu"
-            className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 [.theme-high-contrast-dark_&]:text-yellow-200 [.theme-high-contrast-dark_&]:hover:bg-yellow-950"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-stone-500 hover:bg-stone-100 active:scale-95 transition [.theme-high-contrast-dark_&]:text-yellow-200 [.theme-high-contrast-dark_&]:hover:bg-yellow-950"
           >
             ✕
           </button>
@@ -112,6 +139,13 @@ export function IngredientDrawer({
           )}
         </div>
       </div>
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-hidden="true"
+        onClick={onClose}
+        className="fixed inset-0 border-0 bg-transparent p-0 cursor-default"
+      />
     </div>
   );
 }

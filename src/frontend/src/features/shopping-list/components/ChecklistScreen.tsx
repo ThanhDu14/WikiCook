@@ -1,4 +1,4 @@
-import { useCallback, useState, type KeyboardEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useShoppingList } from '../hooks/useShoppingList';
 import { formatQuantity } from '../services/format';
@@ -48,7 +48,7 @@ function EditableTitle({ title, onSave }: { title: string; onSave: (title: strin
           type="button"
           onClick={() => setDraft(title)}
           title="Bấm để đổi tên"
-          style={{ font: 'inherit', color: 'inherit', background: 'none', border: 0, padding: 0, cursor: 'text', textAlign: 'left' }}
+          style={{ font: 'inherit', color: 'inherit', background: 'none', border: 0, padding: 0, minHeight: 44, cursor: 'text', textAlign: 'left' }}
         >
           {title}
         </button>
@@ -110,7 +110,7 @@ function AislePanel({
               type="button"
               className="wk-item__text"
               onClick={() => onOpen(item)}
-              style={{ background: 'none', border: 0, padding: 0, color: 'inherit', textAlign: 'left', cursor: 'pointer' }}
+              style={{ background: 'none', border: 0, padding: '6px 0', minHeight: 44, color: 'inherit', textAlign: 'left', cursor: 'pointer' }}
             >
               <span className="wk-item__name">{item.displayName}</span>
               {source && <span className="wk-item__src">{source}</span>}
@@ -129,7 +129,22 @@ export function ChecklistScreen() {
   const [localChecked, setLocalChecked] = useState<Record<string, boolean>>({});
   const [adding, setAdding] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuTriggerRef = useRef<HTMLButtonElement>(null);
+  const menuContainerRef = useRef<HTMLDivElement>(null);
+  const menuFirstItemRef = useRef<HTMLButtonElement>(null);
   const [confirmArchive, setConfirmArchive] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    menuFirstItemRef.current?.focus();
+    const onMouseDown = (event: MouseEvent) => {
+      if (!menuContainerRef.current?.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onMouseDown);
+    return () => document.removeEventListener('mousedown', onMouseDown);
+  }, [menuOpen]);
   const [archiving, setArchiving] = useState(false);
   const [opened, setOpened] = useState<{ item: ShoppingListItem; aisleName: string } | null>(null);
 
@@ -201,8 +216,9 @@ export function ChecklistScreen() {
           <p className="wk-eyebrow">Danh sách đi chợ</p>
           <EditableTitle key={list.title} title={list.title} onSave={rename} />
         </div>
-        <div className="sx-row" style={{ flexWrap: 'wrap', position: 'relative' }}>
+        <div ref={menuContainerRef} className="sx-row" style={{ flexWrap: 'wrap', position: 'relative' }}>
           <button
+            ref={menuTriggerRef}
             className="wk-icon-btn"
             type="button"
             aria-label="Tùy chọn"
@@ -218,9 +234,15 @@ export function ChecklistScreen() {
               tabIndex={-1}
               className="wx-panel"
               style={{ position: 'absolute', right: 0, top: 'calc(100% + 8px)', zIndex: 10, gap: 4, padding: 8, minWidth: 220 }}
-              onKeyDown={(e) => e.key === 'Escape' && setMenuOpen(false)}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  setMenuOpen(false);
+                  menuTriggerRef.current?.focus();
+                }
+              }}
             >
               <button
+                ref={menuFirstItemRef}
                 role="menuitem"
                 className="wk-btn wk-btn--ghost wk-btn--sm"
                 type="button"
@@ -334,7 +356,7 @@ export function ChecklistScreen() {
             </div>
           </div>
           <div className="wx-panel">
-            <Link className="wk-link wk-small" to="/shopping-list/history">
+            <Link className="wk-link wk-small" to="/shopping-list/history" style={{ minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>
               Lịch sử mua sắm
             </Link>
           </div>
@@ -355,6 +377,8 @@ export function ChecklistScreen() {
             <button
               className={`wk-btn wk-btn--primary${archiving ? ' is-loading' : ''}`}
               type="button"
+              disabled={archiving}
+              aria-busy={archiving || undefined}
               onClick={() => void doArchive()}
             >
               Lưu trữ

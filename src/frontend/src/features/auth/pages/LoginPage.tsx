@@ -115,7 +115,10 @@ export function LoginPage() {
           name="email"
           autoComplete="username"
           value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: '' }));
+          }}
           error={fieldErrors.email}
           maxLength={254}
         />
@@ -124,7 +127,10 @@ export function LoginPage() {
           name="password"
           autoComplete="current-password"
           value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={(event) => {
+            setPassword(event.target.value);
+            if (fieldErrors.password) setFieldErrors((prev) => ({ ...prev, password: '' }));
+          }}
           error={fieldErrors.password}
           showLabel={strings.fields.showPassword}
           hideLabel={strings.fields.hidePassword}
@@ -134,11 +140,16 @@ export function LoginPage() {
             <input type="checkbox" checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} />
             {strings.fields.rememberMe}
           </label>
-          <Link className="wk-link" to="/forgot-password">
+          <Link className="wk-link" to="/forgot-password" style={{ minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>
             {strings.login.forgot}
           </Link>
         </div>
-        <button type="submit" className="wk-btn wk-btn--primary wk-btn--block" disabled={submitting}>
+        <button
+          type="submit"
+          className={`wk-btn wk-btn--primary wk-btn--block${submitting ? ' is-loading' : ''}`}
+          disabled={submitting}
+          aria-busy={submitting || undefined}
+        >
           {submitting ? strings.login.submitting : strings.login.submit}
         </button>
       </form>

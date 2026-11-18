@@ -233,14 +233,20 @@ export function SearchResultsPage() {
             )}
 
           {data && data.totalItems > 0 && (
-            <>
+            <div
+              aria-busy={loading || undefined}
+              style={{
+                opacity: loading ? 0.6 : 1,
+                transition: 'opacity var(--motion-fast) var(--ease-out)',
+              }}
+            >
               <ResultsList items={data.items} />
               <Pagination
                 currentPage={data.page}
                 totalPages={data.totalPages}
                 onPageChange={handlePageChange}
               />
-            </>
+            </div>
           )}
         </div>
       </div>

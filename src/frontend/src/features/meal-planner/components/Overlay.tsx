@@ -30,10 +30,26 @@ export function Overlay({ title, onClose, children, variant, role = 'dialog', pa
     const previous = document.activeElement as HTMLElement | null;
     const first = panel.current?.querySelector<HTMLElement>('[data-autofocus], input, button');
     first?.focus();
+    const focusableSelector =
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.stopPropagation();
         close.current();
+        return;
+      }
+      if (event.key !== 'Tab' || !panel.current) return;
+      const focusable = Array.from(panel.current.querySelectorAll<HTMLElement>(focusableSelector));
+      if (focusable.length === 0) return;
+      const head = focusable[0];
+      const tail = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey && (active === head || active === panel.current)) {
+        event.preventDefault();
+        tail.focus();
+      } else if (!event.shiftKey && active === tail) {
+        event.preventDefault();
+        head.focus();
       }
     };
     const node = panel.current;

@@ -119,7 +119,7 @@ export function SlotCard({ day, meal, item, onOpen, dense = false, onReplace, on
           className="wk-icon-btn wk-icon-btn--plain"
           aria-label={vi.options(item.recipeName)}
           onClick={onOpen}
-          style={touch ? { width: 44, height: 44, minHeight: 44 } : { width: 32, height: 32, minHeight: 32, background: 'var(--color-surface)' }}
+          style={touch ? { width: 44, height: 44, minHeight: 44 } : { width: 44, height: 44, minHeight: 44, background: 'var(--color-surface)' }}
         >
           <Icon name="more" size={16} />
         </button>

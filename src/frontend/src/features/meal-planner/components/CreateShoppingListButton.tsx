@@ -48,8 +48,9 @@ export function CreateShoppingListButton({ weekStart, availableItemCount, onErro
     <>
       <button
         type="button"
-        className="wk-btn wk-btn--secondary wk-btn--sm"
+        className={`wk-btn wk-btn--secondary wk-btn--sm${busy ? ' is-loading' : ''}`}
         disabled={disabled || busy}
+        aria-busy={busy || undefined}
         aria-describedby={disabled ? hintId : undefined}
         title={disabled ? vi.shoppingNeedsDish : undefined}
         onClick={() => void start()}

@@ -160,7 +160,7 @@ export function AiGenerateDialog({ weekStart, options, initial = null, avoidReci
               </div>
             </section>
 
-            <section className="sx-stack">
+            <section className="sx-stack" style={{ paddingTop: 12, borderTop: '1px solid var(--color-border)' }}>
               <p className="wk-eyebrow">{strings.thisTime}</p>
 
               <div className="wk-field">
@@ -215,23 +215,31 @@ export function AiGenerateDialog({ weekStart, options, initial = null, avoidReci
                 </div>
               </div>
 
-              <div className="sx-row" style={{ gap: 8, flexWrap: 'wrap' }}>
-                <label className="wk-check">
-                  <input type="checkbox" checked={limitTime} onChange={(e) => setLimitTime(e.target.checked)} />
-                  {strings.maxCookTime}
-                </label>
-                <input
-                  type="number"
-                  className="wk-input"
-                  aria-label={strings.maxCookTimeInput}
-                  min={MIN_COOK_TIME}
-                  step={5}
-                  value={maxCookTime}
-                  disabled={!limitTime}
-                  style={{ width: 88 }}
-                  onChange={(e) => setMaxCookTime(Number(e.target.value))}
-                />
-                <span>{strings.maxCookTimeSuffix}</span>
+              <div className="sx-stack" style={{ gap: 6 }}>
+                <div className="sx-row" style={{ gap: 8, flexWrap: 'wrap' }}>
+                  <label className="wk-check">
+                    <input type="checkbox" checked={limitTime} onChange={(e) => setLimitTime(e.target.checked)} />
+                    {strings.maxCookTime}
+                  </label>
+                  <input
+                    type="number"
+                    className="wk-input"
+                    aria-label={strings.maxCookTimeInput}
+                    aria-invalid={limitTime && (!Number.isFinite(maxCookTime) || maxCookTime < MIN_COOK_TIME) ? true : undefined}
+                    min={MIN_COOK_TIME}
+                    step={5}
+                    value={maxCookTime}
+                    disabled={!limitTime}
+                    style={{ width: 88 }}
+                    onChange={(e) => setMaxCookTime(Number(e.target.value))}
+                  />
+                  <span>{strings.maxCookTimeSuffix}</span>
+                </div>
+                {limitTime && (!Number.isFinite(maxCookTime) || maxCookTime < MIN_COOK_TIME) && (
+                  <p className="wk-error" role="alert">
+                    Thời gian nấu tối đa từ {MIN_COOK_TIME} phút trở lên.
+                  </p>
+                )}
               </div>
 
               {defaults.preferredCuisineIds.length > 0 && (

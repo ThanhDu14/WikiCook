@@ -118,7 +118,7 @@ export function HomePage() {
               <h2 id="newest-heading">{strings.home.newRecipesTitle}</h2>
             </div>
             <div className="sx-row flex-wrap">
-              <Link to="/search?sort=NEWEST" className="wk-link">
+              <Link to="/search?sort=NEWEST" className="wk-link inline-flex min-h-[44px] items-center">
                 {strings.home.viewAll}
               </Link>
             </div>

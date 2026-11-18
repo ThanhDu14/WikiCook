@@ -88,7 +88,12 @@ function EditProfileForm({ profile, onReload }: { profile: MyProfile; onReload: 
           <h1>{strings.edit.title}</h1>
         </div>
         <div className="sx-row">
-          <button type="submit" className="wk-btn wk-btn--primary" disabled={saving || !dirty}>
+          <button
+            type="submit"
+            className={`wk-btn wk-btn--primary${saving ? ' is-loading' : ''}`}
+            disabled={saving || !dirty}
+            aria-busy={saving || undefined}
+          >
             {saving ? strings.edit.saving : strings.edit.save}
           </button>
         </div>
@@ -110,7 +115,10 @@ function EditProfileForm({ profile, onReload }: { profile: MyProfile; onReload: 
           label={strings.edit.displayName}
           name="displayName"
           value={displayName}
-          onChange={(event) => setDisplayName(event.target.value)}
+          onChange={(event) => {
+            setDisplayName(event.target.value);
+            if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: undefined }));
+          }}
           error={errors.displayName}
           helper={strings.edit.displayNameHelper}
           counter={`${codePointLength(stripped(displayName))}/${NAME_MAX}`}
@@ -123,7 +131,10 @@ function EditProfileForm({ profile, onReload }: { profile: MyProfile; onReload: 
             className="wk-textarea"
             id="profile-bio"
             value={bio}
-            onChange={(event) => setBio(event.target.value)}
+            onChange={(event) => {
+              setBio(event.target.value);
+              if (errors.bio) setErrors((prev) => ({ ...prev, bio: undefined }));
+            }}
             aria-invalid={errors.bio ? true : undefined}
             aria-describedby="profile-bio-help"
           />

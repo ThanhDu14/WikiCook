@@ -81,9 +81,13 @@ export function ResetPasswordPage() {
   if (phase === 'checking') {
     return (
       <AuthShell>
-        <p role="status" className="wk-muted">
-          {strings.verify.checking}
-        </p>
+        <div className="sx-stack" style={{ gap: 12 }} aria-busy="true">
+          <p role="status" className="wk-muted">
+            {strings.verify.checking}
+          </p>
+          <div className="wk-skel" style={{ height: 48 }} />
+          <div className="wk-skel" style={{ height: 48 }} />
+        </div>
       </AuthShell>
     );
   }
@@ -120,7 +124,10 @@ export function ResetPasswordPage() {
           name="newPassword"
           autoComplete="new-password"
           value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={(event) => {
+            setPassword(event.target.value);
+            if (errors.newPassword) setErrors((prev) => ({ ...prev, newPassword: '' }));
+          }}
           error={errors.newPassword}
           showLabel={strings.fields.showPassword}
           hideLabel={strings.fields.hidePassword}
@@ -131,13 +138,21 @@ export function ResetPasswordPage() {
           name="confirmPassword"
           autoComplete="new-password"
           value={confirm}
-          onChange={(event) => setConfirm(event.target.value)}
+          onChange={(event) => {
+            setConfirm(event.target.value);
+            if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: '' }));
+          }}
           error={errors.confirmPassword}
           showLabel={strings.fields.showPassword}
           hideLabel={strings.fields.hidePassword}
         />
         <Banner tone="info" icon="shield" title={strings.reset.logoutNote} />
-        <button type="submit" className="wk-btn wk-btn--primary wk-btn--block" disabled={saving}>
+        <button
+          type="submit"
+          className={`wk-btn wk-btn--primary wk-btn--block${saving ? ' is-loading' : ''}`}
+          disabled={saving}
+          aria-busy={saving || undefined}
+        >
           {saving ? strings.reset.submitting : strings.reset.submit}
         </button>
       </form>

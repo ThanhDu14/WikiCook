@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { strings } from '@/features/search/strings.vi';
 import type { RecipeCard as RecipeCardType } from '@/features/search/types';
 
@@ -74,7 +75,9 @@ export function RecipeCard({
         <h3
           className={`wk-card__title ${featured ? 'min-[901px]:text-[26px] min-[901px]:leading-[32px] max-[900px]:text-[17px] max-[900px]:leading-[22px]' : ''}`.trim()}
         >
-          {recipe.title}
+          <Link to={`/recipes/${recipe.id}`} state={{ title: recipe.title }} style={{ color: 'inherit' }}>
+            {recipe.title}
+          </Link>
         </h3>
         <div className="wk-meta">
           <span>

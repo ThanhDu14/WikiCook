@@ -12,7 +12,22 @@ export interface AuthRouteHandle {
 
 function Dialog({ onLater, onSignIn }: { onLater: () => void; onSignIn: () => void }) {
   const signIn = useRef<HTMLButtonElement>(null);
-  useEffect(() => signIn.current?.focus(), []);
+  const onLaterRef = useRef(onLater);
+  useEffect(() => {
+    onLaterRef.current = onLater;
+  });
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null;
+    signIn.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onLaterRef.current();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      previous?.focus?.();
+    };
+  }, []);
   return (
     <div className="wk-scrim" role="presentation" style={{ position: 'fixed', zIndex: 60 }}>
       <div className="wk-dialog" role="alertdialog" aria-modal="true" aria-labelledby="expired-title" aria-describedby="expired-body">
