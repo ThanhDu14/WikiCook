@@ -1216,7 +1216,7 @@ Bạn hay đọc và tiến hành ghi sprint-04-report.md của SCRUM 68 giúp t
 
 ### Phần sinh viên cần tự làm, hiệu chỉnh & kiểm chứng (chưa thực hiện tại thời điểm ghi log — cập nhật sau khi làm):
 - Đọc lại diff và xác nhận phạm vi trên với Hiển (reviewer `SCRUM-76`), nhất là việc bọc `RequireAuth` cho `/meal-planner`, `/shopping-list*` trước khi backend `SCRUM-74` merge.
-- Chạy `npm run e2e` (Chromium của Playwright đã được cài trong phiên nhưng chưa chạy e2e); chạy giao diện thật với backend của Hiển (`SCRUM-74`, `SCRUM-75`) để kiểm tra luồng đăng ký → đăng nhập → hồ sơ → hồ sơ ăn uống và lưu vào PostgreSQL.
+- Chạy `npm run e2e` (Chromium của Playwright đã được cài trong phiên nhưng chưa chạy e2e); chạy giao diện thật với backend của Hiển (`SCRUM-74`, `SCRUM-75`) để kiểm tra luồng đăng ký → đăng nhập → hồ sơ → hồ sơ ăn uống và lưu vào PostgreSQL. **Cập nhật 18/11/2026:** giao diện đã được chạy với backend thật và `npm run e2e` đã chạy (kết quả và bản sửa lỗi ở Mục 30).
 - Tự mở app cạnh file thiết kế để xem lại; AI chỉ so ảnh chụp ở 1440 px, chưa so bản mobile 360 px (các file `AU*`, `PF*` không có tiền tố `W-`).
 - Điền hash commit/PR vào dòng "Minh chứng" sau khi commit (đã điền ngày 18/11/2026).
 
