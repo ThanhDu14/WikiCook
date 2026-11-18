@@ -88,7 +88,12 @@ export function ReportDialog({ target, onSubmit, onClose }: ReportDialogProps) {
           <button className="wk-btn wk-btn--secondary" type="button" onClick={onClose}>
             {strings.report.cancel}
           </button>
-          <button className="wk-btn wk-btn--primary" type="submit" disabled={submitting}>
+          <button
+            className={`wk-btn wk-btn--primary${submitting ? ' is-loading' : ''}`}
+            type="submit"
+            disabled={submitting}
+            aria-busy={submitting || undefined}
+          >
             {strings.report.submit}
           </button>
         </div>

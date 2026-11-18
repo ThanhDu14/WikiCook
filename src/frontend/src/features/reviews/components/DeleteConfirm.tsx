@@ -38,7 +38,13 @@ export function DeleteConfirm({ onConfirm, onCancel }: DeleteConfirmProps) {
         <button className="wk-btn wk-btn--secondary" type="button" onClick={onCancel}>
           {strings.deleteConfirm.cancel}
         </button>
-        <button className="wk-btn wk-btn--danger" type="button" disabled={deleting} onClick={() => void confirm()}>
+        <button
+          className={`wk-btn wk-btn--danger${deleting ? ' is-loading' : ''}`}
+          type="button"
+          disabled={deleting}
+          aria-busy={deleting || undefined}
+          onClick={() => void confirm()}
+        >
           {strings.deleteConfirm.confirm}
         </button>
       </div>

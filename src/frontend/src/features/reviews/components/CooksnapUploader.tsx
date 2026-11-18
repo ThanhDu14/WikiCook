@@ -149,7 +149,7 @@ function RemoveButton({ label, onClick }: { label: string; onClick: () => void }
       className="wk-icon-btn wk-icon-btn--overlay"
       aria-label={label}
       onClick={onClick}
-      style={{ position: 'absolute', top: 6, right: 6, width: 32, height: 32 }}
+      style={{ position: 'absolute', top: 2, right: 2, width: 44, height: 44 }}
     >
       <Icon name="close" />
     </button>
