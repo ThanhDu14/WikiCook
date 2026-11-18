@@ -1279,3 +1279,42 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - `git diff --check`: 0 lỗi whitespace / định dạng bảng Markdown.
 - Kiểm tra hiển thị bảng Markdown trên môi trường GitHub / VS Code preview: các bảng Round-Robin và Traceability Matrix hiển thị sắc nét, căn chỉnh đúng chuẩn.
 - Đối chiếu vé Jira: Khớp hoàn toàn với mô tả, tiêu chí nghiệm thu và hạn chót (Nov 19, 2026) của ticket `SCRUM-87`.
+
+---
+
+## Mục 28: Soạn `Changes.md` cho PA4 và cập nhật ghi chú Google trong Use-Case Specification (`SCRUM-84`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Sonnet 5.5 (`claude-sonnet-5-5`) |
+| **Thời gian truy cập cụ thể** | 2026-11-18, khoảng 21:00 – 22:30 (Giờ Việt Nam, UTC+7); giờ là ước lượng theo phiên làm việc |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-84` — `[Documentation] Author Single Changes.md for PA4 Revisions (Part A)`; một phần nhỏ chỉnh tài liệu của `SCRUM-71` theo sự cho phép của chủ tài liệu (Duy) |
+| **Tài liệu / spec liên quan** | `Changes.md`, `docs/requirements/use-case-model.md` (`v0.2` → `v2.0`), `docs/requirements/use-case-specification.md` (`v1.4` → `v2.0`), `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 3, `SCRUM-69`), `tasks/PA4/pa4-guide.md`, `tasks/PA4/wikicook-pa4-team-assignment.md` |
+| **Mục đích sử dụng** | Soạn file `Changes.md` duy nhất cho Phần A: trạng thái TA feedback PA3, bảng Before/After/Lý do theo từng mục của Use-Case Model và theo từng use case của Use-Case Specification, danh sách use case mới, câu hỏi mở. Sau đó sửa các ghi chú "Google chưa có" đã lỗi thời sau PR #97 trong Use-Case Specification. |
+| **Nhánh Git** | `docs/SCRUM-84-changes-md` (tạo từ `origin/main` tại `0831048`) |
+| **Minh chứng (Evidence)** | Commit `e97bca0` (`Changes.md`), `c070eca` (ghi chú Google trong Use-Case Specification), `746f3c6` (dòng ghi lại thay đổi này trong `Changes.md`), commit của mục log này; đã push lên `origin/docs/SCRUM-84-changes-md`. PR: điền số PR khi mở. |
+
+### Prompt đã sử dụng:
+```text
+Push nhánh sửa lỗi và soạn PR title/description đi, sau đó là soạn nháp changes.md và tiến hành ở 1 branch khác giúp tôi
+Spec của Duy có đoạn đã lỗi thời sau PR #97: các ghi chú "Google OAuth chưa có" ... giờ không còn đúng vì Google đã merge. ... Hãy sửa lại đoạn này luôn tôi đã được cho phép sửa dưới quyền của Duy
+Hiện tôi còn thiếu những SCRUM nào , và SCRUM nào của tôi cần hoàn thành
+ok bạn hãy triển khai theo ý bạn nhé
+```
+
+### Nội dung do AI sinh ra:
+1. Đọc diff `git diff 744df48 HEAD` (Use-Case Model) và `git diff 00bbaac HEAD` (Use-Case Specification), tách theo mục và theo use case, rồi soạn `Changes.md`: Mục 0 (TA feedback: không nhận được, kiểm 12/11 bởi Duy), Section A (16 dòng Before/After/Lý do + 4 use case mới + câu hỏi mở), Section B (22 dòng theo use case, câu hỏi mở đã đóng và thêm mới, giới hạn của bản sửa), Section C (đối chiếu hai tài liệu), Section D (phần không đổi).
+2. Sửa 4 chỗ trong Use-Case Specification: ghi chú Section 9, trạng thái triển khai của `UC-011-03` và `UC-011-04`, và `[OQ-011-09]` mục 3. Nội dung mới: Google sign-in đã merge (PR #97), chỉ `intent=reauth` chưa làm (task T149a bị chặn bởi T149b), nên `AF 3.6`, `AF 3.7`, `AF 4.2` vẫn chưa chạy được.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng (chưa thực hiện tại thời điểm ghi log — cập nhật sau khi làm):
+- Đọc lại toàn bộ `Changes.md` và đối chiếu từng dòng với hai tài liệu gốc; AI chỉ đọc diff, chưa đọc từng use case của Section 12 (`070`) và Section 10 (`011`) cho tới từng bước.
+- Nhờ Duy review `Changes.md` (reviewer `SCRUM-84`, hạn 20/11) và xác nhận các thay đổi nhỏ trong tài liệu `SCRUM-71`; nhờ Chung xác nhận phần `070` (reviewer Section 12).
+- Kiểm tra lại TA feedback trên Moodle trước 23/11 và sửa Mục 0 nếu có.
+- Khi PR frontend `070` (`SCRUM-78`) được merge, cập nhật câu "chưa merge" ở mục B.4.
+
+### Kiểm chứng đã thực hiện:
+- Đối chiếu số liệu với `use-case-model.md` (Revision History, mục 5 và 6) và `use-case-specification.md` (Revision History, `[OQ-011-09]`, `[OQ-070-07]`–`[OQ-070-18]`): 64 → 68 use case, 4 ID mới, không đánh số lại.
+- Đọc mã nguồn `GoogleAuthorizationRequestResolver` và `GoogleStartController` để xác nhận `intent=reauth` trả `?reauth=cancelled` và không tạo phiên.
+- Script Python kiểm tra mọi bảng trong `Changes.md` có số cột đồng nhất; đường dẫn liên kết tồn tại.
+- Chưa chạy test (chỉ sửa tài liệu).
