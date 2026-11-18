@@ -1295,13 +1295,10 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 | **Nhánh Git** | `docs/SCRUM-87-standup-02-template` (tạo từ `origin/main` tại `0831048`) |
 | **Minh chứng (Evidence)** | Commit `173d5ac` trên nhánh trên (PR sẽ mở sau; điền số PR khi có). Chưa push tại thời điểm ghi log. |
 
-### Prompt đã sử dụng:
-```text
-Tiến độ hiện tại của PA4 tới đâu, tóm gọn báo cáo lẹ của từng thành viên giúp tôi
-Hiện tôi đã merge 1 số PR, bạn hãy kiểm tra hiện tại tiến độ của PA4, và tiến hành commit bản sửa của bạn
-Hiện tôi còn thiếu những SCRUM nào , và SCRUM nào của tôi cần hoàn thành
-ok bạn hãy triển khai theo ý bạn nhé
-```
+### Prompt đã sử dụng (tóm lược đã biên tập cho rõ ràng; giữ nguyên ý định, không phải nguyên văn từng câu):
+1. Sau khi nhóm merge thêm một số PR, kiểm tra tiến độ PA4 hiện tại trên `main` và báo cáo ngắn gọn theo từng thành viên.
+2. Liệt kê các SCRUM còn thiếu của PM và những SCRUM cần hoàn thành.
+3. Đồng ý để AI triển khai các việc AI đề xuất: sửa biên bản Standup 02, push nhánh và soạn nội dung PR.
 
 ### Nội dung do AI sinh ra:
 1. Phát hiện Mục 2.3 (Standup 02, "19/11/2026, 22:00 – 22:35, 5/5 có mặt") được ghi trước ngày họp (commit ngày 16/11, hôm nay là 18/11), kèm các khẳng định không có trên `main`: C4 Level 2/3 và Deployment Diagram "đã xong", frontend `070` "đã xong", endpoint `POST /api/v1/recipes/{id}/cooksnaps` (không có trong controller), Code Freeze "19/11 23:59" (lịch PA4 ghi 18/11 23:59).
