@@ -22,7 +22,7 @@ Hướng dẫn chạy và kiểm chứng tính năng sau khi implement. Chi ti�
 | `WIKICOOK_APPEAL_CONTACT` | `support@wikicook.test` | Địa chỉ khiếu nại trong email đình chỉ, cấm; bỏ trống (kể cả `WIKICOOK_APPEAL_CONTACT=`) thì dùng `WIKICOOK_MAIL_FROM` |
 | `WIKICOOK_AUTH_SIGN_IN_IP_LIMIT` | Bỏ trống | Số lần thử đăng nhập mỗi IP trong 15 phút, mặc định 100; chỉ nâng khi chạy k6 (mục 6) |
 | `WIKICOOK_BOOTSTRAP_ADMIN_EMAIL`, `…_PASSWORD` | `admin@wikicook.test`, tự đặt | Chỉ tạo khi chưa có Administrator đang hoạt động |
-| `WIKICOOK_GOOGLE_CLIENT_ID`, `…_SECRET` | Bỏ trống hoặc client thật | Bỏ trống: nút Google đưa về thông báo không khả dụng; redirect URI: `{PUBLIC_BASE_URL}/api/v1/auth/oauth2/callback/google` |
+| `WIKICOOK_GOOGLE_CLIENT_ID`, `…_SECRET` | Bỏ trống hoặc client thật | Bỏ trống (cả hai): nút Google đưa về `/login?error=google_unavailable`, đăng nhập email không đổi. Có cả hai: Google Cloud Console → Credentials → OAuth client ID loại *Web application*, thêm **đúng** redirect URI `{PUBLIC_BASE_URL}/api/v1/auth/oauth2/callback/google`, dán id và secret vào `.env`, khởi động lại backend. Không commit secret. Test trong CI dùng Google giả (`FakeGoogle`), không cần credential |
 
 Seed test: tài khoản `member@wikicook.test` đã xác minh, `contributor@`, `moderator@`,
 `unverified@wikicook.test` (đăng ký bằng `POST /auth/register`, rồi đổi vai trò bằng tài khoản
