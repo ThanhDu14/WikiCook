@@ -193,7 +193,7 @@ The first column of evidence was checked on **18/11/2026** against `origin/main`
 | Member | Evidence in the repository on 18/11/2026 (checked, not reported by the member) | Completed since Standup 01 `[to fill]` | Plan for the next cycle `[to fill]` | Blockers / risks `[to fill]` |
 | :--- | :--- | :--- | :--- | :--- |
 | **Mai Văn Hiển** (`@MaiHien3507`) | Merged: `SCRUM-74` auth backend (PR #89), password reset (PR #96), Google sign-in and closure token (PR #97; its `intent=reauth` variant is not built); `SCRUM-75` profile backend (PR #95, #97); `SCRUM-80` Tech Stack and C4 Level 1 (PR #91, #94). `SCRUM-81` (C4 Level 2, backend Level 3): `architecture.md` Section 4 still says "Reserved for Part C". | | | |
-| **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | Merged: `SCRUM-69` (PR #100), `SCRUM-70` Use-Case Model `v2.0` (PR #99), `SCRUM-71` Use-Case Specification `v2.0` (PR #101), AI log entries (PR #103). `SCRUM-78` (frontend `070`): on the branch `feat/070-reviews-frontend`, **not merged**; the branch conflicts with `main` in `MyAccountPage.tsx`. | | | |
+| **Nguyễn Đức Duy** (`@DucDuyNguyen15-IT`) | Merged: `SCRUM-69` (PR #100), `SCRUM-70` Use-Case Model `v2.0` (PR #99), `SCRUM-71` Use-Case Specification `v2.0` (PR #101), AI log entries (PR #103). `SCRUM-78` (frontend `070`) merged by PR #98 (18/11, 21:44); UX pass (PR #102). | | | |
 | **Lê Quốc Hưng** (`@LqHung06`) | Merged: `SCRUM-76` frontend `010` + `011` (PR #90). Open: a fix for the verification page (`fix/SCRUM-76-verify-email-once`) and the draft of `Changes.md` (`SCRUM-84`, branch `docs/SCRUM-84-changes-md`); both waiting for review. | | | |
 | **Trần Nguyễn Công Chung** (`@itzchugnn`) | Merged: `SCRUM-77` review and Cooksnap backend with migration `V501` (PR #93, 16/11). No later commit found; no test report or demo video (`SCRUM-79`), AI usage report (`SCRUM-85`) or QA audit (`SCRUM-86`) found on `main`. | | | |
 | **Nguyễn Thành Dự** (`@ThanhDu14`) | Merge manager of the PRs above. No deliverable of `SCRUM-82` (frontend Level 3), `SCRUM-83` (Deployment Diagram), `SCRUM-89` (Compose and seed check) or `SCRUM-90` (git log, PDF, ZIP) found on `main`. | | | |
@@ -216,7 +216,7 @@ The matrix lists the action items of the ceremonies that took place (Planning an
 | **ACT-04** | Meeting 2 (Standup 01) | Implement Backend Auth | Mai Văn Hiển | 17/11/2026 | `SCRUM-74` | **Merged:** PR #89, #96, #97. Google `intent=reauth` is not built. |
 | **ACT-05** | Meeting 2 (Standup 01) | Implement Frontend Auth & Profile UI | Lê Quốc Hưng | 18/11/2026 | `SCRUM-76` | **Merged:** PR #90. A fix for the verification page is waiting for review. Reviewer approval (Hiển) not recorded here. |
 | **ACT-06** | Meeting 2 (Standup 01) | Implement Backend Reviews & Cooksnap API | Trần Nguyễn Công Chung | 18/11/2026 | `SCRUM-77` | **Merged:** PR #93. |
-| **ACT-07** | Meeting 2 (Standup 01) | Implement Frontend Reviews & Cooksnap UI | Nguyễn Đức Duy | 18/11/2026 | `SCRUM-78` | **Open:** branch `feat/070-reviews-frontend` not merged; conflict with `main`. |
+| **ACT-07** | Meeting 2 (Standup 01) | Implement Frontend Reviews & Cooksnap UI | Nguyễn Đức Duy | 18/11/2026 | `SCRUM-78` | **Merged:** PR #98 (18/11/2026). |
 
 #### 2.4.1. Provenance Statement
 - The minutes of **Meeting 2 (Standup 01)** were written under `SCRUM-87` by Lê Quốc Hưng. The review by Nguyễn Đức Duy is pending.
