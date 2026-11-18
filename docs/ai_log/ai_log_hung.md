@@ -1295,13 +1295,11 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 | **Nhánh Git** | `docs/SCRUM-84-changes-md` (tạo từ `origin/main` tại `0831048`) |
 | **Minh chứng (Evidence)** | Commit `e97bca0` (`Changes.md`), `c070eca` (ghi chú Google trong Use-Case Specification), `746f3c6` (dòng ghi lại thay đổi này trong `Changes.md`), commit của mục log này; đã push lên `origin/docs/SCRUM-84-changes-md`. PR: điền số PR khi mở. |
 
-### Prompt đã sử dụng:
-```text
-Push nhánh sửa lỗi và soạn PR title/description đi, sau đó là soạn nháp changes.md và tiến hành ở 1 branch khác giúp tôi
-Spec của Duy có đoạn đã lỗi thời sau PR #97: các ghi chú "Google OAuth chưa có" ... giờ không còn đúng vì Google đã merge. ... Hãy sửa lại đoạn này luôn tôi đã được cho phép sửa dưới quyền của Duy
-Hiện tôi còn thiếu những SCRUM nào , và SCRUM nào của tôi cần hoàn thành
-ok bạn hãy triển khai theo ý bạn nhé
-```
+### Prompt đã sử dụng (tóm lược đã biên tập cho rõ ràng; giữ nguyên ý định, không phải nguyên văn từng câu):
+1. Đẩy nhánh sửa lỗi của `SCRUM-76` lên remote, soạn tiêu đề và mô tả cho PR đó; sau đó soạn bản nháp `Changes.md` cho PA4 và làm trên một nhánh riêng.
+2. Cập nhật các ghi chú đã lỗi thời về Google OAuth trong `use-case-specification.md` (`UC-011-03` AF 3.6 – 3.7, `UC-011-04` AF 4.2, `[OQ-011-09]` mục 3) sau khi PR #97 được merge. Người dùng xác nhận đã được chủ tài liệu (Nguyễn Đức Duy) cho phép chỉnh sửa tài liệu này.
+3. Liệt kê các SCRUM còn thiếu của PM và những việc cần hoàn thành; sau đó cho phép AI triển khai theo đề xuất của AI.
+4. Viết lại mô tả PR bằng tiếng Anh và biên tập lại phần Prompt trong AI log cho chuyên nghiệp.
 
 ### Nội dung do AI sinh ra:
 1. Đọc diff `git diff 744df48 HEAD` (Use-Case Model) và `git diff 00bbaac HEAD` (Use-Case Specification), tách theo mục và theo use case, rồi soạn `Changes.md`: Mục 0 (TA feedback: không nhận được, kiểm 12/11 bởi Duy), Section A (16 dòng Before/After/Lý do + 4 use case mới + câu hỏi mở), Section B (22 dòng theo use case, câu hỏi mở đã đóng và thêm mới, giới hạn của bản sửa), Section C (đối chiếu hai tài liệu), Section D (phần không đổi).
