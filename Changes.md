@@ -160,7 +160,7 @@ Sections 4.2, 4.4 – 4.6, 4.8 and 4.9 (features `020`, `040`, `050`, `060`, `08
 ## SECTION D — WHAT WAS NOT CHANGED IN PA4
 
 - Vision Document `v2.0` (the four new IDs are not yet in its §8; model issue 7).
-- Flows of the use cases of `030`, `031` and `040` (Sections 1, 2, 14 – 15 of the specification); see the scope note of B.4.
+- Flows of the use cases of `030`, `031` and `040` (Sections 14, 15 and 1 of the specification); see the scope note of B.4.
 - Use-case IDs: none renumbered or removed.
 - Section 13 of the specification (feature `100`) and Sections 1 – 8, 11, 14 – 17 (see Section B).
 - Prototype screens and `full-schema.md`.
