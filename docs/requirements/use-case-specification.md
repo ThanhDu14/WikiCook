@@ -2167,9 +2167,9 @@ When the ingredient the author needs is not in the shared catalogue, the author 
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 > [!NOTE]
-> **Sources:** `specs/010-user-authentication-roles/spec.md` (US1–US5, FR-001 – FR-026 including `FR-022a`, `FR-022b` and `FR-024a`, NFR-001 – NFR-009, SC-001 – SC-007; Clarifications up to the session of 2026-11-09), `specs/010-user-authentication-roles/contracts/openapi.yaml` (endpoints under `/api/v1`, status codes and error codes quoted in the flows) and `contracts/integration.md`, [Vision Document](vision-document.md) §5.1 and §7.4, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.1 (`SCRUM-49`) and the project constitution (`.specify/memory/constitution.md`, Principles IV and V). Actors follow the model: **Guest** is a visitor without a session; **Email Service** and **Google OAuth** are secondary systems. `UC-010-04` extends `UC-010-01`. Role-based access (`010` US3) has no use case of its own in the model: it is carried by the actor generalization (model §2.2), by `UC-100-03` (role changes, suspensions and bans) and by the alternative flows `AF 2.9`, `AF 2.15` and `AF 2.16` below (see `[OQ-010-01]` in Section 9.3).
+> **Sources:** `specs/010-user-authentication-roles/spec.md` (US1–US5, FR-001 – FR-026 including `FR-022a`, `FR-022b` and `FR-024a`, NFR-001 – NFR-009, SC-001 – SC-007; Clarifications up to the session of 2026-11-09), `specs/010-user-authentication-roles/contracts/openapi.yaml` (endpoints under `/api/v1`, status codes and error codes quoted in the flows) and `contracts/integration.md`, [Vision Document](vision-document.md) §5.1 and §7.4, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.1 (`SCRUM-49`) and the project constitution (`.specify/memory/constitution.md`, Principles IV and V). Actors follow the model: **Guest** is a visitor without a session; **Email Service** and **Google OAuth** are secondary systems. `UC-010-04` extends `UC-010-01`. `UC-010-05` Sign Out *(new in v2.0)* has the primary actor **Member**. Role-based access (`010` US3) has no use case of its own in the model: it is carried by the actor generalization (model §2.2), by `UC-100-03` (role changes, suspensions and bans) and by the alternative flows `AF 2.9`, `AF 2.15` and `AF 2.16` below (see `[OQ-010-01]` in Section 9.3).
 >
-> **v2.0 revision note (SCRUM-71):** Spec 010 was clarified on 2026-11-06, 2026-11-07 and 2026-11-09, after the PA3 baseline (v1.2) of this section. Every flow that was marked *"Proposed, pending clarification"* or that pointed to an open question now follows the approved rule, and each step that calls the backend names the contract endpoint and the error code it returns. The backend is not implemented yet (`SCRUM-74`), so these references describe the approved contract, not running code. The interface shows every message in Vietnamese (NFR-006); English wording in the flows gives the meaning only.
+> **v2.0 revision note (SCRUM-71):** Spec 010 was clarified on 2026-11-06, 2026-11-07 and 2026-11-09, after the PA3 baseline (v1.2) of this section. Every flow that was marked *"Proposed, pending clarification"* or that pointed to an open question now follows the approved rule, and each step that calls the backend names the contract endpoint and the error code it returns. The backend of spec 010 has since been merged into `main` (`SCRUM-74`) except Google sign-in; `UC-010-01` – `UC-010-04` were written against the approved contract and were not re-checked line by line against that code in v2.0, while the new `UC-010-05` was written from the code. The interface shows every message in Vietnamese (NFR-006); English wording in the flows gives the meaning only.
 
 ### UC-010-01: Register Account & Verify Email
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
@@ -2322,14 +2322,14 @@ Lets a visitor create a WikiCook account with a display name, an email address, 
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-010-02`
-- **Use Case Name:** Sign In with Email and Password, Stay Signed In and Sign Out
+- **Use Case Name:** Sign In with Email and Password and Stay Signed In
 
 #### 2. Actor(s)
 - **Primary Actor:** **Guest** — a registered visitor who is not signed in; after success the actor acts as **Member** (or the role stored on the account: Contributor, Moderator, Administrator).
 - **Secondary Actor:** **Email Service** — sends the lockout notification (AF 2.3).
 
 #### 3. Description
-Lets a registered user authenticate with an email and a password so that the personalized features (dietary profile, meal planner, shopping list, collections, reviews and recipe submission) become available. The system applies one generic error for a wrong email or password, locks email-and-password sign-in for an email for 15 minutes after 5 consecutive failures (registered or not), limits attempts per IP address, refuses suspended and banned accounts, offers "Remember me", returns the user to the page they asked for, and ends the session on sign-out. The use case also covers the sign-in prompt shown to a Guest who presses a Member-only action, the access-denied page, the in-app role-change notice and what happens when a session ends while the user is on a page.
+Lets a registered user authenticate with an email and a password so that the personalized features (dietary profile, meal planner, shopping list, collections, reviews and recipe submission) become available. The system applies one generic error for a wrong email or password, locks email-and-password sign-in for an email for 15 minutes after 5 consecutive failures (registered or not), limits attempts per IP address, refuses suspended and banned accounts, offers "Remember me", and returns the user to the page they asked for; signing out is `UC-010-05`. The use case also covers the sign-in prompt shown to a Guest who presses a Member-only action, the access-denied page, the in-app role-change notice and what happens when a session ends while the user is on a page.
 
 #### 4. Preconditions
 - The actor can reach the WikiCook web application over an encrypted connection (NFR-002).
@@ -2419,11 +2419,7 @@ Lets a registered user authenticate with an email and a password so that the per
     2. A dialog asks the actor to sign in again; unsaved form content is kept and leaving the page warns first, so nothing is silently lost.
     3. On an offline-first page (shopping list `040`, cooking mode `050`) no dialog blocks the page: the page keeps its local data and shows a non-blocking notice (spec 040 FR-020).
 - **AF 2.13: Sign Out:**
-  - *Trigger:* A signed-in user chooses "Sign out" (US1 AS4, FR-010).
-  - *Steps:*
-    1. The browser sends `POST /api/v1/auth/logout`; the system ends the session of this device immediately and answers `204`. Repeating the call has no further effect.
-    2. Pressing the browser Back button does not show member-only content, and member-only pages are no longer reachable.
-    3. Sessions on other devices stay active (Edge Cases "Simultaneous sessions").
+  - *Moved in v2.0:* signing out is now the use case `UC-010-05` Sign Out, because its actor is a signed-in Member (Use-Case Model v2.0 §4.1).
 - **AF 2.14: Account Suspended or Banned While Signed In:**
   - *Trigger:* A Moderator or an Administrator suspends the account, or an Administrator bans it, while the user has an active session (`UC-100-03`; Edge Cases "Suspended / banned account", FR-022, FR-024).
   - *Steps:*
@@ -2461,13 +2457,12 @@ Lets a registered user authenticate with an email and a password so that the per
 - **Success:** A session exists for this device with the correct lifetime; the failure counter is zero; an audit entry of the success is stored; the actor sees the requested page or the home page with the display name.
 - **Failure (AF 2.1 – AF 2.5):** No session exists; a failure is counted and audited; sign-in for the email may be locked. A banned account has received a closure token valid for 10 minutes and nothing else.
 - **Failure without counting (AF 2.6, AF 2.18):** No session exists and the failure counter is unchanged.
-- **Sign-out (AF 2.13):** The session is ended on this device only.
 - **Role change (AF 2.15):** The new role applies from the next request; the notice is stored until it is acknowledged once.
 
 #### 8. Special Requirements
 - **Security:** Passwords are never stored, logged or shown (NFR-001); error messages and response time do not reveal whether an email is registered (NFR-003); transport is encrypted (NFR-002); Spring Security and BCrypt are used (constitution Principle IV); permissions are enforced by the server on every request, not by hiding buttons (FR-021; constitution Principle IV).
 - **Auditability:** Sign-in successes and failures, lockouts and role changes are audited and retained for at least 90 days (FR-025, NFR-008); an unregistered email is never stored in readable form in an audit entry.
-- **Session lifetime:** The access token is short-lived (15 minutes in the contract) and every signed-in request is checked against the stored session and account, which is how sign-out, suspension and role changes take effect by the next request (FR-010, FR-024).
+- **Session lifetime:** The access token is short-lived (15 minutes in the contract) and every signed-in request is checked against the stored session and account, which is how sign-out (`UC-010-05`), suspension and role changes take effect by the next request (FR-010, FR-024).
 - **Performance:** 95% of sign-in attempts complete in under 2 seconds with up to 100 concurrent users (NFR-004); a returning user can sign in in under 15 seconds (SC-002).
 - **Usability and accessibility:** Usable from 360 px wide, Vietnamese by default, keyboard-only operation, visible labels and field-level announcements (NFR-006, NFR-007).
 - **Reliability:** Zero accounts can be accessed after 5 wrong passwords within 15 minutes (SC-005) and 100% of protected actions are refused for unauthorized roles (SC-004).
@@ -2701,17 +2696,80 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 
 ---
 
+### UC-010-05: Sign Out
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+> *New in v2.0 (`SCRUM-71`).* Use-Case Model v2.0 §4.1 adds this use case because its primary actor is a signed-in Member, not a Guest; in v1.4 it was `AF 2.13` of `UC-010-02`. Checked against `AuthController.logout`, `SessionService.logout`, `ClientHeaderFilter` and `SessionJwtAuthenticationConverter` on `main` (`SCRUM-74`).
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-010-05`
+- **Use Case Name:** Sign Out of This Device
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — any signed-in user (Contributor, Moderator and Administrator inherit it).
+- **Secondary Actor:** None.
+
+#### 3. Description
+Lets a signed-in user end the session of the current device immediately. Sessions on other devices stay signed in. After signing out, member-only content is no longer reachable on this device, also through the browser Back button (US1 AS4, FR-010, Edge Cases "Simultaneous sessions").
+
+#### 4. Preconditions
+- The actor is signed in on this device (`UC-010-02` or `UC-010-04`); the browser holds the refresh cookie of the session.
+
+#### 5. Basic Flow
+1. **Choose Sign Out:** The actor opens the "Tôi" page and chooses "Đăng xuất".
+2. **Send Request:** The browser sends `POST /api/v1/auth/logout` with the header `X-WikiCook-Client: web`; the refresh cookie of this session is sent with it. No request body is needed.
+3. **End Session:** The server finds the session of this cookie, ends it at once and records an audit entry `SIGNED_OUT` (FR-010, FR-025).
+4. **Answer:** The server answers `204` and clears the refresh cookie.
+5. **Show Signed-Out State:** The app discards the access token and shows the home page as a Guest.
+6. **Old Token Refused:** Every later request that still carries the access token of the ended session is refused with `401 UNAUTHENTICATED`, because each signed-in request is checked against the stored session; pressing Back does not show member-only content (US1 AS4).
+
+#### 6. Alternative Flows
+- **AF 5.1: Other Devices Stay Signed In:**
+  - *Trigger:* At Step 3, the user has sessions on other devices (Edge Cases "Simultaneous sessions").
+  - *Steps:*
+    1. Only the session of this cookie ends; the other sessions continue. Other sessions end only through a password reset (`UC-010-03`), a password change or set (`UC-011-03`), a suspension or ban (`UC-100-03`) or an account deletion (`UC-011-04`).
+- **AF 5.2: Session Already Ended or No Cookie:**
+  - *Trigger:* At Step 2, the cookie is missing, unknown or belongs to a session that has already ended, for example after a second press or in a second tab.
+  - *Steps:*
+    1. The server changes nothing, writes no audit entry and still answers `204` with the cookie cleared; the call is idempotent (contract `logout`).
+- **AF 5.3: Client Header Missing:**
+  - *Trigger:* At Step 2, the request has no `X-WikiCook-Client` header, for example a request forged from another site.
+  - *Steps:*
+    1. The server answers `403 INVALID_CLIENT` and ends no session.
+
+#### 7. Postconditions
+- **Success:** The session of this device is ended and audited; the refresh cookie is cleared; sessions on other devices are unchanged.
+- **AF 5.2:** Nothing changes; the cookie is cleared.
+- **AF 5.3:** Nothing changes.
+
+#### 8. Special Requirements
+- **Security:** Signing out takes effect immediately (FR-010): the access token is short-lived and every signed-in request is checked against the stored session (see `UC-010-02` Special Requirements). The refresh token lives only in the cookie, and the custom header is the CSRF defence of the cookie endpoints (`ClientHeaderFilter`; spec 010 research R2).
+- **Auditability:** The audit entry contains the session id only (FR-025, NFR-008).
+- **Usability and accessibility:** "Đăng xuất" is reachable by keyboard and usable from 360 px (NFR-006, NFR-007).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1, "Đăng xuất"); the web pages of the profile area (for example `W-PF01-Me.dc.html`) show the same link in the side menu.
+- **Alternative Flows:** None needed; AF 5.1 – AF 5.3 show no own screen.
+- **UI Asset Gap for SCRUM-58:** None.
+- **Prototype Screenshots (SCRUM-58):**
+  - **"Tôi" page with "Đăng xuất" in the side menu (`W-PF01-Me`), the same screenshot as `UC-011-02`:**
+    - **Desktop Web View:**  
+      ![Basic_ProfileView Desktop](../assets/screenshots/use-cases/011-profile/UC011_02_Basic_ProfileView_desktop.png)
+
+---
+
 ### 9.1. Feature 010 (User Authentication & Roles) Traceability
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria | Vision Feature |
 | :---: | :--- | :---: | :--- | :--- | :---: | :---: |
 | **`UC-010-01`** | Register Account & Verify Email | `US2` (AS 1–6) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-006`, `FR-017`, `FR-026` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-006`, `NFR-007` | `SC-001`, `SC-003`, `SC-007` | §5.1 |
-| **`UC-010-02`** | Sign In with Email & Password | `US1` (AS 1–7); `US3` (AS 1–6, through `AF 2.9`, `AF 2.14` – `AF 2.16`); `US2` (AS 5) | `FR-006`, `FR-007`, `FR-008`, `FR-009`, `FR-010`, `FR-011`, `FR-012`, `FR-013`, `FR-020`, `FR-021`, `FR-022`, `FR-022a`, `FR-024`, `FR-024a`, `FR-025` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-004`, `NFR-005`, `NFR-006`, `NFR-007`, `NFR-008` | `SC-002`, `SC-004`, `SC-005`, `SC-007` | §5.1 |
+| **`UC-010-02`** | Sign In with Email & Password | `US1` (AS 1–3, 5–7); `US3` (AS 1–6, through `AF 2.9`, `AF 2.14` – `AF 2.16`); `US2` (AS 5) | `FR-006`, `FR-007`, `FR-008`, `FR-009`, `FR-011`, `FR-012`, `FR-013`, `FR-020`, `FR-021`, `FR-022`, `FR-022a`, `FR-024`, `FR-024a`, `FR-025` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-004`, `NFR-005`, `NFR-006`, `NFR-007`, `NFR-008` | `SC-002`, `SC-004`, `SC-005`, `SC-007` | §5.1 |
 | **`UC-010-03`** | Reset Forgotten Password | `US4` (AS 1–4) | `FR-002`, `FR-004`, `FR-012`, `FR-014`, `FR-015`, `FR-016`, `FR-017`, `FR-025` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-006`, `NFR-007` | `SC-006`, `SC-007` | §5.1 |
 | **`UC-010-04`** | Sign In with Google | `US5` (AS 1–3) | `FR-003`, `FR-009`, `FR-011`, `FR-012`, `FR-013`, `FR-018`, `FR-019`, `FR-025`, `FR-026` | `NFR-002`, `NFR-005` | `SC-007` | §5.1 |
+| **`UC-010-05`** | Sign Out *(new v2.0)* | `US1` (AS 4) | `FR-010`, `FR-025` | `NFR-006`, `NFR-007`, `NFR-008` | `SC-007` | §5.1 |
 
-*Verification:* User stories `US1`, `US2`, `US4` and `US5` and their 20 acceptance scenarios map to one use case each. `US3` (role-based access) has no dedicated use case in the Use-Case Model: its Guest scenario is `AF 2.9`, its permission scenarios are `AF 2.15` and `AF 2.16`, and role changes by an Administrator belong to `UC-100-03`. `FR-021`, `FR-022`, `FR-022a`, `FR-023` and the permission matrix are enforced by every Member-only use case in the model as a special requirement. `FR-023` (last active Administrator) and the Administrator-side part of `FR-022`, `FR-022a`, `FR-024a` and `FR-025` are performed through `UC-100-03`. The emails of `FR-024a` (account suspended or banned, suspension ended, ban lifted) are sent by spec 010 when a Moderator or Administrator acts through `UC-100-03` or when a suspension ends on schedule; `UC-010-02` shows their effect on a signed-in user (`AF 2.14`) and the in-app role-change notice (`AF 2.15`). `FR-022b` (shared wrong-password counter for re-authentication) is exercised by `UC-011-03`, `UC-011-04` and the Administrator actions of `UC-100-03`. See `[OQ-010-01]`.
+*Verification:* User stories `US1`, `US2`, `US4` and `US5` and their 20 acceptance scenarios map to one use case each, except `US1` AS4 (sign out), which maps to `UC-010-05` since v2.0. `US3` (role-based access) has no dedicated use case in the Use-Case Model: its Guest scenario is `AF 2.9`, its permission scenarios are `AF 2.15` and `AF 2.16`, and role changes by an Administrator belong to `UC-100-03`. `FR-021`, `FR-022`, `FR-022a`, `FR-023` and the permission matrix are enforced by every Member-only use case in the model as a special requirement. `FR-023` (last active Administrator) and the Administrator-side part of `FR-022`, `FR-022a`, `FR-024a` and `FR-025` are performed through `UC-100-03`. The emails of `FR-024a` (account suspended or banned, suspension ended, ban lifted) are sent by spec 010 when a Moderator or Administrator acts through `UC-100-03` or when a suspension ends on schedule; `UC-010-02` shows their effect on a signed-in user (`AF 2.14`) and the in-app role-change notice (`AF 2.15`). `FR-022b` (shared wrong-password counter for re-authentication) is exercised by `UC-011-03`, `UC-011-04` and the Administrator actions of `UC-100-03`. See `[OQ-010-01]`.
 
 ### 9.2. Prototype Screen Mapping & UI Asset Gaps (for SCRUM-58)
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
@@ -2740,8 +2798,9 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 | `UC-010-04` | AF 4.3 | *Gap 010-L* | Back on the sign-in page with a neutral "Google sign-in cancelled" message | **GAP** |
 | `UC-010-04` | AF 4.4 | *Gap 010-M* | Refusal: Google account has no verified email, with the suggestion to register by email | **GAP** |
 | `UC-010-04` | AF 4.7 | *Gap 010-N* | "Google sign-in is not available now", email sign-in still shown | **GAP** |
+| `UC-010-05` | Basic Flow (Step 1) | `PF01-Me.dc.html` | "Tôi" page with "Đăng xuất" | **Available** |
 
-*Note:* `AF 1.3` – `AF 1.8`, `AF 1.12` – `AF 1.15`, `AF 2.6`, `AF 2.8`, `AF 2.10` – `AF 2.11`, `AF 2.13` – `AF 2.14`, `AF 2.17` – `AF 2.19`, `AF 3.2` – `AF 3.3`, `AF 3.6` – `AF 3.10` and `AF 4.1` – `AF 4.2`, `AF 4.5` – `AF 4.6`, `AF 4.8` – `AF 4.10` are validation messages, redirects or background behaviour that reuse the screens above and need no separate screenshot.
+*Note:* `AF 1.3` – `AF 1.8`, `AF 1.12` – `AF 1.15`, `AF 2.6`, `AF 2.8`, `AF 2.10` – `AF 2.11`, `AF 2.14`, `AF 2.17` – `AF 2.19`, `AF 5.1` – `AF 5.3`, `AF 3.2` – `AF 3.3`, `AF 3.6` – `AF 3.10` and `AF 4.1` – `AF 4.2`, `AF 4.5` – `AF 4.6`, `AF 4.8` – `AF 4.10` are validation messages, redirects or background behaviour that reuse the screens above and need no separate screenshot.
 
 *Desktop variants:* every screen listed in this table also has a web variant named `W-<ID>` in the same folder (for example `W-AU02-Register.dc.html`). The mobile files are listed because the flows are written for the 360 px layout (constitution Principle V). `AU01` exists only as `W-AU01-Login.dc.html`.
 
@@ -2758,7 +2817,7 @@ Lets a visitor continue with a Google account that has a verified email. If no W
    - *Proposal:* Either keep this stance, or add a Brief use case `UC-010-05 Enforce Role-Based Access` to the model before the freeze on 02/11/2026.
    - *Owner:* Mai Văn Hiển with Nguyễn Đức Duy (`SCRUM-49`).
    - *Decision (30/10/2026, Mai Văn Hiển):* Keep. `AF 2.9`, `AF 2.15` and `AF 2.16` stay; Duy confirms during review.
-   - *Status (v2.0):* Still **open** at model level. Spec 010 still has no use case for `US3`; the stance is kept and `AF 2.14` (suspension or ban while signed in) now also carries part of `US3`. Whether to add `UC-010-05` is proposed to the owner of `use-case-model.md`, not decided here.
+   - *Status (v2.0):* Still **open** at model level. Spec 010 still has no use case for `US3`; the stance is kept and `AF 2.14` (suspension or ban while signed in) now also carries part of `US3`. *(18/11/2026)* Use-Case Model v2.0 gave the ID `UC-010-05` to **Sign Out**, not to role-based access; the stance of keeping `US3` inside `UC-010-02` and `UC-100-03` is unchanged (model §4.1).
 2. **`[OQ-010-02]` Lockout Details:**
    - *Issue:* The spec does not say whether a successful password reset ends an active lock, nor what the lock screen shows for an unregistered email (a lock message appears only for real accounts, which can reveal that the account exists and conflicts with `NFR-003`).
    - *Current Stance:* Unknown emails are counted and get the same lock screen (`AF 2.2`, `AF 2.3`).
