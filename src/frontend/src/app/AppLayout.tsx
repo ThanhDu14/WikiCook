@@ -132,9 +132,12 @@ function BottomNav() {
 export function AppLayout() {
   return (
     <div className="wx-page min-h-screen">
+      <a href="#main-content" className="wk-skip-link">
+        Bỏ qua đến nội dung chính
+      </a>
       <Header />
       {/* under 900px the bottom navigation covers the last 64px */}
-      <main className="flex-1 pb-[88px] pt-ds-6 min-[901px]:pb-ds-6">
+      <main id="main-content" tabIndex={-1} className="flex-1 pb-[88px] pt-ds-6 min-[901px]:pb-ds-6 focus:outline-none">
         {/* every page in the 1264px column of the screens (W-MP01 too) */}
         <div className="wx-wrap">
           <EmailVerificationBanner />
