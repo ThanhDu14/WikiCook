@@ -1187,18 +1187,14 @@ Bạn hay đọc và tiến hành ghi sprint-04-report.md của SCRUM 68 giúp t
 | **Tài liệu / spec liên quan** | `specs/010-user-authentication-roles/` (`spec.md`, `tasks.md`, `contracts/openapi.yaml`, `contracts/integration.md`), `specs/011-user-profile-dietary/` (cùng bộ), `tasks/PA4/pa4-guide.md`, `docs/analysis-and-design/ui-ux/screens/` (`W-AU01…W-AU09`, `W-PF01…W-PF04`) |
 | **Mục đích sử dụng** | Viết giao diện React 18 + TypeScript cho đăng ký, đăng nhập, đăng xuất, bảo vệ route theo vai trò, hồ sơ cá nhân và hồ sơ ăn uống; token JWT gắn tự động qua `src/frontend/src/shared/api/client.ts`; viết bộ test Vitest + React Testing Library + msw bám theo `tasks.md` của hai spec. |
 | **Nhánh Git** | `feature/SCRUM-76-frontend-auth-profile` (tạo từ `origin/main` tại `b18cd2e`) |
-| **Minh chứng (Evidence)** | **Chưa commit tại thời điểm ghi log** (thay đổi đang ở working tree; điền hash commit/PR sau khi commit). Kết quả chạy lệnh nằm ở phần kiểm chứng bên dưới. |
+| **Minh chứng (Evidence)** | Commit `2298962` (mock API dev), `68bec30` (mục log này), `79abd14` (giao diện Auth + Hồ sơ) trên nhánh `feature/SCRUM-76-frontend-auth-profile`, đã vào `main` qua PR #90 (merge `4538a7a`). Kết quả chạy lệnh nằm ở phần kiểm chứng bên dưới. |
 
-### Prompt đã sử dụng:
-```text
-Bạn hãy vào folder WikiCook và các mục có liên quan đến PA4 nằm trong tasks/PA4 và guide_tasks/PA4 , đọc để hiểu context của PA4 hiện tại
-
-Tôi cần làm SCRUM-76 như trên ảnh [ảnh chụp mô tả task SCRUM-76 trên Jira], và nhớ cập nhật vào docs/ai_log/ai_log_hung.md giúp tôi nhé
-
-Bạn dựa vào ảnh hay html nào của design ui/ux và làm sao để tôi giao diện bạn đã code và đối chiếu với mẫu ui/ux có trong docs
-
-Hiện trạng thái page local hiện tại của các giao diện liên quan chưa bám sát UI/UX đã thiết kế từ trước , bạn hãy kiểm tra lại và đối chiếu đảm bảo thiết kế giống 100% giao diện màu sắc , nếu sai logic thì dẫn đến hiển thị tương ứng giúp tôi [ảnh chụp cột trái của trang đăng nhập: 3 ô màu không có icon]
-```
+### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
+1. Đọc các tài liệu PA4 trong `tasks/PA4` và `guide_task/PA4` để nắm ngữ cảnh hiện tại của PA4.
+2. Hiện thực `SCRUM-76` theo mô tả trên Jira (kèm ảnh chụp mô tả task): giao diện đăng ký, đăng nhập, hồ sơ và hồ sơ ăn uống cho nhóm 1 (`010` + `011`), và ghi lại việc dùng AI vào `docs/ai_log/ai_log_hung.md`.
+3. Cho biết đã dựa vào file thiết kế UI/UX nào trong `docs/analysis-and-design/ui-ux/screens` và cách đối chiếu giao diện đã code với bản thiết kế.
+4. Chạy giao diện cục bộ để xem (`npm run dev`) và cho biết địa chỉ từng trang.
+5. Đối chiếu lại các trang đã làm với thiết kế để giống 100% về màu sắc và bố cục (kèm ảnh chụp chỗ sai: cột trái trang đăng nhập có ba ô màu trống); nếu khác về logic thì giao diện phải hiển thị tương ứng.
 
 ### Nội dung do AI sinh ra:
 1. **Lớp dùng chung** (`src/frontend/src/shared/`): `api/session.ts` (access token chỉ giữ trong bộ nhớ, xóa khóa `wk.accessToken` cũ trong `localStorage`); `api/client.ts` (gắn `Authorization: Bearer` trừ các route công khai `/auth/*`, header `X-WikiCook-Client: web`, `refreshSession()` một lần tại một thời điểm, gặp 401 thì refresh rồi gửi lại đúng một lần, sự kiện `auth:refreshed` / `auth:expired` / `auth:restricted`, `api.postForm`); `api/safeRedirect.ts`; `ui/TextField.tsx`, `ui/PasswordField.tsx`, `ui/useFieldIds.ts`.
@@ -1228,9 +1224,9 @@ Hiện trạng thái page local hiện tại của các giao diện liên quan c
 
 ### Phần sinh viên cần tự làm, hiệu chỉnh & kiểm chứng (chưa thực hiện tại thời điểm ghi log — cập nhật sau khi làm):
 - Đọc lại diff và xác nhận phạm vi trên với Hiển (reviewer `SCRUM-76`), nhất là việc bọc `RequireAuth` cho `/meal-planner`, `/shopping-list*` trước khi backend `SCRUM-74` merge.
-- Chạy `npm run e2e` (Chromium của Playwright đã được cài trong phiên nhưng chưa chạy e2e); chạy giao diện thật với backend của Hiển (`SCRUM-74`, `SCRUM-75`) để kiểm tra luồng đăng ký → đăng nhập → hồ sơ → hồ sơ ăn uống và lưu vào PostgreSQL.
+- Chạy `npm run e2e` (Chromium của Playwright đã được cài trong phiên nhưng chưa chạy e2e); chạy giao diện thật với backend của Hiển (`SCRUM-74`, `SCRUM-75`) để kiểm tra luồng đăng ký → đăng nhập → hồ sơ → hồ sơ ăn uống và lưu vào PostgreSQL. **Cập nhật 18/11/2026:** giao diện đã được chạy với backend thật và `npm run e2e` đã chạy (kết quả và bản sửa lỗi ở Mục 30).
 - Tự mở app cạnh file thiết kế để xem lại; AI chỉ so ảnh chụp ở 1440 px, chưa so bản mobile 360 px (các file `AU*`, `PF*` không có tiền tố `W-`).
-- Điền hash commit/PR vào dòng "Minh chứng" sau khi commit.
+- Điền hash commit/PR vào dòng "Minh chứng" sau khi commit (đã điền ngày 18/11/2026).
 
 ---
 
