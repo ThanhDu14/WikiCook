@@ -1,132 +1,164 @@
-# CHANGES.md — PA3 REVISIONS (PROJECT PLAN & VISION DOCUMENT)
+# CHANGES.md — PA4 REVISIONS (USE-CASE MODEL & USE-CASE SPECIFICATION)
 
 **Course:** CS300 - CSC13002 - Introduction to Software Engineering  
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Team:** Group 05  
-**Submission:** Project Assignment 3 (`PA3-Group05.zip`)  
-**File Status:** Finalized and Approved by Owner: Lê Quốc Hưng (`SCRUM-61`, 06/11/2026). Section A is final for Project Plan `v2.0` (`SCRUM-59` draft, `SCRUM-67` final; reviewed and signed off by Lê Quốc Hưng); section B is final for Vision Document `v2.0` (`SCRUM-60`, `SCRUM-47`). Core consistency checks between plan and vision are closed (Items 1–5); item 7 (NFR-REL-10 wording vs code) was closed on 07/11/2026; release item 6 (tag `v0.5.0`) is closed when the tag is pushed during release packaging.
+**Submission:** Project Assignment 4 (`PA4-Group05.zip`) — Part A (5 points)  
+**Jira Task:** `SCRUM-84` (author Lê Quốc Hưng, reviewer Nguyễn Đức Duy)  
+**File Status:** **Draft of 18/11/2026, not yet reviewed.** The review by Nguyễn Đức Duy and the re-check of the TA feedback before the Moodle deadline (23/11/2026) are still to be done; this file is updated if either changes a row.
 
-This is the single change log for the two documents revised after PA2. Each section lists every change against the PA2 baseline, with the document, the location and the content of the change.
+This is the single change log for the two documents revised for Part A of PA4. Each section lists every change against the PA3 baseline, with the document, the location, the content of the change, the reason and the Jira task. The change log of PA3 (Project Plan and Vision Document) is not repeated here; it stays in the PA3 package and in the repository history (`Changes.md` at commit `00bbaac`, 07/11/2026).
+
+| Section | Document | Baseline (PA3) | Revision (PA4) | Jira |
+| :---: | :--- | :--- | :--- | :---: |
+| **A** | [`docs/requirements/use-case-model.md`](docs/requirements/use-case-model.md) | `v0.2` (29/10/2026, commit `744df48`) | `v2.0` (13/11/2026) | `SCRUM-70` |
+| **B** | [`docs/requirements/use-case-specification.md`](docs/requirements/use-case-specification.md) | `v1.4` (03/11/2026 header; last PA3 commit `00bbaac`, 07/11/2026) | `v2.0` (18/11/2026) | `SCRUM-71` |
+
+The Vision Document is **not** revised in PA4. The two places where it no longer agrees with the new use cases are recorded as open issues (A.3, issue 7), not changed here.
 
 ---
 
-## SECTION A — PROJECT PLAN (`docs/management/project-plan.md`)
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed & Approved by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+## 0. SOURCE OF THE CHANGES (PA3 TA FEEDBACK STATUS, `SCRUM-69`)
 
-**Baseline:** `v1.4` (24/10/2026, PA2 close-out). **This revision:** `v2.0` final (06/11/2026, `SCRUM-67`), built on the `v2.0-draft` (04/11/2026, `SCRUM-59`). The `SCRUM-67` due date was 05/11/2026 (Sprint 03 Report, Sec 1.2); the final revision was completed on 06/11/2026, one day late, inside the 06–07/11 buffer (see A.4, decision 5).
+| Item | Result |
+| :--- | :--- |
+| Channels checked | Moodle submission page of PA3 and the team's own channels (group chat, GitHub PR comments). |
+| Checked by / last check | Nguyễn Đức Duy, 12/11/2026. To be checked again before submission on 23/11/2026. |
+| Feedback found | **None.** No written or verbal feedback on the PA3 Use-Case Model or Use-Case Specification had been published to the team at the time of the check. |
+| Consequence | **No feedback was invented.** Every change below comes from the team's own self-audit (Sprint 04 Report, Section 3: audit checklist items 1 – 9), not from the TA. If feedback arrives before submission, it is recorded in Sprint 04 Report Section 3.1 and in this file with its source and date, as a separate change. |
 
-### A.1. Source of the changes (TA feedback status)
+**What the self-audit compared.** The PA3 baseline was compared with (1) the Vision Document `v2.0`; (2) the Spec Kit artifacts of the two Part E groups on `main` — `specs/010-user-authentication-roles/` and `specs/011-user-profile-dietary/` (PR #84), `specs/070-review-cooksnap/` (PR #87, #88) — and the RBAC matrix of `specs/100-admin-moderation/`; (3) the backend merged into `main`: authentication (`SCRUM-74`, PR #89, #96), profile (`SCRUM-75`, PR #95) and reviews (`SCRUM-77`, PR #93).
 
-- **No TA feedback for PA2 was found in the repository** (checked `docs/`, the Sprint 02 and Sprint 03 reports, the git history for `SCRUM-47`, and all remote branches) as of 04/11/2026. `SCRUM-47` (Nguyễn Đức Duy) confirmed on 06/11/2026 that **no TA feedback for PA2 was received**; the status is recorded in the Sprint 03 Report (Sec 3.2) and in section B.1.
-- Following Decision 2 of the Sprint 03 Planning meeting, **no feedback was invented**. Every change below comes from an internal consistency audit of the plan against the Sprint 03 plan and report, the Vision `v2.0`, the Use-Case Model and Specifications, and the code on `main`.
-- Because no feedback arrived, there were **no late blocker points** to triage under the phased rule of Decision 2. The same status is now stated in the plan itself (Sec 1.2 and ASM-03, rows 16 and 17).
-- If feedback from the TA arrives before the Moodle deadline (00:00, 08/11/2026), only blocker points are fixed and added to this section; the rest goes to PA4.
+**Reason codes used in the tables.** `R1` = spec clarified after the baseline (010 and 011: sessions of 06/11, 07/11, 09/11/2026); `R2` = flows rewritten against the approved `contracts/openapi.yaml` or the merged code; `R3-n` = item *n* of the audit checklist (Sprint 04 Report 3.3); `R4` = consistency between the two documents.
+
+---
+
+## SECTION A — USE-CASE MODEL (`docs/requirements/use-case-model.md`)
+
+*Performed by: Nguyễn Đức Duy (`DucDuyNguyen15-IT`) | Reviewer named in the document: Mai Văn Hiển (`MaiHien3507`) | PR #99*
+
+**Baseline:** `v0.2` (29/10/2026), 64 use cases. **This revision:** `v2.0` (13/11/2026), 68 use cases: 4 added with the next free IDs, **no existing ID renumbered or removed** (R3-6: the 64 existing IDs are identical in the model and in the specification).
+
+Sections 4.2, 4.4 – 4.6, 4.8 and 4.9 (features `020`, `040`, `050`, `060`, `080`, `090`) are **unchanged**.
+
+### A.1. Use cases added
+
+| New ID | Title | Primary actor | Where it was before (PA3) | Reason |
+| :--- | :--- | :--- | :--- | :--- |
+| `UC-010-05` | Sign Out | Member | Alternative flow `AF 2.13` of `UC-010-02` (specification only; not in the model) | R3-1: `010` US1 AS4 had no use case of its own. The actor is a signed-in Member, not a Guest. |
+| `UC-011-06` | View Public Profile | Guest | Step 10 and `AF 2.6` of `UC-011-02` | R3-1: `011` US2 AS6, FR-005. Primary actor differs from the profile owner's. |
+| `UC-070-07` | Mark Review as Helpful | Member | Step 6 of `UC-070-04` | R3-1: `070` US4 AS6, FR-012, FR-022. |
+| `UC-070-08` | Update Recipe Rating Summary *(included)* | — (a Trigger instead of a primary actor) | Repeated inside `UC-070-01`, `UC-070-03`, `UC-070-05` and `UC-100-02` | R3-1: `070` FR-009, FR-024 (rating recalculation) had no use case of its own. |
 
 ### A.2. Changes by section
 
-Rows 1–15 come from the draft (`SCRUM-59`); where `SCRUM-67` changed the same place again, the *After* column shows the final text and marks the `SCRUM-67` part. Rows 16–21 are new in `SCRUM-67`; row 22 records the sign-off fix of 07/11/2026.
-
-| # | Plan section | Before (PA2 `v1.4`) | After (PA3 `v2.0`) | Reason | Task |
-| :---: | :--- | :--- | :--- | :--- | :---: |
-| 1 | Title block | Version `1.4`, date 24/10/2026. | Version `2.0` (Sprint 03 Final Revision, Second Edition), date 06/11/2026. The draft had `2.0-draft`, 04/11/2026. | New revision. | `SCRUM-59`, `SCRUM-67` |
-| 2 | Metadata matrix | No attribution line under the header. | Attribution line added, plus a note listing the subsections that carry their own PA3 line. *`SCRUM-67`:* list extended from 2.3, 3.2, 4.1, 4.3, 4.4 to Revision History, 1.2, 2.2, 2.3, 3.2, 4.1, 4.3, 4.4, 5.4 and Appendix B. | Every section, and every subsection revised in a later Sprint, needs Performed by / Reviewed by / Edited by right after the header (DoD gate 3, row 15). | `SCRUM-59`, `SCRUM-67` |
-| 3 | Revision History and Appendix B | Last entry `v1.4`; no attribution line under either header. | Entry `v2.0-draft` (04/11/2026) kept as history; *`SCRUM-67`:* new entry `v2.0` (06/11/2026) in both tables, stating the late finalisation, and an attribution line under both headers. | Traceability of this revision. | `SCRUM-59`, `SCRUM-67` |
-| 4 | 2.3 Project Deliverables | Three Sprint 3 rows dated "Nov 13, 2026 *(Est.)*", status *Planned*, scope "Use Case Specifications & UI Wireframes", "Core Skeleton". | Dates **Nov 05, 2026** (Moodle: Nov 08, 00:00), status *In Progress*. Rows list the real PA3 deliverables and owners: revised Plan/Vision + `Changes.md`; Use-Case Model, Specifications and prototype screenshots; walking skeleton and feature 040 slice (`Build v0.5`). *`SCRUM-67`:* Use-Case Model row states "10 features, 64 use cases"; new row **Sprint 03 Report (Weekly Scrum Report) & AI Usage Report** (Lê Quốc Hưng, Trần Nguyễn Công Chung). | Old date and old scope no longer matched the Sprint 03 plan; Part F (`SCRUM-63`, `SCRUM-64`) had no deliverable row although Sprint 1 and Sprint 2 reports do. | `SCRUM-59`, `SCRUM-67` |
-| 5 | 3.2 Risk Management | Only `RSK-01`–`RSK-05` and `RSK-S2-01`–`RSK-S2-04`. | Intro updated; new table 3.2.3 with **`RSK-S3-01`** (no code skeleton at sprint start), **`RSK-S3-02`** (dependency on seed data for Part E) and **`RSK-S3-03`** (evening-only working hours from 22:00). *`SCRUM-67`:* `RSK-S3-01` re-verified on `main` (skeleton commits dated 29/10/2026; Compose, Maven modules, frontend and CI present) and marked closed for Sprint 3. | New risks identified in Sprint 3; the draft asked for the re-check. | `SCRUM-59`, `SCRUM-67` |
-| 6 | 4.1.2 Roadmap | Sprint 3: 26/10 – 13/11/2026 *(Est.)*, goal "Use Case Specifications (US-01–07), Domain Analysis Model, UI Wireframes & Navigation Map". | Sprint 3: 28/10 – 05/11/2026 (everything done), buffer 06–07/11 (blocker fixes only), Moodle deadline 00:00 on 08/11/2026. Goal rewritten to the PA3 parts. | Real milestones; the Domain Model and Wireframes are not PA3 deliverables in the Sprint 03 report. | `SCRUM-59` |
-| 7 | 4.1.2 Gantt chart | Sprint 3 bar 26/10 – 13/11. | Sprint 3 bar 28/10 – 05/11 (active) and a buffer bar 06/11 – 08/11. | Same as #6. | `SCRUM-59` |
-| 8 | 4.1.3 Milestone M6 | 13/11/2026 *(Est.)*; criteria "Domain Model ERD, UI Wireframes". | 05/11/2026 all work done, Moodle deadline 08/11/2026 00:00, latest team submission 07/11 23:00; criteria rewritten for the PA3 deliverables and `Build v0.5` tag. | Same as #6. | `SCRUM-59` |
-| 9 | 4.3.3 Sprint 3 backlog | "Proposed: 26/10 – 13/11/2026"; user stories `US-01`–`US-07`; deliverables with Domain Model and Figma wireframes. | Actual dates; scope note that `US-01`–`US-07` are the PA2 subset superseded by the 10-feature scope and that the Part E code slice is limited to feature 040 US1 + US2; deliverables rewritten. *`SCRUM-67`:* the note now separates the 10 Vision features (`F-01`–`F-10`) from the 12 specifications and the 64 use cases, and maps the slice to `UC-040-01` / `UC-040-02` (US3–US5 = `UC-040-03`–`05`, deferred). | The Sprint 03 report (Decision 3) records the old subset as incomplete; the draft called the specification numbers "features", unlike Vision `v2.0` and the Use-Case Model. | `SCRUM-59`, `SCRUM-67` |
-| 10 | 4.3.4 *(new)* | — | Sprint 03 day-by-day timeline 28/10 – 08/11 with the checkpoints at 22:00, the 02/11 draft freeze, the 05/11 completion and the 06–07/11 buffer. *`SCRUM-67`:* the Jira task column follows the start/due dates of the Sprint 03 Report (adds `SCRUM-61` on 29/10, `SCRUM-64` on 30/10, `SCRUM-49` and `SCRUM-67` on 02/11, `SCRUM-50`–`56`, `58`, `57` on 03/11, `SCRUM-60`, `65` on 04/11, `SCRUM-60`–`65`, `67` on 05/11); 03/11 text no longer says "peer review done" (`SCRUM-57` is due 04/11); the Review on 04/11 is at 20:00. | The plan had a day-by-day timeline for Sprint 2 only; the draft omitted several tasks due on those days. | `SCRUM-59`, `SCRUM-67` |
-| 11 | 4.4.2 `Build v0.5` | Date 13/11/2026; "Flyway `V1` baseline only"; Redis 7 container; gate "all 4 containers healthy, `db` and `redis` components `UP`". | Date **05/11/2026** (tag `v0.5.0`). Scope includes the 040 US1 + US2 slice. Redis removed from `v0.5` (moved to `v0.8 Beta`). *`SCRUM-67`:* scope lists the Maven modules and the real migrations `V001`–`V303` plus `V401`–`V403` (no `V5xx`), the in-process Mock LLM and the CI steps; gate: `db`, `app`, `web` healthy, the `app` applies Flyway on startup, the `migrate` job (profile `tools`) exits 0, `/actuator/health` `UP` with the `db` indicator inside the aggregate (no component details), JaCoCo **instruction** coverage ≥ 70 % for `com.wikicook.shoppinglist.service` enforced by `mvn verify`. | The compose files define `db`, `app`, `web` and a `migrate` tool job only; the draft said "baseline schema" and "line coverage", but `main` already has `V001`–`V303` and the JaCoCo rule uses the `INSTRUCTION` counter. | `SCRUM-59`, `SCRUM-67` |
-| 12 | 4.4.4 Integration roadmap, 4.4.4 diagram, 4.4.6 | `v0.5` shows Flyway `V1` only, a Redis container and a Mock LLM container; CI "Docker image build". | `v0.5` shows the 040 REST API, no Redis; staging text says Redis arrives with `v0.8 Beta`. *`SCRUM-67`:* PostgreSQL row lists `V001`–`V303` (`vector` extension and HNSW index created, not filled) and `V401`–`V403`, `v0.8` fills and queries the embeddings; LLM row: in-process Mock client, no LLM container; CI row: `mvn verify` with Testcontainers `*IT` and JaCoCo check, frontend lint/Vitest/build, no Docker image build in CI (integration tests removed from the `v0.8` column because they already run); 4.4.6 diagram and text describe the Mock LLM as a mode of the app. | Consistency with #11 and with `docker-compose.yml`, `.github/workflows/` and `wikicook-ai`. | `SCRUM-59`, `SCRUM-67` |
-| 13 | 4.4.7 Code freeze | `v0.5` code freeze 11/11; tag on 13/11. | Code freeze 03/11; tag on 05/11; 06–07/11 blocker fixes only. | Same as #6. | `SCRUM-59` |
-| 14 | 4.4.8 Consistency notes | Database row says `v0.5` has only the `V1` baseline. | New row "Sprint 3 dates". *`SCRUM-67`:* database row rewritten (`V001`–`V303` and `V401`–`V403` already in `v0.5`; `V5xx` later); new row **AI mode switch** (`LLM_MODE` in the plan = `WIKICOOK_AI_MODE` in the code). | Consistency with #6 and #11; the variable name in the code differs from the plan. | `SCRUM-59`, `SCRUM-67` |
-| 15 | 5.4 DoD gate 3 | Attribution line fixed to "Edited by: Lê Quốc Hưng"; the unescaped `\|` characters split the table row into extra columns. | The editor is the one named on the Jira task of the revision, with Lê Quốc Hưng (Chief Editor) as default; applies to every section and to every subsection revised in a later Sprint; `\|` escaped. *`SCRUM-67`:* attribution line added under the 5.4 header (5.4 itself was revised in PA3). | `SCRUM-59` / `SCRUM-67` name Nguyễn Đức Duy as editor, which contradicted the old rule. | `SCRUM-59`, `SCRUM-67` |
-| 16 | 1.2 Scope | "Detailed task assignments are locked in for the current active sprint (Sprint 2 / PA2) … refined in PA3-2026 based on Teaching Assistant feedback." | Detailed assignments for Sprint 2 (4.2) and Sprint 3 (4.3.4); Sprints 4–5 remain estimates; no TA feedback on PA2 was received (`SCRUM-47`), so PA3 follows an internal audit. Attribution line added. | The sentence still described Sprint 2 as the active sprint and promised feedback that never arrived. | `SCRUM-67` |
-| 17 | 2.2 ASM-03 | Assumption that TAs give timely PA2 feedback; no status. | Status added: not met for PA2, no TA feedback received (`SCRUM-47`, Sprint 03 Report Sec 3.2). Attribution line added. | Record the outcome of `SCRUM-47` in the plan (A.1). | `SCRUM-67` |
-| 18 | 3.2 and 4.4 attribution lines | 3.2: "Performed by Nguyễn Thành Dự \| Reviewed by Trần Nguyễn Công Chung \| Edited by Lê Quốc Hưng"; 4.4: "Performed by Mai Văn Hiển \| Reviewed by Lê Quốc Hưng \| Edited by Lê Quốc Hưng". | Both replaced by the PA3 line "Performed by Mai Văn Hiển \| Reviewed by Lê Quốc Hưng — pending review \| Edited by Nguyễn Đức Duy"; the PA2 authorship stays in the metadata matrix. | The draft replaced these two existing lines; row 2 only mentioned added lines. | `SCRUM-59` |
-| 19 | 4.4.1 Docker image tags | Example `wikicook-backend:0.8.0-beta.1`; every image tagged from `v0.5`. | Released images are tagged with the Git version (`wikicook-app:…`, `wikicook-web:…`); local Compose builds use `:local`. | The compose files name the images `wikicook-app:local` and `wikicook-web:local`; there is no `wikicook-backend` image. | `SCRUM-67` |
-| 20 | 4.4.2 `Build v0.8 Beta` | "`pgvector` column + index" and "**Full relational schema** (Flyway `V2…Vn`)" arrive in `v0.8`. | Embeddings are written into `recipe_embeddings`, whose `VECTOR(768)` column and HNSW index already exist in `V302`; the schema for the `v0.8` services is already in `V001`–`V303` and `V401`–`V403`, with new migrations only where needed. | Consistency with #11; the DDL is already on `main`. | `SCRUM-67` |
-| 21 | 4.4.5 MoSCoW note | "MoSCoW priorities for F-06–F-10 … will be confirmed by the Product Owner in PA3." | Not confirmed in PA3 (Vision `v2.0` has no MoSCoW priority); confirmed by the Product Owner no later than Sprint 4 Planning. | PA3 is ending and the promise was not met. | `SCRUM-67` |
-| 22 | Attribution lines, Revision History, Appendix B | Reviewer shown as "Lê Quốc Hưng (LqHung06) — pending review" in 14 places. | "Reviewed & Approved by: Lê Quốc Hưng (LqHung06)" in the attribution lines and "approved 06/11/2026" in the history tables. | The review was signed off on 06/11/2026 (A.5, item 1); the plan still showed it as pending. | `SCRUM-61` |
-
-### A.3. Items not changed on purpose
-
-- Sprint 4 (16/11 – 04/12) and Sprint 5 (07/12 – 25/12) dates, `Build v0.8 Beta` and `Build v1.0 RC` dates are untouched (see A.4, decision 3).
-- Sprint 2 sections (4.2, 4.3.1, 4.3.2) and Appendix A stay as the closed PA2 record.
-- 4.1.2, the Gantt chart and M6 were checked against the Sprint 03 Report and Vision §7.11 and needed no change: Sprint 3 bar 2026-10-28 → 2026-11-05, buffer 2026-11-06 → 2026-11-08, matching the tables.
-- The status of the Sprint 3 rows in 2.3 stays *In Progress*: the repository only holds the Jira snapshot of 28/10/2026, so no later status is claimed (A.5, item 4).
-- The `v0.5.0` tag date stays 05/11/2026 although the tag does not exist yet (A.5, item 6).
-- Redis stays in the product scope (2.1.2, ASM-01) because Vision §4.1 and NFR-COM-06 describe the full product; only `Build v0.5` excludes it.
-- Sec 1.4 (References) and 1.5 (Document Overview) are left as written in PA2; they do not contradict the revised sections.
-- The plan keeps the name `LLM_MODE` (also used in Vision `v2.0`); 4.4.8 maps it to `WIKICOOK_AI_MODE`.
-
-### A.4. Decisions (final, `SCRUM-67`, 06/11/2026)
-
-1. **Redis is not part of `Build v0.5`.** Confirmed: the root `docker-compose.yml` includes `src/backend/docker-compose.yml` and defines `db`, `app`, `web` and the `migrate` tool job (profile `tools`) only. Vision `v2.0` NFR-REL-10 now says the same.
-2. **Editor rule:** the editor named on the Jira task (DoD gate 3, row 15). `SCRUM-67` names Nguyễn Đức Duy as editor; the Sprint 03 Report has no editor column, so this comes from the Jira task.
-3. **Sprint 4 keeps its 16/11 – 04/12 dates.** `docs/management/w6-w10-weekly-plan.md` proposes a 2-week cycle (PA4 on 21/11, PA5 in week 10), but marks those dates as *dự kiến* and still to be confirmed with the lecturer, so the plan does not adopt them (A.5, item 8).
-4. **Statements checked against `main` on 06/11/2026** (branch merged with `origin/main` at `3bbff45`; commands: `git rev-parse`, `ls`/`find`, `grep`, `cat` on the compose files, workflows, POMs and `application.yml`):
-   - Compose: services `db` (`pgvector/pgvector:pg16`), `app`, `web`, `migrate` (profile `tools`); `app` has `WIKICOOK_AI_MODE=mock` by default; no Redis, no LLM container.
-   - Flyway (`wikicook-db`): `V001`, `V010`, `V101`, `V201`, `V202`, `V203`, `V210`, `V301`, `V302`, `V303`, `V401`, `V402`, `V403`; `V001` creates the `vector` extension and `V302` the `recipe_embeddings` table with `VECTOR(768)` and an HNSW index; no `V5xx`.
-   - Maven modules `wikicook-db`, `wikicook-ai`, `wikicook-app`; `wikicook-ai` has Mock/offline clients only (no live LLM client yet).
-   - Feature 040: `RecipeDetailPort`, `MealPlanHandoffPort`, `SeedRecipeDetailAdapter` and `F2_SeededLookupsIT` present; JaCoCo rule in `wikicook-app/pom.xml`: counter `INSTRUCTION`, minimum `0.70`, package `com.wikicook.shoppinglist.service`, `check` goal in `verify`.
-   - CI: `backend.yml` runs `mvn -B verify` (Failsafe runs the `*IT` tests on Testcontainers); `frontend.yml` runs `npm ci`, `lint`, `test`, `build`. No Docker image build in CI.
-   - Actuator exposes `health,info` with no `show-details` / `show-components` setting, so `/actuator/health` returns only the aggregate status.
-   - `git tag -l` is empty and there is no root `CHANGELOG.md`.
-   - `docs/requirements/use-case-model.md` (10 features, 8 actors, 64 use cases) and `use-case-specification.md` present.
-5. **Late finalisation, recorded openly.** `SCRUM-67` was due on 05/11/2026. The final plan was completed on 06/11/2026, inside the buffer that the plan reserves for blocker fixes only. No new scope was added: the changes are consistency fixes. Lê Quốc Hưng reviewed and approved the final version on 06/11/2026 (A.5, item 1).
-6. **TA feedback:** none received (`SCRUM-47`), so no late feedback had to be triaged.
-
-### A.5. Open items
-
-| # | Item | Status | Result / next step | Owner |
+| # | Section | Before (PA3 `v0.2`) | After (PA4 `v2.0`) | Reason |
 | :---: | :--- | :--- | :--- | :--- |
-| 1 | **Review of the plan** | **Closed (06/11/2026, `SCRUM-61`)** | Lê Quốc Hưng formally reviewed and signed off on the final Project Plan `v2.0` (`SCRUM-67`, PR #72) and `Changes.md` (`SCRUM-61`) on 06/11/2026. All cross-references, milestone dates, and buffer protocols are verified and aligned. | Lê Quốc Hưng |
-| 2 | **Vision conflicts with this plan** | **Closed (06/11/2026, `SCRUM-67`)** | Vision `v2.0` NFR-REL-10 now says `db`, `app`, `web` healthy without Redis, and §7.11 dates `Build v0.5` on 05/11/2026 (Moodle 00:00, 08/11). The other Redis mentions (§3.3 environment, §4.1 architecture text and diagram, NFR-COM-06) were read in context: they describe the full product, and NFR-COM-06 is verified at `Build v1.0 RC` (§7.11), so they do not conflict with the plan. A wording point remains (item 7). | — |
-| 3 | **`w6-w10-weekly-plan.md` T6 13/11** | **Closed (06/11/2026, `SCRUM-67`)** | The row is in week 7 (09/11 – 15/11, Sprint 4): "Dữ liệu cào đã nạp, công thức `PUBLISHED`, đủ embedding" is a Sprint 4 data milestone, not a Sprint 3 date. Kept as is; the file is outside Part A and was not edited. Other conflicts in that file are item 8. | — |
-| 4 | **Cross-check with the final Vision and the Jira board** | **Closed (06/11/2026, `SCRUM-61`/`64`)** | Vision `v2.0`: done (item 2). Jira: all 22 tasks verified as DONE on live Jira board with screenshot evidence in Sprint 03 Report Section 3.3. Standup 1 (30/10), Standup 2 (03/11), and Review/Retro (04/11) minutes formally documented in Sprint 03 Report Sections 2.2–2.4. | Lê Quốc Hưng |
-| 5 | **TA feedback** | **Closed (06/11/2026, `SCRUM-47`)** | Sprint 03 Report Sec 3.2 records "No TA feedback received"; mirrored in A.1, B.1 and in the plan (1.2, ASM-03). | — |
-| 6 | **Tag `v0.5.0` and release notes** | **Open** | The plan dates the tag on 05/11/2026, but no Git tag and no `CHANGELOG.md` exist on 06/11/2026. Tag after the gate passes and the sign-offs (Hiển technical, Hưng final, Sec 4.4.3). | Nguyễn Thành Dự (Release Owner) |
-| 7 | **NFR-REL-10 wording vs the code** | **Closed (07/11/2026)** | Vision NFR-REL-10 was reworded to the real behaviour stated in the plan gate (4.4.2): the `app` applies the migrations on startup, the standalone `migrate` job runs with `docker compose run --rm migrate` (profile `tools`), and `GET /actuator/health` returns the aggregate `UP` with the `db` indicator included but component details not exposed. See B.2, row 12. | Nguyễn Đức Duy (`SCRUM-60`), Nguyễn Thành Dự |
-| 8 | **`w6-w10-weekly-plan.md` vs this plan** | **Open** | That file (author Nguyễn Thành Dự, review by the PM pending) proposes PA4 on 21/11 and PA5 in week 10 and plans `FE ↔ BE ↔ PostgreSQL ↔ Redis` and an Actuator `redis` component for `v0.5`, which contradicts decisions 1 and 3. Confirm the dates with the lecturer and either update this plan (4.1.2, 4.1.3, 4.4.2) or the weekly plan. | Nguyễn Thành Dự, Lê Quốc Hưng |
-| 9 | **MoSCoW priorities for F-06–F-10** | **Open** | Still provisional (4.4.5, row 21). | Nguyễn Đức Duy (PO), by Sprint 4 Planning |
+| 1 | Header, responsibility matrix | Sprint 03 (PA3 Part C); `Document Version: 0.2` (draft for Standup 1, freeze 02/11/2026); date 29/10/2026; Jira task `SCRUM-49`. | Sprint 04 (PA4 Part A); `Document Version: 2.0` (Second Edition); date 13/11/2026; Jira tasks `SCRUM-49`, `SCRUM-70`; a line lists the sections that carry their own attribution (Revision History, 1.2, 1.4, 1.5, 2.1, 2.2, 4.1, 4.3, 4.7, 4.10, 4.11, 6.1, 6.2). | R4 |
+| 2 | Revision History | Rows `v0.1`, `v0.2`. | Row `v2.0` added: states that no TA feedback was received and that the revision is a self-audit. | Transparency (Section 0) |
+| 3 | 1.2 Scope | Mentioned that `040` US3 – US5 were "deferred to PA4" and described the slice implemented in Sprint 3. | Sprint-specific wording removed; states that the Sprint-report feature codes map one-to-one to Vision §5 (`F-01` = §5.1 … `F-10` = §5.10). | The PA4 Part E groups are named `F-01` and `F-07`. |
+| 4 | 1.4 Use-Case Identifiers | IDs follow `UC-<spec>-<NN>`. | Adds the rule that IDs are never renumbered or reused; a use case added later takes the next free number of its specification. | R3-6 |
+| 5 | 1.5 Sources | Vision `v1.1`; Use-Case Specifications `v1.1`. | Vision `v2.0` (adds §8); Use-Case Specifications `v1.4`; Spec Kit artifacts of `010`, `011`, `070` as merged on `main` (13/11/2026); `100` RBAC matrix; Sprint 04 Report §1.1 – §1.2. | R2 |
+| 6 | 2.1 Actor Catalogue | **Guest:** search and read. **Member:** "reviewing and submitting recipes require a verified email". **Moderator:** reviews content and processes reports. **Administrator:** manages accounts, roles, taxonomies. **Google OAuth:** identity provider for sign-in. **Email Service:** verification, reset, account-status emails. | **Guest:** also reads reviews, opens Cooksnap photos at full size, views public profiles, resets a password; Member-only actions ask a Guest to sign in. **Member:** owns a public profile; an unverified Member can use personal features, but *publishing* (recipes, reviews, Cooksnaps) needs a verified email. **Moderator:** also suspends active Members/Contributors for at most 30 days and views the dashboard; cannot act on another Moderator or an Administrator. **Administrator:** also bans, lifts suspensions and bans, changes roles, reads the audit trail; re-authentication before acting on another Administrator; the last active Administrator can never be removed. **Google OAuth:** also re-authenticates Google-only accounts. **Email Service:** also sends the sign-in lockout notice and suspension, ban, end-of-suspension, lifted-ban emails. | R3-2, R1 (`010` FR-006, FR-012, FR-022 – FR-024a), `100` RBAC matrix |
+| 7 | 2.2 Actor Generalization | Chain Guest/Member/Contributor/Moderator/Administrator. | Adds the note that Guest is not an account role (`010` FR-020: every account has exactly one of four roles); the generalization only states that a signed-in actor can still do what a Guest does. | R3-2 |
+| 8 | 3 System Overview | Package labels `5.1` … `5.10`. | Labels `F-01 · 5.1` … `F-10 · 5.10`; the text names `F-01` and `F-07` as the PA4 Part E groups. | R4 |
+| 9 | 4.1 Feature `010`/`011` (`F-01`) | Diagram without sign-out and public profile; Email Service not linked to `UC-010-02`; Google OAuth linked only to `UC-010-04`. Three notes. | Diagram adds `UC-010-05` (Member) and `UC-011-06` (Guest); links Email Service to `UC-010-02` (lockout notice) and Google OAuth to `UC-011-03`, `UC-011-04` (re-authentication). The notes are replaced by per-use-case rules of `010` and `011` (verification link 24 h, 3 emails per 15 min, lock after 5 failures, reset link 30 min, avatar JPEG/PNG/WebP ≤ 5 MB, closure token for banned users, etc.). | R3-1, R3-2, R1 |
+| 10 | 4.3 Feature `030`/`031` | `UC-030-01` and `UC-031-05` did not include `UC-011-05`. | `UC-030-01` «include» `UC-011-05` and `UC-031-05` «include» `UC-011-05`; the specifications already stated that the picker and the slot suggestions apply the hard rules. | R3-3 |
+| 11 | 4.7 Feature `070` (`F-07`) | `UC-070-06` «include» `UC-070-01`; no link from `UC-070-02` to `UC-070-03`; no helpful vote; no rating recalculation; "reviewing, posting Cooksnaps and reporting require a verified email"; three notes. | Adds `UC-070-07` (extends `UC-070-04`) and `UC-070-08` (included by `UC-070-01`, `UC-070-03`, `UC-070-05` and `UC-100-02`). `UC-070-01` and `UC-070-03` now «extend» `UC-070-06` (the post-cooking prompt is optional, so it is not an include). `UC-070-02` also «extend» `UC-070-03`. Verified-email rule limited to writing reviews and Cooksnaps; marking helpful and reporting need only a signed-in Member (`070` FR-015). Notes rewritten per use case (one review per user and recipe, 5 reviews per 10 minutes, up to 3 photos ≤ 5 MB, report reasons, automatic hiding at 10 reports). | R3-1, R3-3, R3-4 |
+| 12 | 4.10 Feature `100` | Administrator was the only actor of `UC-100-03` and `UC-100-06`. | Moderator is also associated with both, with limited rights (suspend ≤ 30 days; dashboard only); banning, lifting and role changes stay with the Administrator. `UC-100-02` «include» `UC-070-08`. | R3-2, `100` RBAC matrix, `010` FR-022 |
+| 13 | 4.11 Recipe Detail hub | Reviews row: `UC-070-04`, `UC-070-01`; "Read: Guest; write: Member". | Reviews row lists rating summary, sort, filter, Cooksnap lightbox, "Edit review", "Hữu ích", "Report" with `UC-070-04`, `-01`, `-03`, `-07`, `-05`; Guest reads and opens the lightbox, a Member writes, votes and reports (writing needs a verified email). A note says `UC-070-03`, `-05`, `-07` start from a review card, not from the page. | R4 |
+| 14 | 5 Catalogue | 64 rows. Totals: Hiển 13, Duy 13, Dự 16, Hưng 10, Chung 12. `UC-100-03` and `UC-100-06` with actor Administrator. | 68 rows (4 marked *new v2.0*). `UC-100-03` and `UC-100-06` list Moderator (suspend only / dashboard only) and Administrator. Totals: Duy 17 (13 + 4 new, `SCRUM-71`), others unchanged. Feature split: `010` 5, `011` 6, `070` 8, others as before. | R3-1, R3-2 |
+| 15 | 6.1 Coverage | `010` → `UC-010-01` – `04`; `011` → `01` – `05`; `070` → `01` – `06`; US-01 → `UC-010-01` – `04`. | `010` → `01` – `05`; `011` → `01` – `06`; `070` → `01` – `08`; US-01 → `UC-010-01` – `05`. New paragraph: `F-01` is covered by 11 use cases and `F-07` by 8; every user story, every user-started endpoint group of the three `contracts/openapi.yaml` files and every permission row of the `010` matrix maps to a use case. | R3-1 |
+| 16 | 6.2 Open Issues | Title "to resolve before the freeze on 02/11/2026"; status column of 29/10; issues 1 – 5. | Status column of 13/11. Issues 1, 2, 3, 5 now **Resolved**; issue 4 (`UC-050-01` actor, `[OQ-050-01]`) still **Open**. Issues 6 – 9 added (A.3). | R3-8, R3-9 |
+
+### A.3. Open issues recorded in `v2.0` (not fixed in PA4)
+
+| # | Issue | Why it stays open | Owner |
+| :---: | :--- | :--- | :--- |
+| 4 | Spec `050` does not say whether Cooking Mode needs an account; the model keeps Guest. | Needs a decision of the spec owner; tracked as `[OQ-050-01]`. | Lê Quốc Hưng |
+| 6 | The four new use cases had no specification in `v1.4`. | **Closed by Section B** (`SCRUM-71`, 18/11/2026). | Nguyễn Đức Duy |
+| 7 | Vision §8 lists `UC-070-01` – `06` and the `010`/`011` use cases only up to `v0.2` of this model. | The Vision is not revised in PA4; the four new IDs are to be added at its next revision. | Nguyễn Đức Duy (PO) |
+| 8 | `011` FR-031 deletes the Cooksnaps of a deleted account, `070` Edge Case 5 keeps them as "Người dùng đã xóa". | Needs `/speckit-clarify`; the model is not affected (`UC-011-04` does not include `UC-070-08`). Also `[OQ-011-07]` in Section B. | Mai Văn Hiển, Trần Nguyễn Công Chung |
+| 9 | `cooksnaps.review_id`, which justifies «extend» `UC-070-01` / `UC-070-03`, is a proposed column of the `070` data model not yet in `full-schema.md` §4.9. | `V501__community.sql` is merged (`SCRUM-77`); the schema document is not re-checked in this revision. | Trần Nguyễn Công Chung |
 
 ---
 
-## SECTION B — VISION DOCUMENT (`docs/requirements/vision-document.md`)
-*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Lê Quốc Hưng (LqHung06)*
+## SECTION B — USE-CASE SPECIFICATION (`docs/requirements/use-case-specification.md`)
 
-**Baseline:** `v1.1` (24/10/2026, PA2 submission). **This revision:** `v2.0-draft` (29/10/2026) and the final `v2.0` (06/11/2026), both under `SCRUM-60`.
+*Performed by: Nguyễn Đức Duy (`DucDuyNguyen15-IT`) | Reviewer named in the document for Sections 9, 10 and 12: Trần Nguyễn Công Chung (marked "v2.0 review pending" in the document) | PR #101*
 
-### B.1. Source of the changes (TA feedback status)
+**Baseline:** `v1.4` (use cases of `020`, `030`, `031`, `040`, `050`, `060`, `070`, `080`, `090`, `010`, `011`, `100`; 64 use cases). **This revision:** `v2.0` (18/11/2026), 68 use cases.
 
-- **No TA feedback for PA2 was received** as of 06/11/2026 (`SCRUM-47`, Nguyễn Đức Duy). The same status is recorded in the Sprint 03 Report and in section A.1.
-- Following Decision 2 of the Sprint 03 Planning meeting, **no feedback was invented**. Every change below comes from an internal consistency audit of the Vision against the Use-Case Model (`SCRUM-49`), the Use-Case Specifications (`SCRUM-50` – `SCRUM-54`) and the revised Project Plan (`SCRUM-59`).
-- If feedback from the TA arrives before the Moodle deadline, only blocker points are fixed and added to this section; the rest goes to PA4.
+**Changed:** Section 9 (feature `010`), Section 10 (feature `011`), Section 12 (feature `070`), each with its traceability (x.1), screen mapping (x.2) and open questions (x.3); one row of `UC-020-06` (extension point `EP-6 Reviews`); the metadata and revision history.
+**Unchanged:** Sections 1 – 8 (features `040`, `050`, `020`, `060`, except the `EP-6` row), 11 (`080`), 13 (`100`), 14 – 17 (`030`, `031`, `090`).
 
-### B.2. Changes by section
+### B.1. How the flows were revised
 
-| # | Vision section | Before (PA2 `v1.1`) | After (PA3 `v2.0`) | Reason |
+- **Spec `010` and `011` (R1).** Both specs were clarified on 06/11, 07/11 and 09/11/2026, after the PA3 baseline (Section 9 and 10 were written against the draft of 30/10). Every flow marked "Proposed, pending clarification" now follows the approved rule, and each step that calls the backend names the endpoint of `contracts/openapi.yaml` and the answer it returns (status code and error code).
+- **Spec `070` (R2).** The PA3 baseline described endpoints, codes and limits that spec `070`, its contract and the code do not define: `POST /api/v1/reports`, a standalone Cooksnap upload, a report limit of 10 per hour, the reasons `ABUSIVE_LANGUAGE` / `MISLEADING_INFO`, `422` answers for self-votes and self-reports, a "Search Indexer" actor and an `AUTO_HIDE_MASS_REPORTED` audit entry. All of these were removed. The flows were checked against `com.wikicook.review` on `main` (`ReviewController`, `ReviewReportController`, `CooksnapMediaController`, `ReviewService`, `ReviewReportService`, `RateLimitingService`, `ImageProcessorService`, `ReviewExceptionHandler`, `V501__community.sql`). Where spec and code disagree, the flow states the implemented behaviour and the difference is an open question.
+- **New use cases (R3-1).** The four new use cases of Section A.1 are specified; the steps that were moved out of `UC-010-02`, `UC-011-02` and `UC-070-04` are replaced by references.
+
+### B.2. Changes by use case
+
+| # | Use case | Before (PA3 `v1.4`) | After (PA4 `v2.0`) | Reason |
 | :---: | :--- | :--- | :--- | :--- |
-| 1 | Title block | Version `1.1`, date 24/10/2026. | Version `2.0` (Second Edition), date 06/11/2026. | New revision. |
-| 2 | Metadata matrix and Revision History | Sections 1–7 only; last entry `v1.1`. | Rows for Section 8 and for the Second Edition revisions (`SCRUM-60`); entries `v2.0-draft` and `v2.0`. | Traceability of this revision. |
-| 3 | 1.2 Scope | Pantry matching listed with the other in-scope capabilities. | Pantry matching marked as a **planned increment** (kept in the Use-Case Model as `UC-020-05` at the Brief level). | Spec 020 does not specify pantry matching for the current release. |
-| 4 | 1.3 Definitions | No entry for use case or planned increment. | New entries **Use case (UC)** (`UC-<spec>-<NN>`) and **Planned increment**. | Terms used by the Use-Case Model and Section 8. |
-| 5 | 1.4 References | PA1/PA2 guidelines only; five specifications listed. | PA3 guideline added; all specifications listed with full names (`011`, `040`, `050`, `070`, `080`, `090`, `100` added); new references to the Use-Case Model, the Use-Case Specifications and the Sprint 03 Report. | The references were incomplete. |
-| 6 | 1.5 Overview | Describes Sections 2–7. | Also describes Section 8. | New section. |
-| 7 | 3.3 User Environment | No development or deployment environment. | New bullet **Development and deployment environment**: local Docker Compose stack, `.env` secrets, primary and backup demo laptops with the Mock LLM. | The environment the product is built and demonstrated in was missing. |
-| 8 | 3.4 Key Needs (N1) and 3.5.4 comparison | Search by on-hand ingredients rated 🟢 for WikiCook. | Rated 🟡 *(planned increment)*; the notation explains what 🟡 means for WikiCook. | Same as #3. |
-| 9 | 5.2 Smart Recipe Discovery | Pantry matching described as part of the feature. | Pantry matching described as a planned increment. | Same as #3. |
-| 10 | 5.11 Feature traceability table | Short specification names (`011`, `070`, `080`, `090`); the non-existent `101-admin-analytics`. | Full specification names; `101-admin-analytics` removed (analytics is User Story 6 of `100-admin-moderation`); new column **Use Cases (Section 8)**. | Names did not match `specs/`; link features to use cases. |
-| 11 | 6.1 and 6.2 workflow step tables | Columns Step / Actor / Description / Feature. | New column **Use Case(s)** for every step; note in 6.2 that steps 1–3 (pantry matching) start with keyword search and filters until the increment is specified. | Link workflows to the Use-Case Model. |
-| 12 | 7.6 NFR-REL-10 | "`docker compose up` brings all 4 containers to `healthy`…; the health endpoint reports `UP` for `db` and `redis`." | "`docker compose up` brings the `db`, `app` and `web` containers to `healthy` in ≤ 5 minutes (the `app` applies the Flyway migrations on startup), and the standalone Flyway `migrate` job (`docker compose run --rm migrate`, profile `tools`) exits with code 0; `GET /actuator/health` reports `UP`, with the `db` health indicator part of that status (component details are not exposed in `Build v0.5`). Redis is not part of `Build v0.5`; it joins the stack in `Build v0.8 Beta`." *07/11 (A.5 item 7):* wording aligned with the code and with Plan 4.4.2 — `migrate` runs only on demand and the health endpoint exposes the aggregate status only. | Conflict with the revised Plan 4.4.2 and the repository compose file (A.4 decision 1, A.5 items 2 and 7). |
-| 13 | 7.11 Verification Approach | Row "Sprint 3 — Build v0.5" dated 13/11/2026. | Dated 05/11/2026 (tag `v0.5.0`; Moodle deadline 00:00, 08/11/2026). | Same as #12 (real Sprint 3 milestones, A.2 #6). |
-| 14 | 8 *(new)* Traceability to the Use-Case Model | — | 8.1 forward trace from needs N1–N8 to use cases; 8.2 feature coverage (64 use cases over the 10 features, with owners); 8.3 backward trace and consistency check; 8.4 change control. | PA3 requires the Vision to be consistent with the Use-Case Model. |
+| 1 | `UC-010-01` Register Account & Verify Email | Flow without endpoints; precondition "the email service is available"; errors described as "the system refuses"; at the email limit the system "tells the actor to wait". | `POST /auth/register` (`409 EMAIL_TAKEN`; `400 VALIDATION_ERROR` with field codes `PASSWORD_TOO_SHORT`, `PASSWORD_TOO_LONG`, `PASSWORD_NO_LETTER`, `PASSWORD_NO_DIGIT`, `PASSWORD_EQUALS_EMAIL`, `PASSWORD_MISMATCH`, `REQUIRED`, `INVALID_EMAIL`, `TOO_LONG`); blocked email → `422 REGISTRATION_REFUSED`, neutral message. Verification: `POST /auth/verification/confirm` → `VERIFIED` / `ALREADY_VERIFIED` / `410 TOKEN_EXPIRED` / `TOKEN_INVALID`; resend always `202`; a newer link makes older ones stop working. Email limit (3 per 15 min, first email counts, separate from reset): at resend `429 EMAIL_RATE_LIMITED`; at registration the account is still created with `verificationEmailSent = false`. Neither registering nor verifying signs the actor in. 7-day purge: a suspended account is kept until the suspension ends; a banned account's email hash goes on the block list. | R1 (`[OQ-010-03]`, `-05`, `-06` closed), R2 |
+| 2 | `UC-010-02` Sign In with Email & Password | Titled "…and Sign Out"; unknown-email lockout and the lock screen marked "Proposed, pending clarification (`[OQ-010-02]`)"; ban flow: "how a banned user reaches the closure page is not specified" (`[OQ-010-04]`); no endpoints. | Retitled "…and Stay Signed In"; sign-out moved to `UC-010-05`. `POST /auth/login`: `200` returns a short-lived access token and the account, refresh token in an HttpOnly cookie; `401 INVALID_CREDENTIALS` identical for unknown email; `423 ACCOUNT_LOCKED` with `retryAt`; per-IP attempt limit (`AF 2.18`); a successful reset does not end the lock and the lock does not block Google; `403 ACCOUNT_SUSPENDED` / `ACCOUNT_BANNED` only after a correct password, the banned user gets a single-use closure token valid 10 minutes that opens only the closure page of `011`. Email Service added as actor (lockout notice). | R1 (`[OQ-010-02]`, `-04` closed), R2, R3-2 |
+| 3 | `UC-010-03` Reset Forgotten Password | Limit message without a status code; Google-only, suspended, banned accounts not specified. | `429 EMAIL_RATE_LIMITED` with `retryAfterSeconds`; Google-only, suspended and banned accounts receive no link but the same answer (`[OQ-010-10]`); link valid 30 minutes; a successful reset does not end a sign-in lock. | R1 (`[OQ-010-06]`), R2 |
+| 4 | `UC-010-04` Sign In with Google | Takeover of an unverified account, name rule and refusal for blocked emails left open. | Takeover is all-or-nothing (`[OQ-010-07]`); a suspended or banned unverified account is never reset; display name uses the registration rule 1 – 50 characters (`[OQ-010-08]`); blocked email → Google error `registration_refused` (`[OQ-010-05]`). | R1 |
+| 5 | `UC-010-05` Sign Out *(new)* | `AF 2.13` of `UC-010-02`. | Own use case, written from the code: `POST /auth/logout` ends the current session only; other devices stay signed in. | R3-1, R2 |
+| 6 | `UC-011-01` Set Up Dietary Profile | Flow in prose, partly marked "Proposed". | `GET /me/dietary-profile`, `PUT /me/dietary-profile` with `version`; lists from `GET /me/dietary-options` (allergens, diet types `NONE`/`VEGETARIAN`/`VEGAN`/`PESCATARIAN`, active cuisines); `GET /ingredients/suggestions?q=` (≤ 10, ignores diacritics); value limits (household 1 – 20, up to 50 excluded ingredients); `AF` for invalid data, network loss, expired session, **version conflict** (another tab or device), **catalogue notices** with `POST /me/dietary-profile/notices/ack`, `503 PROFILE_UNAVAILABLE` (never show an empty profile in place of an unreadable one, FR-026a) and the save limit (20 per hour, NFR-008). An Administrator reads only their own profile. | R1, R2 (`SCRUM-75`) |
+| 7 | `UC-011-02` Edit Public Profile & Avatar | Included viewing another user's public profile (Step 10, `AF 2.6`, `AF 2.17`). | Public-profile viewing moved to `UC-011-06`; the flows follow the clarified spec and the profile endpoints merged by `SCRUM-75` (`GET`/`POST /me/profile`). | R3-1, R2 |
+| 8 | `UC-011-03` Change or Set Password | Wrong-password handling partly proposed. | Wrong passwords on re-authentication are counted separately from the sign-in counter and refuse the action for 15 minutes without touching sign-in (`[OQ-011-04]`, `-05` closed); password fields cleared after any failure (FR-039). Implementation status noted: `POST /me/password` and `/me/password/initial` do not exist on `main` yet (`011` T073 – T084), and the Google re-authentication `intent=reauth` of `AF 3.6` – `3.7` is not built. | R1, R2 |
+| 9 | `UC-011-04` Delete Account | Banned-account path and data rules partly proposed. | Added `AF 4.13` – `AF 4.15` (a banned user deletes the account through the closure token, `[OQ-011-06]` closed); deletion in one step that cannot be undone; reviews and rating totals kept anonymously (FR-035), archived recipes kept (FR-033); Cooksnap conflict recorded (`[OQ-011-07]`). Implementation status: `POST /me/deletion` and `POST /account-closure` do not exist on `main` yet; `POST /auth/reauthenticate` exists but does not count wrong passwords, so `429 PASSWORD_CHECK_LIMITED` is not returned yet; Google re-authentication (`AF 4.2`) is not built either. | R1, R2 |
+| 10 | `UC-011-05` Apply Dietary Hard Rules *(included)* | Included by `UC-011-01`, search and the AI planner. | Also included by `UC-030-01` and `UC-031-05`; implementation status: all modules read the profile through `DietaryProfileReader` (`020`, `030`, `031`, and `040`), a read failure is `503 PROFILE_UNAVAILABLE`. | R3-3, R2 |
+| 11 | `UC-011-06` View Public Profile *(new)* | Step 10 and `AF 2.6` of `UC-011-02`. | Own use case, written from `GET /profiles/{id}`: display name, avatar, bio and published recipes, never the email or the dietary profile; banned, deleted and unknown users all answer `404 USER_NOT_FOUND`. | R3-1, R2 |
+| 12 | `UC-070-01` Rate & Review Recipe | Endpoints and limits not defined by the spec or the code (see B.1). | Rewritten against the review code: one review per user and recipe; not on one's own recipe; 5 reviews per 10 minutes; only a published recipe (the code answers `404`, `[OQ-070-07]`); `403`, `404`, `409`, `429` answers; rating recalculation delegated to `UC-070-08`. | R2 |
+| 13 | `UC-070-02` Upload Cooksnap Photos | Standalone upload. | Photos travel with the review (up to 3, JPEG/PNG/WebP ≤ 5 MB, EXIF stripped); extends `UC-070-01` and `UC-070-03`. Request-size limit recorded (`[OQ-070-11]`). | R2, R3-3 |
+| 14 | `UC-070-03` Edit or Delete Own Review | Owner deletion described as soft delete in places. | Follows `FR-011`, contract and code: hard delete with Cooksnaps, helpful votes and reports, so the user may review again; a review hidden by moderation cannot be edited; a recipe that leaves `PUBLISHED` answers `404` (`[OQ-070-08]`, `-13`). | R2 |
+| 15 | `UC-070-04` Browse, Sort & Filter Reviews | Included the helpful vote (Step 6). | Helpful vote moved to `UC-070-07`; sort and filter on the code's behaviour; deleted author shown as "Thành viên WikiCook" with `isDeleted = true` (`[OQ-070-14]`); unknown recipe answers `200` with an empty list (`[OQ-070-15]`). | R3-1, R2 |
+| 16 | `UC-070-05` Report Review or Cooksnap | Report limit 10 per hour, reasons `ABUSIVE_LANGUAGE`, `MISLEADING_INFO`, `422` for self-reports, audit `AUTO_HIDE_MASS_REPORTED`. | Reasons `SPAM`, `OFFENSIVE`, `COPYRIGHT`, `UNSAFE`, `OTHER`; one report per user and item; not on one's own content; hidden automatically at 10 open reports; includes `UC-070-08`. | R2 |
+| 17 | `UC-070-06` Respond to Post-Cooking Review Prompt | Included `UC-070-01`. | **Extended by** `UC-070-01` and `UC-070-03`; "Để sau" creates nothing; a cook who already reviewed gets the edit form. Implementation status: the Cooking Mode hook `onHandoffToReview(recipeId)` exists, no review screen was connected to it on `main` at the check. A Guest case recorded (`[OQ-070-17]`). | R3-3, R2 |
+| 18 | `UC-070-07` Mark Review as Helpful *(new)* | Step 6 of `UC-070-04`. | Own use case: toggles the vote on another user's review; `POST /reviews/{reviewId}/helpful`. | R3-1 |
+| 19 | `UC-070-08` Update Recipe Rating Summary *(new, included)* | Repeated in `UC-070-01`, `-03`, `-05`, `UC-100-02`. | Written once with a Trigger: average (1 decimal) and count from visible reviews, recipe version unchanged. | R3-1 |
+| 20 | `UC-020-06` View Recipe Details, row `EP-6 Reviews` | Listed `UC-070-04`, `UC-070-01`. | Lists `UC-070-03`, `UC-070-05`, `UC-070-07` as well. | R4 |
+| 21 | Metadata and Revision History | Sections 9, 10, 12 attributed to their PA3 authors. | `v2.0` row added; Sections 9, 10, 12 list the PA3 author (`v1.2` / `v1.3`) and Nguyễn Đức Duy (`v2.0`), with the `v2.0` review shown as pending. | R4 |
+| 22 | Google status notes: Section 9 revision note, `UC-011-03` and `UC-011-04` implementation status, `[OQ-011-09]` item 3 | Said that the Google OAuth endpoints were not implemented. | Google sign-in is implemented (PR #97); only `intent=reauth` is not built (T149a, blocked by T149b), so `AF 3.6` – `3.7` and `AF 4.2` still cannot run. Added after the first version of `v2.0`, on the same day, in a separate commit. | R2 (code check after PR #97) |
 
-### B.3. Items not changed on purpose
+### B.3. Open questions added or closed in `v2.0`
 
-- Sections 2 (Positioning) and 4 (Product Overview) stay as in PA2; the audit found no conflict with the Use-Case Model.
-- Redis stays in the product architecture (§4.1) and in NFR-COM-06; only the `Build v0.5` gate (NFR-REL-10) drops it, because Redis is first needed in `Build v0.8 Beta`.
-- The other Section 7 NFR thresholds are unchanged.
+| Group | Content |
+| :--- | :--- |
+| Closed in Section 9 | `[OQ-010-02]` (unknown-email lock), `-03` (resend invalidates older links), `-04` (banned user and the closure link), `-05` (blocked email message), `-06` (rate-limit message), `-07` (all-or-nothing takeover), `-08` (Google display name), `-10` (no link for Google-only, suspended, banned accounts). |
+| Closed in Section 10 | `[OQ-011-01]` (expired session is a Guest), `-04`, `-05` (wrong-password counter), `-06` (banned user deleting the account). |
+| Added in Section 10 | `[OQ-011-09]` implemented code vs. approved contract (missing endpoints, the re-authentication counter, Google sign-in implemented but `intent=reauth` not built, the shopping-list reader, the `404 USER_NOT_FOUND` rule). `[OQ-011-07]` (Cooksnaps of a deleted account) remains open. |
+| Added in Section 12 | `[OQ-070-07]` – `[OQ-070-18]`, all **Open**: unpublished recipe status, owner deletion wording, rate-limit basis, verified email not enforced by the review endpoints, total upload size (6 MB request limit vs. 3 × 5 MB), error identifiers (`type` URI without `code`), edit after the recipe leaves `PUBLISHED`, deleted-author name, unknown recipe, summary and photo filter, post-cooking prompt for a Guest, Moderator hide/restore (spec `100`) not implemented. |
+
+### B.4. Limits of this revision
+
+- **Status notes are dated.** The "implementation status" notes and `[OQ-011-09]` record `main` as checked on 18/11/2026. Google sign-in was merged afterwards (PR #97) and the notes about it were updated in the same revision: sign-in is implemented, but its re-authentication variant `intent=reauth` is not built (task T149a, blocked by T149b), so `UC-011-03` `AF 3.6` – `3.7` and `UC-011-04` `AF 4.2` still describe the approved contract only. Google sign-in has been tested with a fake Google, not with a real Google client. `UC-010-04` was not re-checked line by line against the Google code of PR #97. The sentence "the review screens of the frontend are not implemented on `main` yet" is also dated: the frontend of `070` (`SCRUM-78`) is on a separate branch that is not merged.
+- **`UC-010-01` – `UC-010-04`** were written against the approved contract; only `UC-010-05` and `UC-011-06` were written from the code.
+- **Section 13 (`100`)** is unchanged; the Moderator rights of `UC-100-03` and `UC-100-06` shown in the model were already in specification `v1.4`.
+- **Review status.** No review of this file or of the two documents is claimed here; the reviewers named in the documents are the planned ones.
+
+---
+
+## SECTION C — TRACEABILITY BETWEEN THE TWO DOCUMENTS
+
+| Feature | Use cases PA3 (`v0.2` / `v1.4`) | Use cases PA4 (`v2.0` / `v2.0`) | Added | Model section | Specification section |
+| :--- | :---: | :---: | :--- | :--- | :--- |
+| `010` | 4 | 5 | `UC-010-05` | 4.1 | 9 |
+| `011` | 5 | 6 | `UC-011-06` | 4.1 | 10 |
+| `070` | 6 | 8 | `UC-070-07`, `UC-070-08` | 4.7 | 12 |
+| `100` | 6 | 6 | — (actors of `UC-100-03`, `-06` changed in the model only) | 4.10 | 13 |
+| Other features (`020`, `030`, `031`, `040`, `050`, `060`, `080`, `090`) | 43 | 43 | — (relations `UC-030-01` / `UC-031-05` → `UC-011-05` added) | 4.2 – 4.6, 4.8, 4.9 | 1 – 8, 11, 14 – 17 |
+| **Total** | **64** | **68** | **4** | | |
+
+---
+
+## SECTION D — WHAT WAS NOT CHANGED IN PA4
+
+- Vision Document `v2.0` (the four new IDs are not yet in its §8; model issue 7).
+- Use-case IDs: none renumbered or removed.
+- Section 13 of the specification (feature `100`) and Sections 1 – 8, 11, 14 – 17 (see Section B).
+- Prototype screens and `full-schema.md`.
