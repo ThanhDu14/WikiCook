@@ -351,7 +351,7 @@ export function CookingView({
           type="button"
           onClick={handleExitClick}
           aria-label={COOKING_VI.exitCooking}
-          className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold transition active:scale-95 ${
+          className={`flex min-h-[44px] items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold transition active:scale-95 ${
             isHighContrast
               ? 'text-yellow-400 hover:bg-yellow-950/40'
               : 'text-stone-600 hover:bg-stone-100'
@@ -387,7 +387,7 @@ export function CookingView({
             aria-label={isListening ? COOKING_VI.listeningActive : COOKING_VI.tapToSpeak}
             title={isListening ? COOKING_VI.listeningActive : COOKING_VI.tapToSpeak}
             onClick={toggleVoiceListening}
-            className={`flex items-center gap-1.5 rounded-lg p-2 text-sm font-medium transition ${
+            className={`flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-medium transition active:scale-95 ${
               isListening
                 ? 'animate-pulse bg-red-600 text-white'
                 : isHighContrast
@@ -409,7 +409,7 @@ export function CookingView({
             aria-label="Cỡ chữ"
             title="Cỡ chữ"
             onClick={cycleFontScale}
-            className={`rounded-lg px-2.5 py-2 text-xs font-bold transition ${
+            className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg px-2.5 py-2 text-xs font-bold transition active:scale-95 ${
               isHighContrast
                 ? 'bg-yellow-950 text-yellow-400 hover:bg-yellow-900'
                 : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
@@ -424,7 +424,7 @@ export function CookingView({
             aria-label={isHighContrast ? COOKING_VI.themeLight : COOKING_VI.themeHighContrastDark}
             title={isHighContrast ? COOKING_VI.themeLight : COOKING_VI.themeHighContrastDark}
             onClick={toggleHighContrast}
-            className={`rounded-lg p-2 text-sm font-medium transition ${
+            className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-sm font-medium transition active:scale-95 ${
               isHighContrast
                 ? 'bg-yellow-400 text-black hover:bg-yellow-300'
                 : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
@@ -439,7 +439,7 @@ export function CookingView({
             aria-label="Toàn màn hình"
             title="Toàn màn hình"
             onClick={toggleFullscreen}
-            className={`rounded-lg p-2 text-sm font-medium transition ${
+            className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-sm font-medium transition active:scale-95 ${
               isHighContrast
                 ? 'bg-yellow-950 text-yellow-400 hover:bg-yellow-900'
                 : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
@@ -490,21 +490,21 @@ export function CookingView({
       {hasStorageWarning && (
         <div className="flex items-center justify-between bg-red-100 px-4 py-2 text-xs font-semibold text-red-900 [.theme-high-contrast-dark_&]:bg-red-950 [.theme-high-contrast-dark_&]:text-red-200">
           <span>{COOKING_VI.storageQuotaWarning}</span>
-          <button type="button" onClick={clearWarnings} className="underline ml-2">✕</button>
+          <button type="button" onClick={clearWarnings} aria-label="Đóng cảnh báo" className="ml-2 inline-flex min-h-[44px] min-w-[44px] items-center justify-center underline">✕</button>
         </div>
       )}
 
       {hasTabConflict && (
         <div className="flex items-center justify-between bg-amber-200 px-4 py-2.5 text-xs font-bold text-amber-950">
           <span>⚠️ {COOKING_VI.conflictWarning}</span>
-          <button type="button" onClick={clearWarnings} className="underline ml-2">✕</button>
+          <button type="button" onClick={clearWarnings} aria-label="Đóng cảnh báo" className="ml-2 inline-flex min-h-[44px] min-w-[44px] items-center justify-center underline">✕</button>
         </div>
       )}
 
       {hasClockJumpWarning && (
         <div className="flex items-center justify-between bg-blue-100 px-4 py-2 text-xs font-medium text-blue-900 [.theme-high-contrast-dark_&]:bg-blue-950 [.theme-high-contrast-dark_&]:text-blue-200">
           <span>ℹ️ {COOKING_VI.clockJumpWarning}</span>
-          <button type="button" onClick={clearWarnings} className="underline ml-2">✕</button>
+          <button type="button" onClick={clearWarnings} aria-label="Đóng cảnh báo" className="ml-2 inline-flex min-h-[44px] min-w-[44px] items-center justify-center underline">✕</button>
         </div>
       )}
 
@@ -572,7 +572,7 @@ export function CookingView({
                 <button
                   type="button"
                   onClick={() => setIsIngredientDrawerOpen(true)}
-                  className="text-xs font-semibold underline opacity-80 hover:opacity-100"
+                  className="inline-flex min-h-[44px] items-center px-2 text-xs font-semibold underline opacity-80 hover:opacity-100"
                 >
                   {COOKING_VI.allIngredients}
                 </button>
@@ -586,7 +586,7 @@ export function CookingView({
                       key={ing.rowId}
                       type="button"
                       onClick={() => runtime.toggleIngredient(ing.rowId)}
-                      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold transition ${
+                      className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition active:scale-95 ${
                         isChecked
                           ? isHighContrast
                           ? 'border-yellow-400 bg-yellow-950 text-yellow-200 line-through'

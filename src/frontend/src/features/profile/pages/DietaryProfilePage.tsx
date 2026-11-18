@@ -164,7 +164,12 @@ function DietaryForm({ data, onReload }: { data: DietaryData; onReload: () => vo
             <button type="button" className="wk-btn wk-btn--secondary" disabled={!dirty || saving} onClick={() => setDraft(draftOf(saved))}>
               {strings.dietary.cancel}
             </button>
-            <button type="submit" className="wk-btn wk-btn--primary" disabled={saving}>
+            <button
+              type="submit"
+              className={`wk-btn wk-btn--primary${saving ? ' is-loading' : ''}`}
+              disabled={saving}
+              aria-busy={saving || undefined}
+            >
               {saving ? strings.dietary.saving : strings.dietary.save}
             </button>
           </div>
@@ -222,14 +227,20 @@ function DietaryForm({ data, onReload }: { data: DietaryData; onReload: () => vo
               <NumberField
                 label={strings.dietary.householdSize}
                 value={draft.household}
-                onChange={(event) => setDraft((current) => ({ ...current, household: event.target.value }))}
+                onChange={(event) => {
+                  setDraft((current) => ({ ...current, household: event.target.value }));
+                  if (errors.household) setErrors((prev) => ({ ...prev, household: undefined }));
+                }}
                 error={errors.household}
                 helper={strings.dietary.householdHelper}
               />
               <NumberField
                 label={strings.dietary.maxCookTime}
                 value={draft.cookTime}
-                onChange={(event) => setDraft((current) => ({ ...current, cookTime: event.target.value }))}
+                onChange={(event) => {
+                  setDraft((current) => ({ ...current, cookTime: event.target.value }));
+                  if (errors.cookTime) setErrors((prev) => ({ ...prev, cookTime: undefined }));
+                }}
                 error={errors.cookTime}
                 helper={strings.dietary.maxCookTimeHelper}
               />

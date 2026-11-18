@@ -86,7 +86,7 @@ export function ReviewList({
               id={sortId}
               value={query.sort}
               onChange={(event) => onSortChange(event.target.value as ReviewSortOption)}
-              style={{ minHeight: 40, width: 'auto', padding: '0 12px' }}
+              style={{ minHeight: 44, width: 'auto', padding: '0 12px' }}
             >
               {SORT_OPTIONS.map((option) => (
                 <option key={option} value={option}>

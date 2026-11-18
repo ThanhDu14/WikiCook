@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { COOKING_VI } from '../i18n/vi';
 
 export interface CustomTimerDialogProps {
@@ -21,6 +21,29 @@ export function CustomTimerDialog({
   const [hours, setHours] = useState(String(Math.floor(duration / 3600)));
   const [minutes, setMinutes] = useState(String(Math.floor(duration % 3600 / 60)));
   const [seconds, setSeconds] = useState(String(duration % 60));
+  const [error, setError] = useState<string | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.activeElement as HTMLElement | null;
+    panelRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onCloseRef.current();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      previous?.focus?.();
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -31,8 +54,12 @@ export function CustomTimerDialog({
     const s = parseInt(seconds, 10) || 0;
 
     const totalSeconds = h * 3600 + m * 60 + s;
-    if (totalSeconds <= 0 || totalSeconds > 86400) return;
+    if (totalSeconds <= 0 || totalSeconds > 86400) {
+      setError('Vui lòng nhập thời lượng từ 1 giây đến 24 giờ.');
+      return;
+    }
 
+    setError(null);
     onStartTimer({
       label: label.trim() || 'Hẹn giờ tùy chỉnh',
       durationSeconds: totalSeconds,
@@ -47,7 +74,11 @@ export function CustomTimerDialog({
       aria-labelledby="custom-timer-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
     >
-      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-white">
+      <div
+        ref={panelRef}
+        tabIndex={-1}
+        className="wk-dialog relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl focus:outline-none [.theme-high-contrast-dark_&]:bg-black [.theme-high-contrast-dark_&]:text-white"
+      >
         <h2 id="custom-timer-title" className="text-xl font-bold text-stone-900 [.theme-high-contrast-dark_&]:text-white">
           {COOKING_VI.customTimerTitle}
         </h2>
@@ -115,23 +146,36 @@ export function CustomTimerDialog({
             </div>
           </div>
 
+          {error && (
+            <p className="wk-error" role="alert">
+              {error}
+            </p>
+          )}
+
           <div className="mt-6 flex flex-col gap-2 pt-2">
             <button
               type="submit"
-              className="w-full rounded-xl bg-orange-600 px-4 py-3 text-base font-semibold text-white shadow-md hover:bg-orange-700 active:scale-95 transition"
+              className="min-h-[44px] w-full rounded-xl bg-orange-600 px-4 py-3 text-base font-semibold text-white shadow-md hover:bg-orange-700 active:scale-95 transition"
             >
               {COOKING_VI.startTimer}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="w-full rounded-xl border border-stone-300 bg-transparent px-4 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-100 active:scale-95 transition [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:text-stone-400 [.theme-high-contrast-dark_&]:hover:bg-stone-800"
+              className="min-h-[44px] w-full rounded-xl border border-stone-300 bg-transparent px-4 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-100 active:scale-95 transition [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:text-stone-400 [.theme-high-contrast-dark_&]:hover:bg-stone-800"
             >
               {COOKING_VI.cancel}
             </button>
           </div>
         </form>
       </div>
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-hidden="true"
+        onClick={onClose}
+        className="fixed inset-0 border-0 bg-transparent p-0 cursor-default"
+      />
     </div>
   );
 }

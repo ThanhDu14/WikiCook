@@ -10,6 +10,7 @@
 @import '@fontsource/be-vietnam-pro/latin-700.css';
 @import './tokens.css';
 @import './soft-editorial.css';
+@import './motion.css';
 
 @tailwind base;
 @tailwind components;

@@ -53,9 +53,12 @@ export function ExcludedIngredientPicker({ selected, onAdd, onRemove }: Props) {
       <div id={listId} aria-label={strings.dietary.suggestionsLabel} role="group">
         {searching && !loading && !failed && options.length === 0 ? <p className="wk-small wk-muted">{strings.dietary.excludedNone}</p> : null}
         {searching && loading ? (
-          <p className="wk-small wk-muted" role="status">
-            {strings.dietary.excludedSearching}
-          </p>
+          <div className="sx-stack" style={{ gap: 4 }} aria-busy="true">
+            <p className="wk-small wk-muted" role="status">
+              {strings.dietary.excludedSearching}
+            </p>
+            <div className="wk-skel" style={{ height: 48 }} aria-hidden="true" />
+          </div>
         ) : null}
         {failed ? (
           <p className="wk-error" role="alert">

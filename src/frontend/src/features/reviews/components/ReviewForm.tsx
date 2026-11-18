@@ -124,7 +124,10 @@ export function ReviewForm({ recipeTitle, review, onSubmit, onCancel }: ReviewFo
           </p>
         </div>
 
-        <div className={`wk-field${errors.substitutionTip ? ' is-error' : ''}`}>
+        <div
+          className={`wk-field${errors.substitutionTip ? ' is-error' : ''}`}
+          style={{ paddingTop: 12, borderTop: '1px solid var(--color-border)' }}
+        >
           <label className="wk-label" htmlFor={tipId}>
             {strings.form.tipLabel}
           </label>
@@ -176,7 +179,12 @@ export function ReviewForm({ recipeTitle, review, onSubmit, onCancel }: ReviewFo
           <button className="wk-btn wk-btn--secondary" type="button" onClick={onCancel}>
             {strings.form.cancel}
           </button>
-          <button className="wk-btn wk-btn--primary" type="submit" disabled={submitting} aria-busy={submitting || undefined}>
+          <button
+            className={`wk-btn wk-btn--primary${submitting ? ' is-loading' : ''}`}
+            type="submit"
+            disabled={submitting}
+            aria-busy={submitting || undefined}
+          >
             {submitting ? strings.form.submitting : editing ? strings.form.save : strings.form.submit}
           </button>
         </div>

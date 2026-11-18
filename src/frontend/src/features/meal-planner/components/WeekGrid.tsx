@@ -60,7 +60,7 @@ export function WeekGrid({ week, onAdd, onOpenItem, onReplaceItem, onRemoveItem,
                     className="wk-icon-btn wk-icon-btn--plain opacity-0 transition-opacity focus-visible:opacity-100 group-hover:opacity-100"
                     aria-label={vi.clearDayOf(vi.dayLong[d.day])}
                     onClick={() => setConfirmDay(d.day)}
-                    style={{ position: 'absolute', top: 0, right: 0, width: 32, height: 32, minHeight: 32 }}
+                    style={{ position: 'absolute', top: -4, right: -4, width: 44, height: 44, minHeight: 44 }}
                   >
                     <Icon name="trash" size={16} />
                   </button>
@@ -144,7 +144,7 @@ function MealCell({ slot, items, onAdd, onOpenItem, onReplaceItem, onRemoveItem,
           className="sx-row wk-caption wk-muted"
           aria-label={`${vi.addDish}: ${vi.dayLong[slot.day]}, ${vi.mealLong[slot.meal]}`}
           onClick={onAdd}
-          style={{ gap: 4, marginTop: 6, padding: '4px 0', border: 0, background: 'transparent', cursor: 'pointer' }}
+          style={{ gap: 4, marginTop: 4, padding: '8px 0', minHeight: 44, width: '100%', border: 0, background: 'transparent', cursor: 'pointer' }}
         >
           <Icon name="plus" size={16} />
           {vi.addDish}

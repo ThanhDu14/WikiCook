@@ -28,9 +28,12 @@ export function AuthCallbackPage() {
 
   return (
     <AuthShell>
-      <p role="status" className="wk-muted">
-        {strings.callback.working}
-      </p>
+      <div className="sx-stack" style={{ gap: 12 }} aria-busy="true">
+        <p role="status" className="wk-muted">
+          {strings.callback.working}
+        </p>
+        <div className="wk-skel" style={{ height: 48 }} />
+      </div>
     </AuthShell>
   );
 }

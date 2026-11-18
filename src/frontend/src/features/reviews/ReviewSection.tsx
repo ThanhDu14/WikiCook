@@ -83,9 +83,18 @@ export function ReviewSection({ recipeId, recipeTitle, isRecipeAuthor = false }:
   let main: React.ReactNode;
   if (data === null && loading) {
     main = (
-      <p className="wk-muted" role="status">
-        {strings.section.loading}
-      </p>
+      <div className="sx-stack" style={{ gap: 16 }} aria-busy="true">
+        <p className="wk-muted" role="status">
+          {strings.section.loading}
+        </p>
+        {[0, 1].map((i) => (
+          <div key={i} className="sx-stack" style={{ gap: 8, padding: '16px 0', borderBottom: '1px solid var(--color-border)' }}>
+            <div className="wk-skel" style={{ height: 20, width: '38%' }} />
+            <div className="wk-skel" style={{ height: 16, width: '90%' }} />
+            <div className="wk-skel" style={{ height: 16, width: '65%' }} />
+          </div>
+        ))}
+      </div>
     );
   } else if (data === null || (error && !loading)) {
     main = (
@@ -124,28 +133,36 @@ export function ReviewSection({ recipeId, recipeTitle, isRecipeAuthor = false }:
     );
   } else {
     main = (
-      <ReviewList
-        data={data}
-        query={reviews.query}
-        hasFilters={reviews.hasFilters}
-        newReviewId={newReviewId}
-        onSortChange={reviews.setSort}
-        onToggleCooksnapOnly={reviews.toggleCooksnapOnly}
-        onClearRating={() => reviews.setRating(null)}
-        onClearFilters={reviews.clearFilters}
-        onPageChange={reviews.setPage}
-        actions={{
-          onOpenPhoto: (review, index) => setDialog({ kind: 'photo', review, index }),
-          onReport: (review) =>
-            isGuest
-              ? askSignIn(strings.signIn.reportTitle)
-              : setDialog({ kind: 'report', target: { type: 'REVIEW', review } }),
-          onEdit: (review) => setDialog({ kind: 'edit', review }),
-          onDelete: (review) => setDialog({ kind: 'delete', review }),
-          onToggleHelpful: (review) => (isGuest ? askSignIn(strings.signIn.voteTitle) : void vote.toggle(review)),
-          isVotePending: vote.isPending,
+      <div
+        aria-busy={loading || undefined}
+        style={{
+          opacity: loading ? 0.6 : 1,
+          transition: 'opacity var(--motion-fast) var(--ease-out)',
         }}
-      />
+      >
+        <ReviewList
+          data={data}
+          query={reviews.query}
+          hasFilters={reviews.hasFilters}
+          newReviewId={newReviewId}
+          onSortChange={reviews.setSort}
+          onToggleCooksnapOnly={reviews.toggleCooksnapOnly}
+          onClearRating={() => reviews.setRating(null)}
+          onClearFilters={reviews.clearFilters}
+          onPageChange={reviews.setPage}
+          actions={{
+            onOpenPhoto: (review, index) => setDialog({ kind: 'photo', review, index }),
+            onReport: (review) =>
+              isGuest
+                ? askSignIn(strings.signIn.reportTitle)
+                : setDialog({ kind: 'report', target: { type: 'REVIEW', review } }),
+            onEdit: (review) => setDialog({ kind: 'edit', review }),
+            onDelete: (review) => setDialog({ kind: 'delete', review }),
+            onToggleHelpful: (review) => (isGuest ? askSignIn(strings.signIn.voteTitle) : void vote.toggle(review)),
+            isVotePending: vote.isPending,
+          }}
+        />
+      </div>
     );
   }
 

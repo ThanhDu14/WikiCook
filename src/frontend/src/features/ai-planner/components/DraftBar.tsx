@@ -48,7 +48,13 @@ export function DraftBar({ draft, onSave, onRegenerate, onDiscard, saving = fals
                 </button>
               )}
               {onSave && (
-                <button type="button" className="wk-btn wk-btn--primary" disabled={saving || draft.items.length === 0} aria-busy={saving} onClick={onSave}>
+                <button
+                  type="button"
+                  className={`wk-btn wk-btn--primary${saving ? ' is-loading' : ''}`}
+                  disabled={saving || draft.items.length === 0}
+                  aria-busy={saving}
+                  onClick={onSave}
+                >
                   {saving ? strings.saving : strings.save}
                 </button>
               )}

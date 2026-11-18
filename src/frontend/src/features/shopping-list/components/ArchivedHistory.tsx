@@ -171,6 +171,8 @@ export function ArchivedHistory({ onRestored }: { onRestored: (list: ShoppingLis
             <button
               className={`wk-btn wk-btn--primary${busy ? ' is-loading' : ''}`}
               type="button"
+              disabled={busy}
+              aria-busy={busy || undefined}
               onClick={() => void confirmRestore(restoring)}
             >
               Khôi phục

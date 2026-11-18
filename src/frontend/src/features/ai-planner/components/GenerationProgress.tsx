@@ -10,7 +10,9 @@ export function GenerationProgress({ onCancel }: { onCancel: () => void }) {
         aria-hidden="true"
         style={{ background: 'var(--color-saffron-tint)', color: 'var(--color-saffron)', width: 56, height: 56, flex: 'none' }}
       >
-        <Icon name="refresh" size={32} />
+        <span className="wk-spin" style={{ display: 'inline-grid' }}>
+          <Icon name="refresh" size={32} />
+        </span>
       </div>
       <div className="sx-grow" role="status" aria-live="polite">
         <h2 className="wk-h2">{strings.generatingTitle}</h2>

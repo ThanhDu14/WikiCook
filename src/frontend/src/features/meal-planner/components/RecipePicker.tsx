@@ -133,7 +133,13 @@ export function RecipePicker({ day, meal, onPick, onClose, suggestionsSlot }: Pr
               </div>
             )}
             {suggestionsSlot && <div data-testid="picker-suggestions">{suggestionsSlot}</div>}
-            {!loading && results.length === 0 ? (
+            {loading && results.length === 0 ? (
+              <div className="grid gap-ds-2" aria-busy="true">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="wk-skel" style={{ height: 64 }} />
+                ))}
+              </div>
+            ) : !loading && results.length === 0 ? (
               <div className="wk-state">
                 <div className="wk-state__art">
                   <Icon name="search" size={32} />

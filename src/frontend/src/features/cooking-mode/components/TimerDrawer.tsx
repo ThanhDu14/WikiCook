@@ -36,7 +36,7 @@ export function TimerDrawer({
         <button
           type="button"
           onClick={onOpenCustomTimer}
-          className="rounded-xl bg-orange-50 px-3 py-1.5 text-xs sm:text-sm font-semibold text-orange-700 hover:bg-orange-100 active:scale-95 transition [.theme-high-contrast-dark_&]:bg-yellow-950 [.theme-high-contrast-dark_&]:text-yellow-200 [.theme-high-contrast-dark_&]:hover:bg-yellow-900"
+          className="min-h-[44px] rounded-xl bg-orange-50 px-3.5 py-2 text-xs sm:text-sm font-semibold text-orange-700 hover:bg-orange-100 active:scale-95 transition [.theme-high-contrast-dark_&]:bg-yellow-950 [.theme-high-contrast-dark_&]:text-yellow-200 [.theme-high-contrast-dark_&]:hover:bg-yellow-900"
         >
           {COOKING_VI.addCustomTimer}
         </button>
@@ -122,14 +122,14 @@ export function TimerDrawer({
                       <button
                         type="button"
                         onClick={() => onExtendTimer(timer.timerId, 60)}
-                        className="rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-100 active:scale-95 transition [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:bg-stone-800 [.theme-high-contrast-dark_&]:text-stone-100 [.theme-high-contrast-dark_&]:hover:bg-stone-700"
+                        className="min-h-[44px] min-w-[44px] rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-100 active:scale-95 transition [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:bg-stone-800 [.theme-high-contrast-dark_&]:text-stone-100 [.theme-high-contrast-dark_&]:hover:bg-stone-700"
                       >
                         {COOKING_VI.extend1Min}
                       </button>
                       <button
                         type="button"
                         onClick={() => onExtendTimer(timer.timerId, 300)}
-                        className="rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-100 active:scale-95 transition [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:bg-stone-800 [.theme-high-contrast-dark_&]:text-stone-100 [.theme-high-contrast-dark_&]:hover:bg-stone-700"
+                        className="min-h-[44px] min-w-[44px] rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-100 active:scale-95 transition [.theme-high-contrast-dark_&]:border-stone-700 [.theme-high-contrast-dark_&]:bg-stone-800 [.theme-high-contrast-dark_&]:text-stone-100 [.theme-high-contrast-dark_&]:hover:bg-stone-700"
                       >
                         {COOKING_VI.extend5Min}
                       </button>
@@ -137,7 +137,7 @@ export function TimerDrawer({
                         type="button"
                         onClick={() => onPauseTimer(timer.timerId)}
                         aria-label={COOKING_VI.pauseTimer}
-                        className="rounded-lg bg-stone-200 p-2 text-stone-700 hover:bg-stone-300 active:scale-95 transition [.theme-high-contrast-dark_&]:bg-stone-700 [.theme-high-contrast-dark_&]:text-stone-100 [.theme-high-contrast-dark_&]:hover:bg-stone-600"
+                        className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg bg-stone-200 p-2 text-stone-700 hover:bg-stone-300 active:scale-95 transition [.theme-high-contrast-dark_&]:bg-stone-700 [.theme-high-contrast-dark_&]:text-stone-100 [.theme-high-contrast-dark_&]:hover:bg-stone-600"
                       >
                         ⏸
                       </button>
@@ -149,7 +149,7 @@ export function TimerDrawer({
                       type="button"
                       onClick={() => onResumeTimer(timer.timerId)}
                       aria-label={COOKING_VI.resumeTimer}
-                      className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 active:scale-95 transition"
+                      className="min-h-[44px] min-w-[44px] rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-emerald-700 active:scale-95 transition"
                     >
                       ▶ {COOKING_VI.resumeTimer}
                     </button>
@@ -159,7 +159,7 @@ export function TimerDrawer({
                     <button
                       type="button"
                       onClick={() => onAcknowledgeTimer(timer.timerId)}
-                      className="flex items-center gap-1 rounded-lg bg-red-600 px-3.5 py-2 text-xs font-bold text-white shadow-md hover:bg-red-700 active:scale-95 transition"
+                      className="flex min-h-[44px] min-w-[44px] items-center gap-1 rounded-lg bg-red-600 px-3.5 py-2 text-xs font-bold text-white shadow-md hover:bg-red-700 active:scale-95 transition"
                     >
                       <span>✓</span>
                       <span>{COOKING_VI.timerCompleted}</span>
@@ -170,7 +170,7 @@ export function TimerDrawer({
                     type="button"
                     onClick={() => onDeleteTimer(timer.timerId)}
                     aria-label={COOKING_VI.deleteTimer}
-                    className="rounded-lg p-2 text-stone-400 hover:bg-stone-100 hover:text-red-600 active:scale-95 transition [.theme-high-contrast-dark_&]:hover:bg-stone-800"
+                    className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-stone-400 hover:bg-stone-100 hover:text-red-600 active:scale-95 transition [.theme-high-contrast-dark_&]:hover:bg-stone-800"
                   >
                     🗑
                   </button>

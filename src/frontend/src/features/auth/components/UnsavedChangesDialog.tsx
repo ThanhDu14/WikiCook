@@ -4,7 +4,22 @@ import { strings } from '../strings.vi';
 
 function Blocked({ blocker }: { blocker: Extract<Blocker, { state: 'blocked' }> }) {
   const stay = useRef<HTMLButtonElement>(null);
-  useEffect(() => stay.current?.focus(), []);
+  const resetRef = useRef(blocker.reset);
+  useEffect(() => {
+    resetRef.current = blocker.reset;
+  });
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null;
+    stay.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') resetRef.current();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      previous?.focus?.();
+    };
+  }, []);
   return (
     <div className="wk-scrim" role="presentation" style={{ position: 'fixed', zIndex: 60 }}>
       <div className="wk-dialog" role="alertdialog" aria-modal="true" aria-labelledby="leave-title" aria-describedby="leave-body">
