@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { Banner } from '@/shared/ui/Banner';
 import { AuthShell } from '../components/AuthShell';
@@ -17,12 +18,14 @@ const formatTime = (iso: string) => {
   return d ? d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', hour12: false }) : null;
 };
 
-/** Google returns the reason in a URL fragment (`#code=…&reason=…&endsAt=…`); it is read once and removed (FR-013). */
+/**
+ * Google returns the reason in a URL fragment (`#code=…&reason=…&endsAt=…`). Reading it is pure, so a render that runs
+ * twice (React StrictMode in the dev server) sees the same fragment; removing it from the URL is a separate effect (FR-013).
+ */
 function fromFragment(): AccountRestriction | null {
   if (!window.location.hash) return null;
   const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
   const code = params.get('code');
-  window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search);
   if (code !== 'ACCOUNT_SUSPENDED' && code !== 'ACCOUNT_BANNED') return null;
   return { code, reason: params.get('reason') ?? undefined, endsAt: params.get('endsAt'), closureToken: params.get('closureToken') };
 }
@@ -34,7 +37,13 @@ function fromFragment(): AccountRestriction | null {
  */
 export function AccountStatusPage() {
   const location = useLocation();
-  const state = (location.state as AccountRestriction | null) ?? fromFragment();
+  const [fragment] = useState(fromFragment);
+  const state = (location.state as AccountRestriction | null) ?? fragment;
+
+  // the reason and the closure token must not stay in the address bar, the history or a Referer
+  useEffect(() => {
+    if (window.location.hash) window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search);
+  }, []);
 
   if (!state) return <Navigate to="/login" replace />;
 
@@ -81,7 +90,7 @@ export function AccountStatusPage() {
       ) : null}
 
       <hr className="wk-rule" />
-      <div className="sx-row">
+      <div className="sx-row" style={{ flexWrap: 'wrap' }}>
         <Link className="wk-btn wk-btn--primary" to="/">
           {strings.accountStatus.toHome}
         </Link>

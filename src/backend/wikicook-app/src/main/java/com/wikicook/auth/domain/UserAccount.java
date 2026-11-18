@@ -15,9 +15,10 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 /**
- * {@code users}, only the columns spec 010 owns. {@code avatar_storage_key}, {@code diet_type}, {@code household_size}
- * and {@code max_cook_time_minutes} belong to 011 and are deliberately not mapped; {@link DynamicUpdate} writes only
- * the changed columns, so a 010 update never overwrites a {@code display_name} that 011 just changed (data-model.md).
+ * {@code users}, only the columns spec 010 owns. {@code diet_type}, {@code household_size} and
+ * {@code max_cook_time_minutes} belong to 011 and are deliberately not mapped; {@code avatar_storage_key} is mapped
+ * read-only so {@code /auth/me} shows the picture without a second query. {@link DynamicUpdate} writes only the
+ * changed columns, so a 010 update never overwrites a {@code display_name} that 011 just changed (data-model.md).
  */
 @Entity
 @Table(name = "users")
@@ -60,6 +61,10 @@ public class UserAccount {
     @Enumerated(EnumType.STRING)
     @Column(name = "pending_role_notice_from", length = 15)
     private Role pendingRoleNoticeFrom;
+
+    /** Owned by 011: never inserted or updated from here, only read. */
+    @Column(name = "avatar_storage_key", insertable = false, updatable = false)
+    private String avatarStorageKey;
 
     @Column(name = "is_system", nullable = false)
     private boolean system;
@@ -125,6 +130,10 @@ public class UserAccount {
 
     public Role getPendingRoleNoticeFrom() {
         return pendingRoleNoticeFrom;
+    }
+
+    public String getAvatarStorageKey() {
+        return avatarStorageKey;
     }
 
     public boolean isSystem() {

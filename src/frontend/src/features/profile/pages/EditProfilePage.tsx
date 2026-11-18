@@ -60,7 +60,7 @@ function EditProfileForm({ profile, onReload }: { profile: MyProfile; onReload: 
       setDisplayName(next.displayName);
       setBio(next.bio ?? '');
       setAvatar({ file: null, remove: false });
-      updateAccount({ displayName: next.displayName });
+      updateAccount({ displayName: next.displayName, avatarUrl: next.avatarUrl });
       setNotice(strings.edit.saved);
     } catch (error) {
       const code = problemCode(error);

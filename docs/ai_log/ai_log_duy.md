@@ -38,6 +38,9 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 20 | 2026-11-09, 04:20 – 04:45 | Backend tìm kiếm 020 và ACT-01 (header API dùng chung) | 020 backend, client API |
 | 21 | 2026-11-09, 04:48 – 11:45 | Claude Code làm backend 060 (wizard đăng công thức, "Công thức của tôi") chạy một mình qua đêm | 060 backend |
 | 22 | 2026-11-10, 22:43 – 23:55 | Gemini Argon làm trang chủ SR-01, đưa backend 020 lên main (PR #81), nạp dữ liệu công thức để chạy thử | 020 frontend, 020 backend |
+| 23 | 2026-11-18, 15:20 – 16:00 | Hoàn thiện frontend Reviews & Cooksnap 070, chạy thử với API thật, mở PR #98 (`SCRUM-78`) | 070 frontend |
+| 24 | 2026-11-18, 15:50 – 16:10 | Hoàn tất Use-Case Model / Specification v2.0, ghi trạng thái feedback PA3 và self-audit, mở PR #99 – #101 (`SCRUM-69`, `SCRUM-70`, `SCRUM-71`) | Use-Case Model, UC Specification, Sprint 04 Report |
+| 25 | 2026-11-18, 16:00 – 17:10 | Gemini 4 Hydrogen cải thiện UX toàn bộ frontend theo 20 nguyên tắc, Claude Code kiểm chứng và quay video so sánh trước/sau (PR #102) | Frontend (tất cả feature) |
 
 ---
 
@@ -1436,3 +1439,168 @@ Kiểm chứng: npm run test, lint, build. Commit nhỏ, không ghi tên AI, kh�
 - Backend: `mvn -pl wikicook-app -am verify` BUILD SUCCESS (165 integration test); CI của PR #81 xanh cả backend và frontend sau commit `45ccb06`.
 - Import: `import.sql` báo 1647 dòng trong file, 1647 món được thêm; sau khi tính `search_vector`, DB có 1581 món đã xuất bản và đều có `search_vector`; tìm "pho", "chao thit bo" qua API đều ra kết quả.
 - Chạy thật: backend 020 nối DB demo; `/api/v1/recipes/featured` và `/api/v1/recipes/search?sort=NEWEST` qua proxy của vite đều trả dữ liệu; Claude Code bật backend + frontend tại `http://localhost:5173/`, mình mở xem bằng mắt và đối chiếu với W-SR01 / SR01.
+
+## Mục 23: Hoàn thiện frontend Reviews & Cooksnap 070, chạy thử với API thật, mở PR #98 (SCRUM-78)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-18, 15:20 – 16:00 (giờ Việt Nam, UTC+7); sửa thêm lúc 16:50 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `src/frontend/src/features/reviews/` (`ReviewSection.tsx`, `RecipeReviewsPage.tsx`, `strings.vi.ts`, `components/ReviewCard.tsx` + test), `src/frontend/src/app/routes.tsx`, `src/frontend/src/shared/ui/RecipeCard.tsx` + test, `specs/070-review-cooksnap/tasks.md` (T003, T049 – T063, T065, T079) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code (Claude Opus 5.5) trong VS Code, Windows 11; MCP Atlassian (Jira) qua Claude Code |
+| Mục đích | Làm xong phần frontend còn dở của SCRUM-78 (ReviewList, ReviewSection, gắn vào trang công thức), nối với backend 070 của Chung (PR #93) và kiểm tra luồng UI → API → DB thật |
+| Nhánh Git | `feat/070-reviews-frontend` (worktree `WikiCook-s78`), rebase lên `main`; commit `9ac4aac`, `d27f030` → PR #98 |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `f642bf0b-95e4-4463-a16e-7fb56d741a0b` (tiếp nối các commit WIP của phiên 13/11) |
+
+### Prompt đã dùng
+
+Prompt gửi Claude Code (viết lại cho đầy đủ ý):
+
+```text
+Bối cảnh: PA4 Sprint 4, mình (B) phụ trách SCRUM-69, 70, 71, 73, 78. Frontend 070 (SCRUM-78) đang làm
+dở ở worktree WikiCook-s78; backend 070 của Chung (SCRUM-77) đã merge vào main. Jira đã nối MCP với
+Claude Code.
+Yêu cầu:
+1. Pull main mới nhất trước, đọc PA4 guide và Jira để biết trạng thái thật của từng task.
+2. Rebase nhánh feat/070-reviews-frontend lên main; đối chiếu types và API service của frontend với
+   DTO/controller backend thật của Chung, chỗ lệch thì sửa theo code.
+3. Làm nốt ReviewSection theo test đã viết sẵn và màn hình W-RV01 – W-RV06 (class wk-/wx-): tổng quan
+   điểm + lọc sao, danh sách, form viết/sửa, xoá có xác nhận, báo cáo, bình chọn hữu ích, lightbox,
+   mời khách đăng nhập (dùng AuthContext của 010). Gắn vào trang công thức.
+4. Chạy npm test, lint, build; kiểm tra luồng thật với backend + PostgreSQL (đăng ký, xác minh email,
+   đăng nhập JWT, tạo/sửa/xoá review, ảnh Cooksnap, điểm trung bình của món).
+5. Đánh dấu task trong tasks.md, commit không ghi tên AI, mở PR cho reviewer Chung, cập nhật Jira.
+```
+
+### Nội dung do AI tạo
+
+- Phát hiện `main` chưa có trang chi tiết công thức (thuộc 060, còn ở nhánh local) nên đề xuất và làm trang `/recipes/:id` đúng màn hình W-RV01 ("Đánh giá cho …"); tên món trên thẻ công thức (`RecipeCard`) thành link tới trang này.
+- Viết `ReviewSection.tsx` nối toàn bộ component đã có; khách được nhận biết qua `AuthContext` của 010 (fallback dev identity khi test). 83 test của `features/reviews` pass, sửa test cũ "thẻ chưa phải link" của `RecipeCard`.
+- Dựng môi trường chạy thử riêng (Docker project `wikicook-e2e`: PostgreSQL + Mailpit, backend chạy bằng jar vì build image Docker lỗi exit 255), seed món mẫu, viết script Python gọi API thật.
+- Khi quay video (Mục 25) phát hiện lỗi review vừa tạo đã hiện "· đã sửa" do backend ghi `createdAt` / `updatedAt` lệch vài micro giây; sửa so sánh với ngưỡng 1 giây và thêm 2 test (commit `d27f030`).
+- Mở PR #98, chuyển SCRUM-78 sang In Review và ghi comment kết quả trên Jira.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Trang chứa review | Làm trang `/recipes/:id` theo W-RV01 thay vì kéo cả 060 lên main | 060 chưa review, quá lớn để gộp vào SCRUM-78; khi 060 lên main chỉ cần gắn `<ReviewSection>` |
+| Tên món trên trang | Lấy từ thẻ đã bấm (router state), không gọi API mới | Chưa có `GET /recipes/{id}` trên main; không làm giả dữ liệu |
+| Kiểm tra tác giả món | Không truyền `isRecipeAuthor`, để server trả 403 | Server đã chặn tự đánh giá; frontend chưa có dữ liệu tác giả |
+| Môi trường chạy thử | DB riêng `wikicook-e2e`, không đụng DB chính và DB demo 020 | Không làm hỏng dữ liệu của nhóm |
+
+### Cách sinh viên kiểm chứng
+
+- `npm test`: 119 file, 903 test pass (sau sửa "đã sửa": 905); `npm run lint` 0 lỗi; `npm run build` thành công.
+- Gọi API thật qua script (JWT thật sau khi đăng ký và xác minh email qua Mailpit): tạo review 201, tạo trùng 409 `review-already-exists`, nhận xét quá ngắn 400, khách xem danh sách và điểm tổng, sửa kèm ảnh Cooksnap (ảnh trả về dạng WebP), lọc "Chỉ có Cooksnap", tự báo cáo 403, tự bình chọn 403, xoá 204, điểm trung bình về 0; `recipes.rating_avg` / `review_count` trong DB cập nhật đúng.
+- Xem bằng mắt qua video quay bằng Playwright (Mục 25): luồng khách → mời đăng nhập → đăng nhập → viết đánh giá → badge "Mới" → bình chọn hữu ích chạy đúng.
+
+## Mục 24: Hoàn tất Use-Case Model / Specification v2.0, ghi trạng thái feedback PA3 và self-audit, mở PR #99 – #101 (SCRUM-69, SCRUM-70, SCRUM-71)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-18, 15:50 – 16:10 (giờ Việt Nam, UTC+7); tiếp nối bản nháp làm ngày 13/11 |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `docs/requirements/use-case-model.md` v2.0, `docs/requirements/use-case-specification.md` v2.0, `docs/management/reports/sprint-04/sprint-04-report.md` (Section 3); danh sách thay đổi cho `Changes.md`: `changes-scrum70.md`, `changes-scrum71.md` (giao cho Hưng, SCRUM-84) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code (Claude Opus 5.5) trong VS Code, Windows 11; một subagent Claude Code viết phần còn lại của SCRUM-71; MCP Atlassian (Jira) |
+| Mục đích | Hoàn tất Part A của PA4: tài liệu use case v2.0 khớp spec và code thật của 010, 011, 070; ghi trung thực trạng thái feedback PA3 |
+| Nhánh Git | `docs/scrum-70-use-case-model-v2` → PR #99; `docs/scrum-71-uc-spec-v2` (commit `1cef757`, `a3bb24d`, `e1a7c3e`, `3faab16`) → PR #101; `docs/scrum-69-feedback-audit` → PR #100 |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `f642bf0b-95e4-4463-a16e-7fb56d741a0b`; phiên ngày 13/11 cho bản nháp SCRUM-70/71 |
+
+### Prompt đã dùng
+
+Prompt gửi Claude Code (viết lại cho đầy đủ ý):
+
+```text
+Bối cảnh: PA4 Part A (5 điểm) gồm Use-Case Model và Use-Case Specification bản sửa, kèm Changes.md
+do Hưng tổng hợp. Chưa nhận được feedback PA3 của TA. Bản nháp SCRUM-70 (xong) và SCRUM-71 (dở, tới
+UC-011-03) đang ở hai worktree từ ngày 13/11.
+Yêu cầu:
+1. SCRUM-71: làm nốt 011 (UC-011-03 – 05), thêm UC-010-05 Sign Out, UC-011-06 View Public Profile,
+   UC-070-07 Mark Review as Helpful, UC-070-08 Update Recipe Rating Summary; viết lại 070 theo spec,
+   contract và controller thật của Chung. Chỗ spec và code lệch nhau thì ghi vào open questions, không
+   khẳng định hành vi chưa có trong code. Giữ mẫu UC, tiếng Anh, dòng Performed/Reviewed/Edited by,
+   Revision History v2.0; viết danh sách thay đổi cho Changes.md.
+2. SCRUM-70: rebase lên main, mở PR.
+3. SCRUM-69: ghi vào Sprint 04 report trạng thái feedback PA3 (không bịa feedback) và checklist
+   self-audit, chỉ rõ việc chuyển cho SCRUM-70, 71, 84.
+4. Mở PR với đúng reviewer theo PA4 guide, cập nhật Jira (In Review + comment link PR).
+```
+
+### Nội dung do AI tạo
+
+- Subagent Claude Code viết phần còn lại của `use-case-specification.md` v2.0: 011, UC-010-05, UC-011-06, viết lại UC-070-01 – 06 theo code, thêm UC-070-07 / 08, cập nhật bảng truy vết, Revision History; ghi 13 điểm lệch spec – code thành `[OQ-011-09]`, `[OQ-070-07]` – `[OQ-070-18]` (ví dụ: món chưa xuất bản trả 404 thay vì 422, rate limit đếm trong bộ nhớ, chưa kiểm tra email đã xác minh khi viết review); viết `changes-scrum71.md`.
+- Claude Code viết Section 3 của Sprint 04 report: bảng trạng thái feedback, checklist self-audit 9 mục, phần chuyển giao.
+- Rebase, mở PR #99, #100, #101; chuyển SCRUM-70, 71 sang In Review, SCRUM-73 sang Done (Chung đã approve và merge PR #88), comment link PR trên Jira.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Feedback PA3 | Ghi "không nhận được, ngày kiểm tra 12/11, sẽ kiểm tra lại trước 23/11"; bỏ câu "đã xác nhận lại 18/11" Claude Code viết lúc đầu | Mình chưa kiểm tra lại Moodle ngày 18/11, không ghi điều chưa xảy ra |
+| Chỗ spec lệch code | Ghi thành open question, không sửa spec 070 | Spec là của nhóm và Chung; tài liệu use case chỉ mô tả cái đã có |
+| `Changes.md` | Không tự viết, chỉ giao danh sách thay đổi cho Hưng | Đó là SCRUM-84 của Hưng |
+| Reviewer | Theo PA4 guide: Hiển (70), Chung (71), Hưng (69) | Mỗi task một người review khác người làm |
+
+### Cách sinh viên kiểm chứng
+
+- Use-Case Model: 13 sơ đồ Mermaid render không lỗi bằng `@mermaid-js/mermaid-cli`; 64 ID cũ trùng khớp với bản specification.
+- Use-Case Specification: 68 use case (`grep "^### UC-"`), các bảng ở mục 9, 10, 12 đủ cột; điểm lệch spec – code đã được Claude Code đối chiếu với kết quả gọi API thật ở Mục 23 (409, 403, 404).
+- Đọc lại Section 3 của report trước khi push.
+
+## Mục 25: Gemini 4 Hydrogen cải thiện UX toàn bộ frontend theo 20 nguyên tắc, Claude Code kiểm chứng và quay video so sánh trước/sau (PR #102)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-18, 16:00 – 17:10 (giờ Việt Nam, UTC+7); Gemini 4 Hydrogen chạy khoảng 16:00 – 16:40, bị ngắt một lần do máy tắt |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `src/frontend/src/styles/motion.css`, `tokens.css`, `app/AppLayout.tsx` và 57 file trong `src/frontend/src/features/*` (search, reviews, meal-planner, ai-planner, shopping-list, cooking-mode, auth, profile); video `D:\HK1-26-27\SE\ux-video\wikicook-ux-so-sanh.mp4` |
+| Công cụ AI, phiên bản, nền tảng | Gemini 4 Hydrogen (High) qua Antigravity CLI `agy` 1.5.11, gọi từ Claude Code; Claude Code (Claude Opus 5.5) trong VS Code soạn prompt, review code, chạy test, quay và dựng video bằng Playwright + ffmpeg |
+| Mục đích | Cải thiện UX toàn bộ đồ án theo 20 nguyên tắc (12 nguyên tắc hoạt hình + 8 luật UX: Fitts, Hick, Miller, Doherty, Postel, Jakob, Frequency of use, Bigger hit areas) mà không đổi logic; có video trước/sau gửi nhóm |
+| Nhánh Git | `feat/ux-20-principles` (worktree `WikiCook-ux`, từ `feat/070-reviews-frontend`), 10 commit `608e7d0` … `3e9fdda` + cherry-pick `d27f030` → PR #102 (stacked trên #98) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `f642bf0b-95e4-4463-a16e-7fb56d741a0b`; output của `agy` lưu ở `hydrogen-ux-report.txt`, `hydrogen-ux-report2.txt` |
+
+### Prompt đã dùng
+
+Prompt gửi Claude Code (viết lại cho đầy đủ ý):
+
+```text
+Bối cảnh: mình muốn cải thiện UX đồ án theo 20 nguyên tắc trong ảnh (Squash & stretch, Anticipation,
+Staging, Pose to pose, Follow through, Slow in & out, Arcs, Secondary action, Snappy timing,
+Exaggerated feedback, Solid drawing, Appeal, Fitts, Bigger hit areas, Hick, Miller, Doherty, Postel,
+Jakob, Frequency of use). Mình dùng Gemini qua lệnh agy.
+Yêu cầu:
+1. Đánh giá nguyên tắc nào hợp với web, nguyên tắc nào nên bỏ.
+2. Sau khi xong các SCRUM, nhờ Gemini 4 Hydrogen làm cho toàn bộ frontend, trong worktree riêng:
+   bám màn hình đồ án và class wk-/wx-, chuyển động gom vào một file CSS, tắt khi
+   prefers-reduced-motion, không thêm thư viện, không đổi API/hooks/types/route, giữ accessibility,
+   chạy test/lint/build sau mỗi feature, commit theo feature, không push, cuối cùng báo cáo bảng
+   nguyên tắc → thay đổi → file.
+3. Tự kiểm tra lại code Gemini viết, không tin báo cáo của Gemini.
+4. Quay video trước khi thay đổi và sau khi thay đổi, ghép thành video so sánh chỉ về UX, làm chuyên
+   nghiệp; tự xem lại và chấm điểm, chỉ dừng khi đạt từ 8/10.
+```
+
+Prompt gửi Gemini 4 Hydrogen do Claude Code soạn (dòng đầu: `[MODEL: Gemini 4 Hydrogen] [TASK: CODE — UX polish of the whole WikiCook frontend, NO logic/API changes]`), tóm tắt: áp dụng 20 nguyên tắc dưới dạng micro-interaction CSS 120 – 300 ms và luật UX; phạm vi `src/frontend/src/features/*`, `app`, `shared/ui`; 6 quy tắc bắt buộc như yêu cầu 2 ở trên; báo cáo cuối gồm bảng, nguyên tắc bỏ qua, kết quả test/lint/build, chỗ lệch màn hình. Lần chạy lại: "Continue the same task from where you stopped …".
+
+### Nội dung do AI tạo
+
+- Gemini 4 Hydrogen: `motion.css` (keyframe hộp thoại/sheet/drawer/toast, nhún khi bấm nút/chip, nhấc thẻ khi hover, sao phóng khi hover, tắt khi reduced-motion), token chuyển động, skip link; theo từng feature: skeleton khi tải, spinner trong nút gửi, vùng bấm ≥ 44 px, Esc/focus quay về nút gốc, xoá lỗi khi sửa ô, chia nhóm form. Bỏ qua 2 nguyên tắc: Pose to pose, Moving in arcs.
+- Claude Code: soạn prompt; khi `agy` headless bị chặn quyền chạy lệnh thì cho chạy tiếp với danh sách lệnh được phép hẹp (npm test/lint/build, git add/commit/status/diff/log) thay vì cờ bỏ qua mọi quyền.
+- Claude Code: viết script Playwright quay cùng một kịch bản trên hai bản (con trỏ chuột hiển thị, mốc đồng bộ màu), script ffmpeg ghép video A/B 1920×1080 có tiêu đề, nhãn TRƯỚC/SAU, chú thích nguyên tắc; tự chấm qua 8 phiên bản (6 → 7 → 7,5 → 8 → 8,5/10), sửa: giao diện quá nhỏ, menu xuống dòng ở 1024 px, chú thích tràn và sai sự thật, video lệch thời gian, khung trắng khi tải trang, tìm kiếm ra 0 kết quả.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Cách gọi Gemini | Không dùng `--dangerously-skip-permissions`; cấp danh sách lệnh hẹp | Không để AI chạy lệnh tuỳ ý trên máy |
+| Phạm vi | Chỉ CSS và giao diện, không đổi logic; làm trên nhánh riêng, PR riêng | Giảm rủi ro xung đột với PR của các thành viên khác |
+| Chú thích video | Bỏ cảnh Lightbox, Tài khoản, Đi chợ; chỉ ghi thay đổi có thật trong code | Lightbox không có hiệu ứng mới; hai cảnh kia không thấy khác biệt trên desktop |
+| Video | So sánh A/B theo từng cảnh thay vì hai khung cạnh nhau | Hai khung cạnh nhau quá nhỏ, không thấy được hiệu ứng |
+
+### Cách sinh viên kiểm chứng
+
+- Claude Code tự chạy lại trên nhánh UX (không dựa vào báo cáo của Gemini): `npm test` 119 file, 905 test pass; `npm run lint` 0 lỗi (2 warning có từ trước); `npm run build` thành công.
+- Đọc diff: không file nào trong `api/`, `hooks/`, `services/`, `lib/`, `types.ts`, `routes.tsx` hay test bị sửa; các thuộc tính `aria-label`, `onClick` bị xoá trong diff đều còn nguyên sau khi viết lại nút.
+- Đối chiếu chú thích video với `motion.css` (sao `scale(1.1)` khi hover, chip `scale(0.95)` khi bấm, thẻ `translateY(-2px)`, hộp thoại `wk-pop-in`), bỏ chú thích không đúng.
+- Xem video so sánh: trích khung đầu và giữa của từng clip để kiểm tra đồng bộ và nội dung.

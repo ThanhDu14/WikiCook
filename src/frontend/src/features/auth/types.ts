@@ -16,6 +16,8 @@ export interface CurrentAccount {
   email: string;
   role: Role;
   emailVerified: boolean;
+  /** The picture (`/api/v1/media/avatars/…`); absent or null when there is none, then the initials are shown. */
+  avatarUrl?: string | null;
   roleNotice?: RoleNotice | null;
 }
 

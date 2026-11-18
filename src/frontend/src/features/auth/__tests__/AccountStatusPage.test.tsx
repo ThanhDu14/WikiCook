@@ -1,13 +1,15 @@
 import { render, screen } from '@testing-library/react';
+import { StrictMode } from 'react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { AccountStatusPage } from '../pages/AccountStatusPage';
 import type { AccountRestriction } from '../types';
 
-function renderPage(state: AccountRestriction | null) {
+function renderPage(state: AccountRestriction | null, strict = false) {
   const router = createMemoryRouter([{ path: '/account-status', element: <AccountStatusPage /> }, { path: '/login', element: <p>login page</p> }], {
     initialEntries: [{ pathname: '/account-status', state }],
   });
-  render(<RouterProvider router={router} />);
+  const app = <RouterProvider router={router} />;
+  render(strict ? <StrictMode>{app}</StrictMode> : app);
 }
 
 afterEach(() => window.history.replaceState(null, '', '/'));
@@ -47,6 +49,15 @@ describe('AccountStatusPage (spec 010 T063, W-AU07)', () => {
 
     expect(screen.getByRole('alert')).toHaveTextContent('Tài khoản bị đình chỉ đến 01/12/2026');
     expect(screen.getByRole('alert')).toHaveTextContent('Lý do: Spam');
+    expect(window.location.hash).toBe('');
+  });
+
+  it("still shows Google's fragment when React renders twice (StrictMode in the dev server), and removes it", () => {
+    window.history.replaceState(null, '', '/account-status#code=ACCOUNT_BANNED&reason=Spam&closureToken=abc');
+    renderPage(null, true);
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Tài khoản đã bị cấm');
+    expect(screen.queryByText('login page')).not.toBeInTheDocument();
     expect(window.location.hash).toBe('');
   });
 

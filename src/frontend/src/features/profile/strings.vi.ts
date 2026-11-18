@@ -50,6 +50,14 @@ export const strings = {
     historyCardHint: 'Danh sách đã hoàn tất',
     loadError: 'Không tải được tài khoản của bạn.',
   },
+  public: {
+    recipeCount: (n: number) => (n === 0 ? 'Chưa đăng công thức nào' : `${n} công thức đã đăng`),
+    noBio: 'Chưa có giới thiệu.',
+    notFoundTitle: 'Không tìm thấy hồ sơ',
+    notFoundBody: 'Đường dẫn có thể sai hoặc người dùng này không còn trên WikiCook.',
+    loadError: 'Không tải được hồ sơ này.',
+    toHome: 'Về trang chủ',
+  },
   edit: {
     title: 'Hồ sơ công khai',
     save: 'Lưu thay đổi',

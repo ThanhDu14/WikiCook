@@ -14,6 +14,9 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
     /** {@code email} must already be normalized (FR-002); the column has the same CHECK. */
     Optional<UserAccount> findByEmail(String email);
 
+    /** The account linked to this Google identity ({@code sub}), spec 010 US5. */
+    Optional<UserAccount> findByGoogleSub(String googleSub);
+
     /** {@code SELECT … FOR UPDATE}: admin operations on one account queue up (research R10). */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select u from UserAccount u where u.id = :id")

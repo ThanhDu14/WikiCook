@@ -1,4 +1,4 @@
-import { act, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { useState } from 'react';
@@ -45,6 +45,32 @@ describe('AppLayout account area (spec 010 T064)', () => {
     expect(within(account).getByText('TD')).toBeInTheDocument();
     expect(within(header()).queryByRole('link', { name: 'Đăng nhập' })).not.toBeInTheDocument();
     expect(within(header()).queryByRole('button', { name: 'Đăng xuất' })).not.toBeInTheDocument(); // it is in the account menu
+  });
+
+  it('shows the picture instead of the initials when the account has an avatarUrl, in the header and the side menu', async () => {
+    server.use(signedInHandler({ avatarUrl: '/api/v1/media/avatars/me.jpg' }));
+    renderWithAuth(routes, '/profile');
+
+    const account = await within(header()).findByRole('link', { name: 'Tài khoản của tôi' });
+    expect(account.querySelector('img')).toHaveAttribute('src', '/api/v1/media/avatars/me.jpg');
+    expect(within(account).queryByText('TD')).not.toBeInTheDocument();
+    const side = document.querySelector<HTMLElement>('nav.wx-side')!;
+    expect(side.querySelector('img')).toHaveAttribute('src', '/api/v1/media/avatars/me.jpg');
+    expect(within(side).queryByText('TD')).not.toBeInTheDocument();
+  });
+
+  it('falls back to the initials when the account has no picture, or the picture cannot be loaded', async () => {
+    server.use(signedInHandler({ avatarUrl: '/api/v1/media/avatars/gone.jpg' }));
+    renderWithAuth(routes, '/profile');
+
+    const account = await within(header()).findByRole('link', { name: 'Tài khoản của tôi' });
+    fireEvent.error(account.querySelector('img')!);
+
+    expect(within(account).getByText('TD')).toBeInTheDocument();
+    expect(account.querySelector('img')).toBeNull();
+    const side = document.querySelector<HTMLElement>('nav.wx-side')!;
+    fireEvent.error(side.querySelector('img')!);
+    expect(within(side).getByText('TD')).toBeInTheDocument();
   });
 
   it('shows "Đăng nhập" to a guest, in the header and in the mobile bar', async () => {

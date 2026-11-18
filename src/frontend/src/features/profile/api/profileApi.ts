@@ -1,5 +1,8 @@
 import { api } from '@/shared/api/client';
-import type { MyProfile, ProfileUpdate } from '../types';
+import type { MyProfile, ProfileUpdate, PublicProfile } from '../types';
+
+/** `GET /profiles/{id}`: the public page of a person, open to guests; 404 for an unknown, deleted or banned one (FR-005). */
+export const getPublicProfile = (id: string) => api.get<PublicProfile>(`/profiles/${encodeURIComponent(id)}`);
 
 /** `GET /me/profile`: the caller's own profile with account info (FR-001, FR-006). */
 export const getMyProfile = () => api.get<MyProfile>('/me/profile');

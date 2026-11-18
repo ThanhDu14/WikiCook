@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSignOut } from '@/features/auth/hooks/useSignOut';
-import { initials } from '@/features/auth/lib/initials';
+import { AccountAvatar } from '@/features/auth/components/AccountAvatar';
 import { useAuth } from '@/features/auth/useAuth';
 import { Icon, type IconName } from '@/shared/ui/Icon';
 import { strings } from '../strings.vi';
@@ -28,9 +28,7 @@ export function AccountLayout({ children }: { children: ReactNode }) {
         <nav className="wx-side" aria-label={strings.nav.label}>
           {account ? (
             <div className="sx-row" style={{ gap: 12, padding: '0 12px 16px' }}>
-              <span className="wk-avatar" aria-hidden="true">
-                {initials(account)}
-              </span>
+              <AccountAvatar account={account} />
               <div>
                 <strong>{account.displayName}</strong>
                 <p className="wk-caption wk-muted">{account.email}</p>

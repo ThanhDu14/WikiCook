@@ -4,7 +4,7 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Document Title:** Detailed Use-Case Specifications for Feature 040 (Shopping List) & Feature 050 (Cooking Mode)  
 **Sprint Cycle:** Sprint 03 (Project Assignment 3 — Part D, 45 Points)  
-**Document Version:** 1.0 (Initial Draft Baseline for Peer Review — SCRUM-53)  
+**Document Version:** 2.0 (Second Edition — PA4 Part A revision of Sections 9, 10 and 12, `SCRUM-71`; first edition `v1.0` – `v1.4`, Sprint 03)  
 **Status:** Proposal / Ready for Review *(Aligned with Spec 040 & Spec 050; pending final Use-Case Model freeze in SCRUM-49)*
 
 ---
@@ -21,10 +21,10 @@
 | **Section 6** | Use-Case Specifications for Feature 020: Recipe Discovery & Recipe Detail (`UC-020-01` – `UC-020-06`) | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-51` |
 | **Section 7** | Use-Case Specifications for Feature 060: Community Recipe Contribution (`UC-060-01` – `UC-060-07`) | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-51` |
 | **Section 8** | Traceability, Screen Mapping & Open Questions for Features 020 & 060 | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-51` |
-| **Section 9** | Use-Case Specifications for Feature 010: User Authentication & Roles (`UC-010-01` – `UC-010-04`) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-50` |
-| **Section 10** | Use-Case Specifications for Feature 011: User Profile & Dietary Profile (`UC-011-01` – `UC-011-05`) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-50` |
+| **Section 9** | Use-Case Specifications for Feature 010: User Authentication & Roles (`UC-010-01` – `UC-010-05`) | **Mai Văn Hiển (MaiHien3507)** (v1.2); **Nguyễn Đức Duy (DucDuyNguyen15-IT)** (v2.0) | **Trần Nguyễn Công Chung (itzchugnn)** *(v2.0 review pending)* | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-50`, `SCRUM-71` |
+| **Section 10** | Use-Case Specifications for Feature 011: User Profile & Dietary Profile (`UC-011-01` – `UC-011-06`) | **Mai Văn Hiển (MaiHien3507)** (v1.2); **Nguyễn Đức Duy (DucDuyNguyen15-IT)** (v2.0) | **Trần Nguyễn Công Chung (itzchugnn)** *(v2.0 review pending)* | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-50`, `SCRUM-71` |
 | **Section 11** | Use-Case Specifications for Feature 080: Recipe Bookmarks & Custom Collections (`UC-080-01` – `UC-080-04`) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-50` |
-| **Section 12** | Use-Case Specifications for Feature 070: Community Reviews & Cooksnaps (`UC-070-01` – `UC-070-06`) | **Trần Nguyễn Công Chung (itzchugnn)** | **Mai Văn Hiển (MaiHien3507)** | **Trần Nguyễn Công Chung (itzchugnn)** | `SCRUM-54` |
+| **Section 12** | Use-Case Specifications for Feature 070: Community Reviews & Cooksnaps (`UC-070-01` – `UC-070-08`) | **Trần Nguyễn Công Chung (itzchugnn)** (v1.3); **Nguyễn Đức Duy (DucDuyNguyen15-IT)** (v2.0) | **Trần Nguyễn Công Chung (itzchugnn)** *(v2.0 review pending)* | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-54`, `SCRUM-71` |
 | **Section 13** | Use-Case Specifications for Feature 100: Administration & Content Moderation (`UC-100-01` – `UC-100-06`) | **Trần Nguyễn Công Chung (itzchugnn)** | **Mai Văn Hiển (MaiHien3507)** | **Trần Nguyễn Công Chung (itzchugnn)** | `SCRUM-54` |
 | **Section 14** | Use-Case Specifications for Feature 030: Weekly Meal Planner, Manual (`UC-030-01` – `UC-030-05`) | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Thành Dự (ThanhDu14)** | `SCRUM-52` |
 | **Section 15** | Use-Case Specifications for Feature 031: AI Weekly Meal Planner (`UC-031-01` – `UC-031-06`) | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Thành Dự (ThanhDu14)** | `SCRUM-52` |
@@ -40,6 +40,7 @@
 | **30/10/2026** | `v1.2` | Added Sections 9–11: 13 use-case specifications for Feature 010 (`UC-010-01` – `UC-010-04`), Feature 011 (`UC-011-01` – `UC-011-05`) and Feature 080 (`UC-080-01` – `UC-080-04`), with traceability, prototype screen mapping and open questions (`SCRUM-50`, first draft). Use-case IDs follow the Use-Case Model v0.1 (`SCRUM-49`). | Mai Văn Hiển (`MaiHien3507`) |
 | **31/10/2026** | `v1.3` | Added Sections 12–13: 12 detailed use-case specifications for Feature 070 (`UC-070-01` – `UC-070-06`) and Feature 100 (`UC-100-01` – `UC-100-06`), complete with author self-review guard, cascading rating recalculation, mass-report auto-quarantine, concurrency inspection presence, traceability matrices, prototype screen mapping and open questions (`SCRUM-54`, first draft). Use-case IDs and titles strictly follow the Use-Case Model v0.1 (`SCRUM-49`). | Trần Nguyễn Công Chung (`itzchugnn`) |
 | **03/11/2026** | `v1.4` | Added Sections 14–17: 16 use-case specifications for Feature 030 (`UC-030-01` – `UC-030-05`), Feature 031 (`UC-031-01` – `UC-031-06`) and Feature 090 (`UC-090-01` – `UC-090-05`), with every AI failure flow (LLM error, timeout, unusable answer, not enough recipes, allergy violation, daily quota, backup draft with the manual planner still usable), traceability, prototype screen mapping and open questions (`SCRUM-52`, first draft for review). Written against the 02/11/2026 Clarification of spec 030 (up to 4 dishes per meal). Use-case IDs follow the Use-Case Model (`SCRUM-49`). | Nguyễn Thành Dự (`ThanhDu14`) |
+| **18/11/2026** | `v2.0` | Second Edition, PA4 Part A (`SCRUM-71`). No TA feedback on PA3 was received; self-audit of Sections 9, 10 and 12 against the clarified specs `010`, `011` and `070`, their `contracts/openapi.yaml` and the backend merged into `main` (`SCRUM-74`, `SCRUM-75`, `SCRUM-77`), mirrored on Use-Case Model `v2.0` (`SCRUM-70`). **Added:** `UC-010-05` Sign Out (moved from `UC-010-02` AF 2.13), `UC-011-06` View Public Profile (moved from `UC-011-02` Step 10, AF 2.6, AF 2.17), `UC-070-07` Mark Review as Helpful (moved from `UC-070-04` Step 6) and `UC-070-08` Update Recipe Rating Summary (included use case with a Trigger; the recalculation repeated in `UC-070-01`, `UC-070-03`, `UC-070-05` now refers to it). **Revised:** `UC-010-01` – `UC-010-04` and `UC-011-01` – `UC-011-05` to the clarified specs and contract (closed open questions, endpoints and error codes; implementation status of password, deletion and Google flows); `UC-011-05` also included by `UC-030-01` and `UC-031-05`; `UC-070-01` – `UC-070-06` rewritten against the review code (endpoints, validation, report reasons, `403`/`404`/`409`/`429` answers, upload limits, automatic hiding at 10 reports), `UC-070-06` now **extended by** `UC-070-01` / `UC-070-03`, `UC-070-02` also extends `UC-070-03`. Endpoints, codes and limits not found in the spec, contract or code removed. Traceability, screen mapping and open questions of Sections 9, 10 and 12 updated (`[OQ-011-09]`, `[OQ-070-07]` – `[OQ-070-18]` record spec-vs-code differences); recipe-detail row `EP-6 Reviews` lists `UC-070-03`, `UC-070-05`, `UC-070-07`. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 
 > [!NOTE]
 > **Use-Case Model Alignment Notice:** The formal Use-Case Model (`docs/requirements/use-case-model.md`) is currently being drafted by Nguyễn Đức Duy under `SCRUM-49` (freeze date: November 02, 2026). The Use Case IDs (`UC-040-01` through `UC-040-05` and `UC-050-01` through `UC-050-05`) and titles documented herein represent the official engineering proposal derived directly from ratified specifications `specs/040-shopping-list/spec.md` and `specs/050-cooking-mode/spec.md`. Once `SCRUM-49` completes model freeze on November 02, any identifier discrepancies will be reconciled during the review phase (`SCRUM-53` final edition, due November 03).
@@ -1426,7 +1427,7 @@ Shows one published recipe as readers see it: header (cover, name, category and 
 | `EP-3 Shop` | "Thêm vào danh sách đi chợ" | `UC-040-02` | Member and above | Lê Quốc Hưng |
 | `EP-4 Cook` | "Bắt đầu nấu" | `UC-050-01` | Guest and above | Lê Quốc Hưng |
 | `EP-5 Save` | "Lưu công thức" / "Lưu vào bộ sưu tập" | `UC-080-01` | Member and above | Mai Văn Hiển |
-| `EP-6 Reviews` | Reviews and Cooksnaps section, "Viết đánh giá" | `UC-070-04` (read), `UC-070-01` (write) | Read: Guest; write: Member | Trần Nguyễn Công Chung |
+| `EP-6 Reviews` | Reviews and Cooksnaps section (rating summary, sort, filter, Cooksnap lightbox), "Viết đánh giá" / "Chỉnh sửa đánh giá", "Hữu ích", "Báo cáo" | `UC-070-04` (read), `UC-070-01` (write), `UC-070-03` (edit or delete own), `UC-070-07` (helpful vote), `UC-070-05` (report) | Read and lightbox: Guest; write, vote, report: Member (writing needs a verified email, spec 010 FR-006) | Trần Nguyễn Công Chung |
 
 #### 6. Alternative Flows
 - **AF 6.1: Guest Presses a Member-Only Button:**
@@ -2164,13 +2165,15 @@ When the ingredient the author needs is not in the shared catalogue, the author 
 ---
 
 ## 9. USE-CASE SPECIFICATIONS FOR FEATURE 010: USER AUTHENTICATION & ROLES
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 > [!NOTE]
-> **Sources:** `specs/010-user-authentication-roles/spec.md` (US1–US5, FR-001 – FR-026 including `FR-022a` and `FR-024a`, NFR-001 – NFR-009, SC-001 – SC-007), [Vision Document](vision-document.md) §5.1, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.1 (`SCRUM-49`) and the project constitution (`.specify/memory/constitution.md`, Principles IV and V). Actors follow the model: **Guest** is a visitor without a session; **Email Service** and **Google OAuth** are secondary systems. `UC-010-04` extends `UC-010-01`. Role-based access (`010` US3) has no use case of its own in the model: it is carried by the actor generalization (model §2.2), by `UC-100-03` (role changes) and by the alternative flows `AF 2.9`, `AF 2.15` and `AF 2.16` below (see `[OQ-010-01]` in Section 9.3).
+> **Sources:** `specs/010-user-authentication-roles/spec.md` (US1–US5, FR-001 – FR-026 including `FR-022a`, `FR-022b` and `FR-024a`, NFR-001 – NFR-009, SC-001 – SC-007; Clarifications up to the session of 2026-11-09), `specs/010-user-authentication-roles/contracts/openapi.yaml` (endpoints under `/api/v1`, status codes and error codes quoted in the flows) and `contracts/integration.md`, [Vision Document](vision-document.md) §5.1 and §7.4, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.1 (`SCRUM-49`) and the project constitution (`.specify/memory/constitution.md`, Principles IV and V). Actors follow the model: **Guest** is a visitor without a session; **Email Service** and **Google OAuth** are secondary systems. `UC-010-04` extends `UC-010-01`. `UC-010-05` Sign Out *(new in v2.0)* has the primary actor **Member**. Role-based access (`010` US3) has no use case of its own in the model: it is carried by the actor generalization (model §2.2), by `UC-100-03` (role changes, suspensions and bans) and by the alternative flows `AF 2.9`, `AF 2.15` and `AF 2.16` below (see `[OQ-010-01]` in Section 9.3).
+>
+> **v2.0 revision note (SCRUM-71):** Spec 010 was clarified on 2026-11-06, 2026-11-07 and 2026-11-09, after the PA3 baseline (v1.2) of this section. Every flow that was marked *"Proposed, pending clarification"* or that pointed to an open question now follows the approved rule, and each step that calls the backend names the contract endpoint and the error code it returns. The backend of spec 010 has since been merged into `main` (`SCRUM-74`) except Google sign-in; `UC-010-01` – `UC-010-04` were written against the approved contract and were not re-checked line by line against that code in v2.0, while the new `UC-010-05` was written from the code. The interface shows every message in Vietnamese (NFR-006); English wording in the flows gives the meaning only.
 
 ### UC-010-01: Register Account & Verify Email
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-010-01`
@@ -2181,47 +2184,47 @@ When the ingredient the author needs is not in the shared catalogue, the author 
 - **Secondary Actor:** **Email Service** — delivers the verification email.
 
 #### 3. Description
-Lets a visitor create a WikiCook account with a display name, an email address, a password and its confirmation. The system creates the account with the **Member** role in an *unverified* state and sends a single-use verification link that is valid for 24 hours. An unverified account can sign in but cannot publish content (recipes, reviews, Cooksnaps, comments) until the link is opened. An account that stays unverified for 7 days after registration is deleted automatically with all its data. `UC-010-04` (Sign In with Google) extends this use case: a first Google sign-in creates the account instead of this form.
+Lets a visitor create a WikiCook account with a display name, an email address, a password and its confirmation. The system creates the account with the **Member** role in an *unverified* state and sends a single-use verification link that is valid for 24 hours. Neither registering nor verifying signs the actor in (FR-005). An unverified account can sign in but cannot publish content (recipes, reviews, Cooksnaps, comments) until the link is opened. An account that stays unverified for 7 days after registration is deleted automatically with all its data. `UC-010-04` (Sign In with Google) extends this use case: a first Google sign-in creates the account instead of this form.
 
 #### 4. Preconditions
 - The actor can reach the WikiCook web application over an encrypted connection (NFR-002).
 - The actor is not signed in. A signed-in user who opens the sign-up page is redirected to the home page (see `AF 1.14`).
-- The email service is available to send the verification email (spec 010 Assumptions).
+- An email-sending service is configured for verification emails (spec 010 Assumptions). Registration itself does not depend on it: above the email limit the account is still created without an email (`AF 1.10`).
 
 #### 5. Basic Flow
 1. **Open Sign-Up Page:** The actor opens the sign-up page, either directly or from the "Tạo tài khoản" link of the sign-in page.
 2. **Display Form:** The system shows the sign-up form with the fields display name (with a counter such as "9/50"), email, password (with the live rule checklist "Ít nhất 8 ký tự", "Có chữ cái", "Có chữ số") and password confirmation, the button "Tạo tài khoản", the link "Đã có tài khoản? Đăng nhập" and the button "Đăng ký với Google" (FR-001, FR-004).
 3. **Enter Details:** The actor types a display name, an email address, a password and the same password again.
-4. **Submit:** The actor presses "Tạo tài khoản". The system disables the button until a response arrives so that a double-click cannot create two accounts or send two emails.
-5. **Normalize and Validate:** The system trims surrounding spaces from the email and treats it as case-insensitive (FR-002). It validates on the server (constitution Principle IV): display name 1–50 characters, email of at most 254 characters, password of 8–128 characters with at least one letter and one digit, password different from the email, and password confirmation equal to the password (FR-001, FR-004). The password is kept exactly as typed.
+4. **Submit:** The actor presses "Tạo tài khoản". The system disables the button until a response arrives so that a double-click cannot create two accounts or send two emails. The browser sends `POST /api/v1/auth/register` with `displayName`, `email`, `password` and `confirmPassword`.
+5. **Normalize and Validate:** The system trims surrounding spaces from the email and treats it as case-insensitive (FR-002). It validates on the server (constitution Principle IV): display name 1–50 characters after trimming, email of at most 254 characters, password of 8–128 characters with at least one letter and one digit, password different from the email, and password confirmation equal to the password (FR-001, FR-004). The password is kept exactly as typed, including leading or trailing spaces.
 6. **Check Uniqueness and Block List:** The system checks that no account uses the normalized email (FR-002) and that its one-way hash is not on the Blocked Email list (FR-026).
-7. **Create Account:** The system creates the account with the **Member** role (FR-003), marks it as *unverified*, stores only a BCrypt hash of the password (NFR-001; constitution Principle IV) and records the registration time that starts the 7-day clock (FR-005).
-8. **Issue Verification Link:** The system creates a single-use verification token that expires after 24 hours and asks the Email Service to send the link to the actor (FR-005).
-9. **Show "Check Your Email":** The system shows the confirmation page with the email address, the 24-hour validity of the link, the note that publishing recipes, reviews and Cooksnaps needs a verified email while saving recipes and planning meals still works, the button "Mở ứng dụng email" and the button "Gửi lại email" with a countdown (FR-006, FR-017).
-10. **Open Verification Link:** The actor opens the link from the email within 24 hours.
-11. **Verify:** The system finds an unused, unexpired token, marks the account as verified, marks the token as used and shows a confirmation that the email is verified, inviting the actor to sign in (`UC-010-02`) (US2 AS4).
+7. **Create Account:** The system creates the account with the **Member** role (FR-003), marks it as *unverified*, stores only a BCrypt hash of the password (NFR-001; constitution Principle IV) and records the registration time that starts the 7-day clock (FR-005). No session is created (FR-005).
+8. **Issue Verification Link:** When the verification-email limit of `FR-017` is not exceeded, the system creates a single-use verification token that expires after 24 hours and asks the Email Service to send the link to the actor (FR-005). The server answers `201 Created` with `verificationEmailSent = true` and the link's expiry time.
+9. **Show "Check Your Email":** The system shows the confirmation page with the email address, the 24-hour validity of the link, the note that publishing recipes, reviews and Cooksnaps needs a verified email while saving recipes and planning meals still works, the button "Mở ứng dụng email" and the button "Gửi lại email" with a countdown (FR-006, FR-017). The actor is still signed out.
+10. **Open Verification Link:** The actor opens the link from the email within 24 hours. The page sends the token to `POST /api/v1/auth/verification/confirm`.
+11. **Verify:** The system finds an unused, unexpired token, marks the account as verified, marks the token as used and answers `200` with status `VERIFIED`. The page shows a confirmation that the email is verified and invites the actor to sign in (`UC-010-02`); verifying does not sign the actor in (US2 AS4, FR-005).
 
 #### 6. Alternative Flows
 - **AF 1.1: Email Already Registered:**
   - *Trigger:* At Step 6, an account already uses the normalized email (US2 AS2).
   - *Steps:*
-    1. The system refuses the registration and creates no account.
+    1. The system refuses the registration with `409 EMAIL_TAKEN` and creates no account.
     2. The system shows a message suggesting that the actor sign in or reset the password, with links to `UC-010-02` and `UC-010-03`.
     3. The values the actor typed, except the passwords, stay in the form.
   - *Outcome:* One email can belong to only one account (FR-002).
 - **AF 1.2: Password Does Not Meet the Rules:**
   - *Trigger:* At Step 5, the password is shorter than 8 or longer than 128 characters, or has no letter, or has no digit (US2 AS3, FR-004).
   - *Steps:*
-    1. The system shows next to the password field which rule failed ("Mật khẩu chưa đạt yêu cầu" with the failed items of the checklist highlighted).
+    1. The server answers `400 VALIDATION_ERROR` with the field error `PASSWORD_TOO_SHORT`, `PASSWORD_TOO_LONG`, `PASSWORD_NO_LETTER` or `PASSWORD_NO_DIGIT`; the system shows next to the password field which rule failed ("Mật khẩu chưa đạt yêu cầu" with the failed items of the checklist highlighted).
     2. No account is created.
 - **AF 1.3: Password Equals the Email Address:**
   - *Trigger:* At Step 5, the password is identical to the email the actor typed (FR-004).
   - *Steps:*
-    1. The system rejects the password with a field-level message and creates no account.
+    1. The system rejects the password with a field-level message (`PASSWORD_EQUALS_EMAIL`) and creates no account.
 - **AF 1.4: Password Confirmation Does Not Match:**
   - *Trigger:* At Step 5, the confirmation differs from the password (FR-001).
   - *Steps:*
-    1. The system shows a field-level message at the confirmation field and creates no account.
+    1. The system shows a field-level message at the confirmation field (`PASSWORD_MISMATCH`) and creates no account.
 - **AF 1.5: Invalid Display Name:**
   - *Trigger:* At Step 5, the display name is empty, only spaces, or longer than 50 characters (Edge Cases "Very long input"; `011` FR-002).
   - *Steps:*
@@ -2230,44 +2233,48 @@ Lets a visitor create a WikiCook account with a display name, an email address, 
 - **AF 1.6: Invalid or Too-Long Email:**
   - *Trigger:* At Step 5, the email is empty, is not a valid address, or is longer than 254 characters (Edge Cases "Very long input").
   - *Steps:*
-    1. The system shows a field-level message at the email field and creates no account.
+    1. The server answers `400 VALIDATION_ERROR` with the field error `REQUIRED`, `INVALID_EMAIL` or `TOO_LONG`; the system shows the message at the email field and creates no account.
 - **AF 1.7: Email on the Blocked Email List:**
-  - *Trigger:* At Step 6, the hash of the email matches an entry created when a banned account deleted itself (FR-026).
+  - *Trigger:* At Step 6, the hash of the email matches an entry created when a banned account deleted itself or was purged while banned (FR-026).
   - *Steps:*
-    1. The system refuses the registration and creates no account. The plain email is never stored on the list.
-  - *Outcome:* A banned user cannot return with the same email (see `[OQ-010-05]` for the message text).
+    1. The system refuses the registration with `422 REGISTRATION_REFUSED` and creates no account. The plain email is never stored on the list.
+    2. The message is neutral and gives no reason, so it does not reveal that the email belonged to a banned account (FR-026; Clarification 2026-11-06, `[OQ-010-05]` closed).
+  - *Outcome:* A banned user cannot return with the same email.
 - **AF 1.8: Repeated Submission:**
   - *Trigger:* At Step 4, the actor double-clicks "Tạo tài khoản" or sends the same request twice.
   - *Steps:*
-    1. The system processes exactly one request, creates at most one account and sends at most one email (Edge Cases "Double-click on submit").
+    1. The system processes exactly one request, creates at most one account and sends at most one email (Edge Cases "Double-click on submit"). A second identical request receives `409 EMAIL_TAKEN`.
 - **AF 1.9: Verification Email Not Delivered or Not Received:**
   - *Trigger:* After Step 9, the email does not arrive or delivery fails (Edge Cases "Email delivery failure").
   - *Steps:*
-    1. The actor presses "Gửi lại email" once the countdown (for example "Gửi lại được sau 00:45") reaches zero.
-    2. The system issues a new verification link and sends it. Earlier unused links are handled as described in `[OQ-010-03]`.
+    1. The actor presses "Gửi lại email" once the countdown (for example "Gửi lại được sau 00:45") reaches zero. The page sends `POST /api/v1/auth/verification/resend` with the email.
+    2. The system issues a new verification link and sends it; every earlier unused verification link of the account stops working (FR-005; Clarification 2026-11-06, `[OQ-010-03]` closed).
     3. The registration time and the 7-day deadline do not change (FR-005).
-- **AF 1.10: Verification Email Request Limit Exceeded:**
-  - *Trigger:* At AF 1.9, the actor has already requested 3 verification emails for the same address within 15 minutes (FR-017).
+    4. The server always answers `202 Accepted`, also for an unknown or already verified email, in which case nothing is sent.
+- **AF 1.10: Verification Email Limit Exceeded:**
+  - *Trigger:* At Step 8 or at AF 1.9, 3 verification emails have already been requested for the same address within 15 minutes; the first email sent at registration counts, and the verification and reset types are counted separately (FR-017).
   - *Steps:*
-    1. The system sends no further email and tells the actor to wait before trying again, showing the remaining wait.
+    1. At AF 1.9 the server answers `429 EMAIL_RATE_LIMITED` with `retryAfterSeconds`; the system sends no further email and shows "Try again in X minutes" ("Thử lại sau X phút"). The answer is the same whether or not the email is registered.
+    2. At Step 8 the registration is **not** refused: the account is created, no link is issued and no email is sent; the server answers `201` with `verificationEmailSent = false` and `retryAfterSeconds`, and the "check your email" page tells the actor to request the link after the wait (FR-017; Clarification 2026-11-07).
 - **AF 1.11: Verification Link Expired:**
   - *Trigger:* At Step 10, the actor opens a link older than 24 hours (US2 AS6).
   - *Steps:*
-    1. The system tells the actor that the link has expired: "Link xác minh chỉ dùng được trong 24 giờ", and offers "Gửi link mới".
+    1. The server answers `410 TOKEN_EXPIRED`. The system tells the actor that the link has expired: "Link xác minh chỉ dùng được trong 24 giờ", and offers "Gửi link mới", which sends the token of the expired link to `POST /api/v1/auth/verification/resend`.
     2. The system also reminds the actor that an account unverified after 7 days is deleted with all its data.
-    3. The actor requests a new link (AF 1.9 and AF 1.10 apply).
+    3. AF 1.9 and AF 1.10 apply to the new link.
 - **AF 1.12: Verification Link Already Used or Invalid:**
-  - *Trigger:* At Step 10, the token was already used, was never issued, or its account no longer exists (FR-005: single-use).
+  - *Trigger:* At Step 10, the token was already used, was never issued, was replaced by a newer link, or its account no longer exists (FR-005: single-use).
   - *Steps:*
-    1. The system tells the actor that the link is not valid and, when the account still exists and is unverified, offers to send a new one.
-    2. When the account is already verified, the system invites the actor to sign in instead.
+    1. When the link was already used by the same account, the server answers `200` with status `ALREADY_VERIFIED` and the system invites the actor to sign in.
+    2. Otherwise the server answers `410 TOKEN_INVALID`; the system tells the actor that the link is not valid and offers to send a new one (AF 1.9).
 - **AF 1.13: Account Left Unverified for 7 Days:**
   - *Trigger:* 7 days pass after registration without a successful verification (FR-005, Edge Cases "Unverified account reaches 7 days").
   - *Steps:*
-    1. The system deletes the account and all its data completely and emits the data-deletion event to specs `011`, `060` and `080` (Integration Points).
-    2. If the user is signed in at that moment, the next request ends the session.
-    3. The email address becomes free to register again immediately and is **not** added to the Blocked Email list.
-  - *Outcome:* Registration can be repeated with the same email at once.
+    1. If the account is suspended at that moment, nothing is deleted while the suspension runs; if it is still unverified when the suspension ends, the steps below run then (FR-005; Clarification 2026-11-06).
+    2. Otherwise the system deletes the account and all its data completely, in one all-or-nothing operation, and emits the data-deletion event to specs `011`, `060` and `080` (Integration Points).
+    3. If the user is signed in at that moment, the next request ends the session.
+    4. The email address becomes free to register again immediately and is **not** added to the Blocked Email list — except when the account is banned at that moment: its email hash is then added to the list (FR-005, FR-026).
+  - *Outcome:* Registration can be repeated with the same email at once, unless the account was banned.
 - **AF 1.14: Already Signed-In User:**
   - *Trigger:* At Step 1, a signed-in user opens the sign-up page (Edge Cases "Already signed in").
   - *Steps:*
@@ -2278,14 +2285,16 @@ Lets a visitor create a WikiCook account with a display name, an email address, 
     1. The use case continues as `UC-010-04` (extension). The email registration form is not used.
 
 #### 7. Postconditions
-- **Success (Step 9):** A new **Member** account exists in the *unverified* state with a hashed password and a pending single-use verification token; one verification email has been requested.
-- **Success (Step 11):** The account is *verified*; the token is consumed and cannot be reused; the actor may sign in and publish content.
+- **Success (Step 9):** A new **Member** account exists in the *unverified* state with a hashed password and a pending single-use verification token; one verification email has been requested; no session exists.
+- **Success with email limit reached (AF 1.10):** The account exists in the *unverified* state, but no token and no email exist until the actor requests a link after the wait.
+- **Success (Step 11):** The account is *verified*; the token is consumed and cannot be reused; the actor is still signed out and may now sign in and publish content.
 - **Failure:** No account and no token exist. Typed values except passwords remain in the form.
-- **Time-out (AF 1.13):** The account and all its data no longer exist and the email is free.
+- **Time-out (AF 1.13):** The account and all its data no longer exist and the email is free, except for a banned account whose email hash is on the Blocked Email list; a suspended account is kept until its suspension ends.
 
 #### 8. Special Requirements
 - **Security:** Passwords are hashed with BCrypt and are never stored, logged or shown in readable form (NFR-001; constitution Principle IV). All validation is repeated on the server with Bean Validation, not only in the browser. Errors never expose stack traces or internal details. All pages and requests use an encrypted connection (NFR-002).
-- **Privacy:** The message of AF 1.1 intentionally tells the visitor to sign in or reset the password (US2 AS2); the sign-in and reset flows do not reveal registered emails (NFR-003).
+- **Privacy:** The message of AF 1.1 intentionally tells the visitor to sign in or reset the password (US2 AS2); the sign-in and reset flows do not reveal registered emails (NFR-003). The block-list refusal (AF 1.7) is neutral; resend requests and their limit give the same answer for any email (FR-017).
+- **Rate limits:** At most 3 verification emails per 15 minutes per address, counted separately from reset emails and including the first email at registration (FR-017).
 - **Usability:** The form is fully usable from 360 px wide with Vietnamese as the default language (NFR-006; constitution Principle V). Strings are kept in the shared string store.
 - **Accessibility:** Keyboard-only operation, a visible label on every field, and errors announced next to the related field (NFR-007).
 - **Performance / Success:** A new visitor reaches the verified, signed-in state in under 3 minutes, excluding email delivery delay (SC-001).
@@ -2310,18 +2319,18 @@ Lets a visitor create a WikiCook account with a display name, an email address, 
 ---
 
 ### UC-010-02: Sign In with Email & Password
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-010-02`
-- **Use Case Name:** Sign In with Email and Password, Stay Signed In and Sign Out
+- **Use Case Name:** Sign In with Email and Password and Stay Signed In
 
 #### 2. Actor(s)
 - **Primary Actor:** **Guest** — a registered visitor who is not signed in; after success the actor acts as **Member** (or the role stored on the account: Contributor, Moderator, Administrator).
 - **Secondary Actor:** **Email Service** — sends the lockout notification (AF 2.3).
 
 #### 3. Description
-Lets a registered user authenticate with an email and a password so that the personalized features (dietary profile, meal planner, shopping list, collections, reviews and recipe submission) become available. The system applies one generic error for a wrong email or password, locks the account for 15 minutes after 5 consecutive failures, refuses suspended and banned accounts, offers "Remember me", returns the user to the page they asked for, and ends the session on sign-out. The use case also covers the sign-in prompt shown to a Guest who presses a Member-only action.
+Lets a registered user authenticate with an email and a password so that the personalized features (dietary profile, meal planner, shopping list, collections, reviews and recipe submission) become available. The system applies one generic error for a wrong email or password, locks email-and-password sign-in for an email for 15 minutes after 5 consecutive failures (registered or not), limits attempts per IP address, refuses suspended and banned accounts, offers "Remember me", and returns the user to the page they asked for; signing out is `UC-010-05`. The use case also covers the sign-in prompt shown to a Guest who presses a Member-only action, the access-denied page, the in-app role-change notice and what happens when a session ends while the user is on a page.
 
 #### 4. Preconditions
 - The actor can reach the WikiCook web application over an encrypted connection (NFR-002).
@@ -2332,12 +2341,12 @@ Lets a registered user authenticate with an email and a password so that the per
 1. **Open Sign-In Page:** The actor opens the sign-in page directly or is sent to it by a protected page (AF 2.9).
 2. **Display Form:** The system shows the sign-in form with email, password, a "Remember me" checkbox, the links "Quên mật khẩu" (to `UC-010-03`) and "Tạo tài khoản" (to `UC-010-01`), and the button "Continue with Google" (to `UC-010-04`).
 3. **Enter Credentials:** The actor types the email — in any letter case and possibly with surrounding spaces, for example `" An@Mail.com "` — and the password, and optionally ticks "Remember me".
-4. **Submit:** The actor submits the form.
-5. **Normalize and Validate:** The system trims surrounding spaces from the email and ignores letter case (US1 AS7, FR-002). The password is not trimmed (Edge Cases "Password with leading/trailing spaces").
-6. **Check Lock:** The system checks that sign-in for the normalized email is not locked after repeated failures (FR-012).
+4. **Submit:** The actor submits the form. The browser sends `POST /api/v1/auth/login` with `email`, `password` and `rememberMe`.
+5. **Normalize and Validate:** The system trims surrounding spaces from the email and ignores letter case (US1 AS7, FR-002). The password is not trimmed (Edge Cases "Password with leading/trailing spaces"). Input that is not valid is not counted as an attempt (AF 2.6).
+6. **Check Limits and Lock:** The system checks that the IP address has not exceeded the attempt limit (AF 2.18) and that sign-in for the normalized email is not locked after repeated failures (FR-012).
 7. **Verify Credentials:** The system verifies the password against the stored BCrypt hash (FR-007; constitution Principle IV).
 8. **Check Account Status:** Only when the credentials are correct, the system checks that the account is not suspended or banned (FR-013).
-9. **Create Session:** The system creates a session for this device. With "Remember me" the session lasts up to 30 days; without it the session ends after 24 hours of inactivity or when the browser is closed (FR-009). The counter of consecutive failures is reset to zero.
+9. **Create Session:** The system creates a session for this device and answers `200` with a short-lived access token and the current account (display name, email, role, verification status); the refresh token is set as an HttpOnly cookie. With "Remember me" the session lasts up to 30 days; without it the session ends after 24 hours of inactivity or when the browser is closed (FR-009). The counter of consecutive failures is reset to zero (Edge Cases "Brute force").
 10. **Record Audit Entry:** The system records an audit entry for the successful sign-in: who, what, when and target account (FR-025).
 11. **Redirect:** The system redirects the actor to the internal page that was originally requested, or to the home page when there was none (US1 AS1, FR-011), where the actor's display name is shown.
 
@@ -2345,46 +2354,45 @@ Lets a registered user authenticate with an email and a password so that the per
 - **AF 2.1: Wrong Password:**
   - *Trigger:* At Step 7, the password does not match (US1 AS2).
   - *Steps:*
-    1. The system refuses the sign-in with the generic message "Email or password is incorrect" and clears the password field (FR-008).
+    1. The server answers `401 INVALID_CREDENTIALS`; the system shows the generic message "Email or password is incorrect" ("Email hoặc mật khẩu không đúng") and clears the password field (FR-008).
     2. The system increases the counter of consecutive failures for the normalized email and records a failure audit entry (FR-025).
 - **AF 2.2: Email Not Registered:**
-  - *Status:* Proposed, pending clarification of spec 010 (`[OQ-010-02]`): spec 010 does not say whether unregistered emails are counted toward the lockout; the steps below follow option A of the decision.
   - *Trigger:* At Step 7, no account uses the normalized email (US1 AS3).
   - *Steps:*
-    1. The system performs a dummy password-hash comparison so that the response time is comparable to AF 2.1 (NFR-003).
-    2. The system shows exactly the same message as in AF 2.1, with no hint that the email does not exist (FR-008).
-    3. The system counts the failure against the normalized email in a temporary counter that expires after 15 minutes, exactly as for a registered account (see AF 2.3).
-    4. The system records a failure audit entry that references no account and does not store the email in readable form.
-- **AF 2.3: Account Locked After Repeated Failures:**
-  - *Status:* Proposed, pending clarification of spec 010 (`[OQ-010-02]`): the lock for an unregistered email and its neutral lock screen are not in spec 010; the lock for a registered account follows `FR-012`.
+    1. The server answers exactly as in AF 2.1 (`401 INVALID_CREDENTIALS`), with the same content and comparable response time, with no hint that the email does not exist (FR-008, NFR-003).
+    2. The system counts the failure against the normalized email, exactly as for a registered account (FR-012; Clarification 2026-11-06, `[OQ-010-02]` closed).
+    3. The system records a failure audit entry that does not store the unknown email in readable form (FR-025).
+- **AF 2.3: Sign-In Locked After Repeated Failures:**
   - *Trigger:* At Step 6, sign-in for the normalized email is locked; or at AF 2.1 or AF 2.2, the failure is the 5th consecutive failed attempt for the same normalized email within 15 minutes, whether or not an account uses it (FR-012).
   - *Steps:*
-    1. The system locks sign-in for that email for 15 minutes and records a lockout audit entry (FR-025).
+    1. The system locks email-and-password sign-in for that email for 15 minutes and records a lockout audit entry (FR-025).
     2. Only when an account exists, the system asks the Email Service to notify the account owner (FR-012). No email is sent otherwise.
-    3. The system shows the same "Không thể đăng nhập" screen for every email, with the retry time, the neutral note "Nếu email này đã đăng ký, chúng tôi đã gửi thông báo", and the button "Đặt lại mật khẩu" (`UC-010-03`).
+    3. The server answers `423 ACCOUNT_LOCKED` with `retryAt`. The system shows the same "Không thể đăng nhập" screen for every email, with the retry time, the neutral note "Nếu email này đã đăng ký, chúng tôi đã gửi thông báo", and the button "Đặt lại mật khẩu" (`UC-010-03`).
     4. While the lock is active, correct credentials are also refused with this screen.
-  - *Outcome:* A visitor cannot tell a locked real account from a locked unknown email (NFR-003). The lock is time-based only; whether a password reset ends it is left to spec 010 (`[OQ-010-02]`).
+    5. The lock ends only when its time runs out: a successful password reset (`UC-010-03`) does not end it, and it does not block Google sign-in (`UC-010-04`) (FR-012; Clarification 2026-11-06).
+  - *Outcome:* A visitor cannot tell a locked real account from a locked unknown email (NFR-003).
 - **AF 2.4: Account Suspended:**
   - *Trigger:* At Step 8, the credentials are correct but the account is suspended for a limited time (FR-013).
   - *Steps:*
     1. The system does not create a session.
-    2. The system shows that the account is suspended with the reason category and the end date (for example "Tài khoản bị đình chỉ đến 04/11/2026", "Lý do: Đăng nội dung quảng cáo lặp lại"), and, as the prototype adds, that published content stays visible.
+    2. Only because the password was correct, the server answers `403 ACCOUNT_SUSPENDED` with the reason and the end date; the account-status page shows them (for example "Tài khoản bị đình chỉ đến 04/11/2026", "Lý do: Đăng nội dung quảng cáo lặp lại"). The reason is the free text given by the person who suspended the account; there is no list of reason categories (FR-013; Clarification 2026-11-06).
     3. The system records a failure audit entry.
 - **AF 2.5: Account Banned:**
   - *Trigger:* At Step 8, the credentials are correct but the account is banned (FR-013).
   - *Steps:*
-    1. The system does not create a session and shows that the account is banned with the reason category and no end date.
-    2. The system records a failure audit entry.
-  - *Outcome:* How a banned user reaches the account-closure page described in spec `011` Assumptions is not specified yet (see `[OQ-010-04]`).
+    1. The system does not create a session. The server answers `403 ACCOUNT_BANNED` with the reason and a single-use closure token that is valid for 10 minutes and creates no session (FR-013).
+    2. The account-status page shows that the account is banned with the reason and no end date, and the action to close the account, which opens only the account-closure page of spec `011` (`UC-011-04` AF 4.13).
+    3. The system records a failure audit entry.
+  - *Outcome:* A banned user can still delete the account without a session (Clarification 2026-11-06, `[OQ-010-04]` closed).
 - **AF 2.6: Invalid Input:**
   - *Trigger:* At Step 5, the email or password is empty, the email is longer than 254 characters, or the password is longer than 128 characters (Edge Cases "Very long input").
   - *Steps:*
-    1. The system shows a field-level validation message and does not count the attempt as a failed sign-in.
+    1. The server answers `400 VALIDATION_ERROR`; the system shows a field-level validation message and does not count the attempt as a failed sign-in.
 - **AF 2.7: Unverified Account Signs In:**
   - *Trigger:* At Step 9, the account has not verified its email (US2 AS5).
   - *Steps:*
     1. The system signs the actor in normally and shows a reminder to verify the email, with a way to request a new link (`UC-010-01` AF 1.9).
-    2. Actions that publish content — submitting recipes, reviews, Cooksnaps and comments — are blocked until the email is verified (FR-006).
+    2. Actions that publish content — submitting recipes, reviews, Cooksnaps and comments — are blocked until the email is verified; the server refuses them with `403 EMAIL_NOT_VERIFIED` (FR-006; contracts `integration.md` §2.4). Saving recipes, collections and meal plans still works.
 - **AF 2.8: Already Signed-In User:**
   - *Trigger:* At Step 1, a signed-in user opens the sign-in page (Edge Cases "Already signed in").
   - *Steps:*
@@ -2405,43 +2413,57 @@ Lets a registered user authenticate with an email and a password so that the per
   - *Steps:*
     1. The system ends the session. The next request must sign in again (restart at Step 1).
   - *Outcome:* With "Remember me", the actor is still signed in when reopening the browser within 30 days (US1 AS5).
-- **AF 2.12: Session Expires While Filling a Form:**
-  - *Trigger:* The session expires while the actor writes a recipe or fills another form (Edge Cases).
+- **AF 2.12: Session Ends While the User Is on a Page:**
+  - *Trigger:* The session expires or is revoked while the actor writes a recipe, fills another form or uses any page that is not offline-first (Edge Cases "Session expires while filling a form"; Clarification 2026-11-09).
   - *Steps:*
-    1. The system asks the actor to sign in again and warns the actor before leaving the page, so that unsaved form content is not silently lost.
+    1. The next request receives `401 UNAUTHENTICATED`; the app tries one silent refresh and, when that also fails, keeps the actor on the page.
+    2. A dialog asks the actor to sign in again; unsaved form content is kept and leaving the page warns first, so nothing is silently lost.
+    3. On an offline-first page (shopping list `040`, cooking mode `050`) no dialog blocks the page: the page keeps its local data and shows a non-blocking notice (spec 040 FR-020).
 - **AF 2.13: Sign Out:**
-  - *Trigger:* A signed-in user chooses "Sign out" (US1 AS4, FR-010).
-  - *Steps:*
-    1. The system ends the session immediately.
-    2. Pressing the browser Back button does not show member-only content, and member-only pages are no longer reachable.
-    3. Sessions on other devices stay active (Edge Cases "Simultaneous sessions").
+  - *Moved in v2.0:* signing out is now the use case `UC-010-05` Sign Out, because its actor is a signed-in Member (Use-Case Model v2.0 §4.1).
 - **AF 2.14: Account Suspended or Banned While Signed In:**
-  - *Trigger:* An Administrator suspends or bans the account while the user has an active session (Edge Cases "Suspended / banned account", FR-024).
+  - *Trigger:* A Moderator or an Administrator suspends the account, or an Administrator bans it, while the user has an active session (`UC-100-03`; Edge Cases "Suspended / banned account", FR-022, FR-024).
   - *Steps:*
-    1. At the user's next request the system ends the session and shows the account-status message of AF 2.4 or AF 2.5.
-- **AF 2.15: Role Lowered While Signed In:**
-  - *Trigger:* An Administrator lowers the role of a signed-in user (US3 AS5, FR-024).
+    1. No later than the user's next request the server answers `403 ACCOUNT_SUSPENDED` or `403 ACCOUNT_BANNED`, the session ends and the account-status page of AF 2.4 or AF 2.5 is shown.
+    2. The owner receives an email with the reason, the end date (for a suspension) and the support contact for appeals; another email follows when the suspension ends or the ban is lifted (FR-024a). There is no appeal workflow: an Administrator reviews the appeal by hand (Clarification 2026-11-07).
+- **AF 2.15: Role Changed While Signed In:**
+  - *Trigger:* An Administrator changes the role of a signed-in user, for example lowers it (`UC-100-03`; US3 AS5, FR-024).
   - *Steps:*
-    1. No later than the user's next request, the system applies the new role. A privileged action the user is no longer allowed to do is refused (FR-021).
-    2. The user sees an in-app notice naming the new role and the permissions that changed, once, at the next request or sign-in (FR-024a). No email is sent for a role change.
+    1. No later than the user's next request, the system applies the new role. A privileged action the user is no longer allowed to do is refused with `403 ACCESS_DENIED` (FR-021).
+    2. Every response to the user's signed-in requests carries the role-notice signal; without reloading the page the app reads the account again (`GET /api/v1/auth/me`, field `roleNotice` with the previous and the new role) (FR-024a; Clarification 2026-11-07).
+    3. The app shows the notice once, naming the new role and the permissions that changed and stressing any permission lost on a demotion; dismissing it calls `POST /api/v1/auth/role-notice/ack`. When the user was signed out, the notice appears at the next sign-in. No email is sent for a role change.
 - **AF 2.16: Signed-In User Without Permission:**
   - *Trigger:* A signed-in user opens a page or calls an action that the role does not allow, for example a Member opens a moderation or administration page (US3 AS2, FR-021).
   - *Steps:*
-    1. The system refuses on the server, shows the page "Bạn không có quyền xem trang này" and reveals nothing about the content of the page.
-    2. A Moderator who tries to change another user's role is refused in the same way (US3 AS3, FR-022).
+    1. The server refuses with `403 ACCESS_DENIED`; the system shows the page "Bạn không có quyền xem trang này" and reveals nothing about the content of the page.
+    2. A Moderator who tries to change another user's role, ban a user, lift a suspension, suspend for more than 30 days, or act on a Moderator or Administrator is refused in the same way (US3 AS3, AS6; FR-022, FR-022a). These actions themselves belong to `UC-100-03`.
+    3. An unverified account that tries to publish content is refused with `403 EMAIL_NOT_VERIFIED` (AF 2.7).
 - **AF 2.17: Google Provider Unavailable:**
   - *Trigger:* The Google sign-in provider cannot be reached (NFR-005).
   - *Steps:*
     1. The email-and-password form of this use case keeps working normally.
+- **AF 2.18: Too Many Attempts From One IP Address:**
+  - *Trigger:* At Step 6, the IP address of the request has exceeded the sign-in attempt limit (FR-012; Clarification 2026-11-06).
+  - *Steps:*
+    1. The server answers `429 TOO_MANY_REQUESTS` with the time to wait; the system shows "Try again in X minutes" and checks no credentials.
+  - *Note:* The spec requires the per-IP limit but does not fix its numbers; they are a configuration value of the plan.
+- **AF 2.19: No Connection When the App Is Open:**
+  - *Trigger:* The app is already loaded and the connection to the backend is lost (Edge Cases "No connection when the app opens"; Clarifications 2026-11-07, 2026-11-09).
+  - *Steps:*
+    1. The system does not treat the person as signed out and does not send them to the sign-in page. Offline-first pages (`040`, `050`) keep working; the meal planner shows its offline notice (spec 030 FR-028).
+    2. When the connection returns, the system checks the session again; if it has ended, AF 2.12 applies.
+  - *Note:* Opening the app with no connection at all needs an offline app shell, which belongs to specs `040` and `050`, not to this use case.
 
 #### 7. Postconditions
 - **Success:** A session exists for this device with the correct lifetime; the failure counter is zero; an audit entry of the success is stored; the actor sees the requested page or the home page with the display name.
-- **Failure (AF 2.1 – AF 2.6):** No session exists; a failure is counted and audited; the account may be locked.
-- **Sign-out (AF 2.13):** The session is ended on this device only.
+- **Failure (AF 2.1 – AF 2.5):** No session exists; a failure is counted and audited; sign-in for the email may be locked. A banned account has received a closure token valid for 10 minutes and nothing else.
+- **Failure without counting (AF 2.6, AF 2.18):** No session exists and the failure counter is unchanged.
+- **Role change (AF 2.15):** The new role applies from the next request; the notice is stored until it is acknowledged once.
 
 #### 8. Special Requirements
 - **Security:** Passwords are never stored, logged or shown (NFR-001); error messages and response time do not reveal whether an email is registered (NFR-003); transport is encrypted (NFR-002); Spring Security and BCrypt are used (constitution Principle IV); permissions are enforced by the server on every request, not by hiding buttons (FR-021; constitution Principle IV).
-- **Auditability:** Sign-in successes and failures, lockouts and role changes are audited and retained for at least 90 days (FR-025, NFR-008).
+- **Auditability:** Sign-in successes and failures, lockouts and role changes are audited and retained for at least 90 days (FR-025, NFR-008); an unregistered email is never stored in readable form in an audit entry.
+- **Session lifetime:** The access token is short-lived (15 minutes in the contract) and every signed-in request is checked against the stored session and account, which is how sign-out (`UC-010-05`), suspension and role changes take effect by the next request (FR-010, FR-024).
 - **Performance:** 95% of sign-in attempts complete in under 2 seconds with up to 100 concurrent users (NFR-004); a returning user can sign in in under 15 seconds (SC-002).
 - **Usability and accessibility:** Usable from 360 px wide, Vietnamese by default, keyboard-only operation, visible labels and field-level announcements (NFR-006, NFR-007).
 - **Reliability:** Zero accounts can be accessed after 5 wrong passwords within 15 minutes (SC-005) and 100% of protected actions are refused for unauthorized roles (SC-004).
@@ -2460,7 +2482,7 @@ Lets a registered user authenticate with an email and a password so that the per
 ---
 
 ### UC-010-03: Reset Forgotten Password
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-010-03`
@@ -2471,7 +2493,7 @@ Lets a registered user authenticate with an email and a password so that the per
 - **Secondary Actor:** **Email Service** — delivers the reset link.
 
 #### 3. Description
-Lets a registered user regain access without contacting support. The user requests a reset for an email address; the system always answers with the same neutral message, and sends a single-use link that is valid for 30 minutes only when the address belongs to an account. Opening the link allows the user to set a new password that meets the password rules; the link is then consumed and every other session of the user is signed out.
+Lets a registered user regain access without contacting support. The user requests a reset for an email address; the system always answers with the same neutral message, and sends a single-use link that is valid for 30 minutes only when the address belongs to an active account that has a password. Google-only, suspended and banned accounts receive no link, with the same answer (FR-014). Opening the link allows the user to set a new password that meets the password rules; the link is then consumed and the user's sessions are signed out. A successful reset does not end a sign-in lock (FR-012).
 
 #### 4. Preconditions
 - The actor can reach the WikiCook web application over an encrypted connection (NFR-002).
@@ -2481,16 +2503,16 @@ Lets a registered user regain access without contacting support. The user reques
 #### 5. Basic Flow
 1. **Open Request Page:** On the sign-in page (or from the locked-account screen) the actor chooses "Quên mật khẩu".
 2. **Display Request Form:** The system shows the page "Quên mật khẩu" with the text "Nhập email đã đăng ký, chúng tôi sẽ gửi link đặt lại mật khẩu", the email field and the button to send.
-3. **Enter Email:** The actor types the email and submits.
+3. **Enter Email:** The actor types the email and submits. The browser sends `POST /api/v1/auth/password/forgot`.
 4. **Normalize:** The system trims surrounding spaces and ignores letter case (FR-002).
-5. **Answer Neutrally:** The system always shows "Nếu email này đã đăng ký, link đặt lại mật khẩu đã được gửi. Link có hiệu lực 30 phút." with the actions "Gửi lại link" and "Quay lại đăng nhập", whether or not the email is registered (US4 AS1, FR-014). Content and response time are the same in both cases (NFR-003).
-6. **Issue Link:** When the email belongs to an account and the request limit is not exceeded, the system invalidates every earlier reset link of that account, creates a new single-use token that expires after 30 minutes, and asks the Email Service to send the link (FR-015, FR-017).
+5. **Answer Neutrally:** The server answers `202 Accepted` and the system always shows "Nếu email này đã đăng ký, link đặt lại mật khẩu đã được gửi. Link có hiệu lực 30 phút." with the actions "Gửi lại link" and "Quay lại đăng nhập", whether or not the email is registered (US4 AS1, FR-014). Content and response time are the same in both cases because sending runs in the background (NFR-003).
+6. **Issue Link:** When the email belongs to an active account that has a password and the request limit is not exceeded, the system invalidates every earlier reset link of that account, creates a new single-use token that expires after 30 minutes, and asks the Email Service to send the link (FR-014, FR-015, FR-017).
 7. **Open Link:** The actor opens the link within 30 minutes.
-8. **Validate Token:** The system checks that the token is the latest one, is unused and is not expired, and shows the page "Đặt mật khẩu mới" for the account with the fields new password and confirmation, the rule checklist and the note that other devices will be signed out.
-9. **Enter New Password:** The actor types a new password and its confirmation and presses "Lưu mật khẩu".
+8. **Validate Token:** The page sends the token to `POST /api/v1/auth/password/reset/validate`, which checks that the token is the latest one, is unused and is not expired without consuming it, and returns the account email and the expiry time. The system shows the page "Đặt mật khẩu mới" with the fields new password and confirmation, the rule checklist and the note that other devices will be signed out.
+9. **Enter New Password:** The actor types a new password and its confirmation and presses "Lưu mật khẩu". The browser sends `POST /api/v1/auth/password/reset` with the token, `newPassword` and `confirmPassword`.
 10. **Validate and Save:** The system validates the password on the server (8–128 characters, at least one letter and one digit, different from the user's email — FR-004), stores its BCrypt hash and marks the token as used (FR-015).
-11. **End Other Sessions:** The system signs the user out of all other sessions (FR-016) and records an audit entry for the password reset (FR-025).
-12. **Confirm:** The system confirms the change and invites the actor to sign in (`UC-010-02`). The new password works and the old password no longer does (US4 independent test).
+11. **End Sessions:** The system signs the user out of all other sessions (FR-016), records an audit entry for the password reset (FR-025) and answers `204`.
+12. **Confirm:** The system confirms the change and invites the actor to sign in (`UC-010-02`); the reset itself does not sign the actor in. The new password works and the old password no longer does (US4 independent test).
 
 #### 6. Alternative Flows
 - **AF 3.1: Email Not Registered:**
@@ -2498,27 +2520,28 @@ Lets a registered user regain access without contacting support. The user reques
   - *Steps:*
     1. The system sends no email and shows the same neutral message as in Step 5, with no hint that the address is unknown (NFR-003).
 - **AF 3.2: Request Limit Exceeded:**
-  - *Trigger:* At Step 3, the actor has already requested 3 emails for the same address within 15 minutes (FR-017).
+  - *Trigger:* At Step 3, 3 reset emails have already been requested for the same address within 15 minutes (FR-017). Reset and verification requests are counted separately.
   - *Steps:*
-    1. The system sends no further email. The limit is counted per email address, whether or not it is registered, so the answer does not reveal registration (see `[OQ-010-06]`).
+    1. The server answers `429 EMAIL_RATE_LIMITED` with `retryAfterSeconds` and sends no further email; the system shows "Try again in X minutes" ("Thử lại sau X phút") (Clarification 2026-11-06, `[OQ-010-06]` closed).
+    2. The limit is counted per email address, also for unregistered addresses, so the answer is the same whether or not the email is registered (NFR-003).
 - **AF 3.3: Several Requests in a Row:**
   - *Trigger:* At Step 6, the actor requests more than one link (US4 AS4, FR-015).
   - *Steps:*
     1. The system invalidates every earlier link each time a newer one is issued.
     2. Only the most recent link works.
 - **AF 3.4: Link Expired, Already Used or Invalid:**
-  - *Trigger:* At Step 7, the link is older than 30 minutes, was already used, or was replaced by a newer link (US4 AS3).
+  - *Trigger:* At Step 8 or Step 10, the link is older than 30 minutes, was already used, or was replaced by a newer link (US4 AS3).
   - *Steps:*
-    1. The system tells the actor that the link is invalid and offers to request a new one (back to Step 2).
+    1. The server answers `410 TOKEN_EXPIRED` or `410 TOKEN_INVALID`; the system tells the actor that the link is invalid and offers to request a new one (back to Step 2).
 - **AF 3.5: New Password Breaks the Rules:**
   - *Trigger:* At Step 10, the new password is shorter than 8 or longer than 128 characters, has no letter or no digit, or equals the user's email (FR-004).
   - *Steps:*
-    1. The system shows which rule failed next to the field and does not change the password.
-    2. The link stays usable until it expires or until a password is saved.
+    1. The server answers `400 VALIDATION_ERROR` with the failed rule (`PASSWORD_TOO_SHORT`, `PASSWORD_TOO_LONG`, `PASSWORD_NO_LETTER`, `PASSWORD_NO_DIGIT`, `PASSWORD_EQUALS_EMAIL`); the system shows it next to the field and does not change the password.
+    2. The token is not consumed: the link stays usable until it expires or until a password is saved.
 - **AF 3.6: Confirmation Does Not Match:**
   - *Trigger:* At Step 10, the confirmation differs from the new password.
   - *Steps:*
-    1. The system shows a field-level message and does not change the password.
+    1. The system shows a field-level message (`PASSWORD_MISMATCH`) and does not change the password; the token is not consumed.
 - **AF 3.7: Email Delivery Failure:**
   - *Trigger:* After Step 6, the email does not arrive or delivery fails (Edge Cases "Email delivery failure").
   - *Steps:*
@@ -2526,15 +2549,21 @@ Lets a registered user regain access without contacting support. The user reques
 - **AF 3.8: Account Locked After Failed Sign-Ins:**
   - *Trigger:* At Step 1, the actor comes from the locked-account screen (`UC-010-02` AF 2.3).
   - *Steps:*
-    1. The flow is the same as the basic flow. Whether a successful reset also ends the lock is not specified (see `[OQ-010-02]`).
+    1. The flow is the same as the basic flow.
+    2. A successful reset does **not** end the lock: email-and-password sign-in with the new password works only after the retry time shown on the lock screen (FR-012; Clarification 2026-11-06, `[OQ-010-02]` closed). Google sign-in is not blocked by the lock.
 - **AF 3.9: Invalid Email Input:**
   - *Trigger:* At Step 3, the email is empty or longer than 254 characters (Edge Cases "Very long input").
   - *Steps:*
-    1. The system shows a field-level message and sends nothing.
+    1. The server answers `400 VALIDATION_ERROR`; the system shows a field-level message and sends nothing.
+- **AF 3.10: Account Without a Password, Suspended or Banned:**
+  - *Trigger:* At Step 6, the email belongs to a Google-only account, a suspended account or a banned account (FR-014; Clarification 2026-11-06, `[OQ-010-10]`).
+  - *Steps:*
+    1. The system sends no link and shows the same neutral answer as Step 5.
+    2. A Google-only user signs in with Google (`UC-010-04`) and may set a password afterwards (`UC-011-03` AF 3.6).
 
 #### 7. Postconditions
-- **Success:** The account has the new password hash; the token is consumed; every earlier reset token is invalid; all other sessions of the user are ended; an audit entry of the reset exists.
-- **Failure or neutral answer:** The password is unchanged. For an unknown email nothing is stored or sent.
+- **Success:** The account has the new password hash; the token is consumed; every earlier reset token is invalid; all other sessions of the user are ended; an audit entry of the reset exists; an active sign-in lock is unchanged.
+- **Failure or neutral answer:** The password is unchanged and the token, if any, stays usable until it expires. For an unknown email, a Google-only, suspended or banned account nothing is sent.
 
 #### 8. Special Requirements
 - **Security:** Reset links are single-use and expire after 30 minutes (FR-015); passwords are never stored or logged (NFR-001); the same answer and the same response time are given for known and unknown emails (NFR-003); requests are limited to 3 per 15 minutes per address (FR-017).
@@ -2560,7 +2589,7 @@ Lets a registered user regain access without contacting support. The user reques
 ---
 
 ### UC-010-04: Sign In with Google
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-010-04`
@@ -2571,7 +2600,7 @@ Lets a registered user regain access without contacting support. The user reques
 - **Secondary Actor:** **Google OAuth** — the identity provider that authenticates the user and returns the verified email.
 
 #### 3. Description
-Lets a visitor continue with a Google account that has a verified email. If no WikiCook account uses that email, a verified **Member** account is created (this is the extension of `UC-010-01`). If a **verified** account already uses the email, the user is signed in to that existing account without creating a duplicate. If an **unverified** email-and-password account uses the email, that account is reset as a brand-new one so that the real email owner never inherits data or a password set by someone else.
+Lets a visitor continue with a Google account that has a verified email. If no WikiCook account uses that email, a verified **Member** account is created (this is the extension of `UC-010-01`). If a **verified** account already uses the email, the user is signed in to that existing account without creating a duplicate. If an **unverified**, active email-and-password account uses the email, that account is reset as a brand-new one, all-or-nothing, so that the real email owner never inherits data or a password set by someone else; a suspended or banned account is never reset (FR-019). A Google session follows the lifetime without "Remember me" (FR-018), and a lock on email-and-password sign-in does not block Google sign-in (FR-012).
 
 #### 4. Preconditions
 - The actor can reach the WikiCook web application and the Google sign-in provider over an encrypted connection (NFR-002).
@@ -2580,14 +2609,14 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 
 #### 5. Basic Flow
 1. **Choose Google:** On the sign-in or sign-up page the actor chooses "Continue with Google" ("Đăng ký với Google" on the sign-up page).
-2. **Redirect to Google:** The system redirects the actor to the Google consent screen (secondary actor).
+2. **Redirect to Google:** The browser navigates to `GET /api/v1/auth/oauth2/google` (with the remembered internal page as `redirect`), and the system redirects the actor to the Google consent screen (secondary actor).
 3. **Consent:** The actor selects a Google account and grants consent.
-4. **Receive Identity:** Google returns to WikiCook with the identity: provider user identifier, email, whether the email is verified, and name.
+4. **Receive Identity:** Google returns to the WikiCook callback (`GET /api/v1/auth/oauth2/callback/google`) with the identity: provider user identifier, email, whether the email is verified, and name.
 5. **Check Email:** The system checks that the email is present and verified by Google (FR-018) and that its one-way hash is not on the Blocked Email list (FR-026).
 6. **Find Account:** The system searches for an account that uses the email and for a linked Google identity. None is found.
-7. **Create Account:** The system creates a **verified Member** account (US5 AS1, FR-003), takes the display name from the Google account, and stores a Linked External Identity (provider, provider user identifier, email).
-8. **Create Session:** The system creates a session for this device and records an audit entry for the sign-in (FR-025).
-9. **Redirect:** The system redirects the actor to the originally requested internal page or to the home page (FR-011).
+7. **Create Account:** The system creates a **verified Member** account (US5 AS1, FR-003), takes the display name from the Google account under the same 1–50 character rule as registration (FR-018), and stores a Linked External Identity (provider, provider user identifier, email).
+8. **Create Session:** The system creates a session for this device with the lifetime of a sign-in without "Remember me" (FR-009, FR-018), sets the refresh-token cookie and records an audit entry for the sign-in (FR-025).
+9. **Redirect:** The system redirects the actor to the originally requested internal page or to the home page (FR-011); a `redirect` value that points outside WikiCook is ignored.
 10. **Repeat Sign-In (verification):** On a later visit the actor repeats Steps 1–5 and the system finds the same account and signs the actor in without creating another one (US5 independent test).
 
 #### 6. Alternative Flows
@@ -2597,50 +2626,57 @@ Lets a visitor continue with a Google account that has a verified email. If no W
     1. The system links the Google identity to that existing account and does not create a duplicate.
     2. The system signs the actor in to the existing account with the same data and the same role, then continues at Step 8.
 - **AF 4.2: Email Matches an Unverified Account (Reset as New Account):**
-  - *Trigger:* At Step 6, an **unverified** email-and-password account uses the email (US5 AS2, FR-019).
+  - *Trigger:* At Step 6, an **unverified** email-and-password account that is active (neither suspended nor banned) uses the email (US5 AS2, FR-019).
   - *Steps:*
-    1. The system deletes all data created before verification: display name, dietary profile (`011`), recipe drafts and other recipes (`060`), collections and bookmarks (`080`) and any other data.
+    1. The system deletes all data created before verification: display name, dietary profile, bio and avatar (`011`), recipe drafts and other recipes (`060`), collections and bookmarks (`080`) and any other data.
     2. The system disables the old password and ends every earlier session of that account.
-    3. The system takes the display name from the Google account and marks the account as verified.
+    3. The system takes the display name from the Google account (1–50 character rule) and marks the account as verified.
     4. The system emits the "account reset" event to specs `011`, `060` and `080` (Integration Points). Data created after verification is never affected.
-    5. The system links the Google identity and continues at Step 8.
-  - *Outcome:* The email owner starts with a clean account (see `[OQ-010-07]` for failure handling).
+    5. The reset is all-or-nothing: if any receiving spec fails to delete its data, nothing changes, the sign-in is not completed and the actor returns to the sign-in page (FR-019; Clarification 2026-11-06, `[OQ-010-07]` closed).
+    6. On success the system links the Google identity and continues at Step 8.
+  - *Outcome:* The email owner starts with a clean account.
 - **AF 4.3: Consent Cancelled or Denied:**
   - *Trigger:* At Step 3, the actor cancels or denies consent (US5 AS3).
   - *Steps:*
-    1. The system returns the actor to the sign-in page with a neutral message and creates no account.
+    1. The callback redirects the actor to the sign-in page with the error `google_cancelled`; the system shows a neutral message and creates no account.
 - **AF 4.4: Google Account Without a Usable Email:**
   - *Trigger:* At Step 5, the Google account has no email address or the email is not verified (Edge Cases "Google account without an email address").
   - *Steps:*
-    1. The system refuses the sign-in with a message suggesting registration with email and password (`UC-010-01`) and creates no account.
+    1. The callback redirects to the sign-in page with the error `google_no_verified_email`; the system shows a message suggesting registration with email and password (`UC-010-01`) and creates no account.
 - **AF 4.5: Email on the Blocked Email List:**
   - *Trigger:* At Step 5, the hash of the Google email matches the Blocked Email list (FR-026).
   - *Steps:*
-    1. The system refuses to create the account and shows a refusal message.
+    1. The callback redirects to the sign-in page with the error `registration_refused`; the system refuses to create the account with a neutral message that gives no reason (FR-026; Clarification 2026-11-06).
 - **AF 4.6: Matched Account Suspended or Banned:**
-  - *Trigger:* At AF 4.1, the existing account is suspended or banned (FR-013).
+  - *Trigger:* At Step 6, the matching account (verified or unverified) is suspended or banned (FR-013, FR-019).
   - *Steps:*
-    1. The system does not create a session and shows the same status message as `UC-010-02` AF 2.4 or AF 2.5.
-    2. The system records a failure audit entry (FR-025).
-- **AF 4.7: Google Provider Unreachable:**
-  - *Trigger:* At Step 2 or Step 4, the provider cannot be reached or returns an error (NFR-005).
+    1. The system does not create a session and does not reset or link anything: the account, its sanction and its data stay unchanged (FR-019; Clarification 2026-11-07).
+    2. The callback redirects to the account-status page, which shows the same information as `UC-010-02` AF 2.4 or AF 2.5 (reason, end date for a suspension, and for a banned account the closure action of `UC-011-04` AF 4.13).
+    3. The system records a failure audit entry (FR-025).
+- **AF 4.7: Google Provider Unreachable or Not Configured:**
+  - *Trigger:* At Step 2 or Step 4, the provider cannot be reached, returns an error or is not configured (NFR-005).
   - *Steps:*
-    1. The system tells the actor that Google sign-in is not available now and returns to the sign-in page.
+    1. The system redirects to the sign-in page with the error `google_unavailable` and tells the actor that Google sign-in is not available now.
     2. Email-and-password sign-in (`UC-010-02`) stays fully available.
 - **AF 4.8: Display Name From Google Is Not Valid:**
-  - *Trigger:* At Step 7, the name returned by Google is empty or longer than 50 characters (FR-001 limit; see `[OQ-010-08]`).
+  - *Trigger:* At Step 7 or AF 4.2, the name returned by Google is empty or longer than 50 characters (FR-018).
   - *Steps:*
-    1. The system applies the same 1–50 character rule as registration before storing the display name.
+    1. The system applies the same 1–50 character rule as registration before storing the display name (FR-018; Clarification 2026-11-06, `[OQ-010-08]` closed).
+  - *Note:* The spec fixes the rule but not how a name outside it is corrected (for example shortened or replaced); this is left to the plan.
 - **AF 4.9: Already Signed-In User:**
   - *Trigger:* At Step 1, a signed-in user opens the page (Edge Cases "Already signed in").
   - *Steps:*
     1. The system redirects the user to the home page.
+- **AF 4.10: Email-and-Password Sign-In Locked:**
+  - *Trigger:* At Step 1, email-and-password sign-in for the same email is locked after repeated failures (`UC-010-02` AF 2.3).
+  - *Steps:*
+    1. The lock does not apply to Google sign-in; the basic flow continues normally (FR-012; Clarification 2026-11-06).
 
 #### 7. Postconditions
 - **Success (new account):** A verified Member account and one Linked External Identity exist; a session is active; an audit entry is stored.
 - **Success (existing verified account):** The Google identity is linked to the existing account; no new account exists.
 - **Success (reset of an unverified account):** The account holds no data from before verification, has no usable password, is verified, and has the Google display name; events were sent to `011`, `060` and `080`.
-- **Failure:** No session is created and no account or identity is created.
+- **Failure:** No session is created and no account or identity is created. A failed reset (AF 4.2 Step 5) leaves the unverified account exactly as it was; a suspended or banned account is never changed (AF 4.6).
 
 #### 8. Special Requirements
 - **Security:** The OAuth client secret is kept in environment variables and is never committed (constitution Principle IV); transport is encrypted (NFR-002); the data of an unverified account is deleted so that no third party can pre-load an email owner's account with an allergy profile or a password (FR-019).
@@ -2661,18 +2697,83 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 
 ---
 
+### UC-010-05: Sign Out
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+> *New in v2.0 (`SCRUM-71`).* Use-Case Model v2.0 §4.1 adds this use case because its primary actor is a signed-in Member, not a Guest; in v1.4 it was `AF 2.13` of `UC-010-02`. Checked against `AuthController.logout`, `SessionService.logout`, `ClientHeaderFilter` and `SessionJwtAuthenticationConverter` on `main` (`SCRUM-74`).
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-010-05`
+- **Use Case Name:** Sign Out of This Device
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — any signed-in user (Contributor, Moderator and Administrator inherit it).
+- **Secondary Actor:** None.
+
+#### 3. Description
+Lets a signed-in user end the session of the current device immediately. Sessions on other devices stay signed in. After signing out, member-only content is no longer reachable on this device, also through the browser Back button (US1 AS4, FR-010, Edge Cases "Simultaneous sessions").
+
+#### 4. Preconditions
+- The actor is signed in on this device (`UC-010-02` or `UC-010-04`); the browser holds the refresh cookie of the session.
+
+#### 5. Basic Flow
+1. **Choose Sign Out:** The actor opens the "Tôi" page and chooses "Đăng xuất".
+2. **Send Request:** The browser sends `POST /api/v1/auth/logout` with the header `X-WikiCook-Client: web`; the refresh cookie of this session is sent with it. No request body is needed.
+3. **End Session:** The server finds the session of this cookie, ends it at once and records an audit entry `SIGNED_OUT` (FR-010, FR-025).
+4. **Answer:** The server answers `204` and clears the refresh cookie.
+5. **Show Signed-Out State:** The app discards the access token and shows the home page as a Guest.
+6. **Old Token Refused:** Every later request that still carries the access token of the ended session is refused with `401 UNAUTHENTICATED`, because each signed-in request is checked against the stored session; pressing Back does not show member-only content (US1 AS4).
+
+#### 6. Alternative Flows
+- **AF 5.1: Other Devices Stay Signed In:**
+  - *Trigger:* At Step 3, the user has sessions on other devices (Edge Cases "Simultaneous sessions").
+  - *Steps:*
+    1. Only the session of this cookie ends; the other sessions continue. Other sessions end only through a password reset (`UC-010-03`), a password change or set (`UC-011-03`), a suspension or ban (`UC-100-03`) or an account deletion (`UC-011-04`).
+- **AF 5.2: Session Already Ended or No Cookie:**
+  - *Trigger:* At Step 2, the cookie is missing, unknown or belongs to a session that has already ended, for example after a second press or in a second tab.
+  - *Steps:*
+    1. The server changes nothing, writes no audit entry and still answers `204` with the cookie cleared; the call is idempotent (contract `logout`).
+- **AF 5.3: Client Header Missing:**
+  - *Trigger:* At Step 2, the request has no `X-WikiCook-Client` header, for example a request forged from another site.
+  - *Steps:*
+    1. The server answers `403 INVALID_CLIENT` and ends no session.
+
+#### 7. Postconditions
+- **Success:** The session of this device is ended and audited; the refresh cookie is cleared; sessions on other devices are unchanged.
+- **AF 5.2:** Nothing changes; the cookie is cleared.
+- **AF 5.3:** Nothing changes.
+
+#### 8. Special Requirements
+- **Security:** Signing out takes effect immediately (FR-010): the access token is short-lived and every signed-in request is checked against the stored session (see `UC-010-02` Special Requirements). The refresh token lives only in the cookie, and the custom header is the CSRF defence of the cookie endpoints (`ClientHeaderFilter`; spec 010 research R2).
+- **Auditability:** The audit entry contains the session id only (FR-025, NFR-008).
+- **Usability and accessibility:** "Đăng xuất" is reachable by keyboard and usable from 360 px (NFR-006, NFR-007).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1, "Đăng xuất"); the web pages of the profile area (for example `W-PF01-Me.dc.html`) show the same link in the side menu.
+- **Alternative Flows:** None needed; AF 5.1 – AF 5.3 show no own screen.
+- **UI Asset Gap for SCRUM-58:** None.
+- **Prototype Screenshots (SCRUM-58):**
+  - **"Tôi" page with "Đăng xuất" in the side menu (`W-PF01-Me`), the same screenshot as `UC-011-02`:**
+    - **Desktop Web View:**  
+      ![Basic_ProfileView Desktop](../assets/screenshots/use-cases/011-profile/UC011_02_Basic_ProfileView_desktop.png)
+
+---
+
 ### 9.1. Feature 010 (User Authentication & Roles) Traceability
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria | Vision Feature |
 | :---: | :--- | :---: | :--- | :--- | :---: | :---: |
-| **`UC-010-01`** | Register Account & Verify Email | `US2` (AS 1–6) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-006`, `FR-017`, `FR-026` | `NFR-001`, `NFR-002`, `NFR-006`, `NFR-007` | `SC-001`, `SC-003`, `SC-007` | §5.1 |
-| **`UC-010-02`** | Sign In with Email & Password | `US1` (AS 1–7); `US3` (AS 1–5, through `AF 2.9`, `AF 2.15`, `AF 2.16`); `US2` (AS 5) | `FR-007`, `FR-008`, `FR-009`, `FR-010`, `FR-011`, `FR-012`, `FR-013`, `FR-020`, `FR-021`, `FR-022`, `FR-022a`, `FR-024`, `FR-024a`, `FR-025` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-004`, `NFR-005`, `NFR-006`, `NFR-007`, `NFR-008` | `SC-002`, `SC-004`, `SC-005`, `SC-007` | §5.1 |
-| **`UC-010-03`** | Reset Forgotten Password | `US4` (AS 1–4) | `FR-014`, `FR-015`, `FR-016`, `FR-017`, `FR-004`, `FR-025` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-006`, `NFR-007` | `SC-006`, `SC-007` | §5.1 |
-| **`UC-010-04`** | Sign In with Google | `US5` (AS 1–3) | `FR-018`, `FR-019`, `FR-003`, `FR-011`, `FR-026` | `NFR-002`, `NFR-005` | `SC-007` | §5.1 |
+| **`UC-010-01`** | Register Account & Verify Email | `US2` (AS 1–6) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-006`, `FR-017`, `FR-026` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-006`, `NFR-007` | `SC-001`, `SC-003`, `SC-007` | §5.1 |
+| **`UC-010-02`** | Sign In with Email & Password | `US1` (AS 1–3, 5–7); `US3` (AS 1–6, through `AF 2.9`, `AF 2.14` – `AF 2.16`); `US2` (AS 5) | `FR-006`, `FR-007`, `FR-008`, `FR-009`, `FR-011`, `FR-012`, `FR-013`, `FR-020`, `FR-021`, `FR-022`, `FR-022a`, `FR-024`, `FR-024a`, `FR-025` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-004`, `NFR-005`, `NFR-006`, `NFR-007`, `NFR-008` | `SC-002`, `SC-004`, `SC-005`, `SC-007` | §5.1 |
+| **`UC-010-03`** | Reset Forgotten Password | `US4` (AS 1–4) | `FR-002`, `FR-004`, `FR-012`, `FR-014`, `FR-015`, `FR-016`, `FR-017`, `FR-025` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-006`, `NFR-007` | `SC-006`, `SC-007` | §5.1 |
+| **`UC-010-04`** | Sign In with Google | `US5` (AS 1–3) | `FR-003`, `FR-009`, `FR-011`, `FR-012`, `FR-013`, `FR-018`, `FR-019`, `FR-025`, `FR-026` | `NFR-002`, `NFR-005` | `SC-007` | §5.1 |
+| **`UC-010-05`** | Sign Out *(new v2.0)* | `US1` (AS 4) | `FR-010`, `FR-025` | `NFR-006`, `NFR-007`, `NFR-008` | `SC-007` | §5.1 |
 
-*Verification:* User stories `US1`, `US2`, `US4` and `US5` and their 20 acceptance scenarios map to one use case each. `US3` (role-based access) has no dedicated use case in the Use-Case Model: its Guest scenario is `AF 2.9`, its permission scenarios are `AF 2.15` and `AF 2.16`, and role changes by an Administrator belong to `UC-100-03`. `FR-021`, `FR-022`, `FR-022a`, `FR-023` and the permission matrix are enforced by every Member-only use case in the model as a special requirement. `FR-023` (last active Administrator) and the Administrator-side part of `FR-022`, `FR-022a`, `FR-024a` and `FR-025` are performed through `UC-100-03`. The emails of `FR-024a` (account suspended or banned, suspension ended, ban lifted) are sent when an Administrator acts or when the status changes (spec `100`); `UC-010-02` covers only the in-app role-change notice of `FR-024a` (`AF 2.15`). See `[OQ-010-01]`.
+*Verification:* User stories `US1`, `US2`, `US4` and `US5` and their 20 acceptance scenarios map to one use case each, except `US1` AS4 (sign out), which maps to `UC-010-05` since v2.0. `US3` (role-based access) has no dedicated use case in the Use-Case Model: its Guest scenario is `AF 2.9`, its permission scenarios are `AF 2.15` and `AF 2.16`, and role changes by an Administrator belong to `UC-100-03`. `FR-021`, `FR-022`, `FR-022a`, `FR-023` and the permission matrix are enforced by every Member-only use case in the model as a special requirement. `FR-023` (last active Administrator) and the Administrator-side part of `FR-022`, `FR-022a`, `FR-024a` and `FR-025` are performed through `UC-100-03`. The emails of `FR-024a` (account suspended or banned, suspension ended, ban lifted) are sent by spec 010 when a Moderator or Administrator acts through `UC-100-03` or when a suspension ends on schedule; `UC-010-02` shows their effect on a signed-in user (`AF 2.14`) and the in-app role-change notice (`AF 2.15`). `FR-022b` (shared wrong-password counter for re-authentication) is exercised by `UC-011-03`, `UC-011-04` and the Administrator actions of `UC-100-03`. See `[OQ-010-01]`.
 
 ### 9.2. Prototype Screen Mapping & UI Asset Gaps (for SCRUM-58)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Use Case ID | Flow / Step Reference | Existing Screen ID & Filename | Description of Prototype View | Asset Status & Action for SCRUM-58 |
 | :---: | :--- | :--- | :--- | :---: |
@@ -2686,7 +2787,7 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 | `UC-010-02` | AF 2.3, AF 2.4, AF 2.5 | `AU07-Locked.dc.html` | Locked account until a time with "Đặt lại mật khẩu"; suspended account with end date and reason; note for banned accounts | **Available** |
 | `UC-010-02` | AF 2.7 | *Gap 010-F* | Reminder banner to verify the email, with the request for a new link | **GAP** |
 | `UC-010-02` | AF 2.9 | `AU08-SignInPrompt.dc.html` | Guest presses Save: "Đăng nhập / Tạo tài khoản / Để sau" | **Available** |
-| `UC-010-02` | AF 2.12 | *Gap 010-G* | Session expired: sign in again, with the leave-page warning | **GAP** |
+| `UC-010-02` | AF 2.12 | *Gap 010-G* | Session ended: sign-in dialog over the page, unsaved form content kept, leave-page warning | **GAP** |
 | `UC-010-02` | AF 2.15 | *Gap 010-H* | One-time in-app notice of the new role and the permissions that changed | **GAP** |
 | `UC-010-02` | AF 2.16 | `AU09-AccessDenied.dc.html` | "Bạn không có quyền xem trang này" | **Available** |
 | `UC-010-03` | Basic Flow (Steps 2–5), AF 3.1 | `AU05-ForgotPassword.dc.html` | Request form and the neutral "Đã gửi yêu cầu" message with "Gửi lại link" | **Available** |
@@ -2698,14 +2799,18 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 | `UC-010-04` | AF 4.3 | *Gap 010-L* | Back on the sign-in page with a neutral "Google sign-in cancelled" message | **GAP** |
 | `UC-010-04` | AF 4.4 | *Gap 010-M* | Refusal: Google account has no verified email, with the suggestion to register by email | **GAP** |
 | `UC-010-04` | AF 4.7 | *Gap 010-N* | "Google sign-in is not available now", email sign-in still shown | **GAP** |
+| `UC-010-05` | Basic Flow (Step 1) | `PF01-Me.dc.html` | "Tôi" page with "Đăng xuất" | **Available** |
 
-*Note:* `AF 1.3` – `AF 1.8`, `AF 1.12` – `AF 1.15`, `AF 2.6`, `AF 2.8`, `AF 2.10` – `AF 2.11`, `AF 2.13` – `AF 2.14`, `AF 2.17`, `AF 3.2` – `AF 3.3`, `AF 3.6` – `AF 3.9` and `AF 4.1` – `AF 4.2`, `AF 4.5` – `AF 4.6`, `AF 4.8` – `AF 4.9` are validation messages, redirects or background behaviour that reuse the screens above and need no separate screenshot.
+*Note:* `AF 1.3` – `AF 1.8`, `AF 1.12` – `AF 1.15`, `AF 2.6`, `AF 2.8`, `AF 2.10` – `AF 2.11`, `AF 2.14`, `AF 2.17` – `AF 2.19`, `AF 5.1` – `AF 5.3`, `AF 3.2` – `AF 3.3`, `AF 3.6` – `AF 3.10` and `AF 4.1` – `AF 4.2`, `AF 4.5` – `AF 4.6`, `AF 4.8` – `AF 4.10` are validation messages, redirects or background behaviour that reuse the screens above and need no separate screenshot.
 
 *Desktop variants:* every screen listed in this table also has a web variant named `W-<ID>` in the same folder (for example `W-AU02-Register.dc.html`). The mobile files are listed because the flows are written for the 360 px layout (constitution Principle V). `AU01` exists only as `W-AU01-Login.dc.html`.
 
 ### 9.3. Open Questions (For Team Alignment)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 *Decisions of 30/10/2026 by Mai Văn Hiển are recorded under each item. Changes to specs `010` need Duy's approval through a PR; the use cases above change only where a decision is stated in the flow.*
+
+*Status update (v2.0, 13/11/2026, `SCRUM-71`):* spec 010 was clarified on 2026-11-06, 2026-11-07 and 2026-11-09. Each item below now carries a *Status (v2.0)* line; the flows of `UC-010-01` – `UC-010-04` follow the clarified spec and the approved contract `specs/010-user-authentication-roles/contracts/openapi.yaml`.
 
 1. **`[OQ-010-01]` Role-Based Access Has No Use Case (`US3`):**
    - *Issue:* Spec 010 has five user stories but the Use-Case Model has four use cases for feature 010; `US3` is modelled only by the actor generalization and by `UC-100-03`. The prototype nevertheless contains `AU08` and `AU09` for it.
@@ -2713,64 +2818,78 @@ Lets a visitor continue with a Google account that has a verified email. If no W
    - *Proposal:* Either keep this stance, or add a Brief use case `UC-010-05 Enforce Role-Based Access` to the model before the freeze on 02/11/2026.
    - *Owner:* Mai Văn Hiển with Nguyễn Đức Duy (`SCRUM-49`).
    - *Decision (30/10/2026, Mai Văn Hiển):* Keep. `AF 2.9`, `AF 2.15` and `AF 2.16` stay; Duy confirms during review.
+   - *Status (v2.0):* Still **open** at model level. Spec 010 still has no use case for `US3`; the stance is kept and `AF 2.14` (suspension or ban while signed in) now also carries part of `US3`. *(18/11/2026)* Use-Case Model v2.0 gave the ID `UC-010-05` to **Sign Out**, not to role-based access; the stance of keeping `US3` inside `UC-010-02` and `UC-100-03` is unchanged (model §4.1).
 2. **`[OQ-010-02]` Lockout Details:**
    - *Issue:* The spec does not say whether a successful password reset ends an active lock, nor what the lock screen shows for an unregistered email (a lock message appears only for real accounts, which can reveal that the account exists and conflicts with `NFR-003`).
    - *Current Stance:* Unknown emails are counted and get the same lock screen (`AF 2.2`, `AF 2.3`).
    - *Depends on this question:* `UC-010-02` `AF 2.2` and `AF 2.3` (both marked "Proposed"). `UC-010-03` `AF 3.8` states the open point about the lock and a reset but proposes nothing.
    - *Owner:* Mai Văn Hiển (spec 010 owner) to decide.
    - *Decision (30/10/2026, Mai Văn Hiển):* Option A: count failures per normalized email including unregistered ones; same lock screen with the retry time and a neutral note; the `FR-012` email only when an account exists. Open, pending clarification of spec 010 (Duy approves by PR). "A successful reset clears the lock" is not in the flows. For `/speckit-plan`: the unknown-email counter expires after 15 minutes and is limited per IP address; audit entries never store an unknown email in readable form.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-012`, `FR-025`): option A is approved; attempts are also limited per IP address; a successful reset does **not** end the lock and the lock does not block Google sign-in. Flows updated: `AF 2.2`, `AF 2.3`, `AF 2.18`, `UC-010-03` `AF 3.8`, `UC-010-04` `AF 4.10`. The per-IP numbers are not fixed by the spec (configuration of the plan).
 3. **`[OQ-010-03]` Older Verification Links After a Resend:**
    - *Issue:* `FR-015` invalidates earlier links only for password reset. For verification, the spec says only "single-use and expires after 24 hours".
    - *Current Stance:* `AF 1.9` does not state whether older unused verification links stay valid.
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010: one sentence in `FR-005` — a new verification link invalidates earlier ones, as `FR-015` does for reset links. Then update `AF 1.9`.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-005`). `AF 1.9` and `AF 1.12` updated.
 4. **`[OQ-010-04]` How a Banned User Reaches Account Closure:**
    - *Issue:* A banned user may delete the account (`010` FR-026, `011` FR-037b), but sign-in is refused for banned accounts (`FR-013`). Spec `011` Assumptions leave the route to the restricted account-closure page to spec 010 and the plan.
    - *Current Stance:* `AF 2.5` shows only the ban message.
    - *Owner:* Mai Văn Hiển, to be settled before `/speckit-plan`.
    - *Decision (30/10/2026, Mai Văn Hiển):* Defer to `/speckit-plan`. To close it earlier, add to `FR-013` a restricted session for the account-closure page. Includes `[OQ-011-06]`.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-013`): after a correct password (or Google identity) a banned user receives a single-use closure link valid for 10 minutes that opens only the closure page of spec 011 and creates no session (`closureToken` of `403 ACCOUNT_BANNED`). Flows updated: `AF 2.5`, `UC-010-04` `AF 4.6`, `UC-011-04` `AF 4.13`. Closes `[OQ-011-06]` too.
 5. **`[OQ-010-05]` Message for a Blocked Email:**
    - *Issue:* `FR-026` says registration and Google account creation are refused for blocked emails but gives no message text; a message that names the block would reveal that the email belonged to a banned account.
    - *Current Stance:* `AF 1.7` and `AF 4.5` refuse without stating a reason.
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 (small): `FR-026` refuses with a neutral message, no reason.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-026`; contract `422 REGISTRATION_REFUSED`, Google error `registration_refused`). `AF 1.7` and `AF 4.5` updated.
 6. **`[OQ-010-06]` Answer When the Reset Request Limit Is Exceeded:**
    - *Issue:* `FR-017` limits requests but does not say what the user sees, and `NFR-003` forbids revealing registered emails.
    - *Current Stance:* `AF 3.2` counts requests per address and gives no registration-dependent answer.
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 (small): add "try again in X minutes". Counting per address is already right.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 and 2026-11-07 (`FR-017`; contract `429 EMAIL_RATE_LIMITED` with `retryAfterSeconds`). Verification and reset emails are counted separately, the first email at registration counts, and the limit never refuses a registration. `AF 1.10` and `AF 3.2` updated.
 7. **`[OQ-010-07]` Atomicity of the Unverified-Account Reset:**
    - *Issue:* `FR-019` lists the data deleted when Google takes over an unverified account but does not say what happens if one of the receiving specs (`011`, `060`, `080`) fails to delete its data.
    - *Current Stance:* `AF 4.2` assumes the whole reset succeeds or the sign-in is not completed.
    - *Owner:* Mai Văn Hiển with the owners of `011`, `060`, `080`.
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 010 and ask Duy: the reset is all-or-nothing; Duy confirms that `060` has a deletion handler.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-019`): all-or-nothing; on failure nothing changes and the sign-in is not completed. Clarification 2026-11-07 adds that a suspended or banned unverified account is never reset. `AF 4.2` and `AF 4.6` updated.
 8. **`[OQ-010-08]` Display Name and Session Lifetime for Google Accounts:**
    - *Issue:* `FR-019` takes the display name from Google only for the reset case, and the spec does not say whether a Google sign-in uses "Remember me".
    - *Current Stance:* `AF 4.8` applies the 1–50 character rule to the Google name; the session follows the default lifetime of `FR-009` without "Remember me".
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Keep; record in a clarification after 03/11.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-018`). `AF 4.8` and Step 8 of `UC-010-04` updated. How a name outside 1–50 characters is corrected is not fixed by the spec (see the note of `AF 4.8`).
 9. **`[OQ-010-09]` Prototype `AU03` Offers "Đổi địa chỉ email":**
    - *Issue:* The check-email screen shows "Đổi địa chỉ email", but spec 010 has no such function and spec `011` states that the email cannot be changed in this release.
    - *Current Stance:* No flow is written for it; it is not a requirement.
    - *Proposal:* Remove the link from `AU03` (Chung, `SCRUM-58`) or add the function to the spec first.
    - *Owner:* Mai Văn Hiển with Trần Nguyễn Công Chung.
    - *Decision (30/10/2026, Mai Văn Hiển):* Pass to Chung: remove "Đổi địa chỉ email" from `AU03`, because spec 011 says the email cannot be changed.
+   - *Status (v2.0):* **Open** (prototype task, `SCRUM-58`). Spec 010 and spec 011 (Assumptions: the email cannot be changed) are unchanged, so no flow is written for the link.
 10. **`[OQ-010-10]` Other Unspecified Cases:**
     - *Issue:* The spec does not state whether registration signs the user in automatically (the prototype `AU03` suggests it does), whether verification signs the user in, whether a suspended, banned, unverified or Google-only account may request a password reset, or what a lock does to a Google sign-in.
     - *Current Stance:* The flows above do not describe these cases; they are not invented.
     - *Owner:* Mai Văn Hiển.
     - *Decision (30/10/2026, Mai Văn Hiển):* Defer until after 03/11. The cases listed in this item stay out of the flows.
+   - *Status (v2.0):* **Closed** by spec 010 Clarifications 2026-11-06 (`FR-005`, `FR-012`, `FR-014`): registering and verifying do not sign the user in; Google-only, suspended and banned accounts receive no reset link but the same answer; a lock does not block Google sign-in. Flows updated: `UC-010-01` Steps 7 – 11, `UC-010-03` `AF 3.10`, `UC-010-04` `AF 4.10`.
 
 ---
 
 ## 10. USE-CASE SPECIFICATIONS FOR FEATURE 011: USER PROFILE & DIETARY PROFILE
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 > [!NOTE]
-> **Sources:** `specs/011-user-profile-dietary/spec.md` (US1–US5, FR-001 – FR-042 including `FR-037a` and `FR-037b`, NFR-001 – NFR-008, SC-001 – SC-008), `specs/010-user-authentication-roles/spec.md` (account status, Blocked Email list, password rules), [Vision Document](vision-document.md) §5.1, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.1 and §5 (`SCRUM-49`) and the project constitution (Principles IV and V). The actor is **Member** (a signed-in user; Contributor, Moderator and Administrator inherit it). `UC-011-01` includes `UC-011-05`; `UC-011-05` is also included by `UC-020-03` and `UC-031-01`. By agreement with spec 010, editing the display name, changing or setting a password, deleting the account and the dietary profile are owned by this feature.
+> **Sources:** `specs/011-user-profile-dietary/spec.md` (US1–US5, FR-001 – FR-042 including `FR-010a`, `FR-026a`, `FR-037a` and `FR-037b`, NFR-001 – NFR-008, SC-001 – SC-008; Clarifications up to the session of 2026-11-07), `specs/011-user-profile-dietary/contracts/openapi.yaml` (endpoints under `/api/v1`, status codes and error codes quoted in the flows) and `data-model.md`, `specs/010-user-authentication-roles/spec.md` and its contract (account status, Blocked Email list, password rules, re-authentication `POST /api/v1/auth/reauthenticate`, closure link of `FR-013`), [Vision Document](vision-document.md) §5.1, the Use-Case Model [`use-case-model.md`](use-case-model.md) §4.1 and §5 (`SCRUM-49`) and the project constitution (Principles IV and V). The actor is **Member** (a signed-in user; Contributor, Moderator and Administrator inherit it). `UC-011-01` includes `UC-011-05`; `UC-011-05` is also included by `UC-020-03`, `UC-030-01`, `UC-031-01` and `UC-031-05`. `UC-011-06` View Public Profile *(new in v2.0)* has the primary actor **Guest**. By agreement with spec 010, editing the display name, changing or setting a password, deleting the account and the dietary profile are owned by this feature.
+>
+> **v2.0 revision note (SCRUM-71):** Spec 011 was clarified on 2026-11-06 and 2026-11-07, after the PA3 baseline (v1.2) of this section. The flows marked *"Proposed"* now follow the approved rules (`FR-026a`, `FR-028`, `FR-030`, `FR-037b`, `FR-039`), archived recipes are kept on account deletion (`FR-033`), and each step that calls the backend names the contract endpoint and the error code it returns.
+>
+> **v2.0 code check (18/11/2026):** The profile backend was merged into `main` by `SCRUM-75` (PR #95): `GET`/`POST /api/v1/me/profile`, the dietary profile, the public profile (`GET /api/v1/profiles/{id}`, `/recipes`) and the avatar media. `UC-011-06` was written from that code. Password change, password set, account deletion and account closure (US3, US4) are not implemented yet, so `UC-011-03` and `UC-011-04` still describe the approved contract; the differences are listed in `[OQ-011-09]`.
 
 ### UC-011-01: Set Up Dietary Profile
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-011-01`
@@ -2781,28 +2900,28 @@ Lets a visitor continue with a Google account that has a verified email. If no W
 - **Included Use Case:** `UC-011-05` Apply Dietary Hard Rules (defines how the saved values are used).
 
 #### 3. Description
-Lets a signed-in user record, in one place and once, what must be avoided and how the user likes to eat: allergens (from a fixed list), excluded ingredients (from the shared ingredient catalogue, up to 50), one diet type, preferred cuisines, household size (1–20) and maximum total cooking time (10–240 minutes). Every field is optional. The saved profile is the single source of truth that search (`020`), the meal planner (`030`) and the AI planner (`031`) read. Saving replaces the whole profile at once, and clearing every field is allowed.
+Lets a signed-in user record, in one place and once, what must be avoided and how the user likes to eat: allergens (from a fixed list), excluded ingredients (from the shared ingredient catalogue, up to 50), one diet type (Vegetarian, Vegan, Pescatarian or none), preferred cuisines, household size (1–20) and maximum total cooking time (10–240 minutes). Every field is optional. The saved profile is the single source of truth that search (`020`), the meal planner (`030`) and the AI planner (`031`) read. Saving replaces the whole profile at once, and clearing every field is allowed. The allergen field always warns that allergen protection is only as complete as the ingredient data of the catalogue (FR-010a).
 
 #### 4. Preconditions
-- The actor is signed in with the Member role or above and the account is active (`UC-010-02`); Guests have no profile page (FR-001).
-- The ingredient catalogue, the fixed list of allergens, the fixed list of diet types and the cuisines managed by Administrators (spec `100`) are available to the form (FR-009, FR-011, FR-012, FR-013).
+- The actor is signed in with the Member role or above and the account is active (`UC-010-02`); Guests have no profile page (FR-001). Email verification does not limit editing the profile (spec 011 Assumptions).
+- The lists of the form come from the server, not from the client: `GET /api/v1/me/dietary-options` returns the fixed allergen list, the diet types `NONE`, `VEGETARIAN`, `VEGAN`, `PESCATARIAN` and the active cuisines managed by Administrators in spec `100` (FR-009, FR-012, FR-013). Approved ingredients of the shared catalogue are available for suggestions (FR-011).
 
 #### 5. Basic Flow
-1. **Open Profile Area:** The actor opens the "Tôi" page, which shows the dietary summary (for example "Dị ứng đậu phộng · 4 người"), and chooses "Hồ sơ ăn uống". While data loads, the system shows a skeleton within 300 ms (FR-039).
-2. **Show Empty State:** The actor has no dietary profile, so the system shows the empty state "Cho chúng tôi biết bạn tránh gì và thích ăn gì", states that no item is required, explains the difference between hard rules and preferences, and offers "Bắt đầu" (US1 AS1).
-3. **Open Form:** The actor presses "Bắt đầu". The system shows the form with the group "Quy tắc bắt buộc" (allergens and excluded ingredients) and the group "Sở thích" (diet type, household size, maximum time, preferred cuisines).
+1. **Open Profile Area:** The actor opens the "Tôi" page, which shows the dietary summary (for example "Dị ứng đậu phộng · 4 người"), and chooses "Hồ sơ ăn uống". The page loads `GET /api/v1/me/dietary-profile`; while data loads, the system shows a skeleton within 300 ms (FR-039).
+2. **Show Empty State:** The server answers `200` with `empty = true` because the actor has no dietary profile. The system shows the empty state "Cho chúng tôi biết bạn tránh gì và thích ăn gì", states that no item is required, explains the difference between hard rules and preferences, and offers "Bắt đầu" (US1 AS1, FR-008).
+3. **Open Form:** The actor presses "Bắt đầu". The system shows the form with the group "Quy tắc bắt buộc" (allergens and excluded ingredients) and the group "Sở thích" (diet type, household size, maximum time, preferred cuisines). The allergen field shows the notice that allergen protection depends on the ingredient data of the catalogue, may be incomplete and does not replace checking the ingredients (FR-010a).
 4. **Choose Allergens:** The actor selects any number of allergens, for example "Đậu phộng", from the fixed list kept by the system. Free text is not accepted (US1 AS2, FR-009).
-5. **Choose Excluded Ingredients:** The actor types "ngo" in the excluded-ingredients field. The system suggests matching approved catalogue ingredients, ignoring diacritics and letter case, within 300 ms of the last keystroke. The actor picks "Ngò rí". The counter shows the number used out of 50 (US1 AS3, FR-011, NFR-001).
-6. **Choose Preferences:** The actor picks at most one diet type, for example "Ăn chay"; enters a household size, for example 4; enters a maximum total time, for example 45 minutes; and picks any number of preferred cuisines (US1 AS4, AS5; FR-012 – FR-015).
-7. **Save:** The actor presses "Lưu hồ sơ". The system disables the button until a response arrives (FR-041).
-8. **Validate on the Server:** The system checks every value: allergen identifiers exist in the fixed list; excluded ingredients are approved catalogue ingredients and at most 50; at most one diet type; household size is a whole number from 1 to 20 or empty; maximum time is a whole number from 10 to 240 or empty (FR-016, FR-040).
+5. **Choose Excluded Ingredients:** The actor types "ngo" in the excluded-ingredients field. The page calls `GET /api/v1/ingredients/suggestions?q=ngo`, which returns at most 10 approved catalogue ingredients, ignoring diacritics and letter case, exact and prefix matches first, within 300 ms of the last keystroke; fewer than 2 characters return no suggestion. The actor picks "Ngò rí". The counter shows the number used out of 50 (US1 AS3, FR-011, NFR-001).
+6. **Choose Preferences:** The actor picks at most one diet type, for example "Ăn chay" (Vegetarian; Keto is not offered in this release, FR-012); enters a household size, for example 4; enters a maximum total time (preparation plus cooking), for example 45 minutes; and picks any number of preferred cuisines (US1 AS4, AS5; FR-012 – FR-015).
+7. **Save:** The actor presses "Lưu hồ sơ". The system disables the button until a response arrives (FR-041). The browser sends `PUT /api/v1/me/dietary-profile` with `allergenIds`, `excludedIngredientIds`, `dietType`, `preferredCuisineIds`, `householdSize`, `maxCookTimeMinutes` and the `version` read in Step 1.
+8. **Validate on the Server:** The system checks every value: allergen identifiers exist in the fixed list; excluded ingredients are approved catalogue ingredients, without duplicates and at most 50; the diet type is one of the four values; household size is a whole number from 1 to 20 or empty; maximum time is a whole number from 10 to 240 or empty (FR-016, FR-040).
 9. **Apply Definitions (include `UC-011-05`):** The system classifies allergens and excluded ingredients as hard rules and diet type, maximum time and preferred cuisines as preferences, as defined by `UC-011-05`.
-10. **Store Atomically:** The system replaces the whole dietary profile in one operation, all fields or none (FR-017, NFR-007), and records an audit entry that contains no dietary detail (FR-042).
+10. **Store Atomically:** The system replaces the whole dietary profile in one operation, all fields or none (FR-017, NFR-007), records an audit entry that contains no dietary detail (FR-042) and answers `200` with the saved profile and its new `version`.
 11. **Confirm:** The system shows a success message. After a reload, and on another device, the saved values are shown (US1 AS6). From the actor's next search, dish added or generation, the new profile is used (US1 AS8, FR-024).
 
 #### 6. Alternative Flows
 - **AF 1.1: Edit an Existing Profile:**
-  - *Trigger:* At Step 2, the actor already has a dietary profile.
+  - *Trigger:* At Step 2, the actor already has a dietary profile (`empty = false`).
   - *Steps:*
     1. The system skips the empty state and shows the form filled with the saved values.
     2. The actor changes any values and the flow continues at Step 7.
@@ -2813,13 +2932,13 @@ Lets a signed-in user record, in one place and once, what must be avoided and ho
     2. After reload the empty state of Step 2 is shown again.
   - *Outcome:* The user is treated as having no hard rules and no preferences (`UC-011-05` AF 5.1).
 - **AF 1.3: Invalid Household Size:**
-  - *Trigger:* At Step 6, the actor enters 0, 21, a negative number, a decimal, or text (US1 AS5).
+  - *Trigger:* At Step 6, the actor enters 0, 21, a negative number, a decimal, or text (US1 AS5, FR-014).
   - *Steps:*
-    1. The system refuses the value with a clear field-level message and saves nothing.
+    1. The form refuses the value with a clear field-level message and saves nothing. A value that reaches the server anyway is refused as in AF 1.7.
 - **AF 1.4: Invalid Maximum Cooking Time:**
   - *Trigger:* At Step 6, the actor enters 5, 241, a decimal, or text (US1 AS5, FR-015).
   - *Steps:*
-    1. The system refuses the value with a clear field-level message and saves nothing. An empty time is accepted.
+    1. The form refuses the value with a clear field-level message and saves nothing. An empty time is accepted. A value that reaches the server anyway is refused as in AF 1.7.
 - **AF 1.5: Value Not in the Catalogue or the Fixed List:**
   - *Trigger:* At Step 4 or Step 5, the actor tries to add free text that is not an allergen of the fixed list or an ingredient of the catalogue (FR-009, FR-011).
   - *Steps:*
@@ -2827,49 +2946,53 @@ Lets a signed-in user record, in one place and once, what must be avoided and ho
 - **AF 1.6: More Than 50 Excluded Ingredients:**
   - *Trigger:* At Step 5, the actor adds the 51st ingredient (Edge Cases "Excluded ingredient list very long").
   - *Steps:*
-    1. The system refuses the 51st ingredient with a message explaining the limit of 50.
-- **AF 1.7: Invalid Data Sent by a Modified Client:**
-  - *Trigger:* At Step 8, the server receives an allergen identifier that does not exist, a household size of 0, or another invalid value (Edge Cases "Invalid data returned to the server").
+    1. The form refuses the 51st ingredient with a message explaining the limit of 50. The server also refuses a list longer than 50 (AF 1.7).
+- **AF 1.7: Invalid Data Sent to the Server:**
+  - *Trigger:* At Step 8, the server receives an allergen identifier that does not exist, a household size of 0, more than 50 excluded ingredients, or another invalid value, for example from a modified client (Edge Cases "Invalid data returned to the server").
   - *Steps:*
-    1. The system refuses the request with field-level messages and leaves the stored profile unchanged (FR-016).
+    1. The server answers `400 VALIDATION_ERROR` with one error per field; the system shows each message next to its field.
+    2. The stored profile is unchanged (FR-016).
 - **AF 1.8: Leaving With Unsaved Changes:**
   - *Trigger:* At Steps 3–6, the actor leaves the page with edited fields (Edge Cases "Unsaved changes").
   - *Steps:*
     1. The system asks for confirmation before leaving. Nothing is saved silently.
 - **AF 1.9: Network Failure While Saving:**
-  - *Trigger:* At Step 7, the connection is lost or the request fails (FR-039).
+  - *Trigger:* At Step 7, the connection is lost or the request fails (Edge Cases "Network loss while saving", FR-039).
   - *Steps:*
     1. The system shows an error message with "Try again" and keeps everything the actor typed in the form.
     2. The stored profile is unchanged.
 - **AF 1.10: Session Expired While Editing:**
-  - *Trigger:* At Steps 3–7, the session expires (Edge Cases "Session expired while editing").
+  - *Trigger:* At Steps 3–7, the session expires and the request receives `401 UNAUTHENTICATED` (Edge Cases "Session expired while editing").
   - *Steps:*
-    1. The system asks the actor to sign in again (`UC-010-02`).
+    1. The system asks the actor to sign in again (`UC-010-02` AF 2.12).
     2. After sign-in the actor returns to the profile page with the typed values still in the form where the browser allows.
     3. The save is never silently dropped or applied to another account.
-- **AF 1.11: Two Tabs or Devices Saving at Once:**
-  - *Trigger:* At Step 7, another tab or device saved the profile after this form was loaded (Edge Cases "Two tabs/devices saving at once").
+- **AF 1.11: Profile Changed in Another Tab or Device:**
+  - *Trigger:* At Step 8, another tab or device saved a different profile after this form was loaded, so the `version` sent is old (Edge Cases "Two tabs/devices saving at once").
   - *Steps:*
-    1. The later save wins for the whole form.
-    2. The earlier tab is told on its next save that the profile changed and can reload.
+    1. When the content sent is identical to the stored profile, the server answers `200` and writes nothing.
+    2. Otherwise the server answers `409 PROFILE_CHANGED`; the system tells the actor that the profile was changed elsewhere and offers to reload.
+    3. If the actor chooses to save anyway, the page reads the new `version` and sends the form again, so the later save wins for the whole form.
 - **AF 1.12: Repeated Clicks on Save:**
   - *Trigger:* At Step 7, the actor presses "Lưu hồ sơ" several times (FR-041).
   - *Steps:*
-    1. The system processes exactly one request. No duplicate effect occurs.
+    1. The button is disabled while a request runs; an identical request that still arrives is answered `200` without a second write. No duplicate effect occurs.
 - **AF 1.13: Catalogue Changed Since the Last Visit:**
-  - *Trigger:* At Step 1 or Step 3, an excluded ingredient was merged into another ingredient, an excluded ingredient was deleted, or an allergen was removed from the fixed list (FR-019, Edge Cases).
+  - *Trigger:* At Step 1, an excluded ingredient was merged into another ingredient, an excluded ingredient was deleted, or an allergen was removed from the fixed list (FR-019, Edge Cases).
   - *Steps:*
     1. For a merge, the system has already moved the exclusion to the target ingredient and keeps one entry when the target was also excluded, so there is no duplicate and the limit of 50 is not exceeded.
     2. For a deletion of an ingredient or of an allergen, the system has already removed it from the profile.
-    3. The system shows a notice about the change the next time the owner opens the profile.
+    3. The profile returned in Step 1 carries the unread notices (`INGREDIENT_MERGED`, `INGREDIENT_REMOVED`, `ALLERGEN_REMOVED`); the system shows them to the owner.
+    4. When the owner dismisses them, the page calls `POST /api/v1/me/dietary-profile/notices/ack` and they are not shown again.
 - **AF 1.14: Profile Cannot Be Loaded:**
-  - *Trigger:* At Step 1, loading fails because the device is offline, the session is invalid, or the server returns an error (FR-039).
+  - *Trigger:* At Step 1, loading fails because the device is offline, the session has expired, or the server cannot read the profile (`503 PROFILE_UNAVAILABLE`) (FR-039, FR-026a).
   - *Steps:*
     1. The system shows the error state with a clear message and "Try again", without losing what the user had typed.
+    2. The system never shows an empty profile in place of a profile it could not read (FR-026a).
 - **AF 1.15: Another User, Guest or Administrator Requests the Profile:**
   - *Trigger:* At any time, someone other than the owner asks the server for the dietary profile or household size (FR-006, FR-018).
   - *Steps:*
-    1. The server refuses the request. This also applies to an Administrator, who may see only email and account information.
+    1. The server gives no way to do it: the dietary-profile endpoints under `/api/v1/me/` have no user identifier and always act on the caller, so an Administrator also reads only their own. An Administrator may see another user's email and account information only through spec 010 (`GET /api/v1/admin/users/{id}`).
     2. The data does not appear in any public page, search result, log, error message, export or audit entry (NFR-005).
 - **AF 1.16: Guest Opens the Profile Page:**
   - *Trigger:* At Step 1, a Guest opens the profile page (FR-001).
@@ -2878,19 +3001,26 @@ Lets a signed-in user record, in one place and once, what must be avoided and ho
 - **AF 1.17: Suspended or Banned Account:**
   - *Trigger:* At Step 7, an old session belongs to an account that was suspended or banned (Edge Cases "Suspended or banned account").
   - *Steps:*
-    1. The system refuses the change; the account cannot edit its profile.
+    1. The server answers `403 ACCOUNT_SUSPENDED` (with the end date) or `403 ACCOUNT_BANNED`; the change is refused and the account-status page of `UC-010-02` AF 2.14 is shown.
 - **AF 1.18: Save Rate Limit Reached:**
-  - *Trigger:* At Step 7, the actor exceeds the limit of profile saves and avatar uploads (default 20 per hour per user, NFR-008).
+  - *Trigger:* At Step 7, the actor exceeds the limit of dietary-profile saves (default 20 per hour per user, counted separately from avatar uploads, NFR-008).
   - *Steps:*
-    1. The system refuses the save with a friendly message and keeps the typed values.
+    1. The server answers `429 PROFILE_RATE_LIMITED` with the time to wait; the system shows a friendly message and keeps the typed values.
+- **AF 1.19: Saved Cuisine No Longer Active:**
+  - *Trigger:* At Step 3, a preferred cuisine of the saved profile was deactivated by an Administrator (spec 011 Integration Points, "Preferred cuisines").
+  - *Steps:*
+    1. The cuisine stays on the saved profile but is not offered on the form.
+    2. It is dropped at the next save.
 
 #### 7. Postconditions
-- **Success:** One dietary profile is stored for the user (or none when everything was cleared); it is the only copy, and other features read it through the server. Saved values apply from the next user action; existing meal plans and shopping lists do not change (FR-024, FR-025).
+- **Success:** One dietary profile is stored for the user (or none when everything was cleared) with a new `version`; it is the only copy, and other features read it through the server. Saved values apply from the next user action; existing meal plans and shopping lists do not change (FR-024, FR-025).
 - **Failure:** The stored profile is unchanged and the typed values stay in the form where possible.
 
 #### 8. Special Requirements
-- **Privacy and security:** The whole dietary profile, including household size, is readable only by the owner; Administrators cannot read it (FR-006, FR-018, NFR-005). Every permission check and every validation is done on the server with Bean Validation (FR-040; constitution Principle IV).
-- **Data integrity:** Saving the profile is all-or-nothing (NFR-007, FR-017).
+- **Privacy and security:** The whole dietary profile, including household size, is readable and writable only by the owner; Administrators cannot read it (FR-006, FR-018, NFR-005). Every permission check and every validation is done on the server with Bean Validation (FR-040; constitution Principle IV).
+- **Safety wording:** The allergen field always shows the notice of `FR-010a`; no screen of this feature states that a recipe is safe for an allergy.
+- **Data integrity:** Saving the profile is all-or-nothing (NFR-007, FR-017); concurrent saves are detected with the profile `version` (AF 1.11).
+- **Abuse protection:** Profile saves are limited to 20 per hour per user by default (NFR-008).
 - **Performance:** Opening the profile page and saving complete in under 1 second for 95% of requests; ingredient suggestions appear within 300 ms of the last keystroke for 95% of requests with a catalogue of 10,000 ingredients (NFR-001; constitution Principle V). Suggestions return the intended ingredient in the top 5 for 100% of a 30-name test set typed without diacritics (SC-007).
 - **Usability and accessibility:** Fully usable from 360 px wide with touch targets of at least 44 × 44 px, Vietnamese by default with all strings in the shared string store, keyboard-only multi-selects, visible labels and errors announced next to the field (NFR-002, NFR-003, NFR-006).
 - **Usability target:** 90% of participants complete a profile with one allergen, one excluded ingredient and a household size in under 2 minutes (SC-001).
@@ -2910,70 +3040,69 @@ Lets a signed-in user record, in one place and once, what must be avoided and ho
 ---
 
 ### UC-011-02: Edit Public Profile & Avatar
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-011-02`
-- **Use Case Name:** Edit Display Name, Bio and Avatar and View the Public Profile
+- **Use Case Name:** Edit Display Name, Bio and Avatar
 
 #### 2. Actor(s)
 - **Primary Actor:** **Member** — a signed-in community member who wants other cooks to recognise the name next to the recipes.
-- **Supporting Actors:** **Guest** and other users view the public profile; an **Administrator** may view a user's email and account information (AF 2.8).
+- **Supporting Actor:** an **Administrator** may view a user's email and account information through spec 010 (AF 2.8). Viewing the public profile is the separate use case `UC-011-06` (primary actor Guest).
 
 #### 3. Description
-Lets a signed-in user change the display name (1–50 characters), write a short bio (up to 300 characters) and set or remove an avatar (JPEG, PNG or WebP, at most 5 MB). The public part of a profile — display name, avatar, bio and the user's published recipes — can be viewed by anyone, including Guests. The private part is split in two levels: email and account information (owner and Administrators) and the dietary profile with household size (owner only).
+Lets a signed-in user change the display name (1–50 characters), write a short bio (up to 300 characters) and set or remove an avatar (JPEG, PNG or WebP, at most 5 MB). Only the public part — display name, avatar, bio and the user's published recipes — is shown to others, through `UC-011-06` View Public Profile. The private part is split in two levels: email and account information (owner and Administrators) and the dietary profile with household size (owner only) (FR-005, FR-006).
 
 #### 4. Preconditions
-- The actor is signed in with the Member role or above and the account is active (`UC-010-02`). Guests have no profile page (FR-001).
-- The email address is shown read-only; it cannot be changed in this release (Assumptions).
+- The actor is signed in with the Member role or above and the account is active (`UC-010-02`). Guests have no profile page (FR-001). Email verification does not limit editing the profile (spec 011 Assumptions).
+- The email address is shown read-only; it cannot be changed in this release (spec 011 Assumptions).
 
 #### 5. Basic Flow
-1. **Open Public Profile Editor:** The actor opens the "Tôi" page and chooses "Hồ sơ công khai".
+1. **Open Public Profile Editor:** The actor opens the "Tôi" page and chooses "Hồ sơ công khai". The page loads `GET /api/v1/me/profile`, which returns the display name, bio, avatar, the profile `version` and the owner's account information (email read-only, role, status, verification, whether a password is set).
 2. **Display Form:** The system shows the avatar with "Đổi ảnh" and "Xóa ảnh" and the note "Ảnh phải là JPEG, PNG hoặc WebP, tối đa 5 MB", the display name with a counter (for example "9/50"), the bio with a counter (for example "68/300") and the note "Liên kết không bấm được", and the reminder that others see only the name, avatar, bio and published recipes while email and dietary profile are never shown.
 3. **Change Display Name:** The actor edits the display name to 1–50 characters.
 4. **Write Bio:** The actor types a bio of up to 300 characters; line breaks are kept (Edge Cases).
 5. **Choose Avatar:** The actor chooses "Đổi ảnh" and selects a PNG of 2 MB. The system checks type and size on the form before any upload and shows a preview immediately (US2 AS3, FR-004).
-6. **Save:** The actor presses "Lưu thay đổi". The system disables the button until a response arrives (FR-041).
-7. **Validate on the Server:** The system trims the display name and checks it is 1–50 characters, not blank and without control characters; checks the bio length; verifies that the file is really an image of an allowed type, within the size and pixel limits (FR-002, FR-003, FR-004, FR-040).
-8. **Store:** The system stores the display name and the bio as plain text, removes EXIF location data from the image, resizes it to one avatar per user, and records an audit entry without the content (FR-042, NFR-004).
-9. **Confirm and Propagate:** The system confirms. The new name and avatar are shown wherever the user appears — recipes, reviews, Cooksnaps — from the next page load, without changing the stored content (US2 AS1, FR-007).
-10. **View as Others Do:** Anyone, signed in or not, opens the public profile and sees only display name, avatar, bio and the user's published recipes in pages (US2 AS6, FR-005); the user's email, dietary profile and household size are never shown.
+6. **Save:** The actor presses "Lưu thay đổi". The system disables the button until a response arrives (FR-041). The browser sends `POST /api/v1/me/profile` as `multipart/form-data`: the part `profile` (JSON with `displayName`, `bio`, `removeAvatar` and `version`) and the optional part `avatar`.
+7. **Validate on the Server:** The system trims the display name and checks it is 1–50 characters, not blank and without control characters; checks the bio length; checks the avatar by its magic bytes and by really decoding it, its type, its size and its pixel dimensions (FR-002, FR-003, FR-004, FR-040, NFR-004).
+8. **Store:** The system stores the display name and the bio as plain text. It crops the avatar to a square of 512 px and re-encodes it as JPEG, which removes all EXIF data including the location; the avatar is served from `/api/v1/media/avatars/{file}` as `image/jpeg` with `nosniff`, so it cannot run as code. An audit entry without the content is recorded (FR-042, NFR-004). When nothing changed and no new image was sent, the server answers `200` without writing.
+9. **Confirm and Propagate:** The server answers `200` with the saved profile and the system confirms. The new name and avatar are shown wherever the user appears — recipes, reviews, Cooksnaps — from the next page load, without changing the stored content (US2 AS1, FR-007).
+10. **View as Others Do:** The actor may open the own public profile to see it as others do; this is `UC-011-06` View Public Profile (US2 AS6, FR-005).
 
 #### 6. Alternative Flows
 - **AF 2.1: Invalid Display Name:**
-  - *Trigger:* At Step 7, the display name is empty, only spaces or control characters, or longer than 50 characters (US2 AS2).
+  - *Trigger:* At Step 7, the display name is empty, only spaces or control characters, or longer than 50 characters (US2 AS2, FR-002).
   - *Steps:*
-    1. The system refuses it with a clear message and keeps what the actor typed. Leading and trailing spaces are trimmed; the name is stored and displayed as plain text, never as markup.
+    1. The server answers `400 VALIDATION_ERROR` with the error on `displayName`; the system shows a clear message and keeps what the actor typed. Leading and trailing spaces are trimmed; the name is stored and displayed as plain text, never as markup.
 - **AF 2.2: Bio Longer Than 300 Characters:**
-  - *Trigger:* At Step 4 or Step 7, the bio exceeds 300 characters (Edge Cases).
+  - *Trigger:* At Step 4 or Step 7, the bio exceeds 300 characters (Edge Cases, FR-003).
   - *Steps:*
-    1. The form and the server both refuse it. Line breaks are kept and links are not clickable.
+    1. The form refuses it, and the server refuses it with `400 VALIDATION_ERROR` on `bio`. Line breaks are kept and links are not clickable.
 - **AF 2.3: Avatar of Wrong Type or Too Large:**
   - *Trigger:* At Step 5, the file is not JPEG, PNG or WebP, or is larger than 5 MB (US2 AS4).
   - *Steps:*
     1. The system refuses it on the form before any upload, naming the allowed types and the size limit.
+    2. A file that reaches the server anyway is refused with `413 AVATAR_TOO_LARGE` or `415 AVATAR_TYPE_NOT_ALLOWED` (FR-004, SC-003); the stored avatar is unchanged.
 - **AF 2.4: File Is Not Really an Image:**
   - *Trigger:* At Step 7, the file passed the form check but is not a real image — the extension was changed, the file is corrupted, or its pixel dimensions are extreme (Edge Cases "Avatar that is not really an image").
   - *Steps:*
-    1. The server refuses the file and the stored avatar is unchanged.
+    1. The server answers `422 AVATAR_NOT_AN_IMAGE` or `422 AVATAR_DIMENSIONS_TOO_LARGE` and the stored avatar is unchanged.
 - **AF 2.5: Remove the Avatar:**
   - *Trigger:* At Step 5, the actor chooses "Xóa ảnh" (US2 AS5).
   - *Steps:*
-    1. After saving, the system shows the neutral default avatar again.
+    1. The browser sends `removeAvatar = true`; after saving, the system shows the neutral default avatar again.
 - **AF 2.6: Guest or Another User Views the Public Profile:**
-  - *Trigger:* At Step 10, a Guest or any signed-in user opens a public profile (US2 AS6, FR-005).
-  - *Steps:*
-    1. The system shows only display name, avatar, bio and "Công thức đã đăng" in pages (for example "1–4 / 12").
+  - *Moved in v2.0:* this flow is now the use case `UC-011-06` View Public Profile (Basic Flow, AF 6.1 – AF 6.2), because its primary actor is a Guest (Use-Case Model v2.0 §4.1).
 - **AF 2.7: Non-Owner Requests Private Data:**
   - *Trigger:* A signed-in user who is not the owner requests another user's email, account information or dietary data (US2 AS7, FR-006).
   - *Steps:*
-    1. The server refuses what the user may not see; it is not merely hidden in the interface.
+    1. The server gives no way to obtain it: `/api/v1/me/` endpoints act only on the caller, and `/api/v1/profiles/` answers contain no private field. It is not merely hidden in the interface.
 - **AF 2.8: Administrator Opens a User's Profile:**
   - *Trigger:* An Administrator opens a user's profile (US2 AS8, FR-006).
   - *Steps:*
-    1. The system shows the email and the account information.
+    1. The system shows the email and the account information, which come from spec 010 (`GET /api/v1/admin/users/{id}`).
     2. The system does **not** show the dietary profile or the household size (least privilege).
-    3. The Administrator cannot edit the profile, the dietary profile or the password of the user.
+    3. The Administrator cannot edit the profile, the dietary profile or the password of the user; spec 011 offers no endpoint for it.
 - **AF 2.9: Leaving With Unsaved Changes:**
   - *Trigger:* At Steps 3–5, the actor leaves with edited fields (Edge Cases "Unsaved changes").
   - *Steps:*
@@ -2983,21 +3112,22 @@ Lets a signed-in user change the display name (1–50 characters), write a short
   - *Steps:*
     1. The system shows an error message with "Try again" and keeps everything the actor typed.
 - **AF 2.11: Session Expired While Editing:**
-  - *Trigger:* At Steps 3–6, the session expires (Edge Cases).
+  - *Trigger:* At Steps 3–6, the session expires and the request receives `401 UNAUTHENTICATED` (Edge Cases).
   - *Steps:*
-    1. The system asks the actor to sign in again, returns to the profile page afterwards with the typed values where the browser allows, and never drops the save silently or applies it to another account.
+    1. The system asks the actor to sign in again (`UC-010-02` AF 2.12), returns to the profile page afterwards with the typed values where the browser allows, and never drops the save silently or applies it to another account.
 - **AF 2.12: Repeated Clicks on Save:**
   - *Trigger:* At Step 6, the actor presses "Lưu thay đổi" several times (FR-041).
   - *Steps:*
-    1. Only one request is processed.
-- **AF 2.13: Upload and Save Rate Limit Reached:**
-  - *Trigger:* At Step 6, the actor exceeds the limit of avatar uploads and profile saves (default 20 per hour per user, NFR-008).
+    1. Only one request is processed; an identical request without a new image is answered `200` without writing.
+- **AF 2.13: Upload or Save Rate Limit Reached:**
+  - *Trigger:* At Step 6, the actor exceeds the limit of avatar uploads or of profile saves (default 20 per hour per user each, counted separately, NFR-008).
   - *Steps:*
-    1. The system refuses with a friendly message and keeps the typed values.
+    1. The server answers `429 PROFILE_RATE_LIMITED` with the time to wait; the system shows a friendly message and keeps the typed values.
 - **AF 2.14: Suspended or Banned Account:**
   - *Trigger:* At Step 6, an old session belongs to an account that was suspended or banned (Edge Cases).
   - *Steps:*
-    1. The system refuses the change. The public profile of a banned user follows the rules of spec 010 (see `[OQ-011-03]`).
+    1. The server answers `403 ACCOUNT_SUSPENDED` or `403 ACCOUNT_BANNED` and refuses the change.
+    2. Visitors still see the public profile of a suspended user; the public profile of a banned user answers like a missing one (`UC-011-06` AF 6.3).
 - **AF 2.15: Profile Cannot Be Loaded:**
   - *Trigger:* At Step 2, loading fails (FR-039).
   - *Steps:*
@@ -3006,22 +3136,29 @@ Lets a signed-in user change the display name (1–50 characters), write a short
   - *Trigger:* At Step 1, a Guest opens the editor (FR-001).
   - *Steps:*
     1. The system asks the Guest to sign in (`UC-010-02` AF 2.9).
+- **AF 2.17: Public Profile Not Available:**
+  - *Moved in v2.0:* now `UC-011-06` AF 6.3.
+- **AF 2.18: Profile Changed in Another Tab or Device:**
+  - *Trigger:* At Step 7, the profile was saved elsewhere after this form was loaded, so the `version` sent is old (Edge Cases "Two tabs/devices saving at once").
+  - *Steps:*
+    1. The server answers `409 PROFILE_CHANGED`; the system tells the actor and offers to reload. Nothing is stored.
 
 #### 7. Postconditions
-- **Success:** The display name, the bio and the avatar are stored; the new name and avatar appear wherever the user is shown from the next page load; the public profile shows only the public data.
+- **Success:** The display name, the bio and the avatar are stored; the new name and avatar appear wherever the user is shown from the next page load, including the public profile of `UC-011-06`.
 - **Failure:** Nothing is stored; the previous values and the previous avatar stay.
 
 #### 8. Special Requirements
-- **Security:** User text is displayed as plain text (NFR-004; constitution Principle IV); avatars are verified as real images on the server and served so that they cannot run as code; EXIF location data is removed; all validation and permission checks are on the server (FR-040).
+- **Security:** User text is displayed as plain text (NFR-004; constitution Principle IV); avatars are verified as real images on the server, re-encoded and served so that they cannot run as code; EXIF data is removed; all validation and permission checks are on the server (FR-040).
 - **Privacy:** Email and account information are visible only to the owner and Administrators; the dietary profile only to the owner (FR-006, NFR-005); `SC-004` requires zero leaks in tests with a second account, a Guest and an Administrator account.
 - **File rule:** The avatar rule (JPEG/PNG/WebP, 5 MB) is the same as the image rule of spec `060` (FR-004).
+- **Abuse protection:** Avatar uploads and profile saves are each limited to 20 per hour per user by default (NFR-008).
 - **Usability and accessibility:** Usable from 360 px with touch targets of at least 44 × 44 px; keyboard-only avatar picker; Vietnamese strings in the shared string store (NFR-002, NFR-003, NFR-006).
-- **Testing:** Every acceptance scenario of US2 has at least one automated test (SC-008); 100% of avatar files with a wrong type or over 5 MB are refused on the form before upload (SC-003).
+- **Testing:** Every acceptance scenario of US2 has at least one automated test (SC-008); 100% of avatar files with a wrong type or over 5 MB are refused on the form before upload, and 100% of non-image files sent directly to the server are refused (SC-003).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
-- **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1), [`PF04-EditProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF04-EditProfile.dc.html) (Steps 2–9), [`PF05-PublicProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF05-PublicProfile.dc.html) (Step 10).
-- **Alternative Flows:** [`PF05-PublicProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF05-PublicProfile.dc.html) (AF 2.6).
-- **UI Asset Gap for SCRUM-58:** Needs the error states for the display name, the bio and the avatar file (AF 2.1 – AF 2.4), the Administrator's view of a user's profile (AF 2.8) and the public profile of a user without published recipes (see `[OQ-011-02]`). See Section 10.2 (Gaps 011-D to 011-F).
+- **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1), [`PF04-EditProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF04-EditProfile.dc.html) (Steps 2–9). Step 10 uses the screen of `UC-011-06`.
+- **Alternative Flows:** No own prototype screen; the screens above show the messages.
+- **UI Asset Gap for SCRUM-58:** Needs the error states for the display name, the bio and the avatar file (AF 2.1 – AF 2.4) and the Administrator's view of a user's profile (AF 2.8). See Section 10.2 (Gaps 011-D and 011-E; Gap 011-F moved to `UC-011-06`).
 - **Prototype Screenshots (SCRUM-58):**
   - **User profile page (`PR01-ProfileView`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -3037,7 +3174,7 @@ Lets a signed-in user change the display name (1–50 characters), write a short
 ---
 
 ### UC-011-03: Change or Set Password
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-011-03`
@@ -3048,96 +3185,103 @@ Lets a signed-in user change the display name (1–50 characters), write a short
 - **Secondary Actor:** **Google OAuth** — re-authenticates a Google-only user before a password is set (AF 3.6).
 
 #### 3. Description
-Lets a signed-in user who has a password change it by giving the current password, a new password that satisfies the rules of spec 010 and its confirmation; all other sessions of the user are then signed out while the current one stays. A user who signs in only with Google and has no password sees "Set password" instead; setting it requires a recent Google re-authentication, and afterwards the account behaves as a password account.
+Lets a signed-in user who has a password change it by giving the current password, a new password that satisfies the rules of spec 010 and differs from the current one, and its confirmation; all other sessions of the user are then signed out while the current one stays. A user who signs in only with Google and has no password sees "Set password" instead; setting it requires a Google re-authentication within the last 5 minutes, also signs out the other sessions, and afterwards the account behaves as a password account. Wrong current passwords share one counter per user with every re-authentication of spec 010 (`FR-022b`): 5 wrong passwords within 15 minutes refuse both for 15 minutes, without locking sign-in (FR-030).
 
 #### 4. Preconditions
 - The actor is signed in with the Member role or above and the account is active (`UC-010-02`).
-- The actor has a password (basic flow), or signs in only with Google and has none (AF 3.6).
+- The actor has a password (basic flow), or signs in only with Google and has none (AF 3.6). The page knows which from `hasPassword` in `GET /api/v1/me/profile` (FR-029).
 
 #### 5. Basic Flow
 1. **Open Security Settings:** The actor opens the "Tôi" page and chooses "Mật khẩu và bảo mật".
 2. **Display Form:** The system shows "Đổi mật khẩu" with the fields "Mật khẩu hiện tại", "Mật khẩu mới" with its rule checklist, "Nhập lại mật khẩu mới" and the note "Các thiết bị khác sẽ bị đăng xuất. Thiết bị này vẫn giữ đăng nhập." (US3 AS1).
 3. **Enter Passwords:** The actor types the current password, a new password and its confirmation.
-4. **Submit:** The actor presses "Đổi mật khẩu". The system disables the button until a response arrives (FR-041).
-5. **Verify Current Password:** The system verifies the current password against the stored hash. Failures are rate-limited as sign-in failures are (FR-027, FR-030).
-6. **Validate New Password:** The system checks on the server that the new password meets the password rules of spec 010 (8–128 characters, at least one letter and one digit, different from the email), differs from the current password, and equals its confirmation (FR-027).
-7. **Store and End Other Sessions:** The system stores the BCrypt hash of the new password, signs the user out of every other session and keeps the current session (FR-028, NFR-004), and records an audit entry without any password (FR-042).
+4. **Submit:** The actor presses "Đổi mật khẩu". The system disables the button until a response arrives (FR-041). The browser sends `POST /api/v1/me/password` with `currentPassword`, `newPassword` and `confirmPassword`.
+5. **Verify Current Password:** The system checks that the shared wrong-password counter of the user does not refuse the attempt (AF 3.2) and verifies the current password against the stored hash (FR-027, FR-030).
+6. **Validate New Password:** The system checks on the server that the new password meets the password rules of spec 010 (8–128 characters, at least one letter and one digit, different from the email — spec 010 `FR-004`), differs from the current password, and equals its confirmation (FR-027).
+7. **Store and End Other Sessions:** The system stores the BCrypt hash of the new password, signs the user out of every other session and keeps the current session (FR-028, NFR-004), records an audit entry without any password (FR-042) and answers `204`.
 8. **Confirm:** The system shows a confirmation. Other devices are rejected at their next request (US3 AS4, SC-005).
 
 #### 6. Alternative Flows
 - **AF 3.1: Wrong Current Password:**
   - *Trigger:* At Step 5, the current password is not correct (US3 AS2).
   - *Steps:*
-    1. The system refuses the change with a generic message ("Mật khẩu hiện tại không đúng") that reveals nothing beyond "incorrect" (FR-030).
-    2. The password is not changed.
-- **AF 3.2: Repeated Wrong Current Passwords:**
-  - *Status:* Proposed, pending clarification of spec 011 (`[OQ-011-04]`): the counter is separate from the sign-in counter and does not lock signing in; `FR-030` only says the limit works "as sign-in failures are".
-  - *Trigger:* At AF 3.1, wrong current passwords are repeated (FR-030).
+    1. The server answers `422 INVALID_CURRENT_PASSWORD`; the system shows a generic message ("Mật khẩu hiện tại không đúng") that reveals nothing beyond "incorrect" (FR-030).
+    2. The failure is counted on the shared counter (AF 3.2). The password is not changed, and the password fields are cleared (FR-039).
+- **AF 3.2: Too Many Wrong Passwords:**
+  - *Trigger:* At Step 5, 5 wrong passwords were given within 15 minutes, counting "Change password" and every re-authentication of spec 010 `FR-022b` (for example on `UC-011-04`) together (US3 AS2, FR-030).
   - *Steps:*
-    1. The system limits further attempts in the same way as sign-in failures (spec 010 `FR-012`) and tells the actor when to try again.
+    1. The server answers `429 PASSWORD_CHECK_LIMITED` with `retryAfterSeconds`; the system tells the actor when to try again.
+    2. "Change password" and re-authentication are refused for 15 minutes. Signing in (`UC-010-02`) is not affected; the counter is separate from the sign-in counter of spec 010 `FR-012` (Clarifications 2026-11-06, `[OQ-011-04]` and `[OQ-011-05]` closed).
 - **AF 3.3: New Password Breaks the Rules:**
   - *Trigger:* At Step 6, the new password is shorter than 8 or longer than 128 characters, has no letter or no digit, or equals the email (US3 AS3).
   - *Steps:*
-    1. The system refuses it, naming the rule that failed, and does not change the password.
+    1. The server answers `400 VALIDATION_ERROR`; the system names the rule that failed and does not change the password.
 - **AF 3.4: New Password Equals the Current Password:**
   - *Trigger:* At Step 6, the new password is identical to the current one (US3 AS3, FR-027).
   - *Steps:*
-    1. The system refuses it with a message and does not change the password.
+    1. The server answers `422 PASSWORD_SAME_AS_CURRENT`; the system shows the message and does not change the password.
 - **AF 3.5: Confirmation Does Not Match:**
   - *Trigger:* At Step 6, the confirmation differs from the new password.
   - *Steps:*
-    1. The system shows a field-level message and does not change the password.
+    1. The system shows a field-level message (`400 VALIDATION_ERROR`) and does not change the password.
 - **AF 3.6: Google-Only Account Sets a Password:**
-  - *Status:* Proposed, pending clarification of spec 011 (`[OQ-011-04]`) for Step 6 only: setting a password also signs out the other sessions; `FR-028` mentions only a change. Steps 1–5 follow `FR-029`.
   - *Trigger:* At Step 1, the account signs in only with Google and has no password (US3 AS5, FR-029).
   - *Steps:*
     1. The system shows "Đặt mật khẩu" instead of "Đổi mật khẩu", without a current-password field, with the text that the actor must first confirm with Google.
-    2. The actor presses "Xác nhận với Google rồi đặt mật khẩu". The system redirects the actor to Google to re-authenticate (US3 AS6).
-    3. After a recent successful Google re-authentication, the system shows the form for the new password and its confirmation.
-    4. The system validates the new password as in Step 6 and stores its hash.
-    5. From then on the account can sign in with email and password, and the screen shows "Đổi mật khẩu" (US3 AS5).
-    6. The system signs the user out of every other session, as after a password change.
+    2. The actor presses "Xác nhận với Google rồi đặt mật khẩu". The system sends the actor to `GET /api/v1/auth/oauth2/google?intent=reauth` to re-authenticate with Google (US3 AS6).
+    3. After a successful Google re-authentication, the system shows the form for the new password and its confirmation.
+    4. The browser sends `POST /api/v1/me/password/initial` with `newPassword` and `confirmPassword`. The server requires the Google re-authentication to be at most 5 minutes old, validates the new password as in Step 6 and stores its hash.
+    5. The system signs the user out of every other session, keeps the current one and answers `204` (FR-028; Clarification 2026-11-06).
+    6. From then on the account can sign in with email and password, and the screen shows "Đổi mật khẩu" (US3 AS5).
 - **AF 3.7: Google Re-Authentication Cancelled, Failed or Not Recent:**
-  - *Trigger:* At AF 3.6, the actor cancels the Google screen, Google fails, or the last sign-in is not recent.
+  - *Trigger:* At AF 3.6, the actor cancels the Google screen, Google fails, another Google account is used, or the re-authentication is older than 5 minutes.
   - *Steps:*
-    1. The system does not accept a password and nothing changes. The actor must authenticate with Google again (FR-029).
-- **AF 3.8: Stale Page for a Google-Only Account:**
+    1. The actor returns to the page that asked, still signed in (spec 010 `FR-022b`; Clarification 2026-11-06). No password is accepted and nothing changes.
+    2. A request sent without a recent re-authentication receives `403 REAUTH_REQUIRED`, and the system asks the actor to confirm with Google again (FR-029).
+- **AF 3.8: Stale "Change Password" Page for a Google-Only Account:**
   - *Trigger:* A Google-only account submits "Change password" from an out-of-date tab (Edge Cases).
   - *Steps:*
-    1. The server refuses the request and the page switches to "Set password".
+    1. The server answers `409 PASSWORD_NOT_SET` and the page switches to "Set password" (AF 3.6).
 - **AF 3.9: Repeated Clicks:**
   - *Trigger:* At Step 4, the actor presses the button several times (FR-041).
   - *Steps:*
     1. Only one request is processed.
 - **AF 3.10: Network Failure or Session Expired:**
-  - *Status:* Proposed, pending clarification of spec 011 (`[OQ-011-04]`) for the cleared password fields only: the Edge Cases keep typed values, so this is a deliberate exception.
-  - *Trigger:* At Step 4, the request fails or the session has expired (FR-039).
+  - *Trigger:* At Step 4, the request fails or the session has expired (`401 UNAUTHENTICATED`) (FR-039).
   - *Steps:*
-    1. The system shows a clear message, the password is not changed, and for an expired session the actor signs in again (`UC-010-02`). Typed values stay in the form as in the Edge Cases, except the password fields, which are cleared.
+    1. The system shows a clear message and the password is not changed; for an expired session the actor signs in again (`UC-010-02` AF 2.12).
+    2. The password fields are cleared after any failure, a deliberate exception to keeping typed values (FR-039; Clarification 2026-11-06, `[OQ-011-04]` closed).
 - **AF 3.11: Suspended or Banned Account:**
   - *Trigger:* At Step 4, an old session belongs to an account that was suspended or banned (Edge Cases).
   - *Steps:*
-    1. The system refuses the change.
+    1. The server answers `403 ACCOUNT_SUSPENDED` or `403 ACCOUNT_BANNED` and refuses the change.
 - **AF 3.12: Administrator or Another User Changes the Password:**
   - *Trigger:* An Administrator or another user tries to change the password of a user (FR-006).
   - *Steps:*
-    1. The server refuses. No one but the owner can change a password in this use case; forgotten passwords are handled by `UC-010-03`.
+    1. There is no way to do it: the password endpoints act only on the signed-in caller. No one but the owner can change a password in this use case; forgotten passwords are handled by `UC-010-03`.
+- **AF 3.13: Stale "Set Password" Page After a Password Was Set:**
+  - *Trigger:* At AF 3.6 Step 4, the account already has a password, for example set in another tab.
+  - *Steps:*
+    1. The server answers `409 PASSWORD_ALREADY_SET`; the page switches to "Change password" and nothing changes.
 
 #### 7. Postconditions
 - **Success (change):** The account has the new password hash; every other session of the user is ended and the current one remains; an audit entry exists.
-- **Success (set):** The account now has a password and can sign in with email and password as well as with Google.
-- **Failure:** The password is unchanged and all sessions stay as they were.
+- **Success (set):** The account now has a password and can sign in with email and password as well as with Google; every other session is ended.
+- **Failure:** The password is unchanged and all sessions stay as they were; a wrong current password has been counted on the shared counter.
 
 #### 8. Special Requirements
-- **Security:** Passwords are hashed with BCrypt and are never logged, stored in readable form or returned (NFR-004; constitution Principle IV); the failure message reveals nothing beyond "incorrect" (FR-030); all validation is on the server (FR-040).
+- **Security:** Passwords are hashed with BCrypt and are never logged, stored in readable form or returned (NFR-004; constitution Principle IV); the failure message reveals nothing beyond "incorrect" (FR-030); a wrong password answers `422`, not `401`, so that the client does not treat it as an expired session; all validation is on the server (FR-040).
+- **Rate limit:** 5 wrong passwords within 15 minutes per user, shared with re-authentication (spec 010 `FR-022b`), refuse further attempts for 15 minutes and never lock sign-in (FR-030).
 - **Success criterion:** After a password change, 100% of the user's other sessions are rejected at their next request while the current session continues (SC-005).
 - **Usability and accessibility:** Usable from 360 px with touch targets of at least 44 × 44 px; keyboard-only operation; errors announced next to the field (NFR-002, NFR-006).
+- **Dependency:** Google re-authentication (AF 3.6) depends on spec 010 and is not yet verified against a real Google client (spec 011 Assumptions).
+- **Implementation status (v2.0):** `POST /api/v1/me/password` and `POST /api/v1/me/password/initial` are not implemented on `main` yet (spec 011 tasks T073 – T084, deferred after 18/11/2026), and the Google OAuth endpoints of spec 010 are not implemented either. The flows above describe the approved contract; the error codes they quote already exist in `ProfileErrorCode`. See `[OQ-011-09]`.
 - **Testing:** Every acceptance scenario of US3 has at least one automated test (SC-008).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1), [`PF06-Security.dc.html`](../analysis-and-design/ui-ux/screens/PF06-Security.dc.html) (Steps 2–8, change-password form with the "wrong current password" message).
 - **Alternative Flows:** [`PF06-Security.dc.html`](../analysis-and-design/ui-ux/screens/PF06-Security.dc.html) (AF 3.1, AF 3.6 – "Tài khoản chỉ dùng Google").
-- **UI Asset Gap for SCRUM-58:** Needs the success confirmation (Step 8), the rule-failed state (AF 3.3), the throttled state after repeated failures (AF 3.2) and the form of "Đặt mật khẩu" after the Google re-authentication (AF 3.6 Step 3). See Section 10.2 (Gaps 011-G to 011-I).
+- **UI Asset Gap for SCRUM-58:** Needs the success confirmation (Step 8), the rule-failed state (AF 3.3), the throttled state after repeated failures (AF 3.2, `429 PASSWORD_CHECK_LIMITED`) and the form of "Đặt mật khẩu" after the Google re-authentication (AF 3.6 Step 3). See Section 10.2 (Gaps 011-G to 011-I).
 - **Prototype Screenshots (SCRUM-58):**
   - **Password & security screen (change-password form) (`PF06-Security`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -3148,61 +3292,65 @@ Lets a signed-in user who has a password change it by giving the current passwor
 ---
 
 ### UC-011-04: Delete Account
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-011-04`
 - **Use Case Name:** Delete One's Own Account After Re-Authentication and Confirmation
 
 #### 2. Actor(s)
-- **Primary Actor:** **Member** — a user who wants to leave and not be tracked after leaving.
+- **Primary Actor:** **Member** — a user who wants to leave and not be tracked after leaving. A banned user acts without a session through the closure link of spec 010 (AF 4.13).
 - **Secondary Actor:** **Google OAuth** — re-authenticates a Google-only user (AF 4.2).
 
 #### 3. Description
-Lets a user delete the own account and personal data immediately, in one step that cannot be undone. The user must re-authenticate (password, or Google for a Google-only account) **and** type `DELETE`, on a screen that lists the data deleted and the data kept anonymously. Published recipes stay with the author shown as "Người dùng đã xóa"; reviews and ratings stay anonymously without changing rating totals; all other recipes, Cooksnaps, the dietary profile, meal plans, shopping lists and collections are deleted. The last active Administrator cannot delete the account, a temporarily suspended account cannot delete itself until the suspension ends, and a banned account may delete itself but its email hash goes onto the Blocked Email list.
+Lets a user delete the own account and personal data immediately, in one step that cannot be undone. The user must re-authenticate (password, or Google for a Google-only account) **and** type `DELETE`, on a screen that lists the data deleted and the data kept anonymously. Published recipes stay with the author shown as "Người dùng đã xóa"; archived recipes stay hidden, with no author; reviews and ratings stay anonymously without changing rating totals. Recipes in draft, pending, revision requested or rejected, open revisions, Cooksnaps, the dietary profile, meal plans, shopping lists and collections are deleted. The last active Administrator cannot delete the account, a temporarily suspended account cannot delete itself until the suspension ends, and a banned account may delete itself through the single-use closure link of spec 010, its email hash going onto the Blocked Email list.
 
 #### 4. Preconditions
-- The actor is signed in (`UC-010-02`) with an account that is active, or a banned account that has reached the account-closure page (see `[OQ-010-04]`).
+- The actor is signed in (`UC-010-02`) with an active account (basic flow), or is a banned user holding a valid closure link from spec 010 (`UC-010-02` AF 2.5, `UC-010-04` AF 4.6), which replaces the session and the re-authentication (AF 4.13, FR-037b).
 - The actor can authenticate again with the password, or with Google for a Google-only account.
 
 #### 5. Basic Flow
 1. **Open Account Section:** The actor opens the "Tôi" page and chooses "Xóa tài khoản".
-2. **Display Confirmation Screen:** The system shows "Xóa tài khoản — Hành động này không thể hoàn tác" with two lists: the data that will be deleted — profile, avatar and dietary profile; drafts and unpublished recipes (with their number); meal plans, shopping lists and collections; Cooksnaps (with the number of photos) — and the data kept in anonymous form as "Người dùng đã xóa" — published recipes (number) and reviews and ratings (number) (FR-031, US4 AS1).
-3. **Re-Authenticate:** The actor enters the password ("Nhập mật khẩu để xác nhận").
+2. **Display Confirmation Screen:** The system shows "Xóa tài khoản — Hành động này không thể hoàn tác" with two lists: the data that will be deleted — profile, avatar and dietary profile; drafts and recipes in review or rejected (with their number); meal plans, shopping lists and collections; Cooksnaps (with the number of photos) — and the data kept in anonymous form as "Người dùng đã xóa" — published and archived recipes (number) and reviews and ratings (number) (FR-031, US4 AS1).
+3. **Re-Authenticate:** The actor enters the password ("Nhập mật khẩu để xác nhận"). The browser sends `POST /api/v1/auth/reauthenticate` (spec 010), which answers `204`; the re-authentication is valid for 5 minutes.
 4. **Type Confirmation Word:** The actor types `DELETE` in capital letters. The delete button "Xóa vĩnh viễn tài khoản" stays disabled until `DELETE` is typed exactly (FR-031).
-5. **Confirm:** The actor presses the button. The system accepts only one request (FR-041).
-6. **Check Rules:** The system verifies the password, checks that the account is not the last active Administrator (FR-037) and not temporarily suspended (FR-037a).
+5. **Confirm:** The actor presses the button. The browser sends `POST /api/v1/me/deletion` with `confirmation = "DELETE"`; the system accepts only one request (FR-041).
+6. **Check Rules:** The system checks that the re-authentication is at most 5 minutes old, that the confirmation word is exactly `DELETE` (letter case counts), that the account is not the last active Administrator (FR-037) and that it is not temporarily suspended (FR-037a).
 7. **Delete Atomically:** In one all-or-nothing operation (FR-032, NFR-007) the system:
-   1. deletes every recipe that is not PUBLISHED — draft, pending, revision requested, rejected, archived (FR-034);
-   2. keeps published recipes and shows their author as "Người dùng đã xóa" without name, avatar or profile link (FR-033);
-   3. keeps reviews and ratings anonymously, with the average rating and review count of each recipe unchanged, and deletes Cooksnaps (FR-035);
+   1. deletes every recipe of the user in DRAFT, PENDING, REVISION_REQUESTED or REJECTED, and every open revision of a recipe that stays (FR-034);
+   2. keeps published recipes and shows their author as "Người dùng đã xóa" without name, avatar or profile link, and keeps archived recipes hidden as before, with no author (FR-033);
+   3. keeps reviews and ratings anonymously, with the stored average rating and review count of each recipe unchanged, and deletes Cooksnaps (FR-035; see `[OQ-011-07]` for the conflict with spec 070);
    4. deletes the dietary profile, meal plans, shopping lists and collections (FR-036);
    5. removes the account, ends all sessions and makes the credentials stop working (FR-032);
    6. leaves nothing on the Blocked Email list, so the same email can register again at once (FR-038);
-   7. records an audit entry that is anonymised after the deletion (FR-042; spec 010 `FR-025`).
+   7. records an audit entry without passwords or dietary details (FR-042; spec 010 `FR-025`).
+   The server answers `204`.
 8. **Say Goodbye:** The system shows "Tạm biệt, hẹn gặp lại": the account and personal data are deleted and published recipes stay for the community, with a button "Về trang chủ" (US4 AS3). Signing in with the same credentials fails afterwards.
 
 #### 6. Alternative Flows
 - **AF 4.1: Wrong Credentials, Cancelled Re-Authentication or Wrong Confirmation Word:**
-  - *Trigger:* At Step 3–6, the password is wrong, the Google sign-in is cancelled, or the word is not exactly `DELETE` (US4 AS2).
+  - *Trigger:* At Steps 3–6, the password is wrong, the Google re-authentication is cancelled or fails, or the word is not exactly `DELETE` (US4 AS2).
   - *Steps:*
-    1. The system deletes nothing and tells the actor why.
+    1. A wrong password receives `401 INVALID_CREDENTIALS` from `POST /api/v1/auth/reauthenticate` and is counted on the shared wrong-password counter (FR-030; AF 4.12); the password field is cleared (FR-039).
+    2. A cancelled or failed Google re-authentication returns the actor to this page, still signed in (spec 010 `FR-022b`).
+    3. A wrong word receives `422 CONFIRMATION_MISMATCH`.
+    4. In every case the system deletes nothing and tells the actor why.
 - **AF 4.2: Google-Only Account:**
   - *Trigger:* At Step 3, the account has no password (US4 AS1, FR-031).
   - *Steps:*
-    1. The system asks the actor to re-authenticate with Google instead of entering a password.
-    2. After a successful Google re-authentication and the word `DELETE`, the flow continues at Step 5.
+    1. The system asks the actor to re-authenticate with Google instead of entering a password and sends the actor to `GET /api/v1/auth/oauth2/google?intent=reauth`.
+    2. After a successful Google re-authentication the actor returns to the confirmation screen and the flow continues at Step 4.
 - **AF 4.3: Last Active Administrator:**
   - *Trigger:* At Step 6, the actor is the last active Administrator (not suspended, banned or deleted) (US4 AS8, FR-037; spec 010 `FR-023`).
   - *Steps:*
-    1. The system refuses with a message to appoint another Administrator first and changes nothing.
+    1. The server answers `409 LAST_ADMINISTRATOR`; the system asks the actor to appoint another Administrator first and changes nothing.
 - **AF 4.4: Temporarily Suspended Account:**
   - *Trigger:* At Step 6, the account is suspended and the suspension has not ended (US4 AS10, FR-037a).
   - *Steps:*
-    1. The system refuses with the end date of the suspension and changes nothing.
+    1. The server answers `403 ACCOUNT_SUSPENDED` with the end date (`endsAt`); the system shows it and changes nothing.
     2. After the suspension ends the account may delete itself normally.
-- **AF 4.5: Banned Account:**
-  - *Trigger:* At Step 6, the account is banned (US4 AS11, FR-037b).
+- **AF 4.5: Banned Account (Email Hash Kept):**
+  - *Trigger:* The account being deleted is banned; this happens only through the closure link of AF 4.13 (US4 AS11, FR-037b).
   - *Steps:*
     1. The system deletes the account as in Step 7.
     2. In the same all-or-nothing operation it stores only a one-way hash of the email on the Blocked Email list of spec 010, never the plain email.
@@ -3216,7 +3364,7 @@ Lets a user delete the own account and personal data immediately, in one step th
   - *Trigger:* At Step 7, a server error interrupts the operation (US4 AS9).
   - *Steps:*
     1. The account is either fully deleted or fully intact — never half-deleted.
-    2. When the actor retries, the result is again all or nothing.
+    2. When the actor retries, the result is again all or nothing. On the closure path (AF 4.13) a failure does not consume the closure link.
 - **AF 4.8: Another Session Is Open:**
   - *Trigger:* At Step 7, the user has other open sessions (Edge Cases).
   - *Steps:*
@@ -3230,25 +3378,51 @@ Lets a user delete the own account and personal data immediately, in one step th
   - *Steps:*
     1. Nothing is deleted and the account is unchanged.
 - **AF 4.11: Network Failure or Session Expired:**
-  - *Trigger:* At Step 5, the request fails or the session has expired (FR-039).
+  - *Trigger:* At Step 5, the request fails or the session has expired (`401 UNAUTHENTICATED`) (FR-039).
   - *Steps:*
     1. The system shows a clear message and nothing is deleted. For an expired session the actor signs in again (`UC-010-02`).
+- **AF 4.12: Too Many Wrong Passwords:**
+  - *Trigger:* At Step 3, 5 wrong passwords were given within 15 minutes, counting "Change password" (`UC-011-03`) and this screen together (US4 AS13, FR-030; spec 010 `FR-022b`).
+  - *Steps:*
+    1. The server answers `429 PASSWORD_CHECK_LIMITED` with `retryAfterSeconds`; the system tells the actor when to try again.
+    2. Re-authentication is refused for 15 minutes, nothing is deleted, and signing in is not affected (Clarification 2026-11-06, `[OQ-011-05]` closed).
+- **AF 4.13: Banned Account Closes Itself Through the Closure Link:**
+  - *Trigger:* A banned user proved their identity at sign-in (correct password or Google) and received `403 ACCOUNT_BANNED` with a single-use closure link valid for 10 minutes (`UC-010-02` AF 2.5, `UC-010-04` AF 4.6), then chose to close the account (FR-037b; spec 010 `FR-013`).
+  - *Steps:*
+    1. The account-status page opens the account-closure page of this feature without a session; the page shows the lists of Step 2.
+    2. The actor types `DELETE`; the button stays disabled until the word is exact.
+    3. The browser sends `POST /api/v1/account-closure` with `closureToken` and `confirmation`; the closure link replaces the session and the re-authentication of Step 3.
+    4. The system deletes the account as in Step 7 and AF 4.5, in one operation, consumes the link and answers `204`; the goodbye page of Step 8 is shown.
+  - *Outcome:* A banned user can leave without ever getting a session (Clarification 2026-11-06, `[OQ-011-06]` closed).
+- **AF 4.14: Closure Link Invalid, Expired or Used:**
+  - *Trigger:* At AF 4.13 Step 3, the closure link is wrong, older than 10 minutes or already used.
+  - *Steps:*
+    1. The server answers `410 TOKEN_INVALID`; nothing is deleted. A new link is obtained only by proving the identity again at sign-in (`UC-010-02` AF 2.5).
+- **AF 4.15: Account State Changed Meanwhile:**
+  - *Trigger:* At Step 6 or AF 4.13 Step 3, the account status changed after the screen was opened, for example the ban was lifted or the account was suspended while the closure link was still valid.
+  - *Steps:*
+    1. The server answers `409 ACCOUNT_STATE_CHANGED`, or `403 ACCOUNT_SUSPENDED` with the end date for a new suspension; nothing is deleted.
+- **AF 4.16: Re-Authentication No Longer Recent:**
+  - *Trigger:* At Step 6, the re-authentication of Step 3 is older than 5 minutes.
+  - *Steps:*
+    1. The server answers `403 REAUTH_REQUIRED`; the system asks the actor to re-authenticate again (Step 3 or AF 4.2) and nothing is deleted.
 
 #### 7. Postconditions
-- **Success:** The account and its personal data no longer exist; published recipes remain under "Người dùng đã xóa"; reviews and ratings remain anonymously with unchanged totals; all other recipes, Cooksnaps and the listed personal data are gone; audit entries are kept in anonymised form for the retention period; the email is free, except for a banned account whose email hash is on the Blocked Email list.
-- **Failure:** The account and all data are intact.
+- **Success:** The account and its personal data no longer exist; published recipes remain under "Người dùng đã xóa"; archived recipes remain hidden with no author; reviews and ratings remain anonymously with unchanged totals; recipes in other statuses, open revisions, Cooksnaps and the listed personal data are gone; audit entries contain no password or dietary detail; the email is free, except for a banned account whose email hash is on the Blocked Email list.
+- **Failure:** The account and all data are intact; a closure link that was not used stays valid until it expires.
 
 #### 8. Special Requirements
-- **Data integrity:** The deletion is immediate, permanent (no grace period or undo) and all-or-nothing (FR-032, NFR-007); 100% of data items are in the stated state in tests including one forced failure midway (SC-006).
-- **Security:** Re-authentication and the word `DELETE` are both mandatory and checked on the server (FR-031, FR-040); no password is logged (NFR-004).
-- **Privacy:** Only a one-way hash of the email of a banned account is kept, never the plain email (FR-037b); audit entries do not contain personal details after deletion.
+- **Data integrity:** The deletion is immediate, permanent (no grace period or undo) and all-or-nothing (FR-032, NFR-007); 100% of data items are in the stated state in tests including one forced failure midway, a banned account's email hash is on the block list, a suspended account is refused, and any other deleted email is free to register again (SC-006).
+- **Security:** Re-authentication (valid 5 minutes) and the exact word `DELETE` are both mandatory and checked on the server (FR-031, FR-040); wrong passwords share the counter of `FR-030`; no password is logged (NFR-004).
+- **Privacy:** Only a one-way hash of the email of a banned account is kept, never the plain email (FR-037b); audit entries contain no password or dietary detail (FR-042).
 - **Usability and accessibility:** The confirmation screen is usable from 360 px with touch targets of at least 44 × 44 px and keyboard-only operation (NFR-002, NFR-006).
 - **Testing:** Every acceptance scenario of US4 has at least one automated test (SC-008; constitution Principle II).
+- **Implementation status (v2.0):** `POST /api/v1/me/deletion` and `POST /api/v1/account-closure` are not implemented on `main` yet (spec 011 tasks T085 – T102). `POST /api/v1/auth/reauthenticate` (Step 3) is implemented and answers `204` or `401 INVALID_CREDENTIALS`, but it does not yet count wrong passwords, so the `429 PASSWORD_CHECK_LIMITED` of AF 4.12 is not returned yet. See `[OQ-011-09]`.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Basic Flow:** [`PF01-Me.dc.html`](../analysis-and-design/ui-ux/screens/PF01-Me.dc.html) (Step 1), [`PF07-DeleteAccount.dc.html`](../analysis-and-design/ui-ux/screens/PF07-DeleteAccount.dc.html) (Steps 2–5), [`PF08-Goodbye.dc.html`](../analysis-and-design/ui-ux/screens/PF08-Goodbye.dc.html) (Step 8).
-- **Alternative Flows:** No prototype screen exists for AF 4.1 – AF 4.4.
-- **UI Asset Gap for SCRUM-58:** Needs the refusal messages for the last Administrator (AF 4.3) and for a temporarily suspended account (AF 4.4), the error state for a wrong credential or a wrong confirmation word (AF 4.1) and the Google re-authentication variant of the form (AF 4.2). See Section 10.2 (Gaps 011-J to 011-M).
+- **Alternative Flows:** No prototype screen exists for AF 4.1 – AF 4.4, AF 4.12 and AF 4.13.
+- **UI Asset Gap for SCRUM-58:** Needs the refusal messages for the last Administrator (AF 4.3) and for a temporarily suspended account (AF 4.4), the error state for a wrong credential or a wrong confirmation word (AF 4.1), the Google re-authentication variant of the form (AF 4.2) and the account-closure page reached from the banned-account screen (AF 4.13). See Section 10.2 (Gaps 011-J to 011-N).
 - **Prototype Screenshots (SCRUM-58):**
   - **Delete account screen / dialog (`PR04-DeleteAccount`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -3259,7 +3433,7 @@ Lets a user delete the own account and personal data immediately, in one step th
 ---
 
 ### UC-011-05: Apply Dietary Hard Rules *(included use case)*
-*Performed by: Mai Văn Hiển (MaiHien3507) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Mai Văn Hiển (MaiHien3507)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-011-05`
@@ -3267,7 +3441,7 @@ Lets a user delete the own account and personal data immediately, in one step th
 
 #### 2. Actor(s)
 - **Primary Actor:** None. This use case has a **Trigger** instead (Use-Case Model §6.2, issue 5): it runs only inside another use case.
-- **Invoking Use Cases:** `UC-011-01` (validation and definitions), `UC-020-03` (hide recipes in search), `UC-031-01` (generate the AI plan) and the recipe picker of the meal planner (`030`). The signed-in **Member** is the person whose profile is read.
+- **Invoking Use Cases:** `UC-011-01` (validation and definitions), `UC-020-03` (hide recipes in search), `UC-030-01` (recipe picker of the meal planner), `UC-031-01` (generate the AI plan) and `UC-031-05` (suggestions for one slot), as in Use-Case Model v2.0 §4.1 and §4.3. The signed-in **Member** is the person whose profile is read.
 
 #### 3. Description
 Defines in one place what the dietary profile means, so that search, the meal planner and the AI planner treat the same user in the same way. **Hard rules** are allergens and excluded ingredients: the system never chooses automatically a recipe that breaks one, and if such a recipe is shown anyway it carries a warning naming each conflict. **Preferences** are diet type, maximum total cooking time and preferred cuisines: they only rank results or pre-fill forms. **Default servings** are the household size, or 2 when it is empty.
@@ -3278,7 +3452,7 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 
 #### 5. Basic Flow
 1. **Trigger:** An invoking use case needs to choose, filter, rank or pre-fill recipes for the signed-in user and passes the candidate recipes.
-2. **Read Profile:** The system reads the dietary profile of the owner through the server. It is never copied into the tables of other features (FR-025).
+2. **Read Profile:** The system reads the dietary profile of the owner through the server. It is never copied into the tables of other features (FR-025). Diet type is one of Vegetarian, Vegan, Pescatarian or none (FR-012).
 3. **Find Conflicts:** For each candidate recipe, the system decides that it breaks a hard rule if it contains at least one ingredient that is in the user's excluded ingredients, or that is linked in the catalogue to one of the user's allergens (FR-021). This single rule is used by specs `020`, `030` and `031`.
 4. **Report Conflicts:** The system returns, per recipe, every conflicting allergen and ingredient by name.
 5. **Hand Back the Decision:** The invoking use case presents the recipe: search hides it and lets the user reveal it, the planner lists it last with a confirmation, the AI planner removes it completely (FR-020). A recipe that is shown despite a conflict carries a warning naming each conflicting allergen or ingredient (US5 AS2).
@@ -3322,18 +3496,21 @@ Defines in one place what the dietary profile means, so that search, the meal pl
   - *Steps:*
     1. The system reads no profile. A Guest is treated as a user with no profile (AF 5.1); another user's profile is never read.
 - **AF 5.9: Profile Cannot Be Read:**
-  - *Trigger:* At Step 2, the server cannot read the profile because of a failure.
+  - *Trigger:* At Step 2, the server cannot read the profile because of a failure; the profile API answers `503 PROFILE_UNAVAILABLE` instead of an empty profile (FR-026a).
   - *Steps:*
-    1. The spec does not define the behaviour. Because wrongly showing an unsafe recipe is a safety risk, this case is raised in `[OQ-011-01]` and no flow is invented here.
+    1. The invoking use case does not choose recipes automatically and shows the reason to the user.
+    2. It does not continue as if the user had no profile.
+    3. An expired session is not this case: the user is treated as a Guest (AF 5.8) (Clarification 2026-11-06, `[OQ-011-01]` closed).
 
 #### 7. Postconditions
 - **Success:** The invoking use case receives, per recipe, the list of conflicting allergens and ingredients, the preferences for ranking and the default servings; nothing is stored or changed by this use case.
-- **Failure:** See `[OQ-011-01]`.
+- **Failure (AF 5.9):** No recipe is chosen automatically and the reason is shown; nothing is stored or changed.
 
 #### 8. Special Requirements
-- **Safety:** With any saved profile, zero recipes that break a hard rule are chosen automatically by specs `020`, `030` and `031` in acceptance tests (SC-002).
+- **Safety:** With any saved profile, zero recipes that break a hard rule are chosen automatically by specs `020`, `030` and `031` in acceptance tests, on a data set whose ingredient ↔ allergen links are complete (SC-002; Clarification 2026-11-07). Allergen protection is only as complete as those links, so no screen states that a recipe is safe for an allergy (FR-010a).
 - **Privacy:** Allergy data is sensitive health information and is shared with no third party except the AI service, only as anonymous constraints required by spec `031` (NFR-005).
 - **Consistency:** FR-020 – FR-026 are authoritative; specs `020`, `030` and `031` must not use different wording (spec 011 Integration Points). Other modules read the profile only through the server (FR-025).
+- **Implementation status (v2.0):** On `main`, every module reads the profile through `DietaryProfileReader` (the ports of `020`, `030`, `031` and also the shopping list `040`); a read failure raises `DietaryProfileUnavailableException`, answered `503 PROFILE_UNAVAILABLE`, and a user without a row is an empty profile (AF 5.1, AF 5.9). Nothing is cached, so Step 8 holds.
 - **Testing:** Every acceptance scenario of US5 has at least one automated test (SC-008).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
@@ -3349,19 +3526,95 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 
 ---
 
+### UC-011-06: View Public Profile
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+> *New in v2.0 (`SCRUM-71`).* Use-Case Model v2.0 §4.1 adds this use case because its primary actor is a Guest; in v1.4 it was Step 10 and `AF 2.6` / `AF 2.17` of `UC-011-02`. Checked against `PublicProfileController`, `PublicProfileService` and `UserProfileRepository.findPublic` on `main` (`SCRUM-75`, PR #95).
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-011-06`
+- **Use Case Name:** View a User's Public Profile and Published Recipes
+
+#### 2. Actor(s)
+- **Primary Actor:** **Guest** — any visitor, signed in or not; Member and the other roles inherit it (Use-Case Model §2.2).
+- **Secondary Actor:** None.
+
+#### 3. Description
+Lets anyone, including a Guest, open the public profile of a user and see the display name, the avatar, the bio, the number of published recipes and the published recipes in pages. The answer never contains the email, the account information, the dietary profile or the household size. The profile of a suspended user stays viewable; the profile of a banned, deleted or missing user answers exactly like one that does not exist (FR-005, FR-039).
+
+#### 4. Preconditions
+- The actor can reach the WikiCook web application. No sign-in is needed: `GET /api/v1/profiles/{id}` and `GET /api/v1/profiles/{id}/recipes` are public routes (contract `security: []`).
+- The actor has the id of a user, for example from the author name on a recipe (`UC-020-06`) or from the own profile page (`UC-011-02` Step 10).
+
+#### 5. Basic Flow
+1. **Open Profile:** The actor opens the public profile of a user.
+2. **Load Profile:** The browser sends `GET /api/v1/profiles/{id}`. The server reads only the public columns of the user (id, display name, avatar, bio), and only when the account is not banned (FR-005).
+3. **Return Public Data:** The server answers `200` with `id`, `displayName`, `avatarUrl` (`null` means the default avatar), `bio` and `publishedRecipeCount` (contract `PublicProfile`).
+4. **Load Recipes:** The browser sends `GET /api/v1/profiles/{id}/recipes?page=0&size=12`. The server answers `200` with the user's `PUBLISHED` recipes, newest first: per recipe `id`, `title`, the cover image, the total time, the average rating and the review count, with `page`, `size` and `totalItems`.
+5. **Display:** The system shows the avatar (or the neutral default avatar), the display name, the bio as plain text with its line breaks, the number of published recipes and the recipe cards under "Công thức đã đăng" (US2 AS6, FR-005).
+6. **Page Through Recipes:** The actor moves to the next page; the browser repeats Step 4 with the next `page` (page size 12 by default, at most 24).
+7. **Open a Recipe:** The actor selects a recipe card; the recipe detail page opens (`UC-020-06`).
+
+#### 6. Alternative Flows
+- **AF 6.1: User Has No Published Recipe:**
+  - *Trigger:* At Step 4, the user has no `PUBLISHED` recipe.
+  - *Steps:*
+    1. The server answers `200` with an empty `items` list and `totalItems = 0`; the system shows the empty state of the recipe list (FR-039).
+- **AF 6.2: Suspended User:**
+  - *Trigger:* At Step 2, the account is suspended.
+  - *Steps:*
+    1. The profile and the recipes are shown normally (FR-005).
+- **AF 6.3: Profile Not Available:**
+  - *Trigger:* At Step 2 or Step 4, the user does not exist, the account was deleted, or the account is banned (FR-005, FR-039).
+  - *Steps:*
+    1. The server answers `404 USER_NOT_FOUND` in the same way for the three cases, so the answer does not reveal which one applies; an id that is not a number is also answered `404`.
+    2. The system shows the generic 404 page.
+- **AF 6.4: Owner or Another Signed-In User Opens the Profile:**
+  - *Trigger:* At Step 1, the actor is signed in, possibly as the owner of the profile (US2 AS6 – AS7).
+  - *Steps:*
+    1. The answer is the same public data as for a Guest. Private data is reached only through `/api/v1/me/` endpoints by the owner, or by an Administrator through spec 010 (`UC-011-02` AF 2.7, AF 2.8).
+- **AF 6.5: Invalid Page Parameters:**
+  - *Trigger:* At Step 4 or Step 6, `page` is negative or `size` is outside 1 – 24.
+  - *Steps:*
+    1. The server answers `400 VALIDATION_ERROR` and returns no recipes.
+- **AF 6.6: Loading Fails:**
+  - *Trigger:* At Step 2 or Step 4, the request fails, for example because the connection is lost (FR-039).
+  - *Steps:*
+    1. The system shows the error state with a clear message and "Try again"; nothing is changed.
+
+#### 7. Postconditions
+- **Success:** The actor sees only the public data of the user. Nothing is stored or changed.
+- **Failure:** The generic 404 page or the error state is shown. Nothing is stored or changed.
+
+#### 8. Special Requirements
+- **Privacy:** The answers contain no email, account information, dietary profile or household size, because the server reads only the public columns; this is enforced by the server, not by hiding fields in the interface (FR-005, FR-006, NFR-005). `SC-004` requires zero leaks in tests with a second account, a Guest and an Administrator.
+- **Security:** Display name and bio are shown as plain text; avatars are served by `GET /api/v1/media/avatars/{file}` as `image/jpeg` with `nosniff` (NFR-004).
+- **Usability and accessibility:** Usable from 360 px with touch targets of at least 44 × 44 px and keyboard-only operation; loading, empty, error and data states are distinct (NFR-002, NFR-006, FR-039).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** [`PF05-PublicProfile.dc.html`](../analysis-and-design/ui-ux/screens/PF05-PublicProfile.dc.html) (Steps 5–6; name, avatar, bio and paged published recipes).
+- **Alternative Flows:** No prototype screen exists for AF 6.1; AF 6.3 uses the generic 404 page.
+- **UI Asset Gap for SCRUM-58:** Needs the public profile of a user without published recipes (AF 6.1, `FR-039`). See Section 10.2 (Gap 011-F).
+- **Prototype Screenshots (SCRUM-58):** None captured yet. The existing screenshot `UC011_02_Basic_ProfileView` shows the owner's "Tôi" page (with the email), not the public profile, so it is not reused here; a capture of `PF05-PublicProfile` is needed (Gap 011-F).
+
+---
+
 ### 10.1. Feature 011 (User Profile & Dietary Profile) Traceability
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Use Case ID | Use Case Name | User Stories Covered | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria | Vision Feature |
 | :---: | :--- | :---: | :--- | :--- | :---: | :---: |
-| **`UC-011-01`** | Set Up Dietary Profile | `US1` (AS 1–8) | `FR-001`, `FR-006`, `FR-008`, `FR-009`, `FR-010`, `FR-011`, `FR-012`, `FR-013`, `FR-014`, `FR-015`, `FR-016`, `FR-017`, `FR-018`, `FR-019`, `FR-024`, `FR-025`, `FR-039` – `FR-042` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-005`, `NFR-006`, `NFR-007`, `NFR-008` | `SC-001`, `SC-004`, `SC-007`, `SC-008` | §5.1 |
-| **`UC-011-02`** | Edit Public Profile & Avatar | `US2` (AS 1–8) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-006`, `FR-007`, `FR-039`, `FR-040`, `FR-041`, `FR-042` | `NFR-002`, `NFR-003`, `NFR-004`, `NFR-005`, `NFR-006`, `NFR-008` | `SC-003`, `SC-004`, `SC-008` | §5.1 |
+| **`UC-011-01`** | Set Up Dietary Profile | `US1` (AS 1–8) | `FR-001`, `FR-006`, `FR-008`, `FR-009`, `FR-010`, `FR-010a`, `FR-011`, `FR-012`, `FR-013`, `FR-014`, `FR-015`, `FR-016`, `FR-017`, `FR-018`, `FR-019`, `FR-024`, `FR-025`, `FR-026a`, `FR-039` – `FR-042` | `NFR-001`, `NFR-002`, `NFR-003`, `NFR-005`, `NFR-006`, `NFR-007`, `NFR-008` | `SC-001`, `SC-004`, `SC-007`, `SC-008` | §5.1 |
+| **`UC-011-02`** | Edit Public Profile & Avatar | `US2` (AS 1–5, 7–8) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-006`, `FR-007`, `FR-039`, `FR-040`, `FR-041`, `FR-042` | `NFR-002`, `NFR-003`, `NFR-004`, `NFR-005`, `NFR-006`, `NFR-008` | `SC-003`, `SC-004`, `SC-008` | §5.1 |
 | **`UC-011-03`** | Change or Set Password | `US3` (AS 1–6) | `FR-027`, `FR-028`, `FR-029`, `FR-030`, `FR-039`, `FR-040`, `FR-041`, `FR-042` | `NFR-002`, `NFR-004`, `NFR-006` | `SC-005`, `SC-008` | §5.1 |
-| **`UC-011-04`** | Delete Account | `US4` (AS 1–12) | `FR-031`, `FR-032`, `FR-033`, `FR-034`, `FR-035`, `FR-036`, `FR-037`, `FR-037a`, `FR-037b`, `FR-038`, `FR-041`, `FR-042` | `NFR-002`, `NFR-004`, `NFR-006`, `NFR-007` | `SC-006`, `SC-008` | §5.1 |
-| **`UC-011-05`** | Apply Dietary Hard Rules *(included)* | `US5` (AS 1–5) | `FR-010`, `FR-019`, `FR-020`, `FR-021`, `FR-022`, `FR-023`, `FR-024`, `FR-025`, `FR-026` | `NFR-005` | `SC-002`, `SC-008` | §5.1 |
+| **`UC-011-04`** | Delete Account | `US4` (AS 1–13) | `FR-030`, `FR-031`, `FR-032`, `FR-033`, `FR-034`, `FR-035`, `FR-036`, `FR-037`, `FR-037a`, `FR-037b`, `FR-038`, `FR-039`, `FR-040`, `FR-041`, `FR-042` | `NFR-002`, `NFR-004`, `NFR-006`, `NFR-007` | `SC-006`, `SC-008` | §5.1 |
+| **`UC-011-05`** | Apply Dietary Hard Rules *(included)* | `US5` (AS 1–5) | `FR-010`, `FR-010a`, `FR-012`, `FR-019`, `FR-020`, `FR-021`, `FR-022`, `FR-023`, `FR-024`, `FR-025`, `FR-026`, `FR-026a` | `NFR-005` | `SC-002`, `SC-008` | §5.1 |
+| **`UC-011-06`** | View Public Profile *(new v2.0)* | `US2` (AS 6) | `FR-005`, `FR-006`, `FR-039` | `NFR-002`, `NFR-004`, `NFR-005`, `NFR-006` | `SC-004`, `SC-008` | §5.1 |
 
-*Verification:* All 5 user stories of spec 011 (39 acceptance scenarios), all 44 functional requirements (`FR-001` – `FR-042` including `FR-037a` and `FR-037b`), the 8 NFRs and `SC-001` – `SC-008` are mapped. `FR-006` is spread over `UC-011-01`, `UC-011-02` and `UC-011-03` because it governs who may read or change each part of the profile.
+*Verification:* All 5 user stories of spec 011 (40 acceptance scenarios: 8 + 8 + 6 + 13 + 5), all 46 functional requirements (`FR-001` – `FR-042` including `FR-010a`, `FR-026a`, `FR-037a` and `FR-037b`), the 8 NFRs and `SC-001` – `SC-008` are mapped. `FR-006` is spread over `UC-011-01`, `UC-011-02`, `UC-011-03` and `UC-011-06` because it governs who may read or change each part of the profile. *(v2.0)* `US2` AS6 (public profile) moved from `UC-011-02` to the new `UC-011-06`. `FR-030` (shared wrong-password counter) is exercised by `UC-011-03` and `UC-011-04`.
 
 ### 10.2. Prototype Screen Mapping & UI Asset Gaps (for SCRUM-58)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Use Case ID | Flow / Step Reference | Existing Screen ID & Filename | Description of Prototype View | Asset Status & Action for SCRUM-58 |
 | :---: | :--- | :--- | :--- | :---: |
@@ -3372,10 +3625,10 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 | `UC-011-01` | AF 1.9, AF 1.14 | *Gap 011-B* | Save failed or profile not loaded, with "Try again" and the typed values kept | **GAP** |
 | `UC-011-01` | AF 1.13 | *Gap 011-C* | Notice that an excluded ingredient was merged, deleted or an allergen removed | **GAP** |
 | `UC-011-02` | Basic Flow (Steps 1–9) | `PF04-EditProfile.dc.html` | Avatar with change and remove, display name 9/50, bio 68/300, privacy note | **Available** |
-| `UC-011-02` | Basic Flow (Step 10), AF 2.6 | `PF05-PublicProfile.dc.html` | Public profile with name, avatar, bio and paged published recipes | **Available** |
+| `UC-011-06` | Basic Flow (Steps 5–6) | `PF05-PublicProfile.dc.html` | Public profile with name, avatar, bio and paged published recipes | **Available** |
 | `UC-011-02` | AF 2.1 – AF 2.4 | *Gap 011-D* | Editor with errors: invalid name, bio over 300, wrong avatar type or size | **GAP** |
 | `UC-011-02` | AF 2.8 | *Gap 011-E* | Administrator's view of a user: email and account information only | **GAP** |
-| `UC-011-02` | AF 2.6 (no recipes) | *Gap 011-F* | Public profile of a user without published recipes | **GAP** (see `[OQ-011-02]`) |
+| `UC-011-06` | AF 6.1 (no recipes) | *Gap 011-F* | Public profile of a user without published recipes | **GAP** (behaviour now defined by `FR-039`) |
 | `UC-011-03` | Basic Flow (Steps 2–5), AF 3.1, AF 3.6 | `PF06-Security.dc.html` | Change-password form with the wrong-current-password message; "Tài khoản chỉ dùng Google" with "Đặt mật khẩu" | **Available** |
 | `UC-011-03` | Basic Flow (Step 8) | *Gap 011-G* | "Password changed" confirmation | **GAP** |
 | `UC-011-03` | AF 3.2, AF 3.3 | *Gap 011-H* | Rule-failed state and throttled state after repeated wrong passwords | **GAP** |
@@ -3386,56 +3639,77 @@ Defines in one place what the dietary profile means, so that search, the meal pl
 | `UC-011-04` | AF 4.2 | *Gap 011-K* | Delete screen for a Google-only account asking for Google re-authentication | **GAP** |
 | `UC-011-04` | AF 4.3 | *Gap 011-L* | Refusal for the last active Administrator | **GAP** |
 | `UC-011-04` | AF 4.4 | *Gap 011-M* | Refusal for a temporarily suspended account with the end date | **GAP** |
+| `UC-011-04` | AF 4.13 | *Gap 011-N* | Account-closure page opened from the banned-account screen (`AU07`) without a session: lists, type DELETE | **GAP** |
 | `UC-011-05` | Basic Flow | `PF02-DietEmpty.dc.html`, `PF03-DietForm.dc.html` | Explanation of hard rules and preferences in the profile screens | **Available** |
 
-*Note:* `AF 1.2`, `AF 1.5`, `AF 1.7`, `AF 1.8`, `AF 1.10` – `AF 1.12`, `AF 1.15` – `AF 1.18`, `AF 2.5`, `AF 2.7`, `AF 2.9` – `AF 2.16`, `AF 3.4` – `AF 3.5`, `AF 3.7` – `AF 3.12`, `AF 4.5` – `AF 4.11` and `AF 5.1` – `AF 5.9` reuse the screens above, are background behaviour, or are server refusals that show a message in a screen already listed.
+*Note:* `AF 1.2`, `AF 1.5`, `AF 1.7`, `AF 1.8`, `AF 1.10` – `AF 1.12`, `AF 1.15` – `AF 1.19`, `AF 2.5`, `AF 2.7`, `AF 2.9` – `AF 2.16`, `AF 2.18`, `AF 3.4` – `AF 3.5`, `AF 3.7` – `AF 3.13`, `AF 4.5` – `AF 4.12`, `AF 4.14` – `AF 4.16` `AF 5.1` – `AF 5.9` and `AF 6.2` – `AF 6.6` reuse the screens above (`AF 6.3` uses the generic 404 page), are background behaviour, or are server refusals that show a message in a screen already listed.
 
 *Desktop variants:* every screen listed in this table also has a web variant named `W-<ID>` in the same folder (for example `W-AU02-Register.dc.html`). The mobile files are listed because the flows are written for the 360 px layout (constitution Principle V). `AU01` exists only as `W-AU01-Login.dc.html`.
 
 ### 10.3. Open Questions (For Team Alignment)
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 *Decisions of 30/10/2026 by Mai Văn Hiển are recorded under each item. Changes to specs `011` need Duy's approval through a PR; the use cases above change only where a decision is stated in the flow.*
+
+*Status update (v2.0, 13/11/2026, `SCRUM-71`):* spec 011 was clarified on 2026-11-06 and 2026-11-07. Each item below now carries a *Status (v2.0)* line. *(18/11/2026)* `[OQ-011-02]` and `[OQ-011-03]` now apply to `UC-011-06` (the public-profile flows moved there); `[OQ-011-09]` records the code check.
 
 1. **`[OQ-011-01]` Behaviour When the Profile Cannot Be Read (`UC-011-05` AF 5.9):**
    - *Issue:* The spec does not say whether a module that cannot read the dietary profile must hide recipes, refuse to generate a plan, or continue as if there were no profile. Continuing silently could show an unsafe recipe to a user with an allergy.
    - *Current Stance:* No flow is invented. The safe choice (refuse to choose recipes automatically and say why) is proposed for the specs of `020`, `030` and `031`.
    - *Owner:* Mai Văn Hiển with Nguyễn Đức Duy (`020`) and Nguyễn Thành Dự (`030`, `031`).
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 011, highest priority: a new FR after `FR-026` — a module that cannot read the profile does not choose recipes automatically and shows the reason. Add one Integration Points row for `020`, `030` and `031`. Not for an expired session (treated as a Guest).
+   - *Status (v2.0):* **Closed** by spec 011 Clarifications 2026-11-06 (`FR-026a`; contract `503 PROFILE_UNAVAILABLE`). `UC-011-05` AF 5.9 and `UC-011-01` AF 1.14 updated. Whether `UC-020-03` and `UC-031-01` already follow `FR-026a` is left to the owners of those sections.
 2. **`[OQ-011-02]` Empty and Error States of the Public Profile (`UC-011-02`):**
    - *Issue:* `FR-039` defines four states for "the profile page" but does not say what a visitor sees on a public profile with no published recipes or on a profile that does not exist or belongs to a deleted user.
    - *Current Stance:* Only the data state is written; a deleted user appears as "Người dùng đã xóa" without a profile link (`FR-033`).
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Fix spec 011 (small): `FR-039` — no recipes shows an empty state; a missing or deleted profile shows the generic 404.
+   - *Status (v2.0):* **Closed** by spec 011 Clarifications 2026-11-06 (`FR-039`; contract `404 USER_NOT_FOUND`). `UC-011-02` AF 2.6 and AF 2.17 updated.
 3. **`[OQ-011-03]` Public Profile of a Suspended or Banned User:**
    - *Issue:* Edge Cases say it "follows the rules of spec 010", but spec 010 defines no such rule.
    - *Current Stance:* `AF 2.14` only states that the account cannot edit.
    - *Owner:* Mai Văn Hiển (specs `010` and `011`).
    - *Decision (30/10/2026, Mai Văn Hiển):* Proposed, not yet decided: a suspended user's profile stays viewable, a banned user's is 404; Hiển decides after asking Chung; record in spec 010.
+   - *Status (v2.0):* **Closed** by spec 011 Clarifications 2026-11-06 (`FR-005`), recorded in spec 011 rather than spec 010. `UC-011-02` AF 2.6, AF 2.14 and AF 2.17 updated.
 4. **`[OQ-011-04]` Details of Password-Change Failures (`UC-011-03`):**
    - *Issue:* `FR-030` limits wrong current passwords "as sign-in failures are", but it is not stated whether this lock also blocks signing in; it is also not stated whether "Set password" signs out other sessions (`FR-028` mentions only a change), or whether typed passwords are kept after a network failure.
    - *Current Stance:* `AF 3.2`, `AF 3.6` and `AF 3.10` mark the proposed rules as "Proposed" until the clarification of spec 011 is approved.
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Proposed: a separate counter that does not lock sign-in; "Set password" also signs out other sessions; password fields cleared on failure (a deliberate exception to the Edge Cases). Pending clarification of spec 011; `AF 3.2`, `AF 3.6` and `AF 3.10` are marked "Proposed".
+   - *Status (v2.0):* **Closed** by spec 011 Clarifications 2026-11-06 (`FR-028`, `FR-030`, `FR-039`). The "Proposed" marks of `AF 3.2`, `AF 3.6` and `AF 3.10` are removed.
 5. **`[OQ-011-05]` Re-Authentication Rate Limit on Account Deletion:**
    - *Issue:* `FR-030` limits wrong passwords for password change only. A stolen session could use the deletion screen to guess the password without limit.
    - *Current Stance:* `AF 4.1` only refuses; no limit is described.
    - *Owner:* Mai Văn Hiển, to be settled before `/speckit-plan`.
    - *Decision (30/10/2026, Mai Văn Hiển):* Open — proposed, awaiting clarification of spec 011: wrong current passwords on "Change password" and on "Delete account" share one counter per user (5 wrong passwords within 15 minutes, both actions refused for 15 minutes with the time to retry), separate from the sign-in counter so it never locks sign-in; Google-only accounts re-authenticate with Google and have no password to guess (`FR-030`). `AF 4.1` stays unchanged for now. After the clarification is approved, add `AF 4.12: Too Many Wrong Passwords` to `UC-011-04` and update this item.
+   - *Status (v2.0):* **Closed** by spec 011 Clarifications 2026-11-06 (`FR-030`, US4 AS13) and spec 010 `FR-022b`; contract `429 PASSWORD_CHECK_LIMITED`. `AF 4.12: Too Many Wrong Passwords` added to `UC-011-04`; `UC-011-03` AF 3.2 uses the same counter.
 6. **`[OQ-011-06]` How a Banned User Reaches Account Deletion:**
    - *Issue:* Same as `[OQ-010-04]`: spec 011 Assumptions leave the route to spec 010.
    - *Current Stance:* `UC-011-04` allows a banned account to delete itself once it reaches the account-closure page.
    - *Owner:* Mai Văn Hiển.
    - *Decision (30/10/2026, Mai Văn Hiển):* Merged into `[OQ-010-04]`, deferred.
+   - *Status (v2.0):* **Closed** with `[OQ-010-04]` by spec 011 Clarifications 2026-11-06 (`FR-037b`) and spec 010 `FR-013`; contract `POST /api/v1/account-closure`. `UC-011-04` AF 4.13 – AF 4.15 added.
 7. **`[OQ-011-07]` Items Still Owned by Other Specs:**
    - *Issue:* Spec 011 Integration Points mark as "to be confirmed" the anonymous reviews (`070`), the deletion of Cooksnaps (`070`), the deletion of meal plans, shopping lists and collections (`030`, `040`, `080`) and the "deleted user" author of published recipes (`060`).
    - *Current Stance:* `UC-011-04` Step 7 follows spec 011 `FR-033` – `FR-036`; the owners must confirm.
    - *Owner:* Trần Nguyễn Công Chung (`070`), Nguyễn Thành Dự (`030`), Lê Quốc Hưng (`040`), Nguyễn Đức Duy (`060`).
    - *Decision (30/10/2026, Mai Văn Hiển):* Pass to Trần Nguyễn Công Chung (`070`), Nguyễn Thành Dự (`030`), Lê Quốc Hưng (`040`) and Nguyễn Đức Duy (`060`), due 02/11.
+   - *Status (v2.0):* **Open.** Spec 011 still marks `FR-035` "to be confirmed by E". Spec 070 now **contradicts** it: spec 070 Edge Case 5 keeps the Cooksnaps of a deleted user visible (`cooksnaps.user_id` set to `NULL`), while spec 011 `FR-035` and US4 AS6 delete them. `UC-011-04` Step 7 follows spec 011; `UC-070-04` AF 4.3 states the conflict. The spec owners (Mai Văn Hiển for 011, Trần Nguyễn Công Chung for 070) must agree on one rule; the other rows (`030`, `040`, `060`, `080`) are not confirmed in this revision.
 8. **`[OQ-011-08]` Prototype `PF07` Shows Only the Password Variant:**
    - *Issue:* The delete screen shows the password field but spec `FR-031` also requires a Google re-authentication variant.
    - *Current Stance:* The variant is described in `AF 4.2` and listed as Gap 011-K; no UI is invented.
    - *Owner:* Trần Nguyễn Công Chung (`SCRUM-58`).
    - *Decision (30/10/2026, Mai Văn Hiển):* Closed — already tracked as Gap 011-K.
+9. **`[OQ-011-09]` Implemented Code vs. Approved Contract (v2.0 code check, 18/11/2026):**
+   - *Issue:* The use cases must state only implemented or approved behaviour. Checking `main` (profile module of `SCRUM-75`, auth module of `SCRUM-74`) found:
+     1. `POST /api/v1/me/password`, `POST /api/v1/me/password/initial`, `POST /api/v1/me/deletion` and `POST /api/v1/account-closure` do not exist yet (spec 011 tasks T073 – T102, US3 and US4 planned after 18/11/2026). `UC-011-03` and `UC-011-04` describe the contract.
+     2. `POST /api/v1/auth/reauthenticate` exists but does not count wrong passwords (`PasswordCheckFailure` is defined but not used), so `429 PASSWORD_CHECK_LIMITED` (spec 010 `FR-022b`, spec 011 `FR-030`) is not returned yet (`UC-011-03` AF 3.2, `UC-011-04` AF 4.12).
+     3. The Google OAuth endpoints (`GET /api/v1/auth/oauth2/google`, `intent=reauth`) are not implemented, so `UC-011-03` AF 3.6 – AF 3.7 and `UC-011-04` AF 4.2 cannot run yet.
+     4. The dietary profile is also read by the shopping list (`040`, `ShoppingDietaryAdapter`); spec 011 FR-020 lists only `020`, `030` and `031`. This is an extra reader, not a different rule.
+     5. `UC-011-06` matches the code: banned, deleted and missing users all answer `404 USER_NOT_FOUND`; the code comment still calls this rule "not approved yet" (research row 11) although spec 011 FR-005 approves it.
+   - *Current Stance:* Flows follow the contract; no behaviour is invented. The items are reported to the owner of `SCRUM-75`.
+   - *Owner:* Mai Văn Hiển (code of `SCRUM-74` / `SCRUM-75`), Nguyễn Đức Duy (spec 011 approval).
+   - *Status (v2.0):* **Open.**
 
 ---
 
@@ -4042,119 +4316,120 @@ Lets a signed-in user see all saved recipes and collections at a glance and open
 ---
 
 ## 12. USE-CASE SPECIFICATIONS FOR FEATURE 070: COMMUNITY REVIEWS & COOKSNAPS
-*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+> [!NOTE]
+> **Sources:** `specs/070-review-cooksnap/spec.md` (US1–US6, FR-001 – FR-025, NFR-001 – NFR-006, SC-001 – SC-006, RBAC matrix; Clarifications of 2026-10-19 and 2026-11-09), `specs/070-review-cooksnap/contracts/openapi.yaml` and `data-model.md`, `specs/010-user-authentication-roles/spec.md` (`FR-006` verified email for publishing, session and account status) and `contracts/integration.md` §2.4, `specs/011-user-profile-dietary/spec.md` (`FR-035`, account deletion), the Use-Case Model [`use-case-model.md`](use-case-model.md) v2.0 §4.7 and the project constitution (Principles IV and V). Actors follow the model: **Member** (any signed-in role) writes, edits, votes and reports; **Guest** reads reviews and opens Cooksnaps. Relations (model v2.0 §4.7): `UC-070-02` extends `UC-070-01` and `UC-070-03`; `UC-070-07` extends `UC-070-04`; `UC-070-01` and `UC-070-03` extend `UC-070-06`; `UC-070-06` extends `UC-050-02`; `UC-070-01`, `UC-070-03`, `UC-070-05` and `UC-100-02` include `UC-070-08`.
+>
+> **v2.0 revision note (SCRUM-71):** The PA3 baseline (v1.3) described endpoints, error codes, limits and audit entries that spec 070, its contract and the code do not define (for example `POST /api/v1/reports`, a standalone Cooksnap upload, a report rate limit of 10 per hour, the reasons `ABUSIVE_LANGUAGE` / `MISLEADING_INFO`, `422` answers for self-votes and self-reports, a "Search Indexer" actor and an `AUTO_HIDE_MASS_REPORTED` audit entry). Every flow was checked against the review backend merged into `main` (`com.wikicook.review`, `SCRUM-77`): `ReviewController`, `ReviewReportController`, `CooksnapMediaController`, `ReviewService`, `ReviewReportService`, `RateLimitingService`, `ImageProcessorService`, `ReviewExceptionHandler` and migration `V501__community.sql`. Where the spec and the code disagree, the flow states the implemented behaviour and the difference is recorded in Section 12.3. The code identifies errors only by the ProblemDetail `type` URI (for example `https://wikicook.com/errors/review-already-exists`); the flows quote the last path segment (`review-already-exists`). The helpful vote and the rating recalculation are now the separate use cases `UC-070-07` and `UC-070-08`. The review screens of the frontend are not implemented on `main` yet.
 
 ### UC-070-01: Rate & Review Recipe
-*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-01`
 - **Use Case Name:** Rate & Review Recipe
 
 #### 2. Actor(s)
-- **Primary Actor:** **Home Cook** (Authenticated Member per Spec 010).
-- **Secondary Actor / Systems:** **Recipe Management Service** (Spec 060), **Notification System**.
+- **Primary Actor:** **Member** — any signed-in user (Member, Contributor, Moderator, Administrator) who is not the author of the recipe (RBAC matrix).
+- **Relationships:** Extended by `UC-070-02` Upload Cooksnap Photos; includes `UC-070-08` Update Recipe Rating Summary; extends `UC-070-06` (the cook accepts the post-cooking prompt).
 
 #### 3. Description
-Enables an authenticated user to leave feedback on a published recipe by selecting a 1-to-5 star rating, writing detailed comments, and optionally sharing substitution advice or cooking tips. The system guarantees that each user can only submit one active review per recipe, **prevents recipe authors from rating their own creations** (to preserve rating integrity), and updates the recipe's aggregate score and review count in real time.
+Lets a signed-in user rate a published recipe from 1 to 5 stars, write a comment of 10–2000 characters and optionally add a substitution tip of up to 500 characters. Each user may hold only one review per recipe (FR-002); the author of the recipe cannot review it (FR-020); review submissions are limited to 5 in 10 minutes (FR-021). The recipe's rating summary is recalculated in the same transaction (`UC-070-08`).
 
 #### 4. Preconditions
-- The user is logged in with a valid JWT token (`Member` role or higher).
-- The recipe exists and is in `PUBLISHED` status.
-- The user has not previously reviewed this recipe (`SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND recipe_id = :recipeId AND status = 'VISIBLE'` evaluates to 0).
-- **The user is not the author of the recipe** (`recipes.author_id != auth.user_id`). Recipe owners may upload Cooksnaps through other flows, but are explicitly excluded from submitting star ratings to prevent self-inflation of the aggregate score.
+- The actor is signed in with an active account (`UC-010-02`). Spec 010 `FR-006` also requires a verified email (see AF 1.11).
+- The recipe exists and is `PUBLISHED`.
+- The actor holds no review row for this recipe, whatever its status (FR-002; unique index `uq_reviews_recipe_user`).
+- The actor is not the author of the recipe (FR-020).
 
 #### 5. Basic Flow
-1. **Open Recipe:** The user navigates to the target recipe page (`/recipes/:id`) and scrolls down to the reviews section.
-2. **Author Guard Check:** The frontend checks whether the current user is the recipe author. If `recipe.author_id == auth.user_id`, the `"Viết đánh giá"` button is **hidden entirely** from the UI. Instead, the author sees a contextual note: *"Bạn là tác giả công thức này — bạn có thể xem đánh giá, nhưng không thể tự chấm điểm."*
-3. **Start Review:** The user (non-author) clicks the `"Viết đánh giá"` (Write Review) button.
-4. **Show Review Form:** The application displays the review modal (`RV02-WriteReview`), presenting:
-   - Recipe thumbnail and title.
-   - 5-star rating selector (unselected by default).
-   - Comment box with a live character counter (`0/2000`).
-   - Optional input field for cooking tips (`0/500`).
-   - Image attachment zone for Cooksnaps.
-5. **Enter Feedback:**
-   - The user selects a rating from 1 to 5 stars (e.g., 4 stars).
-   - The user enters a written review of at least 10 characters (e.g., *"Nước dùng chua thanh rất vừa miệng, cá lóc nấu chín tới không bị tanh."*).
-   - The user optionally enters a tip (e.g., *"Có thể dùng me tươi thay thế sốt me đóng chai."*).
-6. **Submit:** The user clicks `"Gửi đánh giá"`.
-7. **Client Validation:** The frontend checks:
-   - Rating is selected ($1 \le \text{rating} \le 5$).
-   - Comment is between 10 and 2000 characters after trimming whitespace.
-   - Tip does not exceed 500 characters.
-8. **Send API Call:** The browser sends a `POST /api/v1/recipes/:id/reviews` request with the JSON payload `{ rating, comment, tip }`.
-9. **Process on Server:**
-   - The server authenticates the request, strips potential XSS tags from text inputs, and verifies the recipe is still `PUBLISHED`.
-   - **Author self-review guard:** Server verifies `recipes.author_id != auth.user_id`. If the submitter is the author, returns HTTP 403 Forbidden with error code `SELF_REVIEW_FORBIDDEN`.
-   - **Review velocity check (anti-spam):** Server verifies the user has already submitted 5 or more reviews within the past 10 minutes (`SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND created_at > NOW() - INTERVAL '10 minutes'`). If count $\ge 5$, returns HTTP 429 Too Many Requests with message *"Bạn đang đánh giá quá nhanh. Vui lòng đợi vài phút trước khi tiếp tục."*.
-   - Opens a database transaction:
-     - Inserts a new row into `reviews` (`user_id`, `recipe_id`, `rating`, `comment`, `substitution_tip`, `status = 'VISIBLE'`, `created_at = NOW()`).
-     - Atomically recalculates the recipe's aggregate values:
-       $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE status = 'VISIBLE'}$$
-       $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE status = 'VISIBLE'}$$
-       across all visible reviews for this `recipe_id`.
-     - Commits the transaction.
-10. **Update UI:** The server returns HTTP 201 Created. The modal closes, a success toast displays *"Đánh giá của bạn đã được đăng thành công"*, the aggregate score and star chart update, and the new review appears at the top with a `"Mới"` (New) badge.
+1. **Open Recipe:** The actor opens the recipe detail page and scrolls to the reviews section (`UC-070-04`).
+2. **Show Entry Point:** Because the actor is signed in, is not the author and has not reviewed the recipe, the system shows "Viết đánh giá" (FR-001).
+3. **Start Review:** The actor presses "Viết đánh giá".
+4. **Show Review Form:** The system opens the review form (`RV02-WriteReview`) with a 5-star selector with no star selected (FR-003), a comment box with a live counter (`0/2000`) (FR-004), the optional field "Mẹo nấu / Thay thế nguyên liệu" (`0/500`) (FR-005) and the Cooksnap zone of `UC-070-02` (US1 AS1).
+5. **Enter Feedback:** The actor selects a rating, for example 4 stars, writes a comment of at least 10 characters and optionally a tip.
+6. **Submit:** The actor presses "Gửi đánh giá".
+7. **Client Validation:** The form checks that a rating is selected, that the comment has 10–2000 characters and that the tip has at most 500 characters (FR-003 – FR-005).
+8. **Send Request:** The browser sends `POST /api/v1/recipes/{recipeId}/reviews` with `rating`, `comment` and the optional `substitutionTip` — as JSON, or as `multipart/form-data` with up to 3 `cooksnapFiles` when photos are attached (`UC-070-02`).
+9. **Process on Server:** The server validates the fields again (rating 1–5, comment 10–2000 characters and not blank, tip at most 500), applies the submission limit (AF 1.10), locks the recipe row (`SELECT … FOR UPDATE`), checks that the recipe is `PUBLISHED`, that the actor is not its author and that the actor has no review for it, stores the review with `status = 'VISIBLE'` and `helpful_count = 0` and processes the photos (`UC-070-02`).
+10. **Update Rating Summary:** In the same transaction the system runs `UC-070-08`.
+11. **Update UI:** The server answers `201 Created` with the review (author, rating, comment, tip, Cooksnaps, `helpfulCount`, `hasVoted`, `createdAt`, `updatedAt`, `isOwner = true`). The new review appears at the top of the list with the badge "Mới", the rating summary updates, and "Viết đánh giá" is replaced by "Chỉnh sửa đánh giá" (US1 AS2 – AS4).
 
 #### 6. Alternative Flows
-- **AF 1.1: Guest User Attempts to Review:**
-  - *Trigger:* An unauthenticated user clicks `"Đăng nhập để đánh giá"`.
+- **AF 1.1: Guest Presses "Viết đánh giá":**
+  - *Trigger:* At Step 3, the visitor is not signed in (US4 AS5, FR-023).
   - *Steps:*
-    1. The app saves the current page URL as redirect destination.
-    2. Navigates the user to the login screen (`AU08-SignInPrompt` / `W-AU01-Login`).
-    3. Once authenticated, returns the user directly back to `/recipes/:id#reviews` with the review modal open.
-- **AF 1.2: Comment Under 10 Characters:**
-  - *Trigger:* User types fewer than 10 non-whitespace characters (e.g., *"Ngon lắm"*).
+    1. The system shows the sign-in prompt `AU08-SignInPrompt` (`UC-010-02` AF 2.9). A request sent without a session receives `401 UNAUTHENTICATED`.
+    2. After signing in, the actor returns to the recipe page and the flow restarts at Step 2.
+- **AF 1.2: Comment Shorter Than 10 Characters:**
+  - *Trigger:* At Step 7, the comment has fewer than 10 characters (for example *"Ngon lắm"*) (US1 AS5).
   - *Steps:*
-    1. The form highlights the textarea with a red border and displays: *"Nhận xét phải có ít nhất 10 ký tự"*.
-    2. Form submission is prevented; no API call is made.
+    1. The form shows "Nhận xét phải có ít nhất 10 ký tự" and does not submit. A request that reaches the server anyway receives `400` and nothing is created.
 - **AF 1.3: No Star Rating Selected:**
-  - *Trigger:* User writes a comment but forgets to click any star.
+  - *Trigger:* At Step 7, the actor wrote a comment but selected no star (FR-003).
   - *Steps:*
-    1. The form displays an error prompt near the stars: *"Vui lòng chọn số sao đánh giá (1–5 sao)"*.
-    2. Focus moves to the star rating component.
-- **AF 1.4: Duplicate Review Detected:**
-  - *Trigger:* User already submitted a review from another tab or device.
+    1. The form shows that a rating from 1 to 5 must be chosen, moves the focus to the star selector and does not submit. The server refuses a missing or out-of-range rating with `400`.
+- **AF 1.4: Comment Left Empty:**
+  - *Trigger:* At Step 7, the actor selected stars but left the comment empty (US1 AS6).
   - *Steps:*
-    1. The database partial unique index throws a duplicate key exception.
-    2. The API returns HTTP 409 Conflict (`REVIEW_ALREADY_EXISTS`).
-    3. The frontend displays: *"Bạn đã có bài đánh giá cho món này. Bạn có muốn chuyển sang chỉnh sửa bài viết không?"*.
-    4. If accepted, the form reloads in edit mode (`RV04-OwnReview`).
-- **AF 1.5: Recipe Inactive or Archived During Submission:**
-  - *Trigger:* Recipe status changes to `ARCHIVED` or `REJECTED` while user is writing.
+    1. The form shows "Vui lòng viết nhận xét" and does not submit; the server refuses a blank comment with `400`.
+- **AF 1.5: Text Longer Than the Limits:**
+  - *Trigger:* At Step 5, the comment reaches 2000 characters or the tip reaches 500 characters (Edge Case 7).
   - *Steps:*
-    1. The backend rejects the insert with HTTP 422 Unprocessable Entity.
-    2. The UI shows an alert: *"Công thức này đã bị gỡ hoặc lưu trữ, không thể nhận đánh giá mới"*.
-    3. The review modal closes and redirects to recipe search.
-- **AF 1.6: Recipe Author Attempts to Submit Rating:**
-  - *Trigger:* The author of the recipe attempts to bypass the hidden UI and calls the API directly to submit a review.
+    1. The live counter shows the limit and the form does not accept more text. The server validates the lengths independently and answers `400` when they are exceeded.
+- **AF 1.6: Review Already Exists:**
+  - *Trigger:* At Step 9, the actor already has a visible review for this recipe, for example submitted from another tab or device (US1 AS4, FR-002).
   - *Steps:*
-    1. Server detects `recipes.author_id == auth.user_id`.
-    2. Rejects request with HTTP 403 Forbidden (`SELF_REVIEW_FORBIDDEN`).
-    3. No review is created. Audit log records the attempted self-review for monitoring.
-  - *Design Rationale:* Recipe authors have an inherent conflict of interest when rating their own content. Allowing self-ratings would undermine the aggregate score's credibility and mislead future cooks relying on community feedback to select recipes.
-- **AF 1.7: Suspected Clone Account Spam (Velocity Anomaly):**
-  - *Trigger:* A user account attempts to submit a 6th review within a rolling 10-minute window, suggesting automated or coordinated rating manipulation.
+    1. The server answers `409` (`review-already-exists`) and creates nothing.
+    2. The system shows "Bạn đã đánh giá công thức này rồi. Vui lòng chỉnh sửa đánh giá hiện có." and offers to open the existing review in edit mode (`UC-070-03`).
+- **AF 1.7: Earlier Review Hidden by Moderation:**
+  - *Trigger:* At Step 9, the actor's review of this recipe is `HIDDEN` by moderation (FR-011).
   - *Steps:*
-    1. Server counts recent review submissions: `SELECT COUNT(*) FROM reviews WHERE user_id = :userId AND created_at > NOW() - INTERVAL '10 minutes'`.
-    2. If count ≥ 5, returns HTTP 429 Too Many Requests.
-    3. Frontend displays: *"Bạn đang đánh giá quá nhanh. Vui lòng đợi vài phút trước khi tiếp tục."*.
-    4. If the velocity threshold is breached 3 times within 24 hours, the system writes an entry to `audit_logs` (`action = 'REVIEW_VELOCITY_FLAGGED'`, `target_type = 'USER'`) and surfaces an operational alert flag on `AD01-Dashboard`.
+    1. The server answers `409` (`review-under-moderation`); the system explains that the review is hidden pending moderation and that no new review can be submitted.
+- **AF 1.8: Recipe Missing or No Longer Published:**
+  - *Trigger:* At Step 9, the recipe does not exist or was archived or rejected after the actor opened the form (Edge Case 4).
+  - *Steps:*
+    1. The server answers `404` (`review-not-found`) and nothing is created; the system shows "Công thức này không còn khả dụng để đánh giá."
+  - *Note:* Spec 070 Edge Case 4 asks for `422`; the contract and the code answer `404` (`[OQ-070-07]`).
+- **AF 1.9: Recipe Author Bypasses the Interface:**
+  - *Trigger:* At Step 2 the author sees, instead of "Viết đánh giá", the note *"Bạn là tác giả công thức này — bạn có thể xem đánh giá, nhưng không thể tự chấm điểm."*; at Step 9 the author calls the API directly (US1 AS7, FR-020, Edge Case 8).
+  - *Steps:*
+    1. The server answers `403` (`self-review-forbidden`). No review is created.
+- **AF 1.10: Too Many Submissions in 10 Minutes:**
+  - *Trigger:* At Step 9, the actor (from the same IP address) has already sent 5 review submissions in the preceding 10 minutes (US1 AS8, FR-021, Edge Case 9).
+  - *Steps:*
+    1. The server answers `429` (`rate-limit-exceeded`) with the detail "Bạn gửi đánh giá quá nhanh. Vui lòng thử lại sau 10 phút." and creates nothing.
+    2. The system shows the message and keeps the typed text.
+  - *Note:* The code counts submissions in memory per user and IP address, including submissions that were refused afterwards (for example by AF 1.6), while spec FR-021 counts stored reviews in the database (`[OQ-070-09]`).
+- **AF 1.11: Email Not Verified:**
+  - *Trigger:* At Step 9, the actor's email is not verified.
+  - *Steps:*
+    1. Spec 010 `FR-006` and `contracts/integration.md` §2.4 require the server to answer `403 EMAIL_NOT_VERIFIED` and the system to remind the actor to verify the email (`UC-010-02` AF 2.7).
+  - *Note:* Not enforced by the code on `main`: the review endpoints carry no `@VerifiedEmailRequired`, so an unverified account can review (`[OQ-070-10]`).
+- **AF 1.12: Session Expired:**
+  - *Trigger:* At Step 9, the request receives `401 UNAUTHENTICATED`.
+  - *Steps:*
+    1. The system asks the actor to sign in again without leaving the page and keeps the typed text (`UC-010-02` AF 2.12).
+- **AF 1.13: Suspended or Banned Account:**
+  - *Trigger:* At Step 9, the account was suspended or banned.
+  - *Steps:*
+    1. The server answers `403 ACCOUNT_SUSPENDED` or `403 ACCOUNT_BANNED` and the account-status page is shown (`UC-010-02` AF 2.14).
 
 #### 7. Postconditions
-- **Database:** A row is inserted in `reviews`; `recipes.rating_avg` and `recipes.review_count` are recalculated.
-- **UI:** The button changes from `"Viết đánh giá"` to `"Chỉnh sửa đánh giá của bạn"`.
-- **Author view:** If the current user is the recipe author, the `"Viết đánh giá"` button remains hidden; authors see their recipe's rating summary in read-only mode.
+- **Success:** A `reviews` row exists with `status = 'VISIBLE'`; the recipe's rating summary has been recalculated by `UC-070-08`; the page shows "Chỉnh sửa đánh giá" instead of "Viết đánh giá".
+- **Failure:** No review and no photo is created and the rating summary is unchanged; typed text stays in the form.
 
 #### 8. Special Requirements
-- **Performance:** Review submission and aggregate calculation must finish within 200ms using atomic SQL updates.
-- **Accessibility:** Star controls must support keyboard input (`Tab`, Arrow keys, `Space`/`Enter` to select) and explicit ARIA labels.
-- **Anti-Spam:** Review velocity check enforced at $\le 5$ reviews per 10-minute window per user. Repeated breaches write to audit log and alert on dashboard.
+- **Data integrity:** Review writes on one recipe are serialized by locking the recipe row; the rating summary never changes the recipe's `version` (NFR-003, SC-003, Edge Case 1; `UC-070-08`).
+- **Anti-spam:** At most 5 review submissions per 10 minutes (FR-021; implemented per user and IP address, see AF 1.10).
+- **Accessibility:** The star selector is keyboard-navigable (arrow keys to select, Enter to confirm) and announces the selected rating through ARIA attributes (NFR-005).
+- **Usability:** A signed-in user can submit a rating and review within 3 taps from the recipe detail page (SC-001); the section works from 360 px to 4K (NFR-006).
+- **Security:** The author guard, uniqueness, limit and lengths are checked on the server (constitution Principle IV).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/RV01-Reviews.dc.html), [`RV02-WriteReview.dc.html`](../analysis-and-design/ui-ux/screens/RV02-WriteReview.dc.html).
-- **Gaps:** *Gap 070-A* — Success toast notification after review submission (Basic Flow Step 10). *Gap 070-I* — Contextual author guard banner replacing "Viết đánh giá" button (Basic Flow Step 2). *Gap 070-J* — Anti-spam HTTP 429 warning toast ("Đang đánh giá quá nhanh", AF 1.7).
+- **Gaps:** *Gap 070-A* — Success toast after review submission (Basic Flow Step 11). *Gap 070-I* — Author notice replacing "Viết đánh giá" (Basic Flow Step 2, AF 1.9). *Gap 070-J* — Too-many-submissions warning (AF 1.10).
 - **Prototype Screenshots (SCRUM-58):**
   - **Recipe reviews section (`RV01-Reviews`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -4170,83 +4445,84 @@ Enables an authenticated user to leave feedback on a published recipe by selecti
 ---
 
 ### UC-070-02: Upload Cooksnap Photos
-*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-02`
 - **Use Case Name:** Upload Cooksnap Photos
 
 #### 2. Actor(s)
-- **Primary Actor:** **Home Cook** (Authenticated Member).
-- **Secondary Actor / Systems:** **Media Storage Pipeline** (Image Resizer & EXIF Stripper).
+- **Primary Actor:** **Member** — the author of the review being written or edited.
+- **Relationship:** Extends `UC-070-01` (photos attached to a new review) and `UC-070-03` (photos added or removed while editing). A Cooksnap always belongs to a review (`cooksnaps.review_id NOT NULL`); there is no standalone upload.
 
 #### 3. Description
-Allows users to attach up to 3 photos of their finished dish (Cooksnaps) to their review. The system enforces strict format and size limits, strips out privacy-sensitive EXIF metadata (such as GPS coordinates), generates lightweight thumbnails, and lets viewers view full-resolution photos in a lightbox.
+Lets the author of a review attach up to 3 photos of the finished dish (Cooksnaps), each JPEG, PNG or WebP of at most 5 MB. Files are checked in the browser before upload and again on the server (declared type, magic bytes, real decoding, size); every photo is re-encoded, which removes all EXIF metadata, and a thumbnail is generated. Anyone — including Guests — can open the full-size photo in a lightbox (FR-006 – FR-008, FR-023).
 
 #### 4. Preconditions
-- The user is writing or editing their own review.
-- The user grants device file/camera access.
+- The actor is writing a new review (`UC-070-01`, all its preconditions hold) or editing an own review that is `VISIBLE` (`UC-070-03`).
+- The review will hold at most 3 photos.
 
 #### 5. Basic Flow
-1. **Attach Photos:** In the review form (`RV02-WriteReview`), the user clicks the `"Thêm ảnh Cooksnap"` tile.
-2. **Select Files:** The file picker opens; user selects 1 to 3 images (`.jpg`, `.png`, `.webp`).
-3. **Client-Side Checks:** The browser verifies:
-   - Format is valid (JPEG, PNG, or WebP).
-   - Each file is $\le 5$ MB.
-   - Total count does not exceed 3 photos.
-4. **Render Previews:** The app creates local preview thumbnails in the form with a small `"Xóa"` ($\times$) button on each and displays an upload progress bar with per-file status indicator (*Gap 070-K*).
-5. **Submit Review / Cooksnap:** User completes comment/stars (if submitting with review) or clicks upload in the Cooksnap composer.
-6. **Upload Files (API Call):**
-   - **Case 1 (upload together with the first review):** The client sends `POST /api/v1/recipes/:id/reviews` with `Content-Type: multipart/form-data` containing both the text fields (`rating`, `comment`, `substitution_tip`) and the binary image parts (`cooksnaps[]`).
-   - **Case 2 (standalone upload without review text):** The client calls the dedicated endpoint `POST /api/v1/recipes/:id/cooksnaps` with `Content-Type: multipart/form-data` (optional `caption`). To delete a single Cooksnap photo, the client calls `DELETE /api/v1/cooksnaps/:cooksnapId`.
-7. **Server Processing:**
-   - Validates image magic bytes to verify actual MIME type.
-   - Strips all EXIF metadata (specifically GPS coordinates and camera serial numbers).
-   - Generates a 400px wide WebP thumbnail for fast loading.
-   - Stores master images and thumbnails in object storage (`/uploads/cooksnaps/:recipeId/:userId/`).
-   - Inserts records into the `cooksnaps` table referencing `recipe_id` and `user_id` with `status = 'VISIBLE'`.
-8. **Display on Page:** When the recipe reloads, the review displays the Cooksnap photo grid (`RV01-Reviews`).
-9. **Open Lightbox:** Clicking any photo opens the full-screen lightbox (`RV03-Lightbox`) with skeleton loading state (*Gap 070-B*), swipe navigation, author name, and zoom controls.
+1. **Attach Photos:** In the review form (`RV02-WriteReview`) the actor presses "Thêm ảnh Cooksnap" (US2 AS1).
+2. **Select Files:** The device's file picker opens and allows selecting up to 3 images at once.
+3. **Client-Side Checks:** The browser checks that each file is JPEG, PNG or WebP, that each is at most 5 MB, and that the review will hold at most 3 photos (FR-006, FR-007).
+4. **Render Previews:** The form shows a thumbnail preview of each accepted file with a "Xóa" (Remove) icon (US2 AS2).
+5. **Submit With the Review:** The actor submits the review. The photos travel as `cooksnapFiles` in the `multipart/form-data` request of `POST /api/v1/recipes/{recipeId}/reviews` (new review) or `PUT /api/v1/reviews/{reviewId}` (edit).
+6. **Process on Server:** In the same transaction as the review, the server checks each file: the declared type must be `image/jpeg`, `image/png` or `image/webp`, the first bytes must be a JPEG, PNG or WebP signature and the file must decode as an image. It scales the photo down to at most 1920 × 1080 and makes a thumbnail of at most 400 × 400, encodes both as WebP (so no EXIF, GPS or camera data is kept), stores them under a new unique `storage_key` and adds one `cooksnaps` row per photo, linked to the review, with `status = 'VISIBLE'` (US2 AS7, Edge Case 3).
+7. **Display on Page:** The review shows a grid of clickable thumbnails served by `GET /api/v1/media/cooksnaps/{storageKey}?thumbnail=true` (US2 AS6, FR-008).
+8. **Open Lightbox:** Any visitor, signed in or not, taps a thumbnail; the lightbox (`RV03-Lightbox`) opens the full-size photo from `GET /api/v1/media/cooksnaps/{storageKey}` with swipe navigation between the photos of the review (US2 AS6, FR-023). The media answer carries `Cache-Control: public, max-age=3600, must-revalidate` and an `ETag`; a matching `If-None-Match` receives `304`.
 
 #### 6. Alternative Flows
 - **AF 2.1: Image File Exceeds 5 MB:**
-  - *Trigger:* User selects a file larger than 5 MB.
+  - *Trigger:* At Step 3, the actor selects a file larger than 5 MB (US2 AS3).
   - *Steps:*
-    1. The client rejects the oversized file immediately.
-    2. Displays an error banner: *"Ảnh vượt quá 5 MB. Vui lòng chọn ảnh nhỏ hơn."*.
-    3. Any valid files selected alongside are retained.
+    1. The form rejects the file immediately with "Ảnh vượt quá 5 MB. Vui lòng chọn ảnh nhỏ hơn."
+    2. A file over 5 MB that reaches the server is refused by the upload limit (HTTP `413`) and nothing is stored.
 - **AF 2.2: Unsupported File Format:**
-  - *Trigger:* User picks an unapproved file format (e.g., GIF, BMP, HEIC, PDF).
+  - *Trigger:* At Step 3, the actor selects a file of another format, for example BMP, GIF, TIFF or SVG (US2 AS4).
   - *Steps:*
-    1. The client displays error banner on `RV02`: *"Định dạng không hỗ trợ. Vui lòng chọn JPEG, PNG hoặc WebP."*.
-    2. The invalid file is excluded from staging.
-- **AF 2.3: More Than 3 Photos Selected:**
-  - *Trigger:* User tries to add a 4th image.
+    1. The form rejects the file with "Định dạng không hỗ trợ. Vui lòng chọn JPEG, PNG hoặc WebP."
+- **AF 2.3: More Than 3 Photos:**
+  - *Trigger:* At Step 1, the review already holds 3 photos (US2 AS5).
   - *Steps:*
-    1. The upload tile turns disabled with a tooltip: *"Tối đa 3 ảnh cho mỗi đánh giá"*.
+    1. "Thêm ảnh Cooksnap" is disabled with the tooltip "Tối đa 3 ảnh cho mỗi đánh giá."
+    2. A request that would leave more than 3 photos on the review is refused by the server with `400` (`cooksnap-processing-error`); on edit the total is existing photos minus removed plus new.
 - **AF 2.4: Removing a Staged Photo:**
-  - *Trigger:* User clicks the `"Xóa"` icon on a preview thumbnail before submitting.
+  - *Trigger:* At Step 4, the actor presses "Xóa" on a preview before submitting (US2 AS2).
   - *Steps:*
-    1. The photo is removed from upload memory.
-    2. The upload tile re-enables and photo count adjusts (e.g., `2/3`).
-- **AF 2.5: Upload Network Timeout:**
-  - *Trigger:* Network drops during file upload.
+    1. The photo is removed from the form and "Thêm ảnh Cooksnap" is enabled again when fewer than 3 photos remain.
+- **AF 2.5: Network Interruption During Upload:**
+  - *Trigger:* At Step 5, the connection drops (Edge Case 2).
   - *Steps:*
-    1. Request times out after 15 seconds.
-    2. The form retains user text and selected images in local state.
-    3. Displays a retry prompt: *"Tải ảnh thất bại do lỗi kết nối. Dữ liệu đánh giá của bạn đã được lưu nháp."* with a `"Thử lại"` button.
+    1. The client keeps the review text and star rating in a local draft.
+    2. The system shows the recoverable error "Tải ảnh thất bại. Kiểm tra kết nối mạng và thử lại." with "Thử lại". The review text is not lost.
+- **AF 2.6: File Refused by the Server:**
+  - *Trigger:* At Step 6, a file passed the browser checks but has another declared type, a wrong signature, or does not decode as an image (Edge Case 3, FR-007).
+  - *Steps:*
+    1. The server answers `400` (`cooksnap-processing-error`) and the whole request is rolled back: neither the photos nor the review of this request are created or changed.
+- **AF 2.7: Request Larger Than the Total Upload Limit:**
+  - *Trigger:* At Step 5, the files of one request together exceed the server's request limit of 6 MB (`spring.servlet.multipart.max-request-size`), for example three photos of 3 MB each.
+  - *Steps:*
+    1. The server refuses the request (HTTP `413`) and nothing is created or changed.
+  - *Note:* This limit is shared with the avatar upload of spec 011 and is smaller than the 3 × 5 MB that FR-006 allows (`[OQ-070-11]`).
+- **AF 2.8: Photo No Longer Visible:**
+  - *Trigger:* At Step 7 or Step 8, the photo or its review was hidden by moderation or deleted.
+  - *Steps:*
+    1. The media endpoint answers `404` without revealing whether the file still exists; only a photo whose Cooksnap **and** review are `VISIBLE` is served. Because answers are cached for at most 1 hour with revalidation, a hidden or deleted photo disappears from caches within that hour.
 
 #### 7. Postconditions
-- **Database:** Rows added to `cooksnaps` (`recipe_id`, `user_id`, `storage_key`, `content_type`, `size_bytes`, `caption`, `status = 'VISIBLE'`).
-- **Storage:** Cleaned images and thumbnails stored in persistent storage (`/uploads/cooksnaps/:recipeId/:userId/`).
+- **Success:** Up to 3 `cooksnaps` rows exist for the review (`review_id`, `recipe_id`, `user_id`, `storage_key`, `content_type = image/webp`, `size_bytes`, `status = 'VISIBLE'`); the stored images and thumbnails are WebP without EXIF metadata.
+- **Failure:** No photo is stored and the review of the same request is not created or changed.
 
 #### 8. Special Requirements
-- **Privacy:** 100% of EXIF GPS coordinates must be purged before saving to storage.
-- **Performance:** Server-side thumbnail generation must complete in $< 800$ms per 5 MB image.
+- **Privacy and security:** All EXIF metadata is removed by re-encoding, and files are served only through `/api/v1/media/cooksnaps/{storageKey}` after the visibility check (NFR-004; constitution Principle IV).
+- **Performance:** Uploading a 5 MB photo completes within 5 seconds on a 4G connection of 10 Mbps (NFR-002).
+- **Responsiveness:** The thumbnail grid adapts from 1 column on mobile to 3 columns on desktop (NFR-006).
+- **Validation:** Invalid files are rejected in the browser before upload and the server independently confirms file integrity (SC-002).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV02-WriteReview.dc.html`](../analysis-and-design/ui-ux/screens/RV02-WriteReview.dc.html), [`RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/RV01-Reviews.dc.html), [`RV03-Lightbox.dc.html`](../analysis-and-design/ui-ux/screens/RV03-Lightbox.dc.html).
-- **Gaps:** *Gap 070-K* — Image upload progress bar with per-file status indicator (Basic Flow Step 4). *Gap 070-B* — Lightbox skeleton loading state (Basic Flow Step 9).
+- **Gaps:** *Gap 070-K* — Upload progress with per-file status (Basic Flow Steps 4–5; prototype proposal, not required by spec 070). *Gap 070-B* — Lightbox loading state (Basic Flow Step 8).
 - **Prototype Screenshots (SCRUM-58):**
   - **Cooksnap photo lightbox (`RV03-CooksnapLightbox`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -4257,82 +4533,83 @@ Allows users to attach up to 3 photos of their finished dish (Cooksnaps) to thei
 ---
 
 ### UC-070-03: Edit or Delete Own Review
-*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-03`
 - **Use Case Name:** Edit or Delete Own Review
 
 #### 2. Actor(s)
-- **Primary Actor:** **Review Author** (Authenticated Member).
-- **Secondary Actor / Systems:** **Recipe Management Service** (Spec 060).
+- **Primary Actor:** **Member** — the author of the review.
+- **Relationships:** Extended by `UC-070-02` (photos added or removed while editing); includes `UC-070-08` (rating summary after an edit or a deletion); extends `UC-070-06` (the cook who already reviewed the recipe accepts the post-cooking prompt).
 
 #### 3. Description
-Allows users to update their previously submitted reviews (changing rating, text, or photos) or permanently soft-delete them. Deletion automatically hides associated Cooksnap photos and updates the recipe's aggregate score.
+Lets the author of a review change its rating, comment, substitution tip and Cooksnap photos, or delete it. Deleting is a hard delete: the review, its Cooksnaps (and their files), its helpful votes and its reports are removed, so the user may review the recipe again later. `status = 'HIDDEN'` is reserved for moderation; a review hidden by moderation cannot be edited (FR-010, FR-011).
+
+> **Source conflict:** spec 070 US3 AS4 and the Clarification of 2026-10-19 still describe deletion as `status = 'HIDDEN'` (or a hard delete when there are no interactions), while `FR-011`, the contract and the code (`ReviewService.deleteReview`) hard-delete. This use case follows `FR-011` and the code (`[OQ-070-08]`).
 
 #### 4. Preconditions
-- User is logged in.
-- User has an existing active review on this recipe (`reviews.user_id = auth.user_id` and `reviews.status = 'VISIBLE'`).
+- The actor is signed in (`UC-010-02`).
+- The actor owns a review of this recipe whose status is `VISIBLE` (a review hidden by moderation: AF 3.4), and the recipe is `PUBLISHED` (AF 3.7).
 
 #### 5. Basic Flow (Branch A: Edit Review)
-1. **Find Own Review:** The user navigates to the recipe page and locates their own review card (`RV04-OwnReview`), identified by a `"Bạn"` (You) badge.
-2. **Open Options:** User clicks the kebab menu button (`⋮`).
-3. **Choose Edit:** User selects `"Chỉnh sửa"` (Edit) from the menu.
-4. **Open Form with Data:** The review form (`RV02-WriteReview`) opens with existing values pre-filled (stars, comment, tips, current Cooksnaps).
-5. **Update Details:** User updates the star rating (e.g., from 4 to 5 stars), edits the text, removes an old photo, and attaches a new one.
-6. **Save Changes:** User clicks `"Lưu thay đổi"`.
-7. **Persist Updates:** Client sends `PUT /api/v1/recipes/:id/reviews/:reviewId`.
-8. **Server Execution:**
-   - Confirms the active user owns the review.
-   - Updates `reviews` table (`rating`, `comment`, `substitution_tip`, `updated_at = NOW()`).
-   - Marks removed Cooksnaps as `status = 'HIDDEN'` (or deletes via `DELETE /api/v1/cooksnaps/:cooksnapId`) and inserts new photos.
-   - Recalculates the recipe's `rating_avg` if stars changed.
-9. **UI Confirmation:** The modal closes with a toast *"Đã cập nhật đánh giá thành công"*, showing the updated review with an `"(đã chỉnh sửa)"` label (*Gap 070-C*).
+1. **Find Own Review:** The actor opens the recipe page and finds the own review card (`RV04-OwnReview`); the server marks it with `isOwner = true`.
+2. **Open Options:** The actor presses the "⋮" menu; the system shows "Chỉnh sửa" and "Xóa" (US3 AS1).
+3. **Choose Edit:** The actor selects "Chỉnh sửa".
+4. **Open Form With Data:** The review form (`RV02-WriteReview`) opens with the current rating, comment, substitution tip and Cooksnap thumbnails (US3 AS2).
+5. **Update Details:** The actor changes the rating (for example from 3 to 5 stars), edits the text, removes an old photo and attaches a new one (`UC-070-02`).
+6. **Save Changes:** The actor presses "Lưu thay đổi".
+7. **Send Request:** The browser sends `PUT /api/v1/reviews/{reviewId}` with `rating`, `comment`, `substitutionTip`, the `removeCooksnapIds` of the photos to remove and, when new photos are attached, the `cooksnapFiles` (as `multipart/form-data`; JSON otherwise).
+8. **Process on Server:** The server checks that the review exists, that the actor owns it and that it is `VISIBLE`, locks the recipe row, validates the fields as in `UC-070-01`, removes the chosen photos (rows deleted, files deleted after commit), checks that at most 3 photos remain with the new ones, stores the new photos, updates the review and its `updated_at` (US3 AS3, FR-010) and runs `UC-070-08`. It answers `200` with the updated review.
+9. **Show Result:** The form closes and the updated review is shown (the prototype proposes an "(đã chỉnh sửa)" label, *Gap 070-C*).
 
-#### 5b. Alternative Flow (Branch B: Delete Review)
-1. **Choose Delete:** At Step 3 above, user selects `"Xóa"` (Delete).
-2. **Show Warning:** A confirmation modal opens (`W-RV04b-DeleteConfirm`):
-   - Title: *"Xóa đánh giá này?"*
-   - Description: *"Hành động không thể hoàn tác. Điểm sao và ảnh Cooksnap của bạn sẽ bị gỡ."*
-   - Buttons: `"Hủy"` and `"Xóa"`.
-3. **Confirm:** User clicks `"Xóa"`.
-4. **Send Delete Call:** Browser sends `DELETE /api/v1/recipes/:id/reviews/:reviewId`.
-5. **Server Soft Deletion / Hiding:**
-   - Verifies ownership.
-   - Sets `reviews.status = 'HIDDEN'`.
-   - Sets `cooksnaps.status = 'HIDDEN'` for linked user Cooksnaps on this recipe (`WHERE recipe_id = :recipeId AND user_id = :userId`).
-   - **Cascading aggregate recalculation** — updates recipe counts using the atomic formula excluding hidden reviews:
-     $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE status = 'VISIBLE'}$$
-     $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE status = 'VISIBLE'}$$
-   - **Consistency guarantee:** This recalculation is triggered by *any* event that changes a review's status — whether initiated by the author (self-hide/delete), by a Moderator (hide via `UC-100-02`), or by system automation (spam account suspension). The service-layer method `RecipeAggregateService.recalculate(recipeId)` is the single source of truth for both `rating_avg` and `review_count`, ensuring no code path can alter review status without updating the parent recipe's scores.
-6. **UI Refresh:** The review card is removed from the list, the review summary updates, and the button reverts back to `"Viết đánh giá"`. If no reviews remain, the empty state (`RV06-Empty`) is shown.
+#### 5b. Basic Flow (Branch B: Delete Review)
+1. **Choose Delete:** At Step 3 above, the actor selects "Xóa".
+2. **Show Warning:** The system asks for confirmation: "Bạn có chắc muốn xóa đánh giá này? Hành động không thể hoàn tác." with "Hủy" and "Xóa" (US3 AS4; prototype `W-RV04b-DeleteConfirm`).
+3. **Confirm:** The actor presses "Xóa".
+4. **Send Request:** The browser sends `DELETE /api/v1/reviews/{reviewId}`.
+5. **Process on Server:** The server checks ownership, locks the recipe row, hard-deletes the review together with its Cooksnaps, helpful votes and reports (foreign keys `ON DELETE CASCADE`), deletes the image files after the transaction commits and runs `UC-070-08` (FR-011). It answers `204 No Content`.
+6. **Refresh UI:** The review card is removed, the rating summary updates and "Viết đánh giá" is shown again, because the actor may review the recipe again (FR-011). When no review remains, the empty state of `UC-070-04` AF 4.1 is shown.
 
 #### 6. Alternative Flows
-- **AF 3.1: Attempting to Edit Another User's Review:**
-  - *Trigger:* Malicious user crafts an API request to modify someone else's review ID.
+- **AF 3.1: Editing or Deleting Another User's Review:**
+  - *Trigger:* At Branch A Step 7 or Branch B Step 4, the request targets a review owned by another user (US3 AS5).
   - *Steps:*
-    1. Server detects `review.user_id != session.user_id`.
-    2. Rejects request with HTTP 403 Forbidden.
-- **AF 3.2: User Cancels Deletion:**
-  - *Trigger:* User clicks `"Hủy"` in the delete dialog.
+    1. The server answers `403` and changes nothing (the code reuses the type `self-review-forbidden` for this case, `[OQ-070-12]`). Moderators and Administrators hide content only through `UC-100-02`, not through this use case.
+- **AF 3.2: Actor Cancels Deletion:**
+  - *Trigger:* At Branch B Step 3, the actor presses "Hủy".
   - *Steps:*
-    1. Modal closes. No data is changed.
-- **AF 3.3: Review Was Already Deleted by Moderator:**
-  - *Trigger:* Admin removed the review while user was preparing to edit.
+    1. The dialog closes. Nothing changes.
+- **AF 3.3: Review No Longer Exists:**
+  - *Trigger:* At Branch A Step 7 or Branch B Step 4, the review was already deleted, for example by its owner from another tab or device.
   - *Steps:*
-    1. Server returns HTTP 404 Not Found.
-    2. Frontend shows: *"Đánh giá này không còn tồn tại hoặc đã bị gỡ bỏ."* and reloads the reviews.
+    1. The server answers `404` (`review-not-found`); the system tells the actor that the review no longer exists and reloads the reviews.
+- **AF 3.4: Review Hidden by Moderation:**
+  - *Trigger:* At Branch A Step 8, the review is `HIDDEN` by moderation (manual hide or the automatic hiding of `UC-070-05` AF 5.4) (FR-011).
+  - *Steps:*
+    1. The server answers `409` (`review-under-moderation`); the system explains that the review is hidden pending moderation and cannot be edited.
+- **AF 3.5: Invalid Changes:**
+  - *Trigger:* At Branch A Step 8, a field breaks the rules of `UC-070-01` or more than 3 photos would remain (`UC-070-02` AF 2.3).
+  - *Steps:*
+    1. The server answers `400` and nothing is changed; the form keeps the actor's edits.
+- **AF 3.6: Session Expired or Account Restricted:**
+  - *Trigger:* At Branch A Step 7 or Branch B Step 4, the request receives `401 UNAUTHENTICATED`, or `403 ACCOUNT_SUSPENDED` / `403 ACCOUNT_BANNED`.
+  - *Steps:*
+    1. The system follows `UC-010-02` AF 2.12 (sign in again on the page, edits kept) or AF 2.14 (account-status page). Nothing is changed.
+- **AF 3.7: Recipe No Longer Published:**
+  - *Trigger:* At Branch A Step 8 or Branch B Step 5, the recipe was archived or rejected after the review was written.
+  - *Steps:*
+    1. The server answers `404` (`review-not-found`) because it locks the recipe only while it is `PUBLISHED`; nothing is changed.
+  - *Note:* Spec FR-010 / FR-011 allow editing and deleting "at any time"; the code refuses both once the recipe is not published (`[OQ-070-13]`).
 
 #### 7. Postconditions
-- **Database:**
-  - Edit: `reviews.updated_at` updated; `recipes.rating_avg` recalculated via `RecipeAggregateService.recalculate(recipeId)` if star rating changed.
-  - Delete: `reviews.status = 'HIDDEN'` and author's `cooksnaps.status = 'HIDDEN'` set; `rating_avg` and `review_count` fully recalculated (not merely decremented) using `WHERE status = 'VISIBLE'` to prevent drift from accumulated rounding.
-  - Admin Hide (cross-reference `UC-100-02`): When a Moderator hides a review through the report resolution flow (`status = 'HIDDEN'`), the same `RecipeAggregateService.recalculate(recipeId)` method is invoked, guaranteeing that the recipe's public score accurately reflects only reviews with `status = 'VISIBLE'` at all times.
-> **[OQ-070-05]:** The current schema has no `reviews.hidden_reason`. Proposal: add the columns `hidden_reason VARCHAR(300) NULL` and `hidden_by BIGINT NULL (FK → users SET NULL)` to the `reviews` table, following the existing pattern of `recipe_nutrition.hidden_reason`.
-- **UI:** Review card is updated or removed.
+- **Edit:** The review holds the new values and a new `updated_at`; removed photos are gone and new photos are stored; the rating summary was recalculated (`UC-070-08`).
+- **Delete:** The review, its Cooksnaps and their files, its helpful votes and its reports no longer exist; the rating summary was recalculated over the remaining visible reviews; the actor may review the recipe again.
 
 #### 8. Special Requirements
-- **Data Retention:** Hidden Cooksnap files (`status = 'HIDDEN'`) are retained for 30 days before purge to support moderation audit and recovery.
+- **Data integrity:** The rating summary stays consistent with the reviews, including under concurrent writes (NFR-003, SC-003; `UC-070-08`).
+- **Ownership:** Only the owner may edit or delete a review; the check is done on the server (US3 AS5; constitution Principle IV).
+- **Timestamps:** Only an edit by the author changes `updated_at`; helpful votes and moderation do not (contract `updatedAt`).
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV04-OwnReview.dc.html`](../analysis-and-design/ui-ux/screens/RV04-OwnReview.dc.html), [`W-RV04b-DeleteConfirm.dc.html`](../analysis-and-design/ui-ux/screens/W-RV04b-DeleteConfirm.dc.html).
@@ -4352,72 +4629,80 @@ Allows users to update their previously submitted reviews (changing rating, text
 ---
 
 ### UC-070-04: Browse, Sort & Filter Reviews
-*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-04`
 - **Use Case Name:** Browse, Sort & Filter Reviews
 
 #### 2. Actor(s)
-- **Primary Actor:** **Home Cook / Visitor** (Guest or Member).
-- **Secondary Actor / Systems:** **Search Indexer**.
+- **Primary Actor:** **Guest** — any visitor, signed in or not (Member and the other roles inherit it).
+- **Relationship:** Extended by `UC-070-07` Mark Review as Helpful (the "Hữu ích" button on a review card). From a review card a signed-in actor can also start `UC-070-03` (own review) and `UC-070-05` (report); "Viết đánh giá" starts `UC-070-01`.
 
 #### 3. Description
-Enables any visitor to view community reviews and Cooksnaps on a recipe page. Users can inspect the average score and rating breakdown, sort reviews by newest, oldest, highest/lowest rating, or **most helpful** (based on community upvotes), filter for reviews with photos only, and load additional reviews via pagination.
+Lets any visitor read the visible reviews and Cooksnaps of a recipe: the rating summary (average, number of reviews, distribution of 1–5 stars), the reviews in pages of 10, five sort orders including "Hữu ích nhất", a filter for reviews with photos and a filter by star rating (FR-012 – FR-014, FR-017).
 
 #### 4. Preconditions
-- The target recipe is published and accessible.
+- The recipe detail page is reachable (`UC-020-06`). No sign-in is needed: `GET /api/v1/recipes/{recipeId}/reviews` is a public route.
 
 #### 5. Basic Flow
-1. **View Reviews:** User navigates to the recipe reviews section (`RV01-Reviews`).
-2. **Display Summary:** System shows:
-   - Average rating score (e.g., `4,6 / 5` with gold stars).
-   - Total counters (`"128 đánh giá · 41 ảnh"`).
-   - 5-bar distribution chart showing percentages for each star level.
-3. **Load Reviews:** System displays the first 10 reviews sorted by newest first (`sort=created_at,desc`).
-4. **Change Sort:** User clicks the sort dropdown (`#rs`) and selects from available options:
-   - `"Mới nhất"` (Newest) — default, `sort=created_at,desc`
-   - `"Cũ nhất"` (Oldest) — `sort=created_at,asc` (per `FR-012`)
-   - `"Điểm cao nhất"` (Highest Rated) — `sort=rating,desc`
-   - `"Điểm thấp nhất"` (Lowest Rated) — `sort=rating,asc`
-   - `"Hữu ích nhất"` (Most Helpful) — `sort=helpful_count,desc` — prioritizes reviews that received the most upvotes from the community, surfacing insightful reviews with cooking tips and Cooksnaps.
-5. **Update List:** App calls `GET /api/v1/recipes/:id/reviews?sort=<field>,<direction>&page=0&size=10`. The list reorders smoothly.
-6. **Upvote a Review ("Hữu ích"):** Authenticated users can click the `"👍 Hữu ích"` button on any review card (not their own) (*Gap 070-G*). Each user can upvote a given review only once. Clicking again removes the upvote (toggle behavior). The upvote count (`helpful_count`) is displayed next to the button (e.g., *"42 người thấy hữu ích"*).
-7. **Filter by Photos:** User taps the chip filter `"Chỉ có Cooksnap"`.
-8. **Show Photo Reviews:** App queries `has_cooksnaps=true` and displays only reviews that contain photos.
-9. **Load Next Page:** User scrolls to the bottom and clicks `"Xem thêm đánh giá"`.
-10. **Append Items:** The next 10 reviews are fetched (`page=1`) and appended to the feed.
+1. **View Reviews:** The actor scrolls to the reviews section of the recipe (`RV01-Reviews`).
+2. **Load First Page:** The browser sends `GET /api/v1/recipes/{recipeId}/reviews?page=0&size=10&sort=NEWEST`.
+3. **Return Reviews and Summary:** The server answers `200` with the `VISIBLE` reviews of the recipe, newest first, and a `ratingSummary` computed over the visible reviews: `averageRating` (1 decimal), `totalReviews` and `ratingDistribution` (count per star 1–5). Each review carries the author (`displayName`, `avatarUrl`, `role`, `isDeleted`), `rating`, `comment`, `substitutionTip`, its **visible** Cooksnaps with `url` and `thumbnailUrl`, `helpfulCount`, `hasVoted` and `isOwner` for the current user, `createdAt` and `updatedAt`; the page fields are `totalElements`, `totalPages`, `currentPage` and `pageSize`.
+4. **Display Summary:** The system shows the average (for example "4,6 / 5"), the number of reviews and the 5-bar distribution (US4 AS1).
+5. **Change Sort:** The actor selects a sort order: "Mới nhất" (`NEWEST`, default), "Cũ nhất" (`OLDEST`), "Điểm cao nhất" (`HIGHEST_RATED`), "Điểm thấp nhất" (`LOWEST_RATED`) or "Hữu ích nhất" (`MOST_HELPFUL`, by `helpful_count`); ties are ordered newest first (US4 AS3, FR-012).
+6. **Update List:** The browser repeats Step 2 with the chosen `sort`; the list re-orders without a full page reload.
+7. **Filter by Photos:** The actor turns on "Chỉ có ảnh Cooksnap"; the browser adds `hasCooksnapOnly=true` and only reviews with photos are shown, with the count of the filtered list (US4 AS4, FR-013). The actor may also filter by one star value (`rating=1` … `5`, contract parameter `rating`).
+8. **Load Next Page:** The actor presses "Xem thêm đánh giá"; the next page (`page=1`, 10 reviews) is appended (US4 AS2).
+9. **Interact:** The actor may open a photo in the lightbox (`UC-070-02` Step 8), mark a review as helpful (`UC-070-07`), report it (`UC-070-05`), or edit or delete the own review (`UC-070-03`).
 
 #### 6. Alternative Flows
 - **AF 4.1: Recipe Has No Reviews Yet:**
-  - *Trigger:* `review_count = 0`.
+  - *Trigger:* At Step 3, the recipe has no visible review (`totalReviews = 0`, `averageRating = 0.0`).
   - *Steps:*
-    1. The rating bar chart is hidden.
-    2. Shows empty state (`RV06-Empty`): *"Chưa có đánh giá nào. Hãy là người đầu tiên chia sẻ!"*.
-    3. Displays the `"Viết đánh giá"` CTA.
-- **AF 4.2: Photo Filter Returns No Results:**
-  - *Trigger:* User selects `"Chỉ có Cooksnap"` but no reviews contain photos.
+    1. The distribution chart is hidden and the empty state (`RV06-Empty`) is shown: *"Chưa có đánh giá nào. Hãy là người đầu tiên chia sẻ trải nghiệm!"* with "Viết đánh giá" (Edge Case 6).
+- **AF 4.2: Filter Returns No Results:**
+  - *Trigger:* At Step 7, no review matches the filter.
   - *Steps:*
-    1. Displays filter empty state (*Gap 070-D*): *"Không tìm thấy đánh giá nào có ảnh Cooksnap."*.
-    2. Shows button `"Xóa bộ lọc"` (Reset filter).
+    1. The system shows a filter empty state (*Gap 070-D*): *"Không tìm thấy đánh giá nào có ảnh Cooksnap."* with "Xóa bộ lọc".
 - **AF 4.3: Review by a Deleted Account:**
-  - *Trigger:* Author of a review deleted their account.
+  - *Trigger:* At Step 3, the author of a review deleted the account (`reviews.user_id` is `NULL`).
   - *Steps:*
-    1. Review is displayed with author name `"Người dùng đã xóa"` (`wk-avatar--deleted`).
-    2. Review text, rating, and Cooksnaps remain intact to protect recipe score accuracy.
+    1. The review keeps its text, rating and rating contribution (FR-019; spec 011 FR-035). The server returns the author with `isDeleted = true`, no id and no avatar.
+  - *Note:* Spec 070 FR-019 names the author "Người dùng đã xóa", while the code returns the display name "Thành viên WikiCook" (`[OQ-070-14]`). Whether the Cooksnaps of a deleted account stay (spec 070 Edge Case 5) or are deleted (spec 011 FR-035) is still open (`[OQ-011-07]`).
+- **AF 4.4: Hidden Content:**
+  - *Trigger:* At Step 3, a review or a Cooksnap is `HIDDEN` by moderation.
+  - *Steps:*
+    1. A hidden review is not returned and does not count in the summary; a hidden Cooksnap is left out of its review and its media URL answers `404`.
+- **AF 4.5: Guest Presses a Member-Only Button:**
+  - *Trigger:* At Step 9, a Guest presses "Viết đánh giá", "Hữu ích" or "Báo cáo" (US4 AS5, FR-023).
+  - *Steps:*
+    1. The system shows the sign-in prompt `AU08-SignInPrompt` (`UC-010-02` AF 2.9); the lightbox stays open to Guests.
+- **AF 4.6: Page Size Out of Range:**
+  - *Trigger:* At Step 2, `size` is smaller than 1 or larger than 50.
+  - *Steps:*
+    1. The server uses the nearest allowed value (1 or 50, contract maximum 50) and answers `200`.
+- **AF 4.7: Unknown or Unpublished Recipe:**
+  - *Trigger:* At Step 2, the recipe id does not exist or the recipe is not published.
+  - *Steps:*
+    1. The code answers `200` with an empty list and an empty summary, not the `404` of the contract (`[OQ-070-15]`); the recipe detail page itself is not shown for such a recipe (`UC-020-06`).
+- **AF 4.8: Loading Fails:**
+  - *Trigger:* At Step 2 or Step 6, the request fails.
+  - *Steps:*
+    1. The system shows an error message with "Thử lại" and keeps the reviews already shown.
 
 #### 7. Postconditions
-- **Database:** Read-only query for browse/sort/filter.
-> **[OQ-070-04]:** The current schema has no `reviews.helpful_count` column. Proposal: add `helpful_count INTEGER DEFAULT 0` to the `reviews` table and a `review_votes (review_id, user_id, created_at)` table in migration V501. To be confirmed with the Part E engineer before the next sprint.
+- Read-only: nothing is stored or changed.
 
 #### 8. Special Requirements
-- **Performance:** Review summary block and first page of reviews must load within 300ms.
-- **Responsiveness:** Cooksnap gallery must adjust from 1 column on mobile to 3 columns on desktop.
-- **Upvote Integrity:** Users cannot upvote their own reviews. The `"👍 Hữu ích"` button is hidden on the user's own review card (`RV04-OwnReview`). Direct API call returns HTTP 422 (`CANNOT_VOTE_OWN_REVIEW`).
+- **Performance:** The first 10 reviews, including thumbnails, load within 500 ms (NFR-001).
+- **Responsiveness:** The Cooksnap grid adapts from 1 column on mobile to 3 columns on desktop (NFR-006).
+- **Access:** All visible reviews and Cooksnaps are readable by Guests (FR-017, RBAC matrix).
+- **Known gaps:** The summary has no total number of Cooksnap photos (FR-014; neither the contract nor the code provides it), and `hasCooksnapOnly` also counts reviews whose only photos are hidden (FR-013) — `[OQ-070-16]`.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/RV01-Reviews.dc.html), [`W-RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/W-RV01-Reviews.dc.html), [`RV06-Empty.dc.html`](../analysis-and-design/ui-ux/screens/RV06-Empty.dc.html).
-- **Gaps:** *Gap 070-D* — Filter empty state ("Không tìm thấy đánh giá nào có ảnh Cooksnap", AF 4.2). *Gap 070-G* — Active upvote state button and count display on review cards (Basic Flow Step 6).
+- **Gaps:** *Gap 070-D* — Filter empty state (AF 4.2). *Gap 070-G* moved to `UC-070-07`.
 - **Prototype Screenshots (SCRUM-58):**
   - **No reviews yet state (`RV05-EmptyReviews`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -4428,93 +4713,79 @@ Enables any visitor to view community reviews and Cooksnaps on a recipe page. Us
 ---
 
 ### UC-070-05: Report Review or Cooksnap
-*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-05`
 - **Use Case Name:** Report Review or Cooksnap
 
 #### 2. Actor(s)
-- **Primary Actor:** **Community Member** (Authenticated Member).
-- **Secondary Actor / Systems:** **Moderation Queue** (Spec 100), **Moderator**.
+- **Primary Actor:** **Member** — any signed-in user who did not write the reported content. No verified email is needed (Use-Case Model v2.0 §4.7).
+- **Relationship:** Includes `UC-070-08` when the automatic hiding of a review changes the visible ratings (AF 5.4). Reports are handled by the Moderator in `UC-100-02`.
 
 #### 3. Description
-Allows community members to report reviews or Cooksnap photos that violate community standards (e.g., spam, offensive language, harmful advice, explicit photos). Reports are placed in the admin moderation queue for staff review.
+Lets a signed-in user report a review or a Cooksnap photo of someone else with one of the reasons `SPAM`, `OFFENSIVE`, `COPYRIGHT`, `UNSAFE` or `OTHER` and optional details of up to 1000 characters. One report per user and item is allowed. When an item reaches 10 open reports it is hidden automatically until a Moderator decides (FR-015, FR-016, FR-024).
 
 #### 4. Preconditions
-- User is logged in.
-- Target review is active and was not written by the user.
-- User has not previously reported this exact item.
+- The actor is signed in (`UC-010-02`).
+- The review or Cooksnap exists and was not written by the actor; the actor has not reported it before.
 
 #### 5. Basic Flow
-1. **Click Report:** User taps the flag icon (`🚩 Báo cáo`) on another user's review card (`RV01-Reviews`).
-2. **Open Dialog:** Report sheet opens (`RV05-Report`) with reason options:
-   - `"Ngôn ngữ thô tục"` (`ABUSIVE_LANGUAGE`)
-   - `"Spam / quảng cáo"` (`SPAM` - default)
-   - `"Nội dung không phù hợp"` (`INAPPROPRIATE_CONTENT`)
-   - `"Thông tin sai lệch"` (`MISLEADING_INFO`)
-   - `"Khác"` (`OTHER`)
-   - Optional details field (`0/1000`).
-3. **Select Reason:** User selects `"Spam / quảng cáo"` and types an explanation (e.g., *"Đánh giá chứa link bán hàng giả mạo"*).
-4. **Submit:** User clicks `"Gửi báo cáo"`.
-5. **Send API Call:** Client dispatches `POST /api/v1/reports` with `{ target_type: "REVIEW", target_id: 128, reason: "SPAM", details: "..." }`.
-6. **Server Storage:**
-   - Verifies target exists and user hasn't reported it before.
-   - Maps report target to the dedicated FK column per schema constraint `CHECK (num_nonnulls(recipe_id, review_id, cooksnap_id, reported_user_id) = 1)`:
-     - Review report $\rightarrow$ server sets `reports.review_id = :reviewId` (the other FKs stay `NULL`).
-     - Báo cáo cooksnap $\rightarrow$ server sets `reports.cooksnap_id = :cooksnapId`.
-     - User report $\rightarrow$ server sets `reports.reported_user_id = :userId`.
-     - Recipe report $\rightarrow$ server sets `reports.recipe_id = :recipeId`.
-   - Inserts record into `reports` with `status = 'OPEN'`.
-7. **Enqueue:** The report appears in the admin moderation dashboard (`AD05-Reports`).
-8. **UI Confirmation:** The modal closes and shows toast: *"Cảm ơn bạn đã báo cáo. Đội ngũ kiểm duyệt sẽ xem xét nội dung này."*. The flag icon turns gray/disabled for this user.
+1. **Press Report:** The actor presses "🚩 Báo cáo" on a review card or on a Cooksnap of another user (US5 AS1).
+2. **Open Dialog:** The report dialog (`RV05-Report`) shows the reasons `SPAM`, `OFFENSIVE`, `COPYRIGHT`, `UNSAFE`, `OTHER` and the optional field "details" (`0/1000`).
+3. **Fill In:** The actor selects a reason, for example `SPAM`, and may type details.
+4. **Submit:** The actor presses "Gửi báo cáo".
+5. **Send Request:** The browser sends `POST /api/v1/reviews/{reviewId}/reports` (a review) or `POST /api/v1/cooksnaps/{cooksnapId}/reports` (a photo) with `reason` and `details`.
+6. **Process on Server:** The server checks that the item exists, that the actor is not its author and that the actor has not reported it yet, then stores a `reports` row with `reporter_id`, exactly one target (`review_id` or `cooksnap_id`), `reason`, `details` and `status = 'OPEN'` (US5 AS2, FR-016).
+7. **Check Threshold:** The server counts the `OPEN` reports of the item; at 10 or more, AF 5.4 applies.
+8. **Answer:** The server answers `201` with `reportId`, `targetType` (`REVIEW` or `COOKSNAP`), `targetId`, `status = OPEN` and `createdAt`.
+9. **Confirm:** The dialog closes and the system shows "Cảm ơn bạn đã báo cáo. Chúng tôi sẽ xem xét." The report appears in the moderation queue of `UC-100-02` with status `OPEN` (US5 AS4, SC-004).
 
 #### 6. Alternative Flows
-- **AF 5.1: Guest Attempts to Report:**
-  - *Trigger:* Unauthenticated user clicks the report flag.
+- **AF 5.1: Guest Presses Report:**
+  - *Trigger:* At Step 1, the visitor is not signed in (US5 AS5).
   - *Steps:*
-    1. Prompts modal: *"Vui lòng đăng nhập để gửi báo cáo vi phạm"*.
-    2. Redirects to `/login`.
-- **AF 5.2: Duplicate Report Submission:**
-  - *Trigger:* User tries to report the same review again.
+    1. The system shows the sign-in prompt (`UC-010-02` AF 2.9); a request without a session receives `401 UNAUTHENTICATED`.
+- **AF 5.2: Item Already Reported by the Actor:**
+  - *Trigger:* At Step 6, the actor has already reported this item (US5 AS3, FR-016).
   - *Steps:*
-    1. Server catches unique constraint violation and returns HTTP 409 Conflict.
-    2. Frontend displays duplicate report warning banner (*Gap 070-E*): *"Bạn đã báo cáo nội dung này rồi. Chúng tôi đang xem xét."*.
+    1. The server answers `409` (`report-already-exists`) and stores nothing.
+    2. The system shows "Bạn đã báo cáo nội dung này rồi. Chúng tôi đang xem xét." (*Gap 070-E*).
 - **AF 5.3: Reporting Own Content:**
-  - *Trigger:* User attempts to report their own review.
+  - *Trigger:* At Step 6, the actor wrote the review or uploaded the photo (FR-015).
   - *Steps:*
-    1. The flag icon is hidden on the user's own cards (`RV04-OwnReview`).
-    2. Direct API call returns HTTP 422 Unprocessable Entity (`CANNOT_REPORT_SELF`).
+    1. The report button is not shown on the actor's own content; a direct call receives `403` (`self-report-forbidden`) and nothing is stored.
+- **AF 5.4: Automatic Hiding at 10 Open Reports:**
+  - *Trigger:* At Step 7, the item has 10 or more `OPEN` reports and is still `VISIBLE` (US5 AS6, FR-024, Edge Case 10).
+  - *Steps:*
+    1. **Review:** in the same transaction the server sets the review and all its Cooksnaps to `HIDDEN` and runs `UC-070-08`, so the review no longer counts in the recipe's rating.
+    2. **Cooksnap:** the server sets the photo to `HIDDEN`; the media endpoint then answers `404` for it. The rating summary does not change.
+    3. The item stays hidden until a Moderator restores or removes it in `UC-100-02`. The report itself is answered as in Step 8.
+- **AF 5.5: Invalid Report:**
+  - *Trigger:* At Step 6, the reason is missing or not one of the five values, or the details exceed 1000 characters.
+  - *Steps:*
+    1. The server answers `400` and stores nothing; the dialog keeps the input.
+- **AF 5.6: Item No Longer Exists:**
+  - *Trigger:* At Step 6, the review or photo was deleted meanwhile.
+  - *Steps:*
+    1. The server answers `404` (`review-not-found`) and the system reloads the reviews.
+- **AF 5.7: Session Expired or Account Restricted:**
+  - *Trigger:* At Step 5, the request receives `401 UNAUTHENTICATED`, or `403 ACCOUNT_SUSPENDED` / `403 ACCOUNT_BANNED`.
+  - *Steps:*
+    1. The system follows `UC-010-02` AF 2.12 or AF 2.14; nothing is stored.
 
 #### 7. Postconditions
-- **Database:** A row is inserted into `reports` with `status = 'OPEN'`.
-- **Admin System:** Report counter increments on `AD01-Dashboard`.
+- **Success:** One `reports` row with `status = 'OPEN'` exists for the actor and the item; when the threshold was reached, the item is `HIDDEN` and, for a review, the rating summary was recalculated.
+- **Failure:** No report is stored and nothing is hidden.
 
 #### 8. Special Requirements
-- **Rate Limit:** Maximum 10 reports per user per hour (HTTP 429 Too Many Requests) to prevent report-spamming.
-- **Confidentiality:** The author of the reported review is never informed of who filed the report.
-- **Mass-Report Auto-Escalation:** When open reports for an item reach **≥ 10 distinct reports** (evaluated independently per target FK):
-  - For REVIEW reports:
-    `SELECT COUNT(*) FROM reports WHERE review_id = :reviewId AND status = 'OPEN'`
-    When the threshold $\ge 10$ is reached:
-    `UPDATE reviews SET status = 'HIDDEN' WHERE id = :reviewId`
-  - For COOKSNAP reports:
-    `SELECT COUNT(*) FROM reports WHERE cooksnap_id = :cooksnapId AND status = 'OPEN'`
-    When the threshold $\ge 10$ is reached:
-    `UPDATE cooksnaps SET status = 'HIDDEN' WHERE id = :cooksnapId`
-  - The system automatically:
-    1. Hides the reported content from public view (`status = 'HIDDEN'`) and keeps the data for moderator inspection.
-    2. Raises the report bundle to high priority in the moderation queue (`AD05-Reports`) with a red `"Khẩn cấp"` (Urgent) badge (*Gap 070-H*).
-    3. For a review: triggers `RecipeAggregateService.recalculate(recipeId)` so the hidden review is excluded at once (`WHERE status = 'VISIBLE'`) from `rating_avg` and `review_count`, preventing spam reviews from skewing the score while moderation is pending.
-    4. Writes an audit log entry into `audit_logs` (`action = 'AUTO_HIDE_MASS_REPORTED'`, `target_type = 'REVIEW'` or `'COOKSNAP'`, `target_id`, `details = {"report_count": 10, "auto_action": "HIDDEN"}`).
-- **Anti-Coordinated-Abuse Safeguard:** To counter coordinated abuse (mass troll reports), auto-hide is **reversible** — a moderator can restore the content with the `"Khôi phục nội dung"` (Restore Content) action:
-  - Review: `UPDATE reviews SET status = 'VISIBLE' WHERE id = :reviewId` and recalculate the aggregate with `WHERE status = 'VISIBLE'`.
-  - Cooksnap: `UPDATE cooksnaps SET status = 'VISIBLE' WHERE id = :cooksnapId`.
-  - The related reports are updated at the same time: `UPDATE reports SET status = 'DISMISSED', handled_by = auth.user_id, handled_at = NOW()`.
+- **Uniqueness:** One report per user and item, enforced by the unique indexes `uq_reports_review_reporter` and `uq_reports_cooksnap_reporter` (FR-016, SC-005).
+- **Moderation readiness:** 100% of reports appear in the moderation queue with status `OPEN` within 5 seconds (SC-004); every report has a structured reason (SC-005).
+- **Reversibility:** The automatic hiding only sets `HIDDEN`; nothing is deleted, so a Moderator can restore the item in `UC-100-02`.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`RV05-Report.dc.html`](../analysis-and-design/ui-ux/screens/RV05-Report.dc.html), [`W-RV05-Report.dc.html`](../analysis-and-design/ui-ux/screens/W-RV05-Report.dc.html).
-- **Gaps:** *Gap 070-E* — Duplicate report warning banner (AF 5.2). *Gap 070-H* — Auto-hidden content notification badge & restoration action in moderation panel (Special Requirements).
+- **Gaps:** *Gap 070-E* — "Already reported" message (AF 5.2). *Gap 070-H* — Automatically hidden items marked in the moderation queue (AF 5.4; screen of `UC-100-02`).
 - **Prototype Screenshots (SCRUM-58):**
   - **Report review dialog (`RV06-ReportDialog`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -4525,65 +4796,57 @@ Allows community members to report reviews or Cooksnap photos that violate commu
 ---
 
 ### UC-070-06: Respond to Post-Cooking Review Prompt
-*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 #### 1. Name and Identifier
 - **Use Case ID:** `UC-070-06`
 - **Use Case Name:** Respond to Post-Cooking Review Prompt
 
 #### 2. Actor(s)
-- **Primary Actor:** **Home Cook** (Member who completed cooking).
-- **Secondary Actor / Systems:** **Cooking Mode Service** (Spec 050).
+- **Primary Actor:** **Member** — a signed-in cook who has just finished a recipe in Cooking Mode.
+- **Relationships:** Extends `UC-050-02` Step-by-Step Cooking Navigation (at "Hoàn thành nấu ăn"). **Extended by** `UC-070-01` (no review yet) and `UC-070-03` (review already exists) at the extension point "Write or update review"; writing is optional, so there is no «include» (Use-Case Model v2.0 §4.7).
 
 #### 3. Description
-Provides an immediate call to action when a user finishes a Cooking Mode session (Spec 050). A completion card encourages the cook to rate the recipe and take a Cooksnap photo while the dish is fresh.
+When a signed-in cook finishes the last step in Cooking Mode, a prompt invites them to review the recipe and share a Cooksnap while the dish is fresh. Accepting opens the review form of `UC-070-01` (or the edit form of `UC-070-03`); "Để sau" closes the prompt and creates nothing (US6, FR-018).
 
 #### 4. Preconditions
-- User is logged in.
-- User completed all steps in Cooking Mode (`CK09-Finished`).
-- All active kitchen timers are completed or dismissed.
+- The actor is signed in and has finished all steps of a recipe in Cooking Mode (`UC-050-02`), with all timers resolved (US6 AS1).
 
 #### 5. Basic Flow
-1. **Finish Cooking:** In Cooking Mode, the user finishes the last step and clicks `"Hoàn thành nấu ăn"`.
-2. **Show Celebration Screen:** Cooking Mode releases screen wake lock and shows the completion view (`CK09-Finished`):
-   - Cooking time summary: *"Hoàn thành! Thời gian nấu 42 phút."*.
-   - Dish details: *"Bạn vừa nấu xong Canh chua cá lóc!"*.
-   - Call to action: *"Hãy chia sẻ trải nghiệm của bạn để người khác nấu ngon hơn."*.
-   - Primary button: `"Viết đánh giá và chụp Cooksnap"`.
-   - Secondary button: `"Để sau"` (Later).
-3. **Accept Prompt:** User clicks `"Viết đánh giá và chụp Cooksnap"`.
-4. **Open Review Form:** Exits Cooking Mode and opens the review composer (`RV02-WriteReview`) pre-linked to this recipe.
-5. **Take Photo Shortcut:** On mobile devices, clicking the photo button launches the camera viewfinder directly to snap the hot dish (*Gap 070-F*).
-6. **Submit:** User completes text/rating and submits per `UC-070-01`.
+1. **Finish Cooking:** The actor presses "Hoàn thành nấu ăn".
+2. **Show Prompt:** The completion screen (`CK09-Finished`) shows the card "Bạn vừa nấu xong [Tên công thức]! Hãy chia sẻ trải nghiệm của bạn." with the primary button "Viết đánh giá & Chụp Cooksnap" and the secondary button "Để sau" (US6 AS1).
+3. **Accept:** The actor presses "Viết đánh giá & Chụp Cooksnap".
+4. **Extension Point "Write or update review":** The review form of `UC-070-01` opens, linked to the recipe, with no star pre-selected and the camera or gallery picker of `UC-070-02` at hand (US6 AS2). The use case continues in `UC-070-01`.
 
 #### 6. Alternative Flows
-- **AF 6.1: User Dismisses Prompt ("Để sau"):**
-  - *Trigger:* User clicks `"Để sau"` or back arrow.
+- **AF 6.1: Actor Already Reviewed the Recipe:**
+  - *Trigger:* At Step 2, the actor has a review of this recipe (US6 AS3).
   - *Steps:*
-    1. Prompt closes. Returns user to recipe page or home feed.
-    2. The prompt will not reappear for this finished session.
-- **AF 6.2: User Already Reviewed Recipe in the Past:**
-  - *Trigger:* User cooks a recipe they previously reviewed.
+    1. The button reads "Cập nhật đánh giá"; pressing it opens the edit form of `UC-070-03` instead.
+- **AF 6.2: Actor Dismisses the Prompt:**
+  - *Trigger:* At Step 2, the actor presses "Để sau" or navigates away (US6 AS4).
   - *Steps:*
-    1. System detects existing review.
-    2. Primary button changes to: `"Cập nhật đánh giá & Thêm ảnh mới"`.
-    3. Clicking routes directly to edit mode (`UC-070-03`).
-- **AF 6.3: Guest Finishes Cooking Session:**
-  - *Trigger:* Unauthenticated user finishes Cooking Mode.
+    1. The prompt closes, does not reappear for this cooking session, and no record is created.
+- **AF 6.3: Actor Is the Author of the Recipe:**
+  - *Trigger:* At Step 4, the cook wrote the recipe.
   - *Steps:*
-    1. Card displays `"Đăng nhập để lưu thành tích & chia sẻ đánh giá"`.
-    2. Clicking redirects to login dialog.
+    1. `UC-070-01` AF 1.9 applies: the author cannot review the own recipe.
+- **AF 6.4: Actor Is Not Signed In:**
+  - *Trigger:* At Step 1, a Guest finishes cooking.
+  - *Steps:*
+    1. Spec 070 defines the prompt only for a signed-in user (US6 AS1); no prompt is described for a Guest (`[OQ-070-17]`).
 
 #### 7. Postconditions
-- **Database:** Creates review and Cooksnaps upon submission.
-- **Session:** Cooking session in `localStorage` marked as completed.
+- **Accepted:** The postconditions of `UC-070-01` or `UC-070-03` apply.
+- **Dismissed:** Nothing is stored; the prompt is not shown again for this session.
 
 #### 8. Special Requirements
-- **Transition:** Switching from Cooking Mode to review composer must execute within 150ms without screen flicker.
+- **Independence:** The review feature works without Cooking Mode; the prompt is only an extra entry point (spec 070 Assumptions).
+- **Implementation status (v2.0):** On `main`, Cooking Mode calls an optional `onHandoffToReview(recipeId)` hook when a session is completed, but no review screen is connected to it yet; the prompt is approved behaviour, not running code.
 
 #### UI Screen References & Asset Gaps (SCRUM-58)
 - **Screens:** [`CK09-Finished.dc.html`](../analysis-and-design/ui-ux/screens/CK09-Finished.dc.html), [`RV02-WriteReview.dc.html`](../analysis-and-design/ui-ux/screens/RV02-WriteReview.dc.html).
-- **Gaps:** *Gap 070-F* — Camera viewfinder shortcut overlay on mobile (Basic Flow Step 5).
+- **Gaps:** *Gap 070-F* — Camera shortcut on mobile (Basic Flow Step 4).
 - **Prototype Screenshots (SCRUM-58):**
   - **Cooking finished screen with the review prompt (`CK09-Finished`):**
     - **Mobile View (iPhone 12 Pro):**  
@@ -4598,77 +4861,200 @@ Provides an immediate call to action when a user finishes a Cooking Mode session
 
 ---
 
-### 12.1. Feature 070 (Community Reviews & Cooksnaps) Traceability
-| Use Case ID | Use Case Name | User Stories | Functional Requirements (FR) | Success Criteria | Enhancements (v2) |
-| :---: | :--- | :---: | :--- | :---: | :--- |
-| **`UC-070-01`** | Rate & Review Recipe | `US1` (AC 1–6) | `FR-001`, `FR-002`, `FR-003`, `FR-004`, `FR-005`, `FR-009` | `SC-001`, `SC-003` | Author self-review prevention, review velocity anti-spam |
-| **`UC-070-02`** | Upload Cooksnap Photos | `US2` (AC 1–7) | `FR-006`, `FR-007`, `FR-008` | `SC-002` | — |
-| **`UC-070-03`** | Edit or Delete Own Review | `US3` (AC 1–5) | `FR-009`, `FR-010`, `FR-011` | `SC-001`, `SC-003` | Cascading aggregate recalculation on admin hide/delete |
-| **`UC-070-04`** | Browse, Sort & Filter Reviews | `US4` (AC 1–5) | `FR-012`, `FR-013`, `FR-014`, `FR-017`, `FR-019` | `SC-001` | "Hữu ích nhất" (Most helpful) sort (proposed in V501 per `[OQ-070-04]`), upvote toggle |
-| **`UC-070-05`** | Report Review or Cooksnap | `US5` (AC 1–5) | `FR-015`, `FR-016` | `SC-004`, `SC-005` | Mass-report auto-escalation (≥10 reports → auto-hide) |
-| **`UC-070-06`** | Respond to Post-Cooking Review Prompt | `US6` (AC 1–4) | `FR-018` | `SC-001` | — |
+### UC-070-07: Mark Review as Helpful
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
-*Coverage:* **100% (19/19 FRs, 6/6 USs, 5/5 Success Criteria). Enhanced with 5 architectural improvements (v2).**
+> *New in v2.0 (`SCRUM-71`).* In v1.4 this was Step 6 of `UC-070-04`. Checked against `ReviewController.toggleHelpfulVote` and `ReviewService.toggleHelpfulVote` on `main`.
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-070-07`
+- **Use Case Name:** Mark Review as Helpful
+
+#### 2. Actor(s)
+- **Primary Actor:** **Member** — any signed-in user who did not write the review (RBAC matrix).
+- **Relationship:** Extends `UC-070-04` at the "Hữu ích" button of a review card.
+
+#### 3. Description
+Lets a signed-in user toggle a "Hữu ích" vote on a visible review written by someone else. The first press records the vote, the next press removes it; the review's `helpful_count` is recounted after every change and feeds the "Hữu ích nhất" sort (US4 AS6, FR-012, FR-022).
+
+#### 4. Preconditions
+- The actor is signed in (`UC-010-02`) and reads the reviews of a recipe (`UC-070-04`).
+- The review is `VISIBLE` and was not written by the actor.
+
+#### 5. Basic Flow
+1. **Press "Hữu ích":** On a review card of another user, the actor presses "👍 Hữu ích"; the card shows the current count (for example "42 người thấy hữu ích") and whether the actor has voted (`hasVoted`).
+2. **Send Request:** The browser sends `POST /api/v1/reviews/{reviewId}/helpful` (no body).
+3. **Process on Server:** The server locks the review row, checks that it is `VISIBLE` and not the actor's own, then adds the actor's vote to `review_helpful_votes` (or removes it when it already exists) and sets `helpful_count` to the number of votes (`COUNT(*)`, not +1 / −1). `updated_at` of the review is not changed.
+4. **Answer:** The server answers `200` with `reviewId`, `helpfulCount` and `hasVoted` (`true` after a vote, `false` after removing it).
+5. **Update Card:** The button shows the new state and count.
+
+#### 6. Alternative Flows
+- **AF 7.1: Guest Presses "Hữu ích":**
+  - *Trigger:* At Step 1, the visitor is not signed in (US4 AS5, FR-023; Clarification 2026-11-09).
+  - *Steps:*
+    1. The system shows the sign-in prompt (`UC-010-02` AF 2.9); a request without a session receives `401 UNAUTHENTICATED`.
+- **AF 7.2: Own Review:**
+  - *Trigger:* At Step 1, the review belongs to the actor (US4 AS6).
+  - *Steps:*
+    1. The button is not offered on the own review card (`isOwner = true`); a direct call receives `403` (`self-helpful-vote-forbidden`) and nothing changes.
+- **AF 7.3: Review Hidden or Deleted:**
+  - *Trigger:* At Step 3, the review is `HIDDEN` by moderation or no longer exists.
+  - *Steps:*
+    1. The server answers `404` (`review-not-found`) and the system reloads the reviews.
+- **AF 7.4: Repeated or Parallel Presses:**
+  - *Trigger:* At Step 2, the actor presses several times quickly or from two tabs.
+  - *Steps:*
+    1. The requests are processed one after the other because the review row is locked; each one toggles the vote once and the count is always recounted, so no vote is counted twice.
+- **AF 7.5: Session Expired:**
+  - *Trigger:* At Step 2, the request receives `401 UNAUTHENTICATED`.
+  - *Steps:*
+    1. The system asks the actor to sign in again (`UC-010-02` AF 2.12); nothing changes.
+
+#### 7. Postconditions
+- **Success:** The actor's vote exists or no longer exists, and `helpful_count` equals the number of votes of the review.
+- **Failure:** Votes and count are unchanged.
+
+#### 8. Special Requirements
+- **Performance:** The count updates in less than 300 ms for signed-in users (SC-006).
+- **Integrity:** One vote per user and review (`UNIQUE (review_id, user_id)`); `helpful_count` is always recounted from the votes (FR-022). A vote of a deleted account is kept without the user (`user_id` set to `NULL`, migration `V501`), so the count does not change on account deletion.
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Screens:** [`RV01-Reviews.dc.html`](../analysis-and-design/ui-ux/screens/RV01-Reviews.dc.html) (review card with "Hữu ích").
+- **Gaps:** *Gap 070-G* — Pressed "Hữu ích" state with its count (Basic Flow Step 5).
+- **Prototype Screenshots (SCRUM-58):** None captured yet (Gap 070-G).
+
+---
+
+### UC-070-08: Update Recipe Rating Summary *(included use case)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+> *New in v2.0 (`SCRUM-71`).* In v1.4 this recalculation was repeated inside `UC-070-01`, `UC-070-03`, `UC-070-05` and `UC-100-02`. Checked against `ReviewRepository.updateRecipeRatingStats` and its callers on `main`.
+
+#### 1. Name and Identifier
+- **Use Case ID:** `UC-070-08`
+- **Use Case Name:** Update Recipe Rating Summary
+
+#### 2. Actor(s)
+- **Primary Actor:** None. This use case has a **Trigger** instead (Use-Case Model §6.2, issues 5 and 6): it runs only inside another use case.
+- **Invoking Use Cases:** `UC-070-01` (new review), `UC-070-03` (edited review or deleted review), `UC-070-05` (automatic hiding of a review at 10 reports) and `UC-100-02` (a Moderator hides or restores a review).
+
+#### 3. Description
+Keeps the cached rating summary of a recipe — `recipes.rating_avg` (average of the visible reviews, rounded to 1 decimal) and `recipes.review_count` (number of visible reviews) — equal to its visible reviews whenever that set or one of its ratings changes, without changing the recipe's `version` (FR-009, FR-024, NFR-003, Edge Case 1).
+
+#### 4. Preconditions
+- The invoking use case runs inside a transaction and has locked the recipe row (`SELECT … FOR UPDATE`), so review writes on the same recipe are serialized.
+
+#### 5. Basic Flow
+1. **Trigger:** The invoking use case has created a review, changed one, deleted one, or changed a review's status between `VISIBLE` and `HIDDEN`.
+2. **Recalculate:** The system computes, over the reviews of the recipe with `status = 'VISIBLE'`:
+   $$\text{review\_count} = \text{COUNT}(*)$$
+   $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0)$$
+3. **Store:** In one `UPDATE` of the recipe row the system writes `rating_avg` and `review_count` and nothing else; the recipe's `version` stays the same.
+4. **Return:** Control returns to the invoking use case, which commits.
+
+#### 6. Alternative Flows
+- **AF 8.1: No Visible Review Left:**
+  - *Trigger:* At Step 2, the recipe has no visible review.
+  - *Steps:*
+    1. The system stores `rating_avg = 0.0` and `review_count = 0`.
+- **AF 8.2: Invoking Use Case Fails:**
+  - *Trigger:* After Step 3, the invoking use case fails and rolls back.
+  - *Steps:*
+    1. The summary is rolled back with it; it never reflects a change that was not stored.
+- **AF 8.3: Account Deleted:**
+  - *Trigger:* A reviewer deletes the account (`UC-011-04`).
+  - *Steps:*
+    1. This use case is **not** run: reviews stay with `user_id = NULL`, so the summary does not change (spec 011 FR-035; Use-Case Model v2.0 §4.1).
+
+#### 7. Postconditions
+- `rating_avg` and `review_count` of the recipe equal the average (1 decimal) and the number of its visible reviews; the recipe's `version` is unchanged.
+
+#### 8. Special Requirements
+- **Consistency:** The displayed average matches the arithmetic mean of the visible reviews at all times, also under concurrent writes, without optimistic-locking errors on recipes (SC-003, NFR-003). The recipe module maps the two columns read-only, so a stale recipe edit cannot overwrite them (Edge Case 1).
+- **Storage:** `rating_avg` is `NUMERIC(3,2)` and holds a value rounded to 1 decimal (for example `4.30`).
+- **Use by other features:** The summary feeds search sorting; the "Top rated" order puts recipes with at least 3 reviews first (FR-025, implemented in the search module of `020`).
+- **Implementation status (v2.0):** Implemented for `UC-070-01`, `UC-070-03` and `UC-070-05`. The Moderator hide and restore actions of `UC-100-02` do not exist in the code on `main` yet (`[OQ-070-18]`).
+
+#### UI Screen References & Asset Gaps (SCRUM-58)
+- **Basic Flow:** No own screen; the result is the rating summary of `UC-070-04` (`RV01-Reviews`).
+- **UI Asset Gap for SCRUM-58:** None.
+
+---
+
+### 12.1. Feature 070 (Community Reviews & Cooksnaps) Traceability
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+| Use Case ID | Use Case Name | User Stories | Functional Requirements (FR) | Non-Functional Requirements | Success Criteria | Endpoints (contract and code) |
+| :---: | :--- | :---: | :--- | :--- | :---: | :--- |
+| **`UC-070-01`** | Rate & Review Recipe | `US1` (AS 1–8) | `FR-001` – `FR-005`, `FR-020`, `FR-021` | `NFR-003`, `NFR-005`, `NFR-006` | `SC-001`, `SC-003` | `POST /recipes/{recipeId}/reviews` |
+| **`UC-070-02`** | Upload Cooksnap Photos | `US2` (AS 1–7) | `FR-006`, `FR-007`, `FR-008`, `FR-023` | `NFR-002`, `NFR-004`, `NFR-006` | `SC-002`, `SC-006` | `POST /recipes/{recipeId}/reviews`, `PUT /reviews/{reviewId}` (multipart), `GET /media/cooksnaps/{storageKey}` |
+| **`UC-070-03`** | Edit or Delete Own Review | `US3` (AS 1–5) | `FR-010`, `FR-011` | `NFR-003` | `SC-003` | `PUT /reviews/{reviewId}`, `DELETE /reviews/{reviewId}` |
+| **`UC-070-04`** | Browse, Sort & Filter Reviews | `US4` (AS 1–5) | `FR-012`, `FR-013`, `FR-014`, `FR-017`, `FR-019` | `NFR-001`, `NFR-006` | `SC-006` | `GET /recipes/{recipeId}/reviews` |
+| **`UC-070-05`** | Report Review or Cooksnap | `US5` (AS 1–6) | `FR-015`, `FR-016`, `FR-024` | — | `SC-004`, `SC-005` | `POST /reviews/{reviewId}/reports`, `POST /cooksnaps/{cooksnapId}/reports` |
+| **`UC-070-06`** | Respond to Post-Cooking Review Prompt | `US6` (AS 1–4) | `FR-018` | — | `SC-001` | — (frontend only) |
+| **`UC-070-07`** | Mark Review as Helpful *(new v2.0)* | `US4` (AS 5–6) | `FR-012`, `FR-022`, `FR-023` | — | `SC-006` | `POST /reviews/{reviewId}/helpful` |
+| **`UC-070-08`** | Update Recipe Rating Summary *(included; new v2.0)* | `US1` (AS 3), `US3` (AS 3–4), `US5` (AS 6), `US4` (AS 7) | `FR-009`, `FR-024`, `FR-025` | `NFR-003` | `SC-003` | — (inside the endpoints of `UC-070-01`, `UC-070-03`, `UC-070-05`) |
+
+*Coverage:* All 6 user stories (37 acceptance scenarios), `FR-001` – `FR-025`, `NFR-001` – `NFR-006` and `SC-001` – `SC-006` are mapped. Every endpoint of `specs/070-review-cooksnap/contracts/openapi.yaml` and every route of `com.wikicook.review` on `main` maps to one use case. All paths are under `/api/v1`.
 
 ### 12.2. Prototype Screen Mapping & UI Asset Gaps (for SCRUM-58)
-*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
-
-To support task **`SCRUM-58`** (embedding prototype screenshots directly alongside basic and alternative flows in this document), the table below cross-references all available prototype screens for Feature 070 in `docs/analysis-and-design/ui-ux/screens/` and catalogues specific visual gaps requiring screenshot captures:
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
 
 | Use Case ID | Flow / Step Reference | Existing Screen ID & Filename | Description of Prototype View | Asset Status & Action for SCRUM-58 |
 | :---: | :--- | :--- | :--- | :---: |
-| `UC-070-01` | Basic Flow (Step 1–2) | `RV01-Reviews.dc.html` | Reviews section summary, score display, rating breakdown | **Available** |
-| `UC-070-01` | Basic Flow (Step 2) | *Gap 070-I* | Contextual author guard banner replacing "Viết đánh giá" button | **GAP: Chung to generate screenshot** |
-| `UC-070-01` | Basic Flow (Step 4) | `RV02-WriteReview.dc.html` | Star rating selector, comment field, tip input modal | **Available** |
-| `UC-070-01` | Basic Flow (Step 10) | *Gap 070-A* | Success toast notification after review submission | **GAP: Chung to generate screenshot** |
-| `UC-070-01` | AF 1.7 | *Gap 070-J* | Anti-spam HTTP 429 warning toast ("Đang đánh giá quá nhanh") | **GAP: Chung to generate screenshot** |
-| `UC-070-02` | Basic Flow (Step 2–4) | `RV02-WriteReview.dc.html` | Multi-image dropzone with thumbnail previews and caption inputs | **Available** |
-| `UC-070-02` | Basic Flow (Step 4) | *Gap 070-K* | Image upload progress bar with per-file status indicator | **GAP: Chung to generate screenshot** |
-| `UC-070-02` | Basic Flow (Step 9) | *Gap 070-B* | Full-screen Cooksnap lightbox skeleton loading state | **GAP: Chung to generate screenshot** |
-| `UC-070-02` | Basic Flow (Step 9) | `RV03-Lightbox.dc.html` | Full-screen Cooksnap image lightbox with pan and zoom | **Available** |
-| `UC-070-02` | AF 2.2 | `RV02-WriteReview.dc.html` | Unsupported format error banner (JPEG, PNG, WebP) | **Available** |
-| `UC-070-03` | Basic Flow (Step 1–4) | `RV04-OwnReview.dc.html` | Author's own review edit mode with pre-filled inputs and update button | **Available** |
-| `UC-070-03` | Branch A (Step 9) | *Gap 070-C* | Inline `(đã chỉnh sửa)` label on modified reviews | **GAP: Chung to generate screenshot** |
-| `UC-070-03` | Branch B (Step 2) | `W-RV04b-DeleteConfirm.dc.html` | Destructive review deletion confirmation modal dialog | **Available** |
-| `UC-070-04` | Basic Flow (Step 1–4) | `RV01-Reviews.dc.html` | Filter chips ("Tất cả", "Có ảnh Cooksnap", "5 sao") and sort options | **Available** |
-| `UC-070-04` | Basic Flow (Step 6) | *Gap 070-G* | Active upvote state button on review card ("Hữu ích (X)") | **GAP: Chung to generate screenshot** |
-| `UC-070-04` | AF 4.1 | `RV06-Empty.dc.html` | Empty reviews state with prompt "Chưa có nhận xét nào" | **Available** |
-| `UC-070-04` | AF 4.2 | *Gap 070-D* | Filter empty state ("Không tìm thấy đánh giá nào có ảnh Cooksnap") | **GAP: Chung to generate screenshot** |
-| `UC-070-05` | Basic Flow (Step 2–5) | `RV05-Report.dc.html` | Content report bottom sheet with violation reason checkboxes | **Available** |
-| `UC-070-05` | AF 5.2 | *Gap 070-E* | Duplicate report warning banner ("Bạn đã báo cáo nội dung này") | **GAP: Chung to generate screenshot** |
-| `UC-070-05` | Special Requirements | *Gap 070-H* | Auto-hidden content notification badge in moderation panel (Mass-Report) | **GAP: Chung to generate screenshot** |
-| `UC-070-06` | Basic Flow (Step 1–3) | `CK09-Finished.dc.html` | Cooking completion celebration view with review prompt callout | **Available** |
-| `UC-070-06` | Basic Flow (Step 5) | *Gap 070-F* | Mobile camera viewfinder shortcut overlay | **GAP: Chung to generate screenshot** |
+| `UC-070-01` | Basic Flow (Steps 1–2) | `RV01-Reviews.dc.html` | Reviews section summary, score display, rating breakdown | **Available** |
+| `UC-070-01` | Basic Flow (Step 2), AF 1.9 | *Gap 070-I* | Author notice replacing "Viết đánh giá" | **GAP** |
+| `UC-070-01` | Basic Flow (Step 4) | `RV02-WriteReview.dc.html` | Star selector, comment field, tip field | **Available** |
+| `UC-070-01` | Basic Flow (Step 11) | *Gap 070-A* | Success toast after submission | **GAP** |
+| `UC-070-01` | AF 1.10 | *Gap 070-J* | Too-many-submissions warning | **GAP** |
+| `UC-070-02` | Basic Flow (Steps 1–4), AF 2.2 | `RV02-WriteReview.dc.html` | Photo zone with thumbnail previews; unsupported-format message | **Available** |
+| `UC-070-02` | Basic Flow (Steps 4–5) | *Gap 070-K* | Upload progress per file | **GAP** |
+| `UC-070-02` | Basic Flow (Step 8) | `RV03-Lightbox.dc.html` | Full-screen Cooksnap lightbox | **Available** |
+| `UC-070-02` | Basic Flow (Step 8) | *Gap 070-B* | Lightbox loading state | **GAP** |
+| `UC-070-03` | Branch A (Steps 1–4) | `RV04-OwnReview.dc.html` | Own review with "⋮" menu and pre-filled edit form | **Available** |
+| `UC-070-03` | Branch A (Step 9) | *Gap 070-C* | "(đã chỉnh sửa)" label | **GAP** |
+| `UC-070-03` | Branch B (Step 2) | `W-RV04b-DeleteConfirm.dc.html` | Delete confirmation dialog | **Available** |
+| `UC-070-04` | Basic Flow (Steps 1–8) | `RV01-Reviews.dc.html`, `W-RV01-Reviews.dc.html` | Summary, sort options, photo filter, list | **Available** |
+| `UC-070-04` | AF 4.1 | `RV06-Empty.dc.html` | Empty reviews state | **Available** |
+| `UC-070-04` | AF 4.2 | *Gap 070-D* | Filter empty state | **GAP** |
+| `UC-070-05` | Basic Flow (Steps 2–4) | `RV05-Report.dc.html`, `W-RV05-Report.dc.html` | Report dialog with the reasons | **Available** (the prototype labels must show the five reasons of FR-015) |
+| `UC-070-05` | AF 5.2 | *Gap 070-E* | "Already reported" message | **GAP** |
+| `UC-070-05` | AF 5.4 | *Gap 070-H* | Automatically hidden item in the moderation queue | **GAP** |
+| `UC-070-06` | Basic Flow (Steps 1–3) | `CK09-Finished.dc.html` | Completion screen with review prompt | **Available** |
+| `UC-070-06` | Basic Flow (Step 4) | *Gap 070-F* | Camera shortcut on mobile | **GAP** |
+| `UC-070-07` | Basic Flow (Steps 1, 5) | `RV01-Reviews.dc.html` | "Hữu ích" button on a review card | **Available** |
+| `UC-070-07` | Basic Flow (Step 5) | *Gap 070-G* | Pressed "Hữu ích" state with its count | **GAP** |
+| `UC-070-08` | — | — | No own screen (result shown by `UC-070-04`) | **N/A** |
 
-*Desktop variants:* `RV01`, `RV05` have matching desktop web variants (`W-RV01-Reviews.dc.html`, `W-RV05-Report.dc.html`) adhering to constitution Principle V (responsive across 360px mobile and 1280px desktop).
+*Desktop variants:* `RV01` and `RV05` have web variants (`W-RV01-Reviews.dc.html`, `W-RV05-Report.dc.html`) (constitution Principle V).
 
 ### 12.3. Open Questions & Domain Assumptions (For Team Alignment)
-*Performed by: Trần Nguyễn Công Chung (itzchugnn) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Trần Nguyễn Công Chung (itzchugnn)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+
+*Status update (v2.0, 18/11/2026, `SCRUM-71`):* items 1 – 4 are the PA3 questions with their new status; items 5 – 16 record differences between spec 070, its contract and the code on `main` found in the v2.0 check. Where they differ, the flows above state the implemented behaviour. Owner of all new items: Trần Nguyễn Công Chung (spec 070) with the author of the review backend (`SCRUM-77`).
 
 #### 12.3.1. Open Questions (For Team Alignment)
-1. **`[OQ-070-01]` Guest Actor Interaction with Cooksnaps Lightbox & Helpful Votes:**
-   - *Issue:* Can unauthenticated guests browse Cooksnap photo lightboxes (`RV03`) and click helpful votes?
-   - *Current Stance in UC-070-04:* Guests have unrestricted read access to browse reviews, view rating distributions, and open photo lightboxes. However, clicking "Hữu ích" (upvote) or "Viết đánh giá" prompts an authentication modal (`AU08-SignInPrompt`) per `FR-001` and `NFR-002`.
-   - *Status:* Proposal aligned with Vision §5.7; pending final Use-Case Model freeze on November 02.
-2. **`[OQ-070-02]` Spec 070 Scope Amendments & Architectural Enhancements:**
-   - *Issue:* Specifications for Feature 070 in the ratified Spec 070 did not formally define author self-review guard, rate limiting, review upvoting (`review_votes`), or mass-report auto-hide.
-   - *Current Stance in UC-070-01–05:* These architectural enhancements (v2) are specified to satisfy cross-cutting security, anti-spam, community engagement, and moderation resilience needs. They are documented as proposed amendments to Spec 070 for formal team ratification.
-   - *Status:* Documented for Product Owner and Tech Lead alignment.
-3. **`[OQ-070-04]` Review Helpful Votes & Counters (Schema Gap):**
-   - *Issue:* The current schema has no `reviews.helpful_count` column and no `review_votes` table.
-   - *Current Stance in UC-070-04:* Proposal: add `helpful_count INTEGER DEFAULT 0` to the `reviews` table and a `review_votes (review_id, user_id, created_at)` table in migration V501. To be confirmed with the Part E engineer before the next sprint.
-   - *Status:* Open for team alignment.
-4. **`[OQ-070-05]` Review Hidden Reason & Moderation Tracking (Schema Gap):**
-   - *Issue:* The current schema has no `reviews.hidden_reason`.
-   - *Current Stance in UC-070-03 & UC-100-02:* Proposal: add the columns `hidden_reason VARCHAR(300) NULL` and `hidden_by BIGINT NULL (FK → users SET NULL)` to the `reviews` table, following the existing pattern of `recipe_nutrition.hidden_reason`.
-   - *Status:* Open for team alignment.
+1. **`[OQ-070-01]` Guest Access to the Lightbox and Helpful Votes:** **Closed** by spec 070 Clarification 2026-11-09: Guests open the lightbox; voting needs sign-in (`UC-070-02` Step 8, `UC-070-07` AF 7.1).
+2. **`[OQ-070-02]` Scope Additions (author guard, rate limit, helpful votes, auto-hide):** **Closed**: all four are now in spec 070 (`FR-020`, `FR-021`, `FR-022`, `FR-024`) and in the code.
+3. **`[OQ-070-04]` Helpful Vote Schema:** **Closed**: `reviews.helpful_count` and `review_helpful_votes` exist in migration `V501__community.sql`.
+4. **`[OQ-070-05]` Hidden Reason and Moderator Tracking:** **Open**: `reviews` has no `hidden_reason` or `hidden_by` in `V501`; to be settled with spec 100 (`UC-100-02`).
+5. **`[OQ-070-07]` Status Code for an Unpublished Recipe:** Spec Edge Case 4 says `422`; contract and code answer `404` (`review-not-found`). `UC-070-01` AF 1.8 follows the code. **Open** — align the spec.
+6. **`[OQ-070-08]` Owner Deletion:** US3 AS4 and Clarification 2026-10-19 still say `HIDDEN` / soft delete; `FR-011`, contract and code hard-delete. `UC-070-03` follows the code. **Open** — align US3 AS4 and the clarification.
+7. **`[OQ-070-09]` Rate-Limit Basis:** `FR-021` / Edge Case 9 count stored reviews in the database per account; the code counts submissions in memory per user **and IP address**, including refused ones, and the count is lost on restart. **Open**.
+8. **`[OQ-070-10]` Verified Email Not Enforced:** spec 010 `FR-006` and `integration.md` §2.4 require a verified email to publish reviews and Cooksnaps (`403 EMAIL_NOT_VERIFIED`); the review endpoints on `main` do not check it. **Open** — add `@VerifiedEmailRequired` to the create and update endpoints.
+9. **`[OQ-070-11]` Total Upload Size:** `max-request-size: 6MB` in `application.yml` (set for the avatar of spec 011) refuses a review request whose photos together exceed 6 MB, so 3 photos of up to 5 MB each (`FR-006`) cannot always be sent at once; over-size files are refused with `413`, not the `400` of the contract. **Open**.
+10. **`[OQ-070-12]` Error Identifiers:** The code answers only a ProblemDetail `type` URI, without the `code` field (`SELF_REVIEW_FORBIDDEN`, …) quoted in the spec; editing or deleting another user's review reuses `self-review-forbidden`; JSON validation errors are a generic `400` ProblemDetail, multipart validation errors `cooksnap-processing-error`, not the `validation-error` of the contract. **Open**.
+11. **`[OQ-070-13]` Edit or Delete After the Recipe Leaves `PUBLISHED`:** spec allows edit and delete "at any time"; the code answers `404` once the recipe is archived or rejected (`UC-070-03` AF 3.7). **Open**.
+12. **`[OQ-070-14]` Author Name of a Deleted Account:** `FR-019` says "Người dùng đã xóa"; the code returns "Thành viên WikiCook" with `isDeleted = true` (`UC-070-04` AF 4.3). **Open**. The fate of the deleted user's Cooksnaps stays `[OQ-011-07]`.
+13. **`[OQ-070-15]` Reviews of an Unknown Recipe:** contract `GET /recipes/{recipeId}/reviews` answers `404`; the code answers `200` with an empty list (`UC-070-04` AF 4.7). **Open**.
+14. **`[OQ-070-16]` Summary and Photo Filter:** `FR-014` asks for the total number of Cooksnaps in the summary (missing in contract and code); `FR-013` / the contract filter on **visible** Cooksnaps, the code counts any Cooksnap row. **Open**.
+15. **`[OQ-070-17]` Post-Cooking Prompt for a Guest:** spec 070 US6 defines the prompt only for signed-in users; nothing is defined for a Guest who finishes cooking (`UC-070-06` AF 6.4). **Open**.
+16. **`[OQ-070-18]` Moderator Hide and Restore:** `UC-070-08` is included by `UC-100-02`, but the review module on `main` has no Moderator hide or restore endpoint yet (spec 100). **Open**.
 
 #### 12.3.2. Domain Assumptions Reaffirmed
-- **Aggregate Score Precision:** Recipe average rating `rating_avg` is stored and computed as a numeric floating value rounded to exactly 1 decimal place ($1.0$ to $5.0$).
-- **Anti-Spam Velocity Threshold:** Review submission enforces a limit of $\le 5$ reviews per 10-minute sliding window per user account.
-- **Cascading Aggregate Consistency:** Any event modifying review status (`HIDE`, `RESTORE`, `SUBMIT`) MUST synchronously trigger `RecipeAggregateService.recalculate(recipeId)` using the single source of truth formula:
-  $$\text{review\_count} = \text{COUNT}(*) \quad \text{WHERE status = 'VISIBLE'}$$
-  $$\text{rating\_avg} = \text{COALESCE}(\text{ROUND}(\text{AVG}(\text{rating}), 1), 0.0) \quad \text{WHERE status = 'VISIBLE'}$$
+- **Rating precision:** `rating_avg` is rounded to 1 decimal and stored as `NUMERIC(3,2)` (`UC-070-08`).
+- **One summary rule:** Every change of the visible reviews runs `UC-070-08`; no use case increments or decrements the counters by hand.
+- **Status convention:** `VISIBLE` / `HIDDEN` on reviews and Cooksnaps; `HIDDEN` is used only by moderation and the automatic hiding.
 
 
 ---

@@ -50,6 +50,7 @@ class SignInServiceTest {
     private final AccessTokenService tokens = mock(AccessTokenService.class);
     private final AuditWriter audit = mock(AuditWriter.class);
     private final UserSuspensionRepository suspensions = mock(UserSuspensionRepository.class);
+    private final ClosureTokenService closureTokens = mock(ClosureTokenService.class);
     private final EmailHasher hasher = new EmailHasher("unit-test-hash-key-0123456789");
     private SignInService service;
 
@@ -57,7 +58,7 @@ class SignInServiceTest {
     void setUp() {
         when(encoder.encode(anyString())).thenReturn(DUMMY);
         service = new SignInService(throttle, encoder, new BcryptBulkhead(2), sessions, tokens, audit, hasher,
-                suspensions);
+                suspensions, closureTokens);
     }
 
     private static SignInCommand command(String email, String password) {
@@ -172,11 +173,13 @@ class SignInServiceTest {
         when(encoder.matches("right", "hash")).thenReturn(true);
         when(suspensions.findRunning(7L)).thenReturn(Optional.of(
                 new UserSuspension(7L, SanctionKind.BAN, "Fraud", NOW, null, 1L)));
+        when(closureTokens.issue(7L)).thenReturn("closure-token");
 
         assertThatThrownBy(() -> service.signIn(command("an@mail.com", "right")))
                 .isInstanceOfSatisfying(AuthException.class, e -> {
                     assertThat(e.code()).isEqualTo(AuthErrorCode.ACCOUNT_BANNED);
-                    assertThat(e.properties()).containsEntry("reason", "Fraud").doesNotContainKey("endsAt");
+                    assertThat(e.properties()).containsEntry("reason", "Fraud").containsEntry("closureToken", "closure-token")
+                            .doesNotContainKey("endsAt");
                 });
     }
 
