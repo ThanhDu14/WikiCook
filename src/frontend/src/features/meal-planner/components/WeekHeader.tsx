@@ -54,7 +54,12 @@ export function WeekHeader({ weekStart, currentWeek, onChange, aiAction, actions
             <Icon name="chevronRight" />
           </button>
           {weekStart !== currentWeek && (
-            <button type="button" className="wk-link wk-small" style={{ marginLeft: 8 }} onClick={() => onChange(currentWeek)}>
+            <button
+              type="button"
+              className="wk-link wk-small"
+              style={{ marginLeft: 8, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
+              onClick={() => onChange(currentWeek)}
+            >
               {vi.thisWeek}
             </button>
           )}

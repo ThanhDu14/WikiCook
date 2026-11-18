@@ -200,7 +200,7 @@ export function AddToPlanDialog({ recipe, onClose, onUnauthenticated }: Props) {
                 </div>
               )}
 
-              <div className="sx-between">
+              <div className="sx-between" style={{ paddingTop: 12, borderTop: '1px solid var(--color-border)' }}>
                 <span className="wk-label">{vi.servings}</span>
                 <ServingsInput
                   value={servings}
@@ -215,7 +215,13 @@ export function AddToPlanDialog({ recipe, onClose, onUnauthenticated }: Props) {
                 <button type="button" className="wk-btn wk-btn--secondary" onClick={onClose}>
                   {vi.cancel}
                 </button>
-                <button type="button" className="wk-btn wk-btn--primary" disabled={saving || isFull} onClick={() => void submit()}>
+                <button
+                  type="button"
+                  className={`wk-btn wk-btn--primary${saving ? ' is-loading' : ''}`}
+                  disabled={saving || isFull}
+                  aria-busy={saving || undefined}
+                  onClick={() => void submit()}
+                >
                   {vi.addToPlan}
                 </button>
               </div>
