@@ -1,6 +1,6 @@
 /** Shared HTTP client: every feature calls the backend through `api` (REST under /api/v1). */
 
-import { GUEST, getAccessToken, getDevUserId, setAccessToken } from './session';
+import { getAccessToken, setAccessToken } from './session';
 
 export const API_BASE = '/api/v1';
 
@@ -73,17 +73,11 @@ const isAuthRoute = (path: string) => path.startsWith(AUTH_PREFIX);
 const sendsBearer = (path: string) => !isAuthRoute(path) || BEARER_AUTH_ROUTES.has(path);
 
 /**
- * Identity headers of every request (ACT-01): `X-User-Id` (shopping list) and `X-Dev-User-Id` (dev stubs) from the
- * dev session, none for a guest; `Authorization: Bearer` while a token is held, except on the public `/auth/*`
- * routes. `/auth/*` also gets `X-WikiCook-Client: web`, the CSRF guard of the cookie-reading endpoints (R2).
- * Headers set by the caller win.
+ * Headers of every request: `Authorization: Bearer` while a token is held, except on the public `/auth/*` routes, and
+ * `X-WikiCook-Client: web` on `/auth/*`, the CSRF guard of the cookie-reading endpoints (R2). Headers set by the caller
+ * win. The dev identity headers (`X-User-Id`, `X-Dev-User-Id`) are gone: the backend takes the user from the token.
  */
 function addIdentity(headers: Headers, path: string) {
-  const user = getDevUserId();
-  if (user !== GUEST) {
-    if (!headers.has('X-User-Id')) headers.set('X-User-Id', String(user));
-    if (!headers.has('X-Dev-User-Id')) headers.set('X-Dev-User-Id', String(user));
-  }
   const token = getAccessToken();
   if (token && sendsBearer(path) && !headers.has('Authorization')) {
     headers.set('Authorization', `Bearer ${token}`);

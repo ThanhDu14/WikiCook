@@ -36,6 +36,14 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 21 | 2026-11-01, 13:30 – 13:52 | `SCRUM-57` Review Fix-up R2 | Sửa 4 điểm code (V403 sequence identity, dynamic UnitRepository, F8 aisle code precedence, dead 5-arg constructor) và kiểm toán tasks.md theo phản hồi v2 của Hiển | `8ff370a` .. `b6a5d33` | `src/backend/`, `specs/040-shopping-list/tasks.md` |
 | 22 | 2026-11-01, 14:02 – 14:10 | `SCRUM-57` F9 Wiring Follow-up | Viết test ApplicationContextRunner kiểm chứng `@ConditionalOnMissingBean` cho SeedRecipeDetailAdapter và thêm log WARN khi seed active | `df055df` | `src/backend/wikicook-app/` |
 | 23 | 2026-11-01, 23:40 – 23:55 | `SCRUM-57` Review Fix-up R3 | Sửa guard IngredientAggregationService, chuyển seed adapter sang @Configuration, siết IT F4 và dọn style import ShoppingListService theo review COMMENTED của Hiển | `e439aa5` .. `5184fc0` | `src/backend/wikicook-app/` |
+| 24 | 2026-11-06, 09:20 – 09:35 | `SCRUM-61`, `SCRUM-64` | Hoàn tất `Changes.md` PA3 và Báo cáo Sprint 03 với minh chứng Jira 22/22 Done | Nhánh `docs/PA3` (xem Mục 24) | `Changes.md`, `docs/management/reports/sprint-03/` |
+| 25 | 2026-11-10, 21:16 – 21:30 | `SCRUM-68` | Tạo khung Sprint 04 Report và ghi nhận Sprint Planning | `2593dc0` | `docs/management/reports/sprint-04/sprint-04-report.md` |
+| 26 | 2026-11-15, khoảng 22:00 – 23:59 | `SCRUM-76` | Frontend nhóm 1: Auth (`010`) và Hồ sơ, Hồ sơ ăn uống (`011`) | `2298962`, `68bec30`, `79abd14` (PR #90) | `src/frontend/` |
+| 27 | 2026-11-16, khoảng 01:00 – 01:30 | `SCRUM-87` | Biên bản Standup 01 và 02 (Standup 02 được viết trước buổi họp, đã sửa ở Mục 29) | `c016b2b` .. `c336e5f` | `sprint-04-report.md` |
+| 28 | 2026-11-18, khoảng 21:00 – 22:30 | `SCRUM-84` | `Changes.md` PA4 và cập nhật ghi chú Google trong Use-Case Specification | `e97bca0`, `c070eca`, `746f3c6`, `a9e6a8e` | `Changes.md`, `use-case-specification.md` |
+| 29 | 2026-11-18, khoảng 21:30 – 23:00 | `SCRUM-87`, `SCRUM-68` | Sửa Standup 02 thành khung chờ họp, sửa Standup 01, Planning và ngày nộp | `173d5ac`, `3d1b9aa` | `sprint-04-report.md` |
+| 30 | 2026-11-16 .. 2026-11-18 (ước lượng) | `SCRUM-76` | Kiểm tra giao diện với backend thật, sửa trang xác minh email, kiểm PR #97, gỡ định danh dev, bổ sung test, cập nhật `tasks.md` | `60d835a`, `a2d0dbb`, `33156dd`, `85f0437` | `src/frontend/`, `specs/010-*/tasks.md`, `specs/011-*/tasks.md` |
+| 31 | 2026-11-19, khoảng 00:00 – 01:00 | `SCRUM-88`, `SCRUM-87`, `SCRUM-84` | Soạn bản nháp Sprint Review và Retrospective từ bằng chứng trong repo; cập nhật các câu lỗi thời sau khi PR #98 được merge | `7abb494`, `ff02385`, `3e813c1` | `sprint-04-report.md`, `Changes.md`, `use-case-specification.md` |
 
 ---
 
@@ -1179,18 +1187,14 @@ Bạn hay đọc và tiến hành ghi sprint-04-report.md của SCRUM 68 giúp t
 | **Tài liệu / spec liên quan** | `specs/010-user-authentication-roles/` (`spec.md`, `tasks.md`, `contracts/openapi.yaml`, `contracts/integration.md`), `specs/011-user-profile-dietary/` (cùng bộ), `tasks/PA4/pa4-guide.md`, `docs/analysis-and-design/ui-ux/screens/` (`W-AU01…W-AU09`, `W-PF01…W-PF04`) |
 | **Mục đích sử dụng** | Viết giao diện React 18 + TypeScript cho đăng ký, đăng nhập, đăng xuất, bảo vệ route theo vai trò, hồ sơ cá nhân và hồ sơ ăn uống; token JWT gắn tự động qua `src/frontend/src/shared/api/client.ts`; viết bộ test Vitest + React Testing Library + msw bám theo `tasks.md` của hai spec. |
 | **Nhánh Git** | `feature/SCRUM-76-frontend-auth-profile` (tạo từ `origin/main` tại `b18cd2e`) |
-| **Minh chứng (Evidence)** | **Chưa commit tại thời điểm ghi log** (thay đổi đang ở working tree; điền hash commit/PR sau khi commit). Kết quả chạy lệnh nằm ở phần kiểm chứng bên dưới. |
+| **Minh chứng (Evidence)** | Commit `2298962` (mock API dev), `68bec30` (mục log này), `79abd14` (giao diện Auth + Hồ sơ) trên nhánh `feature/SCRUM-76-frontend-auth-profile`, đã vào `main` qua PR #90 (merge `4538a7a`). Kết quả chạy lệnh nằm ở phần kiểm chứng bên dưới. |
 
-### Prompt đã sử dụng:
-```text
-Bạn hãy vào folder WikiCook và các mục có liên quan đến PA4 nằm trong tasks/PA4 và guide_tasks/PA4 , đọc để hiểu context của PA4 hiện tại
-
-Tôi cần làm SCRUM-76 như trên ảnh [ảnh chụp mô tả task SCRUM-76 trên Jira], và nhớ cập nhật vào docs/ai_log/ai_log_hung.md giúp tôi nhé
-
-Bạn dựa vào ảnh hay html nào của design ui/ux và làm sao để tôi giao diện bạn đã code và đối chiếu với mẫu ui/ux có trong docs
-
-Hiện trạng thái page local hiện tại của các giao diện liên quan chưa bám sát UI/UX đã thiết kế từ trước , bạn hãy kiểm tra lại và đối chiếu đảm bảo thiết kế giống 100% giao diện màu sắc , nếu sai logic thì dẫn đến hiển thị tương ứng giúp tôi [ảnh chụp cột trái của trang đăng nhập: 3 ô màu không có icon]
-```
+### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
+1. Đọc các tài liệu PA4 trong `tasks/PA4` và `guide_task/PA4` để nắm ngữ cảnh hiện tại của PA4.
+2. Hiện thực `SCRUM-76` theo mô tả trên Jira (kèm ảnh chụp mô tả task): giao diện đăng ký, đăng nhập, hồ sơ và hồ sơ ăn uống cho nhóm 1 (`010` + `011`), và ghi lại việc dùng AI vào `docs/ai_log/ai_log_hung.md`.
+3. Cho biết đã dựa vào file thiết kế UI/UX nào trong `docs/analysis-and-design/ui-ux/screens` và cách đối chiếu giao diện đã code với bản thiết kế.
+4. Chạy giao diện cục bộ để xem (`npm run dev`) và cho biết địa chỉ từng trang.
+5. Đối chiếu lại các trang đã làm với thiết kế để giống 100% về màu sắc và bố cục (kèm ảnh chụp chỗ sai: cột trái trang đăng nhập có ba ô màu trống); nếu khác về logic thì giao diện phải hiển thị tương ứng.
 
 ### Nội dung do AI sinh ra:
 1. **Lớp dùng chung** (`src/frontend/src/shared/`): `api/session.ts` (access token chỉ giữ trong bộ nhớ, xóa khóa `wk.accessToken` cũ trong `localStorage`); `api/client.ts` (gắn `Authorization: Bearer` trừ các route công khai `/auth/*`, header `X-WikiCook-Client: web`, `refreshSession()` một lần tại một thời điểm, gặp 401 thì refresh rồi gửi lại đúng một lần, sự kiện `auth:refreshed` / `auth:expired` / `auth:restricted`, `api.postForm`); `api/safeRedirect.ts`; `ui/TextField.tsx`, `ui/PasswordField.tsx`, `ui/useFieldIds.ts`.
@@ -1220,9 +1224,9 @@ Hiện trạng thái page local hiện tại của các giao diện liên quan c
 
 ### Phần sinh viên cần tự làm, hiệu chỉnh & kiểm chứng (chưa thực hiện tại thời điểm ghi log — cập nhật sau khi làm):
 - Đọc lại diff và xác nhận phạm vi trên với Hiển (reviewer `SCRUM-76`), nhất là việc bọc `RequireAuth` cho `/meal-planner`, `/shopping-list*` trước khi backend `SCRUM-74` merge.
-- Chạy `npm run e2e` (Chromium của Playwright đã được cài trong phiên nhưng chưa chạy e2e); chạy giao diện thật với backend của Hiển (`SCRUM-74`, `SCRUM-75`) để kiểm tra luồng đăng ký → đăng nhập → hồ sơ → hồ sơ ăn uống và lưu vào PostgreSQL.
+- Chạy `npm run e2e` (Chromium của Playwright đã được cài trong phiên nhưng chưa chạy e2e); chạy giao diện thật với backend của Hiển (`SCRUM-74`, `SCRUM-75`) để kiểm tra luồng đăng ký → đăng nhập → hồ sơ → hồ sơ ăn uống và lưu vào PostgreSQL. **Cập nhật 18/11/2026:** giao diện đã được chạy với backend thật và `npm run e2e` đã chạy (kết quả và bản sửa lỗi ở Mục 30).
 - Tự mở app cạnh file thiết kế để xem lại; AI chỉ so ảnh chụp ở 1440 px, chưa so bản mobile 360 px (các file `AU*`, `PF*` không có tiền tố `W-`).
-- Điền hash commit/PR vào dòng "Minh chứng" sau khi commit.
+- Điền hash commit/PR vào dòng "Minh chứng" sau khi commit (đã điền ngày 18/11/2026).
 
 ---
 
@@ -1279,3 +1283,150 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - `git diff --check`: 0 lỗi whitespace / định dạng bảng Markdown.
 - Kiểm tra hiển thị bảng Markdown trên môi trường GitHub / VS Code preview: các bảng Round-Robin và Traceability Matrix hiển thị sắc nét, căn chỉnh đúng chuẩn.
 - Đối chiếu vé Jira: Khớp hoàn toàn với mô tả, tiêu chí nghiệm thu và hạn chót (Nov 19, 2026) của ticket `SCRUM-87`.
+
+---
+
+## Mục 28: Soạn `Changes.md` cho PA4 và cập nhật ghi chú Google trong Use-Case Specification (`SCRUM-84`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Sonnet 5.5 (`claude-sonnet-5-5`) |
+| **Thời gian truy cập cụ thể** | 2026-11-18, khoảng 21:00 – 22:30 (Giờ Việt Nam, UTC+7); giờ là ước lượng theo phiên làm việc |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-84` — `[Documentation] Author Single Changes.md for PA4 Revisions (Part A)`; một phần nhỏ chỉnh tài liệu của `SCRUM-71` theo sự cho phép của chủ tài liệu (Duy) |
+| **Tài liệu / spec liên quan** | `Changes.md`, `docs/requirements/use-case-model.md` (`v0.2` → `v2.0`), `docs/requirements/use-case-specification.md` (`v1.4` → `v2.0`), `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 3, `SCRUM-69`), `tasks/PA4/pa4-guide.md`, `tasks/PA4/wikicook-pa4-team-assignment.md` |
+| **Mục đích sử dụng** | Soạn file `Changes.md` duy nhất cho Phần A: trạng thái TA feedback PA3, bảng Before/After/Lý do theo từng mục của Use-Case Model và theo từng use case của Use-Case Specification, danh sách use case mới, câu hỏi mở. Sau đó sửa các ghi chú "Google chưa có" đã lỗi thời sau PR #97 trong Use-Case Specification. |
+| **Nhánh Git** | `docs/SCRUM-84-changes-md` (tạo từ `origin/main` tại `0831048`) |
+| **Minh chứng (Evidence)** | Commit `e97bca0` (`Changes.md`), `c070eca` (ghi chú Google trong Use-Case Specification), `746f3c6` (dòng ghi lại thay đổi này trong `Changes.md`), commit của mục log này; đã push lên `origin/docs/SCRUM-84-changes-md`. PR: điền số PR khi mở. |
+
+### Prompt đã sử dụng (tóm lược đã biên tập cho rõ ràng; giữ nguyên ý định, không phải nguyên văn từng câu):
+1. Đẩy nhánh sửa lỗi của `SCRUM-76` lên remote, soạn tiêu đề và mô tả cho PR đó; sau đó soạn bản nháp `Changes.md` cho PA4 và làm trên một nhánh riêng.
+2. Cập nhật các ghi chú đã lỗi thời về Google OAuth trong `use-case-specification.md` (`UC-011-03` AF 3.6 – 3.7, `UC-011-04` AF 4.2, `[OQ-011-09]` mục 3) sau khi PR #97 được merge. Người dùng xác nhận đã được chủ tài liệu (Nguyễn Đức Duy) cho phép chỉnh sửa tài liệu này.
+3. Liệt kê các SCRUM còn thiếu của PM và những việc cần hoàn thành; sau đó cho phép AI triển khai theo đề xuất của AI.
+4. Viết lại mô tả PR bằng tiếng Anh và biên tập lại phần Prompt trong AI log cho chuyên nghiệp.
+
+### Nội dung do AI sinh ra:
+1. Đọc diff `git diff 744df48 HEAD` (Use-Case Model) và `git diff 00bbaac HEAD` (Use-Case Specification), tách theo mục và theo use case, rồi soạn `Changes.md`: Mục 0 (TA feedback: không nhận được, kiểm 12/11 bởi Duy), Section A (16 dòng Before/After/Lý do + 4 use case mới + câu hỏi mở), Section B (22 dòng theo use case, câu hỏi mở đã đóng và thêm mới, giới hạn của bản sửa), Section C (đối chiếu hai tài liệu), Section D (phần không đổi).
+2. Sửa 4 chỗ trong Use-Case Specification: ghi chú Section 9, trạng thái triển khai của `UC-011-03` và `UC-011-04`, và `[OQ-011-09]` mục 3. Nội dung mới: Google sign-in đã merge (PR #97), chỉ `intent=reauth` chưa làm (task T149a bị chặn bởi T149b), nên `AF 3.6`, `AF 3.7`, `AF 4.2` vẫn chưa chạy được.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng (chưa thực hiện tại thời điểm ghi log — cập nhật sau khi làm):
+- Đọc lại toàn bộ `Changes.md` và đối chiếu từng dòng với hai tài liệu gốc; AI chỉ đọc diff, chưa đọc từng use case của Section 12 (`070`) và Section 10 (`011`) cho tới từng bước.
+- Nhờ Duy review `Changes.md` (reviewer `SCRUM-84`, hạn 20/11) và xác nhận các thay đổi nhỏ trong tài liệu `SCRUM-71`; nhờ Chung xác nhận phần `070` (reviewer Section 12).
+- Kiểm tra lại TA feedback trên Moodle trước 23/11 và sửa Mục 0 nếu có.
+- Khi PR frontend `070` (`SCRUM-78`) được merge, cập nhật câu "chưa merge" ở mục B.4.
+
+### Kiểm chứng đã thực hiện:
+- Đối chiếu số liệu với `use-case-model.md` (Revision History, mục 5 và 6) và `use-case-specification.md` (Revision History, `[OQ-011-09]`, `[OQ-070-07]`–`[OQ-070-18]`): 64 → 68 use case, 4 ID mới, không đánh số lại.
+- Đọc mã nguồn `GoogleAuthorizationRequestResolver` và `GoogleStartController` để xác nhận `intent=reauth` trả `?reauth=cancelled` và không tạo phiên.
+- Script Python kiểm tra mọi bảng trong `Changes.md` có số cột đồng nhất; đường dẫn liên kết tồn tại.
+- Chưa chạy test (chỉ sửa tài liệu).
+
+---
+
+## Mục 29: Sửa biên bản Standup 02 viết trước khi họp thành khung chưa điền kết quả (`SCRUM-87`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Sonnet 5.5 (`claude-sonnet-5-5`) |
+| **Thời gian truy cập cụ thể** | 2026-11-18, khoảng 21:30 – 23:00 (Giờ Việt Nam, UTC+7); giờ là ước lượng theo phiên làm việc |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-87` — `[Ceremony] Conduct & Document Weekly Scrum Standups 01 & 02 (Part F)` |
+| **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.3, 2.4, Revision History), `tasks/PA4/pa4-guide.md` (SCRUM-87: "do not pre-fill outcomes as facts"), `tasks/PA4/wikicook-pa4-team-assignment.md` (lịch: Code Freeze 18/11 23:59, Standup 02 ngày 19/11 22:00) |
+| **Mục đích sử dụng** | Rà soát Mục 2.3 và 2.4 do mục 27 tạo ra (16/11): biên bản Standup 02 ghi đầy đủ giờ họp, 5/5 người có mặt, lời từng người và quyết định cho một buổi họp chưa diễn ra; nhiều tiến độ được ghi là đã xong nhưng không có trên `main`. Viết lại thành khung chờ họp thật. |
+| **Nhánh Git** | `docs/SCRUM-87-standup-02-template` (tạo từ `origin/main` tại `0831048`) |
+| **Minh chứng (Evidence)** | Commit `173d5ac` trên nhánh trên (PR sẽ mở sau; điền số PR khi có). Chưa push tại thời điểm ghi log. |
+
+### Prompt đã sử dụng (tóm lược đã biên tập cho rõ ràng; giữ nguyên ý định, không phải nguyên văn từng câu):
+1. Sau khi nhóm merge thêm một số PR, kiểm tra tiến độ PA4 hiện tại trên `main` và báo cáo ngắn gọn theo từng thành viên.
+2. Liệt kê các SCRUM còn thiếu của PM và những SCRUM cần hoàn thành.
+3. Đồng ý để AI triển khai các việc AI đề xuất: sửa biên bản Standup 02, push nhánh và soạn nội dung PR.
+
+### Nội dung do AI sinh ra:
+1. Phát hiện Mục 2.3 (Standup 02, "19/11/2026, 22:00 – 22:35, 5/5 có mặt") được ghi trước ngày họp (commit ngày 16/11, hôm nay là 18/11), kèm các khẳng định không có trên `main`: C4 Level 2/3 và Deployment Diagram "đã xong", frontend `070` "đã xong", endpoint `POST /api/v1/recipes/{id}/cooksnaps` (không có trong controller), Code Freeze "19/11 23:59" (lịch PA4 ghi 18/11 23:59).
+2. Viết lại Mục 2.3 thành khung: trạng thái "chưa họp", chương trình dự kiến lấy từ mô tả Jira `SCRUM-87`, cột "Bằng chứng trong repo ngày 18/11" (lấy từ `git` trên `origin/main`) và các ô `[to fill]` cho giờ họp thật, người có mặt, lời từng người, quyết định.
+3. Viết lại Mục 2.4: chỉ giữ ACT-01 đến ACT-07 (các buổi đã diễn ra), mỗi dòng có trạng thái ngày 18/11 (ví dụ `SCRUM-78` chưa merge); bỏ ACT-08 đến ACT-10; viết lại Provenance Statement, bỏ câu "peer-reviewed".
+4. Thêm dòng `v0.5` vào Revision History và sửa số phiên bản tiêu đề.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng (chưa thực hiện tại thời điểm ghi log — cập nhật sau khi làm):
+- Họp Standup 02 thật (19/11, 22:00), rồi điền các ô `[to fill]` bằng giờ, người có mặt và nội dung thực tế; sau đó nâng phiên bản lên `v0.6`.
+- Đối chiếu **Mục 2.2 (Standup 01, 14/11)** với ghi chép buổi họp thật: AI chưa sửa mục này vì không biết thực tế đã nói gì. Một số chi tiết đáng nghi: "Axios interceptors" (dự án dùng `fetch`), "dev-mode mock server `dev:mock`" (lệnh này được tạo sau ngày 14/11), "Cloud OCR Service" là hệ thống ngoài của C4 Level 1.
+- Nhờ Duy review mục này (reviewer của `SCRUM-87`) và Hiển/Dự xác nhận cột bằng chứng của mình.
+- Tự đọc lại diff trước khi merge.
+
+### Kiểm chứng đã thực hiện:
+- `git fetch` rồi so với `origin/main` (`0831048`): danh sách PR đã merge (#84, #87, #88, #89, #90, #91, #93, #94, #95, #96, #97, #99, #100, #101, #103), nhánh `feat/070-reviews-frontend` chưa merge và xung đột với `main` ở `MyAccountPage.tsx` (kiểm bằng `git merge-tree`).
+- `grep` controller của backend: không có endpoint `.../recipes/{id}/cooksnaps`.
+- `git diff --check`: không có lỗi khoảng trắng.
+- Chưa chạy lại test (chỉ sửa tài liệu).
+
+---
+
+## Mục 30: Kiểm tra giao diện SCRUM-76 với backend thật và khắc phục các điểm lệch so với Spec Kit (`SCRUM-76`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Sonnet 5.5 (`claude-sonnet-5-5`) |
+| **Thời gian truy cập cụ thể** | Từ 2026-11-16, khoảng 21:00 đến 2026-11-18, khoảng 22:30 (Giờ Việt Nam, UTC+7); giờ là ước lượng theo phiên làm việc và dấu thời gian các lần chạy kiểm thử |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-76` — `[Implementation] Frontend Part E (Group 1): 010 + 011 Auth & Dietary Profile UI` |
+| **Tài liệu / spec liên quan** | `specs/010-user-authentication-roles/` và `specs/011-user-profile-dietary/` (`tasks.md`, `contracts/openapi.yaml`), mã nguồn backend `com.wikicook.auth` và `com.wikicook.profile` trên `main` |
+| **Mục đích sử dụng** | Chạy backend thật bằng Docker và kiểm tra các luồng của giao diện (đăng ký, đăng nhập, hồ sơ, hồ sơ ăn uống, quên mật khẩu, xác minh email); đánh giá PR #97 trước khi merge; rà soát các điểm lệch giữa `tasks.md` của Spec Kit và code rồi khắc phục. |
+| **Nhánh Git** | `fix/SCRUM-76-verify-email-once` (sửa lỗi xác minh email); `chore/SCRUM-76-close-gaps` (gỡ định danh dev, thêm test, cập nhật `tasks.md`) |
+| **Minh chứng (Evidence)** | Commit `60d835a` (sửa trang xác minh email, kèm test chạy trong StrictMode); `a2d0dbb` (gỡ `X-User-Id`, `X-Dev-User-Id` và phiên người dùng dev); `33156dd` (test `api.postForm`, spec 011 T014); `85f0437` (tick 41 task của `010` và 21 task của `011`). PR: điền số PR khi mở. |
+
+### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
+1. Kiểm tra xem frontend SCRUM-76 đã chạy được với backend sau khi cập nhật `main` chưa, rồi kiểm lại với backend mới (có API hồ sơ).
+2. Kiểm tra PR "avatarUrl, public profile, Google sign-in, closure token (SCRUM-74/75/76)" đã sẵn sàng merge chưa.
+3. Rà soát các SCRUM của PM, tìm mâu thuẫn logic và khắc phục.
+
+### Nội dung do AI sinh ra:
+1. Dựng backend bằng Docker Compose (tạo `src/backend/.env` cục bộ với khóa ngẫu nhiên, không commit), gọi các endpoint bằng `curl` và chạy các kịch bản Playwright để kiểm tra giao diện thật: đăng ký, đăng nhập, tải lại giữ phiên, sửa hồ sơ kèm ảnh, hồ sơ ăn uống, xung đột phiên bản 409 rồi "Lưu đè", quên mật khẩu rồi đặt lại, xác minh email.
+2. Phát hiện lỗi: dưới StrictMode trang xác minh email gọi `confirm` hai lần nên lần đầu hiện "đã xác minh trước đó"; viết bản sửa và test hồi quy (`60d835a`).
+3. Đánh giá PR #97: gộp thử với `main`, chạy `mvn verify` (1410 test), `vitest` (833 test), lint, build, e2e; đọc mã Google sign-in và closure token.
+4. Khắc phục các điểm lệch Spec Kit: gỡ `X-User-Id`, `X-Dev-User-Id`, `getDevUserId`, `setDevUserId`, `GUEST` theo `tasks.md` T023, T049, T051 (kể cả `ReviewSection` và test của nó); thêm test `api.postForm` (T014); tick các task đã giao trong hai `tasks.md`, để mở các task mà file hoặc hành vi chưa tồn tại.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng (chưa thực hiện tại thời điểm ghi log — cập nhật sau khi làm):
+- Đọc lại diff và nhờ Hiển (reviewer `SCRUM-76`) duyệt; nhờ Duy xem thay đổi ở `ReviewSection` vì đây là code của `SCRUM-78`.
+- Rà lại danh sách task được tick: AI chỉ tick khi file nêu tên đã tồn tại và bộ test qua, không đọc lại từng yêu cầu của task.
+- Các task còn mở cần quyết định: Content-Security-Policy trong `nginx.conf` (T175), xử lý 401 của trang Meal Planner (T026a, T054a), e2e riêng cho auth (T066, T131, T180, T181), trang đổi mật khẩu và xóa tài khoản của `011` (US3, US4, phụ thuộc backend chưa có).
+- Chạy lại e2e: còn 1 test của `meal-planner.spec.ts` lỗi sẵn trên `main` (route `shopping-list/import`), không thuộc `SCRUM-76`.
+
+### Kiểm chứng đã thực hiện:
+- Backend `mvn verify` trên bản đã gộp PR #97 với `main`: 1410 test, 0 lỗi, 0 thất bại.
+- Frontend sau khi gỡ định danh dev: `vitest` 120 file / 916 test, `eslint` 0 lỗi (2 cảnh báo có sẵn), `tsc -b` và build qua.
+- Trình duyệt thật với backend: 20 request API sau khi đăng nhập, không request nào mang header dev, 10 request mang bearer token.
+- Test hồi quy xác minh email đỏ khi bỏ bản sửa, xanh khi có.
+
+---
+
+## Mục 31: Soạn bản nháp Sprint Review và Retrospective từ tiến độ hiện tại của nhóm (`SCRUM-88`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Sonnet 5.5 (`claude-sonnet-5-5`) |
+| **Thời gian truy cập cụ thể** | 2026-11-19, khoảng 00:00 – 01:00 (Giờ Việt Nam, UTC+7); giờ là ước lượng theo phiên làm việc |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-88` — `[Ceremony] Sprint 4 Review, Retrospective & Sprint Report`; sửa nhỏ cho `SCRUM-87` và `SCRUM-84` |
+| **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.3, 2.4, 4, 5), `Changes.md`, `use-case-specification.md`, `tasks/PA4/pa4-guide.md` (SCRUM-88: "Add Jira screenshots only after verifying the live board") |
+| **Mục đích sử dụng** | Soạn nháp Mục 4 (Review) và Mục 5 (Retrospective) dựa trên trạng thái thật của 23 task trên `origin/main`; cập nhật các câu đã lỗi thời vì PR #98 (frontend `070`) được merge. |
+| **Nhánh Git** | `docs/SCRUM-88-review-retro-draft` (tách từ `docs/SCRUM-87-standup-02-template`) |
+| **Minh chứng (Evidence)** | Commit `3e813c1` (Mục 4 và 5), `7abb494` (cập nhật Standup 02), `ff02385` (spec và `Changes.md`); PR: điền số PR khi mở. |
+
+### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
+1. Soạn bản nháp Sprint Review và Retrospective dựa vào tiến độ hiện tại của các thành viên.
+
+### Nội dung do AI sinh ra:
+1. Đối chiếu 23 task với `origin/main` (PR đã merge, nhánh còn mở, thẻ phát hành, tài liệu kiến trúc) và lập bảng trạng thái, bảng theo từng phần PA4, danh sách demo, danh sách giới hạn đã biết.
+2. Viết ứng viên Glad / Sad / Mad kèm bằng chứng và đề xuất việc cho Sprint 5; ghi rõ đây chỉ là bản nháp, buổi họp chưa diễn ra.
+3. Phát hiện PR #98 đã merge sau khi viết nháp Standup 02 nên cập nhật dòng của Duy, ACT-07, và các câu "frontend 070 chưa merge" trong `Changes.md` và spec.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng (chưa thực hiện tại thời điểm ghi log — cập nhật sau khi làm):
+- Họp Review/Retro (22/11, 20:00), để cả nhóm giữ, sửa hoặc bỏ từng ứng viên; điền ngày giờ, người có mặt, quyết định.
+- Kiểm bảng Jira thật rồi mới chụp và đặt ảnh vào `docs/assets/jira/sprint-04/`.
+- Kiểm lại trạng thái `main` vào ngày họp; bảng ở Mục 4.2 chỉ đúng tại 19/11/2026, 00:30.
+- Xác nhận với Duy và Chung việc chạy nhóm 2 (`070`) đầu cuối, vì AI chưa kiểm phần này.
+
+### Kiểm chứng đã thực hiện:
+- `git fetch` rồi đối chiếu `origin/main`, danh sách PR đã merge, thẻ (`git tag`: không có), nhánh từ xa.
+- `git diff --check`: không lỗi khoảng trắng.
+- Chưa chạy test (chỉ sửa tài liệu).

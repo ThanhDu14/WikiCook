@@ -1,34 +1,18 @@
-import { GUEST, getAccessToken, getDevUserId, setAccessToken, setDevUserId } from './session';
+import { getAccessToken, setAccessToken } from './session';
 import { installMemoryStorage } from './memoryStorage.testutil';
 
 beforeAll(() => {
   installMemoryStorage();
 });
 
-describe('dev session (ACT-01)', () => {
+describe('session', () => {
   afterEach(() => {
     window.localStorage.clear();
+    setAccessToken(null);
   });
 
-  it('defaults to dev user 1 and no token', () => {
-    expect(getDevUserId()).toBe(1);
+  it('starts without a token', () => {
     expect(getAccessToken()).toBeNull();
-  });
-
-  it('remembers the dev user and the guest choice', () => {
-    setDevUserId(7);
-    expect(getDevUserId()).toBe(7);
-
-    setDevUserId(GUEST);
-    expect(getDevUserId()).toBe(GUEST);
-  });
-
-  it('ignores a corrupt stored value', () => {
-    window.localStorage.setItem('wk.devUserId', 'abc');
-    expect(getDevUserId()).toBe(1);
-
-    window.localStorage.setItem('wk.devUserId', '-4');
-    expect(getDevUserId()).toBe(1);
   });
 
   it('stores and clears the access token', () => {
@@ -39,14 +23,15 @@ describe('dev session (ACT-01)', () => {
     expect(getAccessToken()).toBeNull();
   });
 
-  it('keeps the access token in memory only and drops the key an earlier build wrote (R2)', () => {
+  it('keeps the access token in memory only and drops the keys an earlier build wrote (R2)', () => {
     window.localStorage.setItem('wk.accessToken', 'old');
+    window.localStorage.setItem('wk.devUserId', '7');
 
     setAccessToken('t2');
 
     expect(window.localStorage.getItem('wk.accessToken')).toBeNull();
-    expect(Object.keys(window.localStorage)).not.toContain('wk.accessToken');
+    expect(window.localStorage.getItem('wk.devUserId')).toBeNull();
+    expect(window.localStorage.length).toBe(0);
     expect(getAccessToken()).toBe('t2');
-    setAccessToken(null);
   });
 });
