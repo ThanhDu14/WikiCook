@@ -44,6 +44,7 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 29 | 2026-11-18, khoảng 21:30 – 23:00 | `SCRUM-87`, `SCRUM-68` | Sửa Standup 02 thành khung chờ họp, sửa Standup 01, Planning và ngày nộp | `173d5ac`, `3d1b9aa` | `sprint-04-report.md` |
 | 30 | 2026-11-16 .. 2026-11-18 (ước lượng) | `SCRUM-76` | Kiểm tra giao diện với backend thật, sửa trang xác minh email, kiểm PR #97, gỡ định danh dev, bổ sung test, cập nhật `tasks.md` | `60d835a`, `a2d0dbb`, `33156dd`, `85f0437` | `src/frontend/`, `specs/010-*/tasks.md`, `specs/011-*/tasks.md` |
 | 31 | 2026-11-19, khoảng 00:00 – 01:00 | `SCRUM-88`, `SCRUM-87`, `SCRUM-84` | Soạn bản nháp Sprint Review và Retrospective từ bằng chứng trong repo; cập nhật các câu lỗi thời sau khi PR #98 được merge | `7abb494`, `ff02385`, `3e813c1` | `sprint-04-report.md`, `Changes.md`, `use-case-specification.md` |
+| 32 | 2026-11-19, khoảng 20:00 – 21:50 (ước lượng) | `SCRUM-88`, `SCRUM-84` | Kiểm tra tiến độ PA4 trên GitHub, cập nhật bảng trạng thái và việc còn mở theo từng người; gộp change list của Duy (`SCRUM-70`, `SCRUM-71`) vào `Changes.md`; model `v2.0.1` | `8680c50`, `3d1cc22`, `c51c31a` | `sprint-04-report.md`, `Changes.md`, `use-case-model.md` |
 
 ---
 
@@ -1430,3 +1431,43 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - `git fetch` rồi đối chiếu `origin/main`, danh sách PR đã merge, thẻ (`git tag`: không có), nhánh từ xa.
 - `git diff --check`: không lỗi khoảng trắng.
 - Chưa chạy test (chỉ sửa tài liệu).
+
+---
+
+## Mục 32: Kiểm tra tiến độ PA4 trên GitHub, cập nhật trạng thái Sprint 04 và gộp change list của Duy vào `Changes.md` (`SCRUM-88`, `SCRUM-84`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: `[Hưng điền model của phiên]` |
+| **Thời gian truy cập cụ thể** | 2026-11-19, khoảng 20:00 – 21:50 (Giờ Việt Nam, UTC+7); giờ bắt đầu là ước lượng, giờ kết thúc khớp với các commit của mục này |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-88` (bảng trạng thái Sprint 04), `SCRUM-84` (`Changes.md`, Use-Case Model `v2.0.1`); đầu vào từ `SCRUM-70`, `SCRUM-71` của Nguyễn Đức Duy |
+| **Tài liệu / spec liên quan** | `tasks/PA4/wikicook-pa4-team-assignment.md`, `wikicook-pa4-handoff-prompt.md`, `pa4-guide.md` (ngoài repo); `sprint-04-report.md`, `Changes.md`, `use-case-model.md`, `use-case-specification.md`; hai file change list Duy gửi qua chat (không có trong repo) |
+| **Mục đích sử dụng** | Đọc tài liệu phân công PA4; xem tiến độ trên GitHub và cập nhật bảng trạng thái để nhắc thành viên; rà hai file change list của Duy và gộp vào `Changes.md`; soạn tin nhắn nhắc Chung và Duy (tin nhắn không đưa vào repo). |
+| **Nhánh Git** | `docs/SCRUM-84-88-pa4-status-changes` (tách từ `origin/main` tại `6a78652`) |
+| **Minh chứng (Evidence)** | Commit `8680c50` (model `v2.0.1`), `3d1cc22` (`Changes.md`), `c51c31a` (Sprint 04 report); PR: điền số PR khi mở. |
+
+### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
+1. Đọc các file liên quan đến PA4, gồm các file chia việc trong `tasks/` và trong `WikiCook`.
+2. Xem tiến độ trên GitHub.
+3. Cập nhật bảng trạng thái `sprint-04-report.md`, chỉ ra phần nào các thành viên đã làm xong, phần nào chưa, để nhắc nhóm; các thành viên còn thiếu những SCRUM nào cụ thể.
+4. Xem hai file Duy gửi có cần bổ sung không; bàn trước và hỏi dạng trắc nghiệm để Hưng duyệt.
+5. Soạn tin nhắn cho Chung và Duy; tạo nhánh mới, commit và mở PR.
+
+### Nội dung do AI sinh ra:
+1. Đối chiếu 23 task với `origin/main`, PR #84 – #106 và các review trên GitHub (API công khai); bảng 4.2 thêm cột người review theo kế hoạch và người approve; mục mới 4.2.1 liệt kê việc còn mở theo từng người.
+2. So từng dòng của hai file Duy với `Changes.md` và với hai tài liệu trên `main`; tìm ra 4 chỗ sai trong `Changes.md` và 2 ý đã cũ trong file Duy; viết lại Section A, B theo lựa chọn của Hưng, thêm A.4, B.5 Verification và dòng Performed / Reviewed / Edited dưới mọi tiêu đề.
+3. Cập nhật trạng thái issue 6 của `use-case-model.md` (`v2.0.1`); phát hiện `UC-100-02` (spec Section 13) vẫn tự mô tả bước tính lại điểm, nên issue 6 ghi "resolved, except one point".
+4. Soạn tin nhắn nhắc Chung (`SCRUM-79`, `-85`, `-86`) và Duy (review `Changes.md`, kiểm tra phản hồi TA).
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Hưng chọn qua câu hỏi trắc nghiệm: giữ cấu trúc A/B của `Changes.md`, sửa luôn `use-case-model.md`, bổ sung ở mức đầy đủ.
+- Hưng xác nhận: Hiển đã review `SCRUM-70` trước khi Hưng approve PR #99; Hưng approve thay người review cho PR #91, #93, #94, #96, #97, #101, #106 theo thỏa thuận trong nhóm.
+- Chưa thực hiện tại thời điểm ghi log (cập nhật sau khi làm): Duy review `Changes.md` và model `v2.0.1`; Chung xác nhận review Use-Case Specification `v2.0`; quyết định cho `UC-100-02`; điền model và giờ bắt đầu chính xác của mục này; đối chiếu với Jira (AI không truy cập được Jira).
+
+### Kiểm chứng đã thực hiện:
+- `git fetch`; GitHub API: danh sách PR và review của PR #80 – #106; nhánh chưa merge (không có việc Sprint 4 nào nằm ngoài `main`); `git ls-remote --tags` (không có thẻ nào).
+- Từng điểm sửa trong `Changes.md` được đối chiếu với tài liệu: bản PA3 của model (`744df48`) cho mục 1.2, 2.1, 6.2; trạng thái các câu hỏi mở trong spec; tên class trong `src/backend/wikicook-app`.
+- Script kiểm số cột của mọi bảng trong 3 file sửa và trong spec (0 lỗi); mọi tiêu đề của `Changes.md` có dòng ghi người làm.
+- `git diff --check`: chỉ báo hai dấu cách ngắt dòng Markdown ở dòng `Document Version` của model (giữ nguyên như các dòng đầu trang khác).
+- Chưa chạy test, chưa render lại Mermaid (không sơ đồ nào thay đổi).
