@@ -1657,7 +1657,7 @@ Tóm lược (nguyên văn nằm trong hội thoại):
 - `grep -c "pending review" docs/management/project-plan.md` ra 7 và trong `Changes.md` ra 2; `grep -n "NFR-REL-10\|Sprint 3 — Build v0.5" docs/requirements/vision-document.md` ra hai dòng 532 và 612 còn ghi `redis` và 13/11/2026.
 - Giờ: lệnh `date` lúc ghi mục này ra `2026-11-06 07:55`.
 - Version Claude Code: 2.1.296.
-- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+- Lịch sử chat: phiên bắt đầu 10:37 ngày 04/11 là `1800126c-f01b-4535-8fd7-021d93d2f4bb.jsonl` (đến 08:19 ngày 06/11); phiên 07:41 – 08:25 ngày 06/11 có cùng prompt mở đầu là `7a740ef7-cb04-4173-b129-5dca86f9b2f9.jsonl`. Không có ảnh chụp màn hình; bằng chứng là file transcript Claude Code trong `C:\Users\DMX\.claude\projects\d--HK1-N-m-3-Nh-p-m-n-CNPM-----n-WikiCook\` (mỗi dòng của file là một lượt hội thoại, kèm dấu thời gian UTC). Hiển có thể đính kèm bản export từ file này khi nộp.
 - Hiển cần tự đối chiếu trước khi nộp: (1) giờ bắt đầu phiên ngày 04/11 và phiên bản Claude Code của từng phiên; (2) từng thay đổi trong bảng A.2 của `Changes.md` với `project-plan.md` đã merge; (3) bốn quyết định AI tự chốt ở mục A.4; (4) câu "all remote branches" ở A.1; (5) hai chỗ Vision (`vision-document.md:532`, `:612`) sau khi lấy PR #71 về, và các câu ở `Changes.md` section A (A.1, A.5 mục 2 và 5) đã lỗi thời so với PR #71; (6) 7 chỗ "pending review" sau khi Hưng đã Approve.
 
 ---
@@ -1745,7 +1745,7 @@ Tóm lược (nguyên văn nằm trong hội thoại):
 - Mermaid: `mermaid.parse` với `mermaid@10.9.1` (cài ở thư mục tạm, không vào repo): 6 khối, 0 lỗi. Số cột bảng Markdown: 0 dòng lệch ở `project-plan.md` và `Changes.md`.
 - Chưa render PDF và chưa chạy `markdownlint`.
 - Version Claude Code: 2.1.296; model theo từng lượt lấy từ transcript phiên.
-- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+- Lịch sử chat: phiên bắt đầu 08:25 ngày 06/11 (`2026-11-06T01:25:39Z`) là `015c2cd7-ca18-4ff0-a9f3-9f9a054dce7f.jsonl` (đến 09:11). Không có ảnh chụp màn hình; bằng chứng là file transcript Claude Code trong `C:\Users\DMX\.claude\projects\d--HK1-N-m-3-Nh-p-m-n-CNPM-----n-WikiCook\` (mỗi dòng của file là một lượt hội thoại, kèm dấu thời gian UTC). Hiển có thể đính kèm bản export từ file này khi nộp.
 - Hiển cần tự đối chiếu trước khi nộp: (1) sửa "all remote branches" ở `Changes.md` A.1; (2) sửa dòng lỗi và thêm `45b1d07` vào mô tả PR #72, đổi tiêu đề PR; (3) từng thay đổi trong bảng A.2 với `project-plan.md`; (4) các nhãn pending review sau khi Hưng duyệt, gồm cả dòng 7 của `Changes.md`; (5) chạy thật gate `Build v0.5`; (6) các mục cần xem trên Jira ở A.5 mục 4.
 
 ---
@@ -1860,7 +1860,7 @@ Tóm lược (nguyên văn nằm trong hội thoại):
 - `git status --short` trong worktree: 4 file đã có trên `main` bị sửa (hai file checklists, `spec.md` của 010 và của 011), 12 mục mới chưa theo dõi của 010 và 011. Sau khi Hiển chép thêm spec 100 và AI log, PR #84 có 6 file đã có trên `main` bị sửa: `ai_log_hien.md`, hai file checklists, spec 010, spec 011 và spec 100 (góp ý của Duy trên PR).
 - Chưa chạy `mvn verify`, `npm test`, chưa render Markdown sang PDF.
 - Version Claude Code: 2.1.296; model theo từng lượt lấy từ transcript phiên.
-- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+- Lịch sử chat: phiên bắt đầu 09:12 ngày 07/11 (`2026-11-07T02:12:45Z`) là `56ae6b34-69eb-4a98-8e81-afc76d9207fc.jsonl` (kéo dài đến 13:55 ngày 12/11); Mục 27 dùng cùng phiên này. Không có ảnh chụp màn hình; bằng chứng là file transcript Claude Code trong `C:\Users\DMX\.claude\projects\d--HK1-N-m-3-Nh-p-m-n-CNPM-----n-WikiCook\` (mỗi dòng của file là một lượt hội thoại, kèm dấu thời gian UTC). Hiển có thể đính kèm bản export từ file này khi nộp.
 - Hiển cần tự làm trước khi đóng SCRUM-72:
   1. Commit trong worktree theo hai thông điệp đề xuất, push, mở PR vào `main`.
   2. Chốt người duyệt (Hưng, Duy) và phạm vi PA4.
@@ -1931,7 +1931,7 @@ hãy lên xem review PR #84. Kiểm tra lại cần sửa điều gì, và giả
 - Hai file `openapi.yaml` (010, 011) parse được bằng PyYAML; `/admin/users/{id}/reinstatement` có phản hồi 200, 400, 401, 403, 404, 409.
 - `grep` không còn `USER_SUSPENDED` (trừ ghi chú), `DELETED_USER`, `old_role` trong 010, 011, 100.
 - Chưa chạy `/speckit-analyze` lại, chưa render PDF.
-- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+- Lịch sử chat: cùng file transcript `56ae6b34-69eb-4a98-8e81-afc76d9207fc.jsonl` của Mục 26 (phần xử lý review PR #84 ngày 11 – 12/11). Không có ảnh chụp màn hình; bằng chứng là file transcript Claude Code trong `C:\Users\DMX\.claude\projects\d--HK1-N-m-3-Nh-p-m-n-CNPM-----n-WikiCook\` (mỗi dòng của file là một lượt hội thoại, kèm dấu thời gian UTC). Hiển có thể đính kèm bản export từ file này khi nộp.
 
 ---
 
