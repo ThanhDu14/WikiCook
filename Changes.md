@@ -6,7 +6,7 @@
 **Team:** Group 05  
 **Submission:** Project Assignment 4 (`PA4-Group05.zip`) — Part A (5 points)  
 **Jira Task:** `SCRUM-84` (author Lê Quốc Hưng, reviewer Nguyễn Đức Duy)  
-**File Status:** **Draft of 19/11/2026, not yet reviewed.** This version merges the detailed change lists that Nguyễn Đức Duy wrote for `SCRUM-70` and `SCRUM-71`, after checking each item against the two documents on `main`. The review by Nguyễn Đức Duy and the re-check of the TA feedback before submission (official deadline 29/11/2026; the team aims to submit by 23/11/2026) are still to be done; this file is updated if either changes a row.
+**File Status:** **Draft of 20/11/2026, not yet reviewed.** The update of 20/11 records the alignment of `UC-100-02` and the review confirmation of the specification (PR #109). This version merges the detailed change lists that Nguyễn Đức Duy wrote for `SCRUM-70` and `SCRUM-71`, after checking each item against the two documents on `main`. The review by Nguyễn Đức Duy and the re-check of the TA feedback before submission (official deadline 29/11/2026; the team aims to submit by 23/11/2026) are still to be done; this file is updated if either changes a row.
 
 This is the single change log for the two documents revised for Part A of PA4. Each section lists every change against the PA3 baseline, with the document, the location, the content of the change, the reason and the Jira task. The change log of PA3 (Project Plan and Vision Document) is not repeated here; it stays in the PA3 package and in the repository history (`Changes.md` at commit `00bbaac`, 07/11/2026).
 
@@ -79,6 +79,7 @@ Sections 4.2, 4.4 – 4.6, 4.8 and 4.9 (features `020`, `040`, `050`, `060`, `08
 | 16 | 6.1 Coverage | `010` → `UC-010-01` – `04`; `011` → `01` – `05`; `070` → `01` – `06`; US-01 → `UC-010-01` – `04`. | `010` → `01` – `05`; `011` → `01` – `06`; `070` → `01` – `08`; the old US-01 and US-07 rows updated to the new ranges. New paragraph: `F-01` is covered by 11 use cases and `F-07` by 8; every user story, every user-started endpoint group of the three `contracts/openapi.yaml` files and every permission row of the `010` / `070` matrices maps to a use case. | R3-1 |
 | 17 | 6.2 Open Issues | Title "to resolve before the freeze on 02/11/2026"; status column of 29/10; issues 1 – 3 already **Resolved**, issues 4 and 5 **Open**. | Title "Open Issues", status column of 13/11, attribution line. Issue 5 now **Resolved** (Use-Case Specifications `v1.4` write the included use cases with a Trigger); issue 4 (`UC-050-01` actor, `[OQ-050-01]`) still **Open**; issues 1 – 3 unchanged. Issues 6 – 9 added (A.3). | R3-8, R3-9 |
 | 18 | 6.2 issue 6, Revision History, header *(`v2.0.1`, 19/11/2026)* | Issue 6 **Open** (the four new use cases had no specification). | Issue 6 **Resolved, except one point**: Use-Case Specifications `v2.0` (`SCRUM-71`) specify the four use cases and replace the moved steps and the repeated recalculation of `UC-070-01`, `-03`, `-05` by references; `UC-100-02` (specification Section 13, not revised in `v2.0`) still describes the recalculation itself. Revision History row `v2.0.1` added; header shows `2.0.1`. No use case, actor, relation or diagram changed. Edited by Lê Quốc Hưng (`SCRUM-84`). | R4 (the model must agree with the merged specification) |
+| 19 | 6.2 issue 6, Revision History, header *(`v2.0.2`, 20/11/2026)* | Issue 6 **Resolved, except one point** (`UC-100-02`). | Issue 6 **Resolved**: `UC-100-02` of the specification now includes `UC-070-08` (B.2 row 26). Revision History row `v2.0.2` added; header shows `2.0.2`. No use case, actor, relation or diagram changed. Edited by Lê Quốc Hưng (`SCRUM-84`). | R4 (the model must agree with the specification) |
 
 ### A.3. Open issues recorded in `v2.0`
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Lê Quốc Hưng (LqHung06)*
@@ -86,7 +87,7 @@ Sections 4.2, 4.4 – 4.6, 4.8 and 4.9 (features `020`, `040`, `050`, `060`, `08
 | # | Issue | Status and why | Owner |
 | :---: | :--- | :--- | :--- |
 | 4 | Spec `050` does not say whether Cooking Mode needs an account; the model keeps Guest. | **Open.** Needs a decision of the spec owner; tracked as `[OQ-050-01]`. | Lê Quốc Hưng |
-| 6 | The four new use cases had no specification in `v1.4`. | **Resolved in `v2.0.1`, except one point** (A.2 row 18): `UC-100-02` still describes the recalculation itself instead of referring to `UC-070-08`. Section 13 of the specification is outside the PA4 revision (Section D). | Nguyễn Đức Duy |
+| 6 | The four new use cases had no specification in `v1.4`. | **Resolved** in `v2.0.1` and `v2.0.2` (A.2 rows 18 – 19). The last point, `UC-100-02`, was aligned on 20/11/2026 by PR #109 (B.2 row 26). | Nguyễn Đức Duy |
 | 7 | Vision §8 lists `UC-070-01` – `06` and the `010`/`011` use cases only up to `v0.2` of this model. | **Open.** The Vision is not revised in PA4; the four new IDs are to be added at its next revision. | Nguyễn Đức Duy (PO) |
 | 8 | `011` FR-031 deletes the Cooksnaps of a deleted account, `070` Edge Case 5 keeps them as "Người dùng đã xóa". | **Open.** Needs `/speckit-clarify`; the model is not affected (`UC-011-04` does not include `UC-070-08`). Also `[OQ-011-07]` in Section B. | Mai Văn Hiển, Trần Nguyễn Công Chung |
 | 9 | `cooksnaps.review_id`, which justifies «extend» `UC-070-01` / `UC-070-03`, is a proposed column of the `070` data model not yet in `full-schema.md` §4.9. | **Open.** `V501__community.sql` is merged (`SCRUM-77`); the schema document is not re-checked in this revision. | Trần Nguyễn Công Chung |
@@ -103,12 +104,12 @@ Sections 4.2, 4.4 – 4.6, 4.8 and 4.9 (features `020`, `040`, `050`, `060`, `08
 ## SECTION B — USE-CASE SPECIFICATION (`docs/requirements/use-case-specification.md`)
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) *(pending)* | Edited by: Lê Quốc Hưng (LqHung06)*
 
-Source: change list of Nguyễn Đức Duy for `SCRUM-71`, PR #101. The document marks the `v2.0` review by Trần Nguyễn Công Chung as pending.
+Source: change list of Nguyễn Đức Duy for `SCRUM-71`, PR #101. Trần Nguyễn Công Chung confirmed the `v2.0` review of Sections 9, 10 and 12 in PR #109 (20/11/2026), which removed the "review pending" marks of the document.
 
 **Baseline:** `v1.4` (use cases of `020`, `030`, `031`, `040`, `050`, `060`, `070`, `080`, `090`, `010`, `011`, `100`; 64 use cases). Sections 9 and 10 were last revised in `v1.2` (`SCRUM-50`), Section 12 in `v1.3` (`SCRUM-54`); the title block still read `Document Version: 1.0`. **This revision:** `v2.0` (18/11/2026), 68 use cases.
 
-**Changed:** Section 9 (feature `010`), Section 10 (feature `011`), Section 12 (feature `070`), each with its traceability (x.1), screen mapping (x.2) and open questions (x.3); one row of `UC-020-06` (extension point `EP-6 Reviews`); the title block, the metadata and the Revision History.
-**Unchanged:** Sections 1 – 8 (features `040`, `050`, `020`, `060`, except the `EP-6` row), 11 (`080`), 13 (`100`), 14 – 17 (`030`, `031`, `090`).
+**Changed:** Section 9 (feature `010`), Section 10 (feature `011`), Section 12 (feature `070`), each with its traceability (x.1), screen mapping (x.2) and open questions (x.3); one row of `UC-020-06` (extension point `EP-6 Reviews`); `UC-100-02` in Section 13 (PR #109, 20/11/2026); the title block, the metadata and the Revision History.
+**Unchanged:** Sections 1 – 8 (features `040`, `050`, `020`, `060`, except the `EP-6` row), 11 (`080`), 13 (`100`) except `UC-100-02`, 14 – 17 (`030`, `031`, `090`).
 
 ### B.1. How the flows were revised
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) *(pending)* | Edited by: Lê Quốc Hưng (LqHung06)*
@@ -147,6 +148,7 @@ Source: change list of Nguyễn Đức Duy for `SCRUM-71`, PR #101. The document
 | 23 | `UC-020-06` View Recipe Details, row `EP-6 Reviews` | Listed `UC-070-04` (read), `UC-070-01` (write). | Lists `UC-070-03`, `UC-070-05`, `UC-070-07` as well, with the lightbox for a Guest and voting and reporting for a Member. | R4 (mirror of model §4.11) |
 | 24 | Title block, metadata and Revision History | `Document Version: 1.0`; metadata rows 9, 10, 12 listed `UC-010-01` – `04`, `UC-011-01` – `05`, `UC-070-01` – `06`, attributed to their PA3 authors (Hiển, Chung). | `Document Version: 2.0`; metadata rows 9, 10, 12 list `UC-010-01` – `05`, `UC-011-01` – `06`, `UC-070-01` – `08`, Edited by Nguyễn Đức Duy, reviewer Trần Nguyễn Công Chung (pending), Jira `SCRUM-71` added; Revision History row `v2.0`. | R4 |
 | 25 | Google status notes: Section 9 revision note, `UC-011-03` and `UC-011-04` implementation status, `[OQ-011-09]` item 3 | Said that the Google OAuth endpoints were not implemented. | Google sign-in is implemented (PR #97); only `intent=reauth` is not built (T149a, blocked by T149b), so `AF 3.6` – `3.7` and `AF 4.2` still cannot run. Added after the first version of `v2.0`, on the same day, in a separate commit. | R2 (code check after PR #97) |
+| 26 | `UC-100-02` Process Content Reports (Section 13); metadata rows 9, 10, 12 | `UC-100-02` called `RecipeAggregateService.recalculate(recipeId)` itself when a review was hidden or restored; Sections 9, 10 and 12 marked "v2.0 review pending". | `UC-100-02` includes `UC-070-08` for hiding and restoring a review, as in the model (§4.10); the "review pending" marks are removed after the review by Trần Nguyễn Công Chung. Changed by Trần Nguyễn Công Chung (PR #109, 20/11/2026). | R4 (model consistency, model issue 6) |
 
 ### B.3. Open questions added or closed in `v2.0`
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) *(pending)* | Edited by: Lê Quốc Hưng (LqHung06)*
@@ -167,8 +169,8 @@ Source: change list of Nguyễn Đức Duy for `SCRUM-71`, PR #101. The document
 - **Status notes are dated.** The "implementation status" notes and `[OQ-011-09]` record `main` as checked on 18/11/2026. Google sign-in was merged afterwards (PR #97) and the notes about it were updated in the same revision: sign-in is implemented, but its re-authentication variant `intent=reauth` is not built (task T149a, blocked by T149b), so `UC-011-03` `AF 3.6` – `3.7` and `UC-011-04` `AF 4.2` still describe the approved contract only. Google sign-in has been tested with a fake Google, not with a real Google client. `UC-010-04` was not re-checked line by line against the Google code of PR #97. The review screens of the frontend of `070` (`SCRUM-78`) were merged after the check (PR #98, 18/11/2026); the sentence of the Section 12 revision note saying they were missing was updated, but the flows of Section 12 were not compared with those screens.
 - **Scope of the audit.** The team assignment (`SCRUM-71`, `SCRUM-84`) asks for the specification to be aligned with `010`, `011`, `030`, `031`, `040` and `070` and with the Vision Document, while `pa4-guide.md` names `010`, `011` and `070`. Version `2.0` revises `010`, `011` and `070` use case by use case. The flows of `030`, `031` and `040` were **not changed** in `v2.0` (only the relations of `UC-030-01` and `UC-031-05` to `UC-011-05` were added in the model). The self-audit (Sprint 04 Report 3.2) lists the frontend of `030`, `031` and `040` among its sources but records no finding for them. This is a known limit of the revision, not a statement that these use cases were checked line by line against the code. The Vision Document was not revised either (Section D).
 - **`UC-010-01` – `UC-010-04`** were written against the approved contract; only `UC-010-05` and `UC-011-06` were written from the code.
-- **Section 13 (`100`)** is unchanged. The Moderator rights of `UC-100-03` and `UC-100-06` shown in the model were already in specification `v1.4`. `UC-100-02` still describes the rating recalculation itself instead of referring to `UC-070-08` (model issue 6).
-- **Review status.** The review of Section B by Trần Nguyễn Công Chung is pending, as the document states.
+- **Section 13 (`100`)**: only `UC-100-02` changed, to include `UC-070-08` (B.2 row 26). The Moderator rights of `UC-100-03` and `UC-100-06` shown in the model were already in specification `v1.4`.
+- **Review status.** Trần Nguyễn Công Chung confirmed the review of Sections 9, 10 and 12 of the specification in PR #109 (20/11/2026). His review of this Section B of `Changes.md` is still pending.
 
 ### B.5. Verification
 *Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Trần Nguyễn Công Chung (itzchugnn) *(pending)* | Edited by: Lê Quốc Hưng (LqHung06)*
@@ -189,7 +191,7 @@ Source: change list of Nguyễn Đức Duy for `SCRUM-71`, PR #101. The document
 | `010` | 4 | 5 | `UC-010-05` | 4.1 | 9 |
 | `011` | 5 | 6 | `UC-011-06` | 4.1 | 10 |
 | `070` | 6 | 8 | `UC-070-07`, `UC-070-08` | 4.7 | 12 |
-| `100` | 6 | 6 | — (actors of `UC-100-03`, `-06` and the include `UC-100-02` → `UC-070-08` changed in the model only) | 4.10 | 13 |
+| `100` | 6 | 6 | — (actors of `UC-100-03`, `-06` changed in the model only; the include `UC-100-02` → `UC-070-08` is in both documents) | 4.10 | 13 |
 | Other features (`020`, `030`, `031`, `040`, `050`, `060`, `080`, `090`) | 43 | 43 | — (relations `UC-030-01` / `UC-031-05` → `UC-011-05` added) | 4.2 – 4.6, 4.8, 4.9 | 1 – 8, 11, 14 – 17 |
 | **Total** | **64** | **68** | **4** | | |
 
@@ -201,5 +203,5 @@ Source: change list of Nguyễn Đức Duy for `SCRUM-71`, PR #101. The document
 - Vision Document `v2.0` (the four new IDs are not yet in its §8; model issue 7).
 - Flows of the use cases of `030`, `031` and `040` (Sections 14, 15 and 1 of the specification); see the scope note of B.4.
 - Use-case IDs: none renumbered or removed.
-- Section 13 of the specification (feature `100`, including `UC-100-02`, which still describes the rating recalculation itself) and Sections 1 – 8, 11, 14 – 17 (see Section B).
+- Section 13 of the specification (feature `100`) except `UC-100-02`, and Sections 1 – 8, 11, 14 – 17 (see Section B).
 - Prototype screens and `full-schema.md`.
