@@ -46,6 +46,7 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 31 | 2026-11-19, khoảng 00:00 – 01:00 | `SCRUM-88`, `SCRUM-87`, `SCRUM-84` | Soạn bản nháp Sprint Review và Retrospective từ bằng chứng trong repo; cập nhật các câu lỗi thời sau khi PR #98 được merge | `7abb494`, `ff02385`, `3e813c1` | `sprint-04-report.md`, `Changes.md`, `use-case-specification.md` |
 | 32 | 2026-11-19, khoảng 20:00 – 21:50 (ước lượng) | `SCRUM-88`, `SCRUM-84` | Kiểm tra tiến độ PA4 trên GitHub, cập nhật bảng trạng thái và việc còn mở theo từng người; gộp change list của Duy (`SCRUM-70`, `SCRUM-71`) vào `Changes.md`; model `v2.0.1` | `8680c50`, `3d1cc22`, `c51c31a` | `sprint-04-report.md`, `Changes.md`, `use-case-model.md` |
 | 33 | 2026-11-20, khoảng 12:00 – 13:00 (ước lượng) | `SCRUM-79`, `SCRUM-71` (review), `SCRUM-84`, `SCRUM-88` | Review PR #108 và #109, soạn bình luận review; cập nhật `Changes.md` và Use-Case Model `v2.0.2` theo PR #109; soạn mô tả PR; cập nhật lại trạng thái Sprint 04 trên GitHub (`v0.8`) | `502a30e`, commit của mục này | `Changes.md`, `use-case-model.md`, `sprint-04-report.md` |
+| 34 | 2026-11-20, khoảng 13:00 – 13:30 (ước lượng) | `SCRUM-87`, `SCRUM-88` | Ghi biên bản Standup 02 (19/11, 22:36 – 23:55) từ thông tin buổi họp do PM cung cấp và trạng thái task trên GitHub/Jira; thêm ACT-08 – ACT-17; cập nhật trạng thái Sprint 04 (`v0.9`) | commit của mục này | `sprint-04-report.md` |
 
 ---
 
@@ -1516,3 +1517,39 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - Đối chiếu các khẳng định của PR #108 với code: tên bảng trong `V210__dietary_profiles.sql`, cột trong `V202`, `V501`, ảnh WebP trong `ImageProcessorService`, số lớp `*IT` theo package.
 - Script kiểm số cột của mọi bảng trong `Changes.md` (0 lỗi); `git diff --check` chỉ báo dấu cách ngắt dòng Markdown có chủ đích.
 - Chưa chạy test (chỉ sửa tài liệu).
+
+---
+
+## Mục 34: Ghi biên bản Weekly Scrum Standup 02 và cập nhật tiến độ Sprint 04 sau buổi họp (`SCRUM-87`, `SCRUM-88`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Opus 5.5 (`claude-opus-5-5`) |
+| **Thời gian truy cập cụ thể** | 2026-11-20, khoảng 13:00 – 13:30 (Giờ Việt Nam, UTC+7); giờ là ước lượng theo phiên làm việc và giờ commit |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-87` — `[Ceremony] Conduct & Document Weekly Scrum Standups 01 & 02 (Part F)`; `SCRUM-88` (bảng trạng thái Sprint 04) |
+| **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.3, 2.4, 4.2, 4.2.1, 4.3), `tasks/PA4/pa4-guide.md` (SCRUM-87: ghi giờ họp, người có mặt và trạng thái thật, không điền trước kết quả) |
+| **Mục đích sử dụng** | Ghi biên bản buổi Standup 02 đã họp ngày 19/11/2026 theo dạng một biên bản thật, dựa trên thông tin buổi họp do PM xác nhận và trạng thái task trên GitHub và Jira; cập nhật bảng hành động và tiến độ Sprint 04. |
+| **Nhánh Git** | `docs/SCRUM-84-88-pa4-status-changes` |
+| **Minh chứng (Evidence)** | Commit của mục này trên nhánh trên; PR của nhánh: điền số PR khi mở. |
+
+### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
+1. Hôm qua (19/11) nhóm đã họp Standup 02 và các thành viên đã triển khai công việc trên Jira; dựa vào tiến độ các PR hiện tại, cập nhật lại tiến độ trong các SCRUM của PM.
+2. Thông tin buổi họp do PM xác nhận qua các câu hỏi trắc nghiệm: họp từ 22:36 đến 23:55 trên Google Meet, đủ 5/5 thành viên; nội dung báo cáo của từng người lấy theo tiến độ trên GitHub và Jira; quyết định là các việc và hạn như trên Jira, với ghi chú rằng hạn trên Jira thể hiện mong muốn nộp sớm, thành viên có thể trễ một chút nếu không ảnh hưởng đến nhóm; trạng thái Jira hiện giống GitHub.
+3. Soạn và trình bày chỉnh chu như một bản báo cáo thật.
+
+### Nội dung do AI sinh ra:
+1. Mục 2.3: thông tin buổi họp (giờ, hình thức, người có mặt), mục tiêu, bảng round-robin của 5 thành viên (việc đã xong từ 15/11 đến 19/11, kế hoạch 20/11 – 23/11, vướng mắc và rủi ro) dựa trên PR và commit tính đến giờ họp, và bốn quyết định.
+2. Mục 2.4: thêm ACT-08 – ACT-17 cho các việc đã chốt ở Standup 02; trạng thái mọi dòng theo GitHub lúc 20/11, 13:15; viết lại Provenance Statement.
+3. Mục 4.2, 4.2.1, 4.3: `SCRUM-87` chuyển sang Done (chờ Duy review); số liệu tổng kết; ghi chú về Jira; Revision History `v0.9`.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Tự tổ chức và điều hành buổi Standup 02 (19/11/2026, 22:36 – 23:55, Google Meet, 5/5 thành viên); cung cấp giờ họp, hình thức, danh sách người có mặt, cách ghi nội dung và các quyết định.
+- Quyết định hạn trên Jira chỉ là mục tiêu nộp sớm (hạn chính thức 29/11/2026) và thành viên có thể trễ một chút nếu không ảnh hưởng đến nhóm.
+- Xác nhận trạng thái trên Jira giống GitHub.
+- Còn phải làm: đọc lại biên bản trước khi mở PR; nhờ Duy review `SCRUM-87`.
+
+### Kiểm chứng đã thực hiện:
+- GitHub API: thời điểm tạo và merge của PR #104 – #113 (giờ Việt Nam) để chỉ đưa vào cột "đã xong" những gì có trước giờ họp; PR #108 được ghi là mở lúc 23:17, trong buổi họp; PR #109 – #113 mở sau buổi họp nên chỉ xuất hiện ở bảng 2.4.
+- `origin/main` vẫn ở `ce7c7a3` lúc 13:15 ngày 20/11.
+- Script kiểm số cột của mọi bảng; `git diff --check` chỉ báo dấu cách ngắt dòng Markdown có chủ đích.
