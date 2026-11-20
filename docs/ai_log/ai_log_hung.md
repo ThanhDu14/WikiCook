@@ -45,6 +45,7 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 30 | 2026-11-16 .. 2026-11-18 (ước lượng) | `SCRUM-76` | Kiểm tra giao diện với backend thật, sửa trang xác minh email, kiểm PR #97, gỡ định danh dev, bổ sung test, cập nhật `tasks.md` | `60d835a`, `a2d0dbb`, `33156dd`, `85f0437` | `src/frontend/`, `specs/010-*/tasks.md`, `specs/011-*/tasks.md` |
 | 31 | 2026-11-19, khoảng 00:00 – 01:00 | `SCRUM-88`, `SCRUM-87`, `SCRUM-84` | Soạn bản nháp Sprint Review và Retrospective từ bằng chứng trong repo; cập nhật các câu lỗi thời sau khi PR #98 được merge | `7abb494`, `ff02385`, `3e813c1` | `sprint-04-report.md`, `Changes.md`, `use-case-specification.md` |
 | 32 | 2026-11-19, khoảng 20:00 – 21:50 (ước lượng) | `SCRUM-88`, `SCRUM-84` | Kiểm tra tiến độ PA4 trên GitHub, cập nhật bảng trạng thái và việc còn mở theo từng người; gộp change list của Duy (`SCRUM-70`, `SCRUM-71`) vào `Changes.md`; model `v2.0.1` | `8680c50`, `3d1cc22`, `c51c31a` | `sprint-04-report.md`, `Changes.md`, `use-case-model.md` |
+| 33 | 2026-11-20, khoảng 12:00 – 13:00 (ước lượng) | `SCRUM-79`, `SCRUM-71` (review), `SCRUM-84`, `SCRUM-88` | Review PR #108 và #109, soạn bình luận review; cập nhật `Changes.md` và Use-Case Model `v2.0.2` theo PR #109; soạn mô tả PR; cập nhật lại trạng thái Sprint 04 trên GitHub (`v0.8`) | `502a30e`, commit của mục này | `Changes.md`, `use-case-model.md`, `sprint-04-report.md` |
 
 ---
 
@@ -1438,7 +1439,7 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 
 | Trường | Nội dung |
 |---|---|
-| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: `[Hưng điền model của phiên]` |
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Opus 5.5 (`claude-opus-5-5`) cho phần lớn phiên, Claude Sonnet 5.5 (`claude-sonnet-5-5`) cho một số bước (theo dữ liệu model ghi trong lịch sử phiên của Claude Code) |
 | **Thời gian truy cập cụ thể** | 2026-11-19, khoảng 20:00 – 21:50 (Giờ Việt Nam, UTC+7); giờ bắt đầu là ước lượng, giờ kết thúc khớp với các commit của mục này |
 | **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
 | **Tác vụ Jira liên quan** | `SCRUM-88` (bảng trạng thái Sprint 04), `SCRUM-84` (`Changes.md`, Use-Case Model `v2.0.1`); đầu vào từ `SCRUM-70`, `SCRUM-71` của Nguyễn Đức Duy |
@@ -1471,3 +1472,47 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - Script kiểm số cột của mọi bảng trong 3 file sửa và trong spec (0 lỗi); mọi tiêu đề của `Changes.md` có dòng ghi người làm.
 - `git diff --check`: chỉ báo hai dấu cách ngắt dòng Markdown ở dòng `Document Version` của model (giữ nguyên như các dòng đầu trang khác).
 - Chưa chạy test, chưa render lại Mermaid (không sơ đồ nào thay đổi).
+
+---
+
+## Mục 33: Review PR #108, #109 và cập nhật `Changes.md`, Sprint 04 report theo trạng thái GitHub ngày 20/11 (`SCRUM-84`, `SCRUM-88`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Opus 5.5 (`claude-opus-5-5`) |
+| **Thời gian truy cập cụ thể** | 2026-11-20, khoảng 12:00 – 13:00 (Giờ Việt Nam, UTC+7); giờ là ước lượng theo phiên làm việc và giờ commit |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | Review `SCRUM-79` (PR #108) và `SCRUM-71` (PR #109); `SCRUM-84` (`Changes.md`, Use-Case Model `v2.0.2`); `SCRUM-88` (bảng trạng thái Sprint 04) |
+| **Tài liệu / spec liên quan** | PR #107 – #113 trên GitHub (lấy qua GitHub API công khai), `docs/test/scrum-79-spec-kit-test-report.md` (PR #108), `use-case-specification.md` (PR #109), `Changes.md`, `use-case-model.md`, `sprint-04-report.md`, `.specify/memory/constitution.md` |
+| **Mục đích sử dụng** | Kiểm tra các PR đang mở, tóm tắt hai PR mình là reviewer và soạn bình luận review; cập nhật `Changes.md` và model cho khớp PR #109; soạn tiêu đề, mô tả PR cho nhánh `docs/SCRUM-84-88-pa4-status-changes`; cập nhật bảng trạng thái Sprint 04 theo GitHub; điền model còn trống của Mục 32. |
+| **Nhánh Git** | `docs/SCRUM-84-88-pa4-status-changes` |
+| **Minh chứng (Evidence)** | Commit `502a30e` (`Changes.md`, model `v2.0.2`) và commit của mục này (Sprint 04 report `v0.8`, AI log); review "Request changes" của Lê Quốc Hưng trên PR #108 và #109 (20/11/2026). PR của nhánh: điền số PR khi mở. |
+
+### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
+1. Kiểm tra các PR đang mở và nhận xét từng PR; với những PR tôi là reviewer, tóm gọn nội dung để tôi review.
+2. Soạn bình luận review bằng tiếng Anh cho PR #108 và #109 với giọng văn tự nhiên, và sửa `Changes.md` cho khớp với PR #109.
+3. Soạn tiêu đề và mô tả PR cho nhánh `docs/SCRUM-84-88-pa4-status-changes`.
+4. Cập nhật bảng trạng thái Sprint 04 theo GitHub và điền phần còn thiếu của AI log; ghi phần prompt trong AI log cho chỉnh chu.
+
+### Nội dung do AI sinh ra:
+1. Lấy danh sách PR qua GitHub API công khai và đối chiếu nội dung từng PR với code trên `main`:
+   - PR #108: số test frontend (918, 120 file) khớp; backend dùng `mvn test` nên bỏ qua integration test (`mvn verify` ngày 18/11 có 1410 test); số liệu JaCoCo không kèm bằng chứng; storyboard sai endpoint (`/api/v1/me/dietary-profile`), tên bảng (`user_allergens`, `user_excluded_ingredients`, `user_preferred_cuisines`) và tên dị ứng; kết luận "30/30 điểm" khi chưa có video.
+   - PR #109: đúng hướng (`UC-100-02` gọi `UC-070-08` như model) nhưng sai tên `UC-070-08`, thiếu dòng Revision History và làm `Changes.md` tự mâu thuẫn.
+   - PR #110 – #113: nhận xét ngắn (đường dẫn file trong PR #111 đều có thật; cổng, image của PR #112 khớp `docker-compose.yml` và Dockerfile).
+2. Soạn hai bình luận review bằng tiếng Anh cho PR #108 và #109.
+3. Cập nhật `Changes.md` (dòng A.2-19, B.2-26, A.3 issue 6, phần đầu Section B, B.4, Section C, Section D) và Use-Case Model `v2.0.2` cho khớp PR #109.
+4. Soạn tiêu đề, mô tả PR của nhánh.
+5. Cập nhật Sprint 04 report `v0.8`: thêm trạng thái "PR open" cho `SCRUM-79`, `-82`, `-83`; PR #109, #113; mục AI log của Chung đã merge (#107); cập nhật 4.2.1, 4.3, S1, S2.
+6. Điền model của Mục 32 từ dữ liệu model ghi trong lịch sử phiên trên máy (phần lớn Opus 5.5, một số bước Sonnet 5.5).
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Tự đăng hai bình luận review lên PR #108 và #109 với trạng thái "Request changes" (20/11/2026).
+- Quyết định nhánh này chỉ merge sau PR #109, và yêu cầu Chung bỏ phần sửa `Changes.md` khỏi PR #109.
+- Còn phải làm: mở PR cho nhánh; ghi biên bản Standup 02 vào Mục 2.3 nếu buổi họp đã diễn ra; kiểm lại bảng 4.2 trước buổi Review ngày 22/11.
+
+### Kiểm chứng đã thực hiện:
+- GitHub API: trạng thái và review của PR #107 – #113; `origin/main` tại `ce7c7a3`.
+- `git merge-tree`: nhánh gộp được với `main`; vẫn xung đột với PR #109 ở `Changes.md` (đã ghi trong mô tả PR).
+- Đối chiếu các khẳng định của PR #108 với code: tên bảng trong `V210__dietary_profiles.sql`, cột trong `V202`, `V501`, ảnh WebP trong `ImageProcessorService`, số lớp `*IT` theo package.
+- Script kiểm số cột của mọi bảng trong `Changes.md` (0 lỗi); `git diff --check` chỉ báo dấu cách ngắt dòng Markdown có chủ đích.
+- Chưa chạy test (chỉ sửa tài liệu).
