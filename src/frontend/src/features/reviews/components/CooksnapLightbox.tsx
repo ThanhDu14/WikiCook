@@ -108,6 +108,8 @@ export function CooksnapLightbox({ review, startIndex, onClose, onReport }: Cook
         style={{
           display: 'grid',
           gridTemplateColumns: 'auto 1fr auto',
+          // bounded row: without it the photo's max-height % has nothing to resolve against and it overflows down
+          gridTemplateRows: 'minmax(0, 1fr)',
           alignItems: 'center',
           gap: 32,
           padding: '0 32px',
@@ -127,7 +129,7 @@ export function CooksnapLightbox({ review, startIndex, onClose, onReport }: Cook
         ) : (
           <span />
         )}
-        <div style={{ display: 'grid', placeItems: 'center', height: '100%', minHeight: 0 }}>
+        <div style={{ display: 'grid', gridTemplateRows: 'minmax(0, 1fr)', placeItems: 'center', height: '100%', minHeight: 0 }}>
           <img
             src={snap.url}
             alt={snap.caption || strings.form.previewAlt(index + 1)}
