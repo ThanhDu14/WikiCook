@@ -206,7 +206,7 @@ Taken from the Jira description of `SCRUM-87` and the PA4 schedule (Code Freeze 
 | **Nguyễn Thành Dự** (`@ThanhDu14`) | • Repository owner: merges of the team's pull requests.<br>• No deliverable of `SCRUM-82`, `SCRUM-83`, `SCRUM-89` or `SCRUM-90` on GitHub or Jira at the time of the meeting. | • Deployment Diagram (`SCRUM-83`, due 19/11) and Frontend Level 3 with the code-to-diagram table (`SCRUM-82`, due 20/11).<br>• Seed check and tag `v0.8.0-beta.1` (`SCRUM-89`, 23/11); git log, PDFs, ZIP and submission (`SCRUM-90`, 23/11).<br>• Sprint 4 entries in his AI log. | `SCRUM-83` was due on the day of the meeting; the packaging of `SCRUM-90` depends on every other deliverable. |
 
 #### 2.3.3. Key Decisions & Action Items from Standup 02
-1. **Part E status noted:** both groups were on `main` before the Code Freeze of 18/11, 23:59 (Group 1: PR #89, #90, #95 – #97; Group 2: PR #93, #98). Work after the freeze is limited to fixes and documents.
+1. **Part E status noted:** both groups were on `main` before the Code Freeze of 18/11, 23:59 (Group 1: PR #89, #90, #95 – #97; Group 2: PR #93, #98).
 2. **Owners and target dates confirmed** as on Jira; they are listed as ACT-08 – ACT-17 in Section 2.4.
 3. **Target date versus deadline:** the official PA4 deadline is **29/11/2026**. The team keeps **23/11/2026** as its target so that late problems can still be fixed. The Jira due dates express this wish to finish early: a member may finish a little after the Jira date if it does not hold up the work of others (for example the demo video or the packaging of `SCRUM-90`).
 4. **Sprint Review and Retrospective:** 22/11/2026, 20:00 (`SCRUM-88`).
