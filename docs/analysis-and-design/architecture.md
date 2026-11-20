@@ -8,6 +8,7 @@
 | **Section 2** | C4 Level 1 — System Context (Part B) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-80` |
 | **Section 3** | Technology Stack (Part B) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-80` |
 | **Sections 4-5** | C4 Level 2 Container (Section 4) and Backend Level 3 Component (Section 5) (Part C) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Thành Dự (ThanhDu14)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-81` |
+| **Section 6** | C4 Level 3 — Frontend Components and Code-to-Diagram Parity (Part C) | **Nguyễn Thành Dự (ThanhDu14)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Thành Dự (ThanhDu14)** | `SCRUM-82` |
 
 ---
 
@@ -532,3 +533,207 @@ This table lists every port that crosses a feature boundary and what is behind i
 ### 5.7. Results to Coordinate With `SCRUM-82`
 
 The frontend diagram of `SCRUM-82` should use the same REST prefixes as the table in Section 5.4, and the container names `web` and `app` of Section 4. Where a frontend feature depends on a stand-in or not-connected port of Section 5.6 (recipe import into a shopping list, collections, nutrition), the data it shows is not backed by the full backend feature; `SCRUM-82` should check this when it maps the frontend to the backend.
+
+---
+
+## 6. C4 Level 3 — Frontend Components
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+### 6.1. Scope
+
+This level opens the container **web** of Section 4. At run time `web` is nginx serving static files; the components below are the parts of the React 18 single-page application that those files contain and that run in the user's browser. The code is `src/frontend/src/`, built by Vite (`npm run build`) into the `web` image.
+
+A **component** here is a folder of `src/frontend/src/features/`, which maps one to one to a feature spec (`010` auth, `011` profile, `020` search, `030` meal planner, `031` AI planner, `040` shopping list, `050` cooking mode, `070` reviews), plus the app shell `src/app/` and the two shared folders `shared/api` and `shared/ui`. Inside a feature the usual sub-folders are `pages`, `components`, `hooks`, `api` (or `services`) and `lib`; `cooking-mode` adds `domain`, `adapters`, `runtime` and `i18n`.
+
+Every statement in this section was checked against `origin/main` at commit `ce7c7a3` (2026-11-20, the merge of PR #107), using `routes.tsx`, `App.tsx`, `main.tsx`, `package.json`, `vite.config.ts` and an import scan of every non-test `.ts` and `.tsx` file under `src/frontend/src`. Test files (`*.test.*`, `__tests__/`, `test/`), `src/test/` and the unused MSW handler `src/mocks/handlers/search.ts` are not components. Status values are those of Section 4.1, plus **Partial** (the component works but part of what it shows is not backed by the real backend feature).
+
+### 6.2. Diagram
+
+The conventions of Sections 4.2 and 5.2 apply: **solid lines are always configured; dashed lines exist only under a condition or point at a stand-in**, written on the line. Arrows point in the direction of the call or import. REST prefixes are those of Section 5.4; all calls are relative to `/api/v1` on the same origin and reach `app` through the nginx proxy of `web`.
+
+```mermaid
+flowchart TB
+    USER(["<b>Users</b><br/>[Person]<br/>web browser"])
+
+    subgraph WEB["web — React SPA running in the browser (src/frontend/src)"]
+        direction TB
+        SHELL["<b>App shell and router</b><br/>[Component: app/]<br/>main.tsx, App.tsx, routes.tsx,<br/>AppLayout, NotFoundPage, HealthBadge"]
+
+        subgraph FEATURES["Feature components (src/features)"]
+            direction TB
+            AUTH["<b>auth</b> (010)<br/>AuthProvider, guards, sign-in pages,<br/>authApi"]
+            PROFILE["<b>profile</b> (011)<br/>account, edit profile, dietary profile,<br/>public profile"]
+            SEARCH["<b>search</b> (020)<br/>HomePage, SearchResultsPage,<br/>searchApi"]
+            MEAL["<b>meal-planner</b> (030)<br/>MealPlannerPage, WeekGrid, RecipePicker,<br/>mealPlanApi, aiPlannerEntry"]
+            AIP["<b>ai-planner</b> (031)<br/>register.ts, DraftLayer, useAiDraft,<br/>aiPlannerApi"]
+            SHOP["<b>shopping-list</b> (040)<br/>ShoppingListPage, ShoppingHistoryPage,<br/>shoppingListApi"]
+            REV["<b>reviews</b> (070)<br/>RecipeReviewsPage, ReviewSection,<br/>reviewApi"]
+            COOK["<b>cooking-mode</b> (050)<br/>CookingPage, CookingRuntimeProvider,<br/>timer and session domain"]
+        end
+
+        API["<b>shared/api</b><br/>[Component]<br/>client.ts: API_BASE /api/v1, bearer token,<br/>one refresh on 401; session.ts; safeRedirect.ts"]
+        UI["<b>shared/ui</b><br/>[Component]<br/>Banner, Icon, TextField, PasswordField,<br/>RecipeCard"]
+        STORE[("<b>Browser storage and APIs</b><br/>localStorage, sessionStorage,<br/>BroadcastChannel, Wake Lock,<br/>Web Speech, Notification")]
+        SEED[/"<b>In-bundle recipe seed</b><br/>realRecipesSeed.ts + test fixture<br/>3 recipes + 1 fixture"/]
+    end
+
+    APP["<b>app</b><br/>[Container: Spring Boot, Section 5]<br/>REST API /api/v1"]
+
+    USER -->|"Opens pages<br/>[HTTP, port 3000]"| SHELL
+    SHELL -->|"Routes to pages, wraps AuthProvider"| AUTH
+    SHELL -->|"/profile, /profile/edit,<br/>/profile/dietary, /profiles/:id"| PROFILE
+    SHELL -->|"/ and /search"| SEARCH
+    SHELL -->|"/meal-planner"| MEAL
+    SHELL -->|"/shopping-list, /shopping-list/history"| SHOP
+    SHELL -->|"/recipes/:id"| REV
+    SHELL -->|"/cooking/:recipeId,<br/>CookingRuntimeProvider"| COOK
+    SHELL -->|"main.tsx imports register.ts"| AIP
+
+    AIP -->|"Registers button and draft hook<br/>in meal-planner/lib/aiPlannerEntry"| MEAL
+    PROFILE -->|"useAuth, AccountAvatar,<br/>UnsavedChangesDialog"| AUTH
+    REV -->|"authContext"| AUTH
+
+    AUTH --> API
+    PROFILE --> API
+    SEARCH --> API
+    MEAL --> API
+    AIP --> API
+    SHOP --> API
+    REV --> API
+    SEARCH --> UI
+    AUTH --> UI
+    PROFILE --> UI
+
+    API -->|"/api/v1/auth, /auth/password,<br/>/auth/verification, /me, /profiles,<br/>/ingredients, /recipes, /meal-plans,<br/>/ai-planner, /shopping-lists,<br/>/reviews, /cooksnaps, /media/*<br/>[HTTPS or HTTP, REST JSON, multipart]"| APP
+    AUTH -.->|"Full-page redirect to /api/v1/auth/oauth2/google<br/>only when a Google client id is set"| APP
+
+    AUTH --> STORE
+    AIP --> STORE
+    COOK --> STORE
+    COOK -.->|"Stand-in: reads recipes from the bundle,<br/>no call to app"| SEED
+
+    subgraph LEGEND["Legend"]
+        direction LR
+        L1["Always"] --> L2["Always"]
+        L3["Conditional or stand-in"] -.-> L4["Conditional or stand-in"]
+    end
+
+    classDef person fill:#1f4e79,stroke:#0b2545,color:#ffffff
+    classDef component fill:#1a73c7,stroke:#073b73,color:#ffffff
+    classDef shared fill:#3d8ad6,stroke:#073b73,color:#ffffff
+    classDef standin fill:#5b7fa6,stroke:#0b2545,color:#ffffff,stroke-dasharray:6 4
+    classDef container fill:#0b5cad,stroke:#073b73,color:#ffffff
+    classDef store fill:#8a8a8a,stroke:#4d4d4d,color:#ffffff
+    classDef legend fill:#ffffff,stroke:#4d4d4d,color:#000000
+
+    class USER person
+    class SHELL,AUTH,PROFILE,SEARCH,MEAL,AIP,SHOP,REV component
+    class COOK,SEED standin
+    class API,UI shared
+    class APP container
+    class STORE store
+    class L1,L2,L3,L4 legend
+```
+
+`cooking-mode` has a dashed border because it does not read recipes from `app` (Section 6.5, FD5). Imports of `shared/ui` by `meal-planner`, `shopping-list` and `reviews` are not drawn: those features use their own `Icon` and `Overlay` copies (Section 6.5).
+
+### 6.3. Dependency Rules
+
+1. **One way to the backend:** every call to `app` goes through `shared/api/client.ts` (`api.*`, `fetchJson`, `API_BASE`), which adds the bearer token, the `X-WikiCook-Client: web` header on `/auth/*`, and one refresh (`POST /api/v1/auth/refresh`) after a 401.
+2. **Between features:** a feature uses another one only through an explicit extension point (today `meal-planner/lib/aiPlannerEntry.ts`) or through the auth context; it does not import another feature's `components`, `hooks`, `lib`, `strings` or `types`.
+3. **`shared` depends on no feature**, and a feature does not import the app shell.
+4. **Only `app/` and `main.tsx` wire features together** (routes, providers, the AI planner registration).
+5. **Production code does not import test code.**
+
+Checked by scanning the imports of every non-test `.ts` and `.tsx` file under `src/frontend/src` on `ce7c7a3`:
+
+| Rule | Result |
+| :--- | :--- |
+| 1: `fetch`, `XMLHttpRequest` or `axios` outside `shared/api/client.ts` | No occurrence. `GoogleButton` changes `window.location` to `/api/v1/auth/oauth2/google`; that is a page navigation, not an API call. |
+| 2: a feature imports another feature's internals | Occurs. FD2 to FD4 in Section 6.5. |
+| 3: `shared` imports a feature; a feature imports `app/` | Occurs, once each. FD1 and FD4. |
+| 4: a feature registers itself outside `app/` and `main.tsx` | No occurrence. `ai-planner/register.ts` is imported only by `main.tsx`. |
+| 5: a non-test file imports from `__tests__/` | Occurs once. FD5. |
+
+### 6.4. Components
+
+"Routes" come from `src/app/routes.tsx`; "Backend prefix" is matched to the `@RequestMapping` prefixes of Section 5.4.
+
+| Component | Folder | Responsibility | Routes | Backend prefix (Section 5.4 component) | Key files | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :---: |
+| **App shell and router** | `src/app/`, `src/main.tsx` | Mounts the app, the router with React Router v7 future flags, `AuthProvider` and `CookingRuntimeProvider`; the shared layout with navigation, account menu, email-verification banner and session-expired dialog; the not-found page; a health badge. Imports `ai-planner/register` before render. | All routes; `*` → `NotFoundPage` | `/actuator/health` (HealthBadge, through `web`) | `App.tsx`, `routes.tsx`, `AppLayout.tsx`, `NotFoundPage.tsx`, `HealthBadge.tsx`, `CookingRuntimeProvider.tsx` (re-export), `main.tsx` | Current |
+| **auth** | `features/auth/` | Sign-in, registration, Google sign-in redirect, email verification, password reset, account status, access denied; route guards (`RequireAuth`, `RedirectIfAuthenticated`); the session context, synchronised between tabs with `BroadcastChannel`. | `/login`, `/register`, `/forgot-password`, `/reset-password`, `/auth/callback`, `/check-email`, `/verify-email`, `/account-status`, `/access-denied` | `/api/v1/auth`, `/api/v1/auth/password`, `/api/v1/auth/verification`, `/api/v1/auth/oauth2` (auth) | `AuthProvider.tsx`, `guards.tsx`, `api/authApi.ts`, `pages/LoginPage.tsx`, `pages/RegisterPage.tsx`, `components/GoogleButton.tsx`, `components/SessionExpiredDialog.tsx` | Current |
+| **profile** | `features/profile/` | My account, profile editing with avatar upload (multipart), dietary profile with allergens, diet type, excluded ingredients and cuisines, dietary notices, public profile page. | `/profile`, `/profile/edit`, `/profile/dietary`, `/profiles/:id` | `/api/v1/me`, `/api/v1/profiles`, `/api/v1/ingredients`, `/api/v1/media/avatars` (profile) | `api/profileApi.ts`, `api/dietaryApi.ts`, `pages/MyAccountPage.tsx`, `pages/EditProfilePage.tsx`, `pages/DietaryProfilePage.tsx`, `pages/PublicProfilePage.tsx` | Current |
+| **search** | `features/search/` | Home page with featured recipes, search results with keyword, filters, sort and pagination, dietary notice for a signed-in viewer. | `/`, `/search` | `/api/v1/recipes` (`/search`, `/search/options`, `/featured`) (search) | `api/searchApi.ts`, `hooks/useRecipeSearch.ts`, `pages/HomePage.tsx`, `pages/SearchResultsPage.tsx`, `lib/searchState.ts` | Current |
+| **meal-planner** | `features/meal-planner/` | Weekly plan (week grid on desktop, day view on mobile), recipe picker, move, replace, servings, clear day, offline notice, "create shopping list" button. Owns the extension point through which `ai-planner` adds its button and draft layer. | `/meal-planner` (member) | `/api/v1/meal-plans/{weekStart}`, `/api/v1/meal-plans/picker/recipes` (mealplan) | `api/mealPlanApi.ts`, `hooks/useWeekPlan.ts`, `pages/MealPlannerPage.tsx`, `components/WeekGrid.tsx`, `components/RecipePicker.tsx`, `lib/aiPlannerEntry.ts` | Partial (Section 6.6) |
+| **ai-planner** | `features/ai-planner/` | "Tạo bằng AI" dialog, generation progress with abort, the unsaved draft shown over the calendar, leave-draft guard, confirm into the plan, limit and not-enough-recipes messages. Has no route of its own; it plugs into `meal-planner`. Keeps the draft in `sessionStorage` / `localStorage`. | None (inside `/meal-planner`) | `/api/v1/ai-planner` (`/weeks/{weekStart}/options`, `/generations`, `/confirm`) (aiplanner) | `register.ts`, `api/aiPlannerApi.ts`, `hooks/useAiDraft.ts`, `hooks/useLeaveGuard.ts`, `components/AiGenerateDialog.tsx`, `components/DraftLayer.tsx` | Current |
+| **shopping-list** | `features/shopping-list/` | Active list grouped by aisle, custom items, check-off, item provenance, archive and restore, history. | `/shopping-list`, `/shopping-list/history` (member, `offlineFirst` handle); `/shopping-list/import` redirects to `/shopping-list` | `/api/v1/shopping-lists` (shoppinglist) | `services/shoppingListApi.ts`, `hooks/useShoppingList.ts`, `ShoppingListPage.tsx`, `ShoppingHistoryPage.tsx`, `components/ChecklistScreen.tsx` | Partial (Section 6.6) |
+| **reviews** | `features/reviews/` | Reviews and ratings of a recipe, rating breakdown, Cooksnap upload (multipart, 5 MB per file) and lightbox, helpful votes, reports. | `/recipes/:id` | `/api/v1/recipes/{recipeId}/reviews`, `/api/v1/reviews`, `/api/v1/cooksnaps`, `/api/v1/media/cooksnaps` (review) | `RecipeReviewsPage.tsx`, `ReviewSection.tsx`, `services/reviewApi.ts`, `hooks/useReviews.ts`, `components/ReviewForm.tsx`, `components/CooksnapUploader.tsx` | Current |
+| **cooking-mode** | `features/cooking-mode/` | Step-by-step cooking screen outside the app layout: steps, ingredient drawer, timers that keep running in the background, voice commands and read-aloud, screen wake lock, resume of an interrupted session. | `/cooking/:recipeId` | None | `pages/CookingPage.tsx`, `runtime/CookingRuntimeProvider.tsx`, `domain/sessionReducer.ts`, `domain/timerEngine.ts`, `adapters/recipeReader.ts`, `adapters/speechAdapter.ts`, `adapters/sessionPersistence.ts` | Stand-in (FD5) |
+| **shared/api** | `shared/api/` | The single HTTP client: base `/api/v1`, JSON and multipart helpers, RFC 7807 errors as `ApiError`, bearer header, one shared refresh after 401, auth events; the access token is kept in memory only (`session.ts` removes keys of earlier builds from `localStorage`); safe redirect targets. | — | All of the above, plus `POST /api/v1/auth/refresh` | `client.ts`, `session.ts`, `safeRedirect.ts` | Current |
+| **shared/ui** | `shared/ui/` | Reusable primitives: banner, icon, text and password fields, field ids, recipe card. | — | — | `Banner.tsx`, `Icon.tsx`, `TextField.tsx`, `PasswordField.tsx`, `RecipeCard.tsx`, `useFieldIds.ts` | Current |
+
+### 6.5. Known Deviations
+
+| # | Where | What is imported or done | Rule broken |
+| :-: | :--- | :--- | :---: |
+| FD1 | `shared/ui/RecipeCard.tsx` | `features/search/types` and `features/search/strings.vi`. The shared card depends on the search feature. | 3 |
+| FD2 | `ai-planner` (`AiGenerateButton`, `AiGenerateDialog`, `DraftBar`, `DraftLayer`, `GenerationProgress`, `LeaveDraftDialog`, `LimitReachedMessage`, `NotEnoughRecipesMessage`, `useAiDraft`, `types.ts`) | `meal-planner/components/Icon`, `Overlay`, `RecipePicker`; `meal-planner/strings.vi`; `meal-planner/types`. The registration itself correctly goes through `meal-planner/lib/aiPlannerEntry`. | 2 |
+| FD3 | `profile` (`AccountLayout`, `AvatarPicker`, `MyAccountPage`, `EditProfilePage`, `DietaryProfilePage`, `PublicProfilePage`) | `auth/components/AccountAvatar`, `UnsavedChangesDialog`; `auth/hooks/useSignOut`, `useUnsavedChangesBlocker`; `auth/lib/initials`, `auth/lib/problem`. Use of `useAuth` is the allowed auth context. | 2 |
+| FD4 | `reviews/RecipeReviewsPage.tsx` | `app/NotFoundPage`: a feature imports the app shell. (`ReviewSection` importing `auth/authContext` is the allowed auth context.) | 3 |
+| FD5 | `cooking-mode/adapters/recipeReader.ts` | `CookingPage` uses `defaultRecipeReader`, a `MockRecipeReader` filled from `realRecipesSeed.ts` (recipes 6, 7 and 9 copied from a database) and from `__tests__/fixtures/recipeFixtures` (one phở bò fixture, under ids `recipe-pho-bo-101` and `101`). The page never calls `app`; any other recipe id shows as unavailable. Section 4.2 already notes that cooking mode has no backend. | 5 |
+| FD6 | `meal-planner`, `shopping-list`, `reviews` | Each has its own `components/Icon.tsx` (and `meal-planner` and `shopping-list` an `Overlay.tsx`) next to `shared/ui/Icon.tsx`. Not a broken rule, but duplication to remove when a feature is touched. | — |
+
+Other findings:
+
+- `aiPlannerApi.cancel` calls `DELETE /api/v1/ai-planner/generations/{requestId}`. `AiPlannerController` has no such mapping on `ce7c7a3`, and no component calls `cancel`; aborting a generation only cancels the browser request (`AbortSignal`).
+- `shopping-list/components/PreImportBottomSheet.tsx` and `RecipeIngredientsPanel.tsx` are imported by no page. `useShoppingList.importRecipe` exists, but no screen on `main` offers recipe import.
+- `idb` is a dependency in `package.json` but no file under `src/` imports it; nothing on `main` uses IndexedDB. The `offlineFirst` route handle of the shopping list only keeps the session-expired dialog away; the list itself is not stored in the browser.
+
+### 6.6. Frontend Dependencies on Backend Stand-ins
+
+Following Section 5.7, these are the screens whose data is not backed by the full backend feature:
+
+| Frontend component and screen | Backend port (Section 5.6) | What the user sees |
+| :--- | :--- | :--- |
+| `meal-planner`, `DayNutritionBadge` in `WeekGrid` | `mealplan.port.DayNutritionPort` — empty map (090 not built) | No nutrition figure for any day. |
+| `meal-planner`, `RecipePicker` and the bookmark filter | `mealplan.port.CollectionRecipePort` — empty set (080 not built) | No recipe is ever marked as saved. |
+| `meal-planner`, dish names and photos in slots and picker | `mealplan.port.RecipeSummaryPort` — direct SQL on recipe tables (060 not built) | Real data from `db`, but not through a recipe component. |
+| `meal-planner`, "Đi chợ" / shopping hand-off; `/shopping-list/import` | `mealplan.MealPlanShoppingFacade` is served, `shoppinglist.port.MealPlanHandoffPort` is not connected | The route redirects to `/shopping-list`; a week is not imported into the list. |
+| `shopping-list`, recipe import (`importRecipe`) | `shoppinglist.port.RecipeDetailPort` — `SeedRecipeDetailAdapter`, in-memory recipes | Not reachable from any screen today (Section 6.5); when it is, imports would use the seed, not `db`. |
+| `profile`, ingredient and cuisine pickers | `profile.port.IngredientCatalogPort`, `CuisineCatalogPort` — direct SQL (060, 100) | Real data from `db`. |
+| `reviews`, recipe title on `/recipes/:id` | No `GET /api/v1/recipes/{id}` (060 not built) | The title comes from the router state of the card that linked to the page. |
+| `cooking-mode` | None — no backend call at all | Only the bundled recipes open (FD5). |
+
+### 6.7. Code-to-Diagram Parity Verification
+
+Every component drawn in Sections 5.2 and 6.2 is listed with the path it was checked against. "Exists" was verified with `ls` / `find` on `ce7c7a3`; backend key classes of Section 5.4 were checked one by one and all were found.
+
+| Level | Component | Path in `src/` | Exists | Note |
+| :---: | :--- | :--- | :---: | :--- |
+| FE | App shell and router | `frontend/src/app/`, `frontend/src/main.tsx` | Yes | 7 non-test files. |
+| FE | auth | `frontend/src/features/auth/` | Yes | |
+| FE | profile | `frontend/src/features/profile/` | Yes | |
+| FE | search | `frontend/src/features/search/` | Yes | Not named in the `SCRUM-82` ticket. |
+| FE | meal-planner | `frontend/src/features/meal-planner/` | Yes | |
+| FE | ai-planner | `frontend/src/features/ai-planner/` | Yes | No route; registered by `main.tsx`. |
+| FE | shopping-list | `frontend/src/features/shopping-list/` | Yes | |
+| FE | reviews | `frontend/src/features/reviews/` | Yes | |
+| FE | cooking-mode | `frontend/src/features/cooking-mode/` | Yes | Not named in the `SCRUM-82` ticket. |
+| FE | shared/api | `frontend/src/shared/api/client.ts`, `session.ts`, `safeRedirect.ts` | Yes | |
+| FE | shared/ui | `frontend/src/shared/ui/` | Yes | 6 non-test files. |
+| FE | In-bundle recipe seed | `frontend/src/features/cooking-mode/adapters/realRecipesSeed.ts`, `__tests__/fixtures/recipeFixtures.ts` | Yes | |
+| FE | Browser storage and APIs | `shared/api/session.ts`, `auth/AuthProvider.tsx`, `ai-planner/hooks/useAiDraft.ts`, `cooking-mode/adapters/*` | Yes | No IndexedDB use. |
+| BE | auth | `backend/wikicook-app/src/main/java/com/wikicook/auth/` | Yes | |
+| BE | profile | `backend/wikicook-app/src/main/java/com/wikicook/profile/` | Yes | |
+| BE | mealplan | `backend/wikicook-app/src/main/java/com/wikicook/mealplan/` | Yes | |
+| BE | aiplanner | `backend/wikicook-app/src/main/java/com/wikicook/aiplanner/` | Yes | |
+| BE | search | `backend/wikicook-app/src/main/java/com/wikicook/search/` | Yes | |
+| BE | shoppinglist | `backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/` | Yes | |
+| BE | review | `backend/wikicook-app/src/main/java/com/wikicook/review/` | Yes | |
+| BE | recipe | `backend/wikicook-app/src/main/java/com/wikicook/recipe/domain/Recipe.java` | Yes | |
+| BE | common | `backend/wikicook-app/src/main/java/com/wikicook/common/` | Yes | `GlobalExceptionHandler` is at `common/GlobalExceptionHandler.java`. |
+| BE | devstub | `backend/wikicook-app/src/main/java/com/wikicook/devstub/` | Yes | |
+| BE | ai | `backend/wikicook-ai/src/main/java/com/wikicook/ai/` | Yes | `AiRequestRepository` is in `ai/quota/`. |
+| BE | db/migration | `backend/wikicook-db/src/main/resources/db/migration/` | Yes | 20 files, as stated in Section 5.4. |
+| FE → BE | REST prefixes used by the SPA | `shared/api/client.ts` callers vs `@RequestMapping` / `@*Mapping` of the controllers | Yes, one exception | Every path called by a screen has a backend mapping. The exception is the unused `DELETE /api/v1/ai-planner/generations/{requestId}` (Section 6.5). |
