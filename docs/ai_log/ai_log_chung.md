@@ -16,6 +16,8 @@ File này ghi lại toàn bộ lịch sử sử dụng công cụ AI của **Tr�
 | 10 | 2026-11-01 – 2026-11-04 | Tổng hợp, trích xuất và nhúng 70+ Prototype Screenshots vào từng Use Case (`SCRUM-58`) | `docs/requirements/use-case-specification.md`, PR #69 (commit `a74eae8`) |
 | 11 | 2026-11-03 – 2026-11-06 | Tiến hành QA Cross-Audit 9 chiều toàn bộ gói nộp PA3 và soạn thảo Section 6 (`SCRUM-62`) | `sprint-03-report.md` Section 6, `.local/scrum-62-63-qa-audit-and-ai-report.md` |
 | 12 | 2026-11-05 – 2026-11-06 | Thanh tra 5 file nhật ký AI toàn nhóm và chốt Báo cáo Tuân thủ Section 4 (`SCRUM-63`) | `docs/ai_log/`, `sprint-03-report.md` Section 4 |
+| 13 | 2026-11-16 | Thiết lập rào chắn kiến trúc, chỉ đạo TDD và hiện thực mã nguồn Backend Feature 070 (`SCRUM-77`) | `src/backend/`, `specs/070-review-cooksnap/` |
+| 14 | 2026-11-16 – 2026-11-18 | Chỉ huy gỡ lỗi CI Integration Test, xử lý xung đột Spring Security filter chain và thẩm định conflict PR #98 (`SCRUM-77`, `SCRUM-78`) | `src/backend/`, `src/frontend/`, PR #93, PR #98 |
 
 ---
 
@@ -591,4 +593,184 @@ Yêu cầu:
 - Kiểm tra tính xác thực của các ảnh chụp môi trường IDE / CLI trong `docs/assets/jira/ai_accounts/` (Antigravity, Claude Code, Claude.ai).
 - Khẳng định 100% mã nguồn và tài liệu đều có sự can thiệp, chỉnh sửa và chịu trách nhiệm chuyên môn của sinh viên ("Human-in-the-Loop").
 - Ký xác nhận QA Audit Verdict: **PASSED — FULL ACADEMIC INTEGRITY COMPLIANCE (100% AUDIT READY FOR PA3 SUBMISSION)** tại Section 4.4 của `sprint-03-report.md`.
+
+---
+
+## Mục 13: Thiết lập rào chắn kiến trúc, chỉ đạo TDD và hiện thực mã nguồn Backend Feature 070 (`SCRUM-77`)
+
+### 13.1. Thông tin phiên làm việc (Session Metadata)
+
+| Trường | Nội dung |
+|---|---|
+| **Mục** | **Mục 13** \| **Ngày thực hiện:** 2026-11-16 (08:30 – 15:40) |
+| **Người thực hiện** | Trần Nguyễn Công Chung (`itzchugnn` - MSSV: 24120272) — QA Lead, Compliance Auditor & Backend Lead Member E |
+| **Nhiệm vụ / Task Jira** | `SCRUM-77` — `[Backend]` Implement Community Reviews, Cooksnaps & Interactive Ratings |
+| **Tài liệu liên quan** | `specs/070-review-cooksnap/` (`spec.md`, `plan.md`, `tasks.md`, `data-model.md`, `contracts/openapi.yaml`), `.specify/memory/constitution.md`, `src/backend/wikicook-app/pom.xml`, Flyway `V501__community.sql`, mã nguồn Java package `com.wikicook.review` |
+| **Công cụ AI & Model** | Google Antigravity (Gemini 2.5 Pro / Flash), Agentic Coding CLI & Sandbox Terminal |
+| **Mục đích làm việc** | Chỉ đạo công cụ AI hiện thực toàn bộ mã nguồn Backend cho Feature 070 trên nhánh `feature/SCRUM-77-review-backend`, áp đặt tuyệt đối các quy tắc của dự án WikiCook và kiểm soát chất lượng qua chu trình TDD. |
+| **Nhánh Git** | `feature/SCRUM-77-review-backend` |
+| **Minh chứng (Evidence)** | Commit `ef55350`, 53/53 unit tests pass (Surefire `BUILD SUCCESS`), JaCoCo line coverage đạt 76.08% (353/464 dòng) tại `target/site/jacoco/index.html`, ảnh xác thực tài khoản Google Antigravity tại `docs/assets/jira/ai_accounts/04_tran_nguyen_cong_chung_antigravity.jpg`. |
+
+#### Dòng tóm tắt theo mẫu AI Usage Notes
+**Google Antigravity.** *Gemini 2.5 Pro / Flash, Google DeepMind, Antigravity IDE & CLI*, truy cập 08:30 đến 15:40 ngày 16/11/2026; prompt: thiết lập 3 giai đoạn khởi động bắt buộc và 9 ràng buộc kiến trúc bất di bất dịch (Pessimistic Locking, không bump version recipe, TwelveMonkeys gỡ 100% EXIF/GPS, TransactionSynchronization dọn file, JaCoCo $\ge 70\%$); AI sinh mã nguồn Flyway V501, Domain Entities, DTOs Record, Services, Controllers và 53 tests; sinh viên trực tiếp thẩm định cấu trúc package, kiểm tra logic chống race condition, kiểm toán báo cáo JaCoCo và nghiệm thu 38 task trong `tasks.md`.
+
+---
+
+### 13.2. Chuỗi câu lệnh / Prompt đã sử dụng (Prompts Used)
+
+```text
+/goal 
+Chào bạn, tôi là Trần Nguyễn Công Chung (@itzchugnn - 24120272), đảm nhiệm vai trò QA Lead, Compliance Auditor & Backend Lead cho Feature F-07 (Member E) trong dự án WikiCook (CSC13002).
+
+Tôi đang tiếp tục phiên làm việc để hiện thực mã nguồn Backend cho nhiệm vụ SCRUM-77: Backend Implementation cho Feature 070 (Community Reviews, Cooksnaps & Interactive Ratings) trên nhánh làm việc: feature/SCRUM-77-review-backend.
+
+TRƯỚC KHI VIẾT CODE HOẶC ĐỀ XUẤT BẤT KỲ THAY ĐỔI NÀO, BẠN BẮT BUỘC PHẢI THỰC HIỆN 3 GIAI ĐOẠN KHỞI ĐỘNG SAU:
+
+GIAI ĐOẠN 1: ĐỌC VÀ NẮM VỮNG HỒ SƠ THIẾT KẾ & QUY TẮC BẤT DI BẤT DỊCH
+Hãy chủ động đọc kỹ các tài liệu kỹ thuật sau trong repository:
+1. .specify/memory/constitution.md (Hiến pháp WikiCook: TDD Test-First, JaCoCo >= 70%, bảo mật EXIF/GPS, không rò rỉ JPA Entity).
+2. specs/070-review-cooksnap/tasks.md (Danh mục 80 nhiệm vụ T001 -> T080, lưu ý đồng bộ song song với src/specs/070-review-cooksnap/tasks.md).
+3. specs/070-review-cooksnap/plan.md (Kế hoạch kiến trúc phân lớp, cấu trúc package, và giải pháp kỹ thuật).
+4. specs/070-review-cooksnap/data-model.md (Lược đồ DB Flyway V501, JPA Entities, Record DTOs).
+5. specs/070-review-cooksnap/contracts/openapi.yaml (Hợp đồng API chuẩn 6 endpoints + report).
+
+CÁC NGUYÊN TẮC VÀ RÀNG BUỘC KỸ THUẬT QUAN TRỌNG (TUYỆT ĐỐI KHÔNG VI PHẠM):
+- Đồng bộ rating không làm tăng recipes.version (tránh lỗi 409 sai cho tác giả công thức).
+- Khóa dòng bi quan (Pessimistic Locking): gọi recipeRepository.lockById(recipeId) (SELECT ... FOR UPDATE) trước khi ghi review.
+- Chủ sở hữu xóa review = Hard Delete (giải phóng unique index để được review lại); HIDDEN CHỈ dùng cho Kiểm duyệt (Admin Moderation).
+- Bảo mật Media: GET /api/v1/media/cooksnaps/{storageKey} chỉ trả file khi CẢ Cooksnap và Review cha đều ở trạng thái VISIBLE.
+- Gỡ bỏ 100% EXIF/GPS tags bảo vệ riêng tư nhà riêng (TwelveMonkeys), nén WebP, tạo thumbnail 400x400.
+- Bảng cooksnaps bắt buộc có cột review_id BIGINT NOT NULL REFERENCES reviews(id) ON DELETE CASCADE.
+- Tên cột chuẩn: storage_key, status, substitution_tip. Tuyệt đối KHÔNG dùng: photo_url, is_hidden, deleted_at.
+- Không dùng trigger DB hay @UpdateTimestamp tự động đổi updated_at trên bảng reviews.
+- TDD Test-First: viết Unit Test & Testcontainers PostgreSQL 16 trước khi viết code chạy, cam kết JaCoCo service layer >= 70%.
+
+GIAI ĐOẠN 2: KIỂM TRA TIẾN ĐỘ THỰC TẾ & TRẠNG THÁI SOURCE CODE HIỆN TẠI...
+GIAI ĐOẠN 3: BÁO CÁO TỔNG QUAN & BẮT ĐẦU TRIỂN KHAI CÁC BƯỚC TIẾP THEO...
+```
+
+---
+
+### 13.3. Nội dung do AI tạo ra (Which Content Was Generated by AI)
+- Bản phác thảo mã nguồn di trú cơ sở dữ liệu Flyway `V501__community.sql` (bảng `reviews`, `cooksnaps`, `helpful_votes` kèm các chỉ mục và ràng buộc toàn vẹn).
+- Khung lớp thực thể JPA Entities (`ReviewEntity`, `CooksnapEntity`, `HelpfulVoteEntity`) và các DTO dạng Java Record tuân thủ nguyên tắc không rò rỉ Entity ra ngoài tầng Web.
+- Các lớp dịch vụ xử lý nghiệp vụ (`ReviewServiceImpl`, `CooksnapServiceImpl`, `LocalStorageServiceImpl`) và các REST Controller theo OpenAPI contract.
+- Bộ 53 ca kiểm thử tự động (Unit Tests & Integration Tests) bao gồm kiểm thử logic tính rating, kiểm thử xác thực quyền tác giả và kiểm thử cascade delete.
+
+---
+
+### 13.4. Sự can thiệp chuyên môn & Kiểm chứng của sinh viên (Human Verification & Editing)
+
+#### Bảng quyết định kỹ thuật của sinh viên (Sử dụng / Hiệu chỉnh / Bác bỏ)
+
+| Thành phần mã nguồn | Quyết định của sinh viên | Phân tích lý do kỹ thuật & Can thiệp chuyên môn |
+|---|---|---|
+| **Cơ chế đồng bộ Rating** | **Bác bỏ** đề xuất dùng JPA `save()` thông thường; **Bắt buộc** dùng Native SQL Update | Nếu dùng JPA Entity cập nhật điểm rating trung bình vào bảng `recipes`, cơ chế `@Version` sẽ tự động tăng version. Điều này dẫn đến việc tác giả công thức khi đang chỉnh sửa món ăn sẽ bị lỗi xung đột `409 OptimisticLockException`. Sinh viên yêu cầu viết hàm cập nhật riêng bằng native query không đụng chạm đến version. |
+| **Xử lý Race Condition khi ghi nhận Review** | **Bắt buộc áp dụng** Pessimistic Lock (`PESSIMISTIC_WRITE`) | Khi nhiều người dùng cùng lúc gửi đánh giá cho 1 công thức, việc tính toán lại `rating_avg` và `review_count` sẽ bị sai lệch (lost update). Sinh viên chỉ đạo gọi `recipeRepository.lockById(recipeId)` phát lệnh `SELECT ... FOR UPDATE` trước khi thực hiện ghi dữ liệu. |
+| **Bảo vệ quyền riêng tư ảnh Cooksnap** | **Bác bỏ** việc lưu trực tiếp file gốc; **Bắt buộc** bóc tách EXIF qua TwelveMonkeys | Ảnh chụp từ smartphone luôn chứa tọa độ GPS và thông tin thiết bị, gây lộ địa chỉ nhà riêng người dùng (vi phạm Hiến pháp IV). Sinh viên chỉ định rõ giải pháp dùng TwelveMonkeys loại bỏ metadata cấp độ nhị phân trước khi nén WebP và tạo thumbnail $400\times 400$. |
+| **Quản lý vòng đời tệp tin đĩa cứng** | **Áp đặt** `TransactionSynchronization` | Tránh tình trạng file còn tồn tại trên đĩa khi giao dịch cơ sở dữ liệu bị Rollback. Sinh viên yêu cầu triển khai `LocalStorageServiceImpl` gắn liền với transaction Spring: chỉ lưu vĩnh viễn khi Commit thành công và tự xóa file rác nếu Rollback. |
+| **Toàn vẹn xóa dữ liệu** | **Phân định rõ ràng**: Hard Delete vs Moderation Hidden | Khi người dùng xóa review của mình, phải là Hard Delete (xóa sạch bản ghi và file liên quan) để giải phóng Partial Unique Index `(recipe_id, user_id)`, cho phép họ đánh giá lại sau này. Trạng thái `HIDDEN` tuyệt đối chỉ dành cho kiểm duyệt viên (`Admin Moderation`). |
+
+#### Kiểm chứng chất lượng & Nghiệm thu
+- **Kiểm tra kiến trúc:** Trực tiếp yêu cầu AI giải trình vai trò của từng file và thư mục trong `com.wikicook.review`, khẳng định 100% Controller trả về Record DTOs, không rò rỉ JPA Entity ra ngoài.
+- **Kiểm toán độ phủ (JaCoCo Audit):** Trực tiếp kiểm tra file `target/site/jacoco/index.html`, xác nhận tầng `com.wikicook.review.service` đạt **76.08%** độ phủ dòng (353 / 464 dòng), vượt tiêu chuẩn tối thiểu $\ge 70\%$.
+- **Đồng bộ Spec Kit:** Kiểm tra đối chiếu và đánh dấu hoàn thành 38 nhiệm vụ backend trong cả 2 file `specs/070-review-cooksnap/tasks.md` và `src/specs/070-review-cooksnap/tasks.md` với độ lệch bằng 0 (`zero diff`).
+
+---
+
+## Mục 14: Chỉ huy gỡ lỗi CI Integration Test, xử lý xung đột Spring Security filter chain và thẩm định conflict PR #98 (`SCRUM-77`, `SCRUM-78`)
+
+### 14.1. Thông tin phiên làm việc (Session Metadata)
+
+| Trường | Nội dung |
+|---|---|
+| **Mục** | **Mục 14** \| **Ngày thực hiện:** 2026-11-16 – 2026-11-18 (15:40 ngày 16/11 – 21:45 ngày 18/11) |
+| **Người thực hiện** | Trần Nguyễn Công Chung (`itzchugnn` - MSSV: 24120272) — QA Lead, Compliance Auditor & Backend Lead Member E |
+| **Nhiệm vụ / Task Jira** | `SCRUM-77` (Backend PR #93) & `SCRUM-78` (Frontend PR #98 QA Review) |
+| **Tài liệu liên quan** | `src/backend/wikicook-app/pom.xml`, `.github/workflows/backend.yml`, `PublicRoutes.java`, `ReviewCurrentUserId.java`, `WikiCookApplicationIT.java`, `CooksnapMediaControllerIT.java`, `ReviewRepositoryIT.java`, `src/frontend/src/app/routes.tsx`, `MyAccountPage.tsx` |
+| **Công cụ AI & Model** | Google Antigravity (Gemini 2.5 Pro / Flash), Git CLI |
+| **Mục đích làm việc** | Chỉ huy khắc phục xung đột khi đồng bộ nhánh `main`, trực tiếp chẩn đoán và khắc phục 6 lỗi kiểm thử tích hợp (Failsafe Integration Tests) do xung đột bộ lọc Spring Security trên GitHub Actions CI, và thẩm định phát hiện điểm nghẽn xung đột cho PR #98 của Frontend. |
+| **Nhánh Git** | `feature/SCRUM-77-review-backend`, nhánh thẩm định `pr-98` |
+| **Minh chứng (Evidence)** | Commit `c50ce4e`, `9073af1`, `2bc29b2`, `92fc710`; PR #93 merge thành công vào `main` (commit `355bfcb`); PR #98 giải quyết dứt điểm conflict và merge vào `main` (commit `0ba3e2f`), ảnh xác thực tài khoản Google Antigravity tại `docs/assets/jira/ai_accounts/04_tran_nguyen_cong_chung_antigravity.jpg`. |
+
+#### Dòng tóm tắt theo mẫu AI Usage Notes
+**Google Antigravity.** *Gemini 2.5 Pro / Flash, Google DeepMind*, truy cập các ngày 16/11 đến 18/11/2026; prompt: chỉ đạo giải quyết xung đột khi merge `main`, phân tích tĩnh tệp CI workflow, cung cấp log Failsafe, yêu cầu bóc tách nguyên nhân Spring Security chặn mã 401 trên route công khai, và kéo PR #98 về máy để kiểm toán conflict; AI phân tích nguyên nhân và đề xuất code; sinh viên trực tiếp phát hiện lỗi ngầm `UnauthenticatedException` trong `ReviewCurrentUserId.java`, sửa quan hệ hai chiều Hibernate Cascade trong `ReviewRepositoryIT`, duyệt commit `92fc710` đưa PR #93 pass 100% CI, và chỉ ra vị trí xung đột trong `routes.tsx` cho tác giả Frontend PR #98.
+
+---
+
+### 14.2. Chuỗi câu lệnh / Prompt đã sử dụng (Prompts Used)
+
+```text
+Prompt 1 (Phân tích phân kỳ nhánh và xung đột phụ thuộc khi đồng bộ origin/main):
+"Hãy kiểm tra tình trạng của nhánh feature/SCRUM-77-review-backend và origin/main. Phân tích cây lịch sử git log, kiểm tra xem việc merge các PR vừa qua có gây xung đột trong tệp cấu hình Maven pom.xml hoặc các bean cấu hình toàn cục hay không. Báo cáo chi tiết các file bị conflict và giải pháp giữ nguyên tính toàn vẹn của Feature 070."
+
+Prompt 2 (Chẩn đoán lỗi CI Failsafe: Bóc tách SecurityFilterChain, RFC 7807 và Hibernate Persistence Context):
+"[INFO] Results:
+[ERROR] Failures: 
+[ERROR]   WikiCookApplicationIT.appliesAllMigrations:29 expected: 403 but was: 501
+[ERROR]   CooksnapMediaControllerIT.testHiddenCooksnapReturns404:127 Status expected:<404> but was:<401>
+[ERROR]   CooksnapMediaControllerIT.testServeCooksnapWebp:88 Status expected:<200> but was:<401>
+[ERROR]   ReviewControllerIT.testGetRecipeReviewsPublic:172 Status expected:<200> but was:<401>
+[ERROR]   ReviewControllerIT.testToggleHelpfulVote:209 JSON path "$.type" expected:<https://wikicook.com/errors/self-helpful-vote-forbidden> but was:<https://wikicook.com/errors/self-upvote-forbidden>
+[ERROR] Errors: 
+[ERROR]   ReviewRepositoryIT.testCascadeDeleteCooksnaps:104 » InvalidDataAccessApiUsage org.hibernate.TransientObjectException
+
+Tôi đã trích xuất log lỗi từ GitHub Actions CI. Qua phân tích ban đầu, có 4 nhóm vấn đề kỹ thuật cốt lõi cần giải quyết:
+1. Xung đột Spring Security: Module Auth (PR #89) đã thắt chặt SecurityFilterChain mặc định chặn /api/** với mã 401. Hãy đối chiếu PublicRoutes.java và cấu hình lại để đưa endpoint tải ảnh cooksnap vào BEARER_IGNORED và endpoint xem review công khai vào OPTIONALLY_SIGNED_IN đúng theo OpenAPI contract.
+2. Lỗi ngữ cảnh người dùng unauthenticated: Kiểm tra lớp ReviewCurrentUserId.java, đảm bảo khi khách vãng lai gọi getOptionalId() thì không được để CurrentUser.id() ném UnauthenticatedException ra ngoài Controller.
+3. Lệch chuẩn URI ProblemDetails RFC 7807: Cập nhật ReviewExceptionHandler đồng bộ chuẩn URI self-helpful-vote-forbidden.
+4. Vi phạm Hibernate Persistence Context: Trong ReviewRepositoryIT, lỗi TransientObjectException xảy ra do quan hệ hai chiều giữa Review và Cooksnap chưa được đồng bộ trước khi xóa cascading. Hãy thiết lập quan hệ hai chiều đầy đủ trong test setup.
+Yêu cầu thực hiện sửa đổi chính xác, không làm suy giảm tỷ lệ test coverage JaCoCo đã đạt."
+
+Prompt 3 (Nghiệm thu chất lượng, kiểm toán hồi quy và an toàn commit):
+"Rà soát toàn diện lại toàn bộ diff của các file vừa chỉnh sửa: PublicRoutes.java, ReviewCurrentUserId.java, ReviewExceptionHandler.java, WikiCookApplicationIT.java và ReviewRepositoryIT.java. Xác nhận không còn code thừa, không vi phạm nguyên tắc Clean Architecture, và không phát sinh hồi quy trước khi tôi tạo commit đẩy lên PR #93."
+
+Prompt 4 (Thẩm định chéo QA Lead, bóc tách xung đột AST/Route trên PR #98 Frontend):
+"Với tư cách QA Lead nghiệm thu Feature 070, hãy fetch pull request #98 (refs/pull/98/head) về nhánh cục bộ pr-98. Chúng ta cần đối chiếu toàn bộ 11 test suites Frontend (MSW mock handler, Vitest) với OpenAPI contract Backend đã merge.
+Đặc biệt, GitHub đang cảnh báo conflict với main. Hãy thực hiện phân tích 3 chiều (three-way merge tree) để bóc tách chính xác từng dòng xung đột tại src/frontend/src/app/routes.tsx và MyAccountPage.tsx. Đưa ra khuyến nghị kỹ thuật giải quyết xung đột (giữ cả hai route của Feature 070 và Feature 011, chọn CSS Tailwind responsive) để tôi hướng dẫn tác giả Frontend fix và hoàn tất merge."
+
+Prompt 5 (Dọn dẹp môi trường kiểm thử và bảo toàn nhánh làm việc):
+"Kiểm tra lại toàn bộ trạng thái của PR #98 trên remote sau khi tác giả đã merge commit giải quyết conflict. Khi PR đã đạt trạng thái 'Clean / Able to merge', hãy chuyển con trỏ git về lại nhánh làm việc chính feature/SCRUM-77-review-backend, xóa nhánh tạm pr-98 để đảm bảo workspace sạch sẽ, và báo cáo để tôi tiến hành duyệt PR trên GitHub."
+```
+
+---
+
+### 14.3. Nội dung do AI tạo ra (Which Content Was Generated by AI)
+- Báo cáo phân tích nguyên nhân gốc rễ (Root-Cause Analysis) của 6 lỗi Failsafe Integration Tests từ tệp log build và cấu hình `.github/workflows/backend.yml`.
+- Bản thảo bổ sung danh sách route công khai cho `PublicRoutes.java` và bản cập nhật xử lý ngoại lệ ProblemDetails RFC 7807 trong `ReviewExceptionHandler.java`.
+- Bảng phân tích chi tiết các điểm xung đột mã nguồn 3 chiều (`git merge-tree`) trên PR #98 tại `routes.tsx` và `MyAccountPage.tsx`.
+
+---
+
+### 14.4. Sự can thiệp chuyên môn & Kiểm chứng của sinh viên (Human Verification & Editing)
+
+Quá trình đưa mã nguồn lên nhánh `main` gặp phải các bài toán hóc búa về kiến trúc phân tầng và bảo mật, sinh viên đã trực tiếp can thiệp giải quyết 5 nhóm sự cố kỹ thuật phức tạp:
+
+1. **Chế ngự hành vi phỏng đoán của AI & Chuyển sang phân tích tĩnh (Static Failure Analysis):**
+   - Khi GitHub Actions báo `backend / verify` bị fail sau 2 phút, AI có dấu hiệu khởi chạy các tiến trình ngầm để biên dịch lại mã nguồn, gây treo máy cục bộ do xung đột byte-buddy trên môi trường sandbox.
+   - Sinh viên đã dứt khoát chỉ đạo dừng việc chạy ngầm, buộc AI phải trích xuất tệp cấu hình `.github/workflows/backend.yml` và phân tích trực tiếp từ cây lệnh `mvn -B verify` để khoanh vùng chính xác lỗi nằm ở pha `maven-failsafe-plugin` (Integration Test).
+
+2. **Chẩn đoán xung đột kiến trúc bảo mật giữa Module 070 và Module 010 (Auth):**
+   - *Bản chất lỗi:* Nhánh `main` vừa tích hợp PR #89 (SCRUM-74 Auth) đưa vào `SecurityConfig` với quy tắc mặc định chặn toàn bộ `/api/**` nếu không nằm trong `PublicRoutes.java`. Trong khi đó, Feature 070 quy định hai endpoint công khai cho khách xem không cần đăng nhập (`GET /api/v1/media/cooksnaps/**` và `GET /api/v1/recipes/*/reviews`).
+   - *Can thiệp của sinh viên:* Chỉ đạo bổ sung chính xác 2 route này vào `PublicRoutes.java` (đưa ảnh vào `BEARER_IGNORED` và danh sách đánh giá vào `OPTIONALLY_SIGNED_IN`), bảo đảm đúng tiêu chuẩn OpenAPI `security: []`.
+
+3. **Bóc tách lỗi tiềm ẩn tinh vi trong `ReviewCurrentUserId.java`:**
+   - *Bản chất lỗi:* Mặc dù route đã mở trong `PublicRoutes`, các bài test `RouteProtectionIT` và `ReviewControllerIT` vẫn bị trả về mã lỗi 401 khi khách vãng lai gọi `GET /recipes/1/reviews`.
+   - *Phát hiện đột phá của sinh viên:* Sinh viên soi vào hợp đồng của interface `CurrentUser`: phương thức `user.id()` sẽ chủ động ném ngoại lệ `UnauthenticatedException` khi người dùng chưa đăng nhập. Trong lớp `ReviewCurrentUserId`, phương thức `getOptionalId()` chỉ kiểm tra `user != null` rồi gọi thẳng `user.id()`. Khi khách vãng lai truy cập, ngoại lệ này bị quăng ra Controller và kích hoạt bộ lọc bảo mật trả về 401.
+   - *Giải pháp triệt để:* Sinh viên yêu cầu bọc khối `try-catch (Exception ex)` bên trong `getOptionalId()`, trả về `null` một cách an toàn cho khách vãng lai, đưa bài test chuyển ngay sang mã **200 OK**.
+
+4. **Sửa lỗi vi phạm Persistence Context của Hibernate (`TransientObjectException`):**
+   - Trong bài test `ReviewRepositoryIT.testCascadeDeleteCooksnaps`, đối tượng `Cooksnap` trỏ đến `savedReview` nhưng danh sách con `savedReview.getCooksnaps()` chưa được cập nhật trong bộ nhớ. Khi lệnh xóa review được kích hoạt, Hibernate phát hiện thực thể con trỏ vào một instance đang bị xóa dở và ném ngoại lệ. Sinh viên trực tiếp chỉ đạo thiết lập quan hệ hai chiều hoàn chỉnh trước khi gọi `delete()`.
+
+5. **Phát hiện và xử lý xung đột phân nhánh trên PR #98 của Frontend:**
+   - Với vai trò QA Lead thẩm định PR #98 của Duy, khi thấy GitHub báo conflict, sinh viên đã dùng lệnh `git merge-tree` bóc tách từng dòng xung đột:
+     - Tại `routes.tsx`: Xung đột giữa route xem review `recipes/:id` (Feature 070) và route xem hồ sơ cá nhân `profiles/:id` (Feature 011). Sinh viên đưa ra quyết định kiến trúc: **giữ lại cả hai route**.
+     - Tại `MyAccountPage.tsx`: Nhánh `main` dùng inline style cũ, trong khi PR #98 đã nâng cấp lên Tailwind responsive. Sinh viên chỉ đạo **chọn phiên bản class Tailwind**.
+   - Hướng dẫn tác giả Duy thực hiện merge đúng chuẩn, đưa PR #98 đạt trạng thái xanh ("Able to merge") và tiến hành phê duyệt.
+
+#### Đánh giá kết quả & Tuân thủ Liêm chính học thuật
+- **Kết quả nghiệm thu:** 
+  - Toàn bộ 430 integration test trên GitHub Actions chạy thành công 100% (`BUILD SUCCESS`).
+  - PR #93 (Backend SCRUM-77) và PR #98 (Frontend SCRUM-78) đã merge an toàn vào nhánh `main`.
+- **Vai trò con người (Human-in-the-Loop):** Khẳng định sinh viên nắm quyền chủ động 100%, trực tiếp đưa ra các quyết định kiến trúc cốt lõi, bắt lỗi công cụ AI, bảo vệ nghiêm ngặt tính toàn vẹn của mã nguồn và hoàn thành đúng hạn các cam kết của Sprint 04.
 
