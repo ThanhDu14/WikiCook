@@ -9,8 +9,8 @@
 | **Người thực hiện** | **Trần Nguyễn Công Chung** (`@itzchugnn` - MSSV: 24120272) — QA Lead, Compliance Auditor & Member E |
 | **Người kiểm tra** | **Lê Quốc Hưng** (`@LqHung06`) — Scrum Master & PM *(Chờ ký duyệt sau khi hoàn thành video demo)* |
 | **Phạm vi kiểm thử** | Toàn bộ 2 nhóm chức năng trọng yếu: **Nhóm 1 (`010 + 011`)** và **Nhóm 2 (`070`)** |
-| **Ngày lập báo cáo** | 2026-11-19 (Cập nhật đối chiếu: 2026-11-20) |
-| **Kết quả tổng quan** | **654 Unit Tests Backend (BUILD SUCCESS)**, **918 Component Tests Frontend (120 files pass 100%)**. Integration Tests chạy qua `mvn verify` (Testcontainers). Video demo đang chuẩn bị thực hiện. |
+| **Ngày lập báo cáo** | 2026-11-19 (Cập nhật hoàn tất: 2026-11-21) |
+| **Kết quả tổng quan** | **654 Unit Tests Backend (BUILD SUCCESS)**, **918 Component Tests Frontend (120 files pass 100%)**. Integration Tests sẵn sàng qua `mvn verify` (Testcontainers). **Video Demo End-to-End đã hoàn tất ghi hình và xuất bản YouTube.** |
 
 ---
 
@@ -18,8 +18,8 @@
 
 Căn cứ theo yêu cầu của nhiệm vụ Jira `SCRUM-79` và Tiêu chí Đánh giá Phần E:
 1. **Yêu cầu a (Kiểm chứng Test Spec Kit — ĐÃ HOÀN THÀNH)**: Thực thi kiểm chứng toàn bộ bộ test được sinh qua Spec Kit cho cả 2 nhóm chức năng (`010+011` và `070`) trên cả Backend (`mvn test` / `mvn verify`) và Frontend (`npm test`), thu thập số liệu chính xác từ báo cáo Surefire/Vitest và lưu bằng chứng kết quả kiểm thử.
-2. **Yêu cầu b (Video Demo End-to-End — ĐANG TIẾN HÀNH)**: Xây dựng kịch bản phân cảnh (Storyboard) chuẩn hóa khớp 100% với REST API và CSDL thật, tiến hành quay Video Demo chi tiết luồng hoạt động end-to-end (`UI -> REST API -> PostgreSQL Database`) của cả 2 nhóm chức năng.
-3. **Yêu cầu c (Xuất bản YouTube — CHỜ GHI HÌNH)**: Đăng tải video lên YouTube (chế độ Unlisted/Public) và tích hợp đường link vào `README.md`, `sprint-04-report.md` và tài liệu nộp bài.
+2. **Yêu cầu b (Video Demo End-to-End — ĐÃ HOÀN THÀNH)**: Đã hoàn tất ghi hình Video Demo chi tiết luồng hoạt động end-to-end (`UI -> REST API -> PostgreSQL Database`) của cả 2 nhóm chức năng theo đúng kịch bản Storyboard chuẩn hóa.
+3. **Yêu cầu c (Xuất bản YouTube — ĐÃ HOÀN THÀNH)**: Đã xuất bản video lên YouTube ở chế độ Không công khai (Unlisted) tại URL [https://www.youtube.com/watch?v=PS3sbgVm_jI](https://www.youtube.com/watch?v=PS3sbgVm_jI) và sẵn sàng tích hợp vào `README.md`, `sprint-04-report.md`.
 
 ---
 
@@ -105,13 +105,14 @@ Video demo được thiết kế theo cấu trúc song song: **Màn hình Trình
 
 ## 4. Đường dẫn Video Demo YouTube (Yêu cầu c)
 
-- **Trạng thái xuất bản**: Đang chuẩn bị ghi hình theo Storyboard Mục 3. Link video sẽ được cập nhật đồng bộ ngay sau khi hoàn tất.
-- **Link Video YouTube**: `[ĐIỀN LINK YOUTUBE TẠI ĐÂY - Ví dụ: https://youtu.be/xxxxxxxxxxx]` *(Chế độ Unlisted/Public)*
-- **Độ phân giải**: 1080p Full HD (Thuyết minh tiếng Việt).
-- **Vị trí tích hợp đồng bộ sau khi ghi hình**:
+- **Trạng thái xuất bản**: **Đã hoàn tất ghi hình và xuất bản trên YouTube (Chế độ Unlisted).**
+- **Tiêu đề video**: `[CSC13002][Nhóm 05] WikiCook - Part E System Verification & End-to-End Demo (SCRUM-79)`
+- **Đường dẫn xem trực tiếp (YouTube URL)**: [https://www.youtube.com/watch?v=PS3sbgVm_jI](https://www.youtube.com/watch?v=PS3sbgVm_jI)
+- **Độ phân giải**: 1080p Full HD (Thuyết minh tiếng Việt có đầy đủ mốc thời gian Timestamps).
+- **Vị trí tích hợp đồng bộ**:
   1. `README.md` (Mục Demo Videos)
-  2. `docs/management/reports/sprint-04/sprint-04-report.md` (Bảng deliverables và Section 1)
-  3. `docs/test/scrum-79-spec-kit-test-report.md`
+  2. `docs/management/reports/sprint-04/sprint-04-report.md` (Bảng deliverables Mục 1 và Section 4)
+  3. `docs/test/scrum-79-spec-kit-test-report.md` (Mục 4 và Mục 5)
 
 ---
 
@@ -121,8 +122,8 @@ Căn cứ trên các bằng chứng kiểm thử thực tế tại đợt nghi�
 - [x] **Yêu cầu a — Kiểm thử Spec Kit Tự động**: Đạt tỷ lệ 654/654 Backend unit tests (`mvn test`), 918/918 Frontend component tests (`npm test`) thành công 100%. Sẵn sàng thực thi ~1.410 tests qua `mvn verify` (Testcontainers).
 - [x] **Yêu cầu a — Độ phủ JaCoCo**: Tầng dịch vụ `review.service` đạt 76.08% (unit test) / 77.16% (integration test), `auth.service` đạt ~97%, `profile.service` đạt ~93% (tuân thủ nghiêm ngặt Hiến pháp Principle II $\ge 70\%$).
 - [x] **Yêu cầu a — Bảo mật & Quyền riêng tư**: Bóc tách 100% metadata GPS/EXIF trên hình ảnh tải lên (tuân thủ Hiến pháp Principle IV).
-- [ ] **Yêu cầu b — Video Demo End-to-End**: Kịch bản Storyboard đã được chuẩn hóa khớp mã nguồn; đang tiến hành ghi hình thực tế.
-- [ ] **Yêu cầu c — Xuất bản YouTube**: Chờ hoàn thiện video để đính kèm link công khai.
+- [x] **Yêu cầu b — Video Demo End-to-End**: Đã ghi hình và nghiệm thu thực tế thành công qua video demo có thuyết minh, chứng minh luồng dữ liệu toàn vẹn: UI -> REST API -> PostgreSQL Database.
+- [x] **Yêu cầu c — Xuất bản YouTube**: Đã tải lên YouTube ở chế độ Unlisted tại đường dẫn [https://www.youtube.com/watch?v=PS3sbgVm_jI](https://www.youtube.com/watch?v=PS3sbgVm_jI) (1080p Full HD).
 
 *Xác nhận của QA Lead:*  
 **Trần Nguyễn Công Chung** (`@itzchugnn` - MSSV: 24120272) — QA Lead & Compliance Auditor, WikiCook Group 05
