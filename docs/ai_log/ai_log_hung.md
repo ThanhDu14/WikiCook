@@ -47,7 +47,8 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 32 | 2026-11-19, khoảng 20:00 – 21:50 (ước lượng) | `SCRUM-88`, `SCRUM-84` | Kiểm tra tiến độ PA4 trên GitHub, cập nhật bảng trạng thái và việc còn mở theo từng người; gộp change list của Duy (`SCRUM-70`, `SCRUM-71`) vào `Changes.md`; model `v2.0.1` | `8680c50`, `3d1cc22`, `c51c31a` | `sprint-04-report.md`, `Changes.md`, `use-case-model.md` |
 | 33 | 2026-11-20, khoảng 12:00 – 13:00 (ước lượng) | `SCRUM-79`, `SCRUM-71` (review), `SCRUM-84`, `SCRUM-88` | Review PR #108 và #109, soạn bình luận review; cập nhật `Changes.md` và Use-Case Model `v2.0.2` theo PR #109; soạn mô tả PR; cập nhật lại trạng thái Sprint 04 trên GitHub (`v0.8`) | `502a30e`, `59172ef` | `Changes.md`, `use-case-model.md`, `sprint-04-report.md` |
 | 34 | 2026-11-20, khoảng 13:00 – 13:30 (ước lượng) | `SCRUM-87`, `SCRUM-88` | Ghi biên bản Standup 02 (19/11, 22:36 – 23:55) từ thông tin buổi họp do PM cung cấp và trạng thái task trên GitHub/Jira; thêm ACT-08 – ACT-17; cập nhật trạng thái Sprint 04 (`v0.9`) | `999dc37`, `01cb032` | `sprint-04-report.md` |
-| 35 | 2026-11-21, khoảng 15:00 – 16:00 (ước lượng) | `SCRUM-79`, `SCRUM-71` (review), `SCRUM-83`, `SCRUM-88` | Kiểm tra PR #108, #109, #110 sau khi được cập nhật; phát hiện nội dung `SCRUM-83` (PR #112) chưa lên `main`; cập nhật trạng thái Sprint 04 (`v0.10`); soạn bình luận review lại và tin nhắn cho Dự | commit của mục này | `sprint-04-report.md` |
+| 35 | 2026-11-21, khoảng 15:00 – 16:00 (ước lượng) | `SCRUM-79`, `SCRUM-71` (review), `SCRUM-83`, `SCRUM-88` | Kiểm tra PR #108, #109, #110 sau khi được cập nhật; phát hiện nội dung `SCRUM-83` (PR #112) chưa lên `main`; cập nhật trạng thái Sprint 04 (`v0.10`); soạn bình luận review lại và tin nhắn cho Dự | `0f71ef0` | `sprint-04-report.md` |
+| 36 | 2026-11-21, khoảng 16:00 – 17:00 (ước lượng) | `SCRUM-87`, `SCRUM-88`, `SCRUM-84` | Rà soát mâu thuẫn trong báo cáo Sprint 04, `Changes.md` và AI log; phát hiện lỗi lưu ảnh Cooksnap khi chạy Docker Compose; sửa biên bản Standup 01 theo xác nhận của PM (`v0.11`, `v0.12`) | `1fc00b1`, commit của mục này | `sprint-04-report.md`, `Changes.md`, `ai_log_hung.md` |
 
 ---
 
@@ -1568,7 +1569,7 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 | **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.4, 4.2, 4.2.1, 4.3, 5.2, 5.4); `docs/test/scrum-79-spec-kit-test-report.md` (PR #108); `docs/requirements/use-case-specification.md` (PR #109); `docs/ai_log/ai_log_hien.md` (PR #110); `docs/analysis-and-design/architecture.md` |
 | **Mục đích sử dụng** | Kiểm tra các PR đang mở sau khi tác giả cập nhật, xác định PR nào thuộc phần PM review và đã sẵn sàng merge chưa; cập nhật tiến độ Sprint 04 theo GitHub; soạn bình luận review lại và tin nhắn nhắc việc. |
 | **Nhánh Git** | `docs/SCRUM-84-88-pa4-status-changes` |
-| **Minh chứng (Evidence)** | Commit `0f71ef0` và commit rà soát ngày 21/11 (báo cáo `v0.11`); bình luận review trên PR #108, #109 (21/11); PR của nhánh: #114. |
+| **Minh chứng (Evidence)** | Commit `0f71ef0`; bình luận review trên PR #108, #109 (21/11); PR của nhánh: #114. |
 
 ### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
 1. Kiểm tra ba PR đang mở: chỉ ra PR nào thuộc phần tôi review và PR đó đã sẵn sàng merge chưa, tiến độ Sprint 04 cần cập nhật ra sao, và tôi còn SCRUM nào chưa hoàn thành.
@@ -1584,7 +1585,6 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - Quyết định thực hiện các đề xuất; đọc lại bình luận review trước khi đăng lên PR #108, #109 và gửi tin nhắn cho Dự.
 - Tự xem video demo của PR #108 ngày 21/11 và đánh giá đạt; đăng bình luận review lại trên PR #108, #109 (sửa lại một bình luận lỡ đăng nhầm từ #108 sang #109).
 - Mở PR #114 cho nhánh; còn phải làm: merge PR #114 sau PR #109.
-- Yêu cầu rà soát lại các mâu thuẫn trong báo cáo thuộc SCRUM của mình; kết quả: báo cáo `v0.11` (số PR #114, review và video ngày 21/11, model `v2.0.2` ở `SCRUM-70` và `Changes.md`, ghi chú ngày `SCRUM-89`, lỗi lưu ảnh Cooksnap khi chạy Docker Compose ở Mục 4.5).
 
 ### Kiểm chứng đã thực hiện:
 - GitHub API: trạng thái, review, commit và file của PR #108 – #113; giờ merge của PR #111 (15:48:52) và #112 (15:49:09, vào nhánh `docs/SCRUM-82-c4-l3-frontend`).
@@ -1592,4 +1592,38 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - Đối chiếu storyboard PR #108 với code trên `main`: `VerificationController` (`POST /api/v1/auth/verification/confirm`), migration `V101__users_auth.sql` (cột `household_size`, không có `servings`), số file test frontend (`auth` 12, `profile` 7, `reviews` 11).
 - YouTube oEmbed: video của PR #108 tồn tại (chỉ kiểm được video có thật, chưa xem nội dung).
 - Script kiểm số cột của mọi bảng trong báo cáo.
-- Chạy `mkdir -p /app/uploads/cooksnaps` bằng user `wikicook` trong image `wikicook-app:local`: `Permission denied`; đối chiếu `ReviewStorageProperties` (`rootPath = uploads/cooksnaps/`), `src/backend/Dockerfile` (`WORKDIR /app` của `root`) và `docker-compose.yml` (chỉ có volume `media` cho ảnh đại diện).
+
+---
+
+## Mục 36: Rà soát mâu thuẫn trong tài liệu của PM và sửa biên bản Standup 01 (`SCRUM-87`, `SCRUM-88`, `SCRUM-84`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Opus 5.5 (`claude-opus-5-5`) |
+| **Thời gian truy cập cụ thể** | 2026-11-21, khoảng 16:00 – 17:00 (Giờ Việt Nam, UTC+7); giờ là ước lượng theo phiên làm việc và giờ commit |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-87` (Standup 01), `SCRUM-88` (bảng trạng thái, Known gaps), `SCRUM-84` (`Changes.md`) |
+| **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 1.2, 2.2, 2.4, 3.1, 4.2 – 4.5, 5); `Changes.md`; `docs/ai_log/ai_log_hung.md`; `src/backend/Dockerfile`, `src/backend/docker-compose.yml`, `ReviewStorageProperties.java` |
+| **Mục đích sử dụng** | Tìm các chỗ mâu thuẫn giữa các phần trong tài liệu thuộc SCRUM của PM và giữa tài liệu với repository; sửa những chỗ đã rõ, hỏi PM những chỗ cần xác nhận. |
+| **Nhánh Git** | `docs/SCRUM-84-88-pa4-status-changes` (PR #114) |
+| **Minh chứng (Evidence)** | Commit `1fc00b1` (báo cáo `v0.11`) và commit của mục này (báo cáo `v0.12`); PR #114. |
+
+### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
+1. Rà soát báo cáo trong các SCRUM của tôi, chỉ ra chỗ nào mâu thuẫn hoặc cần chỉnh sửa cho đúng; chỗ nào cần tôi xác nhận thì hỏi dưới dạng trắc nghiệm.
+2. Trả lời các câu hỏi: giờ họp và người có mặt của Standup 01 là đúng; ở Standup 01 tôi báo SCRUM-76 chưa bắt đầu code, sẽ bắt đầu 15 – 16/11 và không vướng gì; xóa câu còn để trống về ranh giới C4 Level 1; sửa các câu không khớp repository thành kế hoạch hoặc thực tế đã làm, kèm bằng chứng; sửa câu chữ ngày nộp ở Mục 3.1 cho khớp với phần còn lại.
+
+### Nội dung do AI sinh ra:
+1. Danh sách mâu thuẫn: ghi chú ngày `SCRUM-89` ở Mục 1.2 khác Mục 2.1; model `v2.0.2` thiếu ở `SCRUM-70` và trong bảng tóm tắt của `Changes.md`; trạng thái chưa cập nhật số PR #114, review và video ngày 21/11; các chỗ còn để trống của Standup 01; các câu trong Standup 01 không khớp repository; ngày nộp ở Mục 3.1; các chỗ "điền số PR khi mở" trong AI log.
+2. Phát hiện lỗi: khi chạy bằng Docker Compose, ảnh Cooksnap được ghi vào `/app/uploads/cooksnaps`, thư mục mà user `wikicook` không tạo được và không nằm trên volume; đề xuất đặt `WIKICOOK_REVIEW_STORAGE_ROOTPATH` vào volume `media`. Ghi vào Mục 4.5.
+3. Báo cáo `v0.11` và `v0.12`: các sửa đổi trên; viết lại dòng của Hưng, Chung, Dự, Duy và quyết định 2 của Standup 01 theo bằng chứng; `SCRUM-85` ghi PR #110 đã merge; `Changes.md` thêm `v2.0.2`; AI log điền số PR của mục 28 – 35.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Xác nhận giờ họp, hình thức và người có mặt của Standup 01, nội dung mình đã báo ở buổi họp; chọn cách xử lý cho từng chỗ không khớp repository.
+- Đã được Duy cho phép sửa câu chữ trong phần của Duy (Mục 3.1).
+- Còn phải làm: báo lỗi lưu ảnh Cooksnap cho Chung (`SCRUM-77`) và Dự (`SCRUM-89`); nhờ Duy review lại Mục 2.2.
+
+### Kiểm chứng đã thực hiện:
+- Chạy `mkdir -p /app/uploads/cooksnaps` bằng user `wikicook` trong image `wikicook-app:local`: `Permission denied`; đối chiếu `ReviewStorageProperties` (`rootPath = uploads/cooksnaps/`), `LocalStorageServiceImpl` (lỗi tạo thư mục chỉ được ghi log khi khởi động), `src/backend/Dockerfile` (`WORKDIR /app` của `root`) và `docker-compose.yml` (chỉ có volume `media`). Chưa chạy thử một lần tải ảnh thật trong Docker.
+- `git log` theo tác giả và ngày (10 – 14/11) cho các câu của Standup 01: commit Spec Kit `070` của Chung ngày 11 – 12/11; commit `SCRUM-77` đầu tiên lúc 15/11 01:06; commit C4 Level 1 đầu tiên của Hiển lúc 16/11 12:29 (sau buổi họp), commit backend `010` từ 13/11; compose và `V210` có từ 28 – 29/10; commit đầu tiên của `SCRUM-76` ngày 16/11.
+- GitHub API: PR #110 merge lúc 21/11 16:24 sau khi Chung approve.
+- Script kiểm số cột của mọi bảng; `git merge-base --is-ancestor` để xác định PR chứa các commit trong AI log.
