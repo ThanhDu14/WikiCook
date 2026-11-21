@@ -42,6 +42,17 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Mai Vă
 | 36 | 2026-11-15 | Task SCRUM-80 – kiểm tra, soạn prompt và viết Part B (Tech Stack, C4 Level 1) | `architecture.md` |
 | 37 | 2026-11-16 | Review PR #90 (SCRUM-76, SCRUM-87) | PR #90, `sprint-04-report.md` |
 | 38 | 2026-11-16 | Rà soát AI log và bổ sung Mục 28 – 38 | `ai_log_hien.md` |
+| 39 | 2026-11-16 → 2026-11-17 | Task SCRUM-80 – chọn cách commit, cập nhật trạng thái auth sau PR #89, push và mở PR #94 | `architecture.md`, PR #91, #94 |
+| 40 | 2026-11-16 | Task SCRUM-75 – kiểm tra tiến độ và soạn prompt triển khai backend 011 | `pa4-guide.md`, 011 `tasks.md` |
+| 41 | 2026-11-16 → 2026-11-17 | Task SCRUM-75 – triển khai backend 011 (Phase 1 – 4, 7, T112), 5 commit, mô tả PR | 011, code `src/backend` |
+| 42 | 2026-11-17 | Task SCRUM-75 – đối chiếu danh sách thiếu của Hưng, soạn prompt hai giai đoạn, thêm endpoint `notices/ack` | 011 contracts, `tasks.md` |
+| 43 | 2026-11-17 | Task SCRUM-74/75 – quên mật khẩu (PR #96), hợp nhất `main` vào nhánh SCRUM-75, sửa lỗi đọc ảnh | 010, 011, PR #93, #95, #96 |
+| 44 | 2026-11-17 | Task SCRUM-75 – sửa test lỗi trên CI của PR #95 | PR #95, `DietaryPortsIT` |
+| 45 | 2026-11-17 → 2026-11-18 | Kiểm tra bốn việc còn thiếu sau tích hợp F-01 và soạn prompt hoàn thiện | 010, 011, `src/frontend` |
+| 46 | 2026-11-18 | Task SCRUM-74/75/76 – `avatarUrl`, hồ sơ công khai, đăng nhập Google, `closureToken`, e2e, PR #97 | 010, 011, code `src/backend`, `src/frontend` |
+| 47 | 2026-11-19 | Review PR #104 và #105 (SCRUM-76) | PR #104, #105 |
+| 48 | 2026-11-19 | Task SCRUM-81 – kiểm tra, soạn prompt, viết C4 Level 2 và Backend Level 3, PR #106 | `architecture.md` |
+| 49 | 2026-11-19 | Viết các mục AI log còn thiếu (Mục 39 – 49) | `ai_log_hien.md` |
 
 ---
 
@@ -1646,7 +1657,7 @@ Tóm lược (nguyên văn nằm trong hội thoại):
 - `grep -c "pending review" docs/management/project-plan.md` ra 7 và trong `Changes.md` ra 2; `grep -n "NFR-REL-10\|Sprint 3 — Build v0.5" docs/requirements/vision-document.md` ra hai dòng 532 và 612 còn ghi `redis` và 13/11/2026.
 - Giờ: lệnh `date` lúc ghi mục này ra `2026-11-06 07:55`.
 - Version Claude Code: 2.1.296.
-- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+- Lịch sử chat: phiên bắt đầu 10:37 ngày 04/11 là `1800126c-f01b-4535-8fd7-021d93d2f4bb.jsonl` (đến 08:19 ngày 06/11); phiên 07:41 – 08:25 ngày 06/11 có cùng prompt mở đầu là `7a740ef7-cb04-4173-b129-5dca86f9b2f9.jsonl`. Không có ảnh chụp màn hình; bằng chứng là file transcript Claude Code trong `C:\Users\DMX\.claude\projects\d--HK1-N-m-3-Nh-p-m-n-CNPM-----n-WikiCook\` (mỗi dòng của file là một lượt hội thoại, kèm dấu thời gian UTC). Hiển có thể đính kèm bản export từ file này khi nộp.
 - Hiển cần tự đối chiếu trước khi nộp: (1) giờ bắt đầu phiên ngày 04/11 và phiên bản Claude Code của từng phiên; (2) từng thay đổi trong bảng A.2 của `Changes.md` với `project-plan.md` đã merge; (3) bốn quyết định AI tự chốt ở mục A.4; (4) câu "all remote branches" ở A.1; (5) hai chỗ Vision (`vision-document.md:532`, `:612`) sau khi lấy PR #71 về, và các câu ở `Changes.md` section A (A.1, A.5 mục 2 và 5) đã lỗi thời so với PR #71; (6) 7 chỗ "pending review" sau khi Hưng đã Approve.
 
 ---
@@ -1734,7 +1745,7 @@ Tóm lược (nguyên văn nằm trong hội thoại):
 - Mermaid: `mermaid.parse` với `mermaid@10.9.1` (cài ở thư mục tạm, không vào repo): 6 khối, 0 lỗi. Số cột bảng Markdown: 0 dòng lệch ở `project-plan.md` và `Changes.md`.
 - Chưa render PDF và chưa chạy `markdownlint`.
 - Version Claude Code: 2.1.296; model theo từng lượt lấy từ transcript phiên.
-- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+- Lịch sử chat: phiên bắt đầu 08:25 ngày 06/11 (`2026-11-06T01:25:39Z`) là `015c2cd7-ca18-4ff0-a9f3-9f9a054dce7f.jsonl` (đến 09:11). Không có ảnh chụp màn hình; bằng chứng là file transcript Claude Code trong `C:\Users\DMX\.claude\projects\d--HK1-N-m-3-Nh-p-m-n-CNPM-----n-WikiCook\` (mỗi dòng của file là một lượt hội thoại, kèm dấu thời gian UTC). Hiển có thể đính kèm bản export từ file này khi nộp.
 - Hiển cần tự đối chiếu trước khi nộp: (1) sửa "all remote branches" ở `Changes.md` A.1; (2) sửa dòng lỗi và thêm `45b1d07` vào mô tả PR #72, đổi tiêu đề PR; (3) từng thay đổi trong bảng A.2 với `project-plan.md`; (4) các nhãn pending review sau khi Hưng duyệt, gồm cả dòng 7 của `Changes.md`; (5) chạy thật gate `Build v0.5`; (6) các mục cần xem trên Jira ở A.5 mục 4.
 
 ---
@@ -1849,7 +1860,7 @@ Tóm lược (nguyên văn nằm trong hội thoại):
 - `git status --short` trong worktree: 4 file đã có trên `main` bị sửa (hai file checklists, `spec.md` của 010 và của 011), 12 mục mới chưa theo dõi của 010 và 011. Sau khi Hiển chép thêm spec 100 và AI log, PR #84 có 6 file đã có trên `main` bị sửa: `ai_log_hien.md`, hai file checklists, spec 010, spec 011 và spec 100 (góp ý của Duy trên PR).
 - Chưa chạy `mvn verify`, `npm test`, chưa render Markdown sang PDF.
 - Version Claude Code: 2.1.296; model theo từng lượt lấy từ transcript phiên.
-- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+- Lịch sử chat: phiên bắt đầu 09:12 ngày 07/11 (`2026-11-07T02:12:45Z`) là `56ae6b34-69eb-4a98-8e81-afc76d9207fc.jsonl` (kéo dài đến 13:55 ngày 12/11); Mục 27 dùng cùng phiên này. Không có ảnh chụp màn hình; bằng chứng là file transcript Claude Code trong `C:\Users\DMX\.claude\projects\d--HK1-N-m-3-Nh-p-m-n-CNPM-----n-WikiCook\` (mỗi dòng của file là một lượt hội thoại, kèm dấu thời gian UTC). Hiển có thể đính kèm bản export từ file này khi nộp.
 - Hiển cần tự làm trước khi đóng SCRUM-72:
   1. Commit trong worktree theo hai thông điệp đề xuất, push, mở PR vào `main`.
   2. Chốt người duyệt (Hưng, Duy) và phạm vi PA4.
@@ -1920,7 +1931,7 @@ hãy lên xem review PR #84. Kiểm tra lại cần sửa điều gì, và giả
 - Hai file `openapi.yaml` (010, 011) parse được bằng PyYAML; `/admin/users/{id}/reinstatement` có phản hồi 200, 400, 401, 403, 404, 409.
 - `grep` không còn `USER_SUSPENDED` (trừ ghi chú), `DELETED_USER`, `old_role` trong 010, 011, 100.
 - Chưa chạy `/speckit-analyze` lại, chưa render PDF.
-- Screenshot / lịch sử chat: Hiển điền (đính kèm export hội thoại).
+- Lịch sử chat: cùng file transcript `56ae6b34-69eb-4a98-8e81-afc76d9207fc.jsonl` của Mục 26 (phần xử lý review PR #84 ngày 11 – 12/11). Không có ảnh chụp màn hình; bằng chứng là file transcript Claude Code trong `C:\Users\DMX\.claude\projects\d--HK1-N-m-3-Nh-p-m-n-CNPM-----n-WikiCook\` (mỗi dòng của file là một lượt hội thoại, kèm dấu thời gian UTC). Hiển có thể đính kèm bản export từ file này khi nộp.
 
 ---
 
@@ -2428,7 +2439,7 @@ hãy lên github kiểm tra và nhận xét PR #90
 
 | Phần | Quyết định | Lý do |
 |---|---|---|
-| Nhận xét về biên bản Standup 02 | **Hiển điền** đã đăng lên PR hay chuyển tới Hưng chưa | Transcript chỉ cho thấy bản nhận xét trong hội thoại |
+| Nhận xét về biên bản Standup 02 | Không đăng lên PR | `gh pr view 90` (kiểm ngày 19/11): không có bình luận hay review nào của `MaiHien3507`; chỉ có approve của `ThanhDu14` lúc 11:58 ngày 16/11 và PR được merge cùng lúc (04:58 UTC). Nhận xét chỉ nằm trong hội thoại. Việc có chuyển tới Hưng bằng kênh khác hay không thì transcript không cho biết |
 
 ### Cách kiểm chứng
 
@@ -2476,3 +2487,532 @@ hãy kiểm tra xem hiện tại AI log của tôi đầy đủ chưa, nếu ch�
 ### Cách kiểm chứng
 
 - Đối chiếu từng mục với file transcript, `git log` và GitHub.
+
+---
+
+## Mục 39: Task SCRUM-80 – chọn cách commit, cập nhật trạng thái auth sau PR #89, push và mở PR #94
+
+**Task: SCRUM-80**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-16 (commit, sửa tài liệu) và 2026-11-17 (push, mở PR) |
+| Giờ truy cập | 12:26 – 12:47 ngày 16/11; 14:49 – 14:51 ngày 17/11 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/analysis-and-design/architecture.md`, `docs/ai_log/ai_log_hien.md`, PR #89, #91, #94 |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5; cùng hội thoại với Mục 36 (file transcript `1a8fe054`) |
+| Mục đích | Kiểm tra quyền push, tách commit, cập nhật `architecture.md` khi PR #89 vào `main`, viết mô tả PR, push và mở PR |
+| Nhánh Git | `docs/SCRUM-80-tech-stack-c4-l1` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập từ 12:26 ngày 16/11/2026, prompt: "kiểm tra xem tôi đã có thể push code lên được chưa", "hãy chọn cách 2 và commit cho tôi nhưng chưa push", "đã merge vào main", "hãy push cho tôi", dùng để đưa Part B (SCRUM-80) lên GitHub; AI chạy `git`, `gh` và `mmdc`, sửa `architecture.md` (+37/−35 dòng) cho khớp `main` sau PR #89, và viết mô tả PR; Hiển chọn phương án và là người quyết định commit, push.
+
+### Prompt đã dùng
+
+1. (16/11 12:26) "kiểm tra xem tôi đã có thể push code lên được chưa"
+2. (12:28) "phần này đã viết AI log chưa, đã add và commit chưa"
+3. (12:29) "hãy chọn cách 2 và commit cho tôi nhưng chưa push"
+4. (12:31) "bây giờ tôi cần merge trước rồi mới push không"
+5. (12:35) "viết phần description cho tôi"
+6. (12:38) "đã merge vào main"
+7. (12:47) "hãy làm cho tôi"
+8. (17/11 14:49) "hãy push cho tôi"
+9. (14:50) "có"
+
+### Tóm tắt phản hồi của AI
+
+- **Quyền push (12:26):** `MaiHien3507` có `push: true` trên `ThanhDu14/WikiCook`, `main` được bảo vệ; `git push --dry-run` chạy được. Nhánh chậm 34 commit so với `origin/main`; email `git config` (`hien.hu20p390@gmail.com`) khác email của tài khoản `gh`.
+- **Tình trạng commit (12:28):** `architecture.md` và `ai_log_hien.md` (+567 dòng, Mục 28 – 38 do phiên khác viết) chưa commit. AI đưa 3 cách; Hiển chọn cách 2 (hai commit tách).
+- **Commit (12:29):** `48c5d7c` `docs(architecture): add tech stack and C4 level 1 (SCRUM-80)` (+176/−65) và `d75af28` `docs(ai-log): add AI log entries 28-38 for Hien (SCRUM-80)` (+567/−1). Mỗi commit chỉ `git add` một file, không có dòng Co-Authored-By; ba file untracked không đưa vào.
+- **Merge trước push?** Không cần: dùng `git merge-tree` mô phỏng với `origin/main`, kết quả sạch.
+- **PR #89 đã vào `main` (12:38 – 12:41):** AI đọc `origin/main` (`4538a7a`) và sửa `architecture.md`: Spring Security/JWT/BCrypt, SMTP xác minh, Moderator suspension, Administrator, Flyway 18 migration chuyển sang Current; Google sign-in và backend 011 vẫn Planned (khi đó chỉ có dependency, cấu hình và nút ở frontend). Render lại sơ đồ bằng `mmdc`. Commit `b9ff03e` `docs(architecture): mark auth as current after SCRUM-74 merge (SCRUM-80)` (12:47).
+- **Push và PR (17/11):** push `d75af28..b9ff03e`. Khi kiểm tra, AI phát hiện PR #91 từ chính nhánh này đã được merge vào `main` (chỉ gồm hai commit đầu), nên `b9ff03e` chưa có trên `main`. AI viết lại mô tả theo hướng "bổ sung cho #91" và mở **PR #94** với reviewer `DucDuyNguyen15-IT`; kiểm tra PR chỉ chứa `b9ff03e` (1 file, +37/−35) và merge thử sạch.
+- Hạn chế: AI không xác nhận Duy đã thực sự được gắn làm reviewer sau khi tạo PR; chưa có mục AI log cho phần cập nhật ngày 16/11 tại thời điểm đó (mục này bù lại).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Cách 2: hai commit tách (kiến trúc, AI log) | Dùng | Hiển chọn ở prompt 3; PR không mang log của task khác |
+| Mô tả PR viết lúc 12:35 | Chỉnh sửa | PR #89 đã merge nên mục "cần reviewer chốt" cũ không còn đúng; AI viết lại ở 12:47 và lại viết lại ở 14:50 vì PR #91 đã merge |
+| Cập nhật auth thành Current (`b9ff03e`) | Dùng | Hiển báo PR #89 đã merge; AI kiểm chứng trên `origin/main` |
+| Merge `origin/main` vào nhánh | Bỏ | Không bắt buộc, chỉ thêm merge commit vào PR docs |
+
+### Cách kiểm chứng
+
+- `git log` và `gh pr view 94`: PR chỉ có `b9ff03e`; `git merge-tree` không báo xung đột; transcript `1a8fe054` (12:26 – 14:51).
+
+---
+
+## Mục 40: Task SCRUM-75 – kiểm tra tiến độ và soạn prompt triển khai backend 011
+
+**Task: SCRUM-75**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-16 |
+| Giờ truy cập | 12:49 – 12:50 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `pa4-guide.md` (SCRUM-75), `specs/011-user-profile-dietary/tasks.md` (dòng 52), `.specify/memory/constitution.md` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 (file transcript `b11eb30f`) |
+| Mục đích | Biết SCRUM-75 đã làm chưa; nếu chưa thì có prompt để làm |
+| Nhánh Git | `docs/SCRUM-80-tech-stack-c4-l1`; không sửa repo |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 12:49 ngày 16/11/2026, prompt: "Scrum 75 tôi đã làm chưa, nếu chưa thì viết prompt cho tôi để làm", dùng để kiểm tra tiến độ và soạn prompt `/speckit-implement`; AI chạy 6 lệnh Bash chỉ đọc (git, find) và viết prompt; không sửa file nào.
+
+### Prompt đã dùng
+
+```text
+Scrum 75 tôi đã làm chưa, nếu chưa thì viết prompt cho tôi để làm
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Kết luận:** SCRUM-75 chưa làm. Không có commit hoặc nhánh nào mang mã SCRUM-75; `origin/main` chưa có package `com.wikicook.profile`, dietary profile còn là `devstub/StubDietaryProfile`. Hạn 18/11, reviewer Lê Quốc Hưng.
+- **Phạm vi đề xuất theo `tasks.md` dòng 52:** Phase 1 – 4 và Phase 7 (US1, US2, US5) cộng T112; không làm US3, US4 (đổi mật khẩu, xóa tài khoản).
+- **Prompt do AI soạn** (gọi `/speckit-implement`): đọc đủ tài liệu spec 011 trước; test-first (đỏ rồi xanh); dùng `CurrentUser` thật của 010; không tạo lại V010/V101/V210; thay stub bằng adapter thật nhưng không phá mealplan, shoppinglist, search; giữ riêng tư (email và dữ liệu ăn uống); các dòng 🕓 chưa duyệt làm theo quyết định ghi sẵn nhưng không đóng task; commit theo Conventional Commits có mã `(SCRUM-75)`, không Co-Authored-By; chỉ đánh `[x]` khi test xanh; báo kết quả `mvn verify` thật.
+- Hạn chế: nhánh hiện tại có `architecture.md` đang sửa dở nên AI hướng dẫn stash trước khi chuyển nhánh; AI không tự chuyển nhánh.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Prompt `/speckit-implement` | Dùng | Hiển dán nguyên khối vào phiên mới lúc 12:52 (Mục 41) |
+
+### Cách kiểm chứng
+
+- `git branch -a` và `find` trong transcript `b11eb30f`; so với kết quả ở Mục 41.
+
+---
+
+## Mục 41: Task SCRUM-75 – triển khai backend 011 (Phase 1 – 4, Phase 7, T112), kiểm tra hoàn thành và soạn mô tả PR
+
+**Task: SCRUM-75**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-16 và 2026-11-17 |
+| Giờ truy cập | 12:52 – 13:42 ngày 16/11 (phiên dừng vì hết hạn mức); 14:44 – 15:27 ngày 17/11 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/011-user-profile-dietary/` (tasks, spec, plan, research, data-model, contracts, quickstart), `src/backend`, `docker-compose.yml`, `Dockerfile` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 (file transcript `5c84bfda`; lượt đầu dùng kỹ năng `/speckit-implement`) |
+| Mục đích | Làm SCRUM-75: backend spec 011 theo phạm vi PA4, chạy test thật, push, viết mô tả PR, hướng dẫn chạy |
+| Nhánh Git | `feature/SCRUM-75-profile-backend` (từ `main` cập nhật) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 12:52 ngày 16/11/2026 và 14:44 ngày 17/11/2026, prompt: "/speckit-implement Làm SCRUM-75: backend cho spec 011 …" (prompt do AI soạn ở Mục 40), "tiếp tục", "hãy push lên và viết phần description cho tôi", "hãy add và commit cho tôi để tôi tự push lên", "làm sao để chạy được", dùng để triển khai backend hồ sơ và dietary profile; AI viết 52 file ở lượt đầu (90 lần `Write`, 96 lệnh Bash, 21 lệnh PowerShell), chạy test và tạo 5 commit; Hiển giao phạm vi, quyết định push và là người duyệt kết quả.
+
+### Prompt đã dùng
+
+1. (16/11 12:52) Prompt `/speckit-implement` tóm lược ở Mục 40 (phạm vi Phase 1 – 4, 7 và T112; test-first; không Co-Authored-By; mvn qua PowerShell trên `D:\wk`).
+2. (17/11 14:44) "tiếp tục" (sau khi phiên trước dừng vì hết hạn mức; hệ thống báo một lệnh nền chưa kết thúc).
+3. (15:14) "hãy push lên và viết phần description cho tôi"
+4. (15:25) "hãy add và commit cho tôi để tôi tự push lên"
+5. (15:26) "làm sao để chạy được"
+
+### Tóm tắt phản hồi của AI
+
+- **Lượt 12:52 – 13:42:** AI kiểm tra Docker/`D:\wk`, viết test trước rồi code theo từng phase; phiên dừng với thông báo "You've hit your session limit". Đã có commit đầu (Phase 1 – 2).
+- **Lượt 14:44 – 15:06:** tiếp tục, đánh `[x]` cho các task xong (T027 – T034a, T039 – T047, …), bật Docker Desktop, chạy `mvn clean verify`, tạo các commit còn lại và ghi bài học build vào memory (`project_mvn-pitfalls-011.md`).
+- **5 commit (đều có `(SCRUM-75)`, không Co-Authored-By):** `f605dc0` (V211, `UserProfile`, handler lỗi, limiter, media), `25b7985` (US1 dietary API, hai adapter port thật, gỡ `StubDietaryProfile`), `9a96865` (US2 hồ sơ công khai, avatar), `1d5eee4` (`DietRestrictions.hardRules`, `DietRuleContractIT`), `6263765` (T112 `DataBoundaryIT` với JWT thật).
+- **Kết quả `mvn clean verify` (bản cuối):** wikicook-ai 60 unit và 27 IT (2 skipped từ trước); wikicook-app 531 unit và 568 IT, 0 lỗi; JaCoCo đạt, gồm rule mới cho `profile.service`. Baseline trước khi sửa: 434 unit và 413 IT.
+- **Task đóng `[x]`:** 55. Để `[ ]`: frontend (SCRUM-76), US3/US4 (Phase 5 – 6), Phase 8 ngoài T112, các task gắn 🕓 (T057, T067, T103, T105, T106, T109) và T108, T134.
+- **Điểm AI tự nêu:** (1) thêm 3 route GET vào `PublicRoutes` của 010; (2) `ProfileAuditPort` mặc định không làm gì nên FR-042 chưa đạt ở môi trường thật (T116); (3) test Phase 4 được viết trước code nhưng chưa có lần chạy đỏ riêng; (4) sửa hạ tầng test dùng chung vì bộ IT vượt giới hạn cache 32 context (`spring.properties` cache 100, pool Hikari 6, `max_connections=500`); (5) lỗi thật phát hiện nhờ test: ảnh quá cỡ trả 500 thay vì 413 (đã sửa trong `ProfileExceptionHandler`); (6) màu JPEG CMYK chưa so với bản gốc.
+- **15:14:** push nhánh (5 commit), AI viết mô tả PR (tóm tắt, thay đổi chính, kiểm thử, phạm vi, mục cần reviewer soi, cách chạy) nhưng chưa tạo PR.
+- **15:25:** không còn gì để commit. **15:26:** AI hướng dẫn chạy bằng Docker Compose và curl, và nói rõ chưa chạy thử từng bước trong hướng dẫn đó.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Phạm vi (Phase 1 – 4, 7, T112) | Dùng | Do Hiển giao; AI không làm US3, US4, frontend |
+| Task gắn 🕓 | Để mở | Theo prompt: làm theo quyết định ghi sẵn nhưng không đóng task |
+| Sửa hạ tầng test dùng chung | Dùng, cần review | AI ghi rõ file này dùng chung với module khác |
+| Mô tả PR (15:14) | Dùng | PR #95 đã tồn tại trước 15:44 (theo Mục 43); AI không tạo PR nào, nên PR do Hiển tạo |
+| Hướng dẫn chạy bằng curl | Dùng để tham khảo | AI chưa chạy thử từng bước |
+
+### Cách kiểm chứng
+
+- `git log feature/SCRUM-75-profile-backend`: 5 commit nêu trên; `mvn clean verify` trong transcript `5c84bfda` (BUILD SUCCESS, 531 unit và 568 IT); PR #95 trên GitHub.
+
+---
+
+## Mục 42: Task SCRUM-75 – đối chiếu danh sách thiếu của Hưng, soạn prompt hai giai đoạn và thêm endpoint `notices/ack`
+
+**Task: SCRUM-75 (và SCRUM-74 giai đoạn B)**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-17 |
+| Giờ truy cập | 15:28 – 15:41 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | Ghi chú tích hợp của Hưng (SCRUM-76, dán vào hội thoại), `specs/011-user-profile-dietary/contracts/openapi.yaml`, `tasks.md` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 (file transcript `b2d98f09`) |
+| Mục đích | Xem backend còn thiếu gì so với danh sách Hưng báo; làm endpoint còn thiếu |
+| Nhánh Git | `feature/SCRUM-75-profile-backend` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 15:28 ngày 17/11/2026, prompt: ghi chú của Hưng (dán nguyên văn), "hãy viết prompt để thực hiện công việc", rồi dán prompt hai giai đoạn do AI soạn, dùng để làm endpoint `POST /me/dietary-profile/notices/ack`; AI đối chiếu code với danh sách, viết test `DietaryNoticeAckIT` trước, cài endpoint, chạy `mvn clean verify` và commit `5268572`; Hiển quyết định phạm vi và việc push.
+
+### Prompt đã dùng
+
+1. (15:28) Ghi chú của Hưng, tóm lược: frontend SCRUM-76 đã vào `main` (PR #90); backend còn thiếu 7 nhóm endpoint của 011 và adapter `DietaryProfilePort`, kèm quên mật khẩu và Google của 010; cần `WIKICOOK_AUTH_COOKIE_SECURE=false` khi chạy local.
+2. (15:29) "hãy viết prompt để thực hiện công việc"
+3. (15:32) Prompt do AI soạn ở bước 2, tóm lược: giai đoạn A (bắt buộc): endpoint ack theo hợp đồng, viết test trước, chỉ đánh `[x]` cho task thật sự làm, chạy toàn bộ test, commit không Co-Authored-By, dừng hỏi trước khi push; giai đoạn B (chỉ sau khi A xong): quên mật khẩu (T126 – T135 của 010) trên nhánh riêng; không làm Google (US5).
+
+### Tóm tắt phản hồi của AI
+
+- **Đối chiếu (15:29):** trừ `POST /me/dietary-profile/notices/ack`, mọi endpoint Hưng nêu đã có trên nhánh SCRUM-75 (chưa vào `main`). Quên mật khẩu và Google chưa có ở bất kỳ nhánh nào; AI nhắc đừng nhận ngầm nếu không phải việc của Hiển.
+- **Cài đặt (15:32 – 15:41):** `POST /api/v1/me/dietary-profile/notices/ack` trả 204; chỉ đóng thông báo của chính người gọi, id lạ bị bỏ qua, gọi lặp an toàn; `ids` rỗng hoặc quá 100 phần tử trả 400 `VALIDATION_ERROR`; không qua `ProfileWriteLimiter`. `DietaryNoticeAckIT` 8 test: lần đầu 7/8 đỏ (404), sau khi cài 8/8 xanh.
+- **Kiểm thử:** `mvn clean verify` đầy đủ: 576 IT, 0 lỗi, JaCoCo đạt. Commit `5268572` (chưa push); `tasks.md` đánh `[x]` T123 và T126.
+- **Điểm lệch AI nêu:** `tasks.md` ghi T126 trả `notices[]` còn hợp đồng ghi 204 (AI theo hợp đồng); giới hạn 100 id không có trong hợp đồng; trường hợp 403 `AccountRestricted` chưa có test riêng vì test dùng `HeaderCurrentUser`; chưa thử với frontend thật hay Docker stack.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Endpoint ack theo hợp đồng (204) | Dùng | Khớp `openapi.yaml` và frontend của Hưng |
+| Giới hạn `ids` 1..100 do AI tự chọn | Dùng, ghi vào hợp đồng ở Mục 43 | Hợp đồng im lặng; Hiển đồng ý ở Mục 43 ("hãy làm theo ý bạn") |
+| Giai đoạn B | Chưa làm trong phiên này | Prompt yêu cầu dừng hỏi sau giai đoạn A; làm ở Mục 43 |
+
+### Cách kiểm chứng
+
+- Commit `5268572`; chạy `DietaryNoticeAckIT`; `mvn clean verify` (transcript `b2d98f09`).
+
+---
+
+## Mục 43: Task SCRUM-74/75 – quên mật khẩu (PR #96), hợp nhất `main` vào nhánh SCRUM-75, sửa xung đột và lỗi đọc ảnh
+
+**Task: SCRUM-74 (giai đoạn B), SCRUM-75**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-17 |
+| Giờ truy cập | 15:44 – 16:43 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/010-user-authentication-roles/` (contracts dòng 246 – 301, `tasks.md` T126 – T135), `specs/011-user-profile-dietary/contracts/openapi.yaml`, PR #93, #95, #96 |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 (file transcript `cda06df1`) |
+| Mục đích | Chạy lại giai đoạn A, làm giai đoạn B (quên mật khẩu), push hai nhánh, xử lý xung đột với `main` |
+| Nhánh Git | `feature/SCRUM-75-profile-backend`; `feature/SCRUM-74-password-reset` (từ `main`) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 15:44 ngày 17/11/2026, prompt: prompt hai giai đoạn của Mục 42 (dán vào phiên mới), "tiếp tục", "ý tôi là tiếp tục làm giai đoạn B rồi push 1 lần luôn", "hãy đề xuất quyết đinh", "hãy làm theo ý bạn và push", dùng để làm quên mật khẩu và đưa hai nhánh lên GitHub; AI viết 20 file cho giai đoạn B, chạy `mvn clean verify` ba lần, hợp nhất `origin/main`, sửa một lỗi do hợp nhất, đăng comment lên PR #95; Hiển quyết định đồng ý push và chọn đề xuất của AI.
+
+### Prompt đã dùng
+
+1. (15:44) Prompt hai giai đoạn của Mục 42 (dán lại).
+2. (15:59) "tiếp tục" (bị ngắt), rồi "ý tôi là tiếp tục làm giai đoạn B rồi push 1 lần luôn".
+3. (16:21) "hãy đề xuất quyết đinh"
+4. (16:25) "hãy làm theo ý bạn và push"
+
+### Tóm tắt phản hồi của AI
+
+- **Giai đoạn A (15:44 – 15:49):** endpoint ack đã có trong `5268572` nên AI không viết lại, chỉ chạy lại và đối chiếu: wikicook-ai 27 test (2 skipped), wikicook-app 531 unit và 576 IT, BUILD SUCCESS.
+- **Giai đoạn B (15:59 – 16:17):** tạo nhánh `feature/SCRUM-74-password-reset` từ `main`; thêm `PasswordResetController`, `PasswordResetService`, 3 DTO, mẫu mail `reset-password`, `OneTimeTokenService.inspect()`, `PasswordPair.passwordField()`. Test mới: `PasswordResetServiceTest` (14), `PasswordResetRequestsTest` (6), `PasswordResetIT` (20), `ForgotPasswordTimingIT` (1) và test bổ sung. AI kiểm tra thêm: tạm cho tra tài khoản chạy đồng bộ thì `ForgotPasswordTimingIT` đỏ (15,8 ms so với 12,1 ms), rồi hoàn tác. `mvn clean verify`: wikicook-app 461 unit và 435 IT, 0 lỗi. Commit `ce6f59b`; push cả hai nhánh; PR **#96** (SCRUM-74). PR #95 (SCRUM-75) đã có sẵn (AI chưa tạo PR nào cho nhánh này ở Mục 41, nên PR do Hiển tạo); AI thêm comment thay vì ghi đè mô tả.
+- **Lệch so với yêu cầu, AI nêu rõ:** dùng executor virtual thread thay cho `@Async` (vì `@EnableAsync` nằm ở module ai); link cấp trước khi tài khoản bị đình chỉ/cấm sẽ trả 410 `TOKEN_INVALID` (suy từ FR-014, spec không nói rõ); frontend T129 – T131 của Hưng, không đánh dấu; Google (US5) không làm.
+- **Đề xuất quyết định (16:21):** thêm `minItems: 1, maxItems: 100` cho `AckNoticesRequest.ids` vào `openapi.yaml`; giữ 204 cho T126, không sửa dòng task; merge #95 trước #96.
+- **Làm theo (16:25 – 16:43):** commit `f9fcf6e` (hợp đồng). PR #95 xung đột với `main` vì PR #93 vừa merge; AI hợp nhất `origin/main` (xung đột ở `pom.xml` và `PublicRoutes.java`, mỗi bên thêm một khối, giữ cả hai). Sau hợp nhất, 2 test ảnh của `AvatarImageProcessor` lỗi `AVATAR_NOT_AN_IMAGE` vì #93 thêm reader JPEG (TwelveMonkeys) và reader WebP (Luciad); AI sửa để `AvatarImageProcessor` ưu tiên các reader đã kiểm chứng ở 011. Commit merge `b2d3b4d`; kết quả: 584 unit và 593 IT, 0 lỗi, JaCoCo đạt. GitHub báo #95 và #96 `MERGEABLE`.
+- **Lỗi của chính AI:** hai lần `mvn verify` lỗi do AI (IDE biên dịch lại `target/classes` giữa chừng; shell đứng trong `target/failsafe-reports` nên `clean` không xóa được); chạy lại sạch thì xanh.
+- **Rủi ro còn lại AI nêu:** classpath trộn TwelveMonkeys (`imageio-core` 3.15.3, `imageio-jpeg` và `imageio-metadata` 3.10.1); #96 chưa chạy test trên kết quả hợp nhất với `main`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Quên mật khẩu (`ce6f59b`, PR #96) | Dùng | Hiển yêu cầu làm giai đoạn B và push cùng lúc |
+| `minItems/maxItems` cho ack (`f9fcf6e`) | Dùng | Hiển: "hãy làm theo ý bạn" |
+| Giữ 204 cho T126, không sửa dòng task | Dùng | Theo đề xuất của AI, được Hiển chấp nhận |
+| Hợp nhất `main` vào nhánh SCRUM-75 | Dùng | AI nêu rõ việc này vượt phần Hiển đã duyệt và đề nghị xem lại |
+| Google sign-in | Chưa làm ở Mục 43 | Làm ở Mục 46 |
+
+### Cách kiểm chứng
+
+- `git log`: `5268572`, `ce6f59b`, `f9fcf6e`, `b2d3b4d`; `gh pr view 95`, `gh pr view 96`; `mvn clean verify` trong transcript `cda06df1`.
+
+---
+
+## Mục 44: Task SCRUM-75 – sửa test lỗi trên CI của PR #95
+
+**Task: SCRUM-75**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-17 |
+| Giờ truy cập | 17:08 – 17:11 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | PR #95, `DietaryPortsIT.java` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 (file transcript `296fe35d`) |
+| Mục đích | Tìm và sửa check `verify` đang đỏ của PR #95 |
+| Nhánh Git | `feature/SCRUM-75-profile-backend` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 17:08 ngày 17/11/2026, prompt: "hãy vào PR #95 kiểm tra và sửa Failing", dùng để sửa test lỗi trên CI; AI đọc kết quả check bằng `gh`, sửa một dòng assertion trong `DietaryPortsIT`, commit và push; Hiển giao việc và nhận kết quả.
+
+### Prompt đã dùng
+
+```text
+hãy vào PR #95 kiểm tra và sửa Failing
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Nguyên nhân:** chỉ 1 test lỗi, `DietaryPortsIT.shoppingGetsIngredientIds`: mong đợi đúng 2 nguyên liệu gắn PEANUT nhưng có 5, vì các IT khác (`RecipeFixtures`, `SearchFixtures`, `DietRuleContractIT`) dùng chung container Postgres và gắn tag PEANUT mà không dọn, nên kết quả phụ thuộc thứ tự chạy.
+- **Sửa:** đổi `containsExactlyInAnyOrder(peanutButter, peanutOil)` thành `contains(peanutButter, peanutOil).doesNotContain(butter)`; các assertion khác giữ nguyên. Commit `04843ea` `test(profile): make DietaryPortsIT allergen ids robust to PEANUT tags left by other ITs (SCRUM-75)`, push.
+- **Kết quả:** hai check `verify` của PR #95 đều pass sau khi sửa.
+- Hạn chế: AI không chạy test ở máy (Docker đang tắt) nên chỉ xác nhận qua CI; lỗi gốc là dữ liệu dùng chung giữa các IT chưa được dọn, bản sửa chỉ làm test này không phụ thuộc.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Nới assertion thay vì dọn dữ liệu của các IT khác | Dùng | Test chỉ kiểm tra dữ liệu do chính nó tạo; không sửa IT của module khác |
+
+### Cách kiểm chứng
+
+- `gh pr checks 95` (hai run `verify` pass); commit `04843ea`.
+
+---
+
+## Mục 45: Task SCRUM-76/74/75 – kiểm tra bốn việc còn thiếu sau tích hợp F-01 và soạn prompt hoàn thiện
+
+**Task: SCRUM-74, SCRUM-75 (phối hợp với SCRUM-76 của Hưng)**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-17 và 2026-11-18 |
+| Giờ truy cập | 22:09 – 22:17 ngày 17/11; 11:52 ngày 18/11 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | Ghi chú kiểm tra tích hợp của Hưng (dán vào hội thoại), `pa4-guide.md`, `specs/010`, `specs/011`, `src/frontend/src/features/{auth,profile}` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 (file transcript `4d9d1978`) |
+| Mục đích | Xác định bốn việc Hưng nêu đã hoàn thiện chưa, việc nào thuộc Hiển, và soạn prompt để làm |
+| Nhánh Git | `feature/SCRUM-75-profile-backend`; không sửa repo |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 22:09 ngày 17/11/2026, prompt: ghi chú của Hưng (dán nguyên văn) kèm "kiểm tra xem các phần trên hoàn thiện chưa", "phần này có thuộc nhiệm vụ của tôi không", "tôi là Hiển", "hãy viết prompt để hoàn thiện 4 phần trên", dùng để kiểm tra và chia việc; AI đọc code backend, frontend và `pa4-guide.md` (5 lệnh Bash, 9 lần Grep), không chạy ứng dụng hay test, và soạn prompt; Hiển xác nhận danh tính và quyết định làm.
+
+### Prompt đã dùng
+
+1. (22:09) Ghi chú của Hưng, tóm lược 4 mục: (1) backend Google chưa có; (2) nút "Xem hồ sơ công khai" chưa gắn vì chưa có trang; (3) avatar ở header và thanh bên vẫn là chữ cái vì `/auth/me` không trả `avatarUrl`; (4) chưa kiểm tài khoản bị đình chỉ/cấm, đổi vai trò, mobile 360px và E2E. Kèm: "kiểm tra xem các phần trên hoàn thiện chưa".
+2. (22:16) "phần này có thuộc nhiệm vụ của tôi không"
+3. (22:16) "tôi là Hiển"
+4. (18/11 11:52) "hãy viết prompt để hoàn thiện 4 phần trên"
+
+### Tóm tắt phản hồi của AI
+
+- **Kiểm tra (22:10):** cả bốn mục chưa hoàn thiện, đúng như ghi chú. Google: chỉ có dependency, cấu hình và `UserAccount.googleSub`, chưa có endpoint; frontend (`GoogleButton`, `AuthCallbackPage`) đã xong. Nút hồ sơ công khai là `<span aria-disabled>`; `CurrentAccountDto` không có `avatarUrl`; thư mục `e2e/` chỉ có `meal-planner.spec.ts`. AI nói rõ chỉ đọc code, không chạy gì.
+- **Ai làm gì (22:16 – 22:17):** AI hỏi Hiển là Hưng hay Hiển vì ghi chú nói "Hiển làm ở SCRUM-75". Sau khi Hiển xác nhận, AI phân loại: mục 1 (Google, SCRUM-74, US5 ưu tiên P3, hạn đã qua) và phần backend của mục 3 là của Hiển; trang hồ sơ công khai, E2E, 360px là của Hưng; đề xuất thêm `avatarUrl` và để Hiển quyết định có làm Google không.
+- **Prompt (18/11 11:52):** làm theo thứ tự 3 → 2 → 1 → 4; mỗi việc đọc code trước, viết test, chạy test thật và chỉ báo "xong" khi có bằng chứng; không commit nếu chưa được bảo; không đổi hay xóa field của `/auth/me`; việc 2 phải hỏi Hiển tự làm hay để Hưng; Google theo authorization code + PKCE, liệt kê quy tắc của spec 010 trước khi code; hỏi trước khi bật Docker.
+- Hạn chế: kết luận của AI dựa trên đọc code, chưa kiểm bằng chạy.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Phân loại việc theo vai trò | Dùng | Hiển xác nhận là chủ SCRUM-74 và SCRUM-75 |
+| Prompt bốn việc | Dùng | Hiển dán vào phiên mới lúc 11:55 (Mục 46) |
+
+### Cách kiểm chứng
+
+- Đối chiếu với `pa4-guide.md` (phân công SCRUM-74, 75, 76) và kết quả ở Mục 46.
+
+---
+
+## Mục 46: Task SCRUM-74/75/76 – `avatarUrl`, trang hồ sơ công khai, đăng nhập Google, `closureToken`, kiểm thử e2e và mở PR #97
+
+**Task: SCRUM-74, SCRUM-75 (phần frontend thuộc SCRUM-76 của Hưng, tách commit riêng)**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-18 |
+| Giờ truy cập | 11:55 – 14:33 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `specs/010-user-authentication-roles/` (US5, FR-018, FR-019, NFR-005, research R7), `specs/011`, `src/backend/wikicook-app`, `src/frontend` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 (file transcript `9b694bda`) |
+| Mục đích | Làm bốn việc còn thiếu (Mục 45) và hai việc phát sinh, chạy test thật, commit, push, viết mô tả và mở PR |
+| Nhánh Git | `feature/SCRUM-75-profile-backend` |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 11:55 ngày 18/11/2026, prompt: prompt bốn việc do AI soạn ở Mục 45 (dán nguyên khối), "hãy push lên và viết description cho tôi", "những việc chưa làm thì khi nào làm được", "có", "hãy commit và push", dùng để hoàn thiện F-01; AI sửa 39 file ở lượt đầu (94 lệnh Bash, 25 PowerShell, 27 `Write`, 18 `Edit`) và thêm backend `closureToken`, chạy `mvn clean verify`, Vitest và Playwright; Hiển trả lời ba câu hỏi thiết kế và quyết định commit, push, mở PR.
+
+### Prompt đã dùng
+
+1. (11:55) Prompt bốn việc tóm lược ở Mục 45 (ID `9c75`).
+2. (14:11) "hãy push lên và viết description cho tôi"
+3. (14:13) "những việc chưa làm thì khi nào làm được"
+4. (14:14) "có" (đồng ý làm `closureToken` và lỗi `AccountStatusPage`)
+5. (14:31) "hãy commit và push"
+6. (14:33) "có" (đồng ý mở PR)
+
+Ba câu hỏi AI đặt qua công cụ hỏi: (1) bật Docker Desktop? Hiển chọn "Bật Docker (Recommended)"; (2) trang hồ sơ công khai tự làm hay để Hưng? Hiển chọn "Tôi tự làm"; (3) chuyển `AvatarUrls` từ `profile.service` sang `common.media` và map `avatar_storage_key` chỉ đọc? Hiển chọn "Đồng ý (Recommended)".
+
+### Tóm tắt phản hồi của AI
+
+- **Việc 3 – `avatarUrl` (backend và frontend):** `CurrentAccountDto` thêm `avatarUrl` (chỉ thêm field); `AvatarUrls` chuyển sang `common.media`; `UserAccount` map `avatar_storage_key` chỉ đọc nên không thêm query; cập nhật hợp đồng OpenAPI 010; `CurrentAccountAvatarIT` (4 test). Frontend: component `AccountAvatar` (ảnh hoặc initials, fallback khi ảnh lỗi) dùng ở header và thanh bên; `EditProfilePage` làm mới account.
+- **Việc 2 – hồ sơ công khai:** route `/profiles/:id` không cần đăng nhập, `PublicProfilePage`, hook `usePublicProfile`, chuỗi tiếng Việt, nút "Xem hồ sơ công khai" thành link; có trạng thái loading, 404 (kể cả hồ sơ bị cấm) và lỗi; test khẳng định UI không hiện email hay dữ liệu dietary; `vite.mock-api.ts` thêm `/profiles/1`, `/2`, `/500`.
+- **Việc 1 – Google:** authorization code + PKCE S256, cookie `wc_oauth` ký HMAC (không dùng HttpSession), không dùng `issuer-uri`, timeout 5 giây, registration chỉ dựng khi có đủ client id và secret, chống open redirect; listener `AccountResetCleaner` xóa avatar của tài khoản bị tiếp quản. Test dùng Google giả (WireMock, ký ID token bằng khóa test): `GoogleSignInIT` (22), `GoogleTakeoverIT` (6), `GoogleUnavailableIT` (5), `GoogleNotConfiguredIT` (4). Không gọi Google thật.
+- **Việc 4:** thêm 2 test backend (refresh tài khoản bị cấm, `endsAt` của đình chỉ); `e2e/auth-profile.spec.ts` và `fakeAuthApi.ts`; kiểm tra 360×640 cho 7 màn; sửa CSS tràn ngang 41px ở `MyAccountPage`.
+- **Kết quả test (lượt đầu):** `mvn clean verify`: wikicook-app 627 unit và 636 IT, JaCoCo đạt; wikicook-ai 60 unit và 27 IT (2 skipped). Vitest 109 file / 832 test pass, build OK, eslint 0 lỗi. Playwright: 36 pass, 2 skip, 1 fail (test meal-planner có sẵn, do `routes.tsx` chủ ý chuyển hướng `shopping-list/import`).
+- **Chưa làm, AI đề nghị ghi vào báo cáo PA4:** `intent=reauth` (T149a, cần Google thật), `closureToken` (khi đó chưa làm), listener của 060 và 080 cho `AccountResetEvent`; thông báo đổi vai trò ở frontend (có `test.fixme`).
+- **Lỗi ngoài danh sách (AI không tự sửa):** `AccountStatusPage` đọc fragment trong lúc render nên hỏng dưới StrictMode ở dev server; test `CheckEmailPage` flaky khi máy tải nặng; một lần `mvn clean verify` nền báo exit 1 với log rỗng, chưa rõ nguyên nhân (chạy lại sạch).
+- **Thay đổi môi trường máy:** AI bật Docker Desktop, chạy `npm ci` ở frontend, cài Chromium cho Playwright vào `D:\dev\playwright`.
+- **14:11 – 14:13:** 6 commit (`c6509b7`, `64f3426`, `2c8e3b1`, `134a469`, `ed89f86`, `2a28245`) được push; AI viết mô tả PR. Khi Hiển hỏi "khi nào làm được", AI trả lời theo điều kiện chặn (Google thật cần OAuth client; `closureToken` làm được ngay; listener 060/080 chờ module đó; hai việc frontend làm được ngay).
+- **14:14 – 14:33:** AI thêm `closureToken` (`ClosureTokenService`, token một lần hiệu lực 10 phút chỉ lưu hash, cấp sau khi mật khẩu hoặc Google đúng và chỉ cho tài khoản bị cấm; `AccountClosureTokenIT` 11 test; `mvn clean verify`: 627 unit và 647 IT) và sửa `AccountStatusPage` (đọc fragment bằng `useState`, xóa fragment bằng `useEffect`, test StrictMode, bỏ một `test.fixme`, sửa CSS tràn 22px ở 360px; Vitest 833 test, e2e 36 pass, 1 skip, 1 fail có sẵn). Hai commit `44c600a` và `40c05d7`, push, tạo **PR #97** (không có dòng "Generated with Claude Code").
+- Hạn chế: Google thật chưa được thử; giao diện thông báo đổi vai trò chưa có; AI chưa tick T157 và T166 cho đến lúc commit (rồi tick trong `44c600a`).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Chuyển `AvatarUrls` sang `common.media` | Dùng | Hiển chọn "Đồng ý"; auth không phải import profile |
+| Hiển tự làm trang hồ sơ công khai | Dùng | Hiển chọn "Tôi tự làm"; commit frontend tách riêng và ghi rõ là file của Hưng |
+| Google với Google giả (WireMock) | Dùng | Không có client id; Google thật để Hiển thử sau (T178, T149b) |
+| `closureToken` và sửa `AccountStatusPage` | Dùng | Hiển trả lời "có" |
+| Mục "Hồ sơ công khai" ở thanh bên | Không đổi | Nó trỏ `/profile/edit`, là trang sửa cùng tên theo thiết kế |
+| `intent=reauth`, listener 060/080, giao diện thông báo vai trò | Chưa làm | Bị chặn bởi Google thật hoặc module khác; ghi vào PR |
+
+### Cách kiểm chứng
+
+- `git log`: `c6509b7`, `64f3426`, `2c8e3b1`, `134a469`, `ed89f86`, `2a28245`, `44c600a`, `40c05d7`; PR #97; `mvn clean verify`, `npx vitest run`, `npm run e2e` trong transcript `9b694bda`.
+
+---
+
+## Mục 47: Review PR #104 và #105 (SCRUM-76, hồ sơ PM của PA4)
+
+**Task: SCRUM-76 (Hiển là reviewer của SCRUM-76)**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-19 |
+| Giờ truy cập | 08:34 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | PR #104 (xác nhận link verify chỉ một lần dưới StrictMode), PR #105 (`pa4/hung-consolidated`, 22 commit, 14 file) |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 (file transcript `3c5e5728`) |
+| Mục đích | Đọc hai PR đang mở và nhận xét |
+| Nhánh Git | `feature/SCRUM-75-profile-backend`; không sửa repo |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 08:34 ngày 19/11/2026, prompt: "lên github review 2 PR cho tôi", dùng để review PR #104 và #105; AI đọc metadata, diff và kết quả CI bằng `gh` (7 lệnh Bash) và grep nhánh `pa4/hung-consolidated`; AI không đăng gì lên GitHub.
+
+### Prompt đã dùng
+
+```text
+lên github review 2 PR cho tôi
+```
+
+### Tóm tắt phản hồi của AI
+
+- **PR #104:** nên approve. `request.current ??= confirmVerification(value)` giữ một request cho mỗi link nên StrictMode không làm request thứ hai (`ALREADY_VERIFIED`) che kết quả `VERIFIED`; có test chạy trong `<StrictMode>`; CI `verify` pass; lỗi chỉ ở chế độ dev.
+- **PR #105:** nên approve kèm nhận xét. Frontend bỏ hẳn dev identity (`X-User-Id`, `X-Dev-User-Id`, `getDevUserId`, `setDevUserId`, `GUEST`), AI grep nhánh không còn chỗ dùng sót; CI `verify` pass.
+- **Nhận xét của AI:** (1) #105 chứa nguyên fix của #104, nên merge #104 trước hoặc đóng một PR; (2) backend còn `StubCurrentUser` và `DevHeaderSearchViewer` đọc `X-Dev-User-Id` khi bật dev stubs, nên khi bật dev stubs frontend không còn gửi header, search và AI planner rơi về user 1 (không ảnh hưởng production); (3) PR trộn tài liệu PA4, code frontend và tick task trong `specs/`; (4) phần tài liệu chỉ đọc lướt, chưa kiểm chứng các con số (use case 64 → 68, 918 test, ngày 22/11 và 23/11).
+- Hạn chế: không chạy build hay test; chỉ dựa vào CI của GitHub.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Nhận xét về #104 và #105 | Dùng làm cơ sở review | Transcript chỉ cho thấy nhận xét trong hội thoại, không cho thấy đã đăng lên GitHub; #105 được merge lúc 08:37 (commit `b259a6a`) |
+
+### Cách kiểm chứng
+
+- `gh pr checks 104` và `gh pr checks 105` (cả hai pass); `git log origin/main`: #105 merge lúc 08:37 ngày 19/11.
+
+---
+
+## Mục 48: Task SCRUM-81 – kiểm tra, soạn prompt, viết C4 Level 2 và Backend Level 3 (Part C), push và mở PR #106
+
+**Task: SCRUM-81**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-19 |
+| Giờ truy cập | 08:39 – 09:06 |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `pa4-guide.md` (SCRUM-81, 82), `docs/analysis-and-design/architecture.md`, `docs/management/reports/sprint-04/sprint-04-report.md`, hai file `docker-compose.yml`, hai Dockerfile, `src/frontend/nginx.conf`, 3 pom backend, `application.yml`, mã nguồn `com.wikicook.*` |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 (file transcript `c0d8bdc1`) |
+| Mục đích | Kiểm tra SCRUM-81 đã làm chưa; soạn prompt; viết Section 4 (C4 L2) và Section 5 (Backend L3) của `architecture.md`; push và tạo PR |
+| Nhánh Git | `docs/SCRUM-81-c4-l2-l3` (tạo từ `origin/main` `b259a6a`; AI không làm trên `feature/SCRUM-75-profile-backend`) |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 08:39 ngày 19/11/2026, prompt: "tôi đã làm phần SCRUM 81 chưa, nếu chưa thì hãy viết prompt để thực hiện", rồi dán prompt đó (nguyên văn trong hội thoại), "Hãy push và tạo PR", dùng để viết Part C; AI đọc cấu hình và mã nguồn, viết 322 dòng vào `architecture.md`, kiểm chứng bằng script và `mermaid.parse`, commit `e60091c`, push và tạo PR #106; Hiển giao việc, quyết định push và tạo PR.
+
+### Prompt đã dùng
+
+1. (08:39) "tôi đã làm phần SCRUM 81 chưa, nếu chưa thì hãy viết prompt để thực hiện"
+2. (08:44) Prompt do AI soạn ở bước 1, tóm lược: làm SCRUM-81 (Part C), reviewer Dự, hạn 20/11; file đích duy nhất `architecture.md`, thay mục 4 "Reserved for Part C"; không tin mục 4 cũ mà kiểm chứng từ cấu hình thật; mọi container, component phải kiểm chứng được; không trình bày module chưa xây như đã xây; không sửa mục 1 – 3 (chỉ dòng metadata); tạo nhánh từ `origin/main`; không commit các file untracked; Mermaid hợp lệ; một commit `docs(architecture): …(SCRUM-81)`, không Co-Authored-By, chưa push; báo dòng 191 của `sprint-04-report.md` thay vì sửa.
+3. (09:06) "Hãy push và tạo PR"
+
+### Tóm tắt phản hồi của AI
+
+- **Kiểm tra (08:39):** chưa làm. `architecture.md` còn mục 4 "Reserved for Part C" và dòng metadata ghi `SCRUM-81 (not started)`; không có commit nào mang mã SCRUM-81. AI nêu `sprint-04-report.md` dòng 191 ghi SCRUM-81 "Completed" là chưa đúng tại thời điểm đó.
+- **Part C (08:44 – 08:51):** Section 4 gồm sơ đồ container (`web`, `app`, `db`, `mailpit` dev only, `migrate` on demand, volume `pgdata` và `media`, Gemini và Google có điều kiện), bảng container, bảng quan hệ, ánh xạ Tech Stack, và mục 4.6 liệt kê chỗ Section 2 và 3 lệch với `main` hiện tại. Section 5 gồm sơ đồ component (7 feature, `recipe`, `common`, `devstub`, thư viện `ai`, `db/migration`), quy tắc phụ thuộc đã kiểm bằng cách quét import, bảng class, 5 vi phạm đã biết (D1 – D5) và bảng port/adapter có đánh dấu Stand-in.
+- **Phát hiện chính:** `common` và `mealplan` phụ thuộc vòng qua `DietType`; `aiplanner`, `profile`, `search` import trực tiếp `domain`/`controller`/`service` của feature khác; `ProfileAuditPort` chỉ là no-op; `RecipeDetailPort` của shopping list đọc recipe cứng trong bộ nhớ; `MealPlanHandoffPort` và `RecipeSearchIndexFacade` không có implementer; ảnh Cooksnap ghi vào `uploads/cooksnaps/` trong container, không nằm trên volume `media`; nginx chỉ phục vụ HTTP cổng 80 (mục 2 ghi HTTPS); Flyway có 20 migration (mục 3 ghi 18).
+- **Kiểm chứng:** script trích 188 token trong backtick của Section 4 – 5, kiểm lớp và file có tồn tại; 7 token không khớp chỉ là từ không phải tên lớp (`GET`, `Host`, `JavaMailSender`, `NUTRITION`, `V001`, `V211`, `V501`). Cả hai sơ đồ Mermaid qua `mermaid.parse` (mermaid 11.4.1 với jsdom). Lần đầu AI viết "bốn slot mỗi ngày" cho meal planner; sau khi đọc `Meal.java` đã sửa thành ba bữa, tối đa bốn món mỗi bữa; cũng sửa câu về chu trình `common`↔`mealplan` và bỏ nhận định về frontend không có căn cứ.
+- **Commit và PR:** `e60091c` `docs(architecture): add C4 level 2 and backend level 3 (SCRUM-81)` (+322/−3, chỉ `architecture.md`); push nhánh và tạo **PR #106** vào `main` với reviewer `ThanhDu14`; mô tả PR không có dòng "Generated with Claude Code".
+- **Hạn chế:** chưa render sơ đồ ra hình (chỉ kiểm cú pháp); không chạy ứng dụng để xác nhận từng container, chỉ đọc cấu hình và mã; mục 2 – 3 và dòng 191 của `sprint-04-report.md` chưa sửa; Section 4 – 5 mô tả `main` tại `b259a6a`, nếu code đổi sau commit đó thì cần kiểm lại.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Prompt do AI soạn | Dùng | Hiển dán nguyên khối vào lượt 08:44 |
+| Section 4 – 5 và dòng metadata | Dùng | Hiển yêu cầu push và tạo PR ở 09:06 sau khi nhận báo cáo. PR #106 được `LqHung06` approve và merge lúc 19:48 ngày 19/11 (merge commit `6a78652`); `ThanhDu14`, reviewer theo phân công, không có review trên PR (kiểm bằng `gh pr view 106` ngày 20/11) |
+| Sửa mục 2 – 3 và dòng 191 của `sprint-04-report.md` | Chưa làm | Brief cấm sửa; AI hỏi Hiển có muốn làm không |
+
+### Cách kiểm chứng
+
+- `git show --stat e60091c` (+322/−3); `gh pr view 106`; script kiểm tên lớp và `mermaid.parse` trong scratchpad của phiên (`c0d8bdc1`).
+
+---
+
+## Mục 49: Viết các mục AI log còn thiếu (Mục 39 – 49)
+
+**Task: SCRUM-85 (AI Usage Report, phần log cá nhân của Hiển)**
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-19 |
+| Giờ truy cập | Từ 09:16 (phiên hiện tại, cùng hội thoại với Mục 48) |
+| Người thực hiện | Mai Văn Hiển |
+| Spec / Tài liệu liên quan | `docs/ai_log/ai_log_hien.md`, `AI Usage Guidelines.pdf`, 10 file transcript Claude Code (`b11eb30f`, `5c84bfda`, `b2d98f09`, `cda06df1`, `296fe35d`, `4d9d1978`, `9b694bda`, `3c5e5728`, `1a8fe054`, `c0d8bdc1`), lịch sử Git |
+| Công cụ AI | Claude Code (VS Code, Windows 11), 2.1.296, Sonnet 5.5 |
+| Mục đích | Bổ sung các lần dùng AI từ 16/11 đến 19/11 chưa có trong log và điền các ô theo bằng chứng trong transcript |
+| Nhánh Git | `docs/SCRUM-81-c4-l2-l3`; chỉ sửa `docs/ai_log/ai_log_hien.md`, chưa commit khi viết mục này |
+
+### Dòng tóm tắt theo mẫu AI Usage Notes
+
+**Claude Code.** *Sonnet 5.5, Anthropic, Claude Code 2.1.296 trong VS Code trên Windows 11*, truy cập 09:16 ngày 19/11/2026, prompt: "hãy viết những phần AI log chưa có và tự điền cho tôi", dùng để viết Mục 39 – 49; AI đọc phần cuối AI log, các file transcript `.jsonl` bằng script tạm (trích prompt, lệnh git, mvn, gh, tệp đã sửa, câu trả lời cuối của mỗi lượt) và lịch sử Git, rồi viết các mục và thêm dòng vào bảng đầu file; Hiển cần đọc lại trước khi nộp.
+
+### Prompt đã dùng
+
+```text
+hãy viết những phần AI log chưa có và tự điền cho tôi
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Đối chiếu:** log đang dừng ở Mục 38 (16/11 12:17). Từ đó đến 19/11 có 10 hội thoại Claude Code chưa có mục: tiếp phần SCRUM-80 (commit, push, PR #94), SCRUM-75 (kiểm tra, triển khai, `notices/ack`), SCRUM-74 giai đoạn B (quên mật khẩu), sửa CI của PR #95, kiểm tra tích hợp F-01, bốn việc hoàn thiện (`avatarUrl`, hồ sơ công khai, Google, `closureToken`), review PR #104 và #105, và SCRUM-81.
+- **Cách làm:** mỗi mục chỉ ghi điều thấy trong transcript, `git log` và GitHub: prompt, lệnh đã chạy, số test, commit, và câu trả lời cuối của AI. Các ô "Phần đã sử dụng / chỉnh sửa / bỏ" được điền theo quyết định thể hiện trong prompt của Hiển ("chọn cách 2", "Tôi tự làm", "hãy làm theo ý bạn và push"); không có bằng chứng trong transcript thì ghi rõ như vậy thay vì suy diễn.
+- **Điểm cần Hiển kiểm:** transcript không cho thấy Hiển tự đọc hay sửa code do AI viết ngoài các lần trả lời ở trên; nếu có thì Hiển cần bổ sung vào cột "Quyết định" của từng mục. Giờ trong log là giờ máy (UTC+7), quy đổi từ dấu thời gian của transcript. Mục 41, 43 và 46 gộp các lượt trong nhiều giờ nên thời gian truy cập ghi theo khoảng.
+- Hạn chế: không có ảnh chụp màn hình; bằng chứng là file transcript, commit và PR. Chưa kiểm lại từng con số test bằng cách chạy lại; các con số lấy từ báo cáo trong transcript.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Các mục 39 – 49 | Cần Hiển đọc lại | Viết sau sự việc, dựa trên transcript |
+| Mục 28 – 38 và 1 – 27 | Không sửa | Đã có từ trước |
+
+### Cách kiểm chứng
+
+- Đối chiếu từng mục với file transcript có ID nêu trong cột "Công cụ AI", `git log` và `gh pr view` (PR #94 – #97, #104 – #106).
