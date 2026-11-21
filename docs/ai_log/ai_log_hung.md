@@ -1301,7 +1301,7 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 | **Tài liệu / spec liên quan** | `Changes.md`, `docs/requirements/use-case-model.md` (`v0.2` → `v2.0`), `docs/requirements/use-case-specification.md` (`v1.4` → `v2.0`), `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 3, `SCRUM-69`), `tasks/PA4/pa4-guide.md`, `tasks/PA4/wikicook-pa4-team-assignment.md` |
 | **Mục đích sử dụng** | Soạn file `Changes.md` duy nhất cho Phần A: trạng thái TA feedback PA3, bảng Before/After/Lý do theo từng mục của Use-Case Model và theo từng use case của Use-Case Specification, danh sách use case mới, câu hỏi mở. Sau đó sửa các ghi chú "Google chưa có" đã lỗi thời sau PR #97 trong Use-Case Specification. |
 | **Nhánh Git** | `docs/SCRUM-84-changes-md` (tạo từ `origin/main` tại `0831048`) |
-| **Minh chứng (Evidence)** | Commit `e97bca0` (`Changes.md`), `c070eca` (ghi chú Google trong Use-Case Specification), `746f3c6` (dòng ghi lại thay đổi này trong `Changes.md`), commit của mục log này; đã push lên `origin/docs/SCRUM-84-changes-md`. PR: điền số PR khi mở. |
+| **Minh chứng (Evidence)** | Commit `e97bca0` (`Changes.md`), `c070eca` (ghi chú Google trong Use-Case Specification), `746f3c6` (dòng ghi lại thay đổi này trong `Changes.md`), commit của mục log này; đã push lên `origin/docs/SCRUM-84-changes-md`. PR: PR #105 (merged 19/11/2026). |
 
 ### Prompt đã sử dụng (tóm lược đã biên tập cho rõ ràng; giữ nguyên ý định, không phải nguyên văn từng câu):
 1. Đẩy nhánh sửa lỗi của `SCRUM-76` lên remote, soạn tiêu đề và mô tả cho PR đó; sau đó soạn bản nháp `Changes.md` cho PA4 và làm trên một nhánh riêng.
@@ -1338,7 +1338,7 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 | **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.3, 2.4, Revision History), `tasks/PA4/pa4-guide.md` (SCRUM-87: "do not pre-fill outcomes as facts"), `tasks/PA4/wikicook-pa4-team-assignment.md` (lịch: Code Freeze 18/11 23:59, Standup 02 ngày 19/11 22:00) |
 | **Mục đích sử dụng** | Rà soát Mục 2.3 và 2.4 do mục 27 tạo ra (16/11): biên bản Standup 02 ghi đầy đủ giờ họp, 5/5 người có mặt, lời từng người và quyết định cho một buổi họp chưa diễn ra; nhiều tiến độ được ghi là đã xong nhưng không có trên `main`. Viết lại thành khung chờ họp thật. |
 | **Nhánh Git** | `docs/SCRUM-87-standup-02-template` (tạo từ `origin/main` tại `0831048`) |
-| **Minh chứng (Evidence)** | Commit `173d5ac` trên nhánh trên (PR sẽ mở sau; điền số PR khi có). Chưa push tại thời điểm ghi log. |
+| **Minh chứng (Evidence)** | Commit `173d5ac` trên nhánh trên Chưa push tại thời điểm ghi log; sau đó merge vào `main` qua PR #105 (19/11/2026). |
 
 ### Prompt đã sử dụng (tóm lược đã biên tập cho rõ ràng; giữ nguyên ý định, không phải nguyên văn từng câu):
 1. Sau khi nhóm merge thêm một số PR, kiểm tra tiến độ PA4 hiện tại trên `main` và báo cáo ngắn gọn theo từng thành viên.
@@ -1376,7 +1376,7 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 | **Tài liệu / spec liên quan** | `specs/010-user-authentication-roles/` và `specs/011-user-profile-dietary/` (`tasks.md`, `contracts/openapi.yaml`), mã nguồn backend `com.wikicook.auth` và `com.wikicook.profile` trên `main` |
 | **Mục đích sử dụng** | Chạy backend thật bằng Docker và kiểm tra các luồng của giao diện (đăng ký, đăng nhập, hồ sơ, hồ sơ ăn uống, quên mật khẩu, xác minh email); đánh giá PR #97 trước khi merge; rà soát các điểm lệch giữa `tasks.md` của Spec Kit và code rồi khắc phục. |
 | **Nhánh Git** | `fix/SCRUM-76-verify-email-once` (sửa lỗi xác minh email); `chore/SCRUM-76-close-gaps` (gỡ định danh dev, thêm test, cập nhật `tasks.md`) |
-| **Minh chứng (Evidence)** | Commit `60d835a` (sửa trang xác minh email, kèm test chạy trong StrictMode); `a2d0dbb` (gỡ `X-User-Id`, `X-Dev-User-Id` và phiên người dùng dev); `33156dd` (test `api.postForm`, spec 011 T014); `85f0437` (tick 41 task của `010` và 21 task của `011`). PR: điền số PR khi mở. |
+| **Minh chứng (Evidence)** | Commit `60d835a` (sửa trang xác minh email, kèm test chạy trong StrictMode); `a2d0dbb` (gỡ `X-User-Id`, `X-Dev-User-Id` và phiên người dùng dev); `33156dd` (test `api.postForm`, spec 011 T014); `85f0437` (tick 41 task của `010` và 21 task của `011`). PR: PR #104 (`60d835a`) và PR #105 (các commit còn lại), merged 19/11/2026. |
 
 ### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
 1. Kiểm tra xem frontend SCRUM-76 đã chạy được với backend sau khi cập nhật `main` chưa, rồi kiểm lại với backend mới (có API hồ sơ).
@@ -1414,7 +1414,7 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 | **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.3, 2.4, 4, 5), `Changes.md`, `use-case-specification.md`, `tasks/PA4/pa4-guide.md` (SCRUM-88: "Add Jira screenshots only after verifying the live board") |
 | **Mục đích sử dụng** | Soạn nháp Mục 4 (Review) và Mục 5 (Retrospective) dựa trên trạng thái thật của 23 task trên `origin/main`; cập nhật các câu đã lỗi thời vì PR #98 (frontend `070`) được merge. |
 | **Nhánh Git** | `docs/SCRUM-88-review-retro-draft` (tách từ `docs/SCRUM-87-standup-02-template`) |
-| **Minh chứng (Evidence)** | Commit `3e813c1` (Mục 4 và 5), `7abb494` (cập nhật Standup 02), `ff02385` (spec và `Changes.md`); PR: điền số PR khi mở. |
+| **Minh chứng (Evidence)** | Commit `3e813c1` (Mục 4 và 5), `7abb494` (cập nhật Standup 02), `ff02385` (spec và `Changes.md`); PR #105 (merged 19/11/2026). |
 
 ### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
 1. Soạn bản nháp Sprint Review và Retrospective dựa vào tiến độ hiện tại của các thành viên.
@@ -1448,7 +1448,7 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 | **Tài liệu / spec liên quan** | `tasks/PA4/wikicook-pa4-team-assignment.md`, `wikicook-pa4-handoff-prompt.md`, `pa4-guide.md` (ngoài repo); `sprint-04-report.md`, `Changes.md`, `use-case-model.md`, `use-case-specification.md`; hai file change list Duy gửi qua chat (không có trong repo) |
 | **Mục đích sử dụng** | Đọc tài liệu phân công PA4; xem tiến độ trên GitHub và cập nhật bảng trạng thái để nhắc thành viên; rà hai file change list của Duy và gộp vào `Changes.md`; soạn tin nhắn nhắc Chung và Duy (tin nhắn không đưa vào repo). |
 | **Nhánh Git** | `docs/SCRUM-84-88-pa4-status-changes` (tách từ `origin/main` tại `6a78652`) |
-| **Minh chứng (Evidence)** | Commit `8680c50` (model `v2.0.1`), `3d1cc22` (`Changes.md`), `c51c31a` (Sprint 04 report); PR: điền số PR khi mở. |
+| **Minh chứng (Evidence)** | Commit `8680c50` (model `v2.0.1`), `3d1cc22` (`Changes.md`), `c51c31a` (Sprint 04 report); PR #114. |
 
 ### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
 1. Đọc các file liên quan đến PA4, gồm các file chia việc trong `tasks/` và trong `WikiCook`.
@@ -1488,7 +1488,7 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 | **Tài liệu / spec liên quan** | PR #107 – #113 trên GitHub (lấy qua GitHub API công khai), `docs/test/scrum-79-spec-kit-test-report.md` (PR #108), `use-case-specification.md` (PR #109), `Changes.md`, `use-case-model.md`, `sprint-04-report.md`, `.specify/memory/constitution.md` |
 | **Mục đích sử dụng** | Kiểm tra các PR đang mở, tóm tắt hai PR mình là reviewer và soạn bình luận review; cập nhật `Changes.md` và model cho khớp PR #109; soạn tiêu đề, mô tả PR cho nhánh `docs/SCRUM-84-88-pa4-status-changes`; cập nhật bảng trạng thái Sprint 04 theo GitHub; điền model còn trống của Mục 32. |
 | **Nhánh Git** | `docs/SCRUM-84-88-pa4-status-changes` |
-| **Minh chứng (Evidence)** | Commit `502a30e` (`Changes.md`, model `v2.0.2`) và commit của mục này (Sprint 04 report `v0.8`, AI log); review "Request changes" của Lê Quốc Hưng trên PR #108 và #109 (20/11/2026). PR của nhánh: điền số PR khi mở. |
+| **Minh chứng (Evidence)** | Commit `502a30e` (`Changes.md`, model `v2.0.2`) và `59172ef` (Sprint 04 report `v0.8`, AI log); review "Request changes" của Lê Quốc Hưng trên PR #108 và #109 (20/11/2026). PR của nhánh: #114. |
 
 ### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
 1. Kiểm tra các PR đang mở và nhận xét từng PR; với những PR tôi là reviewer, tóm gọn nội dung để tôi review.
@@ -1532,7 +1532,7 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 | **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.3, 2.4, 4.2, 4.2.1, 4.3), `tasks/PA4/pa4-guide.md` (SCRUM-87: ghi giờ họp, người có mặt và trạng thái thật, không điền trước kết quả) |
 | **Mục đích sử dụng** | Ghi biên bản buổi Standup 02 đã họp ngày 19/11/2026 theo dạng một biên bản thật, dựa trên thông tin buổi họp do PM xác nhận và trạng thái task trên GitHub và Jira; cập nhật bảng hành động và tiến độ Sprint 04. |
 | **Nhánh Git** | `docs/SCRUM-84-88-pa4-status-changes` |
-| **Minh chứng (Evidence)** | Commit của mục này trên nhánh trên; PR của nhánh: điền số PR khi mở. |
+| **Minh chứng (Evidence)** | Commit `999dc37`, `01cb032`; PR của nhánh: #114. |
 
 ### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
 1. Hôm qua (19/11) nhóm đã họp Standup 02 và các thành viên đã triển khai công việc trên Jira; dựa vào tiến độ các PR hiện tại, cập nhật lại tiến độ trong các SCRUM của PM.
@@ -1568,7 +1568,7 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 | **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.4, 4.2, 4.2.1, 4.3, 5.2, 5.4); `docs/test/scrum-79-spec-kit-test-report.md` (PR #108); `docs/requirements/use-case-specification.md` (PR #109); `docs/ai_log/ai_log_hien.md` (PR #110); `docs/analysis-and-design/architecture.md` |
 | **Mục đích sử dụng** | Kiểm tra các PR đang mở sau khi tác giả cập nhật, xác định PR nào thuộc phần PM review và đã sẵn sàng merge chưa; cập nhật tiến độ Sprint 04 theo GitHub; soạn bình luận review lại và tin nhắn nhắc việc. |
 | **Nhánh Git** | `docs/SCRUM-84-88-pa4-status-changes` |
-| **Minh chứng (Evidence)** | Commit của mục này trên nhánh trên; bình luận review trên PR #108, #109; PR của nhánh: điền số PR khi mở. |
+| **Minh chứng (Evidence)** | Commit `0f71ef0` và commit rà soát ngày 21/11 (báo cáo `v0.11`); bình luận review trên PR #108, #109 (21/11); PR của nhánh: #114. |
 
 ### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
 1. Kiểm tra ba PR đang mở: chỉ ra PR nào thuộc phần tôi review và PR đó đã sẵn sàng merge chưa, tiến độ Sprint 04 cần cập nhật ra sao, và tôi còn SCRUM nào chưa hoàn thành.
@@ -1582,7 +1582,9 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 
 ### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
 - Quyết định thực hiện các đề xuất; đọc lại bình luận review trước khi đăng lên PR #108, #109 và gửi tin nhắn cho Dự.
-- Còn phải làm: xem video demo của PR #108 trước khi approve; mở PR của nhánh và merge sau PR #109.
+- Tự xem video demo của PR #108 ngày 21/11 và đánh giá đạt; đăng bình luận review lại trên PR #108, #109 (sửa lại một bình luận lỡ đăng nhầm từ #108 sang #109).
+- Mở PR #114 cho nhánh; còn phải làm: merge PR #114 sau PR #109.
+- Yêu cầu rà soát lại các mâu thuẫn trong báo cáo thuộc SCRUM của mình; kết quả: báo cáo `v0.11` (số PR #114, review và video ngày 21/11, model `v2.0.2` ở `SCRUM-70` và `Changes.md`, ghi chú ngày `SCRUM-89`, lỗi lưu ảnh Cooksnap khi chạy Docker Compose ở Mục 4.5).
 
 ### Kiểm chứng đã thực hiện:
 - GitHub API: trạng thái, review, commit và file của PR #108 – #113; giờ merge của PR #111 (15:48:52) và #112 (15:49:09, vào nhánh `docs/SCRUM-82-c4-l3-frontend`).
@@ -1590,3 +1592,4 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - Đối chiếu storyboard PR #108 với code trên `main`: `VerificationController` (`POST /api/v1/auth/verification/confirm`), migration `V101__users_auth.sql` (cột `household_size`, không có `servings`), số file test frontend (`auth` 12, `profile` 7, `reviews` 11).
 - YouTube oEmbed: video của PR #108 tồn tại (chỉ kiểm được video có thật, chưa xem nội dung).
 - Script kiểm số cột của mọi bảng trong báo cáo.
+- Chạy `mkdir -p /app/uploads/cooksnaps` bằng user `wikicook` trong image `wikicook-app:local`: `Permission denied`; đối chiếu `ReviewStorageProperties` (`rootPath = uploads/cooksnaps/`), `src/backend/Dockerfile` (`WORKDIR /app` của `root`) và `docker-compose.yml` (chỉ có volume `media` cho ảnh đại diện).

@@ -12,7 +12,7 @@ This is the single change log for the two documents revised for Part A of PA4. E
 
 | Section | Document | Baseline (PA3) | Revision (PA4) | Jira |
 | :---: | :--- | :--- | :--- | :---: |
-| **A** | [`docs/requirements/use-case-model.md`](docs/requirements/use-case-model.md) | `v0.2` (29/10/2026, commit `744df48`; `SCRUM-49`, `SCRUM-51`) | `v2.0` (13/11/2026); status update `v2.0.1` (19/11/2026) | `SCRUM-70`; `SCRUM-84` for `v2.0.1` |
+| **A** | [`docs/requirements/use-case-model.md`](docs/requirements/use-case-model.md) | `v0.2` (29/10/2026, commit `744df48`; `SCRUM-49`, `SCRUM-51`) | `v2.0` (13/11/2026); status updates `v2.0.1` (19/11/2026) and `v2.0.2` (20/11/2026) | `SCRUM-70`; `SCRUM-84` for `v2.0.1` and `v2.0.2` |
 | **B** | [`docs/requirements/use-case-specification.md`](docs/requirements/use-case-specification.md) | `v1.4` (03/11/2026 in the Revision History; last PA3 commit `00bbaac`, 07/11/2026) | `v2.0` (18/11/2026) | `SCRUM-71` |
 
 The Vision Document is **not** revised in PA4. The two places where it no longer agrees with the new use cases are recorded as open issues (A.3, issue 7), not changed here.
