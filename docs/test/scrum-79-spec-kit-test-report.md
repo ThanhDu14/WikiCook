@@ -30,7 +30,7 @@ Căn cứ theo yêu cầu của nhiệm vụ Jira `SCRUM-79` và Tiêu chí Đá
 - **Thời gian hoàn thành**: 25.943 giây
 - **Trạng thái**: `BUILD SUCCESS` (0 Failure, 0 Error, 0 Skipped)
 - **Tổng số ca kiểm thử**: **654 / 654 unit tests pass 100%**
-- **Ghi nhận về Integration Tests (`mvn verify`)**: Bộ Integration Tests (`*IT`: khoảng 30 lớp trong `auth`, 22 lớp trong `profile`, 5 lớp trong `review` chạy trên Testcontainers PostgreSQL 16) với tổng cộng **1.410 tests (BUILD SUCCESS, 0 Failure)** được Lê Quốc Hưng (`@LqHung06`) thực thi kiểm chứng trên môi trường tích hợp vào ngày 18/11/2026 theo quy định của Hiến pháp dự án.
+- **Ghi nhận về Integration Tests (`mvn verify`)**: Bộ Integration Tests (`*IT`: khoảng 30 lớp trong `auth`, 22 lớp trong `profile`, 5 lớp trong `review` chạy trên Testcontainers PostgreSQL 16) với tổng cộng **1.410 tests (BUILD SUCCESS, 0 Failure, 2 skipped: `wikicook-app` gồm 654 unit và 669 integration; `wikicook-ai` gồm 60 unit và 27 integration)** được Lê Quốc Hưng (`@LqHung06`) thực thi kiểm chứng trên môi trường tích hợp vào ngày 21/11/2026 theo quy định của Hiến pháp dự án.
 
 #### Bảng phân rã chi tiết kết quả Backend Unit Test theo Module (trích xuất trực tiếp từ Surefire Reports):
 
@@ -77,8 +77,8 @@ Căn cứ theo quy định của Hiến pháp WikiCook (`.specify/memory/constit
 - **Độ phủ dòng thực tế tầng `com.wikicook.review.service`**:
   - Khi chạy Unit Test (`mvn test`): **353 / 464 dòng (76.08%)** $\to$ **Đạt chuẩn** (Trần Nguyễn Công Chung thực hiện).
   - Khi chạy kèm Integration Test (`mvn verify`): **358 / 464 dòng (77.16%)** $\to$ **Đạt chuẩn** (kết quả do Lê Quốc Hưng kiểm chứng ngày 18/11/2026).
-- **Độ phủ dòng thực tế tầng `com.wikicook.auth.service`**: **673 / 691 dòng (97.40%)** $\to$ **Đạt chuẩn** (kết quả trích xuất từ đợt kiểm chứng `mvn verify` ngày 16/11–18/11/2026 của Mai Văn Hiển và Lê Quốc Hưng).
-- **Độ phủ dòng thực tế tầng `com.wikicook.profile.service`**: **365 / 392 dòng (93.11%)** $\to$ **Đạt chuẩn** (kết quả trích xuất từ đợt kiểm chứng `mvn verify` ngày 18/11/2026).
+- **Độ phủ dòng thực tế tầng `com.wikicook.auth.service`**: **852 / 871 dòng (97.82%)** $\to$ **Đạt chuẩn** (kết quả đo lường từ đợt kiểm chứng `mvn verify` ngày 21/11/2026 trên `main` của Lê Quốc Hưng).
+- **Độ phủ dòng thực tế tầng `com.wikicook.profile.service`**: **353 / 379 dòng (93.14%)** $\to$ **Đạt chuẩn** (kết quả đo lường từ đợt kiểm chứng `mvn verify` ngày 21/11/2026 trên `main` của Lê Quốc Hưng).
 
 ---
 
