@@ -48,7 +48,8 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 33 | 2026-11-20, khoảng 12:00 – 13:00 (ước lượng) | `SCRUM-79`, `SCRUM-71` (review), `SCRUM-84`, `SCRUM-88` | Review PR #108 và #109, soạn bình luận review; cập nhật `Changes.md` và Use-Case Model `v2.0.2` theo PR #109; soạn mô tả PR; cập nhật lại trạng thái Sprint 04 trên GitHub (`v0.8`) | `502a30e`, `59172ef` | `Changes.md`, `use-case-model.md`, `sprint-04-report.md` |
 | 34 | 2026-11-20, khoảng 13:00 – 13:30 (ước lượng) | `SCRUM-87`, `SCRUM-88` | Ghi biên bản Standup 02 (19/11, 22:36 – 23:55) từ thông tin buổi họp do PM cung cấp và trạng thái task trên GitHub/Jira; thêm ACT-08 – ACT-17; cập nhật trạng thái Sprint 04 (`v0.9`) | `999dc37`, `01cb032` | `sprint-04-report.md` |
 | 35 | 2026-11-21, khoảng 15:00 – 16:00 (ước lượng) | `SCRUM-79`, `SCRUM-71` (review), `SCRUM-83`, `SCRUM-88` | Kiểm tra PR #108, #109, #110 sau khi được cập nhật; phát hiện nội dung `SCRUM-83` (PR #112) chưa lên `main`; cập nhật trạng thái Sprint 04 (`v0.10`); soạn bình luận review lại và tin nhắn cho Dự | `0f71ef0` | `sprint-04-report.md` |
-| 36 | 2026-11-21, khoảng 16:00 – 17:00 (ước lượng) | `SCRUM-87`, `SCRUM-88`, `SCRUM-84` | Rà soát mâu thuẫn trong báo cáo Sprint 04, `Changes.md` và AI log; phát hiện lỗi lưu ảnh Cooksnap khi chạy Docker Compose; sửa biên bản Standup 01 theo xác nhận của PM (`v0.11`, `v0.12`) | `1fc00b1`, commit của mục này | `sprint-04-report.md`, `Changes.md`, `ai_log_hung.md` |
+| 36 | 2026-11-21, khoảng 16:00 – 17:00 (ước lượng) | `SCRUM-87`, `SCRUM-88`, `SCRUM-84` | Rà soát mâu thuẫn trong báo cáo Sprint 04, `Changes.md` và AI log; phát hiện lỗi lưu ảnh Cooksnap khi chạy Docker Compose; sửa biên bản Standup 01 theo xác nhận của PM (`v0.11`, `v0.12`) | `1fc00b1`, `af8a3c9` | `sprint-04-report.md`, `Changes.md`, `ai_log_hung.md` |
+| 37 | 2026-11-21, khoảng 17:00 – 20:00 (ước lượng) | `SCRUM-71`, `SCRUM-79` (review), `SCRUM-84`, `SCRUM-88` | Đăng review bằng GitHub CLI; chạy `mvn verify` trên `main` cho PR #108; kiểm tra bản ghi review của Chung trên #109, approve #109 và mở PR #116 với bản ghi đã sửa; cập nhật trạng thái Sprint 04 (`v0.13`) và `Changes.md` Mục B | `262b3e8`, commit của mục này | `use-case-specification.md`, `sprint-04-report.md`, `Changes.md`, `ai_log_hung.md` |
 
 ---
 
@@ -1606,7 +1607,7 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 | **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 1.2, 2.2, 2.4, 3.1, 4.2 – 4.5, 5); `Changes.md`; `docs/ai_log/ai_log_hung.md`; `src/backend/Dockerfile`, `src/backend/docker-compose.yml`, `ReviewStorageProperties.java` |
 | **Mục đích sử dụng** | Tìm các chỗ mâu thuẫn giữa các phần trong tài liệu thuộc SCRUM của PM và giữa tài liệu với repository; sửa những chỗ đã rõ, hỏi PM những chỗ cần xác nhận. |
 | **Nhánh Git** | `docs/SCRUM-84-88-pa4-status-changes` (PR #114) |
-| **Minh chứng (Evidence)** | Commit `1fc00b1` (báo cáo `v0.11`) và commit của mục này (báo cáo `v0.12`); PR #114. |
+| **Minh chứng (Evidence)** | Commit `1fc00b1` (báo cáo `v0.11`) và `af8a3c9` (báo cáo `v0.12`); PR #114. |
 
 ### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
 1. Rà soát báo cáo trong các SCRUM của tôi, chỉ ra chỗ nào mâu thuẫn hoặc cần chỉnh sửa cho đúng; chỗ nào cần tôi xác nhận thì hỏi dưới dạng trắc nghiệm.
@@ -1627,3 +1628,42 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - `git log` theo tác giả và ngày (10 – 14/11) cho các câu của Standup 01: commit Spec Kit `070` của Chung ngày 11 – 12/11; commit `SCRUM-77` đầu tiên lúc 15/11 01:06; commit C4 Level 1 đầu tiên của Hiển lúc 16/11 12:29 (sau buổi họp), commit backend `010` từ 13/11; compose và `V210` có từ 28 – 29/10; commit đầu tiên của `SCRUM-76` ngày 16/11.
 - GitHub API: PR #110 merge lúc 21/11 16:24 sau khi Chung approve.
 - Script kiểm số cột của mọi bảng; `git merge-base --is-ancestor` để xác định PR chứa các commit trong AI log.
+
+## Mục 37: Đăng review bằng GitHub CLI, chạy `mvn verify` cho PR #108, hoàn tất review `SCRUM-71` và cập nhật tiến độ Sprint 04 (`SCRUM-71`, `SCRUM-79` review, `SCRUM-84`, `SCRUM-88`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Opus 5.5 (`claude-opus-5-5`); GitHub CLI `gh` 2.105.0 đăng nhập bằng tài khoản `@LqHung06` |
+| **Thời gian truy cập cụ thể** | 2026-11-21, khoảng 17:00 – 20:00 (Giờ Việt Nam, UTC+7); giờ là ước lượng theo phiên làm việc, giờ của các review trên GitHub và giờ commit |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-71` (review và bản ghi review), `SCRUM-79` (review PR #108), `SCRUM-84` (`Changes.md`), `SCRUM-88` (bảng trạng thái) |
+| **Tài liệu / spec liên quan** | PR #108, #109, #115, #116; `docs/requirements/use-case-specification.md`; `Changes.md` (Mục B); `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 4.2 – 4.4) |
+| **Mục đích sử dụng** | Đăng các review đã duyệt lên GitHub; có số liệu kiểm thử và độ phủ thật trên `main` cho báo cáo kiểm thử của Chung; kiểm tra phần ghi nhận review của Chung trên PR #109 so với code; theo yêu cầu của Chung, sửa bản ghi review trong một PR mới; cập nhật trạng thái Sprint 04. |
+| **Nhánh Git** | `docs/SCRUM-71-uc-spec-review-record` (PR #116); `docs/SCRUM-84-88-pa4-status-changes` (PR #114) |
+| **Minh chứng (Evidence)** | Review của `@LqHung06` trên PR #108 và #109 (21/11); bình luận `mvn verify` trên PR #108; commit `262b3e8` (PR #116); commit của mục này (báo cáo `v0.13`, PR #114). |
+
+### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
+1. Tìm cách để AI tự đăng bình luận lên GitHub giúp tôi; đăng phần sửa review trên #109 và review trên #108, rồi chạy `mvn verify`; đăng kết quả `mvn verify` lên #108.
+2. Soạn tin nhắn báo lỗi lưu ảnh Cooksnap cho Chung và Dự.
+3. Kiểm tra hiện có PR nào tôi cần review không.
+4. Chung nhờ tôi sửa phần ghi nhận review vì Chung quá nhiều việc: merge PR của Chung và tạo PR mới để Chung review lại phần tôi sửa; nhắn Hiển approve lại thay vì gỡ review của Hiển.
+5. Rà soát còn SCRUM nào của tôi chưa làm; cập nhật vào #114 và push.
+
+### Nội dung do AI sinh ra:
+1. Hướng dẫn cài và đăng nhập GitHub CLI; các lệnh sửa review (đã đăng nhầm sang #109), đăng review "request changes" trên #108, bình luận kết quả `mvn verify` trên #108, approve #109, đẩy nhánh và mở PR #116.
+2. Kết quả `mvn verify` trên `main` (`17d255e`), chạy bằng Docker: 1410 test, BUILD SUCCESS; độ phủ dòng JaCoCo của `auth.service`, `profile.service`, `review.service`.
+3. Đối chiếu bình luận ghi nhận review của Chung trên #109 với code: bốn chi tiết sai (endpoint cập nhật hồ sơ, tên file migration `V501`, độ dài bình luận, giới hạn gửi lại email); phần reauth thuộc Mục 10 chứ không phải Mục 9. Bản thân tài liệu đúng ở cả bốn chỗ.
+4. PR #116: khung "Review record" dưới Revision History, dòng `v2.1.1`, header `2.1.1`; mô tả PR có bảng năm chỗ sửa.
+5. Báo cáo `v0.13`: `SCRUM-71` Done (#109 merge 19:42), `SCRUM-83` PR open (#115), `SCRUM-79` Hiển đã approve, kết quả `mvn verify` ngày 21/11 ở Mục 4.4; `Changes.md` Mục B thêm `v2.1`, `v2.1.1` và dòng B.2 số 27. Tin nhắn cho Chung, Dự (lỗi Cooksnap) và Hiển (approve lại #109).
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Tự đăng nhập GitHub CLI bằng tài khoản của mình; đọc và duyệt nội dung từng review, bình luận và mô tả PR trước khi đăng.
+- Chọn cách nhờ Hiển approve lại #109 thay vì gỡ review của Hiển; Hiển approve và merge #109 lúc 19:42.
+- Việc sửa bản ghi review là do Chung nhờ; Chung là người review PR #116 và xác nhận bản ghi đúng với những gì Chung đã kiểm tra.
+- Còn phải làm: chờ Chung sửa #108 rồi approve; chờ Chung review #116, Chung hoặc Duy review #114.
+
+### Kiểm chứng đã thực hiện:
+- `mvn verify` chạy trong image `maven:3.9-eclipse-temurin-21` trên một worktree của `main` (`17d255e`), 21/11 16:45 – 16:54; đọc số liệu từ `jacoco.csv` của `wikicook-app`.
+- Từng chi tiết trong bản ghi review được tra lại trên `main` (`84844a6`): `MyProfileController` (`POST /api/v1/me/profile`, multipart), `V501__community.sql` (`CHECK (rating BETWEEN 1 AND 5)`), `CreateReviewRequest` (bình luận 10 – 2000, mẹo ≤ 500), `UpdateReviewRequest` (≤ 3 ảnh), `EmailRequestLimiter` (`MAX_REQUESTS = 3`, 15 phút), `ReviewRepositoryIT` (T015), sơ đồ Use-Case Model Mục 4.7 và 4.10 có «include» `UC-100-02` → `UC-070-08`.
+- `git merge-tree` cho #114 và #116 với `main` sau khi #109 merge: không xung đột. GitHub API: thời điểm review, approve và merge của #108, #109, #115, #116.
+- Script kiểm số cột của mọi bảng trong báo cáo, `Changes.md` và AI log.
