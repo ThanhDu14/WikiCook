@@ -5,8 +5,8 @@
 **Team:** Group 05  
 **Document Title:** Use-Case Model (Mermaid) covering the 10 product features of Vision Document §5  
 **Sprint Cycle:** Sprint 04 (Project Assignment 4 — Part A, revised use-case documents); first edition Sprint 03 (Project Assignment 3 — Part C)  
-**Document Version:** 2.0 (Second Edition — PA4 self-audit revision, `SCRUM-70`)  
-**Date:** November 13, 2026
+**Document Version:** 2.0.2 (Second Edition — PA4 self-audit revision, `SCRUM-70`; status updates of open issue 6, `SCRUM-84`)  
+**Date:** November 13, 2026 (status updates: November 19 and 20, 2026)
 
 ---
 
@@ -24,13 +24,15 @@
 *Version 2.0 (`SCRUM-70`):* besides the six section headers, the parts revised in this version carry their own attribution line: Revision History, 1.2, 1.4, 1.5, 2.1, 2.2, 4.1, 4.3, 4.7, 4.10, 4.11, 6.1 and 6.2. Sections 4.2, 4.4 – 4.6, 4.8 and 4.9 are unchanged from `v0.2`.
 
 ### Revision History
-*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT); Lê Quốc Hưng (LqHung06), rows `v2.0.1` and `v2.0.2`*
 
 | Date | Version | Description | Author |
 | :---: | :---: | :--- | :--- |
 | **29/10/2026** | `v0.1` | Initial draft: 8 actors with generalization, system overview, 11 use-case diagrams (one per Vision §5 feature plus the shared Recipe Detail page), catalogue of 64 use cases with traceability to Vision §5, specs and user stories, and coverage check (`SCRUM-49`). | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **29/10/2026** | `v0.2` | Aligned with the Use-Case Specifications v1.1 (`SCRUM-51`): added `UC-060-05 «include» UC-060-02` (`OQ-060-01`), closed open issue 3, updated the status of the open issues. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
 | **13/11/2026** | `v2.0` | Second Edition, PA4 Part A (`SCRUM-70`). No TA feedback on PA3 was received, so this is a self-audit against the Spec Kit artifacts of `010`, `011` and `070` on `main` (the two PA4 Part E groups F-01 and F-07), the other specifications, Vision `v2.0` and Use-Case Specifications `v1.4`. Four use cases added with the next free IDs (`UC-010-05` Sign Out, `UC-011-06` View Public Profile, `UC-070-07` Mark Review as Helpful, `UC-070-08` Update Recipe Rating Summary); no existing ID renumbered. Actors and relations corrected: Email Service on `UC-010-02` (lockout notice), Google OAuth on `UC-011-03` and `UC-011-04` (re-authentication), Moderator on `UC-100-03` and `UC-100-06`, `UC-011-05` also included by `UC-030-01` and `UC-031-05`, `UC-070-02` also extends `UC-070-03`, the post-cooking prompt `UC-070-06` is now extended by `UC-070-01` / `UC-070-03` instead of including `UC-070-01`, verified-email rule limited to reviews and Cooksnaps. Catalogue (68 use cases), coverage, sources and open issues updated. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
+| **19/11/2026** | `v2.0.1` | Status update of open issue 6 only (Section 6.2): resolved by Use-Case Specifications `v2.0` (`SCRUM-71`, 18/11/2026), except that `UC-100-02` in the specification still describes the rating recalculation itself. No use case, actor, relation or diagram changed (`SCRUM-84`). | Lê Quốc Hưng (`LqHung06`) |
+| **20/11/2026** | `v2.0.2` | Status update of open issue 6 only (Section 6.2): fully resolved, because `UC-100-02` in the specification (Section 13) now includes `UC-070-08` instead of describing the rating recalculation itself (`SCRUM-71`, PR #109). No use case, actor, relation or diagram changed (`SCRUM-84`). | Lê Quốc Hưng (`LqHung06`) |
 
 ---
 
@@ -831,9 +833,9 @@ This table is the official list of use-case IDs. Every row must have a specifica
 | *(not covered before)* Reviews & Cooksnaps, Collections, Nutrition | `UC-070-01` – `08`, `UC-080-01` – `04`, `UC-090-01` – `05` |
 
 ### 6.2. Open Issues
-*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT)*
+*Performed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Đức Duy (DucDuyNguyen15-IT); Lê Quốc Hưng (LqHung06), issue 6 status in `v2.0.1` and `v2.0.2`*
 
-Issues 1 – 5 were raised in `v0.1` for the freeze of 02/11/2026; their status is updated to 13/11/2026. Issues 6 – 9 come from the `v2.0` self-audit (`SCRUM-70`). They concern other documents or specifications and do not block this model.
+Issues 1 – 5 were raised in `v0.1` for the freeze of 02/11/2026; their status is updated to 13/11/2026. Issues 6 – 9 come from the `v2.0` self-audit (`SCRUM-70`). They concern other documents or specifications and do not block this model. The status of issue 6 was updated on 19/11/2026 (`v2.0.1`), after the Use-Case Specifications `v2.0` were merged, and on 20/11/2026 (`v2.0.2`), after `UC-100-02` was aligned.
 
 | # | Issue | Proposal | Owner | Status (13/11) |
 | :---: | :--- | :--- | :--- | :--- |
@@ -842,7 +844,7 @@ Issues 1 – 5 were raised in `v0.1` for the freeze of 02/11/2026; their status 
 | 3 | `UC-020-06` View Recipe Details has no user story in `020` (detail content is out of scope there), although `SCRUM-51` assigns the page frame to Duy. | Specify it in `SCRUM-51` from the blocks agreed in Section 4.11; each block owner confirms their row of the table. | Nguyễn Đức Duy, all owners | **Resolved** — specified as `UC-020-06` with extension points `EP-1` – `EP-6` (UC Spec §6); owners confirm their rows (UC Spec `OQ-020-03`). |
 | 4 | `UC-050-01` uses Guest as primary actor (as in `SCRUM-53`); spec `050` should confirm that cooking mode needs no account. | Hưng confirms; if sign-in is required, change the association to Member. | Lê Quốc Hưng | **Open** — spec `050` still does not say whether an account is needed; tracked as `[OQ-050-01]` in the Use-Case Specifications. The model keeps Guest. |
 | 5 | Included use cases (`UC-011-05`, `UC-031-03`, `UC-031-06`, `UC-090-02`, `UC-090-03`) have no human primary actor. | Write them at the Brief level with "Trigger" instead of "Primary Actor"; the reviewer of each owner checks consistency. | Hiển, Dự | **Resolved** — Use-Case Specifications `v1.4` write all five with a Trigger instead of a primary actor. The new included use case `UC-070-08` follows the same rule (issue 6). |
-| 6 | The four use cases added in `v2.0` (`UC-010-05`, `UC-011-06`, `UC-070-07`, `UC-070-08`) have no specification yet. In Use-Case Specifications `v1.4` their behaviour sits inside other use cases: Sign Out is `AF 2.13` of `UC-010-02`, the public profile is Step 10 and `AF 2.6` of `UC-011-02`, the helpful vote is Step 6 of `UC-070-04`, and the rating recalculation is repeated in `UC-070-01`, `UC-070-03`, `UC-070-05` and `UC-100-02`. | Under `SCRUM-71`, add the four specifications (`UC-070-08` with a Trigger, as in issue 5) and replace the moved steps by references; also reflect the changed relations of Section 4 (`UC-070-06` extended by `UC-070-01` / `UC-070-03`, `UC-070-02` extending `UC-070-03`, `UC-011-05` included by `UC-030-01` and `UC-031-05`, Moderator on `UC-100-03` and `UC-100-06`). | Nguyễn Đức Duy (`SCRUM-71`) | **Open** |
+| 6 | The four use cases added in `v2.0` (`UC-010-05`, `UC-011-06`, `UC-070-07`, `UC-070-08`) have no specification yet. In Use-Case Specifications `v1.4` their behaviour sits inside other use cases: Sign Out is `AF 2.13` of `UC-010-02`, the public profile is Step 10 and `AF 2.6` of `UC-011-02`, the helpful vote is Step 6 of `UC-070-04`, and the rating recalculation is repeated in `UC-070-01`, `UC-070-03`, `UC-070-05` and `UC-100-02`. | Under `SCRUM-71`, add the four specifications (`UC-070-08` with a Trigger, as in issue 5) and replace the moved steps by references; also reflect the changed relations of Section 4 (`UC-070-06` extended by `UC-070-01` / `UC-070-03`, `UC-070-02` extending `UC-070-03`, `UC-011-05` included by `UC-030-01` and `UC-031-05`, Moderator on `UC-100-03` and `UC-100-06`). | Nguyễn Đức Duy (`SCRUM-71`) | **Resolved** (19/11/2026; last point 20/11/2026) — Use-Case Specifications `v2.0` (`SCRUM-71`, 18/11/2026) specify the four use cases (`UC-070-08` with a Trigger), replace the moved steps of `UC-010-02`, `UC-011-02`, `UC-070-04` and the recalculation of `UC-070-01`, `UC-070-03`, `UC-070-05` by references, and state the changed relations of Section 4. The last point, `UC-100-02` (specification Section 13), was aligned on 20/11/2026: it now includes `UC-070-08` (`SCRUM-71`, PR #109). |
 | 7 | Vision §8 (Traceability to the Use-Case Model) lists `UC-070-01` – `UC-070-06` and `UC-010` / `UC-011` use cases only up to `v0.2` of this model. | Add `UC-010-05`, `UC-011-06`, `UC-070-07` and `UC-070-08` to Vision §8 at its next revision. | Nguyễn Đức Duy (PO) | **Open** |
 | 8 | The specifications disagree on the Cooksnaps of a deleted account: `011` FR-031 lists Cooksnaps among the data that is deleted, while `070` Edge Case 5 keeps them visible with the author shown as "Người dùng đã xóa". Reviews and ratings are kept in both. | Clarify in `011` or `070` (`/speckit-clarify`). The model is not affected: `UC-011-04` does not change the rating summary either way, so it does not include `UC-070-08`. | Mai Văn Hiển, Trần Nguyễn Công Chung | **Open** |
 | 9 | `UC-070-02` extends `UC-070-01` and `UC-070-03` because every Cooksnap belongs to a review (`070` data-model, `cooksnaps.review_id`), but `cooksnaps.review_id` is marked in the `070` data model as a proposed addition not yet in `full-schema.md` §4.9. | Add the column to the full schema when `070` is implemented in Sprint 04 Part E. If it is dropped, revisit the two «extend» relations. | Trần Nguyễn Công Chung | **Open** |
