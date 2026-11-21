@@ -4,7 +4,7 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Document Title:** Detailed Use-Case Specifications for Feature 040 (Shopping List) & Feature 050 (Cooking Mode)  
 **Sprint Cycle:** Sprint 03 (Project Assignment 3 — Part D, 45 Points)  
-**Document Version:** 2.0 (Second Edition — PA4 Part A revision of Sections 9, 10 and 12, `SCRUM-71`; first edition `v1.0` – `v1.4`, Sprint 03)  
+**Document Version:** 2.1 (Second Edition — PA4 Part A revision of Sections 9, 10 and 12, `SCRUM-71`; first edition `v1.0` – `v1.4`, Sprint 03)  
 **Status:** Proposal / Ready for Review *(Aligned with Spec 040 & Spec 050; pending final Use-Case Model freeze in SCRUM-49)*
 
 ---
@@ -21,11 +21,11 @@
 | **Section 6** | Use-Case Specifications for Feature 020: Recipe Discovery & Recipe Detail (`UC-020-01` – `UC-020-06`) | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-51` |
 | **Section 7** | Use-Case Specifications for Feature 060: Community Recipe Contribution (`UC-060-01` – `UC-060-07`) | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-51` |
 | **Section 8** | Traceability, Screen Mapping & Open Questions for Features 020 & 060 | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Nguyễn Thành Dự (ThanhDu14)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-51` |
-| **Section 9** | Use-Case Specifications for Feature 010: User Authentication & Roles (`UC-010-01` – `UC-010-05`) | **Mai Văn Hiển (MaiHien3507)** (v1.2); **Nguyễn Đức Duy (DucDuyNguyen15-IT)** (v2.0) | **Trần Nguyễn Công Chung (itzchugnn)** *(v2.0 review pending)* | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-50`, `SCRUM-71` |
-| **Section 10** | Use-Case Specifications for Feature 011: User Profile & Dietary Profile (`UC-011-01` – `UC-011-06`) | **Mai Văn Hiển (MaiHien3507)** (v1.2); **Nguyễn Đức Duy (DucDuyNguyen15-IT)** (v2.0) | **Trần Nguyễn Công Chung (itzchugnn)** *(v2.0 review pending)* | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-50`, `SCRUM-71` |
+| **Section 9** | Use-Case Specifications for Feature 010: User Authentication & Roles (`UC-010-01` – `UC-010-05`) | **Mai Văn Hiển (MaiHien3507)** (v1.2); **Nguyễn Đức Duy (DucDuyNguyen15-IT)** (v2.0) | **Trần Nguyễn Công Chung (itzchugnn)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-50`, `SCRUM-71` |
+| **Section 10** | Use-Case Specifications for Feature 011: User Profile & Dietary Profile (`UC-011-01` – `UC-011-06`) | **Mai Văn Hiển (MaiHien3507)** (v1.2); **Nguyễn Đức Duy (DucDuyNguyen15-IT)** (v2.0) | **Trần Nguyễn Công Chung (itzchugnn)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-50`, `SCRUM-71` |
 | **Section 11** | Use-Case Specifications for Feature 080: Recipe Bookmarks & Custom Collections (`UC-080-01` – `UC-080-04`) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-50` |
-| **Section 12** | Use-Case Specifications for Feature 070: Community Reviews & Cooksnaps (`UC-070-01` – `UC-070-08`) | **Trần Nguyễn Công Chung (itzchugnn)** (v1.3); **Nguyễn Đức Duy (DucDuyNguyen15-IT)** (v2.0) | **Trần Nguyễn Công Chung (itzchugnn)** *(v2.0 review pending)* | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-54`, `SCRUM-71` |
-| **Section 13** | Use-Case Specifications for Feature 100: Administration & Content Moderation (`UC-100-01` – `UC-100-06`) | **Trần Nguyễn Công Chung (itzchugnn)** | **Mai Văn Hiển (MaiHien3507)** | **Trần Nguyễn Công Chung (itzchugnn)** | `SCRUM-54` |
+| **Section 12** | Use-Case Specifications for Feature 070: Community Reviews & Cooksnaps (`UC-070-01` – `UC-070-08`) | **Trần Nguyễn Công Chung (itzchugnn)** (v1.3); **Nguyễn Đức Duy (DucDuyNguyen15-IT)** (v2.0) | **Trần Nguyễn Công Chung (itzchugnn)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | `SCRUM-54`, `SCRUM-71` |
+| **Section 13** | Use-Case Specifications for Feature 100: Administration & Content Moderation (`UC-100-01` – `UC-100-06`) | **Trần Nguyễn Công Chung (itzchugnn)** | **Mai Văn Hiển (MaiHien3507)** | **Trần Nguyễn Công Chung (itzchugnn)** | `SCRUM-54`, `SCRUM-71` |
 | **Section 14** | Use-Case Specifications for Feature 030: Weekly Meal Planner, Manual (`UC-030-01` – `UC-030-05`) | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Thành Dự (ThanhDu14)** | `SCRUM-52` |
 | **Section 15** | Use-Case Specifications for Feature 031: AI Weekly Meal Planner (`UC-031-01` – `UC-031-06`) | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Thành Dự (ThanhDu14)** | `SCRUM-52` |
 | **Section 16** | Use-Case Specifications for Feature 090: Nutrition & Allergen Analyzer (`UC-090-01` – `UC-090-05`) | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Thành Dự (ThanhDu14)** | `SCRUM-52` |
@@ -41,6 +41,7 @@
 | **31/10/2026** | `v1.3` | Added Sections 12–13: 12 detailed use-case specifications for Feature 070 (`UC-070-01` – `UC-070-06`) and Feature 100 (`UC-100-01` – `UC-100-06`), complete with author self-review guard, cascading rating recalculation, mass-report auto-quarantine, concurrency inspection presence, traceability matrices, prototype screen mapping and open questions (`SCRUM-54`, first draft). Use-case IDs and titles strictly follow the Use-Case Model v0.1 (`SCRUM-49`). | Trần Nguyễn Công Chung (`itzchugnn`) |
 | **03/11/2026** | `v1.4` | Added Sections 14–17: 16 use-case specifications for Feature 030 (`UC-030-01` – `UC-030-05`), Feature 031 (`UC-031-01` – `UC-031-06`) and Feature 090 (`UC-090-01` – `UC-090-05`), with every AI failure flow (LLM error, timeout, unusable answer, not enough recipes, allergy violation, daily quota, backup draft with the manual planner still usable), traceability, prototype screen mapping and open questions (`SCRUM-52`, first draft for review). Written against the 02/11/2026 Clarification of spec 030 (up to 4 dishes per meal). Use-case IDs follow the Use-Case Model (`SCRUM-49`). | Nguyễn Thành Dự (`ThanhDu14`) |
 | **18/11/2026** | `v2.0` | Second Edition, PA4 Part A (`SCRUM-71`). No TA feedback on PA3 was received; self-audit of Sections 9, 10 and 12 against the clarified specs `010`, `011` and `070`, their `contracts/openapi.yaml` and the backend merged into `main` (`SCRUM-74`, `SCRUM-75`, `SCRUM-77`), mirrored on Use-Case Model `v2.0` (`SCRUM-70`). **Added:** `UC-010-05` Sign Out (moved from `UC-010-02` AF 2.13), `UC-011-06` View Public Profile (moved from `UC-011-02` Step 10, AF 2.6, AF 2.17), `UC-070-07` Mark Review as Helpful (moved from `UC-070-04` Step 6) and `UC-070-08` Update Recipe Rating Summary (included use case with a Trigger; the recalculation repeated in `UC-070-01`, `UC-070-03`, `UC-070-05` now refers to it). **Revised:** `UC-010-01` – `UC-010-04` and `UC-011-01` – `UC-011-05` to the clarified specs and contract (closed open questions, endpoints and error codes; implementation status of password, deletion and Google flows); `UC-011-05` also included by `UC-030-01` and `UC-031-05`; `UC-070-01` – `UC-070-06` rewritten against the review code (endpoints, validation, report reasons, `403`/`404`/`409`/`429` answers, upload limits, automatic hiding at 10 reports), `UC-070-06` now **extended by** `UC-070-01` / `UC-070-03`, `UC-070-02` also extends `UC-070-03`. Endpoints, codes and limits not found in the spec, contract or code removed. Traceability, screen mapping and open questions of Sections 9, 10 and 12 updated (`[OQ-011-09]`, `[OQ-070-07]` – `[OQ-070-18]` record spec-vs-code differences); recipe-detail row `EP-6 Reviews` lists `UC-070-03`, `UC-070-05`, `UC-070-07`. | Nguyễn Đức Duy (`DucDuyNguyen15-IT`) |
+| **20/11/2026** | `v2.1` | Section 13 (`UC-100-02`): Aligned cascading rating recalculation to include `UC-070-08 Update Recipe Rating Summary` per Use-Case Model v2.0; noted implementation status on `main` via reference to `[OQ-070-18]`. Confirmed QA review for Sections 9, 10, 12 (`SCRUM-71`). | Trần Nguyễn Công Chung (`itzchugnn`) |
 
 > [!NOTE]
 > **Use-Case Model Alignment Notice:** The formal Use-Case Model (`docs/requirements/use-case-model.md`) is currently being drafted by Nguyễn Đức Duy under `SCRUM-49` (freeze date: November 02, 2026). The Use Case IDs (`UC-040-01` through `UC-040-05` and `UC-050-01` through `UC-050-05`) and titles documented herein represent the official engineering proposal derived directly from ratified specifications `specs/040-shopping-list/spec.md` and `specs/050-cooking-mode/spec.md`. Once `SCRUM-49` completes model freeze on November 02, any identifier discrepancies will be reconciled during the review phase (`SCRUM-53` final edition, due November 03).
@@ -5178,6 +5179,7 @@ Provides an administrative interface to inspect user-submitted recipes in `PENDI
 #### 2. Actor(s)
 - **Primary Actor:** **Content Moderator** or **System Administrator**.
 - **Secondary Actor / Systems:** **Notification Service**, **Audit Service**.
+- **Including / Extended Use Cases:** Includes `UC-070-08 Update Recipe Rating Summary` when hiding, deleting, or restoring a review (implementation on `main` is pending, see `[OQ-070-18]`).
 
 #### 3. Description
 Provides a triage interface for user reports on recipes, reviews, Cooksnaps, or abusive users. The moderator reviews the reported content in context, checks the author's violation history, and executes disciplinary actions (Hide, Delete, Warn, Suspend, or Dismiss).
@@ -5199,7 +5201,7 @@ Provides a triage interface for user reports on recipes, reviews, Cooksnaps, or 
 6. **Confirm:** Moderator clicks `"Xác nhận xử lý"` (*Gap 100-B*).
 7. **Server Processing:**
    - Offending review is hidden (`reviews.status = 'HIDDEN'`).
-   - **Triggers cascading aggregate recalculation:** Invokes `RecipeAggregateService.recalculate(recipeId)` to recompute `rating_avg` and `review_count` on the parent recipe, excluding the now-hidden review (`WHERE status = 'VISIBLE'`). This ensures the recipe's public score immediately reflects the removal, maintaining data consistency between the moderation action and the public-facing recipe metrics.
+   - **Triggers cascading aggregate recalculation:** Includes `UC-070-08 Update Recipe Rating Summary` to recalculate `rating_avg` and `review_count` on the parent recipe, excluding the now-hidden review (`WHERE status = 'VISIBLE'`). This ensures the recipe's public score immediately reflects the removal, maintaining data consistency between the moderation action and the public-facing recipe metrics.
    - Sets `reports.status = 'RESOLVED'`, `handled_by = auth.user_id`, `handled_at = NOW()`.
    - Inserts record into `moderation_actions` (`actor_id = auth.user_id`, `report_id`, `review_id`, `action = 'HIDE'`).
    - Writes immutable entry to `audit_logs` (`action = 'CONTENT_HIDDEN'`, `target_type = 'REVIEW'`, `target_id`).
@@ -5224,14 +5226,14 @@ Provides a triage interface for user reports on recipes, reviews, Cooksnaps, or 
   - *Steps:*
     1. Moderator selects `"Ẩn nội dung"`.
     2. Server sets `reviews.status = 'HIDDEN'`. The content is hidden from public pages but stays visible to administrators in the moderation table. (Proposed `hidden_reason` column per `[OQ-070-05]`.)
-    3. **Aggregate recalculation triggered:** `RecipeAggregateService.recalculate(recipeId)` is invoked to exclude the hidden review from `rating_avg` and `review_count` (`WHERE status = 'VISIBLE'`). If the moderator later restores the content (via `"Khôi phục nội dung"`), the aggregate is recalculated again to re-include the restored review.
+    3. **Aggregate recalculation triggered:** Includes `UC-070-08 Update Recipe Rating Summary` to exclude the hidden review from `rating_avg` and `review_count` (`WHERE status = 'VISIBLE'`). When the content is restored by a Moderator (via `"Khôi phục nội dung"`), the system includes `UC-070-08` again to restore the review into the rating statistics.
 - **AF 2.4: Resolve Auto-Hidden (Mass-Reported) Content:**
   - *Trigger:* Moderator opens a reported bundle bearing the red `"Khẩn cấp"` badge (*Gap 100-H*) that was automatically hidden due to $\ge 10$ community reports.
   - *Steps:*
     1. Moderator reviews content context and reporter claims.
     2. If content does NOT violate guidelines (e.g., coordinated troll reporting against a legitimate recipe review), moderator clicks `"Khôi phục nội dung"` (Restore Content).
     3. Server sets `reviews.status = 'VISIBLE'` (hoặc `cooksnaps.status = 'VISIBLE'`).
-    4. Synchronously triggers `RecipeAggregateService.recalculate(recipeId)` to restore the review into `rating_avg` and `review_count` (`WHERE status = 'VISIBLE'`).
+    4. Synchronously includes `UC-070-08 Update Recipe Rating Summary` to restore the review into `rating_avg` and `review_count` (`WHERE status = 'VISIBLE'`).
     5. Sets all linked open reports to `reports.status = 'DISMISSED'`, `handled_by = auth.user_id`, `handled_at = NOW()`.
     6. Inserts `moderation_actions` record (`action = 'UNHIDE'`) and `audit_logs` record: `action = 'CONTENT_RESTORED'`, `target_type = 'REVIEW'`, `target_id`.
     7. UI displays toast *"Nội dung đã được khôi phục thành công"*.
@@ -5246,6 +5248,7 @@ Provides a triage interface for user reports on recipes, reviews, Cooksnaps, or 
 
 #### 7. Postconditions
 - **Database:** `reports.status` set to `RESOLVED` or `DISMISSED` with `handled_by` and `handled_at`. Target content hidden (`status = 'HIDDEN'`) or restored (`status = 'VISIBLE'`); suspension recorded in `user_suspensions` if AF 2.5 selected; logged in `moderation_actions` and `audit_logs`.
+- **Implementation Status Note (`SCRUM-71`):** While `UC-100-02` formally includes `UC-070-08 Update Recipe Rating Summary` in the Use-Case Model v2.0, the Moderator hide/restore endpoints (`POST /api/v1/moderation/...`) have not yet been implemented on `main` (documented in `[OQ-070-18]`).
 
 #### 8. Special Requirements
 - **Privacy:** Reported user is never shown the identity of the person who reported them.
