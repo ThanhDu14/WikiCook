@@ -26,11 +26,11 @@ Căn cứ theo yêu cầu của nhiệm vụ Jira `SCRUM-79` và Tiêu chí Đá
 ## 2. Kết quả Kiểm thử Tự động Spec Kit (Yêu cầu a)
 
 ### 2.1. Kiểm thử Backend (Spring Boot 3.5.16 & JUnit 5)
-- **Lệnh thực thi**: `mvn test -f src/backend/pom.xml` (chạy tầng Unit Tests qua Maven Surefire)
+- **Lệnh thực thi trực tiếp cho báo cáo này**: `mvn test -f src/backend/pom.xml` (chạy tầng Unit Tests qua Maven Surefire do Trần Nguyễn Công Chung thực hiện)
 - **Thời gian hoàn thành**: 25.943 giây
 - **Trạng thái**: `BUILD SUCCESS` (0 Failure, 0 Error, 0 Skipped)
 - **Tổng số ca kiểm thử**: **654 / 654 unit tests pass 100%**
-- **Phạm vi Integration Tests (`mvn verify`)**: Khi thực thi lệnh `mvn verify`, Maven Failsafe kích hoạt thêm toàn bộ các lớp Integration Test (`*IT`: khoảng 30 lớp trong `auth`, 22 lớp trong `profile`, 5 lớp trong `review`) chạy trên môi trường container PostgreSQL thật qua Testcontainers, nâng tổng số ca kiểm thử được kiểm chứng lên khoảng 1.410 tests theo đúng quy định của Hiến pháp dự án.
+- **Ghi nhận về Integration Tests (`mvn verify`)**: Bộ Integration Tests (`*IT`: khoảng 30 lớp trong `auth`, 22 lớp trong `profile`, 5 lớp trong `review` chạy trên Testcontainers PostgreSQL 16) với tổng cộng **1.410 tests (BUILD SUCCESS, 0 Failure)** được Lê Quốc Hưng (`@LqHung06`) thực thi kiểm chứng trên môi trường tích hợp vào ngày 18/11/2026 theo quy định của Hiến pháp dự án.
 
 #### Bảng phân rã chi tiết kết quả Backend Unit Test theo Module (trích xuất trực tiếp từ Surefire Reports):
 
@@ -75,10 +75,10 @@ Căn cứ theo quy định của Hiến pháp WikiCook (`.specify/memory/constit
 
 - **Tệp báo cáo**: `src/backend/wikicook-app/target/site/jacoco/jacoco.csv` (và `index.html`)
 - **Độ phủ dòng thực tế tầng `com.wikicook.review.service`**:
-  - Khi chạy Unit Test (`mvn test`): **353 / 464 dòng (76.08%)** $\to$ **Đạt chuẩn** (vượt ngưỡng tối thiểu).
-  - Khi chạy kèm Integration Test (`mvn verify`): **358 / 464 dòng (77.16%)** $\to$ **Đạt chuẩn**.
-- **Độ phủ dòng thực tế tầng `com.wikicook.auth.service`**: Đạt khoảng **97%** dòng được bao phủ $\to$ **Đạt chuẩn**.
-- **Độ phủ dòng thực tế tầng `com.wikicook.profile.service`**: Đạt khoảng **93%** dòng được bao phủ $\to$ **Đạt chuẩn**.
+  - Khi chạy Unit Test (`mvn test`): **353 / 464 dòng (76.08%)** $\to$ **Đạt chuẩn** (Trần Nguyễn Công Chung thực hiện).
+  - Khi chạy kèm Integration Test (`mvn verify`): **358 / 464 dòng (77.16%)** $\to$ **Đạt chuẩn** (kết quả do Lê Quốc Hưng kiểm chứng ngày 18/11/2026).
+- **Độ phủ dòng thực tế tầng `com.wikicook.auth.service`**: **673 / 691 dòng (97.40%)** $\to$ **Đạt chuẩn** (kết quả trích xuất từ đợt kiểm chứng `mvn verify` ngày 16/11–18/11/2026 của Mai Văn Hiển và Lê Quốc Hưng).
+- **Độ phủ dòng thực tế tầng `com.wikicook.profile.service`**: **365 / 392 dòng (93.11%)** $\to$ **Đạt chuẩn** (kết quả trích xuất từ đợt kiểm chứng `mvn verify` ngày 18/11/2026).
 
 ---
 
@@ -94,8 +94,8 @@ Video demo được thiết kế theo cấu trúc song song: **Màn hình Trình
 | Thời lượng | Phân cảnh | Thao tác trên Giao diện (UI) | Quan sát Network (REST API) | Kiểm chứng Cơ sở dữ liệu (PostgreSQL) | Lời thuyết minh trọng tâm |
 |---|---|---|---|---|---|
 | **00:00 – 00:30** | **Mở đầu** | Mở trang chủ WikiCook `http://localhost:3000`, hiển thị danh sách container Docker (`docker compose ps`). | — | — | Giới thiệu họ tên (Trần Nguyễn Công Chung), vai trò QA Lead, đại diện Nhóm 05 demo nghiệm thu Phần E. |
-| **00:30 – 01:15** | **Nhóm 1: Đăng ký & Đăng nhập** | Điền form đăng ký tài khoản `chung_qa@wikicook.local`, mở Mailpit (`localhost:8025`) bấm link xác thực email, sau đó đăng nhập tại `/login`. | `POST /api/v1/auth/register` (201 Created)<br>`GET /api/v1/auth/verify?token=...`<br>`POST /api/v1/auth/login` (200 OK trả về JWT) | `SELECT id, email, role, status FROM users WHERE email = 'chung_qa@wikicook.local';` | Chứng minh tài khoản mới được khởi tạo với trạng thái ACTIVE và nhận JWT token bảo mật. |
-| **01:15 – 02:15** | **Nhóm 1: Hồ sơ ăn uống & Dị ứng** | Vào trang Hồ sơ cá nhân (`/profile/edit`) cập nhật Bio. Vào mục Hồ sơ ăn uống (`/profile/dietary`): chọn dị ứng **Đậu phộng**, **Giáp xác (tôm, cua)**, chế độ ăn **Ăn chay (Vegetarian)**, khẩu phần **4 người**. Bấm Lưu. | `PUT /api/v1/me/dietary-profile` (200 OK) | `SELECT id, email, diet_type, servings FROM users WHERE id = ...;`<br>`SELECT u.email, a.code, a.name_vi FROM user_allergens ua JOIN allergens a ON ua.allergen_id = a.id JOIN users u ON ua.user_id = u.id WHERE u.id = ...;` | Thấy rõ thông tin dị ứng ghi vào bảng `user_allergens`, khẩu phần và chế độ ăn ghi vào bảng `users`; dữ liệu đồng bộ chính xác xuống CSDL. |
+| **00:30 – 01:15** | **Nhóm 1: Đăng ký & Đăng nhập** | Điền form đăng ký tài khoản `chung_qa@wikicook.local`, mở Mailpit (`localhost:8025`) bấm link xác thực email, sau đó đăng nhập tại `/login`. | `POST /api/v1/auth/register` (201 Created)<br>`POST /api/v1/auth/verification/confirm` (200 OK)<br>`POST /api/v1/auth/login` (200 OK trả về JWT) | `SELECT id, email, role, status FROM users WHERE email = 'chung_qa@wikicook.local';` | Chứng minh tài khoản mới được khởi tạo với trạng thái ACTIVE và nhận JWT token bảo mật. |
+| **01:15 – 02:15** | **Nhóm 1: Hồ sơ ăn uống & Dị ứng** | Vào trang Hồ sơ cá nhân (`/profile/edit`) cập nhật Bio. Vào mục Hồ sơ ăn uống (`/profile/dietary`): chọn dị ứng **Đậu phộng**, **Giáp xác (tôm, cua)**, chế độ ăn **Ăn chay (Vegetarian)**, khẩu phần **4 người**. Bấm Lưu. | `PUT /api/v1/me/dietary-profile` (200 OK) | `SELECT id, email, diet_type, household_size FROM users WHERE id = ...;`<br>`SELECT u.email, a.code, a.name_vi FROM user_allergens ua JOIN allergens a ON ua.allergen_id = a.id JOIN users u ON ua.user_id = u.id WHERE u.id = ...;` | Thấy rõ thông tin dị ứng ghi vào bảng `user_allergens`, khẩu phần và chế độ ăn ghi vào bảng `users`; dữ liệu đồng bộ chính xác xuống CSDL. |
 | **02:15 – 03:15** | **Nhóm 2: Đánh giá & Tải ảnh Cooksnap** | Mở công thức đã xuất bản (ví dụ ID 1 hoặc ID 12). Chọn 5 sao, nhập nhận xét, mẹo thay thế (`substitution_tip`), đính kèm ảnh Cooksnap. Bấm Gửi. | `POST /api/v1/recipes/1/reviews` (Multipart/form-data, 201 Created) | `SELECT id, rating, comment FROM reviews WHERE recipe_id = 1;`<br>`SELECT storage_key FROM cooksnaps WHERE review_id = ...;`<br>`SELECT rating_avg, review_count, version FROM recipes WHERE id = 1;` | Điểm rating trên thanh tiêu đề nhảy số tức thì. Chứng minh ảnh lưu dạng WebP sạch, và cột `recipes.version` **không bị tăng**, tránh xung đột phiên bản với tác giả. |
 | **03:15 – 03:45** | **Bảo mật EXIF / GPS** | Kiểm tra siêu dữ liệu hình ảnh Cooksnap tải lên hệ thống. | `GET /api/v1/media/cooksnaps/{storageKey}` | — | Chứng minh TwelveMonkeys đã bóc tách sạch 100% tọa độ GPS/EXIF, bảo vệ quyền riêng tư người dùng theo Hiến pháp Principle IV. |
 | **03:45 – 04:15** | **Nhóm 2: Lightbox, Sửa & Xóa review** | Tích chọn bộ lọc "Có ảnh", bấm vào ảnh mở Lightbox xem toàn màn hình. Sau đó bấm Sửa đánh giá (đổi sang 4 sao) và bấm Xóa đánh giá. | `PUT /api/v1/reviews/{id}`<br>`DELETE /api/v1/reviews/{id}` | `SELECT rating_avg, review_count FROM recipes WHERE id = 1;`<br>`SELECT * FROM reviews WHERE id = ...;` | Điểm rating của công thức tự động tính toán lại; bản ghi review và cooksnap bị cascade delete sạch sẽ, giải phóng partial unique index. |
@@ -106,12 +106,12 @@ Video demo được thiết kế theo cấu trúc song song: **Màn hình Trình
 ## 4. Đường dẫn Video Demo YouTube (Yêu cầu c)
 
 - **Trạng thái xuất bản**: **Đã hoàn tất ghi hình và xuất bản trên YouTube (Chế độ Unlisted).**
-- **Tiêu đề video**: `[CSC13002][Nhóm 05] WikiCook - Part E System Verification & End-to-End Demo (SCRUM-79)`
+- **Tiêu đề video**: `WikiCook - Part E System Verification & End-to-End Demo - Group 05`
 - **Đường dẫn xem trực tiếp (YouTube URL)**: [https://www.youtube.com/watch?v=PS3sbgVm_jI](https://www.youtube.com/watch?v=PS3sbgVm_jI)
 - **Độ phân giải**: 1080p Full HD (Thuyết minh tiếng Việt có đầy đủ mốc thời gian Timestamps).
 - **Vị trí tích hợp đồng bộ**:
-  1. `README.md` (Mục Demo Videos)
-  2. `docs/management/reports/sprint-04/sprint-04-report.md` (Bảng deliverables Mục 1 và Section 4)
+  1. `README.md` (Mục Demo Videos — đã tích hợp trong PR này)
+  2. `docs/management/reports/sprint-04/sprint-04-report.md` (Bảng deliverables Mục 1 và Section 4 do Lê Quốc Hưng cập nhật theo SCRUM-88)
   3. `docs/test/scrum-79-spec-kit-test-report.md` (Mục 4 và Mục 5)
 
 ---
@@ -120,7 +120,7 @@ Video demo được thiết kế theo cấu trúc song song: **Màn hình Trình
 
 Căn cứ trên các bằng chứng kiểm thử thực tế tại đợt nghiệm thu Sprint 04:
 - [x] **Yêu cầu a — Kiểm thử Spec Kit Tự động**: Đạt tỷ lệ 654/654 Backend unit tests (`mvn test`), 918/918 Frontend component tests (`npm test`) thành công 100%. Sẵn sàng thực thi ~1.410 tests qua `mvn verify` (Testcontainers).
-- [x] **Yêu cầu a — Độ phủ JaCoCo**: Tầng dịch vụ `review.service` đạt 76.08% (unit test) / 77.16% (integration test), `auth.service` đạt ~97%, `profile.service` đạt ~93% (tuân thủ nghiêm ngặt Hiến pháp Principle II $\ge 70\%$).
+- [x] **Yêu cầu a — Độ phủ JaCoCo**: Tầng dịch vụ `review.service` đạt 76.08% (unit test) / 77.16% (integration test), `auth.service` đạt 97.40%, `profile.service` đạt 93.11% (tuân thủ nghiêm ngặt Hiến pháp Principle II $\ge 70\%$).
 - [x] **Yêu cầu a — Bảo mật & Quyền riêng tư**: Bóc tách 100% metadata GPS/EXIF trên hình ảnh tải lên (tuân thủ Hiến pháp Principle IV).
 - [x] **Yêu cầu b — Video Demo End-to-End**: Đã ghi hình và nghiệm thu thực tế thành công qua video demo có thuyết minh, chứng minh luồng dữ liệu toàn vẹn: UI -> REST API -> PostgreSQL Database.
 - [x] **Yêu cầu c — Xuất bản YouTube**: Đã tải lên YouTube ở chế độ Unlisted tại đường dẫn [https://www.youtube.com/watch?v=PS3sbgVm_jI](https://www.youtube.com/watch?v=PS3sbgVm_jI) (1080p Full HD).
@@ -129,4 +129,4 @@ Căn cứ trên các bằng chứng kiểm thử thực tế tại đợt nghi�
 **Trần Nguyễn Công Chung** (`@itzchugnn` - MSSV: 24120272) — QA Lead & Compliance Auditor, WikiCook Group 05
 
 *Xác nhận của Scrum Master / PM:*  
-**Lê Quốc Hưng** (`@LqHung06`) — *(Ký duyệt sau khi nghiệm thu video demo hoàn tất)*
+**Lê Quốc Hưng** (`@LqHung06`) — watched the demo video and approved on 21/11/2026
