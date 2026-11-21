@@ -4,7 +4,7 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
 **Document Title:** Detailed Use-Case Specifications for Feature 040 (Shopping List) & Feature 050 (Cooking Mode)  
 **Sprint Cycle:** Sprint 03 (Project Assignment 3 — Part D, 45 Points)  
-**Document Version:** 2.0 (Second Edition — PA4 Part A revision of Sections 9, 10 and 12, `SCRUM-71`; first edition `v1.0` – `v1.4`, Sprint 03)  
+**Document Version:** 2.1 (Second Edition — PA4 Part A revision of Sections 9, 10 and 12, `SCRUM-71`; first edition `v1.0` – `v1.4`, Sprint 03)  
 **Status:** Proposal / Ready for Review *(Aligned with Spec 040 & Spec 050; pending final Use-Case Model freeze in SCRUM-49)*
 
 ---
