@@ -45,8 +45,9 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 30 | 2026-11-16 .. 2026-11-18 (ước lượng) | `SCRUM-76` | Kiểm tra giao diện với backend thật, sửa trang xác minh email, kiểm PR #97, gỡ định danh dev, bổ sung test, cập nhật `tasks.md` | `60d835a`, `a2d0dbb`, `33156dd`, `85f0437` | `src/frontend/`, `specs/010-*/tasks.md`, `specs/011-*/tasks.md` |
 | 31 | 2026-11-19, khoảng 00:00 – 01:00 | `SCRUM-88`, `SCRUM-87`, `SCRUM-84` | Soạn bản nháp Sprint Review và Retrospective từ bằng chứng trong repo; cập nhật các câu lỗi thời sau khi PR #98 được merge | `7abb494`, `ff02385`, `3e813c1` | `sprint-04-report.md`, `Changes.md`, `use-case-specification.md` |
 | 32 | 2026-11-19, khoảng 20:00 – 21:50 (ước lượng) | `SCRUM-88`, `SCRUM-84` | Kiểm tra tiến độ PA4 trên GitHub, cập nhật bảng trạng thái và việc còn mở theo từng người; gộp change list của Duy (`SCRUM-70`, `SCRUM-71`) vào `Changes.md`; model `v2.0.1` | `8680c50`, `3d1cc22`, `c51c31a` | `sprint-04-report.md`, `Changes.md`, `use-case-model.md` |
-| 33 | 2026-11-20, khoảng 12:00 – 13:00 (ước lượng) | `SCRUM-79`, `SCRUM-71` (review), `SCRUM-84`, `SCRUM-88` | Review PR #108 và #109, soạn bình luận review; cập nhật `Changes.md` và Use-Case Model `v2.0.2` theo PR #109; soạn mô tả PR; cập nhật lại trạng thái Sprint 04 trên GitHub (`v0.8`) | `502a30e`, commit của mục này | `Changes.md`, `use-case-model.md`, `sprint-04-report.md` |
-| 34 | 2026-11-20, khoảng 13:00 – 13:30 (ước lượng) | `SCRUM-87`, `SCRUM-88` | Ghi biên bản Standup 02 (19/11, 22:36 – 23:55) từ thông tin buổi họp do PM cung cấp và trạng thái task trên GitHub/Jira; thêm ACT-08 – ACT-17; cập nhật trạng thái Sprint 04 (`v0.9`) | commit của mục này | `sprint-04-report.md` |
+| 33 | 2026-11-20, khoảng 12:00 – 13:00 (ước lượng) | `SCRUM-79`, `SCRUM-71` (review), `SCRUM-84`, `SCRUM-88` | Review PR #108 và #109, soạn bình luận review; cập nhật `Changes.md` và Use-Case Model `v2.0.2` theo PR #109; soạn mô tả PR; cập nhật lại trạng thái Sprint 04 trên GitHub (`v0.8`) | `502a30e`, `59172ef` | `Changes.md`, `use-case-model.md`, `sprint-04-report.md` |
+| 34 | 2026-11-20, khoảng 13:00 – 13:30 (ước lượng) | `SCRUM-87`, `SCRUM-88` | Ghi biên bản Standup 02 (19/11, 22:36 – 23:55) từ thông tin buổi họp do PM cung cấp và trạng thái task trên GitHub/Jira; thêm ACT-08 – ACT-17; cập nhật trạng thái Sprint 04 (`v0.9`) | `999dc37`, `01cb032` | `sprint-04-report.md` |
+| 35 | 2026-11-21, khoảng 15:00 – 16:00 (ước lượng) | `SCRUM-79`, `SCRUM-71` (review), `SCRUM-83`, `SCRUM-88` | Kiểm tra PR #108, #109, #110 sau khi được cập nhật; phát hiện nội dung `SCRUM-83` (PR #112) chưa lên `main`; cập nhật trạng thái Sprint 04 (`v0.10`); soạn bình luận review lại và tin nhắn cho Dự | commit của mục này | `sprint-04-report.md` |
 
 ---
 
@@ -1553,3 +1554,39 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - GitHub API: thời điểm tạo và merge của PR #104 – #113 (giờ Việt Nam) để chỉ đưa vào cột "đã xong" những gì có trước giờ họp; PR #108 được ghi là mở lúc 23:17, trong buổi họp; PR #109 – #113 mở sau buổi họp nên chỉ xuất hiện ở bảng 2.4.
 - `origin/main` vẫn ở `ce7c7a3` lúc 13:15 ngày 20/11.
 - Script kiểm số cột của mọi bảng; `git diff --check` chỉ báo dấu cách ngắt dòng Markdown có chủ đích.
+
+---
+
+## Mục 35: Kiểm tra lại các PR đang mở và cập nhật tiến độ Sprint 04 ngày 21/11 (`SCRUM-88`, review `SCRUM-79`, `SCRUM-71`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Claude Code CLI (terminal, Linux). Model: Claude Opus 5.5 (`claude-opus-5-5`) |
+| **Thời gian truy cập cụ thể** | 2026-11-21, khoảng 15:00 – 16:00 (Giờ Việt Nam, UTC+7); giờ là ước lượng theo phiên làm việc và giờ commit |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-88` (bảng trạng thái Sprint 04); review `SCRUM-79` (PR #108) và `SCRUM-71` (PR #109); `SCRUM-83` (phát hiện PR #112 chưa lên `main`) |
+| **Tài liệu / spec liên quan** | `docs/management/reports/sprint-04/sprint-04-report.md` (Mục 2.4, 4.2, 4.2.1, 4.3, 5.2, 5.4); `docs/test/scrum-79-spec-kit-test-report.md` (PR #108); `docs/requirements/use-case-specification.md` (PR #109); `docs/ai_log/ai_log_hien.md` (PR #110); `docs/analysis-and-design/architecture.md` |
+| **Mục đích sử dụng** | Kiểm tra các PR đang mở sau khi tác giả cập nhật, xác định PR nào thuộc phần PM review và đã sẵn sàng merge chưa; cập nhật tiến độ Sprint 04 theo GitHub; soạn bình luận review lại và tin nhắn nhắc việc. |
+| **Nhánh Git** | `docs/SCRUM-84-88-pa4-status-changes` |
+| **Minh chứng (Evidence)** | Commit của mục này trên nhánh trên; bình luận review trên PR #108, #109; PR của nhánh: điền số PR khi mở. |
+
+### Prompt đã sử dụng (tóm lược ý định, đã biên tập cho rõ ràng):
+1. Kiểm tra ba PR đang mở: chỉ ra PR nào thuộc phần tôi review và PR đó đã sẵn sàng merge chưa, tiến độ Sprint 04 cần cập nhật ra sao, và tôi còn SCRUM nào chưa hoàn thành.
+2. Thực hiện toàn bộ các đề xuất: cập nhật báo cáo Sprint 04 và AI log, soạn bình luận review lại cho PR #108 và #109 bằng tiếng Anh, soạn tin nhắn cho Dự về PR #112.
+
+### Nội dung do AI sinh ra:
+1. Bảng đối chiếu PR #108 (`SCRUM-79`) và #109 (`SCRUM-71`) với các điểm PM đã yêu cầu ngày 20/11: điểm nào đã sửa, điểm nào còn thiếu, và lỗi mới (endpoint xác minh email và cột `household_size` trong storyboard; link video ghi là đã đưa vào `README.md` nhưng PR chỉ sửa một file; đầu tài liệu spec ghi `2.0` trong khi dòng Revision History mới ghi `v2.1`). PR #110 không thuộc phần PM review.
+2. Phát hiện PR #112 (`SCRUM-83`) được merge vào nhánh của PR #111 sau khi PR #111 đã vào `main`, nên Mục 7 Deployment của `architecture.md` không có trên `main`.
+3. Cập nhật báo cáo `v0.10`: bảng hành động 2.4, bảng 4.2 (`SCRUM-82` Done, `SCRUM-83` chưa lên `main`), 4.2.1, 4.3, mục Sad S1, S2, thêm S5 và hành động A8 về PR xếp chồng.
+4. Bản nháp bình luận review lại PR #108, #109 (tiếng Anh) và tin nhắn cho Dự.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Quyết định thực hiện các đề xuất; đọc lại bình luận review trước khi đăng lên PR #108, #109 và gửi tin nhắn cho Dự.
+- Còn phải làm: xem video demo của PR #108 trước khi approve; mở PR của nhánh và merge sau PR #109.
+
+### Kiểm chứng đã thực hiện:
+- GitHub API: trạng thái, review, commit và file của PR #108 – #113; giờ merge của PR #111 (15:48:52) và #112 (15:49:09, vào nhánh `docs/SCRUM-82-c4-l3-frontend`).
+- `git merge-base --is-ancestor`: commit `fd864e2` của `SCRUM-83` không có trong `origin/main` (`17d255e`); `git merge-tree` cho thấy nhánh `docs/SCRUM-83-deployment` merge vào `main` không xung đột, và nhánh của PM không còn xung đột với PR #109.
+- Đối chiếu storyboard PR #108 với code trên `main`: `VerificationController` (`POST /api/v1/auth/verification/confirm`), migration `V101__users_auth.sql` (cột `household_size`, không có `servings`), số file test frontend (`auth` 12, `profile` 7, `reviews` 11).
+- YouTube oEmbed: video của PR #108 tồn tại (chỉ kiểm được video có thật, chưa xem nội dung).
+- Script kiểm số cột của mọi bảng trong báo cáo.

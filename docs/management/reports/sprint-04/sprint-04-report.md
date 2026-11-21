@@ -4,7 +4,7 @@
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem
 **Sprint Cycle:** Sprint 04 (Project Assignment 4 — Requirements Revision, Software Architecture & Two Full-Stack Functional Groups)
 **Sprint Duration:** November 10, 2026 – November 29, 2026. The official PA4 deadline is **29/11/2026**; the team aims to submit by **23/11/2026** so that late problems can still be fixed (an internal target, not a limit)
-**Document Version:** 0.9 (SCRUM-68 Planning, SCRUM-87 Standups 01 and 02 recorded; SCRUM-88 Review and Retrospective drafted, not yet held; delivery status checked on GitHub on 20/11/2026)
+**Document Version:** 0.10 (SCRUM-68 Planning, SCRUM-87 Standups 01 and 02 recorded; SCRUM-88 Review and Retrospective drafted, not yet held; delivery status checked on GitHub on 21/11/2026)
 
 ---
 
@@ -34,6 +34,7 @@
 | **19/11/2026** | `v0.7` | Section 4.2 re-checked against GitHub (`origin/main` at `6a78652`, pull requests #84 – #106 and their reviews) at 21:00: `SCRUM-76` follow-ups and `SCRUM-84` merged (PR #104, #105), `SCRUM-81` merged (PR #106). Added the reviewer columns, Section 4.2.1 (open items by member) and the AI-log check; Section 4.3 and Sad items S1, S2 updated to match. `SCRUM-70`: the Scrum Master confirmed that Hiển's review was received before PR #99 was approved; `SCRUM-84`: Duy's change lists merged into `Changes.md`, and Use-Case Model `v2.0.1` updates the status of open issue 6. Approvals by Hưng in place of the planned reviewer (PR #91, #93, #94, #96, #97, #101, #106) marked "on behalf of", as agreed in the team. | Lê Quốc Hưng (`LqHung06`) |
 | **20/11/2026** | `v0.8` | Section 4.2 re-checked against GitHub at 12:40 (`origin/main` at `ce7c7a3`, pull requests #84 – #113 and their reviews): new state "PR open" for `SCRUM-79` (#108), `SCRUM-82` (#111), `SCRUM-83` (#112); PR #109 for `SCRUM-71` and #113 for `SCRUM-78`; Chung's Sprint 4 AI-log entries merged (#107); changes requested on #108 and #109. 4.2.1, 4.3 and Sad items S1, S2 updated to match. | Lê Quốc Hưng (`LqHung06`) |
 | **20/11/2026** | `v0.9` | Section 2.3 completed with the real Standup 02 (19/11/2026, 22:36 – 23:55, Google Meet, 5/5 present): round-robin summarised from the task status on GitHub and Jira at the time of the meeting, decisions confirmed by the Scrum Master (owners and dates as on Jira; 29/11 official deadline, 23/11 team target, short delays acceptable if they do not hold up others; Review and Retrospective on 22/11). Section 2.4: ACT-08 – ACT-17 added, all statuses as on 20/11, 13:15; provenance statement updated. Section 4.2: `SCRUM-87` done. | Lê Quốc Hưng (`LqHung06`) |
+| **21/11/2026** | `v0.10` | Sections 2.4 and 4.2 re-checked against GitHub on 21/11/2026, 15:45 (`origin/main` at `17d255e`, pull requests #84 – #113 and their reviews): `SCRUM-82` done (PR #111); `SCRUM-83` **not on `main`**, because PR #112 was merged into the branch of PR #111 after PR #111 itself had been merged; PR #113 merged; PR #108 updated with the demo video link and PR #109 updated, both waiting for a new review. 4.2.1, 4.3, Sad items S1, S2 updated; S5 and action A8 added for the stacked pull request. | Lê Quốc Hưng (`LqHung06`) |
 
 ---
 
@@ -216,9 +217,9 @@ Taken from the Jira description of `SCRUM-87` and the PA4 schedule (Code Freeze 
 ### 2.4. Cross-Meeting Governance, Action Item Triage & Traceability Matrix
 *Performed by: Lê Quốc Hưng (LqHung06) | Reviewed by: Nguyễn Đức Duy (DucDuyNguyen15-IT) | Edited by: Lê Quốc Hưng (LqHung06)*
 
-The matrix lists the action items of the three meetings held so far (Planning, Standup 01, Standup 02). The status column was checked against GitHub on **20/11/2026, 13:15** (`origin/main` at `ce7c7a3`); the Scrum Master confirmed that Jira shows the same status.
+The matrix lists the action items of the three meetings held so far (Planning, Standup 01, Standup 02). The status column was checked against GitHub on **21/11/2026, 15:45** (`origin/main` at `17d255e`). The Scrum Master confirmed on 20/11/2026 that Jira showed the same status as GitHub; Jira was not checked again on 21/11.
 
-| Item # | Originating Ceremony | Action Item Description | Primary Owner | Target Due | Closing Task / PR | Status on 20/11/2026 |
+| Item # | Originating Ceremony | Action Item Description | Primary Owner | Target Due | Closing Task / PR | Status on 21/11/2026 |
 | :---: | :--- | :--- | :--- | :---: | :---: | :---: |
 | **ACT-01** | Meeting 1 (Planning) | Audit PA3 TA feedback across course channels | Nguyễn Đức Duy | 12/11/2026 | `SCRUM-69` | **Done:** no feedback found on 12/11 (PR #100); to be checked again before submission. |
 | **ACT-02** | Meeting 1 (Planning) | Deliver Spec Kit artifacts for `010` + `011` | Mai Văn Hiển | 13/11/2026 | `SCRUM-72` | **Done:** PR #84 (12/11). |
@@ -226,13 +227,13 @@ The matrix lists the action items of the three meetings held so far (Planning, S
 | **ACT-04** | Meeting 2 (Standup 01) | Implement Backend Auth | Mai Văn Hiển | 17/11/2026 | `SCRUM-74` | **Done:** PR #89, #96, #97; `intent=reauth` is a known gap. |
 | **ACT-05** | Meeting 2 (Standup 01) | Implement Frontend Auth & Profile UI | Lê Quốc Hưng | 18/11/2026 | `SCRUM-76` | **Done:** PR #90; follow-ups PR #104, #105 (19/11). |
 | **ACT-06** | Meeting 2 (Standup 01) | Implement Backend Reviews & Cooksnap API | Trần Nguyễn Công Chung | 18/11/2026 | `SCRUM-77` | **Done:** PR #93. |
-| **ACT-07** | Meeting 2 (Standup 01) | Implement Frontend Reviews & Cooksnap UI | Nguyễn Đức Duy | 18/11/2026 | `SCRUM-78` | **Done:** PR #98; lightbox fix in PR #113 (open). |
-| **ACT-08** | Meeting 3 (Standup 02) | Deployment Diagram and node specification | Nguyễn Thành Dự | 19/11/2026 | `SCRUM-83` | **PR open:** #112 (20/11), waiting for Hiển's review. |
-| **ACT-09** | Meeting 3 (Standup 02) | C4 Level 3 frontend and code-to-diagram table | Nguyễn Thành Dự | 20/11/2026 | `SCRUM-82` | **PR open:** #111 (20/11), waiting for Hiển's review. |
-| **ACT-10** | Meeting 3 (Standup 02) | Test report and narrated demo video of both groups | Trần Nguyễn Công Chung | 21/11/2026 | `SCRUM-79` | **PR open:** #108; changes requested by Hiển and Hưng (20/11); no video link yet. |
-| **ACT-11** | Meeting 3 (Standup 02) | Confirm the review of specification Sections 9, 10 and 12 | Trần Nguyễn Công Chung | 20/11/2026 | `SCRUM-71` | **PR open:** #109; changes requested by Hiển and Hưng (20/11). |
-| **ACT-12** | Meeting 3 (Standup 02) | Review `Changes.md` with Duy's change lists | Nguyễn Đức Duy | 20/11/2026 | `SCRUM-84` | **Waiting:** branch `docs/SCRUM-84-88-pa4-status-changes` pushed; pull request to be opened after PR #109. |
-| **ACT-13** | Meeting 3 (Standup 02) | Five-member AI usage summary | Trần Nguyễn Công Chung | 21/11/2026 | `SCRUM-85` | **Open:** Chung's entries merged (PR #107), Hiển's in PR #110; no summary yet; Dự has no Sprint 4 entry. |
+| **ACT-07** | Meeting 2 (Standup 01) | Implement Frontend Reviews & Cooksnap UI | Nguyễn Đức Duy | 18/11/2026 | `SCRUM-78` | **Done:** PR #98; lightbox fix merged by PR #113 (20/11, approved by Chung). |
+| **ACT-08** | Meeting 3 (Standup 02) | Deployment Diagram and node specification | Nguyễn Thành Dự | 19/11/2026 | `SCRUM-83` | **Not on `main`:** PR #112 (20/11) targeted the branch of PR #111 and was merged into it at 15:49, 17 seconds after PR #111 had been merged into `main` (15:48); the Deployment Diagram (commit `fd864e2`) did not reach `main`. A new pull request from `docs/SCRUM-83-deployment` to `main` is needed. |
+| **ACT-09** | Meeting 3 (Standup 02) | C4 Level 3 frontend and code-to-diagram table | Nguyễn Thành Dự | 20/11/2026 | `SCRUM-82` | **Done:** PR #111, merged 20/11, 15:48, approved by Hiển. |
+| **ACT-10** | Meeting 3 (Standup 02) | Test report and narrated demo video of both groups | Trần Nguyễn Công Chung | 21/11/2026 | `SCRUM-79` | **PR open:** #108, updated on 20/11 and 21/11 with the link to the demo video (unlisted on YouTube); new review by Hiển and Hưng pending; open points in 4.2. |
+| **ACT-11** | Meeting 3 (Standup 02) | Confirm the review of specification Sections 9, 10 and 12 | Trần Nguyễn Công Chung | 20/11/2026 | `SCRUM-71` | **PR open:** #109, updated on 20/11 (use-case name, Revision History row, `Changes.md` edit removed); review notes in the PR description and the document version still to fix; new review by Hiển and Hưng pending. |
+| **ACT-12** | Meeting 3 (Standup 02) | Review `Changes.md` with Duy's change lists | Nguyễn Đức Duy | 20/11/2026 | `SCRUM-84` | **Waiting:** branch `docs/SCRUM-84-88-pa4-status-changes` pushed; no conflict with PR #109 since its update of 20/11; the pull request is merged after PR #109. |
+| **ACT-13** | Meeting 3 (Standup 02) | Five-member AI usage summary | Trần Nguyễn Công Chung | 21/11/2026 | `SCRUM-85` | **Open (due 21/11):** Chung's entries merged (PR #107); Hiển's entries 39 – 49 in PR #110, no reviewer assigned; no summary yet; Dự has no Sprint 4 entry. |
 | **ACT-14** | Meeting 3 (Standup 02) | QA audit of the PA4 deliverables | Trần Nguyễn Công Chung | 22/11/2026 | `SCRUM-86` | **Open:** not on GitHub yet. |
 | **ACT-15** | Meeting 3 (Standup 02) | Seed check and tag `v0.8.0-beta.1` | Nguyễn Thành Dự | 23/11/2026 | `SCRUM-89` | **Open:** no tag in the repository. |
 | **ACT-16** | Meeting 3 (Standup 02) | Git log, PDF export, ZIP and submission | Nguyễn Thành Dự | 23/11/2026 | `SCRUM-90` | **Open:** not on GitHub yet. |
@@ -241,7 +242,7 @@ The matrix lists the action items of the three meetings held so far (Planning, S
 #### 2.4.1. Provenance Statement
 - The minutes of **Meeting 2 (Standup 01)** were written under `SCRUM-87` by Lê Quốc Hưng; the review by Nguyễn Đức Duy is pending.
 - **Meeting 3 (Standup 02)** took place on 19/11/2026 from 22:36 to 23:55 on Google Meet with all five members, as recorded by the Scrum Master. The round-robin of 2.3.2 is a summary based on the task status on GitHub and Jira at the time of the meeting; the decisions of 2.3.3 are those confirmed by the Scrum Master. The minutes were written on 20/11/2026 and are reviewed by Nguyễn Đức Duy.
-- The statuses of this matrix come from GitHub on 20/11/2026, 13:15. An earlier version of Section 2.3 (`v0.3`, 16/11) described this meeting before it happened; it was replaced in `v0.5` and is now completed with the real meeting in `v0.9`.
+- The statuses of this matrix come from GitHub on 21/11/2026, 15:45. An earlier version of Section 2.3 (`v0.3`, 16/11) described this meeting before it happened; it was replaced in `v0.5` and is now completed with the real meeting in `v0.9`.
 - The Sprint Review, the Retrospective and the Jira screenshots of `SCRUM-88` are drafted in Sections 4 – 5 and completed after 22/11.
 
 ---
@@ -300,7 +301,7 @@ The PA3 baseline (`use-case-model.md` `v0.2`, `use-case-specification.md` `v1.4`
 - **Team members present / absent:** `[to fill, from the real attendance]`
 
 ### 4.2. Delivery against the Sprint 04 backlog
-State on GitHub on **20/11/2026, 13:15**: `origin/main` at commit `ce7c7a3` (after PR #107), the pull requests #84 – #113 and the reviews recorded on them, taken from `git` and the GitHub API. "PR open" means that the deliverable is in an open pull request that is not merged yet. "Not found" means that no deliverable of the task is on `main` and no open pull request or unmerged branch holds one; it does not say the work was not started on a member's computer. The Scrum Master confirmed on 20/11/2026 that the Jira board shows the same status as GitHub; the Jira reviewer fields were not checked one by one.
+State on GitHub on **21/11/2026, 15:45**: `origin/main` at commit `17d255e` (after PR #111), the pull requests #84 – #113 and the reviews recorded on them, taken from `git` and the GitHub API. "PR open" means that the deliverable is in an open pull request that is not merged yet. "Not found" means that no deliverable of the task is on `main` and no open pull request or unmerged branch holds one; it does not say the work was not started on a member's computer. The Scrum Master confirmed on 20/11/2026 that the Jira board showed the same status as GitHub; Jira was not checked again on 21/11, and the Jira reviewer fields were not checked one by one.
 
 The column "Approved on GitHub by" lists who approved the pull request. Where Lê Quốc Hưng approved in place of the planned reviewer (PR #91, #93, #94, #96, #97, #101, #106), this was agreed in the team, as confirmed by the Scrum Master on 19/11/2026; these approvals are marked "on behalf of". In the other cases where the approver is not the planned reviewer, the planned reviewer has not recorded a review on GitHub; the review may still be recorded in Jira, which was not checked.
 
@@ -309,49 +310,49 @@ The column "Approved on GitHub by" lists who approved the pull request. Where L�
 | `SCRUM-68` | Hưng | 11/11 | Sections 1 and 2.1 of this report (PR #80) | Duy | Duy | **Done** |
 | `SCRUM-69` | Duy | 12/11 | Section 3 of this report (PR #100) | Hưng | Hưng | **Done** |
 | `SCRUM-70` | Duy | 16/11 | Use-Case Model `v2.0` (PR #99); status of open issue 6 updated in `v2.0.1` (19/11, `SCRUM-84`) | Hiển | Hưng, after receiving Hiển's review (confirmed by the Scrum Master) | **Done** |
-| `SCRUM-71` | Duy | 18/11 | Use-Case Specification `v2.0` (PR #101). PR #109 (Chung, opened 20/11, not merged): `UC-100-02` includes `UC-070-08` and the "review pending" marks of Sections 9, 10 and 12 are removed; changes requested by Hiển and Hưng on 20/11 | Chung | Hưng, on behalf of Chung (#101) | **Done**; review confirmation in PR #109 |
+| `SCRUM-71` | Duy | 18/11 | Use-Case Specification `v2.0` (PR #101). PR #109 (Chung, opened 20/11, updated 20/11, not merged): `UC-100-02` includes `UC-070-08` and the "review pending" marks of Sections 9, 10 and 12 are removed. Hiển and Hưng requested changes on 20/11; the update fixes the use-case name, adds a Revision History row and drops the `Changes.md` edit. Still open: the review notes in the PR description, and the header says version `2.0` while the new Revision History row says `v2.1` | Chung | Hưng, on behalf of Chung (#101) | **Done**; review confirmation in PR #109 |
 | `SCRUM-72` | Hiển | 13/11 | Spec Kit of `010` + `011` (PR #84) | Hưng | Hưng | **Done** |
 | `SCRUM-73` | Duy | 13/11 | Spec Kit of `070` (PR #87 by Chung, PR #88 by Duy) | Chung | Duy (#87), Chung (#88) | **Done** |
 | `SCRUM-74` | Hiển | 17/11 | Authentication backend (PR #89), password reset (PR #96), Google sign-in and closure token (PR #97); `intent=reauth` is not built | Dự | Dự (#89); Hưng, on behalf of Dự (#96, #97) | **Merged**, one gap |
 | `SCRUM-75` | Hiển | 18/11 | Profile backend (PR #95, #97) | Hưng | Hưng | **Merged** |
 | `SCRUM-76` | Hưng | 18/11 | Frontend of `010` + `011` (PR #90); follow-ups (verification page, close-gaps) merged by PR #104 and #105 on 19/11 | Hiển | Dự (#90), Hiển (#105); #104 has no review | **Merged** |
 | `SCRUM-77` | Chung | 18/11 | Review and Cooksnap backend with `V501` (PR #93) | Hiển | Hưng, on behalf of Hiển | **Merged** |
-| `SCRUM-78` | Duy | 18/11 | Frontend of `070` (PR #98), UX pass (PR #102); Cooksnap lightbox fix in PR #113 (opened 20/11, no review yet) | Chung | Chung (#98); #102 has no review | **Merged** |
-| `SCRUM-79` | Chung | 21/11 | PR #108 (opened 19/11): test report and video storyboard in `docs/test/scrum-79-spec-kit-test-report.md`; changes requested by Hiển and Hưng on 20/11; no video link yet | Hưng | — | **PR open** |
+| `SCRUM-78` | Duy | 18/11 | Frontend of `070` (PR #98), UX pass (PR #102), Cooksnap lightbox fix (PR #113, merged 20/11) | Chung | Chung (#98, #113); #102 has no review | **Merged** |
+| `SCRUM-79` | Chung | 21/11 | PR #108 (opened 19/11, updated 20/11 and 21/11): test report, video storyboard and the link to the demo video (unlisted on YouTube, 21/11) in `docs/test/scrum-79-spec-kit-test-report.md`. The update fixes most of the points of 20/11. Still open: the backend figure covers unit tests only (`mvn test`, 654) and the integration-test figure (about 1410) comes from Hưng's run of 18/11, not from a new `mvn verify`; coverage of `auth.service` and `profile.service` has no line counts; two storyboard lines do not match the code; the report says the link is in `README.md` and this report, but the pull request changes only the test report | Hưng | — (new review pending) | **PR open** |
 | `SCRUM-80` | Hiển | 17/11 | Tech Stack and C4 Level 1 in `architecture.md` Sections 2 – 3 (PR #91, #94) | Duy | Hưng, on behalf of Duy | **Done** |
 | `SCRUM-81` | Hiển | 20/11 | C4 Level 2 and Backend Level 3 in `architecture.md` Sections 4 – 5 (PR #106, merged 19/11, 12:48) | Dự | Hưng, on behalf of Dự | **Merged** |
-| `SCRUM-82` | Dự | 20/11 | PR #111 (opened 20/11): `architecture.md` Section 6, C4 Level 3 frontend with a code-to-diagram parity table; no review yet | Hiển | — | **PR open** |
-| `SCRUM-83` | Dự | 19/11 | PR #112 (opened 20/11, based on the branch of PR #111): `architecture.md` Section 7, Deployment Diagram with node, container and protocol tables; no review yet | Hiển | — | **PR open**, one day after the due date |
-| `SCRUM-84` | Hưng | 20/11 | Root `Changes.md` (PR #105, 19/11). Duy's change lists for `SCRUM-70` and `SCRUM-71`, the Use-Case Model `v2.0.2` and the record of PR #109 are on the branch `docs/SCRUM-84-88-pa4-status-changes` (pushed, pull request still to be opened); status line "Draft of 20/11/2026, not yet reviewed" | Duy | Hiển (#105) | **Merged**, update and review by Duy pending |
-| `SCRUM-85` | Chung | 21/11 | No five-member summary. Sprint 4 AI-log entries: Hưng (on `main`, 19/11), Duy (18/11), Chung (entries 13 – 14, PR #107, merged 20/11), Hiển (entries up to 38 on `main`; 39 – 49 in PR #110, opened 20/11); **Dự has none** (last change 02/11) | Duy | — | **Not found** |
+| `SCRUM-82` | Dự | 20/11 | C4 Level 3 frontend with a code-to-diagram parity table in `architecture.md` Section 6 (PR #111, merged 20/11, 15:48) | Hiển | Hiển | **Done** |
+| `SCRUM-83` | Dự | 19/11 | PR #112 (opened 20/11): `architecture.md` Section 7, Deployment Diagram with node, container and protocol tables. PR #112 targeted the branch of PR #111 and was merged into it on 20/11 at 15:49, after PR #111 had been merged into `main` at 15:48, so Section 7 (commit `fd864e2`) is **not on `main`**. The branch `docs/SCRUM-83-deployment` merges into `main` without conflict | Hiển | — (#112 merged by Hiển without a recorded review) | **Not on `main`**; new pull request needed |
+| `SCRUM-84` | Hưng | 20/11 | Root `Changes.md` (PR #105, 19/11). Duy's change lists for `SCRUM-70` and `SCRUM-71`, the Use-Case Model `v2.0.2` and the record of PR #109 are on the branch `docs/SCRUM-84-88-pa4-status-changes` (pushed; no conflict with PR #109 since its update of 20/11; merged after PR #109); status line "Draft of 20/11/2026, not yet reviewed" | Duy | Hiển (#105) | **Merged**, update and review by Duy pending |
+| `SCRUM-85` | Chung | 21/11 | No five-member summary. Sprint 4 AI-log entries: Hưng (on `main`, 19/11), Duy (18/11), Chung (entries 13 – 14, PR #107, merged 20/11), Hiển (entries up to 38 on `main`; 39 – 49 in PR #110, opened 20/11, no reviewer assigned); **Dự has none** (last change 02/11) | Duy | — | **Not found** |
 | `SCRUM-86` | Chung | 22/11 | No QA audit found | Hưng | — | **Not found** |
-| `SCRUM-87` | Hưng | 19/11 | Standup 01 (14/11) and Standup 02 (19/11, 22:36 – 23:55, 5/5 present) recorded in Sections 2.2 – 2.4 | Duy | Hiển (#105, Standup 01); Standup 02 to be reviewed | **Done**, review by Duy pending |
+| `SCRUM-87` | Hưng | 19/11 | Standup 01 (14/11) and Standup 02 (19/11, 22:36 – 23:55, 5/5 present) recorded in Sections 2.2 – 2.4; Standup 02 is on the branch `docs/SCRUM-84-88-pa4-status-changes`, not yet on `main` | Duy | Hiển (#105, Standup 01); Standup 02 to be reviewed | **Done**, review by Duy pending |
 | `SCRUM-88` | Hưng | 22/11 | This draft (PR #105) | Chung | Hiển (#105) | **Draft** |
 | `SCRUM-89` | Dự | 23/11 | `docker-compose.yml` exists from earlier sprints; the JWT secret, Mailpit and media volume were added to `src/backend/docker-compose.yml` by Hiển under `SCRUM-74`/`SCRUM-75` (commits `6870041`, `f605dc0`); no seed check recorded; **the repository has no Git tag at all** (no `v0.8.0-beta.1`) | Hưng | — | **Not found** |
 | `SCRUM-90` | Dự | 23/11 | `docs/management/git-log.txt` was last updated on 24/10/2026 (PA2); no PDF export or ZIP | Hưng | — | **Not found** |
 
-**Summary:** of the 23 tasks, **15 are done or merged**, **3 are in open pull requests** (`SCRUM-79` #108, `SCRUM-82` #111, `SCRUM-83` #112), 1 is a draft waiting for its meeting (`SCRUM-88`) and **4 have no deliverable on GitHub** (`SCRUM-85`, `-86`, `-89`, `-90`). `SCRUM-83` reached GitHub one day after its due date and `SCRUM-82` on its due date. At Standup 02 the team agreed that the Jira dates express a wish to finish early (official deadline 29/11/2026, team target 23/11/2026), so a short delay is acceptable when it does not hold up others.
+**Summary:** of the 23 tasks, **16 are done or merged**, **1 is in an open pull request** (`SCRUM-79` #108), **1 is on GitHub but not on `main`** (`SCRUM-83`, PR #112 merged into another branch), 1 is a draft waiting for its meeting (`SCRUM-88`) and **4 have no deliverable on GitHub** (`SCRUM-85`, `-86`, `-89`, `-90`). `SCRUM-82` was merged on its due date; `SCRUM-83` reached GitHub one day after its due date and is still not on `main`. At Standup 02 the team agreed that the Jira dates express a wish to finish early (official deadline 29/11/2026, team target 23/11/2026), so a short delay is acceptable when it does not hold up others.
 
-#### 4.2.1. Open items by member (reminder list, 20/11/2026)
+#### 4.2.1. Open items by member (reminder list, 21/11/2026)
 
 | Member | Own tasks still open | Reviews to record (planned reviewer, no GitHub approval yet) | Other items |
 | :--- | :--- | :--- | :--- |
-| **Lê Quốc Hưng** | `SCRUM-88`: hold the Review and Retrospective (22/11, 20:00) and attach the Jira screenshots. `SCRUM-84`: open the pull request of `docs/SCRUM-84-88-pa4-status-changes` after PR #109 and change the status line of `Changes.md` once Duy has reviewed it. | `SCRUM-79` (PR #108) and `SCRUM-71` (PR #109): changes requested on 20/11, re-review after the update. `SCRUM-86`, `-89`, `-90` when delivered. | — |
-| **Nguyễn Đức Duy** | None; all five author tasks are merged. PR #113 (Cooksnap lightbox fix) waits for a review. | `SCRUM-84` (`Changes.md` with Duy's change lists), `SCRUM-87` (standup minutes), `SCRUM-85` when delivered. | Re-check PA3 TA feedback before submission (`SCRUM-69`). Run the Group 2 (`070`) flow end to end with Chung before the demo. |
-| **Mai Văn Hiển** | None; all five author tasks are merged. `SCRUM-74` keeps the known gap `intent=reauth`. PR #110 (AI log entries 39 – 49) waits for a review. | `SCRUM-82` (PR #111) and `SCRUM-83` (PR #112) are now open for review. `SCRUM-76`: main PR #90 was approved by Dự in Hiển's place. | — |
-| **Trần Nguyễn Công Chung** | `SCRUM-79`: update PR #108 after the requested changes and add the video link (due 21/11). `SCRUM-85` five-member AI summary (due 21/11). `SCRUM-86` QA audit (due 22/11). `SCRUM-71`: update PR #109 after the requested changes. | `SCRUM-88` (Review and Retrospective draft); `SCRUM-78` follow-up PR #113. | — |
-| **Nguyễn Thành Dự** | `SCRUM-82` (PR #111) and `SCRUM-83` (PR #112) wait for Hiển's review; PR #112 targets the branch of PR #111 and must be pointed at `main` once PR #111 is merged. `SCRUM-89` seed check and tag `v0.8.0-beta.1` (due 23/11). `SCRUM-90` git log, PDFs, ZIP and submission (due 23/11). | None open. | Own AI log has no Sprint 4 entry (last change 02/11); it is needed for `SCRUM-85`. |
+| **Lê Quốc Hưng** | `SCRUM-88`: hold the Review and Retrospective (22/11, 20:00) and attach the Jira screenshots. `SCRUM-84`: open the pull request of `docs/SCRUM-84-88-pa4-status-changes`, merge it after PR #109, and change the status line of `Changes.md` once Duy has reviewed it; if PR #109 keeps version `v2.1`, write that version in Section B of `Changes.md`. | `SCRUM-79` (PR #108) and `SCRUM-71` (PR #109): new review of the updates of 20/11 and 21/11. `SCRUM-86`, `-89`, `-90` when delivered. | — |
+| **Nguyễn Đức Duy** | None; all five author tasks are merged, and the Cooksnap lightbox fix (PR #113) was merged on 20/11. | `SCRUM-84` (`Changes.md` with Duy's change lists), `SCRUM-87` (standup minutes), `SCRUM-85` when delivered. | Re-check PA3 TA feedback before submission (`SCRUM-69`). Run the Group 2 (`070`) flow end to end with Chung before the demo. |
+| **Mai Văn Hiển** | None; all five author tasks are merged. `SCRUM-74` keeps the known gap `intent=reauth`. PR #110 (AI log entries 39 – 49) has no reviewer assigned. | `SCRUM-82` approved and merged (PR #111). `SCRUM-83`: review the new pull request of Dự to `main` (PR #112 was merged into the branch of PR #111). `SCRUM-76`: main PR #90 was approved by Dự in Hiển's place. | — |
+| **Trần Nguyễn Công Chung** | `SCRUM-79`: fix the open points of PR #108 listed in 4.2 (video link added on 21/11). `SCRUM-71`: add the review notes to the description of PR #109 and align the document version. `SCRUM-85` five-member AI summary (due 21/11). `SCRUM-86` QA audit (due 22/11). | `SCRUM-88` (Review and Retrospective draft). | — |
+| **Nguyễn Thành Dự** | `SCRUM-83`: open a pull request from `docs/SCRUM-83-deployment` to `main`, because PR #112 was merged into the branch of PR #111 and not into `main`. `SCRUM-89` seed check and tag `v0.8.0-beta.1` (due 23/11). `SCRUM-90` git log, PDFs, ZIP and submission (due 23/11). | None open. | Own AI log has no Sprint 4 entry (last change 02/11); it is needed for `SCRUM-85`. |
 
 ### 4.3. State by PA4 part
 No score is claimed here; the grading is done by the course.
 
 | Part | What is on `main` | What is missing |
 | :---: | :--- | :--- |
-| **A** | Use-Case Model `v2.0` and Specification `v2.0`, the TA-feedback audit (Section 3), root `Changes.md` (PR #105). | Merge of the `Changes.md` update (Duy's change lists, model `v2.0.2`); PR #109 (review confirmation of the specification); review of `Changes.md` by Duy; a new TA-feedback check before submission. |
+| **A** | Use-Case Model `v2.0` and Specification `v2.0`, the TA-feedback audit (Section 3), root `Changes.md` (PR #105). | Merge of the `Changes.md` update (Duy's change lists, model `v2.0.2`); PR #109 (review confirmation of the specification: review notes and document version still to fix); review of `Changes.md` by Duy; a new TA-feedback check before submission. |
 | **B** | Tech Stack and C4 Level 1 (`architecture.md` Sections 2 – 3), approved by Hưng on behalf of Duy. | — |
-| **C** | C4 Level 2 and Backend Level 3 (`architecture.md` Sections 4 – 5, PR #106). | Frontend Level 3 and the code-to-diagram table: PR #111, open. |
-| **D** | Nothing on `main` yet. | Deployment Diagram: PR #112, open (due 19/11). |
-| **E** | Group 1 (`010` + `011`): backend and frontend on `main`. Group 2 (`070`): backend and frontend on `main`. | Test report in PR #108 (changes requested); narrated demo video (`SCRUM-79`); end-to-end run of Group 2; items of 4.5. |
+| **C** | C4 Level 2 and Backend Level 3 (`architecture.md` Sections 4 – 5, PR #106); Frontend Level 3 and the code-to-diagram table (Section 6, PR #111). | — |
+| **D** | Nothing on `main` yet: PR #112 was merged into the branch of PR #111, not into `main`. | Deployment Diagram (`architecture.md` Section 7): new pull request from `docs/SCRUM-83-deployment` to `main` (due 19/11). |
+| **E** | Group 1 (`010` + `011`): backend and frontend on `main`. Group 2 (`070`): backend and frontend on `main`. | Test report and video link in PR #108 (new review pending); video link in `README.md`; end-to-end run of Group 2; items of 4.5. |
 | **F** | Planning, Standup 01 and Standup 02 minutes; Sprint 4 AI-log entries of Hưng, Duy, Hiển and Chung. | Review and Retrospective (this section), Jira evidence, Hiển's entries 39 – 49 (PR #110), Sprint 4 AI-log entries of Dự, five-member AI summary (`SCRUM-85`). |
 | **Packaging** | — | Git tag (`SCRUM-89`); `git-log.txt` update, PDFs, `PA4-Group05.zip` (`SCRUM-90`). |
 
@@ -395,10 +396,11 @@ Checked on 18/11/2026 against a local backend started with Docker Compose and a 
 ### 5.2. Sad (candidates)
 | # | Candidate | Evidence |
 | :---: | :--- | :--- |
-| S1 | C4 Level 2 and Backend Level 3 were merged on 19/11 (PR #106), one day before their due date, but the Frontend Level 3 and the Deployment Diagram reached GitHub only on 20/11 as open pull requests (#111, #112), one day after the due date of `SCRUM-83`. | Section 4.2 |
-| S2 | The test report reached GitHub on 19/11 (PR #108) and needed changes; the demo video and the five-member AI summary had not started on GitHub by 20/11; one member still had no Sprint 4 entry in the AI log. | Section 4.2 |
+| S1 | C4 Level 2 and Backend Level 3 were merged on 19/11 (PR #106), one day before their due date; the Frontend Level 3 was merged on its due date (20/11, PR #111); the Deployment Diagram reached GitHub on 20/11, one day after the due date of `SCRUM-83`, and was still not on `main` on 21/11 (see S5). | Section 4.2 |
+| S2 | The test report reached GitHub on 19/11 (PR #108) and needed two rounds of changes; the demo video was published on its due date (21/11); the five-member AI summary had not started on GitHub on its due date (21/11); one member still had no Sprint 4 entry in the AI log. | Section 4.2 |
 | S3 | The Spec Kit task lists were not kept up to date: no frontend task was ticked until 18/11 although the screens existed. | `specs/010-*/tasks.md`, `specs/011-*/tasks.md` |
 | S4 | Part of the approved scope stayed undone: password change and account deletion, Google re-authentication, Content-Security-Policy. | Section 4.5 |
+| S5 | A stacked pull request was lost: PR #112 targeted the branch of PR #111 and was merged into it after PR #111 had already been merged, so GitHub shows it as merged while its content is not on `main`. | PR #111, #112; `SCRUM-83` in Section 4.2 |
 
 ### 5.3. Mad (candidates)
 | # | Candidate | Evidence |
@@ -417,6 +419,7 @@ Checked on 18/11/2026 against a local backend started with Docker Compose and a 
 | A5 | Decide for password change, account deletion and Google re-authentication: build them or declare them out of scope in the specifications. | Tech Lead, Scrum Master |
 | A6 | Add Content-Security-Policy to `nginx.conf` and test it in the Docker image. | Tech Lead, Scrum Master |
 | A7 | Check the live Jira board before any screenshot is added to a report. | Scrum Master |
+| A8 | Before merging the base of a stacked pull request, point the stacked one to `main`; after each merge, check that the change is on `main`. | Author and reviewer of each pull request |
 
 ### 5.5. Team's own items and final decisions
 `[to fill after the meeting]`
