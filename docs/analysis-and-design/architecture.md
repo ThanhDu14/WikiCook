@@ -8,6 +8,8 @@
 | **Section 2** | C4 Level 1 — System Context (Part B) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-80` |
 | **Section 3** | Technology Stack (Part B) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Đức Duy (DucDuyNguyen15-IT)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-80` |
 | **Sections 4-5** | C4 Level 2 Container (Section 4) and Backend Level 3 Component (Section 5) (Part C) | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Thành Dự (ThanhDu14)** | **Mai Văn Hiển (MaiHien3507)** | `SCRUM-81` |
+| **Section 6** | C4 Level 3 — Frontend Components and Code-to-Diagram Parity (Part C) | **Nguyễn Thành Dự (ThanhDu14)** | **Mai Văn Hiển (MaiHien3507)** | **Nguyễn Thành Dự (ThanhDu14)** | `SCRUM-82` |
+| **Section 7** | Deployment Architecture (Part D) | **Nguyễn Thành Dự (ThanhDu14)** | **Lê Quốc Hưng (LqHung06)** | **Nguyễn Thành Dự (ThanhDu14)** | `SCRUM-83` |
 
 ---
 
@@ -532,3 +534,312 @@ This table lists every port that crosses a feature boundary and what is behind i
 ### 5.7. Results to Coordinate With `SCRUM-82`
 
 The frontend diagram of `SCRUM-82` should use the same REST prefixes as the table in Section 5.4, and the container names `web` and `app` of Section 4. Where a frontend feature depends on a stand-in or not-connected port of Section 5.6 (recipe import into a shopping list, collections, nutrition), the data it shows is not backed by the full backend feature; `SCRUM-82` should check this when it maps the frontend to the backend.
+
+---
+
+## 6. C4 Level 3 — Frontend Components
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Mai Văn Hiển (MaiHien3507) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+### 6.1. Scope
+
+This level opens the container **web** of Section 4. At run time `web` is nginx serving static files; the components below are the parts of the React 18 single-page application that those files contain and that run in the user's browser. The code is `src/frontend/src/`, built by Vite (`npm run build`) into the `web` image.
+
+A **component** here is a folder of `src/frontend/src/features/`, which maps one to one to a feature spec (`010` auth, `011` profile, `020` search, `030` meal planner, `031` AI planner, `040` shopping list, `050` cooking mode, `070` reviews), plus the app shell `src/app/` and the two shared folders `shared/api` and `shared/ui`. Inside a feature the usual sub-folders are `pages`, `components`, `hooks`, `api` (or `services`) and `lib`; `cooking-mode` adds `domain`, `adapters`, `runtime` and `i18n`.
+
+Every statement in this section was checked against `origin/main` at commit `ce7c7a3` (2026-11-20, the merge of PR #107), using `routes.tsx`, `App.tsx`, `main.tsx`, `package.json`, `vite.config.ts` and an import scan of every non-test `.ts` and `.tsx` file under `src/frontend/src`. Test files (`*.test.*`, `__tests__/`, `test/`), `src/test/` and the unused MSW handler `src/mocks/handlers/search.ts` are not components. Status values are those of Section 4.1, plus **Partial** (the component works but part of what it shows is not backed by the real backend feature).
+
+### 6.2. Diagram
+
+The conventions of Sections 4.2 and 5.2 apply: **solid lines are always configured; dashed lines exist only under a condition or point at a stand-in**, written on the line. Arrows point in the direction of the call or import. REST prefixes are those of Section 5.4; all calls are relative to `/api/v1` on the same origin and reach `app` through the nginx proxy of `web`.
+
+```mermaid
+flowchart TB
+    USER(["<b>Users</b><br/>[Person]<br/>web browser"])
+
+    subgraph WEB["web — React SPA running in the browser (src/frontend/src)"]
+        direction TB
+        SHELL["<b>App shell and router</b><br/>[Component: app/]<br/>main.tsx, App.tsx, routes.tsx,<br/>AppLayout, NotFoundPage, HealthBadge"]
+
+        subgraph FEATURES["Feature components (src/features)"]
+            direction TB
+            AUTH["<b>auth</b> (010)<br/>AuthProvider, guards, sign-in pages,<br/>authApi"]
+            PROFILE["<b>profile</b> (011)<br/>account, edit profile, dietary profile,<br/>public profile"]
+            SEARCH["<b>search</b> (020)<br/>HomePage, SearchResultsPage,<br/>searchApi"]
+            MEAL["<b>meal-planner</b> (030)<br/>MealPlannerPage, WeekGrid, RecipePicker,<br/>mealPlanApi, aiPlannerEntry"]
+            AIP["<b>ai-planner</b> (031)<br/>register.ts, DraftLayer, useAiDraft,<br/>aiPlannerApi"]
+            SHOP["<b>shopping-list</b> (040)<br/>ShoppingListPage, ShoppingHistoryPage,<br/>shoppingListApi"]
+            REV["<b>reviews</b> (070)<br/>RecipeReviewsPage, ReviewSection,<br/>reviewApi"]
+            COOK["<b>cooking-mode</b> (050)<br/>CookingPage, CookingRuntimeProvider,<br/>timer and session domain"]
+        end
+
+        API["<b>shared/api</b><br/>[Component]<br/>client.ts: API_BASE /api/v1, bearer token,<br/>one refresh on 401; session.ts; safeRedirect.ts"]
+        UI["<b>shared/ui</b><br/>[Component]<br/>Banner, Icon, TextField, PasswordField,<br/>RecipeCard"]
+        STORE[("<b>Browser storage and APIs</b><br/>localStorage, sessionStorage,<br/>BroadcastChannel, Wake Lock,<br/>Web Speech, Notification")]
+        SEED[/"<b>In-bundle recipe seed</b><br/>realRecipesSeed.ts + test fixture<br/>3 recipes + 1 fixture"/]
+    end
+
+    APP["<b>app</b><br/>[Container: Spring Boot, Section 5]<br/>REST API /api/v1"]
+
+    USER -->|"Opens pages<br/>[HTTP, port 3000]"| SHELL
+    SHELL -->|"Routes to pages, wraps AuthProvider"| AUTH
+    SHELL -->|"/profile, /profile/edit,<br/>/profile/dietary, /profiles/:id"| PROFILE
+    SHELL -->|"/ and /search"| SEARCH
+    SHELL -->|"/meal-planner"| MEAL
+    SHELL -->|"/shopping-list, /shopping-list/history"| SHOP
+    SHELL -->|"/recipes/:id"| REV
+    SHELL -->|"/cooking/:recipeId,<br/>CookingRuntimeProvider"| COOK
+    SHELL -->|"main.tsx imports register.ts"| AIP
+
+    AIP -->|"Registers button and draft hook<br/>in meal-planner/lib/aiPlannerEntry"| MEAL
+    PROFILE -->|"useAuth, AccountAvatar,<br/>UnsavedChangesDialog"| AUTH
+    REV -->|"authContext"| AUTH
+
+    AUTH --> API
+    PROFILE --> API
+    SEARCH --> API
+    MEAL --> API
+    AIP --> API
+    SHOP --> API
+    REV --> API
+    SEARCH --> UI
+    AUTH --> UI
+    PROFILE --> UI
+
+    API -->|"/api/v1/auth, /auth/password,<br/>/auth/verification, /me, /profiles,<br/>/ingredients, /recipes, /meal-plans,<br/>/ai-planner, /shopping-lists,<br/>/reviews, /cooksnaps, /media/*<br/>[HTTPS or HTTP, REST JSON, multipart]"| APP
+    AUTH -.->|"Full-page redirect to /api/v1/auth/oauth2/google<br/>only when a Google client id is set"| APP
+
+    AUTH --> STORE
+    AIP --> STORE
+    COOK --> STORE
+    COOK -.->|"Stand-in: reads recipes from the bundle,<br/>no call to app"| SEED
+
+    subgraph LEGEND["Legend"]
+        direction LR
+        L1["Always"] --> L2["Always"]
+        L3["Conditional or stand-in"] -.-> L4["Conditional or stand-in"]
+    end
+
+    classDef person fill:#1f4e79,stroke:#0b2545,color:#ffffff
+    classDef component fill:#1a73c7,stroke:#073b73,color:#ffffff
+    classDef shared fill:#3d8ad6,stroke:#073b73,color:#ffffff
+    classDef standin fill:#5b7fa6,stroke:#0b2545,color:#ffffff,stroke-dasharray:6 4
+    classDef container fill:#0b5cad,stroke:#073b73,color:#ffffff
+    classDef store fill:#8a8a8a,stroke:#4d4d4d,color:#ffffff
+    classDef legend fill:#ffffff,stroke:#4d4d4d,color:#000000
+
+    class USER person
+    class SHELL,AUTH,PROFILE,SEARCH,MEAL,AIP,SHOP,REV component
+    class COOK,SEED standin
+    class API,UI shared
+    class APP container
+    class STORE store
+    class L1,L2,L3,L4 legend
+```
+
+`cooking-mode` has a dashed border because it does not read recipes from `app` (Section 6.5, FD5). Imports of `shared/ui` by `meal-planner`, `shopping-list` and `reviews` are not drawn: those features use their own `Icon` and `Overlay` copies (Section 6.5).
+
+### 6.3. Dependency Rules
+
+1. **One way to the backend:** every call to `app` goes through `shared/api/client.ts` (`api.*`, `fetchJson`, `API_BASE`), which adds the bearer token, the `X-WikiCook-Client: web` header on `/auth/*`, and one refresh (`POST /api/v1/auth/refresh`) after a 401.
+2. **Between features:** a feature uses another one only through an explicit extension point (today `meal-planner/lib/aiPlannerEntry.ts`) or through the auth context; it does not import another feature's `components`, `hooks`, `lib`, `strings` or `types`.
+3. **`shared` depends on no feature**, and a feature does not import the app shell.
+4. **Only `app/` and `main.tsx` wire features together** (routes, providers, the AI planner registration).
+5. **Production code does not import test code.**
+
+Checked by scanning the imports of every non-test `.ts` and `.tsx` file under `src/frontend/src` on `ce7c7a3`:
+
+| Rule | Result |
+| :--- | :--- |
+| 1: `fetch`, `XMLHttpRequest` or `axios` outside `shared/api/client.ts` | No occurrence. `GoogleButton` changes `window.location` to `/api/v1/auth/oauth2/google`; that is a page navigation, not an API call. |
+| 2: a feature imports another feature's internals | Occurs. FD2 to FD4 in Section 6.5. |
+| 3: `shared` imports a feature; a feature imports `app/` | Occurs, once each. FD1 and FD4. |
+| 4: a feature registers itself outside `app/` and `main.tsx` | No occurrence. `ai-planner/register.ts` is imported only by `main.tsx`. |
+| 5: a non-test file imports from `__tests__/` | Occurs once. FD5. |
+
+### 6.4. Components
+
+"Routes" come from `src/app/routes.tsx`; "Backend prefix" is matched to the `@RequestMapping` prefixes of Section 5.4.
+
+| Component | Folder | Responsibility | Routes | Backend prefix (Section 5.4 component) | Key files | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :---: |
+| **App shell and router** | `src/app/`, `src/main.tsx` | Mounts the app, the router with React Router v7 future flags, `AuthProvider` and `CookingRuntimeProvider`; the shared layout with navigation, account menu, email-verification banner and session-expired dialog; the not-found page; a health badge. Imports `ai-planner/register` before render. | All routes; `*` → `NotFoundPage` | `/actuator/health` (HealthBadge, through `web`) | `App.tsx`, `routes.tsx`, `AppLayout.tsx`, `NotFoundPage.tsx`, `HealthBadge.tsx`, `CookingRuntimeProvider.tsx` (re-export), `main.tsx` | Current |
+| **auth** | `features/auth/` | Sign-in, registration, Google sign-in redirect, email verification, password reset, account status, access denied; route guards (`RequireAuth`, `RedirectIfAuthenticated`); the session context, synchronised between tabs with `BroadcastChannel`. | `/login`, `/register`, `/forgot-password`, `/reset-password`, `/auth/callback`, `/check-email`, `/verify-email`, `/account-status`, `/access-denied` | `/api/v1/auth`, `/api/v1/auth/password`, `/api/v1/auth/verification`, `/api/v1/auth/oauth2` (auth) | `AuthProvider.tsx`, `guards.tsx`, `api/authApi.ts`, `pages/LoginPage.tsx`, `pages/RegisterPage.tsx`, `components/GoogleButton.tsx`, `components/SessionExpiredDialog.tsx` | Current |
+| **profile** | `features/profile/` | My account, profile editing with avatar upload (multipart), dietary profile with allergens, diet type, excluded ingredients and cuisines, dietary notices, public profile page. | `/profile`, `/profile/edit`, `/profile/dietary`, `/profiles/:id` | `/api/v1/me`, `/api/v1/profiles`, `/api/v1/ingredients`, `/api/v1/media/avatars` (profile) | `api/profileApi.ts`, `api/dietaryApi.ts`, `pages/MyAccountPage.tsx`, `pages/EditProfilePage.tsx`, `pages/DietaryProfilePage.tsx`, `pages/PublicProfilePage.tsx` | Current |
+| **search** | `features/search/` | Home page with featured recipes, search results with keyword, filters, sort and pagination, dietary notice for a signed-in viewer. | `/`, `/search` | `/api/v1/recipes` (`/search`, `/search/options`, `/featured`) (search) | `api/searchApi.ts`, `hooks/useRecipeSearch.ts`, `pages/HomePage.tsx`, `pages/SearchResultsPage.tsx`, `lib/searchState.ts` | Current |
+| **meal-planner** | `features/meal-planner/` | Weekly plan (week grid on desktop, day view on mobile), recipe picker, move, replace, servings, clear day, offline notice, "create shopping list" button. Owns the extension point through which `ai-planner` adds its button and draft layer. | `/meal-planner` (member) | `/api/v1/meal-plans/{weekStart}`, `/api/v1/meal-plans/picker/recipes` (mealplan) | `api/mealPlanApi.ts`, `hooks/useWeekPlan.ts`, `pages/MealPlannerPage.tsx`, `components/WeekGrid.tsx`, `components/RecipePicker.tsx`, `lib/aiPlannerEntry.ts` | Partial (Section 6.6) |
+| **ai-planner** | `features/ai-planner/` | "Tạo bằng AI" dialog, generation progress with abort, the unsaved draft shown over the calendar, leave-draft guard, confirm into the plan, limit and not-enough-recipes messages. Has no route of its own; it plugs into `meal-planner`. Keeps the draft in `sessionStorage` / `localStorage`. | None (inside `/meal-planner`) | `/api/v1/ai-planner` (`/weeks/{weekStart}/options`, `/generations`, `/confirm`) (aiplanner) | `register.ts`, `api/aiPlannerApi.ts`, `hooks/useAiDraft.ts`, `hooks/useLeaveGuard.ts`, `components/AiGenerateDialog.tsx`, `components/DraftLayer.tsx` | Current |
+| **shopping-list** | `features/shopping-list/` | Active list grouped by aisle, custom items, check-off, item provenance, archive and restore, history. | `/shopping-list`, `/shopping-list/history` (member, `offlineFirst` handle); `/shopping-list/import` redirects to `/shopping-list` | `/api/v1/shopping-lists` (shoppinglist) | `services/shoppingListApi.ts`, `hooks/useShoppingList.ts`, `ShoppingListPage.tsx`, `ShoppingHistoryPage.tsx`, `components/ChecklistScreen.tsx` | Partial (Section 6.6) |
+| **reviews** | `features/reviews/` | Reviews and ratings of a recipe, rating breakdown, Cooksnap upload (multipart, 5 MB per file) and lightbox, helpful votes, reports. | `/recipes/:id` | `/api/v1/recipes/{recipeId}/reviews`, `/api/v1/reviews`, `/api/v1/cooksnaps`, `/api/v1/media/cooksnaps` (review) | `RecipeReviewsPage.tsx`, `ReviewSection.tsx`, `services/reviewApi.ts`, `hooks/useReviews.ts`, `components/ReviewForm.tsx`, `components/CooksnapUploader.tsx` | Current |
+| **cooking-mode** | `features/cooking-mode/` | Step-by-step cooking screen outside the app layout: steps, ingredient drawer, timers that keep running in the background, voice commands and read-aloud, screen wake lock, resume of an interrupted session. | `/cooking/:recipeId` | None | `pages/CookingPage.tsx`, `runtime/CookingRuntimeProvider.tsx`, `domain/sessionReducer.ts`, `domain/timerEngine.ts`, `adapters/recipeReader.ts`, `adapters/speechAdapter.ts`, `adapters/sessionPersistence.ts` | Stand-in (FD5) |
+| **shared/api** | `shared/api/` | The single HTTP client: base `/api/v1`, JSON and multipart helpers, RFC 7807 errors as `ApiError`, bearer header, one shared refresh after 401, auth events; the access token is kept in memory only (`session.ts` removes keys of earlier builds from `localStorage`); safe redirect targets. | — | All of the above, plus `POST /api/v1/auth/refresh` | `client.ts`, `session.ts`, `safeRedirect.ts` | Current |
+| **shared/ui** | `shared/ui/` | Reusable primitives: banner, icon, text and password fields, field ids, recipe card. | — | — | `Banner.tsx`, `Icon.tsx`, `TextField.tsx`, `PasswordField.tsx`, `RecipeCard.tsx`, `useFieldIds.ts` | Current |
+
+### 6.5. Known Deviations
+
+| # | Where | What is imported or done | Rule broken |
+| :-: | :--- | :--- | :---: |
+| FD1 | `shared/ui/RecipeCard.tsx` | `features/search/types` and `features/search/strings.vi`. The shared card depends on the search feature. | 3 |
+| FD2 | `ai-planner` (`AiGenerateButton`, `AiGenerateDialog`, `DraftBar`, `DraftLayer`, `GenerationProgress`, `LeaveDraftDialog`, `LimitReachedMessage`, `NotEnoughRecipesMessage`, `useAiDraft`, `types.ts`) | `meal-planner/components/Icon`, `Overlay`, `RecipePicker`; `meal-planner/strings.vi`; `meal-planner/types`. The registration itself correctly goes through `meal-planner/lib/aiPlannerEntry`. | 2 |
+| FD3 | `profile` (`AccountLayout`, `AvatarPicker`, `MyAccountPage`, `EditProfilePage`, `DietaryProfilePage`, `PublicProfilePage`) | `auth/components/AccountAvatar`, `UnsavedChangesDialog`; `auth/hooks/useSignOut`, `useUnsavedChangesBlocker`; `auth/lib/initials`, `auth/lib/problem`. Use of `useAuth` is the allowed auth context. | 2 |
+| FD4 | `reviews/RecipeReviewsPage.tsx` | `app/NotFoundPage`: a feature imports the app shell. (`ReviewSection` importing `auth/authContext` is the allowed auth context.) | 3 |
+| FD5 | `cooking-mode/adapters/recipeReader.ts` | `CookingPage` uses `defaultRecipeReader`, a `MockRecipeReader` filled from `realRecipesSeed.ts` (recipes 6, 7 and 9 copied from a database) and from `__tests__/fixtures/recipeFixtures` (one phở bò fixture, under ids `recipe-pho-bo-101` and `101`). The page never calls `app`; any other recipe id shows as unavailable. Section 4.2 already notes that cooking mode has no backend. | 5 |
+| FD6 | `meal-planner`, `shopping-list`, `reviews` | Each has its own `components/Icon.tsx` (and `meal-planner` and `shopping-list` an `Overlay.tsx`) next to `shared/ui/Icon.tsx`. Not a broken rule, but duplication to remove when a feature is touched. | — |
+
+Other findings:
+
+- `aiPlannerApi.cancel` calls `DELETE /api/v1/ai-planner/generations/{requestId}`. `AiPlannerController` has no such mapping on `ce7c7a3`, and no component calls `cancel`; aborting a generation only cancels the browser request (`AbortSignal`).
+- `shopping-list/components/PreImportBottomSheet.tsx` and `RecipeIngredientsPanel.tsx` are imported by no page. `useShoppingList.importRecipe` exists, but no screen on `main` offers recipe import.
+- `idb` is a dependency in `package.json` but no file under `src/` imports it; nothing on `main` uses IndexedDB. The `offlineFirst` route handle of the shopping list only keeps the session-expired dialog away; the list itself is not stored in the browser.
+
+### 6.6. Frontend Dependencies on Backend Stand-ins
+
+Following Section 5.7, these are the screens whose data is not backed by the full backend feature:
+
+| Frontend component and screen | Backend port (Section 5.6) | What the user sees |
+| :--- | :--- | :--- |
+| `meal-planner`, `DayNutritionBadge` in `WeekGrid` | `mealplan.port.DayNutritionPort` — empty map (090 not built) | No nutrition figure for any day. |
+| `meal-planner`, `RecipePicker` and the bookmark filter | `mealplan.port.CollectionRecipePort` — empty set (080 not built) | No recipe is ever marked as saved. |
+| `meal-planner`, dish names and photos in slots and picker | `mealplan.port.RecipeSummaryPort` — direct SQL on recipe tables (060 not built) | Real data from `db`, but not through a recipe component. |
+| `meal-planner`, "Đi chợ" / shopping hand-off; `/shopping-list/import` | `mealplan.MealPlanShoppingFacade` is served, `shoppinglist.port.MealPlanHandoffPort` is not connected | The route redirects to `/shopping-list`; a week is not imported into the list. |
+| `shopping-list`, recipe import (`importRecipe`) | `shoppinglist.port.RecipeDetailPort` — `SeedRecipeDetailAdapter`, in-memory recipes | Not reachable from any screen today (Section 6.5); when it is, imports would use the seed, not `db`. |
+| `profile`, ingredient and cuisine pickers | `profile.port.IngredientCatalogPort`, `CuisineCatalogPort` — direct SQL (060, 100) | Real data from `db`. |
+| `reviews`, recipe title on `/recipes/:id` | No `GET /api/v1/recipes/{id}` (060 not built) | The title comes from the router state of the card that linked to the page. |
+| `cooking-mode` | None — no backend call at all | Only the bundled recipes open (FD5). |
+
+### 6.7. Code-to-Diagram Parity Verification
+
+Every component drawn in Sections 5.2 and 6.2 is listed with the path it was checked against. "Exists" was verified with `ls` / `find` on `ce7c7a3`; backend key classes of Section 5.4 were checked one by one and all were found.
+
+| Level | Component | Path in `src/` | Exists | Note |
+| :---: | :--- | :--- | :---: | :--- |
+| FE | App shell and router | `frontend/src/app/`, `frontend/src/main.tsx` | Yes | 7 non-test files. |
+| FE | auth | `frontend/src/features/auth/` | Yes | |
+| FE | profile | `frontend/src/features/profile/` | Yes | |
+| FE | search | `frontend/src/features/search/` | Yes | Not named in the `SCRUM-82` ticket. |
+| FE | meal-planner | `frontend/src/features/meal-planner/` | Yes | |
+| FE | ai-planner | `frontend/src/features/ai-planner/` | Yes | No route; registered by `main.tsx`. |
+| FE | shopping-list | `frontend/src/features/shopping-list/` | Yes | |
+| FE | reviews | `frontend/src/features/reviews/` | Yes | |
+| FE | cooking-mode | `frontend/src/features/cooking-mode/` | Yes | Not named in the `SCRUM-82` ticket. |
+| FE | shared/api | `frontend/src/shared/api/client.ts`, `session.ts`, `safeRedirect.ts` | Yes | |
+| FE | shared/ui | `frontend/src/shared/ui/` | Yes | 6 non-test files. |
+| FE | In-bundle recipe seed | `frontend/src/features/cooking-mode/adapters/realRecipesSeed.ts`, `__tests__/fixtures/recipeFixtures.ts` | Yes | |
+| FE | Browser storage and APIs | `shared/api/session.ts`, `auth/AuthProvider.tsx`, `ai-planner/hooks/useAiDraft.ts`, `cooking-mode/adapters/*` | Yes | No IndexedDB use. |
+| BE | auth | `backend/wikicook-app/src/main/java/com/wikicook/auth/` | Yes | |
+| BE | profile | `backend/wikicook-app/src/main/java/com/wikicook/profile/` | Yes | |
+| BE | mealplan | `backend/wikicook-app/src/main/java/com/wikicook/mealplan/` | Yes | |
+| BE | aiplanner | `backend/wikicook-app/src/main/java/com/wikicook/aiplanner/` | Yes | |
+| BE | search | `backend/wikicook-app/src/main/java/com/wikicook/search/` | Yes | |
+| BE | shoppinglist | `backend/wikicook-app/src/main/java/com/wikicook/shoppinglist/` | Yes | |
+| BE | review | `backend/wikicook-app/src/main/java/com/wikicook/review/` | Yes | |
+| BE | recipe | `backend/wikicook-app/src/main/java/com/wikicook/recipe/domain/Recipe.java` | Yes | |
+| BE | common | `backend/wikicook-app/src/main/java/com/wikicook/common/` | Yes | `GlobalExceptionHandler` is at `common/GlobalExceptionHandler.java`. |
+| BE | devstub | `backend/wikicook-app/src/main/java/com/wikicook/devstub/` | Yes | |
+| BE | ai | `backend/wikicook-ai/src/main/java/com/wikicook/ai/` | Yes | `AiRequestRepository` is in `ai/quota/`. |
+| BE | db/migration | `backend/wikicook-db/src/main/resources/db/migration/` | Yes | 20 files, as stated in Section 5.4. |
+| FE → BE | REST prefixes used by the SPA | `shared/api/client.ts` callers vs `@RequestMapping` / `@*Mapping` of the controllers | Yes, one exception | Every path called by a screen has a backend mapping. The exception is the unused `DELETE /api/v1/ai-planner/generations/{requestId}` (Section 6.5). |
+
+---
+
+## 7. Deployment Architecture (Part D)
+*Performed by: Nguyễn Thành Dự (ThanhDu14) | Reviewed by: Lê Quốc Hưng (LqHung06) | Edited by: Nguyễn Thành Dự (ThanhDu14)*
+
+### 7.1. Scope and Verification Basis
+
+Section 4 shows **what** runs (containers and their relationships). This section shows **where** it runs: the physical and virtual nodes, the containers placed on each node, the network, ports, volumes and health checks, and the startup order. WikiCook has one deployment configuration in the repository: a single Docker host running the Compose project `wikicook`. No cloud, Kubernetes or production TLS configuration exists, so none is drawn.
+
+Checked against `origin/main` at commit `ce7c7a3` using `docker-compose.yml`, `src/backend/docker-compose.yml`, `src/backend/Dockerfile`, `src/frontend/Dockerfile`, `src/frontend/nginx.conf`, `src/backend/.env.example` and `application.yml`.
+
+### 7.2. Deployment Diagram
+
+The root `docker-compose.yml` defines `web` and includes `src/backend/docker-compose.yml`, which defines `db`, `app`, `mailpit` and `migrate`. No network is declared, so all services join the project's default bridge network `wikicook_default` and reach each other by service name. Compose names the containers `wikicook-<service>-1`. Solid lines are always configured; dashed lines exist only under the condition written on the line; dotted arrows marked `depends_on` give the startup order.
+
+```mermaid
+flowchart LR
+    subgraph CLIENT["Node: Client Device (desktop or mobile)"]
+        BROWSER["<b>Web browser</b><br/>[Execution environment]<br/>React SPA loaded from web<br/>access token in memory,<br/>refresh token in HttpOnly cookie"]
+    end
+
+    subgraph HOST["Node: Docker Host (Linux, Docker Engine + Compose v2)"]
+        subgraph NET["Bridge network: wikicook_default"]
+            WEB["<b>wikicook-web-1</b><br/>service web<br/>nginx:1.27-alpine + SPA files<br/>host 3000 to 80"]
+            APP["<b>wikicook-app-1</b><br/>service app<br/>eclipse-temurin:21-jre-alpine<br/>Spring Boot, user wikicook (1001)<br/>host 8080 to 8080"]
+            DB[("<b>wikicook-db-1</b><br/>service db<br/>pgvector/pgvector:pg16<br/>host 5432 to 5432")]
+            MAIL["<b>wikicook-mailpit-1</b><br/>service mailpit - DEV ONLY<br/>axllent/mailpit<br/>host 1025 SMTP, 8025 UI"]
+            MIG["<b>migrate</b> - profile tools<br/>flyway/flyway:11<br/>one-off, exits after run"]
+        end
+        PGDATA[("volume pgdata<br/>/var/lib/postgresql/data")]
+        MEDIA[("volume media<br/>/var/lib/wikicook/media")]
+        SQLDIR[/"bind mount, read-only<br/>wikicook-db/.../db/migration"/]
+    end
+
+    subgraph CLOUD["Node: External Cloud (Google)"]
+        GEMINI["<b>Gemini API</b><br/>generativelanguage.googleapis.com<br/>LLM and embeddings"]
+        GSIGN["<b>Google Sign-In</b><br/>OpenID Connect"]
+    end
+
+    BROWSER -->|"HTTP, port 3000<br/>pages and /api/*"| WEB
+    WEB -->|"HTTP proxy_pass app:8080<br/>/api/ and /actuator/"| APP
+    APP -->|"JDBC over TCP, db:5432"| DB
+    APP -->|"SMTP, mailpit:1025"| MAIL
+    MIG -->|"JDBC over TCP, db:5432"| DB
+    APP -.->|"HTTPS/TLS 443, API key<br/>only when WIKICOOK_AI_MODE=live"| GEMINI
+    APP -.->|"HTTPS/TLS 443, code exchange<br/>only when a client id is set"| GSIGN
+    BROWSER -.->|"HTTPS redirect to sign in"| GSIGN
+    DB --- PGDATA
+    APP --- MEDIA
+    MIG --- SQLDIR
+
+    DB -.->|"depends_on: healthy"| APP
+    APP -.->|"depends_on: healthy"| WEB
+    DB -.->|"depends_on: healthy"| MIG
+
+    classDef node fill:#0b5cad,stroke:#073b73,color:#ffffff
+    classDef devonly fill:#5b7fa6,stroke:#0b2545,color:#ffffff,stroke-dasharray:6 4
+    classDef store fill:#8a8a8a,stroke:#4d4d4d,color:#ffffff
+    classDef ext fill:#6d6d6d,stroke:#4d4d4d,color:#ffffff
+    class BROWSER,WEB,APP node
+    class DB,PGDATA,MEDIA,SQLDIR store
+    class MAIL,MIG devonly
+    class GEMINI,GSIGN ext
+```
+
+### 7.3. Node and Container Specification
+
+| Node | Container (service) | Image / runtime | Port mapping (host:container) | Volume | Health check | Responsibility |
+| :--- | :--- | :--- | :---: | :--- | :--- | :--- |
+| **Client Device** | — | Desktop or mobile browser | — | Browser storage (Section 6.4) | — | Runs the SPA; talks only to `web` on one origin. |
+| **Docker Host** | `wikicook-web-1` (`web`) | `src/frontend/Dockerfile`: `node:22-alpine` build stage, then `nginx:1.27-alpine` | `${WEB_PORT:-3000}:80` | — | `wget http://127.0.0.1/`, every 10 s, timeout 3 s, 5 retries | Serves the SPA (fallback to `index.html`, 1-year cache on `/assets/`), proxies `/api/` (body up to 6 MB) and `/actuator/` to `app:8080`. `restart: unless-stopped`. |
+| **Docker Host** | `wikicook-app-1` (`app`) | `src/backend/Dockerfile`: `maven:3.9-eclipse-temurin-21` build, then `eclipse-temurin:21-jre-alpine` with a layered Spring Boot jar, non-root user `wikicook` (uid 1001), `-XX:MaxRAMPercentage=75` | `${APP_PORT:-8080}:8080` | `media` → `/var/lib/wikicook/media` (avatars) | `wget http://127.0.0.1:8080/actuator/health`, every 10 s, timeout 3 s, start period 40 s, 10 retries (in compose and in the image) | The whole backend (Section 5); runs Flyway at startup. `restart: unless-stopped`. |
+| **Docker Host** | `wikicook-db-1` (`db`) | `pgvector/pgvector:pg16` | `${POSTGRES_PORT:-5432}:5432` | `pgdata` → `/var/lib/postgresql/data` | `pg_isready -U $POSTGRES_USER -d $POSTGRES_DB`, every 5 s, timeout 3 s, 10 retries | PostgreSQL 16 with `pgvector`, `pg_trgm`, `unaccent`; timezone `Asia/Ho_Chi_Minh`. `restart: unless-stopped`. |
+| **Docker Host** | `wikicook-mailpit-1` (`mailpit`) | `axllent/mailpit` (tag not pinned) | `1025:1025`, `8025:8025` | — | — | Development SMTP sink for verification and reset emails. `app` does not wait for it. |
+| **Docker Host** | `migrate` (profile `tools`) | `flyway/flyway:11` | — | Read-only bind mount of `wikicook-db/src/main/resources/db/migration` → `/flyway/sql` | — (waits for `db` healthy; `FLYWAY_CONNECT_RETRIES=10`) | Applies the migrations without the app (`out-of-order` on). Started only with `docker compose run --rm migrate`. |
+| **External Cloud** | — | Google Gemini API, base URL `https://generativelanguage.googleapis.com/v1beta`; models `gemini-3.5-flash` and `gemini-embedding-001` | 443 | — | — | Meal-plan drafts and embeddings, only in AI mode `live` (compose default `mock`). |
+| **External Cloud** | — | Google OpenID Connect endpoints | 443 | — | — | Google sign-in, only when `WIKICOOK_GOOGLE_CLIENT_ID` is set. Redirect URI `${WIKICOOK_PUBLIC_BASE_URL}/api/v1/auth/oauth2/callback/google`. |
+
+### 7.4. Communication Protocols
+
+| From → To | Protocol | Port | Notes |
+| :--- | :--- | :---: | :--- |
+| Browser → `web` | HTTP | 3000 → 80 | Public entry point. TLS is not configured in the repository; HTTPS needs a TLS-terminating proxy in front of the host, and then `WIKICOOK_AUTH_COOKIE_SECURE=true`. |
+| `web` → `app` | HTTP (nginx reverse proxy) | 8080 | Internal network, by service name. Forwards `Host`, `X-Real-IP`, `X-Forwarded-For`, `X-Forwarded-Proto`. |
+| `app` → `db` | JDBC (PostgreSQL wire protocol) over TCP | 5432 | Internal. `DB_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}`, user and password from `.env`. |
+| `migrate` → `db` | JDBC over TCP | 5432 | Internal, on demand. |
+| `app` → `mailpit` | SMTP, no authentication | 1025 | Internal; `MAIL_HOST` fixed to `mailpit` in compose. |
+| `app` → Gemini API | HTTPS / TLS, REST JSON | 443 | Outbound only, header `x-goog-api-key`; the key stays on the backend. 60 s timeout; daily cap `WIKICOOK_AI_DAILY_CAP_TOTAL`. |
+| `app` and browser → Google Sign-In | HTTPS / TLS, OpenID Connect with PKCE | 443 | Browser is redirected; `app` exchanges the code. |
+| Developer → `app`, `db`, `mailpit` | HTTP, JDBC, HTTP | 8080, 5432, 8025 | Published for local development; a production host would not publish them. |
+
+### 7.5. Startup Order, Persistence and Configuration
+
+- **Startup order:** `db` → (`pg_isready` healthy) → `app` runs Flyway and starts → (`/actuator/health` healthy) → `web`. `mailpit` starts independently. `migrate` is not part of `docker compose up`.
+- **Persistence:** `pgdata` holds the database and `media` the avatar files; both survive `docker compose down` and are removed only by `down -v`. Cooksnap photos are written to `uploads/cooksnaps/` inside the `app` container and are lost when it is recreated (Section 4.6). `web`, `app` and `mailpit` are otherwise stateless.
+- **Configuration and secrets:** backend values come from the git-ignored `src/backend/.env` (template `src/backend/.env.example`). Required: `WIKICOOK_JWT_SECRET`, `WIKICOOK_EMAIL_HASH_KEY` (compose refuses to start without them). Others: `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_PORT`, `APP_PORT`, `WIKICOOK_AI_MODE`, `WIKICOOK_AI_API_KEY`, `WIKICOOK_AI_DAILY_CAP_TOTAL`, `WIKICOOK_AI_EMBEDDING_RECONCILE_ON_STARTUP`, `WIKICOOK_AI_EMBEDDING_RECONCILE_LIMIT`, `WIKICOOK_PUBLIC_BASE_URL`, `WIKICOOK_AUTH_COOKIE_SECURE`, `WIKICOOK_AUTH_SIGN_IN_IP_LIMIT`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `WIKICOOK_MAIL_FROM`, `WIKICOOK_APPEAL_CONTACT`, `WIKICOOK_GOOGLE_CLIENT_ID`, `WIKICOOK_GOOGLE_CLIENT_SECRET`, `WIKICOOK_BOOTSTRAP_ADMIN_EMAIL`, `WIKICOOK_BOOTSTRAP_ADMIN_PASSWORD`, `WIKICOOK_DEV_STUBS_ENABLED`, `WIKICOOK_DEV_STUBS_USER_ID`. `WEB_PORT` is read from the shell or a root `.env`. No secret is stored in an image or in `application.yml`.
+- **Running the stack:**
+
+```bash
+cp src/backend/.env.example src/backend/.env   # set POSTGRES_PASSWORD, WIKICOOK_JWT_SECRET, WIKICOOK_EMAIL_HASH_KEY
+docker compose up -d --build                    # db, app (http://localhost:8080), mailpit (http://localhost:8025), web (http://localhost:3000)
+docker compose ps                               # db, app and web report "healthy"
+docker compose run --rm migrate                 # optional: apply migrations without the app
+```

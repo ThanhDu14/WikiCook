@@ -41,6 +41,7 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 23 | 2026-11-18, 15:20 – 16:00 | Hoàn thiện frontend Reviews & Cooksnap 070, chạy thử với API thật, mở PR #98 (`SCRUM-78`) | 070 frontend |
 | 24 | 2026-11-18, 15:50 – 16:10 | Hoàn tất Use-Case Model / Specification v2.0, ghi trạng thái feedback PA3 và self-audit, mở PR #99 – #101 (`SCRUM-69`, `SCRUM-70`, `SCRUM-71`) | Use-Case Model, UC Specification, Sprint 04 Report |
 | 25 | 2026-11-18, 16:00 – 17:10 | Gemini 4 Hydrogen cải thiện UX toàn bộ frontend theo 20 nguyên tắc, Claude Code kiểm chứng và quay video so sánh trước/sau (PR #102) | Frontend (tất cả feature) |
+| 26 | 2026-11-20 | Sửa lỗi ảnh Cooksnap bị lệch xuống dưới trong lightbox (070) | 070 frontend |
 
 ---
 
@@ -1604,3 +1605,48 @@ Prompt gửi Gemini 4 Hydrogen do Claude Code soạn (dòng đầu: `[MODEL: Gem
 - Đọc diff: không file nào trong `api/`, `hooks/`, `services/`, `lib/`, `types.ts`, `routes.tsx` hay test bị sửa; các thuộc tính `aria-label`, `onClick` bị xoá trong diff đều còn nguyên sau khi viết lại nút.
 - Đối chiếu chú thích video với `motion.css` (sao `scale(1.1)` khi hover, chip `scale(0.95)` khi bấm, thẻ `translateY(-2px)`, hộp thoại `wk-pop-in`), bỏ chú thích không đúng.
 - Xem video so sánh: trích khung đầu và giữa của từng clip để kiểm tra đồng bộ và nội dung.
+
+## Mục 26: Sửa lỗi ảnh Cooksnap bị lệch xuống dưới trong lightbox (070)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-20 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Đức Duy |
+| Tài liệu liên quan | `src/frontend/src/features/reviews/components/CooksnapLightbox.tsx`, màn hình `W-RV03-Lightbox` |
+| Công cụ AI, phiên bản, nền tảng | Claude Code (Claude Opus 5.5) trong VS Code |
+| Mục đích | Nhóm báo: bấm vào ảnh Cooksnap thì ảnh trong lightbox bị lệch xuống dưới. Tìm nguyên nhân và sửa |
+| Nhánh Git | `fix/070-cooksnap-lightbox-layout` (từ `origin/main`) |
+
+### Prompt đã dùng
+
+Prompt gửi Claude Code (viết lại cho đầy đủ ý):
+
+```text
+Bối cảnh: tính năng 070 Reviews & Cooksnap đã merge vào main (PR #98). Nhóm báo lỗi: trên web, bấm vào
+ảnh Cooksnap ở bài đánh giá thì lightbox mở ra nhưng ảnh bị lệch xuống dưới.
+Yêu cầu:
+1. Giải thích Cooksnap là gì và luồng mở ảnh trong lightbox.
+2. Tìm nguyên nhân lỗi trong code trên origin/main, tái hiện được trước khi kết luận.
+3. Sửa với thay đổi nhỏ nhất, không đổi logic hay giao diện của màn W-RV03.
+4. Tự kiểm tra lại trên app thật ở nhiều kích thước màn hình, so sánh trước và sau khi sửa, chạy
+   test của reviews; thấy ổn thì ghi AI log, commit và push.
+```
+
+### Nội dung do AI tạo
+
+- Nguyên nhân: ảnh dùng `maxHeight: min(640px, 100%)` nhưng khung chứa nằm trong hàng grid cao `auto`, nên `100%` không tính được; ảnh luôn cao 640 px, tràn xuống dưới và đè dải thumbnail.
+- Cách sửa: thêm `gridTemplateRows: 'minmax(0, 1fr)'` cho 2 khung chứa ảnh để hàng có chiều cao xác định.
+- Script Playwright giả lập API review, đo vị trí ảnh ở 4 kích thước màn hình với ảnh dọc và ảnh ngang.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Cách sửa | Chỉ sửa style grid, không dùng chiều cao trừ cứng theo `vh` | Dải thumbnail đổi chiều cao khi xuống dòng trên màn nhỏ |
+| Nhánh | Tạo nhánh fix riêng từ `origin/main` | Tách khỏi các PR đang mở |
+
+### Cách sinh viên kiểm chứng
+
+- Đo trên app thật trước và sau khi sửa: ở 1366×768, ảnh dọc trước nằm ở 531–1171 (tràn khỏi màn cao 768), sau nằm ở 84–656, vừa giữa thanh trên và dải thumbnail; 1280×650 và 1920×1080 cũng hết lỗi; điện thoại 390×844 không đổi.
+- Xem ảnh chụp màn hình lightbox sau khi sửa.
+- `npx vitest run src/features/reviews`: 11 file, 85 test pass.
