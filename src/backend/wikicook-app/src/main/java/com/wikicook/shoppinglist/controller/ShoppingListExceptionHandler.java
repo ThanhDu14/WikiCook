@@ -1,6 +1,7 @@
 package com.wikicook.shoppinglist.controller;
 
 import com.wikicook.shoppinglist.service.CapacityExceededException;
+import com.wikicook.shoppinglist.service.EmptyMealPlanException;
 import com.wikicook.shoppinglist.service.ShoppingListNotFoundException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -23,6 +24,15 @@ public class ShoppingListExceptionHandler {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         problem.setType(URI.create("https://wikicook.com/errors/capacity-exceeded"));
         problem.setTitle("Shopping List Capacity Exceeded");
+        return problem;
+    }
+
+    @ExceptionHandler(EmptyMealPlanException.class)
+    ProblemDetail handleEmptyMealPlan(EmptyMealPlanException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        problem.setType(URI.create("https://wikicook.com/errors/empty-meal-plan"));
+        problem.setTitle("Empty Meal Plan");
+        problem.setProperty("code", "EMPTY_MEAL_PLAN");
         return problem;
     }
 

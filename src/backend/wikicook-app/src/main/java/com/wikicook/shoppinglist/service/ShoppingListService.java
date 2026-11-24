@@ -1,11 +1,15 @@
 package com.wikicook.shoppinglist.service;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import com.wikicook.shoppinglist.port.MealPlanHandoffPort;
 import com.wikicook.shoppinglist.domain.ShoppingList;
 import com.wikicook.shoppinglist.domain.ShoppingListItem;
 import com.wikicook.shoppinglist.domain.ShoppingListItemSource;
 import com.wikicook.shoppinglist.domain.ShoppingListStatus;
 import com.wikicook.shoppinglist.domain.Unit;
 import com.wikicook.shoppinglist.dto.*;
+import com.wikicook.shoppinglist.port.RecipeCoverPort;
 import com.wikicook.shoppinglist.port.RecipeDetailPort;
 import com.wikicook.shoppinglist.repository.ShoppingListItemRepository;
 import com.wikicook.shoppinglist.repository.ShoppingListRepository;
@@ -52,6 +56,8 @@ public class ShoppingListService {
     private final RecipeDetailPort recipeDetailPort;
     private final IngredientAggregationService ingredientAggregationService;
     private final UnitRepository unitRepository;
+    private final MealPlanHandoffPort mealPlanHandoffPort;
+    private final RecipeCoverPort recipeCoverPort;
 
     @Autowired
     public ShoppingListService(ShoppingListRepository shoppingListRepository,
@@ -59,13 +65,17 @@ public class ShoppingListService {
                                UserAislePreferenceRepository userAislePreferenceRepository,
                                RecipeDetailPort recipeDetailPort,
                                IngredientAggregationService ingredientAggregationService,
-                               UnitRepository unitRepository) {
+                               UnitRepository unitRepository,
+                               MealPlanHandoffPort mealPlanHandoffPort,
+                               RecipeCoverPort recipeCoverPort) {
         this.shoppingListRepository = shoppingListRepository;
         this.shoppingListItemRepository = shoppingListItemRepository;
         this.userAislePreferenceRepository = userAislePreferenceRepository;
         this.recipeDetailPort = recipeDetailPort;
         this.ingredientAggregationService = ingredientAggregationService;
         this.unitRepository = unitRepository;
+        this.mealPlanHandoffPort = mealPlanHandoffPort;
+        this.recipeCoverPort = recipeCoverPort;
     }
 
     public ShoppingListResponse getActiveShoppingList(Long userId) {
@@ -191,6 +201,45 @@ public class ShoppingListService {
         return toShoppingListResponse(saved);
     }
 
+    /**
+     * Fills the active list with the ingredients of every available dish of a week (US2 FR-004, SC-004): each dish
+     * scaled to its servings (or the override sent for it), identical ingredients summed, every contribution kept as a
+     * provenance row with its {@code mealPlanItemId}. One transaction: a capacity overflow leaves the list unchanged.
+     */
+    public ShoppingListResponse importMealPlan(Long userId, ImportMealPlanRequest request) {
+        MealPlanHandoffPort.MealPlanHandoffDto plan = mealPlanHandoffPort
+                .getMealPlanForShoppingList(userId, request.weekStart())
+                .filter(p -> !p.items().isEmpty())
+                .orElseThrow(() -> new EmptyMealPlanException("Thực đơn tuần này chưa có món nào để đi chợ."));
+
+        ShoppingList activeList = shoppingListRepository.findByUserIdAndStatus(userId, ShoppingListStatus.ACTIVE)
+                .orElseGet(() -> createDefaultActiveList(userId));
+        if (request.mode() == ImportMealPlanRequest.Mode.ARCHIVE_AND_NEW
+                && activeList.getItems() != null && !activeList.getItems().isEmpty()) {
+            activeList.setStatus(ShoppingListStatus.ARCHIVED);
+            activeList.setArchivedAt(Instant.now());
+            shoppingListRepository.saveAndFlush(activeList);
+            activeList = createDefaultActiveList(userId);
+        }
+
+        Map<Long, BigDecimal> overrides = new HashMap<>();
+        if (request.servingOverrides() != null) {
+            request.servingOverrides().forEach(o -> overrides.put(o.mealPlanItemId(), o.targetServings()));
+        }
+        Set<Long> excluded = request.excludedIngredientIds() != null
+                ? new HashSet<>(request.excludedIngredientIds()) : Collections.emptySet();
+
+        for (MealPlanHandoffPort.MealPlanItemHandoffDto dish : plan.items()) {
+            RecipeDetailPort.RecipeImportDto recipe = new RecipeDetailPort.RecipeImportDto(
+                    dish.recipeId(), dish.recipeTitle(), dish.recipeBaseServings(), dish.rawIngredients());
+            BigDecimal servings = overrides.getOrDefault(dish.mealPlanItemId(), dish.effectiveServings());
+            ingredientAggregationService.aggregateRecipe(activeList, recipe, servings, excluded, dish.mealPlanItemId());
+        }
+
+        ShoppingList saved = shoppingListRepository.save(activeList);
+        return toShoppingListResponse(saved);
+    }
+
     public ShoppingListResponse importRecipeIngredients(Long userId, ImportRecipeRequest request) {
         ShoppingList activeList = shoppingListRepository.findByUserIdAndStatus(userId, ShoppingListStatus.ACTIVE)
                 .orElseGet(() -> createDefaultActiveList(userId));
@@ -282,8 +331,20 @@ public class ShoppingListService {
                 totalItems,
                 checkedItems,
                 clearedItems,
-                aisleGroups
+                aisleGroups,
+                recipeCovers(items)
         );
+    }
+
+    private Map<Long, String> recipeCovers(List<ShoppingListItem> items) {
+        Set<Long> recipeIds = items.stream()
+                .filter(i -> !i.isCleared() && i.getSources() != null)
+                .flatMap(i -> i.getSources().stream())
+                .map(ShoppingListItemSource::getRecipeId)
+                .filter(java.util.Objects::nonNull)
+                .collect(Collectors.toSet());
+        // null in unit tests that build the service with mocks only
+        return recipeCoverPort == null || recipeIds.isEmpty() ? Map.of() : recipeCoverPort.findCovers(recipeIds);
     }
 
     private String resolveUnitName(Long unitId, String transientName) {

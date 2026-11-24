@@ -85,14 +85,15 @@ import java.util.Optional;
 
 public interface MealPlanHandoffPort {
     /**
-     * Lấy kế hoạch tuần của người dùng theo mealPlanId hoặc tuần chỉ định
+     * Các món còn khả dụng của tuần (weekStart = thứ Hai), lấy qua MealPlanShoppingFacade của 030.
+     * Rỗng khi tuần không có món nào. Nguyên liệu tùy chọn (is_optional) bị bỏ qua.
      */
-    Optional<MealPlanHandoffDto> getMealPlanForShoppingList(Long userId, Long mealPlanId);
+    Optional<MealPlanHandoffDto> getMealPlanForShoppingList(Long userId, LocalDate weekStart);
 
     record MealPlanHandoffDto(
-        Long mealPlanId,
         LocalDate weekStart,
-        List<MealPlanItemHandoffDto> items
+        List<MealPlanItemHandoffDto> items,
+        int skippedUnavailable // số món 030 bỏ qua vì không còn khả dụng
     ) {}
 
     record MealPlanItemHandoffDto(

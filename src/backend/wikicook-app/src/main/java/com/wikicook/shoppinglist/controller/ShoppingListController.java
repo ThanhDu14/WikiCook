@@ -2,6 +2,7 @@ package com.wikicook.shoppinglist.controller;
 
 import com.wikicook.common.security.CurrentUser;
 import com.wikicook.shoppinglist.dto.CreateCustomItemRequest;
+import com.wikicook.shoppinglist.dto.ImportMealPlanRequest;
 import com.wikicook.shoppinglist.dto.ImportRecipeRequest;
 import com.wikicook.shoppinglist.dto.ItemProvenanceDto;
 import com.wikicook.shoppinglist.dto.ShoppingListResponse;
@@ -88,6 +89,12 @@ public class ShoppingListController {
     public ResponseEntity<Void> deleteShoppingListItem(@PathVariable UUID clientUuid) {
         shoppingListService.deleteItem(currentUser.id(), clientUuid);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping({"/import/meal-plan", "/active/import/meal-plan"})
+    public ResponseEntity<ShoppingListResponse> importMealPlanIngredients(
+            @Valid @RequestBody ImportMealPlanRequest request) {
+        return ResponseEntity.ok(shoppingListService.importMealPlan(currentUser.id(), request));
     }
 
     @PostMapping({"/import/recipe", "/active/import/recipe"})

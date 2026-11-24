@@ -39,6 +39,21 @@ public class IngredientAggregationService {
             BigDecimal targetServings,
             Set<Long> excludedIngredientIds
     ) {
+        aggregateRecipe(activeList, recipe, targetServings, excludedIngredientIds, null);
+    }
+
+    /**
+     * Adds the scaled ingredients of one recipe to the list. {@code mealPlanItemId} is the planner dish they came from
+     * (030), kept on each provenance row; {@code null} for a standalone recipe. An ingredient without a quantity
+     * ("vừa đủ") stays without one: it is listed once and its sources are recorded, nothing is summed.
+     */
+    public void aggregateRecipe(
+            ShoppingList activeList,
+            RecipeImportDto recipe,
+            BigDecimal targetServings,
+            Set<Long> excludedIngredientIds,
+            Long mealPlanItemId
+    ) {
         if (targetServings == null || targetServings.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Target servings must be positive");
         }
@@ -63,8 +78,7 @@ public class IngredientAggregationService {
                 continue;
             }
 
-            BigDecimal rawQty = ingredient.rawQuantity() != null ? ingredient.rawQuantity() : BigDecimal.ONE;
-            BigDecimal scaledQty = rawQty.multiply(multiplier);
+            BigDecimal scaledQty = ingredient.rawQuantity() != null ? ingredient.rawQuantity().multiply(multiplier) : null;
 
             // Match existing item with same ingredientId and compatible unit
             Optional<ShoppingListItem> matchedItemOpt = activeList.getItems().stream()
@@ -75,10 +89,17 @@ public class IngredientAggregationService {
 
             if (matchedItemOpt.isPresent()) {
                 ShoppingListItem existingItem = matchedItemOpt.get();
-                UnitQuantityResult sumResult = sumQuantities(existingItem, ingredient, scaledQty);
-                existingItem.setQuantity(sumResult.quantity());
-                existingItem.setUnitId(sumResult.unitId());
-                existingItem.setUnitName(sumResult.unitName());
+                if (scaledQty != null && existingItem.getQuantity() != null) {
+                    UnitQuantityResult sumResult = sumQuantities(existingItem, ingredient, scaledQty);
+                    existingItem.setQuantity(sumResult.quantity());
+                    existingItem.setUnitId(sumResult.unitId());
+                    existingItem.setUnitName(sumResult.unitName());
+                } else if (scaledQty != null) {
+                    UnitQuantityResult normalized = normalizeQuantityAndUnit(scaledQty, ingredient.unitId(), ingredient.unitName());
+                    existingItem.setQuantity(normalized.quantity());
+                    existingItem.setUnitId(normalized.unitId());
+                    existingItem.setUnitName(normalized.unitName());
+                }
 
                 // FR-016: uncheck purchased item if additional quantity is merged
                 existingItem.setChecked(false);
@@ -91,7 +112,7 @@ public class IngredientAggregationService {
                 ShoppingListItemSource source = new ShoppingListItemSource(
                         existingItem,
                         recipe.recipeId(),
-                        null,
+                        mealPlanItemId,
                         recipe.title(),
                         scaledQty,
                         ingredient.unitId(),
@@ -122,7 +143,7 @@ public class IngredientAggregationService {
                 ShoppingListItemSource source = new ShoppingListItemSource(
                         newItem,
                         recipe.recipeId(),
-                        null,
+                        mealPlanItemId,
                         recipe.title(),
                         scaledQty,
                         ingredient.unitId(),
@@ -184,10 +205,26 @@ public class IngredientAggregationService {
     private Long getUnitIdForName(String name, Long fallbackId) {
         if (name == null || name.isBlank()) return fallbackId;
         String clean = name.trim();
-        return unitRepository.findByCode(clean)
-                .or(() -> unitRepository.findByNameVi(clean))
-                .map(Unit::getId)
-                .orElse(fallbackId);
+        // No conversion happened: the unit is still the one the caller sent, keep its id
+        if (fallbackId != null && clean.equalsIgnoreCase(getUnitNameForIdSafe(fallbackId))) {
+            return fallbackId;
+        }
+        try {
+            return unitRepository.findByCode(clean)
+                    .or(() -> unitRepository.findByNameVi(clean))
+                    .map(Unit::getId)
+                    .orElse(fallbackId);
+        } catch (org.springframework.dao.IncorrectResultSizeDataAccessException e) {
+            return fallbackId; // several units share this name: keep the caller's
+        }
+    }
+
+    private String getUnitNameForIdSafe(Long id) {
+        try {
+            return getUnitNameForId(id);
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     // Precedence: defaultAisleCode -> defaultAisleCategoryId -> 6L (GENERAL fallback).

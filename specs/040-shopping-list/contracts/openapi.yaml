@@ -343,7 +343,7 @@ paths:
   /shopping-lists/import/meal-plan:
     post:
       summary: Tạo hoặc gộp danh sách mua sắm từ Kế hoạch ăn tuần (Weekly Meal Plan 030/031)
-      description: Nhận mealPlanId, chế độ (MERGE hoặc ARCHIVE_AND_NEW), danh sách excludedIngredientIds và servingOverrides. Chống gửi trùng lặp bằng Idempotency-Key.
+      description: Nhận weekStart (thứ Hai của tuần, yyyy-MM-dd), chế độ (MERGE hoặc ARCHIVE_AND_NEW), danh sách excludedIngredientIds và servingOverrides. Chống gửi trùng lặp bằng Idempotency-Key.
       operationId: importMealPlanIngredients
       parameters:
         - name: Idempotency-Key
@@ -726,12 +726,13 @@ components:
     ImportMealPlanRequest:
       type: object
       required:
-        - mealPlanId
+        - weekStart
         - mode
       properties:
-        mealPlanId:
-          type: integer
-          format: int64
+        weekStart:
+          type: string
+          format: date
+          description: Thứ Hai của tuần cần nhập, như route của 030 (`/meal-plans/{week}`)
         mode:
           type: string
           enum: [MERGE, ARCHIVE_AND_NEW]

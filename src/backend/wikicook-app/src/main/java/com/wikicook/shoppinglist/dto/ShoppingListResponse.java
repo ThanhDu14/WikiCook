@@ -1,6 +1,7 @@
 package com.wikicook.shoppinglist.dto;
 
 import java.util.List;
+import java.util.Map;
 
 public record ShoppingListResponse(
     Long id,
@@ -9,5 +10,7 @@ public record ShoppingListResponse(
     int totalItems,
     int checkedItems,
     int clearedItems,
-    List<AisleGroupDto> aisleGroups
+    List<AisleGroupDto> aisleGroups,
+    /** Recipe id → cover photo, for the recipes the items came from that have one. */
+    Map<Long, String> recipeCovers
 ) {}

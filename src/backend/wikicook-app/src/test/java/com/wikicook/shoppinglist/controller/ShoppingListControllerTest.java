@@ -76,7 +76,8 @@ class ShoppingListControllerTest {
                 0,
                 0,
                 0,
-                Collections.emptyList()
+                Collections.emptyList(),
+                java.util.Map.of()
         );
     }
 

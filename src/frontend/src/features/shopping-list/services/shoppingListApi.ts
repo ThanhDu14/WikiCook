@@ -1,5 +1,11 @@
 import { api, API_BASE, fetchJson } from '@/shared/api/client';
-import type { CreateCustomItemRequest, ImportRecipeRequest, ItemProvenance, ShoppingList } from './types';
+import type {
+  CreateCustomItemRequest,
+  ImportMealPlanRequest,
+  ImportRecipeRequest,
+  ItemProvenance,
+  ShoppingList,
+} from './types';
 
 const BASE = '/shopping-lists';
 
@@ -24,6 +30,14 @@ export const shoppingListApi = {
   /** The Idempotency-Key lets the backend drop a double-click repeat (contracts/integration.md 3.1). */
   importRecipe: (request: ImportRecipeRequest, idempotencyKey: string) =>
     fetchJson<ShoppingList>(`${API_BASE}${BASE}/active/import/recipe`, {
+      method: 'POST',
+      body: JSON.stringify(request),
+      headers: { 'Idempotency-Key': idempotencyKey },
+    }),
+
+  /** Every available dish of a week, scaled and summed (US2 FR-004). */
+  importMealPlan: (request: ImportMealPlanRequest, idempotencyKey: string) =>
+    fetchJson<ShoppingList>(`${API_BASE}${BASE}/active/import/meal-plan`, {
       method: 'POST',
       body: JSON.stringify(request),
       headers: { 'Idempotency-Key': idempotencyKey },

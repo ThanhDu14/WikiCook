@@ -41,6 +41,8 @@ export interface ShoppingList {
   checkedItems: number;
   clearedItems: number;
   aisleGroups: AisleGroup[];
+  /** Recipe id → cover photo URL, for the recipes of the list that have one. */
+  recipeCovers?: Record<string, string>;
 }
 
 export interface CreateCustomItemRequest {
@@ -49,6 +51,12 @@ export interface CreateCustomItemRequest {
   quantity?: number;
   unitName?: string;
   aisleCategoryId?: number;
+}
+
+/** Body of POST /shopping-lists/active/import/meal-plan (US2 FR-004); the week is its Monday (yyyy-MM-dd). */
+export interface ImportMealPlanRequest {
+  weekStart: string;
+  mode: 'MERGE' | 'ARCHIVE_AND_NEW';
 }
 
 export interface ImportRecipeRequest {
