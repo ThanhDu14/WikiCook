@@ -52,6 +52,8 @@ public final class PublicRoutes {
             PATHS.matcher(HttpMethod.GET, "/api/v1/profiles/*"),
             PATHS.matcher(HttpMethod.GET, "/api/v1/profiles/*/recipes"),
             PATHS.matcher(HttpMethod.GET, "/api/v1/media/avatars/*"),
+            // 060: the detail page of a published recipe (a draft answers 404 to everyone but its author)
+            PATHS.matcher(HttpMethod.GET, "/api/v1/recipes/{id}"),
             // 070: public recipe reviews
             PATHS.matcher(HttpMethod.GET, "/api/v1/recipes/*/reviews"));
 

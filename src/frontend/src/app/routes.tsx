@@ -1,4 +1,4 @@
-import { Navigate, type RouteObject } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 import { AccessDeniedPage } from '@/features/auth/pages/AccessDeniedPage';
 import { AuthCallbackPage } from '@/features/auth/pages/AuthCallbackPage';
 import { AccountStatusPage } from '@/features/auth/pages/AccountStatusPage';
@@ -13,12 +13,13 @@ import { MealPlannerPage } from '@/features/meal-planner/pages/MealPlannerPage';
 import { HomePage } from '@/features/search/pages/HomePage';
 import { SearchResultsPage } from '@/features/search/pages/SearchResultsPage';
 import { ShoppingHistoryPage } from '@/features/shopping-list/ShoppingHistoryPage';
+import { ShoppingListImportRedirect } from '@/features/shopping-list/ShoppingListImportRedirect';
 import { ShoppingListPage } from '@/features/shopping-list/ShoppingListPage';
 import { CookingPage } from '@/features/cooking-mode/pages/CookingPage';
 import { DietaryProfilePage } from '@/features/profile/pages/DietaryProfilePage';
 import { EditProfilePage } from '@/features/profile/pages/EditProfilePage';
 import { MyAccountPage } from '@/features/profile/pages/MyAccountPage';
-import { RecipeReviewsPage } from '@/features/reviews/RecipeReviewsPage';
+import { RecipeDetailPage } from '@/features/recipe-detail/pages/RecipeDetailPage';
 import { PublicProfilePage } from '@/features/profile/pages/PublicProfilePage';
 import { AppLayout } from './AppLayout';
 import { NotFoundPage } from './NotFoundPage';
@@ -59,7 +60,7 @@ export const routes: RouteObject[] = [
       { path: 'search', element: <SearchResultsPage /> },
       { path: 'access-denied', element: <AccessDeniedPage /> },
       // Reviews & Cooksnap (070, W-RV01): public to read; writing asks a guest to sign in.
-      { path: 'recipes/:id', element: <RecipeReviewsPage /> },
+      { path: 'recipes/:id', element: <RecipeDetailPage /> },
       // The public page of a person (011 FR-005): a guest may open it, so it is outside the member routes.
       { path: 'profiles/:id', element: <PublicProfilePage /> },
       // Member pages: a guest is sent to /login?redirect=; an expired session keeps the page (SessionExpiredDialog).
@@ -81,10 +82,10 @@ export const routes: RouteObject[] = [
           { path: 'shopping-list/history', element: <ShoppingHistoryPage /> },
         ],
       },
-      // The import of a week (030 "Đi chợ", 031 "Lưu thực đơn") is D's page, not built yet (040 T041/T044/T045 in PA4):
-      // until then it opens the shopping list instead of the not-found page.
-      { path: 'shopping-list/import', element: <Navigate to="/shopping-list" replace /> },
+      // The import of a week (030 "Đi chợ", 031 "Lưu thực đơn"): the list opens its import dialog for ?weekStart=.
+      { path: 'shopping-list/import', element: <ShoppingListImportRedirect /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
 ];
+

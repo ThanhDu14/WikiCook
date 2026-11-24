@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ApiError } from '@/shared/api/client';
 import { shoppingListApi } from '../services/shoppingListApi';
-import { GENERAL_AISLE_ID, MAX_LIST_ITEMS, type ImportRecipeRequest, type ShoppingList } from '../services/types';
+import {
+  GENERAL_AISLE_ID,
+  MAX_LIST_ITEMS,
+  type ImportMealPlanRequest,
+  type ImportRecipeRequest,
+  type ShoppingList,
+} from '../services/types';
 
 export interface NewCustomItem {
   name: string;
@@ -13,6 +19,9 @@ export interface NewCustomItem {
 /** Maps a failure to a message: only a fetch that never got a response counts as "cannot connect". */
 function describe(error: unknown): string {
   if (error instanceof ApiError) {
+    if (error.status === 422 && error.problem?.code === 'EMPTY_MEAL_PLAN') {
+      return 'Thực đơn tuần này chưa có món nào để đi chợ.';
+    }
     if (error.status === 422) return `Danh sách đã đủ ${MAX_LIST_ITEMS} món. Hãy dọn bớt trước khi thêm.`;
     if (error.status === 404) return 'Không tìm thấy danh sách hoặc món này nữa.';
     if (error.status >= 500) return 'Máy chủ đang gặp sự cố. Vui lòng thử lại sau.';
@@ -115,5 +124,12 @@ export function useShoppingList() {
     [mutate],
   );
 
-  return { list, loading, error, reload, rename, addItem, deleteItem, archive, restore, importRecipe };
+  /** One click is one import: the key travels with the request so a repeat can be recognised (FR-004). */
+  const importMealPlan = useCallback(
+    (request: ImportMealPlanRequest, idempotencyKey: string = crypto.randomUUID()) =>
+      mutate(() => shoppingListApi.importMealPlan(request, idempotencyKey)),
+    [mutate],
+  );
+
+  return { list, loading, error, reload, rename, addItem, deleteItem, archive, restore, importRecipe, importMealPlan };
 }

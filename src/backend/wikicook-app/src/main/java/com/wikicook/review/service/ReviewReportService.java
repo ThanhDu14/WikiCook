@@ -32,17 +32,20 @@ public class ReviewReportService {
     private final ReviewRepository reviewRepository;
     private final CooksnapRepository cooksnapRepository;
     private final JdbcTemplate jdbcTemplate;
+    private final StorageService storageService;
 
     public ReviewReportService(
             ReportRepository reportRepository,
             ReviewRepository reviewRepository,
             CooksnapRepository cooksnapRepository,
-            JdbcTemplate jdbcTemplate
+            JdbcTemplate jdbcTemplate,
+            StorageService storageService
     ) {
         this.reportRepository = reportRepository;
         this.reviewRepository = reviewRepository;
         this.cooksnapRepository = cooksnapRepository;
         this.jdbcTemplate = jdbcTemplate;
+        this.storageService = storageService;
     }
 
     @Transactional
@@ -79,6 +82,7 @@ public class ReviewReportService {
         if (openCount >= 10 && review.getStatus() == ReviewStatus.VISIBLE) {
             lockRecipe(review.getRecipeId());
             review.hide();
+            review.getCooksnaps().forEach(cs -> storageService.registerPostCommitHide(cs.getStorageKey()));
             reviewRepository.save(review);
             reviewRepository.updateRecipeRatingStats(review.getRecipeId());
             log.info("Review {} auto-quarantined due to {} open reports", reviewId, openCount);
@@ -121,6 +125,7 @@ public class ReviewReportService {
         if (openCount >= 10 && cooksnap.getStatus() == ReviewStatus.VISIBLE) {
             cooksnap.hide();
             cooksnapRepository.save(cooksnap);
+            storageService.registerPostCommitHide(cooksnap.getStorageKey());
             log.info("Cooksnap {} auto-quarantined due to {} open reports", cooksnapId, openCount);
         }
 

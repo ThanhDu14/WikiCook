@@ -103,6 +103,17 @@ wikicook:
   profile:
     media-dir: ${WIKICOOK_MEDIA_DIR:./.media}
     write-limit-per-hour: 20
+  # Uploaded media (avatars, Cooksnaps): local disk under profile.media-dir, or a private S3 bucket.
+  # Credentials are never set here: IAM role on AWS, otherwise AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY.
+  media:
+    storage: ${WIKICOOK_MEDIA_STORAGE:local}
+    # CloudFront in front of the bucket, e.g. https://dxxxx.cloudfront.net; blank = serve through /api/v1/media/**
+    public-base-url: ${WIKICOOK_MEDIA_PUBLIC_BASE_URL:}
+    s3:
+      bucket: ${WIKICOOK_MEDIA_S3_BUCKET:}
+      region: ${WIKICOOK_MEDIA_S3_REGION:${AWS_REGION:}}
+      # Only for LocalStack/MinIO in development
+      endpoint: ${WIKICOOK_MEDIA_S3_ENDPOINT:}
   # Dev stand-ins for 010/011 (com.wikicook.devstub); never enable in production.
   dev-stubs:
     enabled: ${WIKICOOK_DEV_STUBS_ENABLED:false}

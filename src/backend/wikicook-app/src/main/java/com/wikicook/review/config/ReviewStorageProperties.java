@@ -8,11 +8,6 @@ import java.util.List;
 public class ReviewStorageProperties {
 
     /**
-     * Filesystem root path for storing uploaded Cooksnap images.
-     */
-    private String rootPath = "uploads/cooksnaps/";
-
-    /**
      * Maximum file size in bytes for a single Cooksnap image (default: 5 MB).
      */
     private long maxSizeBytes = 5 * 1024 * 1024L;
@@ -21,14 +16,6 @@ public class ReviewStorageProperties {
      * Allowed MIME types for Cooksnap uploads.
      */
     private List<String> allowedMimeTypes = List.of("image/jpeg", "image/png", "image/webp");
-
-    public String getRootPath() {
-        return rootPath;
-    }
-
-    public void setRootPath(String rootPath) {
-        this.rootPath = rootPath;
-    }
 
     public long getMaxSizeBytes() {
         return maxSizeBytes;

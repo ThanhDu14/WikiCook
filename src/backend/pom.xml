@@ -36,10 +36,19 @@
         <jacoco.version>0.8.16</jacoco.version>
         <springdoc.version>2.8.13</springdoc.version>
         <imageio-webp.version>3.15.3</imageio-webp.version>
+        <awssdk.version>2.59.8</awssdk.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- AWS SDK v2: S3 for uploaded media (avatars, Cooksnaps) -->
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${awssdk.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>com.wikicook</groupId>
                 <artifactId>wikicook-db</artifactId>

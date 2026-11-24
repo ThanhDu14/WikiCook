@@ -290,7 +290,11 @@ describe('HomePage (T026, T027, T033, SR-01 / W-SR01)', () => {
           ],
         });
       }),
-      http.get('/api/v1/recipes/search', () => {
+      http.get('/api/v1/recipes/search', ({ request }) => {
+        // the category rows and tiles search too; only the "Mới đăng" row is counted here
+        if (new URL(request.url).searchParams.get('sort') !== 'NEWEST') {
+          return HttpResponse.json(makeNewestResponse([]));
+        }
         newestCalls += 1;
         return HttpResponse.json(makeNewestResponse(sixNewestRecipes));
       }),
@@ -337,7 +341,11 @@ describe('HomePage (T026, T027, T033, SR-01 / W-SR01)', () => {
           ],
         });
       }),
-      http.get('/api/v1/recipes/search', () => {
+      http.get('/api/v1/recipes/search', ({ request }) => {
+        // the category rows and tiles search too; only the "Mới đăng" row is counted here
+        if (new URL(request.url).searchParams.get('sort') !== 'NEWEST') {
+          return HttpResponse.json(makeNewestResponse([]));
+        }
         newestCalls += 1;
         if (failNewest) {
           return HttpResponse.json({ status: 500 }, { status: 500 });

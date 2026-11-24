@@ -2,7 +2,7 @@ package com.wikicook.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wikicook.auth.domain.UserAccount;
-import com.wikicook.common.media.AvatarUrls;
+import com.wikicook.common.media.MediaUrls;
 import com.wikicook.common.security.Role;
 
 /**
@@ -18,6 +18,6 @@ public record CurrentAccountDto(Long id, String displayName, String email, Role 
         RoleNoticeDto notice = user.getPendingRoleNoticeFrom() == null ? null
                 : new RoleNoticeDto(user.getPendingRoleNoticeFrom(), user.getRole());
         return new CurrentAccountDto(user.getId(), user.getDisplayName(), user.getEmail(), user.getRole(),
-                user.isEmailVerified(), notice, AvatarUrls.of(user.getAvatarStorageKey()));
+                user.isEmailVerified(), notice, MediaUrls.of(user.getAvatarStorageKey()));
     }
 }

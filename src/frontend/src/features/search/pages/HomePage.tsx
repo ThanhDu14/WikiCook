@@ -1,48 +1,61 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { RecipeCard } from '@/shared/ui/RecipeCard';
+import { AuthContext } from '@/features/auth/authContext';
 import { searchApi } from '../api/searchApi';
+import { CategoryTile } from '../components/CategoryTile';
 import { QuickFilters } from '../components/QuickFilters';
+import { RecipeRow } from '../components/RecipeRow';
 import { SearchBox } from '../components/SearchBox';
 import { strings } from '../strings.vi';
 import type { RecipeCard as RecipeCardType } from '../types';
 
+/** Categories offered as tiles under the hero, slugs of GET /recipes/search/options. */
+const CATEGORY_TILES = [
+  { slug: 'mon-kho', name: 'Món kho', tone: 'warm' },
+  { slug: 'mon-canh', name: 'Món canh', tone: 'olive' },
+  { slug: 'mon-xao', name: 'Món xào', tone: 'saffron' },
+  { slug: 'mon-nuoc', name: 'Món nước', tone: 'cream' },
+  { slug: 'mon-chien', name: 'Món chiên', tone: 'warm' },
+  { slug: 'mon-nuong', name: 'Món nướng', tone: 'saffron' },
+  { slug: 'mon-lau', name: 'Món lẩu', tone: 'olive' },
+  { slug: 'mon-chay', name: 'Món chay', tone: 'cream' },
+] as const;
+
+/** Rows of everyday family dishes, so the page is not only the latest posts. */
+const CATEGORY_ROWS = [
+  { slug: 'mon-kho', title: 'Món kho đưa cơm', subtitle: 'Đậm đà, để được lâu, hợp bữa cơm nhà' },
+  { slug: 'mon-canh', title: 'Canh cho bữa cơm', subtitle: 'Thanh mát, nấu nhanh trong 30 phút' },
+  { slug: 'mon-xao', title: 'Món xào nhanh gọn', subtitle: 'Lửa lớn, vài phút là xong' },
+] as const;
+
+const loadNewest = () => searchApi.searchRecipes({ sort: 'NEWEST' });
+const rowLoaders = Object.fromEntries(
+  CATEGORY_ROWS.map((row) => [row.slug, () => searchApi.searchRecipes({ category: [row.slug] })]),
+);
+
 export function HomePage() {
   const navigate = useNavigate();
+  const displayName = useContext(AuthContext)?.account?.displayName;
 
-  const [featured, setFeatured] = useState<RecipeCardType[]>([]);
+  const [featured, setFeatured] = useState<RecipeCardType | null>(null);
   const [loadingFeatured, setLoadingFeatured] = useState(true);
   const [errorFeatured, setErrorFeatured] = useState(false);
-
-  const [newest, setNewest] = useState<RecipeCardType[]>([]);
-  const [loadingNewest, setLoadingNewest] = useState(true);
-  const [errorNewest, setErrorNewest] = useState(false);
+  const [coverFailed, setCoverFailed] = useState(false);
 
   // setState only after the response, so the effect below never sets state synchronously.
   const fetchFeatured = useCallback(
     () =>
       searchApi
         .getFeaturedRecipes()
-        .then((res) => setFeatured(res.items))
+        .then((res) => setFeatured(res.items[0] ?? null))
         .catch(() => setErrorFeatured(true))
         .finally(() => setLoadingFeatured(false)),
     [],
   );
 
-  const fetchNewest = useCallback(
-    () =>
-      searchApi
-        .searchRecipes({ sort: 'NEWEST' })
-        .then((res) => setNewest(res.items))
-        .catch(() => setErrorNewest(true))
-        .finally(() => setLoadingNewest(false)),
-    [],
-  );
-
   useEffect(() => {
     void fetchFeatured();
-    void fetchNewest();
-  }, [fetchFeatured, fetchNewest]);
+  }, [fetchFeatured]);
 
   const retryFeatured = () => {
     setLoadingFeatured(true);
@@ -50,114 +63,75 @@ export function HomePage() {
     void fetchFeatured();
   };
 
-  const retryNewest = () => {
-    setLoadingNewest(true);
-    setErrorNewest(false);
-    void fetchNewest();
-  };
-
   const handleSearch = (keyword: string) => {
     const trimmed = keyword.trim();
-    if (trimmed) {
-      const params = new URLSearchParams({ q: trimmed });
-      navigate(`/search?${params.toString()}`);
-    } else {
-      navigate('/search');
-    }
+    navigate(trimmed ? `/search?${new URLSearchParams({ q: trimmed }).toString()}` : '/search');
   };
 
-  const featuredRecipe = featured[0] ?? null;
+  const cover = featured?.coverImageUrl && !coverFailed ? featured.coverImageUrl : null;
 
   return (
-    <div className="wk-desktop flex flex-col gap-ds-6">
-      <section className="wx-hero">
-        <div className="sx-stack gap-5">
-          <p className="wk-eyebrow">{strings.home.greeting}</p>
+    <div className="wk-desktop flex flex-col gap-ds-7">
+      <section className={`wx-hero wx-home-hero${cover ? ' has-cover' : ''}`}>
+        {cover && <img className="wx-home-hero__bg" src={cover} alt="" onError={() => setCoverFailed(true)} />}
+        {loadingFeatured && <div className="wx-home-hero__bg wk-skel" aria-busy="true" data-testid="featured-skeleton" />}
+
+        <div className="wx-home-hero__content">
+          <p className="wk-eyebrow">{displayName ? `Chào ${displayName}` : strings.home.greeting}</p>
           <h1 className="wk-display">{strings.home.title}</h1>
-          <SearchBox
-            onSearch={handleSearch}
-            inputClassName="min-h-[56px] min-[901px]:min-h-[60px] shadow-1"
-          />
+          <SearchBox onSearch={handleSearch} inputClassName="min-h-[56px] min-[901px]:min-h-[60px] shadow-2" />
           <QuickFilters />
         </div>
 
-        {loadingFeatured && (
-          <div
-            className="wk-skel min-h-[260px] rounded-md"
-            aria-busy="true"
-            data-testid="featured-skeleton"
-          />
-        )}
-
         {!loadingFeatured && errorFeatured && (
-          <div className="wk-state wk-state--error" role="alert">
+          <div className="wx-home-hero__featured wk-state wk-state--error" role="alert">
             <p>{strings.home.featuredError}</p>
-            <button
-              type="button"
-              className="wk-btn wk-btn--secondary wk-btn--sm"
-              onClick={retryFeatured}
-            >
+            <button type="button" className="wk-btn wk-btn--secondary wk-btn--sm" onClick={retryFeatured}>
               {strings.errorState.retry}
             </button>
           </div>
         )}
 
-        {!loadingFeatured && !errorFeatured && featuredRecipe && (
-          <RecipeCard
-            recipe={featuredRecipe}
-            featured
-            badge={strings.home.featuredBadge}
-          />
+        {!loadingFeatured && !errorFeatured && featured && (
+          <Link to={`/recipes/${featured.id}`} state={{ title: featured.title }} className="wx-home-hero__featured">
+            <span className="wk-badge wk-badge--ai">{strings.home.featuredBadge}</span>
+            <strong className="wx-home-hero__title">{featured.title}</strong>
+            <span className="wk-small wk-muted">
+              {strings.recipeCard.timeMinutes(featured.totalTimeMinutes)} · {strings.difficulty[featured.difficulty] ?? featured.difficulty}
+            </span>
+          </Link>
         )}
       </section>
 
-      {(loadingNewest || errorNewest || newest.length > 0) && (
-        <section className="flex flex-col gap-ds-4" aria-labelledby="newest-heading">
-          <div className="wx-head">
-            <div>
-              <h2 id="newest-heading">{strings.home.newRecipesTitle}</h2>
-            </div>
-            <div className="sx-row flex-wrap">
-              <Link to="/search?sort=NEWEST" className="wk-link inline-flex min-h-[44px] items-center">
-                {strings.home.viewAll}
-              </Link>
-            </div>
-          </div>
+      <section aria-labelledby="categories-heading" className="flex flex-col gap-ds-4">
+        <h2 id="categories-heading">Tìm theo loại món</h2>
+        <nav className="wx-home-cats" aria-label="Loại món">
+          {CATEGORY_TILES.map((tile) => (
+            <CategoryTile key={tile.slug} slug={tile.slug} name={tile.name} tone={tile.tone} />
+          ))}
+        </nav>
+      </section>
 
-          {loadingNewest && (
-            <div
-              className="wx-cards wx-cards--4"
-              aria-busy="true"
-              data-testid="newest-skeleton"
-            >
-              {[0, 1, 2, 3].map((i) => (
-                <div key={i} className="wk-skel min-h-[240px] rounded-md" />
-              ))}
-            </div>
-          )}
+      <RecipeRow
+        id="newest-heading"
+        title={strings.home.newRecipesTitle}
+        viewAllTo="/search?sort=NEWEST"
+        load={loadNewest}
+        errorText={strings.home.newestError}
+        skeletonTestId="newest-skeleton"
+      />
 
-          {!loadingNewest && errorNewest && (
-            <div className="wk-state wk-state--error" role="alert">
-              <p>{strings.home.newestError}</p>
-              <button
-                type="button"
-                className="wk-btn wk-btn--secondary wk-btn--sm"
-                onClick={retryNewest}
-              >
-                {strings.errorState.retry}
-              </button>
-            </div>
-          )}
-
-          {!loadingNewest && !errorNewest && newest.length > 0 && (
-            <div className="wx-cards wx-cards--4">
-              {newest.slice(0, 4).map((recipe) => (
-                <RecipeCard key={recipe.id} recipe={recipe} />
-              ))}
-            </div>
-          )}
-        </section>
-      )}
+      {CATEGORY_ROWS.map((row) => (
+        <RecipeRow
+          key={row.slug}
+          id={`row-${row.slug}`}
+          title={row.title}
+          subtitle={row.subtitle}
+          viewAllTo={`/search?category=${row.slug}`}
+          load={rowLoaders[row.slug]}
+          errorText="Không tải được danh sách món."
+        />
+      ))}
     </div>
   );
 }

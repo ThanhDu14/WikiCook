@@ -92,11 +92,19 @@ class F1_CrossRequestImportMergesIT {
         """);
 
         jdbcTemplate.update("""
-            INSERT INTO recipes (id, title, status) OVERRIDING SYSTEM VALUE
+            INSERT INTO recipes (id, title, status, servings) OVERRIDING SYSTEM VALUE
             VALUES
-                (1, 'Bò kho', 'DRAFT'),
-                (2, 'Bò xào cần tây', 'DRAFT')
-            ON CONFLICT (id) DO NOTHING
+                (1, 'Bò kho', 'DRAFT', 2),
+                (2, 'Bò xào cần tây', 'DRAFT', 4)
+            ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, servings = EXCLUDED.servings
+        """);
+        // the recipes are read from the database by 060's JdbcRecipeImportAdapter
+        jdbcTemplate.update("DELETE FROM recipe_ingredients WHERE recipe_id IN (1, 2)");
+        jdbcTemplate.update("""
+            INSERT INTO recipe_ingredients (recipe_id, ingredient_id, unit_id, quantity, position)
+            VALUES
+                (1, 1, 1, 300, 1), (1, 2, 6, 2, 2), (1, 3, 7, 3, 3),
+                (2, 1, 1, 400, 1), (2, 4, 1, 200, 2), (2, 5, 6, 1, 3)
         """);
     }
 

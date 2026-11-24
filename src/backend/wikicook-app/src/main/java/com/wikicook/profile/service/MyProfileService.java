@@ -1,6 +1,6 @@
 package com.wikicook.profile.service;
 
-import com.wikicook.common.media.AvatarUrls;
+import com.wikicook.common.media.MediaUrls;
 import com.wikicook.common.media.MediaStorage;
 import com.wikicook.common.security.AccountStatus;
 import com.wikicook.common.security.Role;
@@ -149,6 +149,6 @@ public class MyProfileService {
                 AccountStatus.valueOf(account.getStatus()), account.getEmailVerified(), account.getHasPassword(),
                 account.getGoogleLinked(), account.getCreatedAt());
         return new MyProfileDto(profile.getId(), profile.getDisplayName(), profile.getBio(),
-                AvatarUrls.of(profile.getAvatarStorageKey()), profile.getProfileVersion(), info);
+                MediaUrls.of(profile.getAvatarStorageKey()), profile.getProfileVersion(), info);
     }
 }
