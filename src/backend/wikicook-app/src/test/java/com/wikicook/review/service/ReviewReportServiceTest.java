@@ -46,6 +46,9 @@ class ReviewReportServiceTest {
     @Mock
     private JdbcTemplate jdbcTemplate;
 
+    @Mock
+    private StorageService storageService;
+
     private ReviewReportService reportService;
 
     @BeforeEach
@@ -54,7 +57,8 @@ class ReviewReportServiceTest {
                 reportRepository,
                 reviewRepository,
                 cooksnapRepository,
-                jdbcTemplate
+                jdbcTemplate,
+                storageService
         );
     }
 
@@ -194,7 +198,8 @@ class ReviewReportServiceTest {
     void testTenthReportAutoQuarantinesCooksnap() {
         Long cooksnapId = 55L;
         Long reporterId = 310L;
-        Cooksnap cooksnap = Cooksnap.builder().id(cooksnapId).userId(200L).status(ReviewStatus.VISIBLE).build();
+        Cooksnap cooksnap = Cooksnap.builder().id(cooksnapId).userId(200L).storageKey("cs_1_2_ab.webp")
+                .status(ReviewStatus.VISIBLE).build();
         CreateReportRequest request = new CreateReportRequest(ReportReason.COPYRIGHT, "Ảnh trộm bản quyền");
 
         when(cooksnapRepository.findById(cooksnapId)).thenReturn(Optional.of(cooksnap));
@@ -211,6 +216,8 @@ class ReviewReportServiceTest {
         assertThat(response).isNotNull();
         assertThat(cooksnap.getStatus()).isEqualTo(ReviewStatus.HIDDEN);
         verify(cooksnapRepository).save(cooksnap);
+        // the photo leaves the CDN paths once the transaction commits
+        verify(storageService).registerPostCommitHide("cs_1_2_ab.webp");
     }
 }
 

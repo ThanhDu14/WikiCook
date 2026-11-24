@@ -1,6 +1,6 @@
 package com.wikicook.profile.service;
 
-import com.wikicook.common.media.AvatarUrls;
+import com.wikicook.common.media.MediaUrls;
 import com.wikicook.profile.dto.PublicProfileDto;
 import com.wikicook.profile.dto.PublicRecipeCardDto;
 import com.wikicook.profile.dto.PublicRecipePageDto;
@@ -29,7 +29,7 @@ public class PublicProfileService {
 
     public PublicProfileDto get(long userId) {
         PublicRow row = visible(userId);
-        return new PublicProfileDto(row.getId(), row.getDisplayName(), AvatarUrls.of(row.getAvatarStorageKey()), row.getBio(),
+        return new PublicProfileDto(row.getId(), row.getDisplayName(), MediaUrls.of(row.getAvatarStorageKey()), row.getBio(),
                 recipes.countPublishedByAuthor(userId));
     }
 

@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -18,8 +17,6 @@ import org.springframework.core.io.Resource;
  * path inside the root on any operating system.
  */
 public class LocalDiskMediaStorage implements MediaStorage {
-
-    private static final Pattern KEY = Pattern.compile("[A-Za-z0-9][A-Za-z0-9._-]*(/[A-Za-z0-9][A-Za-z0-9._-]*)*");
 
     private final Path root;
 
@@ -69,10 +66,7 @@ public class LocalDiskMediaStorage implements MediaStorage {
     }
 
     private Path resolve(String key) {
-        if (key == null || !KEY.matcher(key).matches()) {
-            throw new IllegalArgumentException("Not a plain relative key");
-        }
-        Path file = root.resolve(key).normalize();
+        Path file = root.resolve(MediaKeys.requireValid(key)).normalize();
         if (!file.startsWith(root)) {
             throw new IllegalArgumentException("Not a plain relative key");
         }

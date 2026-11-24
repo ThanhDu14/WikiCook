@@ -1,5 +1,6 @@
 package com.wikicook.review.service;
 
+import com.wikicook.common.media.MediaUrls;
 import com.wikicook.review.domain.Cooksnap;
 import com.wikicook.review.domain.Review;
 import com.wikicook.review.domain.ReviewHelpfulVote;
@@ -372,6 +373,7 @@ public class ReviewService {
             if (openCount != null && openCount >= 10 && review.getStatus() == ReviewStatus.VISIBLE) {
                 lockAndGetRecipe(review.getRecipeId());
                 review.hide();
+                review.getCooksnaps().forEach(cs -> storageService.registerPostCommitHide(cs.getStorageKey()));
                 reviewRepository.save(review);
                 reviewRepository.updateRecipeRatingStats(review.getRecipeId());
             }
@@ -410,6 +412,7 @@ public class ReviewService {
             if (openCount != null && openCount >= 10 && cooksnap.getStatus() == ReviewStatus.VISIBLE) {
                 cooksnap.hide();
                 cooksnapRepository.save(cooksnap);
+                storageService.registerPostCommitHide(cooksnap.getStorageKey());
             }
         } catch (Exception ignored) {
         }
@@ -463,8 +466,8 @@ public class ReviewService {
                 .map(c -> new CooksnapDto(
                         c.getId(),
                         c.getStorageKey(),
-                        "/api/v1/media/cooksnaps/" + c.getStorageKey(),
-                        "/api/v1/media/cooksnaps/" + c.getStorageKey() + "?thumbnail=true",
+                        MediaUrls.cooksnap(c.getStorageKey(), false),
+                        MediaUrls.cooksnap(c.getStorageKey(), true),
                         c.getCaption(),
                         c.getSizeBytes(),
                         c.getContentType()
@@ -508,7 +511,7 @@ public class ReviewService {
             if (!rows.isEmpty()) {
                 Map<String, Object> u = rows.get(0);
                 String avatarKey = (String) u.get("avatar_storage_key");
-                String avatarUrl = avatarKey != null ? "/api/v1/media/avatars/" + avatarKey : null;
+                String avatarUrl = MediaUrls.of(avatarKey);
                 return new ReviewAuthorDto(
                         userId,
                         (String) u.get("display_name"),

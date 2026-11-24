@@ -58,8 +58,15 @@ services:
       WIKICOOK_GOOGLE_CLIENT_SECRET: ${WIKICOOK_GOOGLE_CLIENT_SECRET:-}
       WIKICOOK_BOOTSTRAP_ADMIN_EMAIL: ${WIKICOOK_BOOTSTRAP_ADMIN_EMAIL:-}
       WIKICOOK_BOOTSTRAP_ADMIN_PASSWORD: ${WIKICOOK_BOOTSTRAP_ADMIN_PASSWORD:-}
-      # Avatars (spec 011 R7): local disk on the media volume
+      # Uploaded media (avatars, Cooksnaps): "local" = the media volume below, "s3" = the bucket
       WIKICOOK_MEDIA_DIR: /var/lib/wikicook/media
+      WIKICOOK_MEDIA_STORAGE: ${WIKICOOK_MEDIA_STORAGE:-local}
+      WIKICOOK_MEDIA_PUBLIC_BASE_URL: ${WIKICOOK_MEDIA_PUBLIC_BASE_URL:-}
+      WIKICOOK_MEDIA_S3_BUCKET: ${WIKICOOK_MEDIA_S3_BUCKET:-}
+      WIKICOOK_MEDIA_S3_REGION: ${WIKICOOK_MEDIA_S3_REGION:-ap-southeast-1}
+      # Leave empty on EC2 with an IAM role (instance profile); set from .env elsewhere
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       TZ: Asia/Ho_Chi_Minh
     ports:
       - "${APP_PORT:-8080}:8080"

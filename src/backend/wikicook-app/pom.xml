@@ -96,6 +96,17 @@
             <artifactId>imageio-jpeg</artifactId>
             <version>3.10.1</version>
         </dependency>
+        <!-- Uploaded media on S3 when wikicook.media.storage=s3 (avatars, Cooksnaps); sync client on Apache HTTP only -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>software.amazon.awssdk</groupId>
+                    <artifactId>netty-nio-client</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <!-- In-memory rate limiting sliding window (Caffeine Cache) -->
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
