@@ -30,6 +30,11 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 12 | 2026-10-18, 22:25 – 23:36 | Lập plan, tasks và analyze cho spec 090, commit và đồng bộ `src/specs` | 090 |
 | 13 | 2026-10-21, 13:02 – 13:06 | Kiểm tra ma trận quản lý rủi ro (Mục 3.2 project plan) theo acceptance criteria của `SCRUM-30` | Project plan §3.2 |
 | 14 | 2026-11-02, từ 10:39 | Implement spec 030 (Meal Planner) bằng `/speckit-implement`: Setup, Foundational, US1–US3 (đang làm) | 030, 031 |
+| 15 | 2026-11-02, 11:50 – 12:20 | Đổi spec 030 sang nhiều món mỗi bữa | 030, 031 |
+| 16 | 2026-11-02, 16:15 – 16:50 | Implement phần còn lại của spec 030 – backend (US4–US7, Phase 10, Phase 11) | 030, 031, 040, 090 |
+| 17 | 2026-11-24, 09:06 – 10:05 | Chuyển lưu ảnh (avatar, Cooksnap) sang S3 + CloudFront, dựng hạ tầng AWS, chạy app với S3 thật | 011, 070, DevOps |
+| 18 | 2026-11-24, 10:09 – 11:13 | Test app trên Chrome; implement 040 US2 (nhập từ thực đơn tuần) và US5 (sao chép, in); thiết kế lại trang Đi chợ theo món | 040, 030 |
+| 19 | 2026-11-24, 11:19 – 12:49 | Thiết kế lại trang chủ; implement trang chi tiết công thức (060 T035, T037, T038); mở PR #119 | 020, 060, 040, 070 |
 
 ---
 
@@ -1625,3 +1630,174 @@ Ràng buộc (giữ như các lần trước):
   - chạy k6 khi có máy cài k6 *(chưa làm)*;
   - báo người làm 040 về hướng handoff theo `weekStart`;
   - duyệt API cho phần frontend.
+
+---
+
+## Mục 17: Chuyển lưu ảnh sang S3 + CloudFront
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-24, 09:06 – 10:05 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 011 – Profile (avatar); 070 – Review & Cooksnap (ảnh Cooksnap); hạ tầng DevOps |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.330 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, extension Claude in Chrome để test giao diện; AWS CLI để dựng hạ tầng |
+| Mục đích | Ảnh người dùng tải lên đang lưu trên ổ đĩa của server; muốn chuyển lên S3, DB chỉ giữ đường dẫn, ảnh cào giữ nguyên, phát ảnh qua CloudFront cho nhanh |
+| Nhánh Git | `feat/media-s3-cloudfront` (commit `5a264a7`) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `c3876f26-cf11-44c5-a730-9a1b0bedf39c` |
+
+### Prompt đã dùng
+
+```
+Phần storage đó , cái nào đang dùng để lưu vậy
+Mình muốn dùng S3 để lưu nha . nó tốn phí nhiều không
+S3 nha. nhưng cần dùng IAM role hay SDK gì không
+với app của tôi thì nên dùng ECS hay EC2
+Mình muốn thay storage lưu ở phía server thành S3 nha.
+cả 2 đưa lên storage luôn chứ , còn db thì lưu đường dẫn trên s3 thôi. còn các dữ liệu cũ đã cào thì vẫn để đó, nếu được thì có thể dùng cloudfront để mà truy vấn dữ liệu tỉnh nhanh
+S3 bucket tên gì vậy
+ủa rồi sao bạn test pass
+Tôi muốn bạn tạo cho tôi luôn nhé.
+Tôi muốn chạy app lên thử
+```
+
+### Nội dung do AI tạo
+
+- Giải thích chi phí S3, cách app đăng nhập AWS (IAM role trên EC2, access key khi chạy ngoài AWS), so sánh EC2 và ECS cho quy mô của nhóm.
+- Code (`com.wikicook.common.media`):
+  - một `MediaStorage` chung cho avatar và Cooksnap, chọn bằng `WIKICOOK_MEDIA_STORAGE` (`local` mặc định, `s3`);
+  - `S3MediaStorage` (AWS SDK v2), `MediaUrls` trả URL CloudFront khi có `WIKICOOK_MEDIA_PUBLIC_BASE_URL`;
+  - Cooksnap bị ẩn được chuyển sang `hidden/` (CloudFront không đọc được) và chuyển lại khi khôi phục;
+  - test `S3MediaStorageTest` (S3Client giả) và `S3MediaStorageIT` (S3Mock trong Docker).
+- Tài liệu `docs/analysis-and-design/media-storage-s3.md`: bucket, CloudFront OAC, bucket policy chỉ cho đọc `avatars/*` và `cooksnaps/*`, IAM tối thiểu.
+- Hạ tầng AWS (theo yêu cầu "tạo cho tôi luôn"): bucket private ở `ap-southeast-1`, CloudFront với OAC, IAM user của app chỉ có `PutObject`/`GetObject`/`DeleteObject`; điền `src/backend/.env` (không commit, không in key ra màn hình).
+- Khi chạy app: bổ sung biến `.env` còn thiếu của spec 010, gỡ migration V305 của nhánh chưa merge và chạy bù 6 migration (có backup DB trước khi sửa).
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Đưa cả avatar và Cooksnap lên S3, DB chỉ lưu key | Mình yêu cầu | Không phụ thuộc ổ đĩa server khi triển khai |
+| Không đụng ảnh đã cào (`external_url`) | Mình yêu cầu | Ảnh đó đã nằm trên CDN của nguồn |
+| Dùng CloudFront phía trước bucket | Mình yêu cầu, AI đề xuất cách giữ `hidden/` không đọc được | Ảnh tải nhanh hơn, bucket vẫn private |
+| Mặc định vẫn là `local` | AI đề xuất, mình đồng ý | Dev, test và CI không cần tài khoản AWS |
+| Chưa tạo budget alert | Để lại | Cần email nhận cảnh báo, mình tự tạo sau |
+
+### Cách sinh viên kiểm chứng
+
+- `mvn clean verify`: 664 unit test và 672 IT của app qua, đạt ngưỡng JaCoCo.
+- Kiểm tra hạ tầng bằng AWS CLI: key của app upload được nhưng bị từ chối với lệnh ngoài quyền; truy cập thẳng S3 bị 403; qua CloudFront `avatars/...` trả 200, `hidden/...` trả 403.
+- Chạy app bằng docker compose với S3 thật: upload avatar, API trả URL CloudFront, ảnh tải được qua CloudFront và qua backend.
+- Sinh viên cần làm: tạo budget alert, cấp quyền AWS cho các thành viên khác nếu cần.
+
+---
+
+## Mục 18: Test app trên Chrome, implement 040 US2 và US5, thiết kế lại trang Đi chợ
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-24, 10:09 – 11:13 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 040 – Shopping List (US2, US5); 030 – Meal Planner (`MealPlanShoppingFacade`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.330 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, extension Claude in Chrome để test giao diện |
+| Mục đích | Đi qua các màn chính để tìm chỗ chưa hợp lý; nối luồng Thực đơn → Đi chợ đang bị khóa; làm trang Đi chợ dễ nhìn hơn |
+| Nhánh Git | `feat/media-s3-cloudfront` (commit `f9c11ce`) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `c3876f26-cf11-44c5-a730-9a1b0bedf39c` |
+
+### Prompt đã dùng
+
+```
+bạn có thể mở chrome lên và test lại trên giao diện giúp mình nhé, nếu thấy phần nào k hợp lý thì note lại
+4. Luồng Thực đơn → "Đi chợ" bị cụt. ... phần này đã làm chưa
+Gợi ý prompt và sau đó chạy cho mình luôn nhé, test trên trình duyệt
+Thiết kế lại trang đi chợ k, nó bị rối mắt lắm á
+Món nào nên mua gì chứ k list ra lộn xộn như z á , rối mắt quá
+A thử đi. thiết kế lại ui cho mình
+Mình duyệt
+không dùng superpower nhé
+tôi nghĩ nên phân trang ra á, rồi đưa món nào có hình ảnh của nó lên nhé
+Bố cục như cứt z
+```
+
+Prompt implement do AI soạn rồi tự chạy (mình xem trước):
+
+```
+Implement spec specs/040-shopping-list, phần US2 "Nhập từ thực đơn tuần" (T041, T043–T045, T038)
+và US5 "Sao chép" + "In" (Phase 7).
+- Backend: cài MealPlanHandoffPort qua com.wikicook.mealplan.api.ShoppingHandoff (030 đã có). Gộp
+  nguyên liệu theo ingredient_id và đơn vị, nhân theo khẩu phần. Thêm
+  POST /api/v1/shopping-lists/active/import/meal-plan có chế độ MERGE/ARCHIVE, lưu nguồn gốc từng dòng.
+  Theo đúng contracts/ và data-model.md.
+- Frontend: mở khóa "Nhập từ thực đơn tuần", hộp thoại chọn tuần và chế độ; nút "Đi chợ" ở Thực đơn
+  mang theo tuần đang xem; "Sao chép" xuất text có [ ]; "In" dùng @media print.
+- Test: unit và IT cho backend, Vitest cho frontend. Chạy mvn verify và npm test.
+- Rebuild docker, test trên Chrome, tick task trong tasks.md.
+```
+
+### Nội dung do AI tạo
+
+- Báo cáo test trên Chrome: liệt kê lỗi theo mức độ (chưa có trang chi tiết công thức, chế độ nấu dùng dữ liệu giả, ô tìm kiếm header bị khóa, luồng Đi chợ bị cụt, …). Không bấm "Tạo bằng AI" vì gọi API thật tốn tiền.
+- Backend 040: `JdbcMealPlanHandoffAdapter`, `ImportMealPlanRequest`, endpoint `POST …/import/meal-plan` (`MERGE` / `ARCHIVE_AND_NEW`), lỗi 422 `EMPTY_MEAL_PLAN`, bỏ nguyên liệu tùy chọn, xếp quầy theo loại nguyên liệu; sửa lỗi 500 khi bảng `units` có nhiều đơn vị trùng tên; trường `recipeCovers` để hiện ảnh món.
+- Frontend 040: `ImportMealPlanDialog`, sao chép dạng text, kiểu in riêng; giao diện mới chia theo món (`byDish.ts`): khung "Dùng chung nhiều món" cho nguyên liệu dùng từ 3 món trở lên, mỗi món một hàng có ảnh bìa, 6 món một trang, menu ⋯ cho Sao chép / In / Lưu trữ / Lịch sử.
+- Cập nhật `specs/040-shopping-list/tasks.md` và contract sang `weekStart`.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Chia danh sách theo món thay vì một cột dài | Mình yêu cầu, chọn phương án A trong 3 phương án AI đưa ra | Nhìn vào là biết món nào cần mua gì |
+| Phân trang và hiện ảnh món | Mình yêu cầu | Danh sách dài và khó nhận ra món |
+| Đổi lưới 3 cột thành mỗi món một hàng ngang | Mình chê bố cục, AI sửa | Lưới bị hở lởm chởm |
+| Không dùng bộ skill superpowers | Mình yêu cầu giữa chừng | Muốn làm nhanh, không qua nhiều bước thiết kế |
+
+### Cách sinh viên kiểm chứng
+
+- `mvn clean verify` sau phần nhập: 1346/1346 test backend qua, đạt ngưỡng JaCoCo. Frontend 926/926, sau thiết kế lại 934/934; typecheck và lint sạch.
+- Test trên Chrome (tuần 23/11 – 29/11): nhập chế độ Gộp và chế độ Lưu cũ bắt đầu mới, số lượng khớp DB (2 dòng 200 ml cộng thành 400 ml), tuần trống báo lỗi ngay trong hộp thoại, sao chép ra đúng định dạng.
+- Sinh viên cần làm: bấm "In" để xem bản xem trước thật (AI không mở hộp thoại in).
+
+---
+
+## Mục 19: Thiết kế lại trang chủ, implement trang chi tiết công thức (060)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-24, 11:19 – 12:49 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 020 – Search (trang chủ); 060 – Recipe Editor (T035, T037, T038); 040, 030, 070, 050 (các khối gắn vào trang chi tiết) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.330 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, extension Claude in Chrome để test giao diện |
+| Mục đích | Trang chủ trông đơn điệu; `/recipes/:id` chỉ có phần đánh giá, không có ảnh, nguyên liệu hay các bước |
+| Nhánh Git | `feat/media-s3-cloudfront` (commit `ddb8d76`, `5fd8987`), PR #119 |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `c3876f26-cf11-44c5-a730-9a1b0bedf39c` |
+
+### Prompt đã dùng
+
+```
+Phần trang chủ design lại cho đẹp tí
+hình như hình ảnh các món đang bị sai á
+Phần trang của chi tiết á nó không có hiển thị được
+Mình đồng ý
+push code và pr mới lên trên github đi
+cập nhật ai log nữa nha. rồi push lên lại
+```
+
+### Nội dung do AI tạo
+
+- Trang chủ: banner lớn với ảnh món nổi bật, ô tìm kiếm và lọc nhanh; 8 ô loại món; hàng "Mới đăng" và 3 hàng món theo loại (`RecipeRow`, `CategoryTile`).
+- Kiểm tra "ảnh sai": so 120 ảnh trên API với DB đều khớp; nguyên nhân thật là trang chi tiết chưa có.
+- Backend 060: `GET /api/v1/recipes/{id}` (`RecipeDetailService`, `RecipeDetailDto`, `RecipeDetailController`, 404 `NOT_FOUND`), khách xem được món đã đăng, bản nháp chỉ tác giả xem; `RecipeDetailControllerIT` 5 case theo T035. Thêm `JdbcRecipeImportAdapter` đọc nguyên liệu thật cho nút "Thêm vào danh sách đi chợ" (thay adapter dữ liệu mẫu của 040).
+- Frontend 060: `features/recipe-detail` theo mockup W-NU01: ảnh bìa, thông tin món, nguồn angingon.com, nguyên liệu (dùng `RecipeIngredientsPanel` của 040), các bước có ảnh và hẹn giờ, video YouTube, phần đánh giá của 070 ở cuối, nút "Bắt đầu nấu" và "Thêm vào thực đơn"; `RecipeDetailPage.test.tsx` 7 test.
+- Chia 4 commit theo phần việc, push và mở PR #119 (không có dòng ghi công Claude).
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Làm trang chi tiết theo spec 060 (T035–T038) | AI đề xuất, mình đồng ý | Cần cho luồng "tìm món → xem chi tiết → đi chợ" |
+| Khối Lưu (080) và dinh dưỡng (090) để trống | AI đề xuất | Hai tính năng chưa làm, không hiện nút chết |
+| Không đưa `PA3-2026.pdf`, `ke-hoach-kiem-thu.md`, `docs/superpowers/` vào PR | AI hỏi lại, để mình quyết | Không phải file làm trong phiên này |
+
+### Cách sinh viên kiểm chứng
+
+- `mvn verify` toàn bộ backend qua, đạt ngưỡng JaCoCo. Frontend 941/941 test, eslint 0 lỗi.
+- Test trên Chrome: `/recipes/224` hiện đủ ảnh bìa, 10 nguyên liệu, 5 bước có ảnh, phần đánh giá; `/recipes/999999999` báo "Công thức này không còn tồn tại". Phát hiện bảng "Thêm vào danh sách đi chợ" bị kẹt trong cột nguyên liệu và bị header che, đã sửa CSS rồi kiểm tra lại.
+- Sinh viên cần làm: review PR #119; lỗi lọc "Món chay" (`diet=VEGETARIAN` trả về mọi món) chưa sửa.
