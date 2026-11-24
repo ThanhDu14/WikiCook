@@ -341,7 +341,7 @@ Sections 2 and 3 were verified on 2026-11-16 at commit `4538a7a` and are kept as
 
 Other findings that matter for the architecture:
 
-- **Cooksnap photos share the `media` volume.** `wikicook.review.storage.root-path` defaults to `uploads/cooksnaps/`, relative to the working directory. The `app` image runs as user `wikicook` and `/app` belongs to `root`, so that default cannot be created inside the container. The compose file therefore sets `WIKICOOK_REVIEW_STORAGE_ROOTPATH=/var/lib/wikicook/media/cooksnaps/` (`SCRUM-89`, checked on 24/11/2026: upload returns 201 and the photo is still served after the container is recreated). On a developer machine without that variable the default creates the directory `uploads/` under the folder the application starts in.
+- **Cooksnap photos share the `media` volume.** `wikicook.review.storage.root-path` defaults to `uploads/cooksnaps/`, relative to the working directory. The `app` image runs as user `wikicook` and `/app` belongs to `root`, so that default cannot be created inside the container. The compose file therefore sets `WIKICOOK_REVIEW_STORAGE_ROOTPATH=/var/lib/wikicook/media/cooksnaps` (PR #118) (`SCRUM-89`, checked on 24/11/2026: upload returns 201 and the photo is still served after the container is recreated). On a developer machine without that variable the default creates the directory `uploads/` under the folder the application starts in.
 - **Two upload paths exist.** Avatars use `common.media.MediaStorage`; Cooksnaps use their own `review.service.StorageService`.
 - **`app` is also published on host port 8080**, so the API can be reached without `web`.
 
