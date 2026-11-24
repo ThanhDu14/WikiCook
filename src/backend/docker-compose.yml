@@ -60,6 +60,8 @@ services:
       WIKICOOK_BOOTSTRAP_ADMIN_PASSWORD: ${WIKICOOK_BOOTSTRAP_ADMIN_PASSWORD:-}
       # Avatars (spec 011 R7): local disk on the media volume
       WIKICOOK_MEDIA_DIR: /var/lib/wikicook/media
+      # Cooksnap photos (spec 070): same volume; the default uploads/ under /app is not writable by the wikicook user
+      WIKICOOK_REVIEW_STORAGE_ROOTPATH: /var/lib/wikicook/media/cooksnaps/
       TZ: Asia/Ho_Chi_Minh
     ports:
       - "${APP_PORT:-8080}:8080"
