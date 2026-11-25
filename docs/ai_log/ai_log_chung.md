@@ -19,7 +19,7 @@ File này ghi lại toàn bộ lịch sử sử dụng công cụ AI của **Tr�
 | 13 | 2026-11-16 | Thiết lập rào chắn kiến trúc, chỉ đạo TDD và hiện thực mã nguồn Backend Feature 070 (`SCRUM-77`) | `src/backend/`, `specs/070-review-cooksnap/` |
 | 14 | 2026-11-16 – 2026-11-18 | Chỉ huy gỡ lỗi CI Integration Test, xử lý xung đột Spring Security filter chain và thẩm định conflict PR #98 (`SCRUM-77`, `SCRUM-78`) | `src/backend/`, `src/frontend/`, PR #93, PR #98 |
 | 15 | 2026-11-20 – 2026-11-21 | Thẩm định kiểm thử toàn hệ thống (mvn verify), chuẩn hóa JaCoCo, hoàn tất báo cáo và sản xuất video demo YouTube (`SCRUM-79`) | `docs/test/scrum-79-spec-kit-test-report.md`, `README.md`, PR #108 |
-| 16 | 2026-11-20 – 2026-11-22 | Kiểm toán đối chiếu Use-Case Spec v2.1/v2.1.1 (`SCRUM-71`), chuẩn hóa quan hệ UC-100-02 và thanh tra AI Log toàn đội (`SCRUM-85`) | `docs/requirements/use-case-specification.md`, `docs/ai_log/`, `sprint-04-report.md` (PR #109, PR #116) |
+| 16 | 2026-11-20 – 2026-11-25 | Kiểm toán đối chiếu Use-Case Spec v2.1/v2.1.1 (`SCRUM-71`), chuẩn hóa quan hệ UC-100-02, thanh tra AI Log toàn đội (`SCRUM-85`) và kiểm toán chất lượng bàn giao PA4 (`SCRUM-86`) | `docs/requirements/use-case-specification.md`, `docs/ai_log/`, `sprint-04-report.md` (PR #109, PR #116, PR #117) |
 
 ---
 
@@ -787,33 +787,33 @@ Quá trình đưa mã nguồn lên nhánh `main` gặp phải các bài toán h�
 | **Mục** | **Mục 15** \| **Ngày thực hiện:** 2026-11-20 – 2026-11-21 (14:00 ngày 20/11 – 22:30 ngày 21/11) |
 | **Người thực hiện** | Trần Nguyễn Công Chung (`itzchugnn` - MSSV: 24120272) — QA Lead, Compliance Auditor & Member E |
 | **Nhiệm vụ / Task Jira** | `SCRUM-79` — Verify Spec Kit Tests & Record YouTube Video Demo |
-| **Tài liệu liên quan** | `docs/test/scrum-79-spec-kit-test-report.md`, `README.md`, `src/backend/wikicook-app/pom.xml`, `jacoco.csv`, storyboard 14 phân cảnh, YouTube video: `https://www.youtube.com/watch?v=PS3sbgVm_jI` |
+| **Tài liệu liên quan** | `docs/test/scrum-79-spec-kit-test-report.md`, `README.md`, `src/backend/wikicook-app/pom.xml`, `jacoco.csv`, storyboard 7 phân cảnh, YouTube video: `https://www.youtube.com/watch?v=PS3sbgVm_jI` |
 | **Công cụ AI & Model** | Google Antigravity (Gemini 2.5 Pro / Flash), Windows Shell / Git CLI |
 | **Mục đích làm việc** | Chỉ đạo công cụ AI cấu trúc và hoàn thiện báo cáo kiểm thử hệ thống Part E (`scrum-79-spec-kit-test-report.md`), tổng hợp dữ liệu JaCoCo và kết quả đo kiểm `mvn verify` thực tế từ PM Hưng (ngày 21/11), chỉnh sửa các sai lệch trong kịch bản storyboard, đồng bộ tài liệu `README.md` và sản xuất video minh chứng End-to-End đăng tải lên YouTube. |
 | **Nhánh Git** | `docs/SCRUM-79-verification-demo` (PR #108) |
-| **Minh chứng (Evidence)** | Commits `e7fd8ae`, `2fc6943`, `49915b6`, `2325bbc`, `21a4000`; PR #108 được Mai Văn Hiển (`@MaiHien3507`) duyệt (Approve); video YouTube 1080p có thuyết minh tại `https://www.youtube.com/watch?v=PS3sbgVm_jI`. |
+| **Minh chứng (Evidence)** | Commits `e7fd8ae`, `2fc6943`, `49915b6`, `2325bbc`, `21a4000`; PR #108 được Mai Văn Hiển (`@MaiHien3507`) duyệt (Approve) và merge (`64b23bf`); video YouTube 1080p có thuyết minh tại `https://www.youtube.com/watch?v=PS3sbgVm_jI`. |
 
 #### Dòng tóm tắt theo mẫu AI Usage Notes
-**Google Antigravity.** *Gemini 2.5 Pro / Flash, Google DeepMind*, truy cập các ngày 20/11 đến 21/11/2026; prompt: yêu cầu cấu trúc báo cáo kiểm thử 5 phần theo chuẩn RUP, trích xuất dữ liệu độ phủ JaCoCo theo số dòng thực tế, phát hiện và sửa các điểm sai lệch trong storyboard API (endpoint xác thực email, trường `household_size` trong DB), đối soát kết quả `mvn verify` (1410 integration tests, 654 unit tests) đo kiểm ngày 21/11, và tích hợp link video demo YouTube vào `README.md`; AI tổng hợp số liệu và sinh nội dung báo cáo; sinh viên trực tiếp phát hiện và loại bỏ số liệu ước lượng mơ hồ ("about 97%"), sửa lại đường dẫn endpoint, kiểm chứng 14 phân cảnh demo, biên tập lồng tiếng video thực tế và ký duyệt biên bản kiểm thử.
+**Google Antigravity.** *Gemini 2.5 Pro / Flash, Google DeepMind*, truy cập các ngày 20/11 đến 21/11/2026; prompt: yêu cầu cấu trúc báo cáo kiểm thử 5 phần theo chuẩn RUP, trích xuất dữ liệu độ phủ JaCoCo theo số dòng thực tế, phát hiện và sửa các điểm sai lệch trong storyboard API (endpoint xác thực email, trường `household_size` trong DB), đối soát kết quả `mvn verify` (1.410 tests tổng gồm unit + integration, trong đó `mvn test` tại `wikicook-app` đạt 654 unit tests) đo kiểm ngày 21/11, và tích hợp link video demo YouTube vào `README.md`; AI tổng hợp số liệu và sinh nội dung báo cáo; sinh viên trực tiếp phát hiện và loại bỏ số liệu ước lượng mơ hồ ("about 97%"), sửa lại đường dẫn endpoint, kiểm chứng 7 phân cảnh demo, biên tập lồng tiếng video thực tế và ký duyệt biên bản kiểm thử.
 
 ---
 
 ### 15.2. Chuỗi câu lệnh / Prompt đã sử dụng (Prompts Used)
 
 ```text
-Prompt 1 (Thiết lập cấu trúc báo cáo kiểm thử Part E & Kịch bản Storyboard 14 phân cảnh):
+Prompt 1 (Thiết lập cấu trúc báo cáo kiểm thử Part E & Kịch bản Storyboard 7 phân cảnh):
 "Tôi là Chung (@itzchugnn), QA Lead của WikiCook. Để phục vụ đánh giá nghiệm thu Part E (30 điểm) cho hai nhóm tính năng F-01 (010+011) và F-07 (070), hãy khởi tạo cấu trúc báo cáo docs/test/scrum-79-spec-kit-test-report.md. Báo cáo phải bao gồm:
 1. Tổng quan phạm vi nghiệm thu đối chiếu với Spec Kit và OpenAPI contracts.
 2. Ma trận kết quả kiểm thử tự động (Unit Test, Integration Test, Testcontainers, Vitest, MSW).
 3. Phân tích độ phủ mã nguồn JaCoCo chi tiết cho 3 service cốt lõi: auth.service, profile.service, và review.service.
-4. Kịch bản Storyboard chi tiết từng bước cho video demo (14 phân cảnh) từ Đăng ký, Xác thực email, Đăng nhập, Tạo hồ sơ, Chế độ ăn dị ứng đến Viết review, Đánh giá sao, Upload Cooksnap, Tương tác helpful và Báo cáo vi phạm.
+4. Kịch bản Storyboard chi tiết từng bước cho video demo (7 phân cảnh, 4 phút 30 giây) từ Đăng ký, Xác thực email, Đăng nhập, Hồ sơ ăn uống & Dị ứng đến Viết review, Upload Cooksnap bóc tách EXIF/GPS, Lightbox, Sửa và Xóa đánh giá.
 5. Biên bản ký duyệt nghiệm thu chất lượng (Quality Gate Sign-off).
 Yêu cầu: Không dùng số liệu giả lập vô căn cứ; mọi API endpoint và thuộc tính DB phải đối chiếu chính xác với mã nguồn trên nhánh main."
 
 Prompt 2 (Phản hồi review của PM: Hiệu chỉnh số liệu JaCoCo thực tế, chuẩn hóa endpoint xác thực và thuộc tính DB):
 "PM Lê Quốc Hưng vừa hoàn thành review PR #108 và yêu cầu hiệu chỉnh 5 điểm kỹ thuật sau:
-1. Số liệu kiểm thử: Ghi nhận rõ số liệu mvn verify chạy ngày 21/11 đạt 1410 integration tests (do Hưng chạy trong container maven:3.9-eclipse-temurin-21 trên main) và 654 unit tests (mvn test chạy trực tiếp).
-2. Độ phủ JaCoCo: Tuyệt đối không dùng ước lượng 'about 97%' hay 'about 93%'. Bắt buộc đưa ra số dòng chính xác (covered/total lines): auth.service đạt 248/255 dòng (97.25%), profile.service đạt 260/279 dòng (93.19%), review.service đạt 358/464 dòng (77.16%).
+1. Số liệu kiểm thử: Ghi nhận rõ số liệu mvn verify chạy ngày 21/11 đạt tổng 1.410 tests (BUILD SUCCESS, 2 skipped: wikicook-app gồm 654 unit + 669 integration; wikicook-ai gồm 60 unit + 27 integration) trên main và 654 unit tests khi chạy mvn test trực tiếp, cùng 918 component tests Frontend (120 files).
+2. Độ phủ JaCoCo: Tuyệt đối không dùng ước lượng 'about 97%' hay 'about 93%'. Bắt buộc đưa ra số dòng chính xác (covered/total lines) đo kiểm trên main: auth.service đạt 852/871 dòng (97.82%), profile.service đạt 353/379 dòng (93.14%), review.service đạt 358/464 dòng (77.16%).
 3. Sửa Storyboard: Endpoint xác thực email phải là 'POST /api/v1/auth/verification/confirm' (không dùng confirm-email); trường quy mô hộ gia đình trong bảng users là 'household_size' dạng INTEGER (không phải servings).
 4. Đồng bộ README.md: Bổ sung liên kết video YouTube demo 'https://www.youtube.com/watch?v=PS3sbgVm_jI' và tiêu đề chuẩn 'WikiCook - Part E System Verification & End-to-End Demo - Group 05' vào Section 4 của README.md.
 5. Cập nhật dòng ký duyệt của PM: 'watched the demo video and approved on 21/11/2026'.
@@ -823,7 +823,7 @@ Hãy áp dụng toàn bộ các chỉnh sửa trên vào scrum-79-spec-kit-test-
 ---
 
 ### 15.3. Nội dung do AI tạo ra (Which Content Was Generated by AI)
-- Bộ khung tài liệu `docs/test/scrum-79-spec-kit-test-report.md` gồm 5 phần chi tiết, bảng ma trận ánh xạ 14 phân cảnh storyboard với mã nguồn API và giao diện React.
+- Bộ khung tài liệu `docs/test/scrum-79-spec-kit-test-report.md` gồm 5 phần chi tiết, bảng ma trận ánh xạ 7 phân cảnh storyboard với mã nguồn API và giao diện React.
 - Bảng thống kê độ phủ kiểm thử JaCoCo và bảng tổng hợp kết quả chạy test multi-module Maven.
 - Đoạn Markdown nhúng liên kết và metadata của video demo YouTube trong `README.md`.
 
@@ -835,11 +835,11 @@ Hãy áp dụng toàn bộ các chỉnh sửa trên vào scrum-79-spec-kit-test-
 
 | Thành phần tài liệu & Dữ liệu | Quyết định của sinh viên | Phân tích lý do kỹ thuật & Can thiệp chuyên môn |
 |---|---|---|
-| **Dữ liệu độ phủ mã nguồn JaCoCo** | **Bác bỏ** việc dùng ước lượng phần trăm xấp xỉ; **Bắt buộc** lấy số dòng thực tế | AI ban đầu đưa ra nhận xét chung chung như "khoảng 97%" hay "khoảng 93%". Trong thẩm định QA, việc ước lượng làm mất đi tính tin cậy học thuật. Sinh viên trực tiếp trích xuất dữ liệu dòng từ báo cáo `jacoco.csv`, đưa vào tỷ lệ chính xác từng dòng: `auth.service` (248/255 dòng = 97.25%), `profile.service` (260/279 dòng = 93.19%), và `review.service` (358/464 dòng = 77.16%), khẳng định cả 3 module đều vượt xa rào chắn $\ge 70\%$. |
+| **Dữ liệu độ phủ mã nguồn JaCoCo** | **Bác bỏ** việc dùng ước lượng phần trăm xấp xỉ; **Bắt buộc** lấy số dòng thực tế | AI ban đầu đưa ra nhận xét chung chung như "khoảng 97%" hay "khoảng 93%". Trong thẩm định QA, việc ước lượng làm mất đi tính tin cậy học thuật. Sinh viên đối chiếu kết quả đo kiểm JaCoCo trên `main`, đưa vào tỷ lệ chính xác từng dòng: `auth.service` (852/871 dòng = 97.82%), `profile.service` (353/379 dòng = 93.14%), và `review.service` (358/464 dòng = 77.16%; unit test độc lập đạt 353/464 dòng = 76.08%), khẳng định cả 3 module đều vượt xa rào chắn $\ge 70\%$. |
 | **Endpoint xác thực Email trong Storyboard** | **Hiệu chỉnh bắt buộc** sang URI chuẩn | Bản thảo storyboard của AI ghi nhầm URI thành `/api/v1/auth/confirm-email`. Sinh viên soi vào controller `AuthVerificationController.java` và OpenAPI spec, phát hiện endpoint thật sự là `POST /api/v1/auth/verification/confirm`. Sinh viên chỉ đạo sửa lại ngay để kịch bản demo khớp 100% với backend. |
 | **Thuộc tính quy mô hộ gia đình** | **Sửa lỗi sai lệch Schema CSDL** | AI mô tả trong phân cảnh hồ sơ người dùng là cập nhật "servings". Sinh viên đối chiếu với schema bảng `users` tại migration Flyway `V201`, phát hiện tên cột chính xác là `household_size` kiểu `INTEGER`. Sinh viên yêu cầu chuẩn hóa đúng danh pháp kỹ thuật. |
-| **Phân định kết quả `mvn test` và `mvn verify`** | **Phân tách rạch ròi** ngữ cảnh đo kiểm | Nhận diện môi trường terminal cục bộ không đủ tài nguyên chạy toàn bộ Testcontainers nặng của cả dự án cùng lúc, sinh viên ghi rõ: bài kiểm tra cục bộ chạy `mvn test` đạt 654 unit tests, trong khi kết quả toàn diện 1410 integration tests được đo kiểm độc lập bởi PM Hưng trên môi trường chuẩn Docker ngày 21/11/2026. |
-| **Sản xuất video demo thực tế** | **Tự thực hiện 100% bằng video người thật** | Sinh viên tự dàn dựng môi trường, nạp dữ liệu hạt giống (seed data), thực hiện ghi hình 1080p toàn bộ 14 phân cảnh (từ đăng ký tài khoản, nhận mail kích hoạt, cập nhật hồ sơ, viết review, bóc tách EXIF ảnh Cooksnap, kiểm tra rate limit đến báo cáo vi phạm), lồng tiếng giải thích chuyên sâu và tải lên YouTube dưới chế độ Unlisted. |
+| **Phân định kết quả `mvn test` và `mvn verify`** | **Phân tách rạch ròi** ngữ cảnh đo kiểm | Nhận diện môi trường terminal cục bộ không đủ tài nguyên chạy toàn bộ Testcontainers nặng của cả dự án cùng lúc, sinh viên ghi rõ: bài kiểm tra cục bộ chạy `mvn test` đạt 654 unit tests, trong khi kết quả toàn diện `mvn verify` đạt tổng 1.410 tests (`wikicook-app`: 654 unit + 669 integration; `wikicook-ai`: 60 unit + 27 integration; 2 skipped) được đo kiểm độc lập bởi PM Hưng trên môi trường chuẩn Docker ngày 21/11/2026. |
+| **Sản xuất video demo thực tế** | **Tự thực hiện 100% bằng video người thật** | Sinh viên tự dàn dựng môi trường, nạp dữ liệu hạt giống (seed data), thực hiện ghi hình 1080p toàn bộ 7 phân cảnh trong 4 phút 30 giây (từ đăng ký tài khoản, nhận mail kích hoạt, cập nhật hồ sơ dị ứng, viết review, bóc tách EXIF ảnh Cooksnap đến mở Lightbox, sửa và xóa đánh giá), lồng tiếng giải thích chuyên sâu và tải lên YouTube dưới chế độ Unlisted. |
 
 ---
 
@@ -849,14 +849,14 @@ Hãy áp dụng toàn bộ các chỉnh sửa trên vào scrum-79-spec-kit-test-
 
 | Trường | Nội dung |
 |---|---|
-| **Mục** | **Mục 16** \| **Ngày thực hiện:** 2026-11-20 – 2026-11-22 (09:00 ngày 20/11 – 16:00 ngày 22/11) |
+| **Mục** | **Mục 16** \| **Ngày thực hiện:** 2026-11-20 – 2026-11-25 (09:00 ngày 20/11 – 20:30 ngày 25/11) |
 | **Người thực hiện** | Trần Nguyễn Công Chung (`itzchugnn` - MSSV: 24120272) — QA Lead, Compliance Auditor & Member E |
-| **Nhiệm vụ / Task Jira** | `SCRUM-71` (Use-Case Spec v2.0 Review & Realignment) & `SCRUM-85` (Compile Five-Member AI Usage Report) |
-| **Tài liệu liên quan** | `docs/requirements/use-case-specification.md`, `docs/requirements/use-case-model.md`, `specs/010-user-authentication-roles/`, `specs/011-user-profile-dietary/`, `specs/070-review-cooksnap/`, `docs/ai_log/` (5 tệp log thành viên), `docs/management/reports/sprint-04/sprint-04-report.md` |
+| **Nhiệm vụ / Task Jira** | `SCRUM-71` (Use-Case Spec v2.0 Review & Realignment), `SCRUM-85` (Five-Member AI Usage Report) & `SCRUM-86` (Full QA Deliverables Cross-Audit) |
+| **Tài liệu liên quan** | `docs/requirements/use-case-specification.md`, `docs/requirements/use-case-model.md`, `docs/analysis-and-design/architecture.md`, `docs/ai_log/` (5 tệp log thành viên), `docs/management/reports/sprint-04/sprint-04-report.md` (Section 6 & 7) |
 | **Công cụ AI & Model** | Google Antigravity (Gemini 2.5 Pro / Flash), Git CLI |
-| **Mục đích làm việc** | Thực hiện kiểm toán toàn diện Use-Case Specification v2.0 cho các phần 9, 10, 12 đối chiếu với OpenAPI và mã nguồn trên `main`; giải quyết dứt điểm mâu thuẫn kiến trúc tại `UC-100-02` bằng quan hệ «include» `UC-070-08`; nâng tài liệu lên `v2.1` (PR #109); thẩm định bản ghi kiểm toán của PM Hưng tại `v2.1.1` (PR #116); và rà soát thanh tra toàn bộ nhật ký sử dụng AI của 5 thành viên phục vụ báo cáo `SCRUM-85`. |
-| **Nhánh Git** | `docs/SCRUM-71-uc-spec-review-confirmation` (PR #109), `docs/SCRUM-71-uc-spec-review-record` (PR #116), `docs/SCRUM-85-ai-log-chung` |
-| **Minh chứng (Evidence)** | PR #109 merged (commit `8b2008b`), PR #116 merged (commit `47aca2b`), `docs/requirements/use-case-specification.md` cập nhật v2.1.1, bảng ma trận AI Log 5 thành viên được kiểm tra đối chiếu. |
+| **Mục đích làm việc** | Thực hiện kiểm toán toàn diện Use-Case Specification v2.0 cho các phần 9, 10, 12 đối chiếu với OpenAPI và mã nguồn trên `main`; giải quyết dứt điểm mâu thuẫn kiến trúc tại `UC-100-02` bằng quan hệ «include» `UC-070-08`; nâng tài liệu lên `v2.1` (PR #109); thẩm định bản ghi kiểm toán của PM Hưng tại `v2.1.1` (PR #116); đồng thời thanh tra toàn bộ nhật ký sử dụng AI của 5 thành viên (`SCRUM-85`) và kiểm toán chéo chất lượng bàn giao PA4 (`SCRUM-86`, PR #117). |
+| **Nhánh Git** | `docs/SCRUM-71-uc-spec-review-confirmation` (PR #109), `docs/SCRUM-71-uc-spec-review-record` (PR #116), `docs/SCRUM-85-86-ai-and-qa-audit` (PR #117) |
+| **Minh chứng (Evidence)** | PR #109 merged (commit `8b2008b`), PR #116 merged (commit `47aca2b`), PR #117 cập nhật Section 6 & Section 7 của `sprint-04-report.md` đồng bộ với `main` (`00539b4`). |
 
 #### Dòng tóm tắt theo mẫu AI Usage Notes
 **Google Antigravity.** *Gemini 2.5 Pro / Flash, Google DeepMind*, truy cập các ngày 20/11 đến 22/11/2026; prompt: đối chiếu toàn bộ các luồng của Mục 9, 10, 12 với OpenAPI và Spring Boot controller trên main, tái cấu trúc use case UC-100-02 để delegate việc tính toán rating sang use case UC-070-08 phù hợp với Use-Case Model v2.0, bóc tách 4 điểm kỹ thuật cốt lõi cho bản ghi review (sliding window 15m email rate limit, multipart profile update, không tăng recipe version khi aggregate rating), và quét toàn bộ 5 file `ai_log_<member>.md` để tổng hợp ma trận tuân thủ AI 5 thành viên; AI phân tích diff và đề xuất nội dung chỉnh sửa; sinh viên trực tiếp kiểm chứng mã nguồn thực tế, bắt lỗi bộ đếm 60s sai lệch, xác nhận UC-100-02 tuân thủ kiến trúc phân rã, phê duyệt PR #109 và #116, và thiết lập bảng kiểm toán AI 5 thành viên.
@@ -886,8 +886,8 @@ Prompt 3 (Thanh tra nhật ký AI toàn nhóm & Thiết lập ma trận tuân th
 "Thực hiện kiểm toán tuân thủ liêm chính học thuật cho nhiệm vụ SCRUM-85 (Compile Five-Member AI Usage Report):
 Hãy quét toàn bộ thư mục docs/ai_log/ gồm 5 tệp: ai_log_hung.md, ai_log_duy.md, ai_log_hien.md, ai_log_chung.md, ai_log_thanhdu.md.
 1. Kiểm tra 7 tiêu chí bắt buộc theo Mục 5 AI Usage Guidelines.pdf đối với các mục ghi nhận trong Sprint 04.
-2. Tổng hợp ma trận số lượng mục: Hưng (Mục 26–37), Duy (Mục 23–26), Hiển (Mục 39–49), Chung (Mục 13–16), Dự (ghi chú chưa có mục cho Sprint 4, đang chờ nạp).
-3. Trích xuất 10 phiên tương tác tiêu biểu đại diện cho 100% các phần A, B, C, D, E, F của đồ án PA4 để chuẩn bị tích hợp vào sprint-04-report.md."
+2. Tổng hợp ma trận số lượng mục đúng phạm vi Sprint 04 / PA4: Hưng (Mục 25–37), Duy (Mục 22–26), Hiển (Mục 26–27, 31–49), Chung (Mục 13–16), Dự (Mục 27–30 sau khi merge PR #121).
+3. Trích xuất 10 phiên tương tác tiêu biểu đại diện cho 100% các phần A, B, C, D, E, F của đồ án PA4 và lập báo cáo QA Cross-Audit 9 chiều (SCRUM-86) với trạng thái Conditional Sign-Off chờ hoàn tất SCRUM-88 và SCRUM-90."
 ```
 
 ---
