@@ -2,7 +2,7 @@
 
 Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễn Thành Dự** (ThanhDu14, mã **C**, DevOps Lead, phụ trách spec `030-meal-planner`, `031-ai-weekly-meal-planner` và `090-nutrition-analysis` theo [phân công tuần 12/10 – 18/10](../management/w1-spec-design-assignment.md), và Mục 3.2 – ma trận rủi ro của [project plan](../management/project-plan.md) theo `SCRUM-30`). Mỗi lần dùng AI là một mục mới, mục mới nhất ở cuối. Các lần chỉ nhờ AI chạy lệnh git (pull, push, tạo PR, gỡ conflict) không ghi thành mục riêng.
 
-**Khai báo sử dụng AI (AI Usage Notes, mục 5.B của AI Usage Guidelines):** trong Sprint 1–2, mình có dùng AI. Mỗi mục bên dưới ghi đủ các trường guideline yêu cầu:
+**Khai báo sử dụng AI (AI Usage Notes, mục 5.B của AI Usage Guidelines):** trong Sprint 1–4, mình có dùng AI. Mỗi mục bên dưới ghi đủ các trường guideline yêu cầu:
 
 | Trường guideline yêu cầu | Vị trí trong mỗi mục |
 |---|---|
@@ -29,7 +29,26 @@ Mỗi thành viên ghi log vào một file riêng; file này là của **Nguyễ
 | 11 | 2026-10-18, 21:52 – 22:23 | Lập plan, tasks và analyze cho spec 031 | 031, 030 |
 | 12 | 2026-10-18, 22:25 – 23:36 | Lập plan, tasks và analyze cho spec 090, commit và đồng bộ `src/specs` | 090 |
 | 13 | 2026-10-21, 13:02 – 13:06 | Kiểm tra ma trận quản lý rủi ro (Mục 3.2 project plan) theo acceptance criteria của `SCRUM-30` | Project plan §3.2 |
-| 14 | 2026-11-02, từ 10:39 | Implement spec 030 (Meal Planner) bằng `/speckit-implement`: Setup, Foundational, US1–US3 (đang làm) | 030, 031 |
+| 14 | 2026-11-02, 10:39 – 11:25 | Implement spec 030 (Meal Planner) bằng `/speckit-implement`: Setup, Foundational, US1–US3 | 030, 031 |
+| 15 | 2026-11-02, 11:50 – 12:20 | Đổi spec 030 sang nhiều món mỗi bữa (tối đa 4 món) | 030, 031 |
+| 16 | 2026-11-02, 16:15 – 16:50 | Implement phần còn lại của spec 030 – backend (US4–US7, Phase 10, Phase 11) | 030, 031, 040, 090 |
+| 17 | 2026-11-02, 16:49 – 18:29 | Implement frontend còn lại của 030 và thêm test Playwright | 030, 031 |
+| 18 | 2026-11-03, 11:22 – 11:27 | Sửa test làm CI của PR #64 bị đỏ | 030 |
+| 19 | 2026-11-03, 11:29 – 11:49 | Viết Use-Case Specification cho 030, 031, 090 (`SCRUM-52`) | Use-case spec |
+| 20 | 2026-11-07, 09:42 – 10:38 | Đóng gói PA3 và sửa mâu thuẫn trước khi nộp (`SCRUM-65`) | PA3 |
+| 21 | 2026-11-09, 11:50 – 23:40 (3 phiên) | Đổi tiêu đề thành tên món, nạp 6.390 công thức, tạo embedding | 031, dữ liệu cào |
+| 22 | 2026-11-09, 12:53 – 13:43 | Implement giao diện "Tạo bằng AI" của 031 (US1) | 031 |
+| 23 | 2026-11-09, 23:00 – 23:24 | Implement US2 của 031 (sửa và lưu bản nháp) | 031, 030 |
+| 24 | 2026-11-09, 23:26 – 2026-11-10, 00:41 | Implement US3–US5 của 031, tăng độ đa dạng, làm app shell | 031 |
+| 25 | 2026-11-10, 09:42 – 10:20 | Implement US6 của 031 (bản nháp dự phòng, hủy lượt tạo) | 031 |
+| 26 | 2026-11-10, 10:20 – 12:30 | Implement US7 của 031 (xếp hạng món thay thế, "Gợi ý cho bạn") | 031, 030 |
+| 27 | 2026-11-13, 10:24 – 10:56 | Viết kế hoạch kiểm thử và 4 test case cho lập thực đơn tuần | Test plan |
+| 28 | 2026-11-20, 11:05 – 11:27 | Viết Phần D – Deployment Diagram (`SCRUM-83`) | Architecture §7 |
+| 29 | 2026-11-20, 11:12 – 11:27 | Viết C4 Level 3 Frontend và bảng parity (`SCRUM-82`) | Architecture §6 |
+| 30 | 2026-11-21, từ 16:10 | Mở lại PR cho `SCRUM-83`, bổ sung AI log Sprint 4 | `SCRUM-83`, `SCRUM-85` |
+| 31 | 2026-11-24, 09:06 – 10:05 | Chuyển lưu ảnh (avatar, Cooksnap) sang S3 + CloudFront, dựng hạ tầng AWS, chạy app với S3 thật | 011, 070, DevOps |
+| 32 | 2026-11-24, 10:09 – 11:13 | Test app trên Chrome; implement 040 US2 (nhập từ thực đơn tuần) và US5 (sao chép, in); thiết kế lại trang Đi chợ theo món | 040, 030 |
+| 33 | 2026-11-24, 11:19 – 12:49 | Thiết kế lại trang chủ; implement trang chi tiết công thức (060 T035, T037, T038); mở PR #119 | 020, 060, 040, 070 |
 
 ---
 
@@ -1625,3 +1644,1290 @@ Ràng buộc (giữ như các lần trước):
   - chạy k6 khi có máy cài k6 *(chưa làm)*;
   - báo người làm 040 về hướng handoff theo `weekStart`;
   - duyệt API cho phần frontend.
+
+---
+
+## Mục 17: Implement phần frontend còn lại của spec 030 và thêm test Playwright
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-02, 16:49 – 18:29 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 030 – Meal Planner; 031 (điểm nối `aiPlannerEntry`, `draftItems`); 040 (đích handoff `/shopping-list/import`); 090 (badge kcal) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, lệnh Spec Kit `/speckit-implement`, Playwright 1.64.1 |
+| Mục đích | Làm nốt frontend của 030 (US4–US7, Phase 10, T104) sau khi backend ở Mục 16 đã được duyệt, rồi thêm test end-to-end |
+| Nhánh Git | `feature/030-meal-planner` (PR #64, đã merge) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `3607322d-5094-45b3-a9ea-10ebd808870c` |
+
+### Prompt đã dùng
+
+```
+gợi ý prompt tiếp theo cho phần front-end của 030 nhé.
+```
+
+AI đề xuất 3 prompt (US4 + US6, US5 + US7, Phase 10 + a11y). Mình bảo "Gôm lại 1 prompt thôi nhé", AI gộp lại, mình chạy bản gộp:
+
+```
+/speckit-implement 030 – làm toàn bộ phần frontend còn lại, theo thứ tự phase, TDD
+(viết test trước, chạy cho FAIL rồi mới cài):
+
+1. Phase 6 – US4 (T070, T071, T073, T074, T075): WeekHeader, EmptyWeekState, ?week= trên URL.
+   Registry aiPlannerEntry để rỗng (031 chưa đăng ký), nên nút AI ẩn; test cả trường hợp
+   có đăng ký và không đăng ký.
+2. Phase 8 – US6 (T084, T086): biến thể "Không còn khả dụng" của SlotCard.
+3. Phase 7 – US5 (T078, T081): CreateShoppingListButton. Route /shopping-list/import chưa
+   chốt (⛓ D) nên tạm làm theo spec và ghi chú lại ở task.
+4. Phase 9 – US7 (T087–T094): useIsDesktop, useOnlineStatus, DayView (vùng chạm ≥ 44px),
+   OfflineNotice; chọn WeekGrid hoặc DayView theo useIsDesktop; không ghi gì vào
+   localStorage/sessionStorage.
+5. Phase 10 – frontend (T096, T098, T101, T102): DayNutritionBadge (backend 090 đã trả
+   nutrition), draftItems/onDraftChange cho 031.
+6. T104: kiểm tra a11y trên app thật (bàn phím, tương phản, màn 360px), ghi kết quả vào
+   docs/test/030-meal-planner-a11y.md.
+
+UI: làm theo mockup trong docs/analysis-and-design/ui-ux/screens (MP01–MP07 cho mobile,
+W-MP01–W-MP07 cho desktop, SL03 là đích của handoff), dùng class wk-, câu chữ đưa vào
+strings.vi.ts. Đối chiếu luôn WeekGrid hiện tại với W-MP01 và sửa nếu lệch.
+
+Xong mỗi phase: chạy vitest, tsc và lint, đánh [x] trong tasks.md, commit riêng.
+Cuối cùng chạy lại toàn bộ test frontend và liệt kê những task còn mở trong tasks.md.
+```
+
+Sau đó:
+
+```
+dùng playwright test cho tôi , tôi nhớ tôi cài r
+```
+
+```
+không phải là bạn sẽ tự mở trình duyệt lên test hả
+```
+
+### Nội dung do AI tạo
+
+| Commit | Nội dung |
+|---|---|
+| `112b310` US4 | Chuyển tuần trước/sau/"Tuần này" trên header, `?week=` trên URL, màn tuần rỗng; registry `aiPlannerEntry` để trống nên nút AI ẩn |
+| `26734c3` US6 | Món có công thức đã bị gỡ: nhãn "Không còn khả dụng", nút "Thay món"/"Xóa" ngay trong ô |
+| `11bcce5` US5 | Nút "Đi chợ" gọi handoff rồi chuyển tới `/shopping-list/import?weekStart=`; có món bị bỏ thì hỏi xác nhận trước |
+| `b2d5c49` US7 | Màn hẹp xem từng ngày (vùng chạm ≥ 44 px); mất mạng thì thay lịch bằng thông báo offline, không ghi gì vào localStorage/sessionStorage |
+| `68318cc` Phase 10 | Badge kcal từng ngày; `WeekGrid`/`DayView` nhận `draftItems` và `onDraftChange` cho 031 |
+| `8ca46fb` T104 | Kiểm a11y trên app thật (axe, bàn phím, 360 px), sửa 2 lỗi, ghi vào `docs/test/030-meal-planner-a11y.md` |
+| `4c03b2d` | 15 test Playwright cho `/meal-planner` (desktop 1440 px và phone 360 px), API giả trong `e2e/fakeApi.ts` theo `openapi.yaml`, ngày cố định 21/10/2026; biến `SLOWMO` để xem browser bấm |
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Gộp 3 prompt thành 1 | Mình yêu cầu | Các phase nối tiếp nhau, chạy một lần đỡ phải dán lại bối cảnh |
+| Route `/shopping-list/import` | Giữ theo spec, ghi chú ở task | Người làm 040 chưa chốt route |
+| Thêm Playwright vào repo | Mình yêu cầu | Unit test không kiểm được luồng thật trên trình duyệt; máy đã cài sẵn Playwright 1.64.1 nên AI dùng đúng phiên bản đó |
+| Chạy test có cửa sổ trình duyệt | Mình yêu cầu | Để tự xem browser bấm, không chỉ đọc kết quả |
+
+### Cách sinh viên kiểm chứng
+
+- AI chạy vitest, tsc, lint sau mỗi phase: cuối đợt 28 file, 138/138 test (trước đó 91), tsc và lint sạch.
+- Playwright: 15/15 test qua, chạy lặp 2 lần không có test chập chờn; mình xem lại bằng `SLOWMO=500 npm run e2e -- --headed --workers=1`.
+- **Sự cố trong phiên:** lúc kiểm T104, AI chưa kiểm tra cổng 8081 nên đã ghi 13 món thử vào DB dev qua backend mình đang chạy. AI báo lại và xóa đúng 13 món đó (id 21–33) cùng plan tuần 26/10 chúng tạo ra; 3 món của mình còn nguyên. Sau đó AI chạy lại trên DB tạm ở cổng 5433 và xóa DB tạm khi xong.
+- Test Playwright dùng API giả, chưa chạm backend thật; đây là giới hạn đã biết.
+
+---
+
+## Mục 18: Sửa test làm CI của PR #64 bị đỏ
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-03, 11:22 – 11:27 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 030 – Meal Planner (test `JdbcRecipeSummaryAdapterIT`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, `gh` CLI |
+| Mục đích | CI backend của PR #64 đỏ trong khi chạy ở máy thì xanh |
+| Nhánh Git | `feature/030-meal-planner` (PR #64) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `df970900-faee-48aa-9505-cecc31c91c20` |
+
+### Prompt đã dùng
+
+Trước đó trong cùng phiên mình nhờ AI push, mở PR và gỡ conflict PR #62 (thao tác git, không ghi thành mục riêng). Sau đó:
+
+```
+64 CI trigger bị lỗi kìa
+```
+
+### Nội dung do AI tạo
+
+- Đọc log CI và tìm ra nguyên nhân: `RecipeFixtures.ingredient()` dùng lại nguyên liệu trùng tên. `MealPlanWriteFacadeIT` và `MealPlanControllerIT` cũng tạo "Cá basa" nhưng với loại `OTHER`, và các IT dùng chung một database. Trên CI hai test kia chạy trước, nên món cá bị xếp `VEGAN` thay vì `PESCATARIAN`.
+- Commit `812f156` (chỉ sửa test): đổi sang tên nguyên liệu không test nào khác dùng ("Đậu hũ non", "Cá thu", "Thăn bò"), thêm comment giải thích.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+- Mình phát hiện CI đỏ trên GitHub và yêu cầu sửa.
+- Chỉ sửa dữ liệu test, không sửa code thật, vì code phân loại món đúng; lỗi chỉ do thứ tự chạy test.
+
+### Cách sinh viên kiểm chứng
+
+- AI chạy lại `mvn verify` ở máy và xem CI trên GitHub: CI của PR #64 xanh lại sau khi push.
+- PR #64 được Hiển merge ngày 06/11.
+
+---
+
+## Mục 19: Viết Use-Case Specification cho 030, 031, 090 (`SCRUM-52`)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-03, 11:29 – 11:49 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 030, 031, 090 – `docs/requirements/use-case-specification.md` Section 14–17 |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.316 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, Atlassian MCP (đọc Jira) |
+| Mục đích | Làm task `SCRUM-52` (hạn 03/11) cho PA3 Phần D |
+| Nhánh Git | `docs/scrum-52-uc-spec-030-031-090` (commit `06dc3ed`, PR #67, đã merge) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `f5f41772-ba86-49d7-8445-237595704d89` |
+
+### Prompt đã dùng
+
+```
+Dùng mcp jira check task thành dự còn lại
+```
+
+```
+Hổ trợ mình làm SCRUM-52 nhé
+```
+
+```
+có
+```
+
+(câu cuối là đồng ý commit, push và mở PR sau khi xem bản nháp)
+
+### Nội dung do AI tạo
+
+- Đọc Jira: còn `SCRUM-52` (hạn 03/11) và `SCRUM-65` (đóng gói PA3, hạn 05/11).
+- 16 use case nối vào cuối `use-case-specification.md` (+1.626 dòng):
+  - Section 14: `UC-030-01` – `05`;
+  - Section 15: `UC-031-01` – `06`;
+  - Section 16: `UC-090-01` – `05`;
+  - Section 17: bảng traceability (US, FR, NFR, SC của cả 3 spec), bảng map màn hình kèm danh sách gap cho `SCRUM-58`, 14 câu hỏi mở.
+- Alternative flow riêng cho từng lỗi AI: LLM lỗi, quá 60 giây, kết quả không đọc được, không đủ công thức, vi phạm dị ứng/loại trừ, hết quota ngày, bản nháp dự phòng cũng lỗi mà lịch thủ công vẫn dùng được.
+- Thêm 4 dòng vào bảng phân công và dòng `v1.4` vào Revision History.
+- Soạn sẵn nội dung comment cho `SCRUM-52` (lệnh comment Jira bị hệ thống quyền chặn, nên AI không tự đăng).
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Nội dung bám quy tắc "tối đa 4 món mỗi bữa" (02/11) | Theo spec đã sửa ở Mục 15 | UC phải khớp code |
+| Chữ tiếng Việt trong UC | Lấy từ `strings.vi.ts` đã code | Tránh lệch giữa UC và giao diện |
+| Reviewer Lê Quốc Hưng | AI đoán theo vòng review của nhóm, mình giữ | Đúng vòng review |
+| 14 câu hỏi mở (17.3) | AI ghi "Proposed Decision", để chốt trong review | Một số câu (ví dụ `OQ-031-01`, `OQ-031-04`) cần cả nhóm quyết |
+
+### Cách sinh viên kiểm chứng
+
+- AI chạy script kiểm tra: cả 16 UC đủ 8 mục, có dòng metadata dưới header, mọi link màn hình trỏ tới file có thật.
+- Hưng approve và merge PR #67 ngày 03/11.
+
+---
+
+## Mục 20: Đóng gói PA3 và sửa các chỗ mâu thuẫn trước khi nộp (`SCRUM-65`)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-07, 09:42 – 10:38 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | PA3 – `PA3-2026.pdf`; project plan, `Changes.md`, Vision, use-case spec, Sprint 03 report |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.319 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux; Ghostscript và ImageMagick để nén |
+| Mục đích | Gom đúng các file đề PA3 yêu cầu vào `PA3-Group05.zip` (≤ 20 MB) và sửa mâu thuẫn giữa các tài liệu |
+| Nhánh Git | `docs/pa3-final-fixes` (commit `00bbaac`, PR #76, đã merge) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `da3e3364-867d-44ef-acea-69de74986973` |
+
+### Prompt đã dùng
+
+```
+kéo code mới nhất về đọc PA3-2026 xong rồi lấy các file theo pdf cần.
+```
+
+```
+https://www.youtube.com/watch?v=2CUFItaD1SE link youtube
+```
+
+```
+kích thước tối đa làm 20mb thì sao mà nộp
+```
+
+```
+bạn zip hết src luôn hả, phải zip các file theo yêu cầu chứ
+```
+
+Sau đó mình dán một bản rà soát mâu thuẫn gồm 3 mục (14 chỗ "pending review" trong project plan trái với bảng A.5 của `Changes.md`; Sprint 03 report chưa có link video; tag `v0.5.0` chưa tạo), rồi:
+
+```
+Khoan đọc lại đề bài PA3 và kiểm tra mâu thuẫn lại lần nữa, nếu hợp lis thì tiến hành chỉnh sửa luôn , sau đó hẳn push giúp tôi
+```
+
+```
+Ghi rõ lý do không có ảnh thay vì để trống lý do gì
+```
+
+### Nội dung do AI tạo
+
+- Script đóng gói (bảng đối chiếu từng Phần A–F với file trong gói). Lần cuối: 16,6 MB; ảnh prototype thu về cạnh dài 1000 px, JPEG chất lượng 68; PDF nén bằng Ghostscript 100 dpi. Repo gốc không bị đổi, chỉ bản trong gói được nén.
+- Commit `00bbaac`:
+  - project plan: sửa cả 14 chỗ "pending review"; `Changes.md` dòng 78 khớp với A.5 mục 1, thêm dòng 22 vào bảng A.2;
+  - Vision: viết lại NFR-REL-10 cho khớp code, đóng A.5 mục 7;
+  - use-case spec: chụp 48 ảnh prototype cho 16 UC còn thiếu, dịch khoảng 77 caption sang tiếng Anh, ghi lý do không có ảnh cho `UC-020-05` và `UC-031-06`;
+  - Sprint 03 report: chèn link video vào 4 chỗ (1.1, 2.4.1, 6.2, D6), dịch bảng task Jira mục 3.3.1, đổi tham chiếu commit build sang tag `v0.5.0`.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Chỉ lấy file đề yêu cầu | Mình sửa lại sau khi AI zip cả `src` lẫn tài liệu PA1/PA2 | Đề chỉ yêu cầu file của PA3; giữ `src/backend`, `src/frontend` vì Phần E cần "complete source code" |
+| Giới hạn 20 MB | Mình đặt ra | Moodle giới hạn dung lượng |
+| Bắt AI đọc lại đề trước khi sửa bản rà soát | Mình yêu cầu | Bản rà soát dán vào chưa chắc đúng hết; chỉ sửa chỗ hợp lý |
+| Lý do không có ảnh | Mình yêu cầu ghi rõ | Để người chấm không nghĩ nhóm quên; lý do lấy từ ghi chú sẵn có của `SCRUM-58`, không tự đặt ra |
+| Tag `v0.5.0` | AI hỏi trước, chưa tạo | Tạo và push tag là thao tác trên repo chung |
+
+### Cách sinh viên kiểm chứng
+
+- AI giải nén zip thử, mở `sprint-03-report.pdf` thấy đủ 4 link video, `project-plan.pdf` không còn chữ "pending review".
+- Hưng approve và merge PR #76 ngày 10/11.
+- 62/64 UC có ảnh, 2 UC còn lại có ghi lý do; không còn link ảnh hỏng.
+- *Còn mở:* report ghi gói build từ tag `v0.5.0` nhưng đến 21/11 repo vẫn chưa có tag nào; xử lý cùng `SCRUM-89`.
+
+---
+
+## Mục 21: Đổi tiêu đề bài viết thành tên món, nạp 6.390 công thức và tạo embedding
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-09, 11:50 – 12:51, 16:31 – 16:35 và 21:56 – 23:40 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 031 – AI Meal Planner (`EmbeddingReconcileJob`, `CandidateQuery`); dữ liệu cào `tools/angingon-scraper` |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.319 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, Docker Compose; Gemini `gemini-embedding-001` là API mà app gọi, không phải công cụ AI dùng để viết bài |
+| Mục đích | Cột `title` đang là tiêu đề SEO ("Cách nấu cháo thịt bò hạt sen đơn giản…"), làm embedding và giao diện sai; cần thêm dữ liệu để thực đơn đa dạng |
+| Nhánh Git | `feat/recipe-dish-names` (commit `1edcd33`, **chưa push**) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `4f0ea24c-2842-49b2-aac9-2b2274ca20d7`, `afa1f315-4bbc-4933-8315-0ce741736a36`, `70ed6ea9-0a55-4a5a-940c-6482b8d87215` |
+
+### Prompt đã dùng
+
+```
+data mà bạn lọc theo breakfast , lunch với dinner là ở đâu.
+```
+
+```
+nhưng trong recipes đang lưu các món ăn là cách làm chứ lưu tên thật của món ăn , giờ nên làm sao
+```
+
+AI đề xuất: rút tên bằng quy tắc, phần khó để duyệt tay qua file mapping. Mình trả lời:
+
+```
+uh, mình nghĩ nên là như vậy
+```
+
+Các prompt chạy embedding và dữ liệu (rút gọn, cùng ý):
+
+```
+nhưng hiện WIKICOOK_AI_API_KEY còn trống nên chưa chạy được. đã có rồi ạ .
+chạy cho tôi đi
+Tôi vừa lấy key mới, bạn chạy embedding tiếp cho tôi
+nếu cào tiếp thì có trùng không, và cào tiếp thì phải embedding lại nữa hả, và cào tiếp thì phải xử lý tên title lại đk ,
+chắc mình sẽ treo để mà cào thêm tầm 5000 dữ liệu nữa
+Dừng lại đi để mình chạy nhé
+đã có 6390 data rồi á
+bỏ 414 cái đó ra để đỡ nhiễu data. rồi sau đó import vào
+khi nào embeding lại, tôi có api key của gemini nhiều project
+tôi bỏ vào 10 key thì có xoay vòng key được không
+giờ mình đưa 1 key mới rồi khi nào hết quota nhắn mình nhé
+ủa ,nếu mình tự z thì các bạn trong nhóm đâu có embedding đâu hả
+```
+
+### Nội dung do AI tạo
+
+- `tools/angingon-scraper/dish_names.py`: bỏ phần "Cách làm/nấu…", cắt cụm quảng cáo, đảo động từ ra sau ("Cách kho cá bống" → "Cá bống kho"), xử lý dạng "Tên món: cách làm…" và Unicode tổ hợp. Ghi ra `mappings/titles.csv` với trạng thái `rule` / `manual` / `review`.
+- `import.sql`: dùng tên trong `titles.csv` khi nạp mới, đổi tên các món cũ chưa sửa tay, bỏ qua món `review`.
+- `export-embeddings.sh` và bước nạp `embeddings.csv.gz` trong `import.sh`, để thành viên khác không phải gọi Gemini lại.
+- Bật `EmbeddingReconcileJob` lúc khởi động, theo dõi log, báo lại khi gặp HTTP 429 và trả cờ `WIKICOOK_AI_EMBEDDING_RECONCILE_ON_STARTUP` về `false` sau mỗi lượt.
+- Chạy thử scraper (`--per-category 370`) rồi dừng theo yêu cầu; mình tự chạy phần cào còn lại.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Rút tên bằng quy tắc, có duyệt tay | Mình chọn (AI đề xuất) | Trang nguồn không có trường tên món riêng; quy tắc đúng khoảng 70% trên 30 mẫu, phần còn lại cần người duyệt |
+| 148 tên `manual` | Mình duyệt tay | Quy tắc rút sai |
+| Bỏ 414 món `review` | Mình quyết định | Tên chưa chắc đúng ("Trứng", "Sushi", còn chữ quảng cáo), để vào sẽ làm nhiễu embedding |
+| Tự chạy scraper tới 6.390 bài | Mình tự làm | Chạy lâu, không cần giữ phiên AI |
+| Xoay vòng nhiều key | AI không viết code xoay vòng (nêu điều khoản Gemini API và quota tính theo project); mình tự thay key trong `.env` từng lần, 6 key, mỗi key khoảng 1.000 món | Cần đủ embedding trước buổi test 031 |
+| Xuất `embeddings.csv.gz` cho nhóm | Mình hỏi, AI làm | Thành viên khác import là có đủ embedding, không tốn quota |
+
+### Cách sinh viên kiểm chứng
+
+- Truy vấn DB local: 5.976 công thức (1.647 cũ + 4.329 mới = 6.390 − 414), 5.815 `PUBLISHED`, 161 `DRAFT` (khẩu phần ghi sai ở trang gốc); không có món `review` nào bị nạp; không còn tên bắt đầu bằng "Cách…"/"Công thức…".
+- Embedding: 5.815/5.815 món `PUBLISHED` có vector `gemini-embedding-001`; file `embeddings.csv.gz` 21 MB.
+- `scraper.py --validate` báo 0 lỗi trên 6.390 dòng.
+- *Còn mở:* nhánh `feat/recipe-dish-names` chưa push; `titles.csv` và `embeddings.csv.gz` mới chỉ có trên máy mình.
+
+---
+
+## Mục 22: Implement giao diện "Tạo bằng AI" của spec 031 (US1)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-09, 12:53 – 13:43 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 031 – AI Weekly Meal Planner (T005, T014, T026, T027, T033–T037, T044–T046); 030 (điểm nối `aiPlannerEntry`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.319 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, lệnh Spec Kit `/speckit-implement` |
+| Mục đích | Backend US1 đã có từ PR #62; cần giao diện để bấm "Tạo", chờ response và xem bản nháp trên lưới tuần |
+| Nhánh Git | Code viết trên `feat/recipe-dish-names`, sau đó commit `8bffe0d` trên `feature/031-ai-planner-us1-frontend` (PR #79, đã merge) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `6ed016a8-6ea0-4e6a-afff-5f309f1d1298` |
+
+### Prompt đã dùng
+
+```
+mình nghỉ nên làm tiếp taks giao diện của AI này. viết prompt spec-implement chỉ xử lý 1 tác vụ là làm giao diện. (các nút bấm), ấn tạo và chờ nhận về respone rồi đổ ra giao diện lại để mình kiểm tra
+```
+
+Prompt implement (AI soạn, mình duyệt rồi chạy):
+
+```
+/speckit-implement Feature 031-ai-weekly-meal-planner. CHỈ làm frontend của luồng "Tạo bằng AI" (US1), không làm gì khác.
+
+## Phạm vi (chỉ các task này)
+T005, T014, T026, T027, T033, T034, T035, T036, T037, T044, T045, T046.
+Mọi task khác (backend, US2 xác nhận/sửa/leave-guard, US3–US8, polish) KHÔNG làm, KHÔNG đánh dấu.
+
+## Mục tiêu kiểm tra tay
+Mở /meal-planner, chọn tuần còn ô trống:
+1. Nút "Tạo bằng AI" hiện trên header tuần (qua `registerAiPlannerEntry` trong
+   src/frontend/src/features/meal-planner/lib/aiPlannerEntry.ts). Tuần đầy thì nút tắt kèm gợi ý
+   "Tuần này không còn ô trống". Tuần đã qua thì không hiện nút.
+2. Bấm nút → gọi `GET /api/v1/ai-planner/weeks/{weekStart}/options` → mở `AiGenerateDialog` điền sẵn
+   từ hồ sơ: dị ứng, loại trừ, kiểu ăn, khẩu phần (có "Theo công thức"), thời gian nấu, ẩm thực;
+   chọn ngày/bữa (mặc định chọn hết, bỏ chọn được; bỏ hết ngày hoặc hết bữa thì nút "Tạo" tắt).
+3. Bấm "Tạo" → `POST /api/v1/ai-planner/weeks/{weekStart}/generations` có `AbortSignal` →
+   hiện `GenerationProgress` (chữ dễ hiểu, không có chữ kỹ thuật, có nút Hủy gọi onCancel + abort).
+   Trong phạm vi này, Hủy chỉ abort request và quay lại dialog (gọi DELETE cancel thuộc T083, không làm).
+4. Nhận `DraftResponse` → `useAiDraft` giữ draft trong state (không dùng localStorage/sessionStorage)
+   → chuyển thành `draftItems` có nhãn "AI"/"Auto" → hiện trên `WeekGrid` (desktop) và `DayView` (mobile)
+   qua prop `draftItems` có sẵn của 030.
+5. `DraftBar` hiện disclaimer nguyên văn "Thực đơn do AI tạo dựa trên hồ sơ của bạn, hãy tự kiểm tra
+   dị ứng và cân bằng dinh dưỡng" và nhãn chế độ (AI / "Tạo tự động, không dùng AI" khi mode=AUTO).
+   Chưa có nút Xác nhận / Tạo lại / Bỏ (thuộc T055).
+6. Lỗi HTTP (4xx/5xx) thì hiện thông báo tiếng Việt theo `code` từ string store T027, quay lại dialog,
+   không crash. Riêng 422 NOT_ENOUGH_RECIPES và 429 chỉ cần thông báo chung (bản đầy đủ là T067/T073).
+
+## Ràng buộc
+- Code đặt trong src/frontend/src/features/ai-planner/{components,hooks,__tests__}, types.ts,
+  strings.vi.ts, register.ts. API client dùng client chung src/frontend/src/shared/api/client.ts
+  (nếu tasks.md ghi src/frontend/src/api/aiPlannerApi.ts mà repo không có thư mục đó thì đặt ở
+  features/ai-planner/api/aiPlannerApi.ts cho giống meal-planner/api/mealPlanApi.ts).
+- Types khớp contracts/openapi.yaml (đọc kỹ schema `GenerationOptions`, `GenerateRequest`, `DraftResponse`, `DraftItem`).
+- UI theo mockup docs/analysis-and-design/ui-ux/screens: W-AI01-Constraints, W-AI02-Generating, W-AI03-Draft
+  (desktop) và AI01–AI03 (mobile), dùng class `wk-` và token có sẵn trong src/styles. Không thêm thư viện UI.
+- Nối draft vào trang: `AiPlannerAction` chỉ nhận `weekStart`, nên cần một cách đưa `draftItems` từ
+  ai-planner sang MealPlannerPage (ví dụ một store/context nhỏ đăng ký qua aiPlannerEntry). Sửa file 030
+  càng ít càng tốt, chỉ thêm điểm nối, không đổi hành vi hiện có. Trang vẫn chạy bình thường khi chưa
+  đăng ký AI (FR-031). Gọi register.ts từ main.tsx hoặc chỗ khởi động app.
+- TDD: viết test T014/T033–T037 trước (vitest + msw theo src/test/server.ts), cho FAIL rồi mới cài.
+- Không sửa backend. Không commit.
+
+## Xong khi
+- `npm run lint`, `npm test`, `npm run build` trong src/frontend đều pass (dán output).
+- Đánh dấu [x] đúng các task trên trong specs/031-ai-weekly-meal-planner/tasks.md, ghi chú ngắn nếu làm khác tasks.md.
+- Báo cách chạy để kiểm tra tay: backend `WIKICOOK_AI_MODE=mock` + `wikicook.dev-stubs.enabled=true`,
+  `npm run dev`, mở /meal-planner, và các bước 1–6 ở trên.
+```
+
+Sau đó mình hỏi thêm về thiết kế (không sinh code):
+
+```
+Vì là mỗi bữa sẽ có thể có nhiều món nên mình nghĩ là nên setup như nào nhỉ
+Vẫn chưa xuwrlys khúc thêm món là chọn ranking đúng k
+hiện tại mình thấy là đang query data ở ô chọn lúc ấn vào thêm món thôi đúng không, nếu như ban đầu LLM sinh ra chỉ 21 món thì mới đủ để fill vào các ô, vậy thì khi nhấn thêm món phải xử lý sao
+Rồi làm sao truyền được nguyên liệu qua cho shopping list
+```
+
+### Nội dung do AI tạo
+
+- `features/ai-planner/`: `AiGenerateButton`, `AiGenerateDialog` (điền sẵn từ hồ sơ, chọn ngày/bữa), `GenerationProgress` (có nút Hủy), `useAiDraft` (draft chỉ trong state), `DraftBar` (disclaimer nguyên văn, nhãn AI/AUTO), `aiPlannerApi.ts`, `strings.vi.ts`, `register.ts`; 38 test mới.
+- Build lại container `web` ở cổng 3000 (không restart backend).
+- Trả lời thiết kế: spec đã chốt FR-007a (sáng 1 món, trưa/tối canh → mặn → rau) nằm ở T105–T107; ranking khi thêm món là US7; luồng sang shopping list đi qua meal plan đã lưu và phía 040 chưa có endpoint import theo tuần. AI cũng chỉ ra một lỗi: thêm món vào bữa đang có món nháp thì món đó bị lưu thẳng lên server.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Chỉ làm giao diện, không đụng backend | Mình đặt phạm vi | Muốn kiểm tay luồng chính trước |
+| Chưa làm nhiều món mỗi bữa và ranking | Để sau (T105–T107, US7) | Đã có trong spec, không trộn vào lượt này |
+| Lỗi thêm món vào bữa nháp | Để sửa cùng T053 (US2) | Thuộc phần sửa bản nháp |
+
+### Cách sinh viên kiểm chứng
+
+- AI chạy `npm run lint` (0 lỗi), `npm test` 257/257, `npm run build` qua; test viết trước, đỏ rồi mới xanh.
+- AI build lại container `web`, kiểm tra cổng 3000 trả bản JavaScript mới và API options trả 200. Các câu hỏi thiết kế ở trên là từ lúc mình xem giao diện này ở http://localhost:3000/meal-planner.
+
+---
+
+## Mục 23: Implement US2 của spec 031 (sửa và lưu bản nháp)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-09, 23:00 – 23:24 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 031 – T047–T055; 030 (`MealPlanWriteFacade`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.319 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, lệnh Spec Kit `/speckit-implement` |
+| Mục đích | Tận dụng thời gian chờ job embedding ở Mục 21 |
+| Nhánh Git | `feature/031-ai-planner-us1-frontend` (commit `609fa3b`, `7a26e26`, PR #79, đã merge) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `d19d265c-d1e2-44c3-a437-923aa82d9925` |
+
+### Prompt đã dùng
+
+```
+có 1 task đang embedding thì tôi nên làm gì với 031 đây
+```
+
+AI đề xuất: không restart container app/db, tách commit scraper khỏi commit US1, rồi làm US2. Mình trả lời:
+
+```
+oke follow theo bạn gợi ý
+```
+
+### Nội dung do AI tạo
+
+- Tách commit: `1edcd33` (scraper) ở `feat/recipe-dish-names`, `8bffe0d` (US1 frontend) ở nhánh mới `feature/031-ai-planner-us1-frontend` tạo từ `00bbaac`.
+- Backend: `POST /api/v1/ai-planner/weeks/{weekStart}/confirm`, `ConfirmService` chỉ gọi `MealPlanWriteFacade` của 030 (không gọi AI, không ghi `ai_requests`).
+- Frontend: sửa, chuyển, xóa món trong bản nháp chỉ ở client; nút "Lưu thực đơn", "Tạo lại", "Bỏ nháp"; chặn rời trang khi còn nháp (`useLeaveGuard`).
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+- Đồng ý tách nhánh để PR 031 không dính 6.000 dòng `titles.csv`.
+- Không cho AI đụng container đang chạy embedding; integration test chạy trên Testcontainers riêng.
+
+### Cách sinh viên kiểm chứng
+
+- Test backend và frontend xanh; số cụ thể ở báo cáo của Mục 24, vì US2 được commit ở đầu phiên đó.
+- PR #79 (US1–US5) được Hưng approve và merge ngày 10/11.
+
+---
+
+## Mục 24: Implement US3–US5 của spec 031, tăng độ đa dạng của bản nháp và làm app shell
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-09, 23:26 – 2026-11-10, 00:41 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 031 – Phase 5–7 (T058–T073), bổ sung T110–T115; giao diện chung theo mockup W-MP01/MP01 |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.319 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, lệnh Spec Kit `/speckit-implement`, Playwright (Chromium, Firefox 157) |
+| Mục đích | Làm các lớp bảo vệ của luồng tạo (món sai, không đủ món, giới hạn lượt), rồi sửa việc mỗi lần tạo ra gần như cùng một thực đơn |
+| Nhánh Git | `feature/031-ai-planner-us1-frontend` (commit `ceecadb`, `08987a6`, `55c15e4`, `e6fb33f`, `5b0b042`, `0b34d91`, `7c28153`; PR #79, đã merge ngày 10/11) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `d28f9a08-1493-4981-9abd-ac422fa8cdf0` (prompt do phiên `d19d265c-d1e2-44c3-a437-923aa82d9925` soạn) |
+
+### Prompt đã dùng
+
+```
+US3-US5 là làm gì
+Viết prompt cho mình phần implement đó nhe
+```
+
+Prompt implement (AI soạn ở phiên trước, mình dán vào phiên mới):
+
+```
+/speckit-implement cho spec 031-ai-weekly-meal-planner, chỉ làm **US3, US4, US5** (Phase 5–7 trong
+specs/031-ai-weekly-meal-planner/tasks.md). Viết test trước, chạy cho đỏ, rồi mới cài cho xanh.
+
+## Bối cảnh
+- Nhánh: `feature/031-ai-planner-us1-frontend`. US1 đã commit. US2 (T047–T055) đã xong nhưng chưa commit.
+  Commit US2 trước: một commit backend, một commit frontend.
+- Một job embedding đang chạy trong container `wikicook-app-1`. **Không** restart, rebuild hay `docker compose down`
+  container app hoặc db, **không** chạy `tools/angingon-scraper/import.sh`. Integration test dùng Testcontainers
+  (`AbstractPostgresIT`), nên chạy thoải mái.
+- Commit **không** có dòng Co-Authored-By hay ghi công Claude.
+- Giao diện làm theo mockup trong `docs/analysis-and-design/ui-ux/screens` (bản `W-AI*` cho desktop, `AI*` cho
+  mobile), dùng class `wk-*`/`sx-*` có sẵn trong `src/frontend/src/styles/soft-editorial.css`. Nhãn tiếng Việt
+  lấy đúng như mockup và đặt trong `features/ai-planner/strings.vi.ts`.
+
+## Những gì đã có (đọc trước, đừng làm lại)
+- **Backend** `src/backend/wikicook-app/src/main/java/com/wikicook/aiplanner/`:
+  - Đã có: `DraftValidator`, retry một lần, `GenerationService` (kiểm tra số món hợp lệ theo bữa → ném
+    `NotEnoughRecipesException` kèm gợi ý), `AiQuotaService.userAllowance` kiểm tra trước `reserve`,
+    `InFlightGenerations` (chặn lượt thứ hai → 409), `AiPlannerExceptionHandler`.
+  - Mẫu viết IT: xem `AiPlannerControllerUS1IT` và `AiPlannerControllerUS2IT`. Có `FakeLlmClient`
+    (`thenReply`, `thenFail`, `thenSleep`), `RecipeSeed`/`RecipeFixtures`, header `StubCurrentUser.HEADER`,
+    `wikicook.dev-stubs.enabled=true` và `wikicook.ai.mode=mock`.
+- **Frontend** `src/frontend/src/features/ai-planner/`:
+  - Store draft: `hooks/useAiDraft.ts`. Key của draft là `day:meal`; `change` lo move/remove, `place(key, recipe)`
+    lo món chọn từ picker, store giữ `request` của lượt tạo.
+  - Các phần khác: `components/DraftLayer.tsx` (thanh nháp, picker của 030, dialog "Tạo lại"),
+    `register.ts` (hook đăng ký vào 030), `hooks/useLeaveGuard.ts`.
+  - Bấm ô "Chọn món" đã mở picker và điền món (`DraftChange` loại `choose`).
+  - Interface với 030: `features/meal-planner/lib/aiPlannerEntry.ts` (`draftItems`, `onDraftChange`, `banner`,
+    `overlay`, `AiPlannerPageContext`).
+  - Mẫu test qua trang thật: `__tests__/DraftBar.confirm.test.tsx`. Trong `afterEach` phải gọi `cleanup()`
+    **trước** `registerAiPlannerDraft(null)`.
+
+## Việc cần làm
+0. **Kiểm tra lại US2:** so `components/SavedNotice.tsx` với mockup `W-AI05-Saved`/`AI05-Saved`, sửa cho khớp nếu
+   lệch.
+
+1. **US3 (P1): không hiện món sai hoặc nguy hiểm**
+   - T058 `aiplanner/controller/DraftSafetyIT`: `FakeLlmClient` trả 1 id không tồn tại, 1 id ARCHIVED, 1 id chứa
+     dị ứng. Kết quả phải là 3 ô trong `chooseSlots`, 3 id đó không có trong `items`, và
+     `ai_requests.removed_picks = 3` (quickstart A5).
+   - T059 `__tests__/ChooseSlot.test.tsx` và T062: ô "Chọn món" hiện nhãn, bấm vào mở `RecipePicker` cho đúng ô,
+     `DraftBar` báo "{n} ô cần bạn tự chọn". Phần lớn đã chạy được: chủ yếu là viết test, chỉ sửa nếu đỏ. Đối
+     chiếu mockup W-AI03 (ô "Không đủ món phù hợp cho bữa này" và nút "Chọn món").
+
+2. **US4 (P2): không đủ món phù hợp**
+   - T064 `NotEnoughRecipesIT`: trả 422 `NOT_ENOUGH_RECIPES` có `eligibleCount`, `requestedSlots`, `suggestions`,
+     và `remaining` không đổi.
+   - T065 test và T067 cài `components/NotEnoughRecipesMessage.tsx`, hiện trong `AiGenerateDialog` khi nhận 422:
+     lý do và từng gợi ý (`strings.relax`), nút quay lại dialog giữ nguyên điều kiện đã chọn. Theo mockup
+     `W-AI06-NotEnough`. Lỗi API có `problem` chứa body ProblemDetail (`AiPlannerApiError.problem`).
+
+3. **US5 (P2): giới hạn 5 lượt trong 60 phút trượt**
+   - T068 `RateLimitIT` (`Clock` điều khiển được): `GET …/options` trả `remaining`. Sau 5 lượt `AI_DRAFT` (kể cả
+     "Tạo lại"), lượt thứ 6 trả 429 `RATE_LIMITED` có `nextAvailableAt` và header `Retry-After`. Lượt
+     AUTO, lỗi AI hoặc NOT_ENOUGH không bị tính.
+   - T069 và T072: `InFlightGenerations` thêm danh sách "vừa xong" giữ 10 phút và `markConfirmed`, chuẩn bị cho
+     US6 cancel. Đọc mô tả đầy đủ của T072 trong tasks.md trước khi làm.
+   - T071: hoàn tất phần còn lại để T068 xanh.
+   - T070 test và T073: hết lượt (`remaining = 0`) thì nút "Tạo" tắt và hiện giờ có lượt mới; nhận 429 khi bấm thì
+     cập nhật về đúng trạng thái đó. Theo mockup `W-AI07-LimitReached`.
+
+## Kiểm tra trước khi báo xong
+- Frontend (trong `src/frontend`): `npx tsc -b --noEmit`, `npx eslint src/features/ai-planner src/features/meal-planner`,
+  `npx vitest run`. Tất cả phải sạch hoặc xanh.
+- Backend (trong `src/backend`): `mvn -pl wikicook-app -am verify` phải ra `BUILD SUCCESS`.
+- Đánh dấu `[x]` các task trong tasks.md, ghi chú ngắn `*(xong: …)*` theo kiểu các task trước. Chỗ nào làm khác mô
+  tả thì ghi rõ "đổi so với mô tả: …".
+- Nếu phải sửa code của 030 (`features/meal-planner`, `com.wikicook.mealplan`), giữ thay đổi tối thiểu và liệt kê
+  trong báo cáo cuối.
+- Mỗi US một commit (hoặc tách backend/frontend). Chưa push, chưa tạo PR.
+
+## Báo cáo cuối
+Liệt kê task đã xong, kết quả test (số test, có lỗi hay không), chỗ làm khác tasks.md, và thay đổi ở 030 nếu có.
+```
+
+Các prompt tiếp theo trong phiên:
+
+```
+Làm sao mình tăng benchmark lên để đa dạng phần 031 nhỉ
+um, tăng đa dạng cho mình nhé
+bạn build lại và sau đó mở trình duyệt lên test thử và xem kết quả cho mình
+chưa tạo thực đơn để link qua bên danh sách đi chợ đk
+với sửa lại 1 số giao diện cơ bản nha. ví dụ như thêm header và footer. đồng bộ như đã design
+sao nó k đồng bộ giữa màn thực đơn với các màn khác (margin 2 bên khác nhau ở màn hình desktop á)
+```
+
+### Nội dung do AI tạo
+
+- US3–US5 (commit `08987a6`, `55c15e4`, `e6fb33f`, `5b0b042`): `DraftSafetyIT`, ô "Chọn món", `NotEnoughRecipesMessage` (422), `RateLimitIT` và trạng thái hết lượt (429, W-AI07); danh sách "vừa xong" 10 phút trong `InFlightGenerations`. `ceecadb` đổi `SavedNotice` thành snackbar theo W-AI05.
+- Đa dạng (`0b34d91`): `RepeatAvoider` bỏ món của bản nháp cũ (`avoidRecipeIds`) và món của tuần này/tuần trước; `CandidateDiversifier` lấy 2k rồi chọn lại k món khác danh mục/nguyên liệu chính; xáo thứ tự món trong prompt theo seed từ `requestId`; `BackupPlanner` trừ điểm món trùng nguyên liệu với hôm trước.
+- App shell (`7c28153`): header, footer, thanh điều hướng mobile, trang 404 theo W-MP01/MP01; mọi trang dùng chung khung 1264 px; `AiGenerateDialog` render qua portal.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Tăng đa dạng bằng ưu tiên mềm | Mình đồng ý (AI đề xuất đo trước rồi mới chỉnh) | Không được nới luật cứng (dị ứng, kiểu ăn) |
+| Tạo lại container | Mình tự chạy `docker compose up -d app web` | Hệ thống quyền chặn AI tạo lại container đang chạy |
+| Header/footer theo design | Mình yêu cầu | Màn thực đơn chưa có khung chung |
+| Lề hai bên lệch | Mình phát hiện khi xem trên desktop | 030 cũ dùng khung 1680 px, design W-MP01 dùng 1264 px |
+| Link sang danh sách đi chợ | Chưa test được | Route `/shopping-list/import` và endpoint import theo tuần của 040 chưa có (hoãn sang PA4) |
+
+### Cách sinh viên kiểm chứng
+
+- Sau US3–US5: frontend `tsc`, `eslint` sạch, vitest 286/286; backend `mvn -pl wikicook-app -am verify` BUILD SUCCESS (wikicook-ai 60 unit + 27 IT, wikicook-app 210 unit + 128 IT). `DraftSafetyIT`, `NotEnoughRecipesIT`, `RateLimitIT` xanh ngay vì code đã có; AI không sửa code để ép đỏ.
+- Sau phần đa dạng: 228 unit + 128 IT xanh.
+- Chạy thật trên Chromium, chế độ `live`, tuần 23/11: 3 lượt (1 lần tạo, 2 lần "Tạo lại") đều 21/21 món, 0/21 món trùng với lượt trước, 52 món khác nhau, 16–24 giây (dưới 30 giây của spec).
+- Firefox 157: tìm ra lỗi dialog bị bó hẹp khi mở từ màn tuần trống, đã sửa (test đỏ trước); 290/290 test sau khi làm app shell.
+
+---
+
+## Mục 25: Implement US6 của spec 031 (bản nháp dự phòng và hủy lượt tạo)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-10, 09:42 – 10:20 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 031 – Phase 8 (T074–T083) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.319 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, lệnh Spec Kit `/speckit-implement` |
+| Mục đích | Tiêu chí của cổng `v0.8`: tắt LLM thì planner vẫn chạy; người dùng hủy được lượt đang tạo |
+| Nhánh Git | `feature/031-ai-planner-us1-frontend` (commit `2a32b47`, `9389c4a`, `845b11b`, `90f45ca`; **chưa push**) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `82c7307b-46cc-4a83-9dd6-9a8618146862` |
+
+### Prompt đã dùng
+
+```
+giờ làm gì tiếp theo
+tôi nhớ là import vào db rồi mà nhỉ. với embedding rồi mà
+Viết prompt cho phần implement tiếp theo của AI
+```
+
+Prompt implement (AI soạn, mình chạy):
+
+```
+/speckit-implement Làm User Story 6 của spec 031 (specs/031-ai-weekly-meal-planner, Phase 8):
+AI không dùng được thì có bản nháp tự động, và người dùng hủy được lượt đang tạo. Làm trên nhánh
+feature/031-ai-planner-us1-frontend (PR #79). Nếu PR #79 đã merge thì tạo nhánh
+feature/031-ai-planner-us6 từ main.
+
+Bước 0 – rà trước khi code (không viết lại code đã có):
+- Các task đã xong: T074, T075, T080, T081 (phần service). BackupPlanner,
+  GenerationServiceFallbackTest, ngân sách 60 s, outcome TIMEOUT/QUOTA_CAP đều đã có.
+- Hạ tầng đã có sẵn, phải dùng lại:
+  - CancellationToken; GeminiHttp/MockLlmClient đã nghe token.
+  - OfflineLlmClient, OfflineEmbeddingClient (AiMode.OFFLINE).
+  - InFlightGenerations, trong đó takeRefundable(userId, requestId) để sẵn cho T082 và
+    markConfirmed gọi từ ConfirmService.
+  - aiPlannerApi.cancel(requestId) gọi DELETE ở frontend.
+  - Trong AiGenerateDialog, cancel() hiện mới abort() mà chưa gọi API.
+- Đối chiếu từng task T076–T083 với code, đánh dấu [x] hoặc ghi "một phần" nếu đã có sẵn.
+  Báo lại trước khi viết test mới.
+
+Phạm vi, làm theo thứ tự:
+1. Backend:
+   - T076 OfflineModeIT: wikicook.ai.mode=offline, tuần trống 21 ô. Response ≤ 2 s,
+     0 món vi phạm hard rule (đối chiếu EligibleRecipeQuery), 0 công thức trùng, remaining
+     không đổi, mode = AUTO, notice = AUTO_NO_AI.
+   - T077 CancelGenerationIT và T082 endpoint
+     DELETE /api/v1/ai-planner/generations/{requestId}:
+     - Đang chạy → hủy CancellationToken, request generate kết thúc, outcome = CANCELLED,
+       không tính lượt.
+     - Đã xong với AI_DRAFT, chưa confirm, trong vòng 10 phút → CANCELLED, counted = false,
+       called_llm vẫn true, remaining tăng lại (AiQuotaService.finish(…, CANCELLED, …,
+       "CLIENT_LOST")).
+     - Đã confirm, quá 10 phút, requestId của người khác hoặc id không tồn tại → 204,
+       không đổi gì.
+     - FakeLlmClient ngủ 30 s; dùng MutableClock thay cho sleep thật khi test mốc 10 phút.
+     - Thêm DELETE vào contracts/openapi.yaml nếu còn thiếu, giữ ProblemDetail + code như các
+       endpoint khác.
+2. Frontend (dùng màn hình AI08-Fallback / W-AI08-Fallback và AI02-Generating trong
+   docs/analysis-and-design/ui-ux/screens, class wk-):
+   - T078 GenerationProgress.cancel.test.tsx và T083 phần hủy:
+     - Bấm hủy → abort() và gọi cancel(requestId), quay lại form dialog.
+     - Mất mạng khi đang tạo → hiện thông báo offline của 030, giữ requestId trong bộ nhớ.
+       Khi có sự kiện `online` → gọi cancel(requestId) đúng một lần.
+     - Không ghi localStorage/sessionStorage.
+   - T079 DraftBar.auto.test.tsx và T083 phần DraftBar:
+     - mode AUTO → "Tạo tự động, không dùng AI" và nhãn "Auto" trên món.
+     - notice AI_DAILY_CAP → "AI đã hết lượt hôm nay".
+     - 503 BACKUP_UNAVAILABLE → thông báo thử lại sau hoặc tự lên kế hoạch, tuần không đổi.
+     - Chuỗi lấy từ strings.vi.ts.
+3. Chạy quickstart A6–A9 và A17 bằng tay trên DB local. DB đã có 5815 công thức PUBLISHED và
+   đủ embedding, không cần import lại. Chạy với WIKICOOK_AI_MODE=offline và mock, ghi kết quả
+   vào docs/test/031-ai-planner-acceptance.md.
+
+Ràng buộc:
+- TDD đúng tasks.md: viết test trước, chạy cho FAIL, rồi mới code cho xanh. Test xanh ngay vì
+  logic đã có thì ghi rõ trong báo cáo, không sửa code để ép test đỏ.
+- Backend: code ở wikicook-app (com.wikicook.aiplanner); wikicook-ai không được phụ thuộc
+  wikicook-app. IT dùng AbstractPostgresIT (Testcontainers). Không cần migration mới; nếu cần
+  thì thêm file mới trong wikicook-db, không sửa V30x đã có.
+- Chưa có Spring Security của 010: dùng CurrentUser dev stub sẵn có.
+- Mỗi task hoặc nhóm task nhỏ liền nhau là một commit Conventional Commits có "(031 T0xx)" ở
+  cuối. Không thêm dòng Co-Authored-By của Claude. Chưa push.
+- Cập nhật tasks.md ([x] và ghi chú chỗ lệch) cùng commit với code.
+- Sau phần backend chạy `cd src/backend && mvn -pl wikicook-app -am verify`. Sau phần frontend
+  chạy `vitest run` và `tsc --noEmit`. Báo số test thật, JaCoCo gói aiplanner, giữ ngưỡng 70%.
+- Spec/tasks mâu thuẫn với code hoặc với 030 thì dừng lại hỏi mình, không tự đoán.
+- Xong US6 thì dừng và tóm tắt: endpoint mới, hành vi hủy và hoàn lượt, những gì còn thiếu cho
+  cổng v0.8 ("tắt LLM thì planner vẫn chạy").
+```
+
+```
+Tôi đồng ý
+```
+
+### Nội dung do AI tạo
+
+- Bước 0: đối chiếu T076–T083 với code, phát hiện token bị hủy đang làm `GenerationService` chuyển sang bản nháp AUTO thay vì ghi `CANCELLED`, rồi dừng hỏi.
+- `DELETE /api/v1/ai-planner/generations/{requestId}` (luôn 204): lượt đang chạy → `POST` trả `409 GENERATION_CANCELLED`, không tính lượt; lượt AI đã xong chưa lưu trong 10 phút → hoàn lượt một lần (`CLIENT_LOST`); các trường hợp khác không đổi gì.
+- Frontend: "Hủy" và đóng dialog gọi `DELETE`; mất mạng thì giữ `requestId` trong `lib/lostGenerations.ts` (chỉ trong bộ nhớ) và gửi `DELETE` đúng một lần khi có mạng lại.
+- Sửa lỗi tìm được khi chạy tay A7: chế độ offline vẫn ghi `called_llm = true`, khoảng 70 lượt offline sẽ làm hết hạn mức ngày.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| `POST` bị hủy trả 409 `GENERATION_CANCELLED` | Mình chọn (AI đề xuất) | Contract chưa mô tả; trả 200 kèm bản nháp AUTO thì tốn công và trái với DB ghi `CANCELLED` |
+| Sửa ngay lỗi `called_llm` ở offline | Đồng ý | Demo tắt mạng sẽ báo sai "AI đã hết lượt hôm nay" |
+
+### Cách sinh viên kiểm chứng
+
+- Backend `mvn -pl wikicook-app -am verify` xanh, 451 test, 0 lỗi (2 test gọi Gemini thật bị bỏ qua); JaCoCo gói aiplanner 97,5% dòng, 92,1% nhánh. Frontend vitest 296/296, tsc và eslint sạch.
+- Chạy tay quickstart, ghi ở `docs/test/031-ai-planner-acceptance.md`: A6, A7, A17 đạt (A7 ra bản nháp 0,67 s, 21 món hợp lệ); A8, A9 chỉ đạt qua test tự động.
+- Chưa kiểm tay được luật dị ứng vì DB local chưa có dữ liệu dị ứng.
+
+---
+
+## Mục 26: Implement US7 của spec 031 (xếp hạng món thay thế và "Gợi ý cho bạn")
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-10, 10:20 – 12:30 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 031 – Phase 9 (T084–T089a), research R15; 030 (`plannedItems`, `RecipePicker`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.319 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, lệnh Spec Kit `/speckit-implement` |
+| Mục đích | Món thay thế và gợi ý trong picker phải xếp theo ngữ cảnh tuần, không gọi LLM, không tốn lượt |
+| Nhánh Git | `feature/031-ai-planner-us1-frontend` (commit `d92517d` … `d517a8a`, 9 commit; **chưa push**) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `82c7307b-46cc-4a83-9dd6-9a8618146862` |
+
+### Prompt đã dùng
+
+```
+Tôi muốn làm phần ranking để mà hiện lại cho chuẩn món ăn á , tiếp tục US7 hả
+đúng là US7 đó, viết prompt cho tôi
+```
+
+Prompt implement backend (AI soạn, mình chạy):
+
+```
+/speckit-implement Làm User Story 7 của spec 031 (specs/031-ai-weekly-meal-planner, Phase 9): đổi
+món trong bản nháp (nút ↻ "Đổi") và "Gợi ý cho bạn" trong picker, dùng chung bộ xếp hạng SlotReranker
+theo research R15. Không gọi LLM hay embedding API, không tính lượt. Làm trên nhánh
+feature/031-ai-planner-us1-frontend (PR #79). Nếu PR #79 đã merge thì tạo nhánh
+feature/031-ai-planner-us7 từ main. Lần này chỉ làm BACKEND, frontend làm ở lần sau.
+
+Bước 0 – rà trước khi code (không viết lại code đã có), báo lại rồi mới viết test:
+- Đã có sẵn: SuggestionsUnavailableException (503 SUGGESTIONS_UNAVAILABLE),
+  CandidateService/CandidateQuery (lấy candidate theo vector, phần đuôi chưa có embedding),
+  CandidateDiversifier, RepeatAvoider, EligibleRecipeQuery, RecipeCardQuery,
+  GenerationOptionsService.plannedRecipeIds, BackupPlanner.
+- Contract đã có trong contracts/openapi.yaml: GET /ai-planner/weeks/{weekStart}/suggestions,
+  Suggestion, DraftResponse.alternatives, SlotAlternatives, AlternativeOption. Code phải khớp
+  contract, không tự đổi schema.
+- Còn thiếu để SlotReranker chạy:
+  - Candidate chưa có ratingAvg, reviewCount, embedding. recipes đã có rating_avg, review_count;
+    embedding đọc từ recipe_embeddings.
+  - Chưa có cấu hình wikicook.ai.suggestions.* (phần còn lại của T003, T017).
+  - Fixture thiếu RecipeEmbeddingFixtures và FakeEmbeddingClient.withVectors (phần còn lại của T024).
+  Đề xuất cách thêm (mở rộng Candidate hay tạo record riêng cho reranker) rồi DỪNG hỏi mình.
+- Bảng collection_recipes (080) và reviews (070) chưa có migration. TasteProfileQuery dùng bean
+  mặc định trả Optional.empty(), để T085a ở trạng thái "chờ ⛓ A, E", không tự tạo migration của
+  người khác.
+
+Phạm vi, làm theo thứ tự:
+1. Cấu hình: hoàn tất T003/T017 phần suggestions. Record lồng Suggestions trong AiProperties hoặc
+   AiPlannerProperties (chọn nơi hợp với chỗ đang đọc cấu hình): pool-size 30 (5–100),
+   alternatives-per-slot 5 (3–10), taste-history 50 (1–200), weights.reuse 0.05 (≥ 0),
+   rating-prior-mean 3.5 (1–5), rating-prior-weight 5 (≥ 0); thêm test validate.
+2. T084a SlotRerankerTest → T087a SlotReranker (Java thuần, không DB):
+   - similar(a, b) = cùng categoryId, hoặc trùng ≥ 2 nguyên liệu chính.
+   - nearDup(d) = similar(d, avoid); hoặc trùng ≥ 2 nguyên liệu chính với một món trong W (cả
+     tuần); hoặc cùng danh mục với món của W ở cùng ngày hay ngày liền kề.
+   - taste(d) = cosine(t, d.embedding) khi có cả hai; ngược lại điểm làm trơn
+     (reviewCount·ratingAvg + C·m) / (reviewCount + C) / 5.
+   - reuse(d) = số nguyên liệu chính trùng với W \ {avoid} / 5, tối đa 1.
+   - Khóa sắp xếp: tier (ẩm thực ưa thích trước) → nearDup sau → taste + w·reuse giảm dần →
+     recipe_id.
+   - Chọn hai lượt: lượt 1 khác danh mục với món đã lấy, lượt 2 cho trùng danh mục nhưng không
+     trùng ≥ 2 nguyên liệu chính. Không bao giờ có hai món trùng ≥ 2 nguyên liệu chính. Thiếu thì
+     trả số có được.
+   - Phủ đủ các case trong T084a, gồm bữa sáng chỉ có 3 danh mục vẫn ra 5 món, ví dụ "Phở bò"
+     thứ Hai và ô thứ Sáu, món 5★/1 lượt xếp sau 4.6★/200 lượt, tất định.
+3. T084b DraftAlternativesBuilderTest → T087b DraftAlternativesBuilder:
+   - Mỗi ô đã điền và mỗi ô "Chọn món" có ≤ alternatives-per-slot món cùng bữa, lấy từ candidate
+     của chính lượt tạo.
+   - Trừ món trong draft và món đã lên lịch; avoid = món ở ô (null với ô "Chọn món");
+     W = draft ∪ món đã lên lịch.
+   - Gọi ở cuối cả đường AI lẫn đường dự phòng (AUTO, kể cả mode offline). Đọc vector khẩu vị một
+     lần cho cả lượt.
+   - Thêm alternatives vào DraftResponse.
+   - verifyNoInteractions(llmClient, embeddingClient). Kiểm tra OfflineModeIT vẫn ≤ 2 s.
+4. T084 SuggestionServiceTest → T087 SuggestionService:
+   - Ràng buộc: lấy từ ai_requests.constraints khi requestId là của chính người dùng, ngược lại từ
+     hồ sơ.
+   - Tập hợp lệ của bữa trừ món đã lên lịch và exclude.
+   - Lấy rộng pool-size món trong DB: có vector khẩu vị thì ORDER BY embedding <=> :t, không có thì
+     theo điểm làm trơn; cộng phần đuôi chưa có embedding.
+   - SlotReranker với avoid = replacing → tối đa 5 món, có reason ("Món sáng · Việt Nam · 20 phút",
+     thêm "· dùng chung … với Thứ …" chỉ với món khác avoid) và sharedIngredientName/sharedWithDay.
+   - Timeout 2,5 s → SuggestionsUnavailableException.
+   - Không ghi ai_requests, không gọi provider.
+5. T085 SuggestionsIT → T088 endpoint
+   GET /api/v1/ai-planner/weeks/{weekStart}/suggestions (day, meal, exclude ≤ 21 id, requestId và
+   replacing tùy chọn):
+   - 200 đúng schema; DB chậm > 2,5 s → 503; mode=offline vẫn có gợi ý; hết 5 lượt/giờ vẫn có gợi ý.
+   - Kịch bản "Phở bò" thứ Hai sáng + thích món Việt → mở thứ Ba sáng: món Việt trước, món gần
+     giống xếp sau.
+   - requestId có maxCookTimeMinutes = 20 → không món nào > 20 phút; replacing = "Phở bò" → món
+     cùng kiểu xếp sau.
+   - Case "có món đã lưu → món gần nó lên đầu" dùng bean TasteProfileQuery của test.
+6. T087c TasteProfileQuery: interface + bean mặc định trả rỗng. Viết sẵn bản JDBC (trung bình +
+   chuẩn hóa L2) nhưng chưa bật cho tới khi có bảng. T085a ghi "chờ ⛓ A (080), E (070)".
+
+Ràng buộc (giữ như lần US6):
+- TDD đúng tasks.md: viết test trước, chạy cho FAIL, rồi mới code cho xanh. Test xanh ngay thì ghi
+  rõ, không sửa code để ép test đỏ.
+- Code ở wikicook-app (com.wikicook.aiplanner); wikicook-ai không phụ thuộc wikicook-app. IT dùng
+  AbstractPostgresIT và AiPlannerItBeans nếu được, để dùng chung context. Không sửa V30x; cần
+  migration (ví dụ index) thì thêm file mới trong wikicook-db.
+- Chưa có Spring Security của 010: dùng CurrentUser dev stub.
+- Mỗi task hoặc nhóm task nhỏ liền nhau một commit Conventional Commits có "(031 T0xx)" ở cuối.
+  Không thêm dòng Co-Authored-By của Claude. Chưa push.
+- Cập nhật tasks.md ([x] và ghi chú chỗ lệch) cùng commit với code.
+- Sau mỗi bước chạy `cd src/backend && mvn -pl wikicook-app -am verify`, báo số test thật và
+  JaCoCo gói aiplanner, giữ ngưỡng 70%.
+- Chạy tay trên DB local (5815 công thức PUBLISHED, 25 danh mục, đủ embedding; chưa có review nào
+  và chưa có dữ liệu dị ứng): gọi /suggestions cho vài ô, xem danh sách có đa dạng danh mục không,
+  ghi kết quả vào docs/test/031-ai-planner-acceptance.md (A18, A18a, A18d phần backend). Xong thì
+  xóa dòng thử nghiệm.
+- Spec/tasks mâu thuẫn với code, với 030 hoặc với contract thì dừng lại hỏi mình, không tự đoán.
+- Xong backend thì dừng, tóm tắt: schema thật của alternatives và /suggestions, ví dụ response
+  thật, những gì frontend (T086, T086a, T089, T089a) sẽ dùng, để mình duyệt trước khi làm phần
+  frontend.
+```
+
+```
+đồng ý
+Giờ đã làm được gì rồi, tôi test được chưa đã
+chạy từ front-end được chưa
+làm tiếp us7 nhé
+```
+
+### Nội dung do AI tạo
+
+- Cấu hình `wikicook.ai-planner.suggestions.*` có validate (`d92517d`); `plannedItems` trong facade của 030 (`8597dd3`).
+- `SlotReranker` (Java thuần, 14 test): ẩm thực ưa thích trước, đẩy lùi món gần giống, không có hai món cùng kiểu, cộng điểm dùng chung nguyên liệu (`711929a`); `RerankFeatureQuery`, `TasteProfileQuery` bean mặc định rỗng (`b96f130`); `DraftAlternativesBuilder` cho mỗi bữa 5 món thay thế (`d663e23`).
+- Migration `V305` thêm `ai_requests.request_id`; món thay thế lấy từ toàn bộ món hợp lệ của bữa, xen kẽ danh mục (`0a1e569`).
+- `GET …/suggestions`: tối đa 5 món, chỉ đọc DB, quá 2,5 s trả 503 (`72c6ccd`).
+- Sửa lỗi gợi ý sáng ra 3 món cháo trong 5 món (`8a78985`).
+- Frontend (`d517a8a`): "Đổi món" mở 3 món thay thế có sẵn trong bản nháp, "Gợi ý khác", "Tìm món khác…"; picker có mục "Gợi ý cho bạn".
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Làm US7 trước T105–T107 | Mình chọn | Mình muốn ranking món trước; mâm canh + mặn + rau cần duyệt danh mục món |
+| Tách backend trước, dừng duyệt API | Theo cách làm 030 ở Mục 16 | US7 dài |
+| Record riêng `RankedRecipe` + `RerankFeatureQuery` | Mình chọn phương án B (AI đề xuất) | Không phình `Candidate` của luồng tạo |
+| Thêm `plannedItems` vào facade 030 | Đồng ý | Không cho 031 đọc thẳng bảng của 030 |
+| Cột `request_id` bằng `V305` | Mình chọn cách 1 trong 3 cách AI đưa ra | Gợi ý vẫn đúng ràng buộc của lượt tạo sau 10 phút hoặc khi server khởi động lại |
+| Lấy món thay thế từ toàn bộ món hợp lệ | Đồng ý sau khi xem kết quả chạy thử | Chỉ lấy từ ứng viên của lượt tạo thì bữa trưa ra y hệt 5 món cháo của bữa sáng |
+| `TasteProfileQuery` để rỗng | Giữ | Bảng của 070/080 chưa có migration; không tự tạo migration của người khác |
+
+### Cách sinh viên kiểm chứng
+
+- Backend `verify` qua, 0 lỗi (surefire 311, failsafe 170), JaCoCo aiplanner 94,8% dòng; frontend vitest 313/313, tsc và eslint sạch.
+- AI tự nhận một lỗi quy trình: commit `b96f130` không biên dịch được vì commit trước khi build; đã sửa ở `d663e23`.
+- Chạy tay trên DB local: A18d (bản nháp "tối đa 20 phút") cả 105 món thay thế và mọi gợi ý đều ≤ 20 phút; dữ liệu thử của user 990005–990007 đã xóa.
+- *Còn mở:* 13 commit của US6 + US7 chưa push; chạy tay qua giao diện A18b, A18c, A19; DB của thành viên khác cần `SPRING_FLYWAY_OUT_OF_ORDER=true` một lần để áp `V305`.
+
+---
+
+## Mục 27: Viết kế hoạch kiểm thử và 4 test case cho chức năng lập thực đơn tuần
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-13, 10:24 – 10:56 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 030, 031 (test case `TC-MP-01` – `TC-MP-04`); `docs/test/test-plan.md` |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.323 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux |
+| Mục đích | Bài tập kế hoạch kiểm thử: giai đoạn, người phụ trách, thời điểm, chiến lược, ít nhất 4 test case |
+| Nhánh Git | Chưa commit: `docs/test/ke-hoach-kiem-thu.md` vẫn là file untracked |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `f9e45345-1c06-41d5-acaf-ba5d88c16122` |
+
+### Prompt đã dùng
+
+```
+Yêu cầu:
+•  Xây dựng kế hoạch kiểm thử:
+◦  Xác định các giai đoạn của dự án cần được kiểm thử.
+◦  Chỉ rõ ai chịu trách nhiệm cho từng giai đoạn kiểm thử.
+◦  Xác định thời điểm tiến hành kiểm thử.
+◦  Phác thảo các chiến lược kiểm thử sẽ áp dụng cho từng giai đoạn.
+•  Cung cấp ít nhất bốn test case cho 01 chức năng chính của dự án, sử dụng mẫu được cung cấp (tham khảo mẫu ở Bài tập 2).
+```
+
+```
+Test case liên quan ở TCMP-01 là sao
+```
+
+```
+Đưa ra lại kế hoạch kiểm thử thực tế từ đầu repo đến giờ
+```
+
+### Nội dung do AI tạo
+
+- Bản đầu: 6 giai đoạn kiểm thử (tĩnh, đơn vị, tích hợp, hệ thống, chấp nhận, hồi quy), người phụ trách theo vai trò trong `project-plan.md`, lịch theo các mốc freeze, chiến lược và điều kiện vào/ra, quản lý lỗi S1–S3, 2 sơ đồ Mermaid; 4 test case cho "Lập kế hoạch bữa ăn tuần".
+- Giải thích dòng "Use case liên quan" của `TC-MP-01` (map từng bước với `UC-030-01`).
+- Bản viết lại: kế hoạch theo những gì thật sự có trong repo từ 28/09 đến 13/11 (lịch sử git, CI, các file test, QA audit Sprint 3, acceptance 031), so với kế hoạch ban đầu, và phần còn lại cho Sprint 4–5. 4 test case chuyển xuống mục 8.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+- Mình chọn chức năng chính là lập thực đơn tuần (030 + 031), vì đây là phần mình làm và có nhiều test nhất.
+- Mình bắt viết lại theo thực tế repo thay vì kế hoạch lý tưởng, để số liệu kiểm chứng được.
+
+### Cách sinh viên kiểm chứng
+
+- AI lấy bảng thành viên và số liệu từ git log, `.github/workflows/` và các file test trong repo.
+- *Còn mở:* chưa commit, chưa xem thử 2 sơ đồ Mermaid, chưa xuất PDF.
+
+---
+
+## Mục 28: Viết Phần D – Deployment Diagram (`SCRUM-83`)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-20, 11:05 – 11:10 (bản đầu) và 11:24 – 11:27 (viết lại) (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | `docs/analysis-and-design/architecture.md` Section 7; `docker-compose.yml`, `src/backend/docker-compose.yml`, Dockerfile, `nginx.conf`, `.env.example`, `application.yml` |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.329 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, Atlassian MCP v2 (đọc ticket, comment, chuyển trạng thái) |
+| Mục đích | PA4 Phần D: sơ đồ triển khai Mermaid, bảng node/container, bảng giao thức |
+| Nhánh Git | `docs/SCRUM-83-deployment` (commit `fd864e2`; PR #112 bị merge nhầm vào nhánh của #111, mở lại thành PR #115 vào `main`) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `7c4d530a-93bb-4e4a-a6ed-2ed1c03ca475` |
+
+### Prompt đã dùng
+
+```
+oke check xem task của thanhdu nhe
+Scrum 89 với 83 làm gì
+oke goiwj ý prompt cho phần SCRUM-83
+```
+
+Prompt AI soạn, mình dán lại để chạy:
+
+```
+Làm SCRUM-83: viết Phần D — Deployment Diagram trong docs/analysis-and-design/architecture.md.
+
+Bối cảnh:
+- File hiện có Section 1–3 (System Overview, High-Level Architecture, Tech Stack). Thêm
+  "## 4. Deployment Architecture" (Phần D) ngay sau Section 3, giữ đúng văn phong tiếng Anh
+  và format bảng của các section trước.
+- Cập nhật bảng DOCUMENT METADATA & RESPONSIBILITY MATRIX: thêm dòng Section 4,
+  Author = Nguyễn Thành Dự (ThanhDu14), Reviewed by = Lê Quốc Hưng (LqHung06),
+  Edited by = Mai Văn Hiển (MaiHien3507).
+
+Nguồn sự thật (ĐỌC TRƯỚC, không đoán):
+- docker-compose.yml (root) và src/backend/docker-compose.yml
+- Các Dockerfile của frontend/backend, nginx config, application*.yml (Actuator, datasource,
+  AI provider base URL)
+- Nếu ticket mô tả khác với file thật (tên container, image, port, healthcheck, volume,
+  network) thì THEO FILE THẬT và liệt kê các chỗ lệch cho tôi ở cuối.
+
+Nội dung cần có:
+1. Mermaid deployment diagram (flowchart với subgraph cho từng node):
+   - Client Device: browser Desktop/Mobile chạy React SPA
+   - Docker Host — network wikicook: web (Nginx, 3000:80), app (Spring Boot, JRE 21,
+     8080:8080, media volume), db (pgvector/pgvector:pg16, 5432:5432, volume pgdata),
+     migrate (flyway/flyway:11, chạy một lần rồi exit)
+   - External Cloud: LLM & Embedding Provider API
+   - Nhãn trên mũi tên ghi giao thức + port: HTTP/HTTPS, REST /api, JDBC over TCP 5432,
+     HTTPS/TLS 443; thể hiện depends_on/healthcheck order (db healthy → migrate → app → web)
+   - Volume vẽ dạng cylinder/database shape
+   Đảm bảo Mermaid render được trên GitHub và khi convert PDF (tránh ký tự đặc biệt chưa
+   quote, không dùng syntax beta).
+2. Bảng Node/Container Specification: Node | Container | Image/Runtime | Port mapping |
+   Volume | Healthcheck | Responsibility.
+3. Bảng Communication Protocols: From → To | Protocol | Port | Notes (auth, TLS, nội bộ hay
+   public).
+4. Đoạn ngắn về startup order & healthcheck, persistence (pgdata, media), cấu hình env/
+   secrets (chỉ nêu tên biến, KHÔNG ghi giá trị key), và cách chạy (docker compose up).
+
+Ràng buộc:
+- Chỉ sửa architecture.md, không đụng code.
+- Không commit; xong thì cho tôi xem diff và danh sách chỗ ticket lệch so với code.
+```
+
+```
+oke , có thể commit và chuyển sang phầ SCRUM-83 rồi
+```
+
+### Nội dung do AI tạo
+
+- Đọc Jira: 4 task còn mở (`SCRUM-82`, `83`, `89`, `90`); chỉ ra mô tả của `SCRUM-89` bị copy từ `SCRUM-90`.
+- Bản đầu (commit `3867e0d`) viết trên nhánh 031 cũ. Khi soạn prompt cho `SCRUM-82`, AI tự phát hiện nhánh này đi sau `main`: `main` đã có Section 1–5, volume `media`, container `mailpit`. AI đề xuất bỏ commit đó (chưa từng push) và viết lại.
+- Bản viết lại (commit `fd864e2`, +106 dòng): Section 7 gồm sơ đồ Mermaid (Client Device, Docker Host với `web`, `app`, `db`, `mailpit`, `migrate`, volume `pgdata`, `media`; External Cloud với Gemini và Google Sign-In; thứ tự khởi động theo `depends_on: service_healthy`), bảng node/container, bảng giao thức, thứ tự khởi động, lưu dữ liệu, tên biến môi trường (không ghi giá trị) và lệnh chạy.
+- Danh sách chỗ ticket khác code: không có `container_name`, không khai báo network `wikicook`, có thêm `mailpit` và Google Sign-In, `migrate` ở profile `tools` vì `app` tự chạy Flyway, không có TLS trong repo.
+- Chuyển `SCRUM-83` sang In Review và comment nội dung cho reviewer.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Viết theo file compose thật, không theo ticket | Mình đặt trong prompt | Ticket mô tả khác code; tài liệu phải khớp code |
+| Bỏ bản đầu, viết lại trên nhánh từ `main` | Mình đồng ý ("Ok") | Bản đầu sẽ conflict và sai so với `main` |
+| Xếp PR chồng (#112 base là nhánh của #111) | Đồng ý theo đề xuất của AI | Nhánh 83 tạo từ nhánh 82; PR chỉ hiện đúng commit của Section 7 |
+
+### Cách sinh viên kiểm chứng
+
+- AI đọc các file compose, Dockerfile, `nginx.conf`, `.env.example`, `application.yml` trên `main` (`ce7c7a3`) rồi mới viết bảng.
+- Sơ đồ Mermaid chưa render thử trong phiên (lệnh tải `mermaid-cli` bị chặn quyền); để reviewer xem trên tab "Files changed".
+- **Sự cố sau phiên:** #111 được merge vào `main` lúc 15:48 ngày 20/11, 17 giây sau #112 được merge vào nhánh của #111 trước khi đổi base sang `main`, nên Section 7 không lên `main`. Ngày 21/11 mình mở lại PR #115 (xem Mục 30); Hiển merge #115 vào `main` lúc 22:04 cùng ngày. Ngày 24/11 PR #120 cập nhật thêm §7: volume `media` chứa cả ảnh Cooksnap (Hưng merge). Rút kinh nghiệm: không xếp PR chồng cho tài liệu; nếu xếp thì đổi base trước khi merge PR dưới.
+
+---
+
+## Mục 29: Viết C4 Level 3 – Frontend Components và bảng Code-to-Diagram Parity (`SCRUM-82`)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-20, 11:12 – 11:27 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | `docs/analysis-and-design/architecture.md` Section 6; `src/frontend/src/features/*`, `app/routes.tsx`, `main.tsx` |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.329 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, Atlassian MCP v2 |
+| Mục đích | PA4 Phần C, nửa frontend: sơ đồ component và bảng đối chiếu code với sơ đồ |
+| Nhánh Git | `docs/SCRUM-82-c4-l3-frontend` (commit `83779c2`, PR #111, đã merge vào `main`) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `7c4d530a-93bb-4e4a-a6ed-2ed1c03ca475` |
+
+### Prompt đã dùng
+
+```
+viết prompt 82 nha
+```
+
+AI soạn prompt đầy đủ. Đoạn mình dán vào chỉ có phần đầu (phần sau bị cắt khi copy); AI vẫn có bản đầy đủ ngay ở tin trước trong cùng phiên:
+
+```
+Làm SCRUM-82: C4 Level 3 — Frontend Components + bảng Code-to-Diagram Parity
+(nửa còn lại của Phần C) trong docs/analysis-and-design/architecture.md.
+
+Branch & nền:
+- Tạo branch docs/SCRUM-82-c4-l3-frontend từ origin/main (git fetch trước). KHÔNG làm trên
+  feature/031-*, vì branch đó thiếu features/auth, profile, reviews, search, cooking-mode và
+  có architecture.md cũ.
+- Đọc toàn bộ architecture.md trên main, đặc biệt Section 4 (C4 L2), Section 5 (C4 L3 Backend)
+  và 5.7 "Results to Coordinate With SCRUM-82". Giữ đúng văn phong tiếng Anh, cách đánh số
+  sub-section, format bảng và dòng "*Performed by ... *" như Section 5.
+
+Vị trí & phân công:
+- Thêm "## 6. C4 Level 3 — Frontend Components" ngay sau Section 5 (nếu đã có Section 6 thì
+  chèn vào trước và đánh lại số).
+```
+
+```
+Chạy xong chưa
+Ok
+Oke
+```
+
+("Ok" là đồng ý commit `SCRUM-82` và viết lại `SCRUM-83`; "Oke" là đồng ý push và mở 2 PR.)
+
+### Nội dung do AI tạo
+
+- Section 6 (+205 dòng), cùng cấu trúc Section 5: 6.1 phạm vi (container `web`, mỗi component là một thư mục feature); 6.2 sơ đồ (app shell, 8 feature, `shared/api`, `shared/ui`, browser storage, nối tới `app` theo REST prefix của 5.4); 6.3 năm quy tắc phụ thuộc, kiểm bằng cách quét import của mọi file không phải test; 6.4 bảng component; 6.5 lệch FD1–FD6; 6.6 frontend phụ thuộc stand-in của backend (theo yêu cầu ở 5.7); 6.7 parity đủ 25 component FE và BE, path nào cũng kiểm là có thật.
+- Thêm dòng Section 6 vào bảng metadata (Reviewer: Mai Văn Hiển).
+- Chỗ ticket khác code: thiếu `features/search` và `features/cooking-mode`; `ai-planner` không có route riêng mà gắn vào trang meal-planner qua `register.ts`.
+- Chuyển `SCRUM-82` sang In Review, comment nhờ Hiển review.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+- Bắt làm trên nhánh mới từ `origin/main`, vì nhánh 031 thiếu `features/auth`, `profile`, `reviews`, `search`, `cooking-mode`.
+- Giữ đúng văn phong và cách đánh số của Section 5 (Hiển viết) để phần C đọc liền mạch.
+
+### Cách sinh viên kiểm chứng
+
+- Mọi path trong bảng parity đã được AI kiểm là tồn tại.
+- Sơ đồ Mermaid chưa render thử trong phiên; Hiển approve và merge PR #111 ngày 20/11.
+
+---
+
+## Mục 30: Mở lại PR cho `SCRUM-83` và bổ sung AI log Sprint 4
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-21, từ 16:10 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | `SCRUM-83` (PR #115); `SCRUM-85` (AI log chung); file này |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.330 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, `gh` CLI |
+| Mục đích | Đưa Section 7 lên `main` sau sự cố ở Mục 28; bổ sung các mục 17–30 cho AI log theo yêu cầu của Chung (hạn tối 22/11) |
+| Nhánh Git | `docs/SCRUM-83-deployment` (PR #115); `docs/SCRUM-85-ai-log-thanhdu-sprint4` (file này) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `f85798ec-9f5d-4cda-8f5d-78239d5495cf` |
+
+### Prompt đã dùng
+
+Mình dán nguyên tin nhắn của Chung vào phiên:
+
+```
+Dự ơi, PR #112 (SCRUM-83 Deployment) bị merge nhầm vào nhánh docs/SCRUM-82-c4-l3-frontend chứ không vào main. [...]
+Dự mở giúp mình một PR mới từ docs/SCRUM-83-deployment vào main nhé. [...] Mở xong thì nhờ Hiển review lại.
+
+Thêm 2 việc nữa:
+- AI log Sprint 4: file của Dự chưa có mục nào từ 02/11. Chung cần phần này cho SCRUM-85, nên Dự bổ sung trước tối 22/11 giúp mình (SCRUM-82, 83 và các việc khác Dự có dùng AI).
+- SCRUM-89 (kiểm seed, tag v0.8.0-beta.1) và SCRUM-90 (git log, PDF, ZIP, nộp bài), hạn 23/11. [...]
+```
+
+### Nội dung do AI tạo
+
+- Kiểm tra lại: nhánh chỉ có commit `fd864e2`, merge sạch vào `main`; xác nhận #112 có base là `docs/SCRUM-82-c4-l3-frontend`.
+- Mở PR #115 vào `main`, gán Hiển (`MaiHien3507`) làm reviewer, mô tả nêu lý do mở lại.
+- Đọc 18 phiên Claude Code từ 02/11 đến 20/11 (prompt, báo cáo cuối của AI, commit, PR) và viết nháp các mục 17–30 cùng các dòng mới của bảng mục lục.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+- Các lần chỉ chạy lệnh git, gỡ conflict hoặc hỏi đáp vận hành (ví dụ phiên ngày 06/11: push, gỡ conflict PR #62, build lại container, kiểm tra DNS mạng trường) không ghi thành mục riêng, theo quy ước ở đầu file.
+- Sinh viên cần đọc lại từng mục và sửa chỗ chưa đúng với điều mình nhớ trước khi merge.
+
+### Cách sinh viên kiểm chứng
+
+- Thời gian lấy từ timestamp trong file phiên (đổi UTC sang UTC+7); commit và PR đối chiếu bằng `git log` và `gh pr list`.
+- Commit chưa push được đánh dấu rõ trong từng mục (Mục 21, 25, 26).
+
+---
+
+## Mục 31: Chuyển lưu ảnh sang S3 + CloudFront
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-24, 09:06 – 10:05 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 011 – Profile (avatar); 070 – Review & Cooksnap (ảnh Cooksnap); hạ tầng DevOps |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.330 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, extension Claude in Chrome để test giao diện; AWS CLI để dựng hạ tầng |
+| Mục đích | Ảnh người dùng tải lên đang lưu trên ổ đĩa của server; muốn chuyển lên S3, DB chỉ giữ đường dẫn, ảnh cào giữ nguyên, phát ảnh qua CloudFront cho nhanh |
+| Nhánh Git | `feat/media-s3-cloudfront` (commit `5a264a7`) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `c3876f26-cf11-44c5-a730-9a1b0bedf39c` |
+
+### Prompt đã dùng
+
+```
+Phần storage đó , cái nào đang dùng để lưu vậy
+Mình muốn dùng S3 để lưu nha . nó tốn phí nhiều không
+S3 nha. nhưng cần dùng IAM role hay SDK gì không
+với app của tôi thì nên dùng ECS hay EC2
+Mình muốn thay storage lưu ở phía server thành S3 nha.
+cả 2 đưa lên storage luôn chứ , còn db thì lưu đường dẫn trên s3 thôi. còn các dữ liệu cũ đã cào thì vẫn để đó, nếu được thì có thể dùng cloudfront để mà truy vấn dữ liệu tỉnh nhanh
+S3 bucket tên gì vậy
+ủa rồi sao bạn test pass
+Tôi muốn bạn tạo cho tôi luôn nhé.
+Tôi muốn chạy app lên thử
+```
+
+### Nội dung do AI tạo
+
+- Giải thích chi phí S3, cách app đăng nhập AWS (IAM role trên EC2, access key khi chạy ngoài AWS), so sánh EC2 và ECS cho quy mô của nhóm.
+- Code (`com.wikicook.common.media`):
+  - một `MediaStorage` chung cho avatar và Cooksnap, chọn bằng `WIKICOOK_MEDIA_STORAGE` (`local` mặc định, `s3`);
+  - `S3MediaStorage` (AWS SDK v2), `MediaUrls` trả URL CloudFront khi có `WIKICOOK_MEDIA_PUBLIC_BASE_URL`;
+  - Cooksnap bị ẩn được chuyển sang `hidden/` (CloudFront không đọc được) và chuyển lại khi khôi phục;
+  - test `S3MediaStorageTest` (S3Client giả) và `S3MediaStorageIT` (S3Mock trong Docker).
+- Tài liệu `docs/analysis-and-design/media-storage-s3.md`: bucket, CloudFront OAC, bucket policy chỉ cho đọc `avatars/*` và `cooksnaps/*`, IAM tối thiểu.
+- Hạ tầng AWS (theo yêu cầu "tạo cho tôi luôn"): bucket private ở `ap-southeast-1`, CloudFront với OAC, IAM user của app chỉ có `PutObject`/`GetObject`/`DeleteObject`; điền `src/backend/.env` (không commit, không in key ra màn hình).
+- Khi chạy app: bổ sung biến `.env` còn thiếu của spec 010, gỡ migration V305 của nhánh chưa merge và chạy bù 6 migration (có backup DB trước khi sửa).
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Đưa cả avatar và Cooksnap lên S3, DB chỉ lưu key | Mình yêu cầu | Không phụ thuộc ổ đĩa server khi triển khai |
+| Không đụng ảnh đã cào (`external_url`) | Mình yêu cầu | Ảnh đó đã nằm trên CDN của nguồn |
+| Dùng CloudFront phía trước bucket | Mình yêu cầu, AI đề xuất cách giữ `hidden/` không đọc được | Ảnh tải nhanh hơn, bucket vẫn private |
+| Mặc định vẫn là `local` | AI đề xuất, mình đồng ý | Dev, test và CI không cần tài khoản AWS |
+| Chưa tạo budget alert | Để lại | Cần email nhận cảnh báo, mình tự tạo sau |
+
+### Cách sinh viên kiểm chứng
+
+- `mvn clean verify`: 664 unit test và 672 IT của app qua, đạt ngưỡng JaCoCo.
+- Kiểm tra hạ tầng bằng AWS CLI: key của app upload được nhưng bị từ chối với lệnh ngoài quyền; truy cập thẳng S3 bị 403; qua CloudFront `avatars/...` trả 200, `hidden/...` trả 403.
+- Chạy app bằng docker compose với S3 thật: upload avatar, API trả URL CloudFront, ảnh tải được qua CloudFront và qua backend.
+- Sinh viên cần làm: tạo budget alert, cấp quyền AWS cho các thành viên khác nếu cần.
+
+---
+
+## Mục 32: Test app trên Chrome, implement 040 US2 và US5, thiết kế lại trang Đi chợ
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-24, 10:09 – 11:13 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 040 – Shopping List (US2, US5); 030 – Meal Planner (`MealPlanShoppingFacade`) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.330 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, extension Claude in Chrome để test giao diện |
+| Mục đích | Đi qua các màn chính để tìm chỗ chưa hợp lý; nối luồng Thực đơn → Đi chợ đang bị khóa; làm trang Đi chợ dễ nhìn hơn |
+| Nhánh Git | `feat/media-s3-cloudfront` (commit `f9c11ce`) |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `c3876f26-cf11-44c5-a730-9a1b0bedf39c` |
+
+### Prompt đã dùng
+
+```
+bạn có thể mở chrome lên và test lại trên giao diện giúp mình nhé, nếu thấy phần nào k hợp lý thì note lại
+4. Luồng Thực đơn → "Đi chợ" bị cụt. ... phần này đã làm chưa
+Gợi ý prompt và sau đó chạy cho mình luôn nhé, test trên trình duyệt
+Thiết kế lại trang đi chợ k, nó bị rối mắt lắm á
+Món nào nên mua gì chứ k list ra lộn xộn như z á , rối mắt quá
+A thử đi. thiết kế lại ui cho mình
+Mình duyệt
+không dùng superpower nhé
+tôi nghĩ nên phân trang ra á, rồi đưa món nào có hình ảnh của nó lên nhé
+Bố cục như cứt z
+```
+
+Prompt implement do AI soạn rồi tự chạy (mình xem trước):
+
+```
+Implement spec specs/040-shopping-list, phần US2 "Nhập từ thực đơn tuần" (T041, T043–T045, T038)
+và US5 "Sao chép" + "In" (Phase 7).
+- Backend: cài MealPlanHandoffPort qua com.wikicook.mealplan.api.ShoppingHandoff (030 đã có). Gộp
+  nguyên liệu theo ingredient_id và đơn vị, nhân theo khẩu phần. Thêm
+  POST /api/v1/shopping-lists/active/import/meal-plan có chế độ MERGE/ARCHIVE, lưu nguồn gốc từng dòng.
+  Theo đúng contracts/ và data-model.md.
+- Frontend: mở khóa "Nhập từ thực đơn tuần", hộp thoại chọn tuần và chế độ; nút "Đi chợ" ở Thực đơn
+  mang theo tuần đang xem; "Sao chép" xuất text có [ ]; "In" dùng @media print.
+- Test: unit và IT cho backend, Vitest cho frontend. Chạy mvn verify và npm test.
+- Rebuild docker, test trên Chrome, tick task trong tasks.md.
+```
+
+### Nội dung do AI tạo
+
+- Báo cáo test trên Chrome: liệt kê lỗi theo mức độ (chưa có trang chi tiết công thức, chế độ nấu dùng dữ liệu giả, ô tìm kiếm header bị khóa, luồng Đi chợ bị cụt, …). Không bấm "Tạo bằng AI" vì gọi API thật tốn tiền.
+- Backend 040: `JdbcMealPlanHandoffAdapter`, `ImportMealPlanRequest`, endpoint `POST …/import/meal-plan` (`MERGE` / `ARCHIVE_AND_NEW`), lỗi 422 `EMPTY_MEAL_PLAN`, bỏ nguyên liệu tùy chọn, xếp quầy theo loại nguyên liệu; sửa lỗi 500 khi bảng `units` có nhiều đơn vị trùng tên; trường `recipeCovers` để hiện ảnh món.
+- Frontend 040: `ImportMealPlanDialog`, sao chép dạng text, kiểu in riêng; giao diện mới chia theo món (`byDish.ts`): khung "Dùng chung nhiều món" cho nguyên liệu dùng từ 3 món trở lên, mỗi món một hàng có ảnh bìa, 6 món một trang, menu ⋯ cho Sao chép / In / Lưu trữ / Lịch sử.
+- Cập nhật `specs/040-shopping-list/tasks.md` và contract sang `weekStart`.
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Chia danh sách theo món thay vì một cột dài | Mình yêu cầu, chọn phương án A trong 3 phương án AI đưa ra | Nhìn vào là biết món nào cần mua gì |
+| Phân trang và hiện ảnh món | Mình yêu cầu | Danh sách dài và khó nhận ra món |
+| Đổi lưới 3 cột thành mỗi món một hàng ngang | Mình chê bố cục, AI sửa | Lưới bị hở lởm chởm |
+| Không dùng bộ skill superpowers | Mình yêu cầu giữa chừng | Muốn làm nhanh, không qua nhiều bước thiết kế |
+
+### Cách sinh viên kiểm chứng
+
+- `mvn clean verify` sau phần nhập: 1346/1346 test backend qua, đạt ngưỡng JaCoCo. Frontend 926/926, sau thiết kế lại 934/934; typecheck và lint sạch.
+- Test trên Chrome (tuần 23/11 – 29/11): nhập chế độ Gộp và chế độ Lưu cũ bắt đầu mới, số lượng khớp DB (2 dòng 200 ml cộng thành 400 ml), tuần trống báo lỗi ngay trong hộp thoại, sao chép ra đúng định dạng.
+- Sinh viên cần làm: bấm "In" để xem bản xem trước thật (AI không mở hộp thoại in).
+
+---
+
+## Mục 33: Thiết kế lại trang chủ, implement trang chi tiết công thức (060)
+
+| Trường | Nội dung |
+|---|---|
+| Thời gian truy cập | 2026-11-24, 11:19 – 12:49 (giờ Việt Nam, UTC+7) |
+| Người thực hiện | Nguyễn Thành Dự |
+| Spec liên quan | 020 – Search (trang chủ); 060 – Recipe Editor (T035, T037, T038); 040, 030, 070, 050 (các khối gắn vào trang chi tiết) |
+| Công cụ AI, phiên bản, nền tảng | Claude Code 2.1.330 (Anthropic), model Claude Opus 5.5 (`claude-opus-5-5`), terminal Ubuntu Linux, extension Claude in Chrome để test giao diện |
+| Mục đích | Trang chủ trông đơn điệu; `/recipes/:id` chỉ có phần đánh giá, không có ảnh, nguyên liệu hay các bước |
+| Nhánh Git | `feat/media-s3-cloudfront` (commit `ddb8d76`, `5fd8987`), PR #119 |
+| Lịch sử chat (bằng chứng) | Phiên Claude Code `c3876f26-cf11-44c5-a730-9a1b0bedf39c` |
+
+### Prompt đã dùng
+
+```
+Phần trang chủ design lại cho đẹp tí
+hình như hình ảnh các món đang bị sai á
+Phần trang của chi tiết á nó không có hiển thị được
+Mình đồng ý
+push code và pr mới lên trên github đi
+cập nhật ai log nữa nha. rồi push lên lại
+```
+
+### Nội dung do AI tạo
+
+- Trang chủ: banner lớn với ảnh món nổi bật, ô tìm kiếm và lọc nhanh; 8 ô loại món; hàng "Mới đăng" và 3 hàng món theo loại (`RecipeRow`, `CategoryTile`).
+- Kiểm tra "ảnh sai": so 120 ảnh trên API với DB đều khớp; nguyên nhân thật là trang chi tiết chưa có.
+- Backend 060: `GET /api/v1/recipes/{id}` (`RecipeDetailService`, `RecipeDetailDto`, `RecipeDetailController`, 404 `NOT_FOUND`), khách xem được món đã đăng, bản nháp chỉ tác giả xem; `RecipeDetailControllerIT` 5 case theo T035. Thêm `JdbcRecipeImportAdapter` đọc nguyên liệu thật cho nút "Thêm vào danh sách đi chợ" (thay adapter dữ liệu mẫu của 040).
+- Frontend 060: `features/recipe-detail` theo mockup W-NU01: ảnh bìa, thông tin món, nguồn angingon.com, nguyên liệu (dùng `RecipeIngredientsPanel` của 040), các bước có ảnh và hẹn giờ, video YouTube, phần đánh giá của 070 ở cuối, nút "Bắt đầu nấu" và "Thêm vào thực đơn"; `RecipeDetailPage.test.tsx` 7 test.
+- Chia 4 commit theo phần việc, push và mở PR #119 (không có dòng ghi công Claude).
+
+### Phần sinh viên tự quyết định và chỉnh sửa
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Làm trang chi tiết theo spec 060 (T035–T038) | AI đề xuất, mình đồng ý | Cần cho luồng "tìm món → xem chi tiết → đi chợ" |
+| Khối Lưu (080) và dinh dưỡng (090) để trống | AI đề xuất | Hai tính năng chưa làm, không hiện nút chết |
+| Không đưa `PA3-2026.pdf`, `ke-hoach-kiem-thu.md`, `docs/superpowers/` vào PR | AI hỏi lại, để mình quyết | Không phải file làm trong phiên này |
+
+### Cách sinh viên kiểm chứng
+
+- `mvn verify` toàn bộ backend qua, đạt ngưỡng JaCoCo. Frontend 941/941 test, eslint 0 lỗi.
+- Test trên Chrome: `/recipes/224` hiện đủ ảnh bìa, 10 nguyên liệu, 5 bước có ảnh, phần đánh giá; `/recipes/999999999` báo "Công thức này không còn tồn tại". Phát hiện bảng "Thêm vào danh sách đi chợ" bị kẹt trong cột nguyên liệu và bị header che, đã sửa CSS rồi kiểm tra lại.
+- Sinh viên cần làm: review PR #119; lỗi lọc "Món chay" (`diet=VEGETARIAN` trả về mọi món) chưa sửa.
