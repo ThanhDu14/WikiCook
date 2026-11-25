@@ -1,11 +1,11 @@
-# USE-CASE SPECIFICATIONS: WIKICOOK CORE MODULES (040 & 050)
+# USE-CASE SPECIFICATIONS: WIKICOOK (ALL 10 PRODUCT FEATURES)
 
 **Course:** CS300 - CSC13002 - Introduction to Software Engineering  
 **Project Name:** WikiCook — Intelligent Culinary & Meal Planning Ecosystem  
-**Document Title:** Detailed Use-Case Specifications for Feature 040 (Shopping List) & Feature 050 (Cooking Mode)  
-**Sprint Cycle:** Sprint 03 (Project Assignment 3 — Part D, 45 Points)  
-**Document Version:** 2.1.1 (Second Edition — PA4 Part A revision of Sections 9, 10 and 12, `SCRUM-71`; first edition `v1.0` – `v1.4`, Sprint 03)  
-**Status:** Proposal / Ready for Review *(Aligned with Spec 040 & Spec 050; pending final Use-Case Model freeze in SCRUM-49)*
+**Document Title:** Detailed Use-Case Specifications covering all 10 Vision §5 Product Features (68 Use Cases)  
+**Sprint Cycle:** Sprint 04 (Project Assignment 4 — Part A, Revised Use-Case Specification; first edition Sprint 03 — Part D)  
+**Document Version:** 2.1.1 (Second Edition — PA4 Part A revision of Sections 9, 10, 12, and `UC-100-02`, `SCRUM-71`; first edition `v1.0` – `v1.4`, Sprint 03)  
+**Status:** Finalized / Reviewed for PA4 *(Aligned with Use-Case Model `v2.0.2` and PA4 Part E implementation on `main`; review confirmed in PR #109 and PR #116)*
 
 ---
 
