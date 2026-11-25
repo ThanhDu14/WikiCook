@@ -240,7 +240,7 @@ flowchart TB
         WEB["<b>web</b><br/>[Container: nginx 1.27 + React SPA files]<br/>Serves the SPA, proxies /api/ and /actuator/<br/>host port 3000 to container port 80"]
         APP["<b>app</b><br/>[Container: Java 21, Spring Boot 3.5.16]<br/>REST API /api/v1, security, business rules,<br/>AI orchestration, Flyway on start<br/>host port 8080"]
         DB[("<b>db</b><br/>[Container: PostgreSQL 16 + pgvector]<br/>System of record and recipe embeddings<br/>host port 5432, volume pgdata")]
-        MEDIA[/"<b>media</b><br/>[Docker volume]<br/>/var/lib/wikicook/media<br/>avatars"/]
+        MEDIA[/"<b>media</b><br/>[Docker volume]<br/>/var/lib/wikicook/media<br/>avatars, Cooksnap photos"/]
         MAILPIT["<b>mailpit</b><br/>[Container: axllent/mailpit] DEV ONLY<br/>SMTP sink on 1025, web UI on 8025"]
         MIGRATE["<b>migrate</b><br/>[Container: flyway/flyway 11] ON DEMAND<br/>profile tools, one-off job"]
     end
@@ -251,7 +251,7 @@ flowchart TB
     USER -->|"Uses the SPA<br/>[HTTP]"| WEB
     WEB -->|"Forwards /api/ and /actuator/<br/>[HTTP, proxy_pass http://app:8080]"| APP
     APP -->|"Reads and writes<br/>[JDBC over TCP, 5432]"| DB
-    APP -->|"Writes and reads avatar files<br/>[file system]"| MEDIA
+    APP -->|"Writes and reads avatar<br/>and Cooksnap files<br/>[file system]"| MEDIA
     APP -->|"Sends verification and reset emails<br/>[SMTP, 1025]"| MAILPIT
     MIGRATE -->|"Applies V001 to V501<br/>[JDBC over TCP, 5432]"| DB
     APP -.->|"Meal-plan drafts and embeddings<br/>only when WIKICOOK_AI_MODE=live<br/>[HTTPS, REST JSON, API key]"| GEMINI
@@ -291,7 +291,7 @@ Dashed borders on `mailpit` and `migrate` mark development tooling, not part of 
 | **mailpit** | `axllent/mailpit` (tag not pinned) | Captures the emails sent by `app`. `MAIL_HOST` is fixed to `mailpit` in the compose file. No production mail provider is configured. `app` does not wait for it, so a missing SMTP server does not stop the application. | Host 1025 (SMTP) and 8025 (web UI). No volume. | `src/backend/docker-compose.yml`, `application.yml` (`spring.mail`, `management.health.mail`) |
 | **migrate** | `flyway/flyway:11`, compose profile `tools` | Runs the SQL files of `wikicook-db` against `db` once and exits, without starting `app`. Uses the same Flyway history table as `app` and enables `out-of-order`. Not started by `docker compose up`. | Mounts `wikicook-db/src/main/resources/db/migration` read-only. No published port. | `src/backend/docker-compose.yml` |
 
-`media` and `pgdata` are named Docker volumes, not containers. The Cooksnap photo directory is the exception described in Section 4.6.
+`media` and `pgdata` are named Docker volumes, not containers.
 
 ### 4.4. Relationships
 
@@ -300,7 +300,7 @@ Dashed borders on `mailpit` and `migrate` mark development tooling, not part of 
 | Browser | web | Page, scripts and styles of the SPA. The browser keeps the access token in memory and the refresh token in an HttpOnly cookie. | HTTP on port 3000. TLS is not configured anywhere in the repository (nginx listens on 80 only), so HTTPS would need a proxy in front of `web`. | `nginx.conf`, `docker-compose.yml` |
 | web | app | Every `/api/` and `/actuator/` request, with `Host`, `X-Real-IP`, `X-Forwarded-For` and `X-Forwarded-Proto`. `app` trusts them (`server.forward-headers-strategy: native`) for the sign-in throttle and the audit IP address. | HTTP, `proxy_pass http://app:8080` | `nginx.conf`, `application.yml` |
 | app | db | JPA and JDBC queries, `pgvector` similarity search, Flyway DDL. | JDBC over TCP to `db:5432`; `DB_URL`, `DB_USER`, `DB_PASSWORD` | `docker-compose.yml`, `application.yml` |
-| app | media volume | Avatar files written by `LocalDiskMediaStorage`. | Local file system | `docker-compose.yml` (`WIKICOOK_MEDIA_DIR`), `ProfileDefaultsConfig.java` |
+| app | media volume | Avatar files written by `LocalDiskMediaStorage`; Cooksnap photos and thumbnails written by `LocalStorageServiceImpl` under `cooksnaps/`. | Local file system | `docker-compose.yml` (`WIKICOOK_MEDIA_DIR`, `WIKICOOK_REVIEW_STORAGE_ROOTPATH`), `ProfileDefaultsConfig.java`, `ReviewStorageProperties.java` |
 | app | mailpit | Account verification and password-reset emails, sent through Spring `JavaMailSender` after the transaction commits. | SMTP to `mailpit:1025`, no authentication | `LinkMailer.java`, `docker-compose.yml` |
 | app | Google Gemini API | Meal-plan draft requests and recipe or query embeddings. | HTTPS, REST JSON, API key in `x-goog-api-key`. Base URL `https://generativelanguage.googleapis.com/v1beta`. Only in mode `live`; the compose default is `mock`. | `AiProperties.java`, `AiClientConfig.java`, `GeminiHttp.java` |
 | app and browser | Google Sign-In | Authorization Code with PKCE; the browser is redirected to Google and `app` exchanges the code. Google's endpoints come from Spring's `CommonOAuth2Provider.GOOGLE`. The registration exists only when `WIKICOOK_GOOGLE_CLIENT_ID` is set. | HTTPS, OpenID Connect | `GoogleOAuthConfig.java`, `application.yml` (`wikicook.auth.google`) |
@@ -341,7 +341,7 @@ Sections 2 and 3 were verified on 2026-11-16 at commit `4538a7a` and are kept as
 
 Other findings that matter for the architecture:
 
-- **Cooksnap photos are not on a volume.** `wikicook.review.storage.root-path` defaults to `uploads/cooksnaps/`, relative to the working directory, and the compose file neither sets it nor mounts it. Inside the `app` container these files live in the writable layer and are lost when the container is recreated. Only avatars use the `media` volume. On a developer machine the same default creates the directory `uploads/` under the folder the application starts in.
+- **Cooksnap photos share the `media` volume.** `wikicook.review.storage.root-path` defaults to `uploads/cooksnaps/`, relative to the working directory. The `app` image runs as user `wikicook` and `/app` belongs to `root`, so that default cannot be created inside the container. The compose file therefore sets `WIKICOOK_REVIEW_STORAGE_ROOTPATH=/var/lib/wikicook/media/cooksnaps` (PR #118) (`SCRUM-89`, checked on 24/11/2026: upload returns 201 and the photo is still served after the container is recreated). On a developer machine without that variable the default creates the directory `uploads/` under the folder the application starts in.
 - **Two upload paths exist.** Avatars use `common.media.MediaStorage`; Cooksnaps use their own `review.service.StorageService`.
 - **`app` is also published on host port 8080**, so the API can be reached without `web`.
 
@@ -810,7 +810,7 @@ flowchart LR
 | :--- | :--- | :--- | :---: | :--- | :--- | :--- |
 | **Client Device** | — | Desktop or mobile browser | — | Browser storage (Section 6.4) | — | Runs the SPA; talks only to `web` on one origin. |
 | **Docker Host** | `wikicook-web-1` (`web`) | `src/frontend/Dockerfile`: `node:22-alpine` build stage, then `nginx:1.27-alpine` | `${WEB_PORT:-3000}:80` | — | `wget http://127.0.0.1/`, every 10 s, timeout 3 s, 5 retries | Serves the SPA (fallback to `index.html`, 1-year cache on `/assets/`), proxies `/api/` (body up to 6 MB) and `/actuator/` to `app:8080`. `restart: unless-stopped`. |
-| **Docker Host** | `wikicook-app-1` (`app`) | `src/backend/Dockerfile`: `maven:3.9-eclipse-temurin-21` build, then `eclipse-temurin:21-jre-alpine` with a layered Spring Boot jar, non-root user `wikicook` (uid 1001), `-XX:MaxRAMPercentage=75` | `${APP_PORT:-8080}:8080` | `media` → `/var/lib/wikicook/media` (avatars) | `wget http://127.0.0.1:8080/actuator/health`, every 10 s, timeout 3 s, start period 40 s, 10 retries (in compose and in the image) | The whole backend (Section 5); runs Flyway at startup. `restart: unless-stopped`. |
+| **Docker Host** | `wikicook-app-1` (`app`) | `src/backend/Dockerfile`: `maven:3.9-eclipse-temurin-21` build, then `eclipse-temurin:21-jre-alpine` with a layered Spring Boot jar, non-root user `wikicook` (uid 1001), `-XX:MaxRAMPercentage=75` | `${APP_PORT:-8080}:8080` | `media` → `/var/lib/wikicook/media` (avatars, `cooksnaps/`) | `wget http://127.0.0.1:8080/actuator/health`, every 10 s, timeout 3 s, start period 40 s, 10 retries (in compose and in the image) | The whole backend (Section 5); runs Flyway at startup. `restart: unless-stopped`. |
 | **Docker Host** | `wikicook-db-1` (`db`) | `pgvector/pgvector:pg16` | `${POSTGRES_PORT:-5432}:5432` | `pgdata` → `/var/lib/postgresql/data` | `pg_isready -U $POSTGRES_USER -d $POSTGRES_DB`, every 5 s, timeout 3 s, 10 retries | PostgreSQL 16 with `pgvector`, `pg_trgm`, `unaccent`; timezone `Asia/Ho_Chi_Minh`. `restart: unless-stopped`. |
 | **Docker Host** | `wikicook-mailpit-1` (`mailpit`) | `axllent/mailpit` (tag not pinned) | `1025:1025`, `8025:8025` | — | — | Development SMTP sink for verification and reset emails. `app` does not wait for it. |
 | **Docker Host** | `migrate` (profile `tools`) | `flyway/flyway:11` | — | Read-only bind mount of `wikicook-db/src/main/resources/db/migration` → `/flyway/sql` | — (waits for `db` healthy; `FLYWAY_CONNECT_RETRIES=10`) | Applies the migrations without the app (`out-of-order` on). Started only with `docker compose run --rm migrate`. |
@@ -833,7 +833,7 @@ flowchart LR
 ### 7.5. Startup Order, Persistence and Configuration
 
 - **Startup order:** `db` → (`pg_isready` healthy) → `app` runs Flyway and starts → (`/actuator/health` healthy) → `web`. `mailpit` starts independently. `migrate` is not part of `docker compose up`.
-- **Persistence:** `pgdata` holds the database and `media` the avatar files; both survive `docker compose down` and are removed only by `down -v`. Cooksnap photos are written to `uploads/cooksnaps/` inside the `app` container and are lost when it is recreated (Section 4.6). `web`, `app` and `mailpit` are otherwise stateless.
+- **Persistence:** `pgdata` holds the database and `media` the avatar files and Cooksnap photos (`cooksnaps/`, Section 4.6); both survive `docker compose down` and are removed only by `down -v`. `web`, `app` and `mailpit` are otherwise stateless.
 - **Configuration and secrets:** backend values come from the git-ignored `src/backend/.env` (template `src/backend/.env.example`). Required: `WIKICOOK_JWT_SECRET`, `WIKICOOK_EMAIL_HASH_KEY` (compose refuses to start without them). Others: `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_PORT`, `APP_PORT`, `WIKICOOK_AI_MODE`, `WIKICOOK_AI_API_KEY`, `WIKICOOK_AI_DAILY_CAP_TOTAL`, `WIKICOOK_AI_EMBEDDING_RECONCILE_ON_STARTUP`, `WIKICOOK_AI_EMBEDDING_RECONCILE_LIMIT`, `WIKICOOK_PUBLIC_BASE_URL`, `WIKICOOK_AUTH_COOKIE_SECURE`, `WIKICOOK_AUTH_SIGN_IN_IP_LIMIT`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `WIKICOOK_MAIL_FROM`, `WIKICOOK_APPEAL_CONTACT`, `WIKICOOK_GOOGLE_CLIENT_ID`, `WIKICOOK_GOOGLE_CLIENT_SECRET`, `WIKICOOK_BOOTSTRAP_ADMIN_EMAIL`, `WIKICOOK_BOOTSTRAP_ADMIN_PASSWORD`, `WIKICOOK_DEV_STUBS_ENABLED`, `WIKICOOK_DEV_STUBS_USER_ID`. `WEB_PORT` is read from the shell or a root `.env`. No secret is stored in an image or in `application.yml`.
 - **Running the stack:**
 
