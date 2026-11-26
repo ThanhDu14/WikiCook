@@ -50,6 +50,7 @@ Tất cả các mục đều khai báo đầy đủ 7 tiêu chí bắt buộc th
 | 35 | 2026-11-21, khoảng 15:00 – 16:00 (ước lượng) | `SCRUM-79`, `SCRUM-71` (review), `SCRUM-83`, `SCRUM-88` | Kiểm tra PR #108, #109, #110 sau khi được cập nhật; phát hiện nội dung `SCRUM-83` (PR #112) chưa lên `main`; cập nhật trạng thái Sprint 04 (`v0.10`); soạn bình luận review lại và tin nhắn cho Dự | `0f71ef0` | `sprint-04-report.md` |
 | 36 | 2026-11-21, khoảng 16:00 – 17:00 (ước lượng) | `SCRUM-87`, `SCRUM-88`, `SCRUM-84` | Rà soát mâu thuẫn trong báo cáo Sprint 04, `Changes.md` và AI log; phát hiện lỗi lưu ảnh Cooksnap khi chạy Docker Compose; sửa biên bản Standup 01 theo xác nhận của PM (`v0.11`, `v0.12`) | `1fc00b1`, `af8a3c9` | `sprint-04-report.md`, `Changes.md`, `ai_log_hung.md` |
 | 37 | 2026-11-21, khoảng 17:00 – 20:00 (ước lượng) | `SCRUM-71`, `SCRUM-79` (review), `SCRUM-84`, `SCRUM-88` | Đăng review bằng GitHub CLI; chạy `mvn verify` trên `main` cho PR #108; kiểm tra bản ghi review của Chung trên #109, approve #109 và mở PR #116 với bản ghi đã sửa; cập nhật trạng thái Sprint 04 (`v0.13`) và `Changes.md` Mục B | `262b3e8`, commit của mục này | `use-case-specification.md`, `sprint-04-report.md`, `Changes.md`, `ai_log_hung.md` |
+| 38 | 2026-11-23 .. 2026-11-25 (12:53 – 22:30) | `SCRUM-84`, `SCRUM-85`/`86` (review), `SCRUM-88` | Theo dõi tiến độ PR #117–#121, soạn nhận xét review cho PR #117 (6 điểm đồng bộ code/tài liệu), rà soát mâu thuẫn chéo toàn bộ tài liệu PA4, chốt `sprint-04-report.md` (`v1.0`), `Changes.md`, đồng bộ `architecture.md` (§2–§3) và header `use-case-specification.md` | Nhánh `docs/SCRUM-88-final-pa4-report` | `sprint-04-report.md`, `Changes.md`, `architecture.md`, `use-case-specification.md`, `ai_log_hung.md` |
 
 ---
 
@@ -1667,3 +1668,37 @@ Tiến hành triển khai SCRUM 87 giúp tôi, đồng thời gợi ý lệnh co
 - Từng chi tiết trong bản ghi review được tra lại trên `main` (`84844a6`): `MyProfileController` (`POST /api/v1/me/profile`, multipart), `V501__community.sql` (`CHECK (rating BETWEEN 1 AND 5)`), `CreateReviewRequest` (bình luận 10 – 2000, mẹo ≤ 500), `UpdateReviewRequest` (≤ 3 ảnh), `EmailRequestLimiter` (`MAX_REQUESTS = 3`, 15 phút), `ReviewRepositoryIT` (T015), sơ đồ Use-Case Model Mục 4.7 và 4.10 có «include» `UC-100-02` → `UC-070-08`.
 - `git merge-tree` cho #114 và #116 với `main` sau khi #109 merge: không xung đột. GitHub API: thời điểm review, approve và merge của #108, #109, #115, #116.
 - Script kiểm số cột của mọi bảng trong báo cáo, `Changes.md` và AI log.
+
+## Mục 38: Theo dõi tiến độ cuối Sprint 4, review PR #117, rà soát mâu thuẫn PA4 và chốt bản nộp cuối (`SCRUM-84`, `SCRUM-86` review, `SCRUM-88`)
+
+| Trường | Nội dung |
+|---|---|
+| **Công cụ, phiên bản & nền tảng** | Google Antigravity CLI (Linux, Gemini 4), kết hợp `git` và `gh` CLI |
+| **Thời gian truy cập cụ thể** | 2026-11-23 12:53 – 2026-11-25 22:30 (Giờ Việt Nam, UTC+7) |
+| **Người thực hiện** | Lê Quốc Hưng (`@LqHung06`) |
+| **Tác vụ Jira liên quan** | `SCRUM-84` (`Changes.md`), `SCRUM-85`/`SCRUM-86` (review PR #117), `SCRUM-88` (Sprint Review, Retrospective & chốt báo cáo PA4) |
+| **Tài liệu / spec liên quan** | PR #117, #118, #119, #120, #121; `docs/management/reports/sprint-04/sprint-04-report.md`; `Changes.md`; `docs/analysis-and-design/architecture.md`; `docs/requirements/use-case-specification.md`; `docs/assets/jira/sprint-04/` |
+| **Mục đích sử dụng** | Đối chiếu tiến độ 23 tasks PA4 và AI-log 5 thành viên trên GitHub; rà soát chi tiết PR #117 trước khi duyệt; kiểm tra mâu thuẫn chéo trên toàn bộ tài liệu nộp PA4 và hoàn thiện bản cuối `v1.0` của `sprint-04-report.md` kèm ảnh Jira 25/11. |
+| **Nhánh Git** | `docs/SCRUM-88-final-pa4-report` |
+| **Minh chứng (Evidence)** | Review của `@LqHung06` trên PR #117 (23/11 và 25/11), merge PR #117 (`1b1206e`), PR #118 (`3e99613`), PR #120 (`f1e881e`), PR #121 (`00539b4`); commit chốt `v1.0` trên nhánh `docs/SCRUM-88-final-pa4-report`. |
+
+### Prompt đã sử dụng (tóm lược):
+1. Đọc các file trong `WikiCook`, `tasks/PA4`, `guide_task/PA4` và các commit liên quan để báo cáo tiến độ hiện tại từng thành viên và từng SCRUM.
+2. Kiểm tra PR mới nhất của Dự và Chung (#117, #118, #119, #120, #121), kiểm tra đủ AI-log 5 thành viên; soạn review comment cho PR #117.
+3. Cập nhật tiến độ mới nhất, nhúng 2 ảnh chụp Jira 25/11 và gỡ các trạng thái Draft/pending cho bản PA4 cuối cùng.
+4. Rà soát lại toàn bộ tài liệu PA4 xem còn mâu thuẫn logic nào không, sửa toàn bộ lỗi phát hiện được, commit và mở PR.
+
+### Nội dung do AI sinh ra:
+1. Bảng đối chiếu tiến độ 23 tasks, kiểm tra đủ AI-log 5 thành viên và phát hiện PR #119 (S3/040/020/060) cần giữ ở Draft ngoài phạm vi PA4 để giữ code parity.
+2. Danh sách 6 điểm lệch code/tài liệu trên PR #117 (Redis/R2/S3, port `5173` vs `3000`, `64` vs `68` use cases, số liệu `mvn verify`/JaCoCo, verdict `PASSED` khi §4–5 còn Draft, phân đoạn mục Duy/Dự) để Chung sửa trong commit `6eb4834`.
+3. Rà soát chéo phát hiện mâu thuẫn giữa `architecture.md` §2–§3 (Part B viết trước khi `011`, `070`, password reset, Google sign-in, `V501`, `media` volume lên `main`) với §4–§7, tiêu đề cũ PA3 trong `use-case-specification.md`, và các dòng trạng thái còn sót trong `sprint-04-report.md` & `Changes.md`.
+4. Bản cập nhật `v1.0` cho `sprint-04-report.md`, `Changes.md`, đồng bộ `architecture.md` §2–§3, header `use-case-specification.md`, và Mục 38 này.
+
+### Phần sinh viên tự làm độc lập, hiệu chỉnh & kiểm chứng:
+- Trực tiếp xác nhận buổi họp Sprint Review & Retrospective qua Google Meet (5/5 thành viên), chính sách hạn Jira là mốc nội bộ dưới hạn nộp 29/11, và trực tiếp kiểm tra lại Moodle ngày 25/11 (vẫn chưa có feedback PA3).
+- Tự chụp và cung cấp 2 ảnh Jira Sprint 4 (25/11, 23/23 `Done`) và xác nhận trung thực việc đánh `Done` trước cho `SCRUM-90` (sẽ đóng gói ngay sau khi PR này merge).
+- Trực tiếp duyệt và merge PR #118, #120, #121, #117 trên GitHub sau khi xác nhận các điểm review đã được sửa.
+
+### Kiểm chứng đã thực hiện:
+- Script Python kiểm tra toàn bộ link tương đối (0 link hỏng) và số cột của mọi bảng Markdown (0 bảng lệch cột) trên 7 tài liệu PA4.
+- Đối chiếu phiên bản thư viện trong `src/backend/pom.xml` / `wikicook-app/pom.xml` (`imageio-webp` `3.15.3`, `org.sejda.imageio:webp-imageio`, `caffeine`) và số lượng file Flyway trong `wikicook-db/src/main/resources/db/migration/` (20 files `V001`–`V501`).
